@@ -32,7 +32,8 @@
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.util :as util]))
+   [heraldry.util :as util]
+   [taoensso.tufte :as tufte]))
 
 (def fields
   [plain/field-type
@@ -92,34 +93,38 @@
     [:geometry :size-mode]})
 
 (defmethod interface/options :heraldry.component/field [context]
-  (when (:subscriptions context)
-    (js/console.log :field-options context))
-  (let [path (:path context)
-        root-field? (-> path drop-last last (= :coat-of-arms))
-        subfield? (-> path last int?)
-        semy-charge? (->> path (take-last 2) (= [:charge :field]))
-        field-type (interface/get-raw-data (c/++ context :type))
-        plain? (= field-type :heraldry.field.type/plain)
-        counterchanged? (= field-type :heraldry.field.type/counterchanged)
-        ref? (= field-type :heraldry.field.type/ref)]
-    (cond-> {:manual-blazon options/manual-blazon}
-      (not (or counterchanged?
-               plain?
-               ref?)) (assoc :outline? options/plain-outline?-option)
-      (not ref?) (-> (merge (interface/options (assoc context :dispatch-value field-type)))
-                     (assoc :type type-option))
-      (and (not ref?)
-           (or subfield?
-               root-field?
-               semy-charge?)) (update-in [:type :choices] #(->> %
-                                                                (filter (fn [[_ t]]
-                                                                          (not= t :heraldry.field.type/counterchanged)))
-                                                                vec))
-      (not (or root-field?
-               semy-charge?
-               counterchanged?
-               ref?)) (assoc :inherit-environment?
-                             {:type :boolean
-                              :default false
-                              :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
-                                           :de "Umgebung erben (e.g. für Halbierung)"}}}))))
+  (tufte/profile
+   {:id :stuff}
+   (tufte/p
+    {:id ::options}
+    (when (:subscriptions context)
+      (js/console.log :field-options context))
+    (let [path (:path context)
+          root-field? (-> path drop-last last (= :coat-of-arms))
+          subfield? (-> path last int?)
+          semy-charge? (->> path (take-last 2) (= [:charge :field]))
+          field-type (interface/get-raw-data (c/++ context :type))
+          plain? (= field-type :heraldry.field.type/plain)
+          counterchanged? (= field-type :heraldry.field.type/counterchanged)
+          ref? (= field-type :heraldry.field.type/ref)]
+      (cond-> {:manual-blazon options/manual-blazon}
+        (not (or counterchanged?
+                 plain?
+                 ref?)) (assoc :outline? options/plain-outline?-option)
+        (not ref?) (-> (merge (interface/options (assoc context :dispatch-value field-type)))
+                       (assoc :type type-option))
+        (and (not ref?)
+             (or subfield?
+                 root-field?
+                 semy-charge?)) (update-in [:type :choices] #(->> %
+                                                                  (filter (fn [[_ t]]
+                                                                            (not= t :heraldry.field.type/counterchanged)))
+                                                                  vec))
+        (not (or root-field?
+                 semy-charge?
+                 counterchanged?
+                 ref?)) (assoc :inherit-environment?
+                               {:type :boolean
+                                :default false
+                                :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
+                                             :de "Umgebung erben (e.g. für Halbierung)"}}}))))))
