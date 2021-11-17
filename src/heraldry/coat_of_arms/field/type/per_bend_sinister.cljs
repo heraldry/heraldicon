@@ -19,6 +19,11 @@
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
+(defmethod interface/options-subscriptions field-type [context]
+  (-> #{[:origin :point]
+        [:anchor :point]}
+      (into (line/options-subscriptions (c/++ context :line)))))
+
 (defmethod interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line))
         origin-point-option {:type :choice

@@ -18,6 +18,10 @@
 
 (defmethod field-interface/part-names field-type [_] nil)
 
+(defmethod interface/options-subscriptions field-type [context]
+  (-> #{}
+      (into (line/options-subscriptions (c/++ context :line) :fimbriation? false))))
+
 (defmethod interface/options field-type [context]
   {:layout {:num-fields-y {:type :range
                            :min 1

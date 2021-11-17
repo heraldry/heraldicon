@@ -19,6 +19,10 @@
 
 (defmethod field-interface/part-names field-type [_] ["dexter" "fess" "sinister"])
 
+(defmethod interface/options-subscriptions field-type [context]
+  (-> #{}
+      (into (line/options-subscriptions (c/++ context :line) :fimbriation? false))))
+
 (defmethod interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]

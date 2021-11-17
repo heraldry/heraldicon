@@ -22,6 +22,12 @@
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
+(defmethod interface/options-subscriptions field-type [context]
+  (-> #{[:direction-anchor :point]
+        [:anchor :point]}
+      (into (line/options-subscriptions (c/++ context :line)))
+      (into (line/options-subscriptions (c/++ context :opposite-line)))))
+
 (defmethod interface/options field-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)

@@ -13,6 +13,9 @@
 
 (defmethod field-interface/part-names field-type [_] [])
 
+(defmethod interface/options-subscriptions field-type [_context]
+  #{})
+
 (defmethod interface/options field-type [_context]
   {:tincture {:type :choice
               :choices tincture/choices

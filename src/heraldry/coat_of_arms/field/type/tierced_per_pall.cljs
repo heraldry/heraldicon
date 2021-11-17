@@ -23,6 +23,12 @@
 
 (defmethod field-interface/part-names field-type [_] ["middle" "side I" "side II"])
 
+(defmethod interface/options-subscriptions field-type [context]
+  (-> #{[:direction-anchor :point]
+        [:anchor :point]}
+      (into (line/options-subscriptions (c/++ context :line :fimbriation? false)))
+      (into (line/options-subscriptions (c/++ context :opposite-line :fimbriation? false)))))
+
 (defmethod interface/options field-type [context]
   (let [line-style (-> (line/options (c/++ context :line)
                                      :fimbriation? false)
