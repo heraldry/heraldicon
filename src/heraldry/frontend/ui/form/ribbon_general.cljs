@@ -340,9 +340,9 @@
                       [:p "Segmente können Vorderseite oder Rückseite oder Vorderseite mit Text repräsentieren, und ihrer Render-Reihenfolge wird durch die Layer-Zahl angegeben."]
                       [:p "Note: wende die Vorauswahl an nachdem sich die Anzahl der Segmente in der Kurve ändert. Das überschreibt die Änderungen hier, aber im Moment gibt es keinen guten Weg, diese Änderungen beizubehalten."]]}]])])
 
-(defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [{:keys [path]}]
+(defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [context]
   {:title strings/general
-   :validation @(rf/subscribe [:validate-ribbon-general path])})
+   :validation @(rf/subscribe [:validate-ribbon-general context])})
 
 (defmethod ui-interface/component-form-data :heraldry.component/ribbon-general [_context]
   {:form form})

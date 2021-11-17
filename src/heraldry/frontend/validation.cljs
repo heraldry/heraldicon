@@ -6,7 +6,8 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [heraldry.context :as c]))
 
 (def level-order
   {:error 0
@@ -116,7 +117,7 @@
     [(rf/subscribe [:field-tinctures-for-validation field-path])
      (rf/subscribe [:field-tinctures-for-validation parent-field-path])
      (rf/subscribe [:fimbriation-tinctures-for-validation fimbriation-path])
-     (rf/subscribe [:get-relevant-options fimbriation-path])])
+     (rf/subscribe [:heraldry.state/options fimbriation-path])])
 
   (fn [[field-tinctures
         parent-field-tinctures
@@ -314,15 +315,15 @@
                                                    :de "Das Feld sollte in eine gerade Zahl von Felder geteilt sein, für ungerade Anzahl sollten Schrägbalken benutzt werden."}})))))
 
 (rf/reg-sub :validate-attribution
-  (fn [[_ path] _]
-    [(rf/subscribe [:get-sanitized-data (conj path :nature)])
-     (rf/subscribe [:get-sanitized-data (conj path :source-license)])
-     (rf/subscribe [:get-sanitized-data (conj path :source-name)])
-     (rf/subscribe [:get-sanitized-data (conj path :source-link)])
-     (rf/subscribe [:get-sanitized-data (conj path :source-creator-name)])
-     (rf/subscribe [:get-sanitized-data (conj path :source-creator-link)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :nature)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-license)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-name)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-link)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-creator-name)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-creator-link)])])
 
-  (fn [[nature & source-fields] [_ _path]]
+  (fn [[nature & source-fields] [_ _context]]
     (when (and (= nature :derivative)
                (seq (filter (fn [value]
                               (if (keyword? value)
@@ -333,56 +334,56 @@
                   :de "Alle Felder für die Quelle müssen ausgefüllt sein für abgeleitete Arbeit."}}])))
 
 (rf/reg-sub :validate-is-public
-  (fn [[_ path] _]
-    [(rf/subscribe [:get-sanitized-data (conj path :is-public)])
-     (rf/subscribe [:get-sanitized-data (conj path :attribution :license)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :is-public)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :attribution :license)])])
 
-  (fn [[is-public license] [_ _path]]
+  (fn [[is-public license] [_ _context]]
     (when (and is-public (= license :none))
       [{:level :error
         :message {:en "License required for public objects."
                   :de "Lizenz benötigt für öffentliche Objekte."}}])))
 
 (rf/reg-sub :validate-arms-general
-  (fn [[_ path] _]
-    [(rf/subscribe [:validate-is-public path])
-     (rf/subscribe [:validate-attribution (conj path :attribution)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:validate-is-public context])
+     (rf/subscribe [:validate-attribution (c/++ context :attribution)])])
 
   (fn [[is-public
-        attribution] [_ _path]]
+        attribution] [_ _context]]
     (concat
      is-public
      attribution)))
 
 (rf/reg-sub :validate-charge-general
-  (fn [[_ path] _]
-    [(rf/subscribe [:validate-is-public path])
-     (rf/subscribe [:validate-attribution (conj path :attribution)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:validate-is-public context])
+     (rf/subscribe [:validate-attribution (c/++ context :attribution)])])
 
   (fn [[is-public
-        attribution] [_ _path]]
+        attribution] [_ _context]]
     (concat
      is-public
      attribution)))
 
 (rf/reg-sub :validate-collection-general
-  (fn [[_ path] _]
-    [(rf/subscribe [:validate-is-public path])
-     (rf/subscribe [:validate-attribution (conj path :attribution)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:validate-is-public context])
+     (rf/subscribe [:validate-attribution (c/++ context :attribution)])])
 
   (fn [[is-public
-        attribution] [_ _path]]
+        attribution] [_ _context]]
     (concat
      is-public
      attribution)))
 
 (rf/reg-sub :validate-ribbon-general
-  (fn [[_ path] _]
-    [(rf/subscribe [:validate-is-public path])
-     (rf/subscribe [:validate-attribution (conj path :attribution)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:validate-is-public context])
+     (rf/subscribe [:validate-attribution (c/++ context :attribution)])])
 
   (fn [[is-public
-        attribution] [_ _path]]
+        attribution] [_ _context]]
     (concat
      is-public
      attribution)))
