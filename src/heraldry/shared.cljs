@@ -1,7 +1,6 @@
 (ns heraldry.shared
   (:require
    [heraldry.attribution :as attribution]
-   [heraldry.context :as c]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.charge-group.core] ;; needed for side effects
    [heraldry.coat-of-arms.charge-group.options] ;; needed for side effects
@@ -18,6 +17,7 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.collection.element] ;; needed for side effects
    [heraldry.collection.options] ;; needed for side effects
+   [heraldry.context :as c]
    [heraldry.font :as font]
    [heraldry.helm] ;; needed for side effects
    [heraldry.interface :as interface]
@@ -27,6 +27,11 @@
    [heraldry.ribbon :as ribbon]
    [heraldry.state] ;; needed for side effects
    [heraldry.strings :as strings]))
+
+(defmethod interface/options-subscriptions :heraldry.component/arms-general [_context]
+  #{[:attribution :license]
+    [:attribution :nature]
+    [:attribution :source-license]})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-arms.[thing].options namespaces
 (defmethod interface/options :heraldry.component/arms-general [context]
@@ -38,6 +43,11 @@
    :attribution (attribution/options (c/++ context :attribution))
    :tags {:ui {:form-type :tags}}})
 
+(defmethod interface/options-subscriptions :heraldry.component/collection-general [_context]
+  #{[:attribution :license]
+    [:attribution :nature]
+    [:attribution :source-license]})
+
 ;; TODO: might not be the right place for it, others live in the coat-of-collection.[thing].options namespaces
 (defmethod interface/options :heraldry.component/collection-general [context]
   {:name {:type :text
@@ -48,6 +58,12 @@
    :attribution (attribution/options (c/++ context :attribution))
    :tags {:ui {:form-type :tags}}
    :font font/default-options})
+
+(defmethod interface/options-subscriptions :heraldry.component/charge-general [_context]
+  #{[:attribution :license]
+    [:attribution :nature]
+    [:attribution :source-license]
+    [:landscape?]})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
 (defmethod interface/options :heraldry.component/charge-general [context]
@@ -83,6 +99,11 @@
                              :default :none
                              :ui {:label {:en "Fixed tincture"
                                           :de "Feste Tinktur"}}}})))
+
+(defmethod interface/options-subscriptions :heraldry.component/ribbon-general [_context]
+  #{[:attribution :license]
+    [:attribution :nature]
+    [:attribution :source-license]})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
 (defmethod interface/options :heraldry.component/ribbon-general [context]
