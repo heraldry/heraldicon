@@ -119,7 +119,7 @@
                                                                :de "Lizenzversion"}}})
 
         (-> context
-            (c/++  :nature)
+            (c/++ :nature)
             interface/get-raw-data
             (= :derivative)) (merge {:source-license {:type :choice
                                                       :choices license-choices

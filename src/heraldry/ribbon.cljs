@@ -11,7 +11,6 @@
    [heraldry.math.curve :as curve]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.options :as options]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 

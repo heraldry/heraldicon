@@ -9,22 +9,22 @@
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [heraldry.context :as c]))
 
 (rf/reg-sub :attribution-submenu-link-name
-  (fn [[_ path] _]
-    [(rf/subscribe [:get path])
-     (rf/subscribe [:get-relevant-options path])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :nature)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :license)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :license-version)])])
 
-  (fn [[attribution options] [_ _path]]
-    (let [sanitized-attribution (options/sanitize attribution options)
-          main-name (attribution/nature-map (:nature sanitized-attribution))
-          license (:license sanitized-attribution)
+  (fn [[nature license license-version] [_ _path]]
+    (let [main-name (attribution/nature-map nature)
           changes [main-name
                    (if (= license :none)
                      {:en "no license"
                       :de "keine Lizenz"}
-                     (attribution/license-display-name license (:license-version sanitized-attribution)))]]
+                     (attribution/license-display-name license license-version))]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
@@ -36,7 +36,7 @@
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:attribution-submenu-link-name path])]
+          link-name @(rf/subscribe [:attribution-submenu-link-name context])]
       [:div.ui-setting
        (when label
          [:label [tr label]])
