@@ -14,7 +14,9 @@
                         relative-path (-> base-path count (drop path) vec)]
                     (if (contains? data relative-path)
                       (get data relative-path)
-                      (log/error (str "Missing subscription: " path " context: " context))))
+                      (do
+                        (log/error (str "Missing subscription: " path " context: " context))
+                        (get-raw-data (dissoc context :subscriptions)))))
     (-> path first (= :context)) (get-in context (drop 1 path))
     :else @(rf/subscribe [:get path])))
 
