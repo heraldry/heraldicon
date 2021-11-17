@@ -9,26 +9,26 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
+;; TODO: probably can be improved with better subscriptions
 (rf/reg-sub :geometry-submenu-link-name
-  (fn [[_ path] _]
-    [(rf/subscribe [:get path])
-     (rf/subscribe [:get-relevant-options path])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/options context])
+     (rf/subscribe [:heraldry.state/sanitized-data context])])
 
-  (fn [[geometry options] [_ _path]]
-    (let [sanitized-geometry (options/sanitize geometry options)
-          changes (concat
-                   (when (some #(options/changed? % sanitized-geometry options)
+  (fn [[options geometry] [_ _path]]
+    (let [changes (concat
+                   (when (some #(options/changed? % geometry options)
                                [:size :width :height :thickness])
                      [strings/resized])
-                   (when (some #(options/changed? % sanitized-geometry options)
+                   (when (some #(options/changed? % geometry options)
                                [:eccentricity])
                      [strings/adjusted])
-                   (when (some #(options/changed? % sanitized-geometry options)
+                   (when (some #(options/changed? % geometry options)
                                [:stretch])
                      [strings/stretched])
-                   (when (:mirrored? sanitized-geometry)
+                   (when (:mirrored? geometry)
                      [strings/mirrored-lc])
-                   (when (:reversed? sanitized-geometry)
+                   (when (:reversed? geometry)
                      [{:en "reversed"
                        :de "umgedreht"}]))]
       (if (seq changes)
@@ -36,11 +36,11 @@
             util/upper-case-first)
         "Default"))))
 
-(defn geometry-submenu [{:keys [path] :as context}]
+(defn geometry-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:geometry-submenu-link-name path])]
+          link-name @(rf/subscribe [:geometry-submenu-link-name context])]
       [:div.ui-setting
        (when label
          [:label [tr label]])
