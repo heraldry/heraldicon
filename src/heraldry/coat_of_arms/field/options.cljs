@@ -81,7 +81,9 @@
 
 (defmethod interface/options-subscriptions :heraldry.component/field [_context]
   #{[:type]
+    [:line]
     [:line :type]
+    [:line :fimbriation]
     [:line :fimbriation :mode]
     [:opposite-line :type]
     [:opposite-line :fimbriation :mode]
