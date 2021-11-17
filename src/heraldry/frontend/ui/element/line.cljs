@@ -10,35 +10,36 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
+;; TODO: likely can be further improved by reading out the various description strings
+;; in separate subscriptions
 (rf/reg-sub :line-submenu-link-name
-  (fn [[_ path] _]
-    [(rf/subscribe [:get path])
-     (rf/subscribe [:get-relevant-options path])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/options context])
+     (rf/subscribe [:heraldry.state/sanitized-data context])])
 
-  (fn [[line options] [_ _path]]
-    (let [sanitized-line (options/sanitize line options)
-          changes [(-> sanitized-line :type line/line-map)
-                   (when (some #(options/changed? % sanitized-line options)
+  (fn [[options line] [_ _path]]
+    (let [changes [(-> line :type line/line-map)
+                   (when (some #(options/changed? % line options)
                                [:eccentricity :spacing :offset :base-line])
                      strings/adjusted)
-                   (when (some #(options/changed? % sanitized-line options)
+                   (when (some #(options/changed? % line options)
                                [:width :height])
                      strings/resized)
-                   (when (:mirrored? sanitized-line)
+                   (when (:mirrored? line)
                      strings/mirrored-lc)
-                   (when (:flipped? sanitized-line)
+                   (when (:flipped? line)
                      strings/flipped-lc)
-                   (when (and (-> sanitized-line :fimbriation :mode)
-                              (-> sanitized-line :fimbriation :mode (not= :none)))
+                   (when (and (-> line :fimbriation :mode)
+                              (-> line :fimbriation :mode (not= :none)))
                      strings/fimbriated)]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(defn line-submenu [{:keys [path] :as context}]
+(defn line-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:line-submenu-link-name path])]
+          link-name @(rf/subscribe [:line-submenu-link-name context])]
       [:div.ui-setting
        (when label
          [:label [tr label]])
