@@ -3,6 +3,9 @@
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
+(defmethod interface/options-subscriptions :heraldry.component/collection-element [_context]
+  #{})
+
 (defmethod interface/options :heraldry.component/collection-element [_context]
   {:name {:type :text
           :ui {:label strings/name}}
