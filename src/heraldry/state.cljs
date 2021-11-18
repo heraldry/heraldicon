@@ -19,20 +19,6 @@
   (fn [value [_ _path]]
     (count value)))
 
-(rf/reg-sub :get-relevant-options
-  (fn [_ [_ path]]
-    ;; TODO: can this be done by feeding the subscriptions in again?
-    ;; probably is more efficient, but the previous attempt didn't refresh the
-    ;; subscription properly when the options changed (e.g. switching to "arc" in a charge-group)
-    (->> (range (count path) 0 -1)
-         (keep (fn [idx]
-                 (let [option-path (subvec path 0 idx)
-                       relative-path (subvec path idx)
-                       options (interface/options {:path option-path})]
-                   (when-let [relevant-options (get-in options relative-path)]
-                     relevant-options))))
-         first)))
-
 (rf/reg-sub ::component-type
   (fn [[_ context] _]
     (rf/subscribe [:get (:path (c/++ context :type))]))
