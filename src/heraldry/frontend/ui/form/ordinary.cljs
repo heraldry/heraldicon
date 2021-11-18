@@ -129,7 +129,7 @@
                                   (rf/dispatch-sync [:set cottise-extra-2-context default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select (:path cottise-extra-2-context) {:open? true}]))}))]
     {:title (ordinary/title context)
-     :validation @(rf/subscribe [:validate-ordinary path])
+     ;; :validation @(rf/subscribe [:validate-ordinary path])
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
                 :disabled? (empty? menu)
