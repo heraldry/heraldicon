@@ -42,9 +42,9 @@
                  :cottise-extra-2 "2 (extra)"})
         (get cottise-key))))
 
-(defmethod ui-interface/component-node-data :heraldry.component/cottise [{:keys [path] :as context}]
+(defmethod ui-interface/component-node-data :heraldry.component/cottise [context]
   {:title (str "Cottise " (cottise-name context))
-   :validation @(rf/subscribe [:validate-cottise path])
+   :validation @(rf/subscribe [:validate-cottise context])
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod ui-interface/component-form-data :heraldry.component/cottise [_context]

@@ -20,11 +20,11 @@
     :manual-blazon
     :ignore-layer-separator?]))
 
-(defmethod ui-interface/component-node-data :heraldry.component/charge [{:keys [path] :as context}]
+(defmethod ui-interface/component-node-data :heraldry.component/charge [context]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
   {:title (charge-options/title context)
-   ;; :validation @(rf/subscribe [:validate-charge path])
+   :validation @(rf/subscribe [:validate-charge context])
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod ui-interface/component-form-data :heraldry.component/charge [_context]
