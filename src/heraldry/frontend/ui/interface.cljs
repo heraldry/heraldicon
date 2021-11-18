@@ -33,14 +33,6 @@
     :text :text-field
     nil))
 
-(rf/reg-sub :get-sanitized-data
-  (fn [[_ path] _]
-    [(rf/subscribe [:get path])
-     (rf/subscribe [:get-relevant-options path])])
-
-  (fn [[data options] [_ _path]]
-    (options/sanitize-value-or-data data options)))
-
 (rf/reg-sub :get-counterchange-tinctures
   (fn [[_ path _context] _]
     (rf/subscribe [:get path]))

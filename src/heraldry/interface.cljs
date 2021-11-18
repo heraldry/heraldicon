@@ -39,10 +39,6 @@
 (defmethod options-subscriptions nil [_context]
   nil)
 
-(defn new-options? [{:keys [path] :as _context}]
-  (or (= (first path) :arms-form)
-      (= (first path) :collection-form)))
-
 (defn reduce-context [context]
   (-> context
       (dissoc :environment)
@@ -51,9 +47,7 @@
 ;; TODO: this is one of the biggest potential bottle necks
 (defn get-relevant-options [{:keys [path] :as context}]
   (if (-> path first (not= :context))
-    (if (new-options? context)
-      @(rf/subscribe [:heraldry.state/options (reduce-context context)])
-      @(rf/subscribe [:get-relevant-options path]))
+    @(rf/subscribe [:heraldry.state/options (reduce-context context)])
     (let [[options relative-path] (or (->> (range (count path) 0 -1)
                                            (keep (fn [idx]
                                                    (let [option-path (subvec path 0 idx)
@@ -86,9 +80,7 @@
     (let [data (get-raw-data context)
           options (get-relevant-options context)]
       (options/sanitize-value-or-data data options))
-    (if (new-options? context)
-      @(rf/subscribe [:heraldry.state/sanitized-data (reduce-context context)])
-      @(rf/subscribe [:get-sanitized-data path]))))
+    @(rf/subscribe [:heraldry.state/sanitized-data (reduce-context context)])))
 
 (defn get-list-size [{:keys [path] :as context}]
   (if (-> path first (= :context))
