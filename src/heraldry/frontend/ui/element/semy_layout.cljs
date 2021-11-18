@@ -9,10 +9,11 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
+;; TODO: probably can be improved with better subscriptions
 (rf/reg-sub :semy-layout-submenu-link-name
-  (fn [[_ path] _]
-    [(rf/subscribe [:get path])
-     (rf/subscribe [:get-relevant-options path])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:get context])
+     (rf/subscribe [:heraldry.state/options context])])
 
   (fn [[layout options] [_ _path]]
     (let [sanitized-layout (options/sanitize layout options)
@@ -32,11 +33,11 @@
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
-(defn layout-submenu [{:keys [path] :as context}]
+(defn layout-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:semy-layout-submenu-link-name path])]
+          link-name @(rf/subscribe [:semy-layout-submenu-link-name context])]
       [:div.ui-setting
        (when label
          [:label [tr label]])
