@@ -213,5 +213,7 @@
      [:variant]
      [:data]
      [:fimbriation :mode]}
+   ;; charge group options subscriptions
+   #{[:type]}
    ;; semy options subscriptions
    #{}))
