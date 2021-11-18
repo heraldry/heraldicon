@@ -3,6 +3,7 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
+   [heraldry.options :as options]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
@@ -114,11 +115,17 @@
                                 :ui {:label {:en "Rotate charges"
                                              :de "Wappenfiguren rotieren"}}}})))
 
+(defmethod interface/options-subscriptions :heraldry.component/charge-group [_context]
+  options/shared-options-subscriptions)
+
 (defmethod interface/options :heraldry.component/charge-group [context]
   (-> context
       (assoc :dispatch-value (interface/get-raw-data (c/++ context :type)))
       interface/options
       (assoc :type type-option)))
+
+(defmethod interface/options-subscriptions :heraldry.component/charge-group-strip [_context]
+  options/shared-options-subscriptions)
 
 (defmethod interface/options :heraldry.component/charge-group-strip [_context]
   {:slots {:type :range
