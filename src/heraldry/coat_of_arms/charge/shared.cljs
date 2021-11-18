@@ -86,12 +86,7 @@
                                          :ui {:label strings/angle}})
 
                (not= current-anchor-point
-                     :angle) (assoc :alignment {:type :choice
-                                                :choices position/alignment-choices
-                                                :default :middle
-                                                :ui {:label strings/alignment
-                                                     :form-type :radio-select}}
-                                    :offset-x {:type :range
+                     :angle) (assoc :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
