@@ -42,7 +42,7 @@
 (defn ^:export init []
   (rf/dispatch-sync [:initialize-db])
   (rf/dispatch-sync [:heraldry.frontend.language/load-language-setting])
-  (print-stats)
+  #_(print-stats)
   (route/start-router)
   (user/load-session-user-data)
   (r/render
