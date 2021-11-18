@@ -475,3 +475,15 @@
 (def base-line
   {:en "Base line"
    :de "Basislinie"})
+
+(def cottise
+  {:en "Cottise"
+   :de "Leiste"})
+
+(def opposite
+  {:en "opposite"
+   :de "gegenüber"})
+
+(def extra
+  {:en "extra"
+   :de "extra"})

@@ -5,6 +5,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.form.cottise :as cottise]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
@@ -86,7 +87,7 @@
         menu (cond-> []
                (and (:cottise-1 cottising-options)
                     (not cottise-1?))
-               (conj {:title "Cottise 1"
+               (conj {:title (cottise/cottise-name cottise-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-1-context default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select (:path cottise-1-context) {:open? true}]))})
@@ -94,14 +95,14 @@
                (and (:cottise-2 cottising-options)
                     cottise-1?
                     (not cottise-2?))
-               (conj {:title "Cottise 2"
+               (conj {:title (cottise/cottise-name cottise-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-2-context default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select (:path cottise-2-context) {:open? true}]))})
 
                (and (:cottise-opposite-1 cottising-options)
                     (not cottise-opposite-1?))
-               (conj {:title "Cottise 1 (opposite)"
+               (conj {:title (cottise/cottise-name cottise-opposite-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-opposite-1-context default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select (:path cottise-opposite-1-context) {:open? true}]))})
@@ -109,14 +110,14 @@
                (and (:cottise-opposite-2 cottising-options)
                     cottise-opposite-1?
                     (not cottise-opposite-2?))
-               (conj {:title "Cottise 2 (opposite)"
+               (conj {:title (cottise/cottise-name cottise-opposite-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-opposite-2-context default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select (:path cottise-opposite-2-context) {:open? true}]))})
 
                (and (:cottise-extra-1 cottising-options)
                     (not cottise-extra-1?))
-               (conj {:title "Cottise 1 (extra)"
+               (conj {:title (cottise/cottise-name cottise-extra-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-extra-1-context default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select (:path cottise-extra-1-context) {:open? true}]))})
@@ -124,7 +125,7 @@
                (and (:cottise-extra-2 cottising-options)
                     cottise-extra-1?
                     (not cottise-extra-2?))
-               (conj {:title "Cottise 2 (extra)"
+               (conj {:title (cottise/cottise-name cottise-extra-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-extra-2-context default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select (:path cottise-extra-2-context) {:open? true}]))}))]
