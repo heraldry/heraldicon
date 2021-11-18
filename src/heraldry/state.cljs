@@ -72,7 +72,10 @@
   (fn [component-types [_ {:keys [path]}]]
     (->> component-types
          (keep-indexed (fn [idx component-type]
-                         (when component-type
+                         (when (and component-type
+                                    ;; some types are special in that they can't span their own
+                                    ;; option set, but they still have a component node representation
+                                    (not (#{:heraldry.component/cottise} component-type)))
                            (subvec path 0 (-> path count (- idx))))))
          first)))
 
