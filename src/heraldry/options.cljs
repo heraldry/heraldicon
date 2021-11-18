@@ -212,4 +212,6 @@
      [:anchor :point]
      [:variant]
      [:data]
-     [:fimbriation :mode]}))
+     [:fimbriation :mode]}
+   ;; semy options subscriptions
+   #{}))

@@ -1,8 +1,11 @@
 (ns heraldry.coat-of-arms.semy.options
   (:require
    [heraldry.interface :as interface]
-   [heraldry.strings :as strings]
-   [heraldry.util :as util]))
+   [heraldry.options :as options]
+   [heraldry.strings :as strings]))
+
+(defmethod interface/options-subscriptions :heraldry.component/semy [_context]
+  options/shared-options-subscriptions)
 
 (defmethod interface/options :heraldry.component/semy [_context]
   (-> {:layout {:num-fields-x {:type :range
