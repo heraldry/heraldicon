@@ -3,7 +3,6 @@
    [heraldry.coat-of-arms.counterchange :as counterchange]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
-   [heraldry.options :as options]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
