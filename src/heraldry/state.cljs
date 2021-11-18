@@ -42,12 +42,13 @@
                       (into {}))))))
 
   (fn [{:keys [component-type entity-type] :as subscription-data} [_ context]]
-    (let [subscription-context (-> context
-                                   (assoc :dispatch-value component-type
-                                          :entity-type entity-type
-                                          :subscriptions {:base-path (:path context)
-                                                          :data subscription-data}))]
-      (interface/options subscription-context))))
+    (when (or component-type entity-type)
+      (let [subscription-context (-> context
+                                     (assoc :dispatch-value component-type
+                                            :entity-type entity-type
+                                            :subscriptions {:base-path (:path context)
+                                                            :data subscription-data}))]
+        (interface/options subscription-context)))))
 
 (rf/reg-sub ::option-path
   (fn [[_ {:keys [path] :as context}] _]
