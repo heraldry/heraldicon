@@ -219,9 +219,14 @@
 (def semy-options-subscriptions
   #{})
 
+(def motto-options-subscriptions
+  #{[:type]
+    [:ribbon-variant]})
+
 (def shared-options-subscriptions
   (set/union
    ordinary-options-subscriptions
    charge-options-subscriptions
    charge-group-options-subscriptions
-   semy-options-subscriptions))
+   semy-options-subscriptions
+   motto-options-subscriptions))
