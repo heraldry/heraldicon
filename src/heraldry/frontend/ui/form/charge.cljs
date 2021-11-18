@@ -24,7 +24,7 @@
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
   {:title (charge-options/title context)
-   :validation @(rf/subscribe [:validate-charge path])
+   ;; :validation @(rf/subscribe [:validate-charge path])
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod ui-interface/component-form-data :heraldry.component/charge [_context]

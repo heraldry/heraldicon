@@ -58,76 +58,7 @@
         :form-type :ordinary-type-select}})
 
 (defmethod interface/options-subscriptions :heraldry.component/ordinary [_context]
-  #{[:type]
-    [:line]
-    [:line :type]
-    [:line :fimbriation]
-    [:line :fimbriation :mode]
-    [:opposite-line :type]
-    [:opposite-line :fimbriation :mode]
-    [:extra-line :type]
-    [:extra-line :fimbriation :mode]
-
-    [:cottising :cottise-1 :line]
-    [:cottising :cottise-1 :line :type]
-    [:cottising :cottise-1 :line :fimbriation]
-    [:cottising :cottise-1 :line :fimbriation :mode]
-    [:cottising :cottise-1 :opposite-line :type]
-    [:cottising :cottise-1 :opposite-line :fimbriation :mode]
-    [:cottising :cottise-1 :extra-line :type]
-    [:cottising :cottise-1 :extra-line :fimbriation :mode]
-
-    [:cottising :cottise-2 :line]
-    [:cottising :cottise-2 :line :type]
-    [:cottising :cottise-2 :line :fimbriation]
-    [:cottising :cottise-2 :line :fimbriation :mode]
-    [:cottising :cottise-2 :opposite-line :type]
-    [:cottising :cottise-2 :opposite-line :fimbriation :mode]
-    [:cottising :cottise-2 :extra-line :type]
-    [:cottising :cottise-2 :extra-line :fimbriation :mode]
-
-    [:cottising :cottise-opposite-1 :line]
-    [:cottising :cottise-opposite-1 :line :type]
-    [:cottising :cottise-opposite-1 :line :fimbriation]
-    [:cottising :cottise-opposite-1 :line :fimbriation :mode]
-    [:cottising :cottise-opposite-1 :opposite-line :type]
-    [:cottising :cottise-opposite-1 :opposite-line :fimbriation :mode]
-    [:cottising :cottise-opposite-1 :extra-line :type]
-    [:cottising :cottise-opposite-1 :extra-line :fimbriation :mode]
-
-    [:cottising :cottise-opposite-2 :line]
-    [:cottising :cottise-opposite-2 :line :type]
-    [:cottising :cottise-opposite-2 :line :fimbriation]
-    [:cottising :cottise-opposite-2 :line :fimbriation :mode]
-    [:cottising :cottise-opposite-2 :opposite-line :type]
-    [:cottising :cottise-opposite-2 :opposite-line :fimbriation :mode]
-    [:cottising :cottise-opposite-2 :extra-line :type]
-    [:cottising :cottise-opposite-2 :extra-line :fimbriation :mode]
-
-    [:cottising :cottise-extra-1 :line]
-    [:cottising :cottise-extra-1 :line :type]
-    [:cottising :cottise-extra-1 :line :fimbriation]
-    [:cottising :cottise-extra-1 :line :fimbriation :mode]
-    [:cottising :cottise-extra-1 :opposite-line :type]
-    [:cottising :cottise-extra-1 :opposite-line :fimbriation :mode]
-    [:cottising :cottise-extra-1 :extra-line :type]
-    [:cottising :cottise-extra-1 :extra-line :fimbriation :mode]
-
-    [:cottising :cottise-extra-2 :line]
-    [:cottising :cottise-extra-2 :line :type]
-    [:cottising :cottise-extra-2 :line :fimbriation]
-    [:cottising :cottise-extra-2 :line :fimbriation :mode]
-    [:cottising :cottise-extra-2 :opposite-line :type]
-    [:cottising :cottise-extra-2 :opposite-line :fimbriation :mode]
-    [:cottising :cottise-extra-2 :extra-line :type]
-    [:cottising :cottise-extra-2 :extra-line :fimbriation :mode]
-
-    [:origin :point]
-    [:direction-anchor :point]
-    [:anchor :point]
-
-    [:fimbriation :mode]
-    [:geometry :size-mode]})
+  options/shared-options-subscriptions)
 
 (defmethod interface/options :heraldry.component/ordinary [context]
   (-> context

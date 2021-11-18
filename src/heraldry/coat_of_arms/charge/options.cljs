@@ -58,6 +58,9 @@
                                                             :max 400
                                                             :default 100))))))))
 
+(defmethod interface/options-subscriptions :heraldry.component/charge [_context]
+  options/shared-options-subscriptions)
+
 (defmethod interface/options :heraldry.component/charge [context]
   (-> context
       (assoc :dispatch-value (charge-interface/effective-type context))
