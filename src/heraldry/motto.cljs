@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
+   [heraldry.options :as options]
    [heraldry.ribbon :as ribbon]
    [heraldry.strings :as strings]))
 
@@ -20,6 +21,9 @@
    :choices [[strings/motto :heraldry.motto.type/motto]
              [strings/slogan :heraldry.motto.type/slogan]]
    :ui {:label strings/type}})
+
+(defmethod interface/options-subscriptions :heraldry.component/motto [_context]
+  options/shared-options-subscriptions)
 
 (defmethod interface/options :heraldry.component/motto [context]
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
