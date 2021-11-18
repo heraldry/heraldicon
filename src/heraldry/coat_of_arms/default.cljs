@@ -18,7 +18,8 @@
    :outline? true})
 
 (def cottise
-  {:field field
+  {:field {:type :heraldry.field.type/plain
+           :tincture :or}
    :enabled? true})
 
 (def charge
