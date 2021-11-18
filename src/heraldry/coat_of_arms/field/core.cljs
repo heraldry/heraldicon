@@ -40,6 +40,7 @@
                   (-> default/field
                       (assoc :tincture :vert))]]
     (cond
+      (#{:plain :counterchanged} type) []
       (= :per-saltire type) (-> (subvec defaults 0 2)
                                 (into [{:type :heraldry.field.type/ref
                                         :index 1}
