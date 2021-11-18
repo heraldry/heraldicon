@@ -3,11 +3,11 @@
    [clojure.string :as s]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.component :as component]
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
-   [re-frame.core :as rf]
-   [heraldry.context :as c]))
+   [re-frame.core :as rf]))
 
 (def level-order
   {:error 0
@@ -27,20 +27,20 @@
     "#ccc"))
 
 (rf/reg-sub :field-tinctures-for-validation
-  (fn [[_ path] _]
-    [(rf/subscribe [:get-sanitized-data (conj path :type)])
-     (rf/subscribe [:get-sanitized-data (conj path :tincture)])
-     (rf/subscribe [:get-sanitized-data (conj path :fields 0 :type)])
-     (rf/subscribe [:get-sanitized-data (conj path :fields 0 :tincture)])
-     (rf/subscribe [:get-sanitized-data (conj path :fields 1 :type)])
-     (rf/subscribe [:get-sanitized-data (conj path :fields 1 :tincture)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :type)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :tincture)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :fields 0 :type)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :fields 0 :tincture)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :fields 1 :type)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :fields 1 :tincture)])])
 
   (fn [[field-type
         tincture
         subfield-1-type
         subfield-1-tincture
         subfield-2-type
-        subfield-2-tincture] [_ _path]]
+        subfield-2-tincture] [_ _context]]
     (let [field-type (some-> field-type name keyword)
           subfield-1-type (some-> subfield-1-type name keyword)
           subfield-2-type (some-> subfield-2-type name keyword)]
@@ -60,11 +60,11 @@
                    (not= subfield-2-type :plain))) (conj :mixed))))))
 
 (rf/reg-sub :fimbriation-tinctures-for-validation
-  (fn [[_ path] _]
-    [(rf/subscribe [:get-sanitized-data (conj path :tincture-1)])
-     (rf/subscribe [:get-sanitized-data (conj path :tincture-2)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :tincture-1)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :tincture-2)])])
 
-  (fn [[tincture-1 tincture-2] [_ _path]]
+  (fn [[tincture-1 tincture-2] [_ _context]]
     [tincture-1 tincture-2]))
 
 (defn list-tinctures [tinctures]
@@ -113,20 +113,22 @@
                                            ") " breaks-rule-of-tincture)})))
 
 (rf/reg-sub :validate-tinctures
-  (fn [[_ field-path parent-field-path fimbriation-path] _]
-    [(rf/subscribe [:field-tinctures-for-validation field-path])
-     (rf/subscribe [:field-tinctures-for-validation parent-field-path])
-     (rf/subscribe [:fimbriation-tinctures-for-validation fimbriation-path])
-     (rf/subscribe [:heraldry.state/options fimbriation-path])])
+  (fn [[_ field-context parent-field-context fimbriation-context] _]
+    [(rf/subscribe [:field-tinctures-for-validation field-context])
+     (rf/subscribe [:field-tinctures-for-validation parent-field-context])
+     (rf/subscribe [:fimbriation-tinctures-for-validation fimbriation-context])
+     (rf/subscribe [:heraldry.state/options fimbriation-context])])
 
   (fn [[field-tinctures
         parent-field-tinctures
         [fimbriation-tincture-1
          fimbriation-tincture-2]
-        fimbriation-options] [_ field-path _parent-field-path fimbriation-path]]
+        fimbriation-options] [_ field-context _parent-field-context fimbriation-context]]
     (when (or fimbriation-options
-              (= (drop-last field-path) (drop-last fimbriation-path)))
-      (let [which (-> fimbriation-path
+              (= (-> field-context :path drop-last)
+                 (-> fimbriation-context :path drop-last)))
+      (let [which (-> fimbriation-context
+                      :path
                       drop-last
                       last)
             tinctures-touching-parent (or (when fimbriation-tincture-2
@@ -212,17 +214,15 @@
            validations))
 
 (rf/reg-sub :validate-ordinary
-  (fn [[_ path] _]
-    (let [field-path (conj path :field)
-          parent-field-path (->> path
-                                 (drop-last 2)
-                                 vec)]
-      [(rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :line :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :opposite-line :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :extra-line :fimbriation)])]))
+  (fn [[_ context] _]
+    (let [field-context (c/++ context :field)
+          parent-field-context (c/-- context 2)]
+      [(rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :fimbriation)])
+       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :line :fimbriation)])
+       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :opposite-line :fimbriation)])
+       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :extra-line :fimbriation)])]))
 
-  (fn [[main-validation & other-validations] [_ _path]]
+  (fn [[main-validation & other-validations] [_ _context]]
     (let [fimbriated? (some (comp :fimbriated? first) other-validations)
           ;; if any of the line validations had fimbriations, then use all of them, because
           ;; each need to be validated on their own then, the main one doesn't matter anymore;
@@ -237,47 +237,37 @@
            (filter identity)
            sort-validations))))
 
+;; TODO: probably a bug, this derefs subscriptions inside the subscription building function
 (rf/reg-sub :validate-charge
-  (fn [[_ path] _]
-    (let [field-path (conj path :field)
-          parent-semy-path (->> path
-                                drop-last
-                                vec)
-          parent-charge-group-path (->> path
-                                        (drop-last 2)
-                                        vec)
+  (fn [[_ context] _]
+    (let [field-context (c/++ context :field)
+          parent-semy-context (c/-- context)
+          parent-charge-group-context (c/-- context 2)
           parent-type (some->
                        (or
-                        @(rf/subscribe [:get (conj parent-semy-path :type)])
-                        @(rf/subscribe [:get (conj parent-charge-group-path :type)]))
+                        @(rf/subscribe [:get (c/++ parent-semy-context :type)])
+                        @(rf/subscribe [:get (c/++ parent-charge-group-context :type)]))
                        component/type->component-type)
-          parent-field-path (case parent-type
-                              :heraldry.component/charge-group (->> parent-charge-group-path
-                                                                    (drop-last 2)
-                                                                    vec)
-                              :heraldry.component/semy (->> parent-semy-path
-                                                            (drop-last 2)
-                                                            vec)
-                              (->> path
-                                   (drop-last 2)
-                                   vec))]
-      (rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :fimbriation)])))
+          parent-field-context (case parent-type
+                                 :heraldry.component/charge-group (c/-- parent-charge-group-context 2)
+                                 :heraldry.component/semy (c/-- parent-semy-context 2)
+                                 (c/-- context 2))]
+      (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :fimbriation)])))
 
-  (fn [main-validation [_ _path]]
+  (fn [main-validation [_ _context]]
     (sort-validations (second main-validation))))
 
 (rf/reg-sub :validate-cottise
-  (fn [[_ path] _]
-    (let [field-path (conj path :field)
-          parent-field-path (-> path
-                                (->> (drop-last 2))
-                                vec
-                                (conj :field))]
-      [(rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :line :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-path parent-field-path (conj path :opposite-line :fimbriation)])]))
+  (fn [[_ context] _]
+    (let [field-context (c/++ context :field)
+          parent-field-context (-> context
+                                   (c/-- 2)
+                                   (c/++ :field))]
+      [(rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :fimbriation)])
+       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :line :fimbriation)])
+       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :opposite-line :fimbriation)])]))
 
-  (fn [[main-validation & other-validations] [_ _path]]
+  (fn [[main-validation & other-validations] [_ _context]]
     (let [fimbriated? (some (comp :fimbriated? first) other-validations)
           ;; if any of the line validations had fimbriations, then use all of them, because
           ;; each need to be validated on their own then, the main one doesn't matter anymore;
@@ -293,12 +283,12 @@
            sort-validations))))
 
 (rf/reg-sub :validate-field
-  (fn [[_ path] _]
-    [(rf/subscribe [:get (conj path :type)])
-     (rf/subscribe [:get-sanitized-data (conj path :layout :num-fields-x)])
-     (rf/subscribe [:get-sanitized-data (conj path :layout :num-fields-y)])])
+  (fn [[_ context] _]
+    [(rf/subscribe [:get (c/++ context :type)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :layout :num-fields-x)])
+     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :layout :num-fields-y)])])
 
-  (fn [[field-type num-fields-x num-fields-y] [_ _path]]
+  (fn [[field-type num-fields-x num-fields-y] [_ _context]]
     (let [field-type (-> field-type name keyword)]
       (cond-> []
         (and (= field-type :paly)

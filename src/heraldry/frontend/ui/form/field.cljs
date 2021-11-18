@@ -102,7 +102,7 @@
                                                (c/++ (interface/get-raw-data
                                                       (c/++ context :index))))))
                              (field/title context))])
-     :validation @(rf/subscribe [:validate-field path])
+     :validation @(rf/subscribe [:validate-field context])
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
                   :title strings/change

@@ -8,7 +8,9 @@
 
 (rf/reg-sub :get
   (fn [db [_ path]]
-    (get-in db path)))
+    (if (map? path)
+      (get-in db (:path path))
+      (get-in db path))))
 
 (rf/reg-sub :get-list-size
   (fn [[_ path] _]
