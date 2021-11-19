@@ -78,7 +78,9 @@
    (assoc
     context/default
     :path form-db-path
-    :render-options-path (conj form-db-path :render-options))])
+    :render-options-path (conj form-db-path :render-options)
+    :select-component-fn (fn [event context]
+                           (state/dispatch-on-event event [:ui-component-node-select (:path context)])))])
 
 (defn blazonry []
   [:div.blazonry

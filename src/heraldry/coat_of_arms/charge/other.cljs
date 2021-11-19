@@ -165,7 +165,8 @@
            origin-override size-default
            self-below-shield? render-pass-below-shield?
            auto-resize?
-           ui-show-colours] :as context
+           ui-show-colours
+           select-component-fn] :as context
     :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (c/++ context :data))
         variant (interface/get-raw-data (c/++ context :variant))
@@ -575,13 +576,8 @@
                                                    (c/++ :field)
                                                    (assoc :environment charge-environment))]]])
                       [:g {:mask (str "url(#" mask-id ")")
-                           ;; TODO: select component
-                           :on-click nil #_(when fn-select-component
-                                             (fn [event]
-                                               (fn-select-component (-> context
-                                                                        :db-path
-                                                                        (conj :field)))
-                                               (.stopPropagation event)))}
+                           :on-click (when select-component-fn
+                                       #(select-component-fn % context))}
                        (svg/make-unique-ids coloured-charge)]
                       (when render-shadow?
                         [:g {:mask (str "url(#" shadow-mask-id ")")}
