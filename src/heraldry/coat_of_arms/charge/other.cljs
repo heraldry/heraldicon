@@ -165,7 +165,9 @@
            origin-override size-default
            self-below-shield? render-pass-below-shield?
            auto-resize?
-           ui-show-colours] :as context
+           ui-show-colours
+           select-component-fn
+           svg-export?] :as context
     :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (c/++ context :data))
         variant (interface/get-raw-data (c/++ context :variant))
@@ -397,8 +399,18 @@
             vertical-mask-id (util/id "mask")
             layer-separator-colour-for-shadow-highlight (if hide-lower-layer?
                                                           "#000000"
-                                                          "none")]
+                                                          "none")
+            charge-clip-path-id (util/id "mask")]
         [:<>
+         (when-not svg-export?
+           [:defs
+            [:clipPath {:id charge-clip-path-id}
+             [:rect {:transform (str "translate(" (v/->str origin-point) ")")
+                     :x min-x
+                     :y min-y
+                     :width (- max-x min-x)
+                     :height (- max-y min-y)
+                     :style {:fill "#ffffff"}}]]])
          (when vertical-mask?
            (let [total-width (- max-x min-x)
                  total-height (- max-y min-y)
@@ -421,8 +433,14 @@
                         :width (+ total-width 20)
                         :height (+ mask-height 10)
                         :style {:fill "#000000"}}]]]]))
-         [:g (when vertical-mask?
-               {:mask (str "url(#" vertical-mask-id ")")})
+         [:g (merge
+              {:on-click (when select-component-fn
+                           #(select-component-fn % context))
+               :style {:cursor "pointer"}}
+              (when-not svg-export?
+                {:clip-path (str "url(#" charge-clip-path-id ")")})
+              (when vertical-mask?
+                {:mask (str "url(#" vertical-mask-id ")")}))
           [:defs
            (when render-shadow?
              [:mask {:id shadow-mask-id}
@@ -574,14 +592,7 @@
                           [field-shared/render (-> context
                                                    (c/++ :field)
                                                    (assoc :environment charge-environment))]]])
-                      [:g {:mask (str "url(#" mask-id ")")
-                           ;; TODO: select component
-                           :on-click nil #_(when fn-select-component
-                                             (fn [event]
-                                               (fn-select-component (-> context
-                                                                        :db-path
-                                                                        (conj :field)))
-                                               (.stopPropagation event)))}
+                      [:g {:mask (str "url(#" mask-id ")")}
                        (svg/make-unique-ids coloured-charge)]
                       (when render-shadow?
                         [:g {:mask (str "url(#" shadow-mask-id ")")}
