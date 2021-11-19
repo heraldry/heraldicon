@@ -165,7 +165,9 @@
            origin-override size-default
            self-below-shield? render-pass-below-shield?
            auto-resize?
-           ui-show-colours] :as context
+           ui-show-colours
+           select-component-fn
+           svg-export?] :as context
     :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (c/++ context :data))
         variant (interface/get-raw-data (c/++ context :variant))
@@ -404,7 +406,9 @@
                  total-height (- max-y min-y)
                  mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
              [:defs
-              [:mask {:id vertical-mask-id}
+              [(if svg-export?
+                 :mask
+                 :clipPath) {:id vertical-mask-id}
                [:g {:transform (str "translate(" (v/->str origin-point) ")")}
                 [:rect {:x (- min-x 10)
                         :y (- min-y 10)
@@ -422,7 +426,9 @@
                         :height (+ mask-height 10)
                         :style {:fill "#000000"}}]]]]))
          [:g (when vertical-mask?
-               {:mask (str "url(#" vertical-mask-id ")")})
+               {(if svg-export?
+                  :mask
+                  :clip-path) (str "url(#" vertical-mask-id ")")})
           [:defs
            (when render-shadow?
              [:mask {:id shadow-mask-id}
@@ -500,9 +506,13 @@
                 svg/make-unique-ids)]])
            (when-not landscape?
              [:<>
-              [:mask {:id mask-id}
+              [(if svg-export?
+                 :mask
+                 :clipPath) {:id mask-id}
                (svg/make-unique-ids mask)]
-              [:mask {:id mask-inverted-id}
+              [(if svg-export?
+                 :mask
+                 :clipPath) {:id mask-inverted-id}
                (svg/make-unique-ids mask-inverted)]])]
           (let [transform (str "translate(" (v/->str origin-point) ")"
                                "rotate(" angle ")"
@@ -569,19 +579,18 @@
                         :charge-data full-charge-data}
                        :charge]
                       (when render-field?
-                        [:g {:mask (str "url(#" mask-inverted-id ")")}
+                        [:g {(if svg-export?
+                               :mask
+                               :clip-path) (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}
                           [field-shared/render (-> context
                                                    (c/++ :field)
                                                    (assoc :environment charge-environment))]]])
-                      [:g {:mask (str "url(#" mask-id ")")
-                           ;; TODO: select component
-                           :on-click nil #_(when fn-select-component
-                                             (fn [event]
-                                               (fn-select-component (-> context
-                                                                        :db-path
-                                                                        (conj :field)))
-                                               (.stopPropagation event)))}
+                      [:g {(if svg-export?
+                             :mask
+                             :clip-path) (str "url(#" mask-id ")")
+                           :on-click (when select-component-fn
+                                       #(select-component-fn % context))}
                        (svg/make-unique-ids coloured-charge)]
                       (when render-shadow?
                         [:g {:mask (str "url(#" shadow-mask-id ")")}

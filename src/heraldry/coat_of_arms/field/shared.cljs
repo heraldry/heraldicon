@@ -109,7 +109,7 @@
                  :style {:opacity 0.25}
                  :fill "url(#selected)"}])])))
 
-(defn -make-subfields [context paths parts mask-overlaps parent-environment]
+(defn -make-subfields [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
   [:<>
    (doall
     (for [[idx [part-context [shape-path bounding-box-points & extra] overlap-paths]]
@@ -135,30 +135,40 @@
         ^{:key idx}
         [:<>
          [:defs
-          [:mask {:id clip-path-id}
+          [(if svg-export?
+             :mask
+             :clipPath) {:id clip-path-id} {:id clip-path-id}
            [:path {:d environment-shape
                    :fill "#fff"}]
-           (cond
-             (= overlap-paths :all) [:path {:d environment-shape
-                                            :fill "none"
-                                            :stroke-width overlap-stroke-width
-                                            :stroke "#fff"}]
-             overlap-paths (for [[idx shape] (map-indexed vector overlap-paths)]
-                             ^{:key idx}
-                             [:path {:d shape
-                                     :fill "none"
-                                     :stroke-width overlap-stroke-width
-                                     :stroke "#fff"}]))]
+           (when svg-export?
+             (cond
+               (= overlap-paths :all) [:path {:d environment-shape
+                                              :fill "none"
+                                              :stroke-width overlap-stroke-width
+                                              :stroke "#fff"}]
+               overlap-paths (doall
+                              (for [[idx shape] (map-indexed vector overlap-paths)]
+                                ^{:key idx}
+                                [:path {:d shape
+                                        :fill "none"
+                                        :stroke-width overlap-stroke-width
+                                        :stroke "#fff"}]))))]
           (when-let [mask-shape (-> env :meta :mask)]
-            [:mask {:id mask-id}
+            [(if svg-export?
+               :mask
+               :clipPath) {:id mask-id}
              [:path {:d environment-shape
                      :fill "#fff"}]
              [:path {:d mask-shape
                      :fill "#000"}]])]
 
-         [:g {:mask (str "url(#" clip-path-id ")")}
-          [:g {:mask (when (-> env :meta :mask)
-                       (str "url(#" mask-id ")"))}
+         [:g {(if svg-export?
+                :mask
+                :clip-path) (str "url(#" clip-path-id ")")}
+          [:g {(if svg-export?
+                 :mask
+                 :clip-path) (when (-> env :meta :mask)
+                               (str "url(#" mask-id ")"))}
            [render (c/<< part-context :environment env)]]]])))])
 
 (defn make-subfields [context parts mask-overlaps parent-environment]
