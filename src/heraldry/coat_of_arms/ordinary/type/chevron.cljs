@@ -117,8 +117,14 @@
                                 [strings/base-point :base]
                                 [strings/honour-point :honour]
                                 [strings/nombril-point :nombril]
+                                [strings/top-left :top-left]
+                                [strings/top :top]
                                 [strings/top-right :top-right]
-                                [strings/bottom-left :bottom-left]]
+                                [strings/left :left]
+                                [strings/right :right]
+                                [strings/bottom-left :bottom-left]
+                                [strings/bottom :bottom]
+                                [strings/bottom-right :bottom-right]]
                       :default :fess
                       :ui {:label strings/point}}
               :alignment {:type :choice
