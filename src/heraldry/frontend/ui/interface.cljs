@@ -32,13 +32,6 @@
     :text :text-field
     nil))
 
-(rf/reg-sub :get-counterchange-tinctures
-  (fn [[_ path _context] _]
-    (rf/subscribe [:get path]))
-
-  (fn [data [_ _path context]]
-    (counterchange/get-counterchange-tinctures data context)))
-
 (defmulti form-element (fn [context]
                          (let [options (interface/get-relevant-options context)]
                            (or

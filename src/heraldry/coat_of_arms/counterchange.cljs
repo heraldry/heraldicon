@@ -1,4 +1,5 @@
-(ns heraldry.coat-of-arms.counterchange)
+(ns heraldry.coat-of-arms.counterchange
+  (:require [re-frame.core :as rf]))
 
 (defn collect-tinctures [field {:keys [tincture-mapping]}]
   (->> field
@@ -25,3 +26,10 @@
   (-> data
       (collect-tinctures context)
       (->> (take 2))))
+
+(rf/reg-sub :get-counterchange-tinctures
+  (fn [[_ path _context] _]
+    (rf/subscribe [:get path]))
+
+  (fn [data [_ _path context]]
+    (get-counterchange-tinctures data context)))
