@@ -131,7 +131,8 @@
            size-default
            self-below-shield?
            render-pass-below-shield?
-           auto-resize?]
+           auto-resize?
+           svg-export?]
     :or {auto-resize? true}
     :as context} arg function]
   ;; only render, if we are in the right render pass
@@ -281,7 +282,9 @@
                total-height (- max-y min-y)
                mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
            [:defs
-            [:mask {:id vertical-mask-id}
+            [(if svg-export?
+               :mask
+               :clipPath) {:id vertical-mask-id}
              [:g {:transform (str "translate(" (v/->str origin-point) ")")}
               [:rect {:x (- min-x 10)
                       :y (- min-y 10)
@@ -299,7 +302,9 @@
                       :height (+ mask-height 10)
                       :style {:fill "#000000"}}]]]]))
        [:g (when vertical-mask?
-             {:mask (str "url(#" vertical-mask-id ")")})
+             {(if svg-export?
+                :mask
+                :clip-path) (str "url(#" vertical-mask-id ")")})
         (when (-> fimbriation :mode #{:double})
           (let [thickness (+ (-> fimbriation
                                  :thickness-1

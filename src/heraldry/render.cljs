@@ -188,7 +188,8 @@
                                               (c/++ :elements idx)
                                               (assoc :environment helm-environment))])))]}))))
 
-(defn ribbon [context
+(defn ribbon [{:keys [select-component-fn
+                      svg-export?] :as context}
               tincture-foreground
               tincture-background
               tincture-text
@@ -208,7 +209,10 @@
                             (colour/darken foreground-colour)
                             (tincture/pick tincture-background context))
         text-colour (tincture/pick tincture-text context)]
-    [:<>
+    [:g (when-not svg-export?
+          {:on-click (when select-component-fn
+                       #(select-component-fn % (c/-- context)))
+           :style {:cursor "pointer"}})
      (doall
       (for [[idx partial-curve] (->> curves
                                      (map-indexed vector)
@@ -277,7 +281,7 @@
                                  count
                                  pos?))]
           ^{:key idx}
-          [:<>
+          [:g
            [:path {:d full-path
                    :style (merge (when outline?
                                    (outline/style context))

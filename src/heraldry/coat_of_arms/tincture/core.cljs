@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.hatching :as hatching]
    [heraldry.coat-of-arms.tincture.pattern :as pattern]
    [heraldry.coat-of-arms.tincture.theme :as theme]
+   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
@@ -198,8 +199,10 @@
       (lookup-colour background theme)
       (lookup-colour foreground theme)))))
 
-(defn tinctured-field [{:keys [tincture-mapping] :as context} & {:keys [mask-id
-                                                                        transform]}]
+(defn tinctured-field [{:keys [tincture-mapping
+                               svg-export?
+                               select-component-fn] :as context} & {:keys [mask-id
+                                                                           transform]}]
   (let [tincture (interface/get-sanitized-data context)
         theme (interface/render-option :theme context)
         theme (if (and (:svg-export? context)
@@ -222,5 +225,10 @@
                   :height 1100
                   :transform transform
                   :fill colour
-                  :style (when animation
-                           {:animation (str animation " linear 20s infinite")})}])))
+                  :on-click (when (and (not svg-export?)
+                                       select-component-fn)
+                              #(select-component-fn % (c/-- context)))
+                  :style (merge
+                          {:cursor "pointer"}
+                          (when animation
+                            {:animation (str animation " linear 20s infinite")}))}])))
