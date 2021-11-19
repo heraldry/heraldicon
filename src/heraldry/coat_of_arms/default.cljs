@@ -139,7 +139,8 @@
   {:type :heraldry.charge.type/compartment
    :variant {:id (config/get :compartment-charge-id)
              :version 0}
-   :field field
+   :field {:type :heraldry.field.type/plain
+           :tincture :vert}
    :tincture {:shadow 1
               :highlight 1}
    :origin {:point :bottom}
