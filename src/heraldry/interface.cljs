@@ -40,9 +40,12 @@
   nil)
 
 (defn reduce-context [context]
-  (-> context
-      (dissoc :environment)
-      (dissoc :blazonry)))
+  (select-keys
+   context
+   [:path
+    :render-options-path
+    :dispatch-value
+    :entity-type]))
 
 ;; TODO: this is one of the biggest potential bottle necks
 (defn get-relevant-options [{:keys [path] :as context}]
