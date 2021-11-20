@@ -286,7 +286,7 @@
                      :x (- min-x 10)
                      :y (- min-y 10)
                      :width (+ total-width 20)
-                     :height (+ total-height 10)
+                     :height (+ total-height 20)
                      :style {:fill "#ffffff"}}]
              [:rect {:transform (str "translate(" (v/->str origin-point) ")")
                      :x (- min-x 10)
