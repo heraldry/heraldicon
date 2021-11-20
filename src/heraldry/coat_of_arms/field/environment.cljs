@@ -1,13 +1,17 @@
 (ns heraldry.coat-of-arms.field.environment
   (:require
    ["svgpath" :as svgpath]
-   [heraldry.math.vector :as v]
-   [heraldry.math.bounding-box :as bounding-box]))
+   [heraldry.math.bounding-box :as bounding-box]
+   [heraldry.math.vector :as v]))
 
 (defn create [shape {:keys [bounding-box context] :as meta}]
-  (let [override-environment (:override-environment meta)
+  (let [shape (if (map? shape)
+                shape
+                {:paths [shape]})
+        override-environment (:override-environment meta)
         [min-x max-x min-y max-y] (or bounding-box
-                                      (bounding-box/bounding-box-from-path shape))
+                                      (bounding-box/bounding-box-from-paths
+                                       (:paths shape)))
         top-left (v/v min-x min-y)
         top-right (v/v max-x min-y)
         bottom-left (v/v min-x max-y)
@@ -64,11 +68,13 @@
         offset (v/sub top-left)
         scale-factor (/ target-width width)]
     (-> environment
-        (assoc-in [:shape] (-> (:shape environment)
-                               (svgpath)
-                               (.translate (:x offset) (:y offset))
-                               (.scale scale-factor)
-                               (.toString)))
+        (assoc-in [:shape] {:paths (into []
+                                         (map #(-> %
+                                                   svgpath
+                                                   (.translate (:x offset) (:y offset))
+                                                   (.scale scale-factor)
+                                                   (.toString)))
+                                         (-> environment :shape :paths))})
         (update-in [:width] * scale-factor)
         (update-in [:height] * scale-factor)
         (update-in [:points] merge (into {}

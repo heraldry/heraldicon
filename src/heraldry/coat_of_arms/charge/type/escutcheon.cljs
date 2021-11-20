@@ -38,9 +38,11 @@
                                       escutcheon)) width)
              env-fess (-> env :points :fess)
              offset (v/mul env-fess -1)]
-         {:shape (path/translate (:shape env)
-                                 (:x offset)
-                                 (:y offset))
+         {:shape {:paths (into []
+                               (map #(path/translate %
+                                                     (:x offset)
+                                                     (:y offset)))
+                               (-> env :shape :paths))}
           :charge-top-left offset
           :charge-width (:width env)
           :charge-height (:height env)})))))

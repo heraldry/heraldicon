@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.charge.shared
   (:require
    ["svgpath" :as svgpath]
+   [clojure.string :as s]
    [heraldry.coat-of-arms.angle :as angle]
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.geometry :as geometry]
@@ -203,6 +204,9 @@
                   charge-width
                   charge-height
                   charge-top-left]} (function target-arg-value)
+          shape (if (map? shape)
+                  shape
+                  {:paths [shape]})
           min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.9))
                              (min (- (:x origin-point) (:x left))
                                   (- (:x right) (:x origin-point))))
@@ -232,19 +236,21 @@
           charge-top-left (or charge-top-left
                               (-> (v/v charge-width charge-height)
                                   (v/div -2)))
-          charge-shape (-> shape
-                           path/make-path
-                           (->
-                            (svgpath)
-                            (.scale scale-x scale-y)
-                            (.toString))
-                           (cond->
-                             squiggly? squiggly/squiggly-path
-                             (not= angle 0) (->
-                                             (svgpath)
-                                             (.rotate angle)
-                                             (.toString)))
-                           (path/translate (:x origin-point) (:y origin-point)))
+          charge-shape {:paths (into []
+                                     (map #(-> %
+                                               path/make-path
+                                               (->
+                                                (svgpath)
+                                                (.scale scale-x scale-y)
+                                                (.toString))
+                                               (cond->
+                                                 squiggly? squiggly/squiggly-path
+                                                 (not= angle 0) (->
+                                                                 (svgpath)
+                                                                 (.rotate angle)
+                                                                 (.toString)))
+                                               (path/translate (:x origin-point) (:y origin-point))))
+                                     (:paths shape))}
           mask-shape (when mask
                        (-> mask
                            path/make-path
@@ -353,7 +359,7 @@
           :all]
          (when outline?
            [:g (outline/style context)
-            [:path {:d charge-shape}]
+            [:path {:d (s/join "" (:paths charge-shape))}]
             (when mask-shape
               [:path {:d mask-shape}])])]]])
     [:<>]))

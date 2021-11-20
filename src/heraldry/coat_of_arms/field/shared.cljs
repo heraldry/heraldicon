@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.field.shared
   (:require
+   [clojure.string :as s]
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.field.interface :as ui-interface]
    [heraldry.context :as c]
@@ -105,14 +106,15 @@
              (assoc :parent-field-path path)
              (assoc :parent-field-environment environment))]]
        (when selected?
-         [:path {:d (:shape environment)
+         [:path {:d (s/join "" (-> environment :shape :paths))
+                 :fill-rule "evenodd"
                  :style {:opacity 0.25}
                  :fill "url(#selected)"}])])))
 
 (defn -make-subfields [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
   [:<>
    (doall
-    (for [[idx [part-context [shape-path bounding-box-points & extra] overlap-paths]]
+    (for [[idx [part-context [shape bounding-box-points & extra] overlap-paths]]
           (->> (map vector paths parts mask-overlaps)
                (map-indexed vector))]
       (let [clip-path-id (util/id (str "clip-" idx))
@@ -123,7 +125,11 @@
                                 (c/++ part-context :type))
                                :heraldry.field.type/counterchanged)
             env (environment/create
-                 (path/make-path shape-path)
+                 (if (map? shape)
+                   (update shape :paths #(into []
+                                               (map path/make-path)
+                                               %))
+                   {:paths [(path/make-path shape)]})
                  {:parent context
                   :parent-environment parent-environment
                   :bounding-box (bounding-box/bounding-box bounding-box-points)
@@ -131,18 +137,20 @@
                                                   counterchanged?)
                                           parent-environment)
                   :mask (first extra)})
-            environment-shape (:shape env)]
+            environment-shape-paths (-> env :shape :paths)]
         ^{:key idx}
         [:<>
          [:defs
           [(if svg-export?
              :mask
              :clipPath) {:id clip-path-id}
-           [:path {:d environment-shape
+           [:path {:d (s/join "" environment-shape-paths)
+                   :clip-rule "evenodd"
+                   :fill-rule "evenodd"
                    :fill "#fff"}]
            (when svg-export?
              (cond
-               (= overlap-paths :all) [:path {:d environment-shape
+               (= overlap-paths :all) [:path {:d (s/join "" environment-shape-paths)
                                               :fill "none"
                                               :stroke-width overlap-stroke-width
                                               :stroke "#fff"}]
@@ -155,7 +163,8 @@
                                         :stroke "#fff"}]))))]
           (when-let [mask-shape (-> env :meta :mask)]
             [:mask {:id mask-id}
-             [:path {:d environment-shape
+             [:path {:d (s/join "" environment-shape-paths)
+                     :fill-rule "evenodd"
                      :fill "#fff"}]
              [:path {:d mask-shape
                      :fill "#000"}]])]
