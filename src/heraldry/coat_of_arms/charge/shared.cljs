@@ -6,7 +6,6 @@
    [heraldry.coat-of-arms.geometry :as geometry]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.outline :as outline]
-   [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -282,29 +281,26 @@
                total-height (- max-y min-y)
                mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
            [:defs
-            [(if svg-export?
-               :mask
-               :clipPath) {:id vertical-mask-id}
-             [:g {:transform (str "translate(" (v/->str origin-point) ")")}
-              [:rect {:x (- min-x 10)
-                      :y (- min-y 10)
-                      :width (+ total-width 20)
-                      :height (+ total-height 10)
-                      :style {:fill "#ffffff"}}]
-              [:rect {:x (- min-x 10)
-                      :y (if (pos? vertical-mask)
-                           (-> min-y
-                               (+ total-height)
-                               (- mask-height))
-                           (-> min-y
-                               (- 10)))
-                      :width (+ total-width 20)
-                      :height (+ mask-height 10)
-                      :style {:fill "#000000"}}]]]]))
+            [:mask {:id vertical-mask-id}
+             [:rect {:transform (str "translate(" (v/->str origin-point) ")")
+                     :x (- min-x 10)
+                     :y (- min-y 10)
+                     :width (+ total-width 20)
+                     :height (+ total-height 10)
+                     :style {:fill "#ffffff"}}]
+             [:rect {:transform (str "translate(" (v/->str origin-point) ")")
+                     :x (- min-x 10)
+                     :y (if (pos? vertical-mask)
+                          (-> min-y
+                              (+ total-height)
+                              (- mask-height))
+                          (-> min-y
+                              (- 10)))
+                     :width (+ total-width 20)
+                     :height (+ mask-height 10)
+                     :style {:fill "#000000"}}]]]))
        [:g (when vertical-mask?
-             {(if svg-export?
-                :mask
-                :clip-path) (str "url(#" vertical-mask-id ")")})
+             {:mask (str "url(#" vertical-mask-id ")")})
         (when (-> fimbriation :mode #{:double})
           (let [thickness (+ (-> fimbriation
                                  :thickness-1
