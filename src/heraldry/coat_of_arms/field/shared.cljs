@@ -101,7 +101,7 @@
             :transform transform}
         [ui-interface/render-field field-context]
         [render-components
-         (-> context
+         (-> field-context
              (assoc :parent-field-path path)
              (assoc :parent-field-environment environment))]]
        (when selected?
