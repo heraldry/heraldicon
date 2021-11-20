@@ -19,10 +19,36 @@
    [heraldry.math.svg.core :as svg]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defmethod interface/options :heraldry.charge.type/other [context]
   (-> (charge-shared/options context)
+      (assoc :tincture {:eyed {:type :choice
+                               :choices tincture/choices
+                               :default :argent
+                               :ui {:label {:en "Eyed"
+                                            :de "Augen"}}}
+                        :toothed {:type :choice
+                                  :choices tincture/choices
+                                  :default :argent
+                                  :ui {:label {:en "Toothed"
+                                               :de "Zähne"}}}
+                        :shadow {:type :range
+                                 :min 0
+                                 :max 1
+                                 :default 1
+                                 :ui {:label strings/shadow
+                                      :step 0.01}}
+                        :highlight {:type :range
+                                    :min 0
+                                    :max 1
+                                    :default 1
+                                    :ui {:label strings/highlight
+                                         :step 0.01}}
+                        :ui {:label {:en "Tinctures"
+                                     :de "Tinkturen"}
+                             :form-type :tincture-modifiers}})
       (assoc :ignore-layer-separator?
              {:type :boolean
               :default false
