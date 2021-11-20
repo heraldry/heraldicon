@@ -1,5 +1,6 @@
 (ns heraldry.frontend.main
   (:require
+   ["paper" :refer [paper]]
    [heraldry.frontend.header :as header]
    [heraldry.frontend.modal :as modal]
    [heraldry.frontend.route :as route]
@@ -41,6 +42,7 @@
 
   (start-stats-timer print-stats))
 (defn ^:export init []
+  (.setup paper (js/document.getElementById "dummy-canvas"))
   (rf/dispatch-sync [:initialize-db])
   (rf/dispatch-sync [:heraldry.frontend.language/load-language-setting])
   #_(print-stats)

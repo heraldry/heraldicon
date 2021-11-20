@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.ordinary.type.bordure
   (:require
    ["svgpath" :as svgpath]
+   [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.outline :as outline]
@@ -37,7 +38,7 @@
         middle (-> top-left
                    (v/add bottom-right)
                    (v/div 2))
-        environment-shape (-> environment :shape :paths first)
+        environment-shape (environment/effective-shape environment)
         bordure-shape (-> environment-shape
                           svgpath
                           (.translate

@@ -1,6 +1,8 @@
 (ns heraldry.coat-of-arms.field.environment
   (:require
+   ["paper" :refer [Path]]
    ["svgpath" :as svgpath]
+   [clojure.string :as s]
    [heraldry.math.bounding-box :as bounding-box]
    [heraldry.math.vector :as v]))
 
@@ -82,3 +84,24 @@
                                                 [key (-> value
                                                          (v/add offset)
                                                          (v/mul scale-factor))]) (:points environment)))))))
+
+
+(defn intersect-shapes [shape1 shape2]
+  (-> (new Path shape1)
+      (.intersect (new Path shape2))
+      .-pathData))
+
+(defn effective-shape [environment]
+  (let [shapes (->> environment
+                    (tree-seq map? (comp list :parent-environment :meta))
+                    (filter (comp not :override-environment :meta))
+                    (map :shape)
+                    (filter identity))]
+    (reduce
+     (fn [result shape]
+       (let [combined-path (s/join "" (:paths shape))]
+         (if (not result)
+           combined-path
+           (intersect-shapes result combined-path))))
+     nil
+     shapes)))
