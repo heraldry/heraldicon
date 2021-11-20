@@ -114,11 +114,10 @@
 (defn -make-subfields [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
   [:<>
    (doall
-    (for [[idx [part-context [shape bounding-box-points & extra] overlap-paths]]
+    (for [[idx [part-context [shape bounding-box-points] overlap-paths]]
           (->> (map vector paths parts mask-overlaps)
                (map-indexed vector))]
       (let [clip-path-id (util/id (str "clip-" idx))
-            mask-id (util/id (str "mask-" idx))
             inherit-environment? (interface/get-sanitized-data
                                   (c/++ part-context :inherit-environment?))
             counterchanged? (= (interface/get-sanitized-data
@@ -135,8 +134,7 @@
                   :bounding-box (bounding-box/bounding-box bounding-box-points)
                   :override-environment (when (or inherit-environment?
                                                   counterchanged?)
-                                          parent-environment)
-                  :mask (first extra)})
+                                          parent-environment)})
             environment-shape-paths (-> env :shape :paths)]
         ^{:key idx}
         [:<>
@@ -160,21 +158,12 @@
                                 [:path {:d shape
                                         :fill "none"
                                         :stroke-width overlap-stroke-width
-                                        :stroke "#fff"}]))))]
-          (when-let [mask-shape (-> env :meta :mask)]
-            [:mask {:id mask-id}
-             [:path {:d (s/join "" environment-shape-paths)
-                     :fill-rule "evenodd"
-                     :fill "#fff"}]
-             [:path {:d mask-shape
-                     :fill "#000"}]])]
+                                        :stroke "#fff"}]))))]]
 
          [:g {(if svg-export?
                 :mask
                 :clip-path) (str "url(#" clip-path-id ")")}
-          [:g {:mask (when (-> env :meta :mask)
-                       (str "url(#" mask-id ")"))}
-           [render (c/<< part-context :environment env)]]]])))])
+          [render (c/<< part-context :environment env)]]])))])
 
 (defn make-subfields [context parts mask-overlaps parent-environment]
   (-make-subfields context

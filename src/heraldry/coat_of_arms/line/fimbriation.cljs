@@ -97,7 +97,7 @@
     :bevel "bevel"
     "round"))
 
-(defn dilate-and-fill-path [shape negate-shape thickness color {:keys [svg-export?]}
+(defn dilate-and-fill-path [shape thickness color {:keys [svg-export?]}
                             & {:keys [fill? corner] :or {fill? true}}]
   (let [mask-id (util/id "mask")
         linejoin-value (linejoin corner)]
@@ -110,14 +110,7 @@
                :style {:stroke-width thickness
                        :stroke "#ffffff"
                        :stroke-linejoin linejoin-value
-                       :stroke-miterlimit 10}}]
-       (when negate-shape
-         [:path {:d negate-shape
-                 :fill "#000000"
-                 :style {:stroke-width thickness
-                         :stroke "#ffffff"
-                         :stroke-linejoin linejoin-value
-                         :stroke-miterlimit 10}}])]]
+                       :stroke-miterlimit 10}}]]]
 
      [:rect {:x -500
              :y -500

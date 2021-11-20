@@ -200,7 +200,6 @@
                                    80)
                                ((util/percent-of arg-value)))
           {:keys [shape
-                  mask
                   charge-width
                   charge-height
                   charge-top-left]} (function target-arg-value)
@@ -251,20 +250,6 @@
                                                                  (.toString)))
                                                (path/translate (:x origin-point) (:y origin-point))))
                                      (:paths shape))}
-          mask-shape (when mask
-                       (-> mask
-                           path/make-path
-                           (->
-                            (svgpath)
-                            (.scale scale-x scale-y)
-                            (.toString))
-                           (cond->
-                             squiggly? squiggly/squiggly-path
-                             (not= angle 0) (->
-                                             (svgpath)
-                                             (.rotate angle)
-                                             (.toString)))
-                           (path/translate (:x origin-point) (:y origin-point))))
           [min-x max-x min-y max-y] (bounding-box/rotate charge-top-left
                                                          (v/add charge-top-left
                                                                 (v/v charge-width
@@ -276,8 +261,7 @@
                 [(v/add origin-point
                         (v/v min-x min-y))
                  (v/add origin-point
-                        (v/v max-x max-y))]
-                mask-shape]
+                        (v/v max-x max-y))]]
           charge-id (util/id "charge")
           vertical-mask? (not (zero? vertical-mask))
           vertical-mask-id (util/id "mask")]
@@ -318,13 +302,11 @@
              (when outline?
                [fimbriation/dilate-and-fill-path
                 charge-shape
-                mask-shape
                 (+ thickness outline/stroke-width)
                 (outline/color context) context
                 :corner (-> fimbriation :corner)])
              [fimbriation/dilate-and-fill-path
               charge-shape
-              mask-shape
               (cond-> thickness
                 outline? (- outline/stroke-width))
               (-> fimbriation
@@ -339,13 +321,11 @@
              (when outline?
                [fimbriation/dilate-and-fill-path
                 charge-shape
-                mask-shape
                 (+ thickness outline/stroke-width)
                 (outline/color context) context
                 :corner (-> fimbriation :corner)])
              [fimbriation/dilate-and-fill-path
               charge-shape
-              mask-shape
               (cond-> thickness
                 outline? (- outline/stroke-width))
               (-> fimbriation
@@ -359,7 +339,5 @@
           :all]
          (when outline?
            [:g (outline/style context)
-            [:path {:d (s/join "" (:paths charge-shape))}]
-            (when mask-shape
-              [:path {:d mask-shape}])])]]])
+            [:path {:d (s/join "" (:paths charge-shape))}]])]]])
     [:<>]))
