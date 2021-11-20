@@ -154,9 +154,7 @@
                                         :stroke-width overlap-stroke-width
                                         :stroke "#fff"}]))))]
           (when-let [mask-shape (-> env :meta :mask)]
-            [(if svg-export?
-               :mask
-               :clipPath) {:id mask-id}
+            [:mask {:id mask-id}
              [:path {:d environment-shape
                      :fill "#fff"}]
              [:path {:d mask-shape
@@ -165,10 +163,8 @@
          [:g {(if svg-export?
                 :mask
                 :clip-path) (str "url(#" clip-path-id ")")}
-          [:g {(if svg-export?
-                 :mask
-                 :clip-path) (when (-> env :meta :mask)
-                               (str "url(#" mask-id ")"))}
+          [:g {:mask (when (-> env :meta :mask)
+                       (str "url(#" mask-id ")"))}
            [render (c/<< part-context :environment env)]]]])))])
 
 (defn make-subfields [context parts mask-overlaps parent-environment]
