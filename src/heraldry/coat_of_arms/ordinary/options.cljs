@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.ordinary.type.base :as base]
    [heraldry.coat-of-arms.ordinary.type.bend :as bend]
    [heraldry.coat-of-arms.ordinary.type.bend-sinister :as bend-sinister]
+   [heraldry.coat-of-arms.ordinary.type.bordure :as bordure]
    [heraldry.coat-of-arms.ordinary.type.chevron :as chevron]
    [heraldry.coat-of-arms.ordinary.type.chief :as chief]
    [heraldry.coat-of-arms.ordinary.type.cross :as cross]
@@ -37,7 +38,8 @@
    gore/ordinary-type
    label/ordinary-type
    quarter/ordinary-type
-   point/ordinary-type])
+   point/ordinary-type
+   bordure/ordinary-type])
 
 (def choices
   (->> ordinaries

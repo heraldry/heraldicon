@@ -1,5 +1,6 @@
 (ns heraldry.shared
   (:require
+   ["paper" :refer [paper Size]]
    [heraldry.attribution :as attribution]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.charge-group.core] ;; needed for side effects
@@ -27,6 +28,8 @@
    [heraldry.ribbon :as ribbon]
    [heraldry.state] ;; needed for side effects
    [heraldry.strings :as strings]))
+
+(.setup paper (new Size 500 500))
 
 (defmethod interface/options-subscriptions :heraldry.component/arms-general [_context]
   #{[:attribution :license]
