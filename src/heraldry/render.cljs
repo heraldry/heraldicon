@@ -40,7 +40,10 @@
         shield (escutcheon/field escutcheon)
         environment (-> (environment/transform-to-width shield width)
                         (cond->
-                          squiggly? (update :shape squiggly/squiggly-path)))
+                          squiggly? (update-in [:shape :paths]
+                                               #(into []
+                                                      (map squiggly/squiggly-path)
+                                                      %))))
         mask-id (util/id "mask")
         texture-id (util/id "texture")
         shiny-id (util/id "shiny")
@@ -101,7 +104,9 @@
                   :mask
                   :clipPath)
                 {:id mask-id}
-                [:path {:d (:shape environment)
+                [:path {:d (s/join "" (-> environment :shape :paths))
+                        :clip-rule "evenodd"
+                        :fill-rule "evenodd"
                         :fill "#fff"
                         :stroke "none"}]]]
               [:g {(if svg-export?
@@ -110,7 +115,8 @@
                [:g {:filter (when texture-link (str "url(#" texture-id ")"))}
                 [:g {:filter (when shiny?
                                (str "url(#" shiny-id ")"))}
-                 [:path {:d (:shape environment)
+                 [:path {:d (s/join "" (-> environment :shape :paths))
+                         :fill-rule "evenodd"
                          :fill "#f0f0f0"}]
                  [field-shared/render (-> context
                                           (c/++ :field)
@@ -120,7 +126,7 @@
               (when (or escutcheon-outline?
                         outline?)
                 [:g (outline/style context)
-                 [:path {:d (:shape environment)}]])]}))
+                 [:path {:d (s/join "" (-> environment :shape :paths))}]])]}))
 
 (defn helm [context & {:keys [below-shield?]}]
   [:<>

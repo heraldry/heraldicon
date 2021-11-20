@@ -12,9 +12,12 @@
           [x x y y]
           rest))
 
-(defn bounding-box-from-path [d]
-  (let [path (path/new-path d)
-        points (path/points path 50)
+(defn bounding-box-from-paths [paths]
+  (let [points (mapcat
+                #(-> %
+                     path/new-path
+                     (path/points 50))
+                paths)
         box (min-max-x-y points)]
     box))
 

@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.fimbriation
   (:require
+   [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
@@ -103,7 +104,8 @@
     [:<>
      [:defs
       [:mask {:id mask-id}
-       [:path {:d shape
+       [:path {:d (s/join "" (:paths shape))
+               :fill-rule "evenodd"
                :fill (when fill? "#ffffff")
                :style {:stroke-width thickness
                        :stroke "#ffffff"

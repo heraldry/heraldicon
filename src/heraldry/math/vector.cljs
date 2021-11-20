@@ -167,23 +167,30 @@
 
 (defn inside-shape? [point shape]
   (let [ray (str "M" (->str point) "l" 10000 "," 9000)
-        intersections (-> (path-intersection ray shape)
-                          (js->clj :keywordize-keys true)
-                          prune-duplicates
-                          (prune-point point))]
+        intersections (into []
+                            (map #(-> (path-intersection ray %)
+                                      (js->clj :keywordize-keys true)
+                                      prune-duplicates
+                                      (prune-point point)))
+                            (:paths shape))]
     (-> intersections
         count
         odd?)))
 
-(defn close-to-edge? [point shape]
+(defn close-to-single-path? [point path]
   (let [radius 0.0001
         left (sub point (v radius 0))
         right (add point (v radius 0))
         neighbourhood (str "M" (->str left)
                            "A" radius " " radius " 0 0 0 " (->str right)
                            "A" radius " " radius " 0 0 1 " (->str left))
-        intersections (path-intersection neighbourhood shape)]
+        intersections (path-intersection neighbourhood path)]
     (-> intersections count pos?)))
+
+(defn close-to-edge? [point {:keys [paths] :as _shape}]
+  (->> paths
+       (map (partial close-to-single-path? point))
+       (some true?)))
 
 (defn inside-environment? [point environment]
   (->> environment
@@ -214,9 +221,12 @@
                        "L" (->str to))
         intersections (->> shapes
                            (map-indexed (fn [parent-idx shape]
-                                          (-> (path-intersection line-path shape)
-                                              (js->clj :keywordize-keys true)
-                                              (->> (map #(assoc % :parent-index parent-idx))))))
+                                          (into []
+                                                (mapcat (fn [path]
+                                                          (-> (path-intersection line-path path)
+                                                              (js->clj :keywordize-keys true)
+                                                              (->> (map #(assoc % :parent-index parent-idx))))))
+                                                (:paths shape))))
                            (apply concat)
                            (filter #(inside-environment? % environment))
                            vec)]
