@@ -487,3 +487,7 @@
 (def extra
   {:en "extra"
    :de "extra"})
+
+(def distance
+  {:en "Distance"
+   :de "Abstand"})

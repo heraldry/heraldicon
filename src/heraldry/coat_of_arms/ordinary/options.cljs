@@ -11,6 +11,7 @@
    [heraldry.coat-of-arms.ordinary.type.fess :as fess]
    [heraldry.coat-of-arms.ordinary.type.gore :as gore]
    [heraldry.coat-of-arms.ordinary.type.label :as label]
+   [heraldry.coat-of-arms.ordinary.type.orle :as orle]
    [heraldry.coat-of-arms.ordinary.type.pale :as pale]
    [heraldry.coat-of-arms.ordinary.type.pall :as pall]
    [heraldry.coat-of-arms.ordinary.type.pile :as pile]
@@ -39,7 +40,8 @@
    label/ordinary-type
    quarter/ordinary-type
    point/ordinary-type
-   bordure/ordinary-type])
+   bordure/ordinary-type
+   orle/ordinary-type])
 
 (def choices
   (->> ordinaries

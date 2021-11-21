@@ -205,6 +205,7 @@
 
     [:fimbriation :mode]
     [:geometry :size-mode]
+    [:distance]
     [:thickness]})
 
 (def charge-options-subscriptions
