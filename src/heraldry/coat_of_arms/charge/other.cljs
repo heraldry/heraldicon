@@ -400,11 +400,6 @@
                          (v/sub)
                          (v/div 2)
                          (v/add origin-point))
-            inherit-environment? (interface/get-sanitized-data
-                                  (c/++ context :field :inherit-environment?))
-            counterchanged? (= (interface/get-sanitized-data
-                                (c/++ context :field :type))
-                               :heraldry.field.type/counterchanged)
             charge-environment (environment/create
                                 (path/make-path ["M" position
                                                  "l" (v/v (:x clip-size) 0)
@@ -417,10 +412,7 @@
                                  :context [:charge]
                                  :bounding-box (bounding-box/bounding-box
                                                 [position (v/add position
-                                                                 clip-size)])
-                                 :override-environment (when (or inherit-environment?
-                                                                 counterchanged?)
-                                                         environment)})
+                                                                 clip-size)])})
             vertical-mask? (not (zero? vertical-mask))
             vertical-mask-id (util/id "mask")
             layer-separator-colour-for-shadow-highlight (if hide-lower-layer?

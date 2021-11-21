@@ -11,7 +11,6 @@
   (let [shape (if (map? shape)
                 shape
                 {:paths [shape]})
-        override-environment (:override-environment meta)
         [min-x max-x min-y max-y] (or bounding-box
                                       (bounding-box/bounding-box-from-paths
                                        (:paths shape)))
@@ -40,30 +39,26 @@
         base (v/avg bottom nombril)
         dexter (v/avg left (v/avg left fess))
         sinister (v/avg right (v/avg right fess))]
-    (if override-environment
-      (-> override-environment
-          (assoc :shape shape)
-          (assoc :meta meta))
-      (-> {}
-          (assoc :shape shape)
-          (assoc :width width)
-          (assoc :height height)
-          (assoc :meta meta)
-          (assoc-in [:points :top-left] top-left)
-          (assoc-in [:points :top-right] top-right)
-          (assoc-in [:points :bottom-left] bottom-left)
-          (assoc-in [:points :bottom-right] bottom-right)
-          (assoc-in [:points :top] top)
-          (assoc-in [:points :bottom] bottom)
-          (assoc-in [:points :fess] fess)
-          (assoc-in [:points :left] left)
-          (assoc-in [:points :right] right)
-          (assoc-in [:points :honour] honour)
-          (assoc-in [:points :nombril] nombril)
-          (assoc-in [:points :chief] chief)
-          (assoc-in [:points :base] base)
-          (assoc-in [:points :dexter] dexter)
-          (assoc-in [:points :sinister] sinister)))))
+    (-> {}
+        (assoc :shape shape)
+        (assoc :width width)
+        (assoc :height height)
+        (assoc :meta meta)
+        (assoc-in [:points :top-left] top-left)
+        (assoc-in [:points :top-right] top-right)
+        (assoc-in [:points :bottom-left] bottom-left)
+        (assoc-in [:points :bottom-right] bottom-right)
+        (assoc-in [:points :top] top)
+        (assoc-in [:points :bottom] bottom)
+        (assoc-in [:points :fess] fess)
+        (assoc-in [:points :left] left)
+        (assoc-in [:points :right] right)
+        (assoc-in [:points :honour] honour)
+        (assoc-in [:points :nombril] nombril)
+        (assoc-in [:points :chief] chief)
+        (assoc-in [:points :base] base)
+        (assoc-in [:points :dexter] dexter)
+        (assoc-in [:points :sinister] sinister))))
 
 (defn transform-to-width [environment target-width]
   (let [width (:width environment)
@@ -132,7 +127,6 @@
 (defn effective-shape [environment]
   (let [shapes (->> environment
                     (tree-seq map? (comp list :parent-environment :meta))
-                    (filter (comp not :override-environment :meta))
                     (map :shape)
                     (filter identity))]
     (reduce
