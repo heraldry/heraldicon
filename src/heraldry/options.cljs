@@ -204,7 +204,8 @@
     [:anchor :point]
 
     [:fimbriation :mode]
-    [:geometry :size-mode]})
+    [:geometry :size-mode]
+    [:thickness]})
 
 (def charge-options-subscriptions
   #{[:type]
