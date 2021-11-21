@@ -207,7 +207,8 @@
     [:geometry :size-mode]
     [:distance]
     [:thickness]
-    [:voided :voided?]})
+    [:voided :voided?]
+    [:humetty :humetty?]})
 
 (def charge-options-subscriptions
   #{[:type]

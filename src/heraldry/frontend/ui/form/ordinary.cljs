@@ -53,6 +53,7 @@
     :distance
     :thickness
     :num-points
+    :humetty
     :voided
     :fimbriation
     :outline?
