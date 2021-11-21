@@ -56,15 +56,11 @@
                                                :default :even
                                                :ui {:label strings/alignment}}
                                    :corner {:type :choice
-                                            :choices [[{:en "Round"
-                                                        :de "Rund"} :round]
-                                                      [{:en "Sharp"
-                                                        :de "Spitz"} :sharp]
-                                                      [{:en "Bevel"
-                                                        :de "Abgeschnitten"} :bevel]]
+                                            :choices [[strings/corner-round :round]
+                                                      [strings/corner-sharp :sharp]
+                                                      [strings/corner-bevel :bevel]]
                                             :default :sharp
-                                            :ui {:label {:en "Corner"
-                                                         :de "Kanten"}}}
+                                            :ui {:label strings/corner}}
                                    :thickness-1 {:type :range
                                                  :min 1
                                                  :max 10

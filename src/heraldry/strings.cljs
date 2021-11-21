@@ -491,3 +491,31 @@
 (def distance
   {:en "Distance"
    :de "Abstand"})
+
+(def voided
+  {:en "Voided"
+   :de "Durchbrochen"})
+
+(def voided-edge
+  {:en "Voided Edge"
+   :de "Durchbrochen Rand"})
+
+(def corner-round
+  {:en "Round"
+   :de "Rund"})
+
+(def corner-sharp
+  {:en "Sharp"
+   :de "Spitz"})
+
+(def corner-bevel
+  {:en "Bevel"
+   :de "Abgeschnitten"})
+
+(def corner
+  {:en "Corner"
+   :de "Kanten"})
+
+(def no
+  {:en "No"
+   :de "Nein"})
