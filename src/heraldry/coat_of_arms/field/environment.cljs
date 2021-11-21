@@ -39,26 +39,25 @@
         base (v/avg bottom nombril)
         dexter (v/avg left (v/avg left fess))
         sinister (v/avg right (v/avg right fess))]
-    (-> {}
-        (assoc :shape shape)
-        (assoc :width width)
-        (assoc :height height)
-        (assoc :meta meta)
-        (assoc-in [:points :top-left] top-left)
-        (assoc-in [:points :top-right] top-right)
-        (assoc-in [:points :bottom-left] bottom-left)
-        (assoc-in [:points :bottom-right] bottom-right)
-        (assoc-in [:points :top] top)
-        (assoc-in [:points :bottom] bottom)
-        (assoc-in [:points :fess] fess)
-        (assoc-in [:points :left] left)
-        (assoc-in [:points :right] right)
-        (assoc-in [:points :honour] honour)
-        (assoc-in [:points :nombril] nombril)
-        (assoc-in [:points :chief] chief)
-        (assoc-in [:points :base] base)
-        (assoc-in [:points :dexter] dexter)
-        (assoc-in [:points :sinister] sinister))))
+    {:shape shape
+     :width width
+     :height height
+     :meta meta
+     :points {:top-left top-left
+              :top-right top-right
+              :bottom-left bottom-left
+              :bottom-right bottom-right
+              :top top
+              :bottom bottom
+              :fess fess
+              :left left
+              :right right
+              :honour honour
+              :nombril nombril
+              :chief chief
+              :base base
+              :dexter dexter
+              :sinister sinister}}))
 
 (defn transform-to-width [environment target-width]
   (let [width (:width environment)
