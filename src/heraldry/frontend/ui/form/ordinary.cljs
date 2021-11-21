@@ -50,6 +50,7 @@
     :escutcheon
     :angle
     :geometry
+    :thickness
     :num-points
     :fimbriation
     :outline?

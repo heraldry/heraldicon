@@ -16,26 +16,24 @@
                                                               :de "Schildbord"})
 
 (defmethod interface/options ordinary-type [_context]
-  {:geometry {:size {:type :range
-                     :min 0.1
-                     :max 35
-                     :default 10
-                     :ui {:label strings/size
-                          :step 0.1}}
-              :ui {:label strings/geometry
-                   :form-type :geometry}}
+  {:thickness {:type :range
+               :min 0.1
+               :max 35
+               :default 10
+               :ui {:label strings/thickness
+                    :step 0.1}}
    :outline? options/plain-outline?-option})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
-  (let [size (interface/get-sanitized-data (c/++ context :geometry :size))
+  (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         width (:width environment)
-        band-width ((util/percent-of width) size)
+        thickness ((util/percent-of width) thickness)
         environment-shape (environment/effective-shape environment)
-        bordure-shape (environment/shrink-shape environment-shape band-width)
+        bordure-shape (environment/shrink-shape environment-shape thickness)
         part [{:paths [environment-shape
                        bordure-shape]}
               [(:top-left points)
