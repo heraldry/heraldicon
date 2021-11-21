@@ -1,7 +1,9 @@
 (ns heraldry.coat-of-arms.ordinary.type.cross
   (:require
+   [clojure.string :as s]
    [heraldry.coat-of-arms.cottising :as cottising]
    [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.humetty :as humetty]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
@@ -22,10 +24,13 @@
                                                               :de "Kreuz"})
 
 (defmethod interface/options ordinary-type [context]
-  (let [line-style (-> (line/options (c/++ context :line))
+  (let [humetty? (interface/get-raw-data (c/++ context :humetty :humetty?))
+        line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
-                       (options/override-if-exists [:fimbriation :alignment :default] :outside))]
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                       (cond->
+                         humetty? (dissoc :fimbriation)))]
     {:origin {:point {:type :choice
                       :choices [[strings/chief-point :chief]
                                 [strings/base-point :base]
@@ -60,6 +65,7 @@
                 :ui {:label strings/geometry
                      :form-type :geometry}}
      :voided (voided/options (c/++ context :voided))
+     :humetty (humetty/options (c/++ context :humetty))
      :outline? options/plain-outline?-option
      :cottising (cottising/add-cottising context 1)}))
 
@@ -69,6 +75,7 @@
         origin (interface/get-sanitized-data (c/++ context :origin))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         voided? (interface/get-sanitized-data (c/++ context :voided :voided?))
+        humetty? (interface/get-sanitized-data (c/++ context :humetty :humetty?))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
@@ -211,48 +218,51 @@
                                                    :real-end end
                                                    :context context
                                                    :environment environment)
-        shape (cond-> ["M" (v/add corner-top-left
-                                  line-pale-top-left-start)
-                       (path/stitch line-pale-top-left)
-                       (infinity/path :clockwise
-                                      [:top :top]
-                                      [(v/add pale-top-left
-                                              line-pale-top-left-start)
-                                       (v/add pale-top-right
-                                              line-pale-top-right-start)])
-                       (path/stitch line-pale-top-right)
-                       "L" (v/add corner-top-right
-                                  line-fess-top-right-start)
-                       (path/stitch line-fess-top-right)
-                       (infinity/path :clockwise
-                                      [:right :right]
-                                      [(v/add fess-top-right
-                                              line-fess-top-right-start)
-                                       (v/add fess-bottom-right
-                                              line-fess-bottom-right-start)])
-                       (path/stitch line-fess-bottom-right)
-                       "L" (v/add corner-bottom-right
-                                  line-pale-bottom-right-start)
-                       (path/stitch line-pale-bottom-right)
-                       (infinity/path :clockwise
-                                      [:bottom :bottom]
-                                      [(v/add pale-bottom-right
-                                              line-pale-bottom-right-start)
-                                       (v/add pale-bottom-left
-                                              line-pale-bottom-left-start)])
-                       (path/stitch line-pale-bottom-left)
-                       "L" (v/add corner-bottom-left
-                                  line-fess-bottom-left-start)
-                       (path/stitch line-fess-bottom-left)
-                       (infinity/path :clockwise
-                                      [:left :left]
-                                      [(v/add fess-bottom-left
-                                              line-fess-bottom-left-start)
-                                       (v/add fess-top-left
-                                              line-fess-top-left-start)])
-                       (path/stitch line-fess-top-left)
-                       "z"]
-                voided? (voided/void band-width (c/++ context :voided)))
+        shape (-> ["M" (v/add corner-top-left
+                              line-pale-top-left-start)
+                   (path/stitch line-pale-top-left)
+                   (infinity/path :clockwise
+                                  [:top :top]
+                                  [(v/add pale-top-left
+                                          line-pale-top-left-start)
+                                   (v/add pale-top-right
+                                          line-pale-top-right-start)])
+                   (path/stitch line-pale-top-right)
+                   "L" (v/add corner-top-right
+                              line-fess-top-right-start)
+                   (path/stitch line-fess-top-right)
+                   (infinity/path :clockwise
+                                  [:right :right]
+                                  [(v/add fess-top-right
+                                          line-fess-top-right-start)
+                                   (v/add fess-bottom-right
+                                          line-fess-bottom-right-start)])
+                   (path/stitch line-fess-bottom-right)
+                   "L" (v/add corner-bottom-right
+                              line-pale-bottom-right-start)
+                   (path/stitch line-pale-bottom-right)
+                   (infinity/path :clockwise
+                                  [:bottom :bottom]
+                                  [(v/add pale-bottom-right
+                                          line-pale-bottom-right-start)
+                                   (v/add pale-bottom-left
+                                          line-pale-bottom-left-start)])
+                   (path/stitch line-pale-bottom-left)
+                   "L" (v/add corner-bottom-left
+                              line-fess-bottom-left-start)
+                   (path/stitch line-fess-bottom-left)
+                   (infinity/path :clockwise
+                                  [:left :left]
+                                  [(v/add fess-bottom-left
+                                          line-fess-bottom-left-start)
+                                   (v/add fess-top-left
+                                          line-fess-top-left-start)])
+                   (path/stitch line-fess-top-left)
+                   "z"]
+                  path/make-path
+                  (cond->
+                    humetty? (humetty/coup width (c/++ context :humetty))
+                    voided? (voided/void band-width (c/++ context :voided))))
         part [shape
               [top-left bottom-right]]]
     [:<>
@@ -260,18 +270,23 @@
       (c/++ context :field)
       part
       :all]
-     (when (and voided?
-                outline?)
-       [:g (outline/style context)
-        [:path {:d (-> shape :paths last)}]])
-     [line/render line [line-fess-top-left-data
-                        line-pale-top-left-data] fess-top-left outline? context]
-     [line/render line [line-pale-top-right-data
-                        line-fess-top-right-data] pale-top-right outline? context]
-     [line/render line [line-fess-bottom-right-data
-                        line-pale-bottom-right-data] fess-bottom-right outline? context]
-     [line/render line [line-pale-bottom-left-data
-                        line-fess-bottom-left-data] pale-bottom-left outline? context]
+     (cond
+       humetty? [:g (outline/style context)
+                 [:path {:d (s/join "" (:paths shape))}]]
+       (and voided?
+            outline?) [:g (outline/style context)
+                       [:path {:d (-> shape :paths last)}]]
+       :else nil)
+     (when-not humetty?
+       [:<>
+        [line/render line [line-fess-top-left-data
+                           line-pale-top-left-data] fess-top-left outline? context]
+        [line/render line [line-pale-top-right-data
+                           line-fess-top-right-data] pale-top-right outline? context]
+        [line/render line [line-fess-bottom-right-data
+                           line-pale-bottom-right-data] fess-bottom-right outline? context]
+        [line/render line [line-pale-bottom-left-data
+                           line-fess-bottom-left-data] pale-bottom-left outline? context]])
      [:<>
       (for [[chevron-angle
              corner-point] [[225 corner-top-left]

@@ -21,6 +21,7 @@
    [heraldry.frontend.ui.element.fimbriation] ;; needed for side effects
    [heraldry.frontend.ui.element.geometry] ;; needed for side effects
    [heraldry.frontend.ui.element.hover-menu :as hover-menu] ;; needed for side effects
+   [heraldry.frontend.ui.element.humetty] ;; needed for side effects
    [heraldry.frontend.ui.element.line] ;; needed for side effects
    [heraldry.frontend.ui.element.line-type-select] ;; needed for side effects
    [heraldry.frontend.ui.element.ordinary-type-select] ;; needed for side effects
