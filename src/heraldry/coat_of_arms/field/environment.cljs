@@ -80,13 +80,13 @@
                                                     (v/add offset)
                                                     (v/mul scale-factor))]) (:points environment)))))))
 
-(defn -shrink-step [shape distance]
+(defn -shrink-step [shape distance join]
   (let [original-path (new Path shape)
         outline-left (-> PaperOffset
                          (.offset
                           original-path
                           (- distance)
-                          (clj->js {:join "round"
+                          (clj->js {:join join
                                     :insert false})))]
     ;; The path might be clockwise, then (- distance) is the
     ;; correct offset for the inner path; we expect that path
@@ -102,32 +102,38 @@
           (.offset
            original-path
            distance
-           (clj->js {:join "round"
+           (clj->js {:join join
                      :insert false}))
           .-pathData))))
 
 (def shrink-step
   (memoize -shrink-step))
 
-(defn shrink-shape [shape distance]
-  (let [max-step 5]
+(defn shrink-shape [shape distance join]
+  (let [max-step 5
+        join (case join
+               :round "round"
+               :bevel "bevel"
+               "miter")]
     (loop [shape shape
            distance distance]
       (cond
         (zero? distance) shape
-        (<= distance max-step) (shrink-step shape distance)
-        :else (recur (shrink-step shape max-step) (- distance max-step))))))
+        (<= distance max-step) (shrink-step shape distance join)
+        :else (recur (shrink-step shape max-step join) (- distance max-step))))))
 
 (defn intersect-shapes [shape1 shape2]
   (-> (new Path shape1)
       (.intersect (new Path shape2))
       .-pathData))
 
-(defn effective-shape [environment]
+(defn effective-shape [environment & {:keys [additional-shape]}]
   (let [shapes (->> environment
                     (tree-seq map? (comp list :parent-environment :meta))
                     (map :shape)
-                    (filter identity))]
+                    (filter identity))
+        shapes (cond-> shapes
+                 additional-shape (conj additional-shape))]
     (reduce
      (fn [result shape]
        (let [combined-path (s/join "" (:paths shape))]
