@@ -83,33 +83,41 @@
                       environment
                       svg-export?
                       transform] :as context}]
-  (if (= (interface/get-sanitized-data (c/++ context :type)) :heraldry.field.type/counterchanged)
-    (render-counterchanged-field context)
-    (let [selected? false
-          ;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
-          ;; adding it to the choices in the option would affect the UI
-          field-type (interface/get-raw-data (c/++ context :type))
-          field-context (cond-> context
-                          (= field-type
-                             :heraldry.field.type/ref) (->
-                                                        c/--
-                                                        (c/++ (interface/get-raw-data
-                                                               (c/++ context :index)))))]
-      [:<>
-       [:g {:style (when (not svg-export?)
-                     {:pointer-events "visiblePainted"
-                      :cursor "pointer"})
-            :transform transform}
-        [ui-interface/render-field field-context]
-        [render-components
-         (-> field-context
-             (assoc :parent-field-path path)
-             (assoc :parent-field-environment environment))]]
-       (when selected?
-         [:path {:d (s/join "" (-> environment :shape :paths))
-                 :fill-rule "evenodd"
-                 :style {:opacity 0.25}
-                 :fill "url(#selected)"}])])))
+  (let [;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
+        ;; adding it to the choices in the option would affect the UI
+        field-type (interface/get-raw-data (c/++ context :type))
+        field-context (cond-> context
+                        (= field-type
+                           :heraldry.field.type/ref) (->
+                                                      c/--
+                                                      (c/++ (interface/get-raw-data
+                                                             (c/++ context :index)))))
+        inherit-environment? (interface/get-sanitized-data
+                              (c/++ field-context :inherit-environment?))
+        counterchanged? (= (interface/get-raw-data (c/++ field-context :type))
+                           :heraldry.field.type/counterchanged)
+        field-context (cond-> field-context
+                        (or inherit-environment?
+                            counterchanged?) (assoc :environment
+                                                    (-> environment :meta :parent-environment)))]
+    (if counterchanged?
+      (render-counterchanged-field field-context)
+      (let [selected? false]
+        [:<>
+         [:g {:style (when (not svg-export?)
+                       {:pointer-events "visiblePainted"
+                        :cursor "pointer"})
+              :transform transform}
+          [ui-interface/render-field field-context]
+          [render-components
+           (-> field-context
+               (assoc :parent-field-path path)
+               (assoc :parent-field-environment environment))]]
+         (when selected?
+           [:path {:d (s/join "" (-> environment :shape :paths))
+                   :fill-rule "evenodd"
+                   :style {:opacity 0.25}
+                   :fill "url(#selected)"}])]))))
 
 (defn -make-subfields [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
   [:<>
@@ -118,11 +126,6 @@
           (->> (map vector paths parts mask-overlaps)
                (map-indexed vector))]
       (let [clip-path-id (util/id (str "clip-" idx))
-            inherit-environment? (interface/get-sanitized-data
-                                  (c/++ part-context :inherit-environment?))
-            counterchanged? (= (interface/get-sanitized-data
-                                (c/++ part-context :type))
-                               :heraldry.field.type/counterchanged)
             env (environment/create
                  (if (map? shape)
                    (update shape :paths #(into []
@@ -131,10 +134,7 @@
                    {:paths [(path/make-path shape)]})
                  {:parent context
                   :parent-environment parent-environment
-                  :bounding-box (bounding-box/bounding-box bounding-box-points)
-                  :override-environment (when (or inherit-environment?
-                                                  counterchanged?)
-                                          parent-environment)})
+                  :bounding-box (bounding-box/bounding-box bounding-box-points)})
             environment-shape-paths (-> env :shape :paths)]
         ^{:key idx}
         [:<>

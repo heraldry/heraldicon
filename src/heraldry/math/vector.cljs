@@ -195,7 +195,6 @@
 (defn inside-environment? [point environment]
   (->> environment
        (tree-seq map? (comp list :parent-environment :meta))
-       (filter (comp not :override-environment :meta))
        (map :shape)
        (filter identity)
        (map-indexed (fn [parent-idx shape]
@@ -214,7 +213,6 @@
 (defn find-intersections [from to environment]
   (let [shapes (->> environment
                     (tree-seq map? (comp list :parent-environment :meta))
-                    (filter (comp not :override-environment :meta))
                     (map :shape)
                     (filter identity))
         line-path (str "M" (->str from)
