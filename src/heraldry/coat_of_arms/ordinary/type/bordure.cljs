@@ -33,7 +33,7 @@
         width (:width environment)
         thickness ((util/percent-of width) thickness)
         environment-shape (environment/effective-shape environment)
-        bordure-shape (environment/shrink-shape environment-shape thickness)
+        bordure-shape (environment/shrink-shape environment-shape thickness :round)
         part [{:paths [environment-shape
                        bordure-shape]}
               [(:top-left points)

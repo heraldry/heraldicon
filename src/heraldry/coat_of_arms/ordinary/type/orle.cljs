@@ -41,8 +41,8 @@
         distance ((util/percent-of width) distance)
         thickness ((util/percent-of width) thickness)
         environment-shape (environment/effective-shape environment)
-        outer-shape (environment/shrink-shape environment-shape distance)
-        inner-shape (environment/shrink-shape outer-shape thickness)
+        outer-shape (environment/shrink-shape environment-shape distance :round)
+        inner-shape (environment/shrink-shape outer-shape thickness :round)
         part [{:paths [outer-shape
                        inner-shape]}
               [(:top-left points)
