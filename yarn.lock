@@ -1323,10 +1323,17 @@ paper-jsdom@^0.12.15:
     paper "0.12.15"
     source-map-support "^0.5.19"
 
-paper@0.12.15:
+paper@0.12.15, paper@^0.12.4:
   version "0.12.15"
   resolved "https://registry.yarnpkg.com/paper/-/paper-0.12.15.tgz#28b5e5ce0f7a99a851e980f6715f376881dfbc84"
   integrity sha512-9qqtcY+V0Sd2RTLZKh7rTfWDbhfitOrtq3kzgOufhGpuYpCUXM+3UIK61au14tI0F9NA4xSttDYfk376O50aPA==
+
+paperjs-offset@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/paperjs-offset/-/paperjs-offset-1.0.8.tgz#3ddb297785a45b99126e3da3bca852e3612b3d68"
+  integrity sha512-rUXMtHH4bTNVrCgDcu+x71qyGoPe+01yZtrPD7bowji4VfWiDWzl4EUdRxiZnG5ooPg7b07mk6jVx33hNSojaA==
+  dependencies:
+    paper "^0.12.4"
 
 parse-asn1@^5.0.0, parse-asn1@^5.1.5:
   version "5.1.6"
