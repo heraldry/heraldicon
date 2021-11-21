@@ -37,11 +37,11 @@
    pall/ordinary-type
    pile/ordinary-type
    gore/ordinary-type
-   label/ordinary-type
    quarter/ordinary-type
    point/ordinary-type
    bordure/ordinary-type
-   orle/ordinary-type])
+   orle/ordinary-type
+   label/ordinary-type])
 
 (def choices
   (->> ordinaries
