@@ -1,15 +1,14 @@
 (ns heraldry.coat-of-arms.ordinary.type.bordure
   (:require
-   ["svgpath" :as svgpath]
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
-   [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]))
+   [heraldry.strings :as strings]
+   [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/bordure)
 
@@ -19,7 +18,7 @@
 (defmethod interface/options ordinary-type [_context]
   {:geometry {:size {:type :range
                      :min 0.1
-                     :max 90
+                     :max 35
                      :default 10
                      :ui {:label strings/size
                           :step 0.1}}
@@ -33,22 +32,10 @@
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
-        middle (-> top-left
-                   (v/add bottom-right)
-                   (v/div 2))
+        width (:width environment)
+        band-width ((util/percent-of width) size)
         environment-shape (environment/effective-shape environment)
-        bordure-shape (-> environment-shape
-                          svgpath
-                          (.translate
-                           (- (:x middle))
-                           (- (:y middle)))
-                          (.scale (- 1.0 (/ size 100)))
-                          (.translate
-                           (:x middle)
-                           (:y middle))
-                          .toString)
+        bordure-shape (environment/shrink-shape environment-shape band-width)
         part [{:paths [environment-shape
                        bordure-shape]}
               [(:top-left points)

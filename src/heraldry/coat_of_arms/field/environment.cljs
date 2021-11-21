@@ -1,6 +1,7 @@
 (ns heraldry.coat-of-arms.field.environment
   (:require
    ["paper" :refer [Path]]
+   ["paperjs-offset" :refer [PaperOffset]]
    ["svgpath" :as svgpath]
    [clojure.string :as s]
    [heraldry.math.bounding-box :as bounding-box]
@@ -85,6 +86,43 @@
                                                     (v/add offset)
                                                     (v/mul scale-factor))]) (:points environment)))))))
 
+(defn -shrink-step [shape distance]
+  (let [original-path (new Path shape)
+        outline-left (-> PaperOffset
+                         (.offset
+                          original-path
+                          (- distance)
+                          (clj->js {:join "round"
+                                    :insert false})))]
+    ;; The path might be clockwise, then (- distance) is the
+    ;; correct offset for the inner path; we expect that path
+    ;; to be shorter, so use it, if that's true, otherwise
+    ;; use the offset on the other side (distance).
+    ;; Escutcheon paths are clockwise, so testing for that
+    ;; first should avoid having to do both calculations in
+    ;; most cases.
+    (if (<= (.-length outline-left)
+            (.-length original-path))
+      (.-pathData outline-left)
+      (-> PaperOffset
+          (.offset
+           original-path
+           distance
+           (clj->js {:join "round"
+                     :insert false}))
+          .-pathData))))
+
+(def shrink-step
+  (memoize -shrink-step))
+
+(defn shrink-shape [shape distance]
+  (let [max-step 5]
+    (loop [shape shape
+           distance distance]
+      (cond
+        (zero? distance) shape
+        (<= distance max-step) (shrink-step shape distance)
+        :else (recur (shrink-step shape max-step) (- distance max-step))))))
 
 (defn intersect-shapes [shape1 shape2]
   (-> (new Path shape1)
