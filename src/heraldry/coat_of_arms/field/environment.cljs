@@ -44,9 +44,10 @@
           (assoc :shape shape)
           (assoc :meta meta))
       (-> {}
-          (assoc-in [:shape] shape)
-          (assoc-in [:width] width)
-          (assoc-in [:height] height)
+          (assoc :shape shape)
+          (assoc :width width)
+          (assoc :height height)
+          (assoc :meta meta)
           (assoc-in [:points :top-left] top-left)
           (assoc-in [:points :top-right] top-right)
           (assoc-in [:points :bottom-left] bottom-left)
@@ -61,8 +62,7 @@
           (assoc-in [:points :chief] chief)
           (assoc-in [:points :base] base)
           (assoc-in [:points :dexter] dexter)
-          (assoc-in [:points :sinister] sinister)
-          (assoc-in [:meta] meta)))))
+          (assoc-in [:points :sinister] sinister)))))
 
 (defn transform-to-width [environment target-width]
   (let [width (:width environment)
@@ -70,20 +70,20 @@
         offset (v/sub top-left)
         scale-factor (/ target-width width)]
     (-> environment
-        (assoc-in [:shape] {:paths (into []
-                                         (map #(-> %
-                                                   svgpath
-                                                   (.translate (:x offset) (:y offset))
-                                                   (.scale scale-factor)
-                                                   (.toString)))
-                                         (-> environment :shape :paths))})
-        (update-in [:width] * scale-factor)
-        (update-in [:height] * scale-factor)
-        (update-in [:points] merge (into {}
-                                         (map (fn [[key value]]
-                                                [key (-> value
-                                                         (v/add offset)
-                                                         (v/mul scale-factor))]) (:points environment)))))))
+        (assoc :shape {:paths (into []
+                                    (map #(-> %
+                                              svgpath
+                                              (.translate (:x offset) (:y offset))
+                                              (.scale scale-factor)
+                                              (.toString)))
+                                    (-> environment :shape :paths))})
+        (update :width * scale-factor)
+        (update :height * scale-factor)
+        (update :points merge (into {}
+                                    (map (fn [[key value]]
+                                           [key (-> value
+                                                    (v/add offset)
+                                                    (v/mul scale-factor))]) (:points environment)))))))
 
 
 (defn intersect-shapes [shape1 shape2]
