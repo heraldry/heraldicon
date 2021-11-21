@@ -5,7 +5,9 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.position :as position]
+   [heraldry.coat-of-arms.voided :as voided]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
@@ -57,6 +59,7 @@
                             :step 0.1}}
                 :ui {:label strings/geometry
                      :form-type :geometry}}
+     :voided (voided/options (c/++ context :voided))
      :outline? options/plain-outline?-option
      :cottising (cottising/add-cottising context 1)}))
 
@@ -65,6 +68,7 @@
   (let [line (interface/get-sanitized-data (c/++ context :line))
         origin (interface/get-sanitized-data (c/++ context :origin))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
+        voided? (interface/get-sanitized-data (c/++ context :voided :voided?))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
@@ -207,53 +211,59 @@
                                                    :real-end end
                                                    :context context
                                                    :environment environment)
-        part [["M" (v/add corner-top-left
-                          line-pale-top-left-start)
-               (path/stitch line-pale-top-left)
-               (infinity/path :clockwise
-                              [:top :top]
-                              [(v/add pale-top-left
-                                      line-pale-top-left-start)
-                               (v/add pale-top-right
-                                      line-pale-top-right-start)])
-               (path/stitch line-pale-top-right)
-               "L" (v/add corner-top-right
-                          line-fess-top-right-start)
-               (path/stitch line-fess-top-right)
-               (infinity/path :clockwise
-                              [:right :right]
-                              [(v/add fess-top-right
-                                      line-fess-top-right-start)
-                               (v/add fess-bottom-right
-                                      line-fess-bottom-right-start)])
-               (path/stitch line-fess-bottom-right)
-               "L" (v/add corner-bottom-right
-                          line-pale-bottom-right-start)
-               (path/stitch line-pale-bottom-right)
-               (infinity/path :clockwise
-                              [:bottom :bottom]
-                              [(v/add pale-bottom-right
-                                      line-pale-bottom-right-start)
-                               (v/add pale-bottom-left
-                                      line-pale-bottom-left-start)])
-               (path/stitch line-pale-bottom-left)
-               "L" (v/add corner-bottom-left
-                          line-fess-bottom-left-start)
-               (path/stitch line-fess-bottom-left)
-               (infinity/path :clockwise
-                              [:left :left]
-                              [(v/add fess-bottom-left
-                                      line-fess-bottom-left-start)
-                               (v/add fess-top-left
-                                      line-fess-top-left-start)])
-               (path/stitch line-fess-top-left)
-               "z"]
+        shape (cond-> ["M" (v/add corner-top-left
+                                  line-pale-top-left-start)
+                       (path/stitch line-pale-top-left)
+                       (infinity/path :clockwise
+                                      [:top :top]
+                                      [(v/add pale-top-left
+                                              line-pale-top-left-start)
+                                       (v/add pale-top-right
+                                              line-pale-top-right-start)])
+                       (path/stitch line-pale-top-right)
+                       "L" (v/add corner-top-right
+                                  line-fess-top-right-start)
+                       (path/stitch line-fess-top-right)
+                       (infinity/path :clockwise
+                                      [:right :right]
+                                      [(v/add fess-top-right
+                                              line-fess-top-right-start)
+                                       (v/add fess-bottom-right
+                                              line-fess-bottom-right-start)])
+                       (path/stitch line-fess-bottom-right)
+                       "L" (v/add corner-bottom-right
+                                  line-pale-bottom-right-start)
+                       (path/stitch line-pale-bottom-right)
+                       (infinity/path :clockwise
+                                      [:bottom :bottom]
+                                      [(v/add pale-bottom-right
+                                              line-pale-bottom-right-start)
+                                       (v/add pale-bottom-left
+                                              line-pale-bottom-left-start)])
+                       (path/stitch line-pale-bottom-left)
+                       "L" (v/add corner-bottom-left
+                                  line-fess-bottom-left-start)
+                       (path/stitch line-fess-bottom-left)
+                       (infinity/path :clockwise
+                                      [:left :left]
+                                      [(v/add fess-bottom-left
+                                              line-fess-bottom-left-start)
+                                       (v/add fess-top-left
+                                              line-fess-top-left-start)])
+                       (path/stitch line-fess-top-left)
+                       "z"]
+                voided? (voided/void band-width (c/++ context :voided)))
+        part [shape
               [top-left bottom-right]]]
     [:<>
      [field-shared/make-subfield
       (c/++ context :field)
       part
       :all]
+     (when (and voided?
+                outline?)
+       [:g (outline/style context)
+        [:path {:d (-> shape :paths last)}]])
      [line/render line [line-fess-top-left-data
                         line-pale-top-left-data] fess-top-left outline? context]
      [line/render line [line-pale-top-right-data

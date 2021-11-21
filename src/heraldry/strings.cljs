@@ -496,9 +496,9 @@
   {:en "Voided"
    :de "Durchbrochen"})
 
-(def voided-edge
-  {:en "Voided Edge"
-   :de "Durchbrochen Rand"})
+(def edge
+  {:en "Edge"
+   :de "Rand"})
 
 (def corner-round
   {:en "Round"
@@ -519,3 +519,7 @@
 (def no
   {:en "No"
    :de "Nein"})
+
+(def humetty
+  {:en "Humetty / Couped"
+   :de "Schwebend / Abgeschnitten"})

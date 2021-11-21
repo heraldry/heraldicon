@@ -36,6 +36,7 @@
    [heraldry.frontend.ui.element.theme-select] ;; needed for side effects
    [heraldry.frontend.ui.element.tincture-modifiers] ;; needed for side effects
    [heraldry.frontend.ui.element.tincture-select] ;; needed for side effects
+   [heraldry.frontend.ui.element.voided] ;; needed for side effects
    [heraldry.frontend.ui.form.arms-general] ;; needed for side effects
    [heraldry.frontend.ui.form.charge] ;; needed for side effects
    [heraldry.frontend.ui.form.charge-general] ;; needed for side effects

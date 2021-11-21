@@ -206,7 +206,8 @@
     [:fimbriation :mode]
     [:geometry :size-mode]
     [:distance]
-    [:thickness]})
+    [:thickness]
+    [:voided :voided?]})
 
 (def charge-options-subscriptions
   #{[:type]

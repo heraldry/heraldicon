@@ -750,7 +750,8 @@ li.nav-menu-item a:hover {
 .submenu-field-layout label,
 .submenu-semy-layout label,
 .submenu-tincture-modifiers label,
-.submenu-fimbriation label {
+.submenu-fimbriation label,
+.submenu-voided label {
   width: 8em;
 }
 

@@ -53,6 +53,7 @@
     :distance
     :thickness
     :num-points
+    :voided
     :fimbriation
     :outline?
     :manual-blazon]))
