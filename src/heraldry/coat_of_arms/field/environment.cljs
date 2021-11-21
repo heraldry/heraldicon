@@ -90,13 +90,13 @@
                                     :insert false})))]
     ;; The path might be clockwise, then (- distance) is the
     ;; correct offset for the inner path; we expect that path
-    ;; to be shorter, so use it, if that's true, otherwise
+    ;; to surround a smaller area, so use it, if that's true, otherwise
     ;; use the offset on the other side (distance).
     ;; Escutcheon paths are clockwise, so testing for that
     ;; first should avoid having to do both calculations in
     ;; most cases.
-    (if (<= (.-length outline-left)
-            (.-length original-path))
+    (if (<= (.-area outline-left)
+            (.-area original-path))
       (.-pathData outline-left)
       (-> PaperOffset
           (.offset
