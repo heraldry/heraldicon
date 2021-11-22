@@ -32,10 +32,18 @@
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
+          tooltip (:tooltip ui)
           link-name @(rf/subscribe [:humetty-submenu-link-name context])]
       [:div.ui-setting
        (when label
-         [:label [tr label]])
+         [:label [tr label]
+          (when tooltip
+            [:div.tooltip.info {:style {:display "inline-block"
+                                        :margin-left "0.2em"}}
+             [:i.fas.fa-question-circle]
+             [:div.bottom
+              [:h3 {:style {:text-align "center"}} [tr tooltip]]
+              [:i]]])])
        [:div.option
         [submenu/submenu context label link-name {:style {:width "22em"}
                                                   :class "submenu-humetty"}
