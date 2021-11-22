@@ -13,6 +13,8 @@
 (defmethod interface/blazon-component :heraldry.component/ordinary [context]
   (let [ordinary-type (interface/get-sanitized-data (c/++ context :type))
         line (interface/get-sanitized-data (c/++ context :line))
+        voided? (interface/get-sanitized-data (c/++ context :voided :voided?))
+        humetty? (interface/get-sanitized-data (c/++ context :humetty :humetty?))
         ordinary-name (case ordinary-type
                         :heraldry.ordinary.type/quarter
                         (let [size (interface/get-sanitized-data (c/++ context :geometry :size))]
@@ -25,6 +27,8 @@
                         (util/translate ordinary-type))
         rest (util/combine " " [ordinary-name
                                 (util/translate-line line)
+                                (when voided? "voided")
+                                (when humetty? "humetty")
                                 (interface/blazon (c/++ context :field))
                                 (fimbriation/blazon context
                                                     :include-lines? true)])
