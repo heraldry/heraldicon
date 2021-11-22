@@ -94,7 +94,7 @@
        :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
                         (options/override-if-exists [:alignment :default] :outside))}
       (ordinary-shared/add-humetty-and-voided context)
-      (assoc-in [:voided :thickness :default] 25)))
+      (options/override-if-exists [:voided :thickness :default] 25)))
 
 (defn relative-points [points]
   (reduce (fn [result point]
