@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
@@ -39,53 +40,54 @@
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
-    {:origin {:point {:type :choice
-                      :choices [[strings/fess-point :fess]
-                                [strings/chief-point :chief]
-                                [strings/base-point :base]]
-                      :default :fess
-                      :ui {:label strings/point}}
-              :offset-x {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-x
-                              :step 0.1}}
-              :offset-y {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-y
-                              :step 0.1}}
-              :ui {:label strings/origin
-                   :form-type :position}}
-     :anchor (cond-> {:point anchor-point-option
-                      :ui {:label strings/anchor
-                           :form-type :position}}
+    (-> {:origin {:point {:type :choice
+                          :choices [[strings/fess-point :fess]
+                                    [strings/chief-point :chief]
+                                    [strings/base-point :base]]
+                          :default :fess
+                          :ui {:label strings/point}}
+                  :offset-x {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label strings/offset-x
+                                  :step 0.1}}
+                  :offset-y {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label strings/offset-y
+                                  :step 0.1}}
+                  :ui {:label strings/origin
+                       :form-type :position}}
+         :anchor (cond-> {:point anchor-point-option
+                          :ui {:label strings/anchor
+                               :form-type :position}}
 
-               (= current-anchor-point
-                  :angle) (assoc :angle {:type :range
-                                         :min -80
-                                         :max 80
-                                         :default -45
-                                         :ui {:label strings/angle}})
+                   (= current-anchor-point
+                      :angle) (assoc :angle {:type :range
+                                             :min -80
+                                             :max 80
+                                             :default -45
+                                             :ui {:label strings/angle}})
 
-               (not= current-anchor-point
-                     :angle) (assoc :offset-x {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label strings/offset-x
-                                                    :step 0.1}}
-                                    :offset-y {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label strings/offset-y
-                                                    :step 0.1}}))
-     :line line-style
-     :opposite-line opposite-line-style
-     :outline? options/plain-outline?-option}))
+                   (not= current-anchor-point
+                         :angle) (assoc :offset-x {:type :range
+                                                   :min -45
+                                                   :max 45
+                                                   :default 0
+                                                   :ui {:label strings/offset-x
+                                                        :step 0.1}}
+                                        :offset-y {:type :range
+                                                   :min -45
+                                                   :max 45
+                                                   :default 0
+                                                   :ui {:label strings/offset-y
+                                                        :step 0.1}}))
+         :line line-style
+         :opposite-line opposite-line-style
+         :outline? options/plain-outline?-option}
+        (ordinary-shared/add-humetty-and-voided context))))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
@@ -97,6 +99,7 @@
                      (interface/get-sanitized-data (c/++ context :outline?)))
 
         points (:points environment)
+        width (:width environment)
         top-left (:top-left points)
         top-right (:top-right points)
         left? (case (-> anchor :point)
@@ -136,20 +139,25 @@
                                                         v/abs)
                                           :context context
                                           :environment environment)
-        part [["M" (v/add diagonal-top
-                          line-diagonal-start)
-               (path/stitch line-diagonal)
-               "L" origin-point
-               (path/stitch line-down)
-               (infinity/path (if left?
-                                :clockwise
-                                :counter-clockwise)
-                              [:bottom :top]
-                              [(v/add bottom
-                                      line-down-end)
-                               (v/add diagonal-top
-                                      line-diagonal-start)])
-               "z"]
+        shape (ordinary-shared/adjust-shape
+               ["M" (v/add diagonal-top
+                           line-diagonal-start)
+                (path/stitch line-diagonal)
+                "L" origin-point
+                (path/stitch line-down)
+                (infinity/path (if left?
+                                 :clockwise
+                                 :counter-clockwise)
+                               [:bottom :top]
+                               [(v/add bottom
+                                       line-down-end)
+                                (v/add diagonal-top
+                                       line-diagonal-start)])
+                "z"]
+               width
+               (/ width 2)
+               context)
+        part [shape
               [(if left?
                  top-left
                  top-right)
@@ -160,4 +168,6 @@
       (c/++ context :field)
       part
       :all]
-     [line/render line [line-diagonal-data line-down-data] diagonal-top outline? context]]))
+     (ordinary-shared/adjusted-shape-outline
+      shape outline? context
+      [line/render line [line-diagonal-data line-down-data] diagonal-top outline? context])]))

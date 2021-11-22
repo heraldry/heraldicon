@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.saltire :as saltire]
    [heraldry.context :as c]
@@ -38,70 +39,71 @@
                               anchor-point-option)]
     ;; TODO: perhaps there should be origin options for the corners?
     ;; so one can align fro top-left to bottom-right
-    {:origin {:point {:type :choice
-                      :choices [[strings/chief-point :chief]
-                                [strings/base-point :base]
-                                [strings/fess-point :fess]
-                                [strings/dexter-point :dexter]
-                                [strings/sinister-point :sinister]
-                                [strings/honour-point :honour]
-                                [strings/nombril-point :nombril]]
-                      :default :fess
-                      :ui {:label strings/point}}
-              :offset-x {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-x
-                              :step 0.1}}
-              :offset-y {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-y
-                              :step 0.1}}
-              :ui {:label strings/origin
-                   :form-type :position}}
-     :anchor (cond-> {:point anchor-point-option
-                      :ui {:label strings/anchor
-                           :form-type :position}}
+    (-> {:origin {:point {:type :choice
+                          :choices [[strings/chief-point :chief]
+                                    [strings/base-point :base]
+                                    [strings/fess-point :fess]
+                                    [strings/dexter-point :dexter]
+                                    [strings/sinister-point :sinister]
+                                    [strings/honour-point :honour]
+                                    [strings/nombril-point :nombril]]
+                          :default :fess
+                          :ui {:label strings/point}}
+                  :offset-x {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label strings/offset-x
+                                  :step 0.1}}
+                  :offset-y {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label strings/offset-y
+                                  :step 0.1}}
+                  :ui {:label strings/origin
+                       :form-type :position}}
+         :anchor (cond-> {:point anchor-point-option
+                          :ui {:label strings/anchor
+                               :form-type :position}}
 
-               (= current-anchor-point
-                  :angle) (assoc :angle {:type :range
-                                         :min 10
-                                         :max 80
-                                         :default 45
-                                         :ui {:label strings/angle}})
+                   (= current-anchor-point
+                      :angle) (assoc :angle {:type :range
+                                             :min 10
+                                             :max 80
+                                             :default 45
+                                             :ui {:label strings/angle}})
 
-               (not= current-anchor-point
-                     :angle) (assoc :alignment {:type :choice
-                                                :choices position/alignment-choices
-                                                :default :middle
-                                                :ui {:label strings/alignment
-                                                     :form-type :radio-select}}
-                                    :offset-x {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label strings/offset-x
-                                                    :step 0.1}}
-                                    :offset-y {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label strings/offset-y
-                                                    :step 0.1}}))
-     :line line-style
-     :geometry {:size {:type :range
-                       :min 0.1
-                       :max 90
-                       :default 25
-                       :ui {:label strings/size
-                            :step 0.1}}
-                :ui {:label strings/geometry
-                     :form-type :geometry}}
-     :outline? options/plain-outline?-option
-     :cottising (cottising/add-cottising context 1)}))
+                   (not= current-anchor-point
+                         :angle) (assoc :alignment {:type :choice
+                                                    :choices position/alignment-choices
+                                                    :default :middle
+                                                    :ui {:label strings/alignment
+                                                         :form-type :radio-select}}
+                                        :offset-x {:type :range
+                                                   :min -45
+                                                   :max 45
+                                                   :default 0
+                                                   :ui {:label strings/offset-x
+                                                        :step 0.1}}
+                                        :offset-y {:type :range
+                                                   :min -45
+                                                   :max 45
+                                                   :default 0
+                                                   :ui {:label strings/offset-y
+                                                        :step 0.1}}))
+         :line line-style
+         :geometry {:size {:type :range
+                           :min 0.1
+                           :max 90
+                           :default 25
+                           :ui {:label strings/size
+                                :step 0.1}}
+                    :ui {:label strings/geometry
+                         :form-type :geometry}}
+         :outline? options/plain-outline?-option
+         :cottising (cottising/add-cottising context 1)}
+        (ordinary-shared/add-humetty-and-voided context))))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
@@ -266,45 +268,53 @@
                                                        :real-end end
                                                        :context context
                                                        :environment environment)
-        part [["M" (v/add corner-left
-                          line-top-left-lower-start)
-               (path/stitch line-top-left-lower)
-               "L" (v/add top-left-upper
-                          line-top-left-upper-start)
-               (path/stitch line-top-left-upper)
-               "L" (v/add corner-top
-                          line-top-right-upper-start)
-               (path/stitch line-top-right-upper)
-               "L" (v/add top-right-lower
-                          line-top-right-lower-start)
-               (path/stitch line-top-right-lower)
-               "L" (v/add corner-right
-                          line-bottom-right-upper-start)
-               (path/stitch line-bottom-right-upper)
-               "L" (v/add bottom-right-lower
-                          line-bottom-right-lower-start)
-               (path/stitch line-bottom-right-lower)
-               "L" (v/add corner-bottom
-                          line-bottom-left-lower-start)
-               (path/stitch line-bottom-left-lower)
-               "L" (v/add bottom-left-upper
-                          line-bottom-left-upper-start)
-               (path/stitch line-bottom-left-upper)
-               "z"]
+        shape (ordinary-shared/adjust-shape
+               ["M" (v/add corner-left
+                           line-top-left-lower-start)
+                (path/stitch line-top-left-lower)
+                "L" (v/add top-left-upper
+                           line-top-left-upper-start)
+                (path/stitch line-top-left-upper)
+                "L" (v/add corner-top
+                           line-top-right-upper-start)
+                (path/stitch line-top-right-upper)
+                "L" (v/add top-right-lower
+                           line-top-right-lower-start)
+                (path/stitch line-top-right-lower)
+                "L" (v/add corner-right
+                           line-bottom-right-upper-start)
+                (path/stitch line-bottom-right-upper)
+                "L" (v/add bottom-right-lower
+                           line-bottom-right-lower-start)
+                (path/stitch line-bottom-right-lower)
+                "L" (v/add corner-bottom
+                           line-bottom-left-lower-start)
+                (path/stitch line-bottom-left-lower)
+                "L" (v/add bottom-left-upper
+                           line-bottom-left-upper-start)
+                (path/stitch line-bottom-left-upper)
+                "z"]
+               width
+               band-width
+               context)
+        part [shape
               [top bottom left right]]]
     [:<>
      [field-shared/make-subfield
       (c/++ context :field)
       part
       :all]
-     [line/render line [line-top-left-upper-data
-                        line-top-right-upper-data] top-left-upper outline? context]
-     [line/render line [line-top-right-lower-data
-                        line-bottom-right-upper-data] top-right-lower outline? context]
-     [line/render line [line-bottom-right-lower-data
-                        line-bottom-left-lower-data] bottom-right-lower outline? context]
-     [line/render line [line-bottom-left-upper-data
-                        line-top-left-lower-data] bottom-left-upper outline? context]
+     (ordinary-shared/adjusted-shape-outline
+      shape outline? context
+      [:<>
+       [line/render line [line-top-left-upper-data
+                          line-top-right-upper-data] top-left-upper outline? context]
+       [line/render line [line-top-right-lower-data
+                          line-bottom-right-upper-data] top-right-lower outline? context]
+       [line/render line [line-bottom-right-lower-data
+                          line-bottom-left-lower-data] bottom-right-lower outline? context]
+       [line/render line [line-bottom-left-upper-data
+                          line-top-left-lower-data] bottom-left-upper outline? context]])
      [:<>
       (for [[chevron-angle
              corner-point

@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -19,79 +20,81 @@
                                                               :de "Turnierkragen"})
 
 (defmethod interface/options ordinary-type [context]
-  {:origin {:point {:type :choice
-                    :choices [[strings/fess-point :fess]
-                              [strings/chief-point :chief]
-                              [strings/base-point :base]
-                              [strings/honour-point :honour]
-                              [strings/nombril-point :nombril]
-                              [strings/top :top]
-                              [strings/bottom :bottom]]
-                    :default :chief
-                    :ui {:label strings/point}}
-            :alignment {:type :choice
-                        :choices position/alignment-choices
-                        :default :middle
-                        :ui {:label strings/alignment
-                             :form-type :radio-select}}
-            :offset-y {:type :range
-                       :min -45
-                       :max 45
-                       :default 0
-                       :ui {:label strings/offset-y
-                            :step 0.1}}
-            :ui {:label strings/origin
-                 :form-type :position}}
-   :variant {:type :choice
-             :choices [[{:en "Full"
-                         :de "Durchgehend"} :full]
-                       [{:en "Truncated"
-                         :de "Schwebend"} :truncated]]
-             :default :full
-             :ui {:label strings/variant
-                  :form-type :radio-select}}
-   :num-points {:type :range
-                :min 2
-                :max 16
-                :default 3
-                :integer? true
-                :ui {:label {:en "Number of points"
-                             :de "Anzahl Lätze"}}}
-   :geometry {:size {:type :range
-                     :min 2
-                     :max 90
-                     :default 10
-                     :ui {:label strings/size
-                          :step 0.1}}
-              :width {:type :range
-                      :min 10
-                      :max 150
-                      :default 66
-                      :ui {:label strings/width
-                           :step 0.1}}
-              :thickness {:type :range
-                          :min 0
-                          :max 20
-                          :default 5
-                          :ui {:label strings/bar-thickness
+  (-> {:origin {:point {:type :choice
+                        :choices [[strings/fess-point :fess]
+                                  [strings/chief-point :chief]
+                                  [strings/base-point :base]
+                                  [strings/honour-point :honour]
+                                  [strings/nombril-point :nombril]
+                                  [strings/top :top]
+                                  [strings/bottom :bottom]]
+                        :default :chief
+                        :ui {:label strings/point}}
+                :alignment {:type :choice
+                            :choices position/alignment-choices
+                            :default :middle
+                            :ui {:label strings/alignment
+                                 :form-type :radio-select}}
+                :offset-y {:type :range
+                           :min -45
+                           :max 45
+                           :default 0
+                           :ui {:label strings/offset-y
+                                :step 0.1}}
+                :ui {:label strings/origin
+                     :form-type :position}}
+       :variant {:type :choice
+                 :choices [[{:en "Full"
+                             :de "Durchgehend"} :full]
+                           [{:en "Truncated"
+                             :de "Schwebend"} :truncated]]
+                 :default :full
+                 :ui {:label strings/variant
+                      :form-type :radio-select}}
+       :num-points {:type :range
+                    :min 2
+                    :max 16
+                    :default 3
+                    :integer? true
+                    :ui {:label {:en "Number of points"
+                                 :de "Anzahl Lätze"}}}
+       :geometry {:size {:type :range
+                         :min 2
+                         :max 90
+                         :default 10
+                         :ui {:label strings/size
+                              :step 0.1}}
+                  :width {:type :range
+                          :min 10
+                          :max 150
+                          :default 66
+                          :ui {:label strings/width
                                :step 0.1}}
-              :eccentricity {:type :range
-                             :min 0
-                             :max 1
-                             :default 0
-                             :ui {:label strings/eccentricity
-                                  :step 0.01}}
-              :stretch {:type :range
-                        :min 0.33
-                        :max 10
-                        :default 2
-                        :ui {:label strings/stretch
-                             :step 0.01}}
-              :ui {:label strings/geometry
-                   :form-type :geometry}}
-   :outline? options/plain-outline?-option
-   :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
-                    (options/override-if-exists [:alignment :default] :outside))})
+                  :thickness {:type :range
+                              :min 0
+                              :max 20
+                              :default 5
+                              :ui {:label strings/bar-thickness
+                                   :step 0.1}}
+                  :eccentricity {:type :range
+                                 :min 0
+                                 :max 1
+                                 :default 0
+                                 :ui {:label strings/eccentricity
+                                      :step 0.01}}
+                  :stretch {:type :range
+                            :min 0.33
+                            :max 10
+                            :default 2
+                            :ui {:label strings/stretch
+                                 :step 0.01}}
+                  :ui {:label strings/geometry
+                       :form-type :geometry}}
+       :outline? options/plain-outline?-option
+       :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
+                        (options/override-if-exists [:alignment :default] :outside))}
+      (ordinary-shared/add-humetty-and-voided context)
+      (assoc-in [:voided :thickness :default] 25)))
 
 (defn relative-points [points]
   (reduce (fn [result point]
@@ -176,7 +179,7 @@
         variant (interface/get-sanitized-data (c/++ context :variant))
         num-points (interface/get-sanitized-data (c/++ context :num-points))
         fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
-        width (interface/get-sanitized-data (c/++ context :geometry :width))
+        label-width (interface/get-sanitized-data (c/++ context :geometry :width))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         thickness (interface/get-sanitized-data (c/++ context :geometry :thickness))
         eccentricity (interface/get-sanitized-data (c/++ context :geometry :eccentricity))
@@ -195,21 +198,24 @@
         point-width (-> size
                         ((util/percent-of (:width environment))))
         point-height (* point-width stretch)
+        width (:width environment)
         {:keys [lines
                 shape
                 points
                 environment-points]} (draw-label variant
                                                  origin-point num-points
-                                                 width band-height point-width point-height
+                                                 label-width band-height point-width point-height
                                                  eccentricity
                                                  line
                                                  environment
                                                  context)
-        part [shape
-              environment-points]]
+        shape (ordinary-shared/adjust-shape shape width band-height context)
+        part [shape environment-points]]
     [:<>
      [field-shared/make-subfield
       (c/++ context :field)
       part
       :all]
-     [line/render line lines (first points) outline? context]]))
+     (ordinary-shared/adjusted-shape-outline
+      shape outline? context
+      [line/render line lines (first points) outline? context])]))

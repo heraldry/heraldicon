@@ -12,7 +12,8 @@
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
-   [heraldry.util :as util]))
+   [heraldry.util :as util]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]))
 
 (def ordinary-type :heraldry.ordinary.type/bend-sinister)
 
@@ -64,67 +65,68 @@
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
-    {:origin {:point origin-point-option
-              :alignment {:type :choice
-                          :choices position/alignment-choices
-                          :default :middle
-                          :ui {:label strings/alignment
-                               :form-type :radio-select}}
-              :offset-x {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-x
-                              :step 0.1}}
-              :offset-y {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-y
-                              :step 0.1}}
-              :ui {:label strings/origin
-                   :form-type :position}}
-     :anchor (cond-> {:point anchor-point-option
-                      :ui {:label strings/anchor
-                           :form-type :position}}
+    (-> {:origin {:point origin-point-option
+                  :alignment {:type :choice
+                              :choices position/alignment-choices
+                              :default :middle
+                              :ui {:label strings/alignment
+                                   :form-type :radio-select}}
+                  :offset-x {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label strings/offset-x
+                                  :step 0.1}}
+                  :offset-y {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label strings/offset-y
+                                  :step 0.1}}
+                  :ui {:label strings/origin
+                       :form-type :position}}
+         :anchor (cond-> {:point anchor-point-option
+                          :ui {:label strings/anchor
+                               :form-type :position}}
 
-               (= current-anchor-point
-                  :angle) (assoc :angle {:type :range
-                                         :min 0
-                                         :max 360
-                                         :default 45
-                                         :ui {:label strings/angle}})
+                   (= current-anchor-point
+                      :angle) (assoc :angle {:type :range
+                                             :min 0
+                                             :max 360
+                                             :default 45
+                                             :ui {:label strings/angle}})
 
-               (not= current-anchor-point
-                     :angle) (assoc :alignment {:type :choice
-                                                :choices position/alignment-choices
-                                                :default :middle
-                                                :ui {:label strings/alignment
-                                                     :form-type :radio-select}}
-                                    :offset-x {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label strings/offset-x
-                                                    :step 0.1}}
-                                    :offset-y {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label strings/offset-y
-                                                    :step 0.1}}))
-     :line line-style
-     :opposite-line opposite-line-style
-     :geometry {:size {:type :range
-                       :min 0.1
-                       :max 90
-                       :default 25
-                       :ui {:label strings/size
-                            :step 0.1}}
-                :ui {:label strings/geometry
-                     :form-type :geometry}}
-     :outline? options/plain-outline?-option
-     :cottising (cottising/add-cottising context 2)}))
+                   (not= current-anchor-point
+                         :angle) (assoc :alignment {:type :choice
+                                                    :choices position/alignment-choices
+                                                    :default :middle
+                                                    :ui {:label strings/alignment
+                                                         :form-type :radio-select}}
+                                        :offset-x {:type :range
+                                                   :min -45
+                                                   :max 45
+                                                   :default 0
+                                                   :ui {:label strings/offset-x
+                                                        :step 0.1}}
+                                        :offset-y {:type :range
+                                                   :min -45
+                                                   :max 45
+                                                   :default 0
+                                                   :ui {:label strings/offset-y
+                                                        :step 0.1}}))
+         :line line-style
+         :opposite-line opposite-line-style
+         :geometry {:size {:type :range
+                           :min 0.1
+                           :max 90
+                           :default 25
+                           :ui {:label strings/size
+                                :step 0.1}}
+                    :ui {:label strings/geometry
+                         :form-type :geometry}}
+         :outline? options/plain-outline?-option
+         :cottising (cottising/add-cottising context 2)}
+        (ordinary-shared/add-humetty-and-voided context))))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment
@@ -243,15 +245,20 @@
         inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
-        part [["M" (v/add first-start
-                          line-one-start)
-               (path/stitch line-one)
-               "L" (v/add second-end
-                          line-reversed-start)
-               (path/stitch line-reversed)
-               "L" (v/add first-start
-                          line-one-start)
-               "z"]
+        shape (ordinary-shared/adjust-shape
+               ["M" (v/add first-start
+                           line-one-start)
+                (path/stitch line-one)
+                "L" (v/add second-end
+                           line-reversed-start)
+                (path/stitch line-reversed)
+                "L" (v/add first-start
+                           line-one-start)
+                "z"]
+               width
+               band-height
+               context)
+        part [shape
               (if use-parent-environment?
                 [first-real-start first-real-end
                  second-real-start second-real-end]
@@ -270,8 +277,11 @@
                                   "rotate(" angle ")"))))
       part
       :all]
-     [line/render line [line-one-data] first-start outline? context]
-     [line/render opposite-line [line-reversed-data] second-end outline? context]
+     (ordinary-shared/adjusted-shape-outline
+      shape outline? context
+      [:<>
+       [line/render line [line-one-data] first-start outline? context]
+       [line/render opposite-line [line-reversed-data] second-end outline? context]])
      [cottising/render-bend-cottise
       (c/++ cottise-context :cottising :cottise-1)
       :cottise-2 :cottise-1

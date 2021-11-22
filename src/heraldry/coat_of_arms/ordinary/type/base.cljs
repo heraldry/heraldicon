@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
@@ -21,17 +22,18 @@
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    {:line line-style
-     :geometry {:size {:type :range
-                       :min 0.1
-                       :max 75
-                       :default 25
-                       :ui {:label strings/size
-                            :step 0.1}}
-                :ui {:label strings/geometry
-                     :form-type :geometry}}
-     :outline? options/plain-outline?-option
-     :cottising (cottising/add-cottising context 1)}))
+    (-> {:line line-style
+         :geometry {:size {:type :range
+                           :min 0.1
+                           :max 75
+                           :default 25
+                           :ui {:label strings/size
+                                :step 0.1}}
+                    :ui {:label strings/geometry
+                         :form-type :geometry}}
+         :outline? options/plain-outline?-option
+         :cottising (cottising/add-cottising context 1)}
+        (ordinary-shared/add-humetty-and-voided context))))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment
@@ -47,6 +49,7 @@
         bottom-right (:bottom-right points)
         left (:left points)
         right (:right points)
+        width (:width environment)
         height (:height environment)
         band-height (-> size
                         ((util/percent-of height)))
@@ -77,16 +80,21 @@
                                          row-left row-right
                                          :context context
                                          :environment environment)
-        part [["M" (v/add row-left
-                          line-one-start)
-               (path/stitch line-one)
-               (infinity/path :clockwise
-                              [:right :left]
-                              [(v/add row-right
-                                      line-one-start)
-                               (v/add row-left
-                                      line-one-start)])
-               "z"]
+        shape (ordinary-shared/adjust-shape
+               ["M" (v/add row-left
+                           line-one-start)
+                (path/stitch line-one)
+                (infinity/path :clockwise
+                               [:right :left]
+                               [(v/add row-right
+                                       line-one-start)
+                                (v/add row-left
+                                       line-one-start)])
+                "z"]
+               width
+               band-height
+               context)
+        part [shape
               [(v/v (:x left)
                     (:y row-left))
                bottom-right]]
@@ -100,7 +108,9 @@
       (c/++ context :field)
       part
       :all]
-     [line/render line [line-one-data] row-left outline? context]
+     (ordinary-shared/adjusted-shape-outline
+      shape outline? context
+      [line/render line [line-one-data] row-left outline? context])
      [cottising/render-fess-cottise
       (c/++ cottise-context :cottising :cottise-1)
       :cottise-2 :cottise-1

@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -27,53 +28,54 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    {:origin {:point {:type :choice
-                      :choices [[strings/fess-point :fess]
-                                [strings/chief-point :chief]
-                                [strings/base-point :base]
-                                [strings/honour-point :honour]
-                                [strings/nombril-point :nombril]
-                                [strings/top :top]
-                                [strings/bottom :bottom]]
-                      :default :fess
-                      :ui {:label strings/point}}
-              :alignment {:type :choice
-                          :choices position/alignment-choices
-                          :default :middle
-                          :ui {:label strings/alignment
-                               :form-type :radio-select}}
-              :offset-y {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-y
-                              :step 0.1}}
-              :ui {:label strings/origin
-                   :form-type :position}}
-     :line line-style
-     :opposite-line opposite-line-style
-     :variant {:type :choice
-               :choices [[{:en "Dexter-chief"
-                           :de "Heraldisch rechts-oben"} :dexter-chief]
-                         [{:en "Sinister-chief"
-                           :de "Heraldisch links-oben"} :sinister-chief]
-                         [{:en "Dexter-base"
-                           :de "Heraldisch rechts-unten"} :dexter-base]
-                         [{:en "Sinister-base"
-                           :de "Heraldisch links-unten"} :sinister-base]]
-               :default :dexter-chief
-               :ui {:label strings/variant
-                    :form-type :select}}
-     :geometry {:size {:type :range
-                       :min 10
-                       :max 150
-                       :default 100
-                       :ui {:label strings/size
-                            :step 0.1}}
-                :ui {:label strings/geometry
-                     :form-type :geometry}}
-     :outline? options/plain-outline?-option
-     :cottising (cottising/add-cottising context 1)}))
+    (-> {:origin {:point {:type :choice
+                          :choices [[strings/fess-point :fess]
+                                    [strings/chief-point :chief]
+                                    [strings/base-point :base]
+                                    [strings/honour-point :honour]
+                                    [strings/nombril-point :nombril]
+                                    [strings/top :top]
+                                    [strings/bottom :bottom]]
+                          :default :fess
+                          :ui {:label strings/point}}
+                  :alignment {:type :choice
+                              :choices position/alignment-choices
+                              :default :middle
+                              :ui {:label strings/alignment
+                                   :form-type :radio-select}}
+                  :offset-y {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label strings/offset-y
+                                  :step 0.1}}
+                  :ui {:label strings/origin
+                       :form-type :position}}
+         :line line-style
+         :opposite-line opposite-line-style
+         :variant {:type :choice
+                   :choices [[{:en "Dexter-chief"
+                               :de "Heraldisch rechts-oben"} :dexter-chief]
+                             [{:en "Sinister-chief"
+                               :de "Heraldisch links-oben"} :sinister-chief]
+                             [{:en "Dexter-base"
+                               :de "Heraldisch rechts-unten"} :dexter-base]
+                             [{:en "Sinister-base"
+                               :de "Heraldisch links-unten"} :sinister-base]]
+                   :default :dexter-chief
+                   :ui {:label strings/variant
+                        :form-type :select}}
+         :geometry {:size {:type :range
+                           :min 10
+                           :max 150
+                           :default 100
+                           :ui {:label strings/size
+                                :step 0.1}}
+                    :ui {:label strings/geometry
+                         :form-type :geometry}}
+         :outline? options/plain-outline?-option
+         :cottising (cottising/add-cottising context 1)}
+        (ordinary-shared/add-humetty-and-voided context))))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
@@ -240,17 +242,21 @@
                           1 [line-top-data line-right-data]
                           2 [line-bottom-data line-left-data]
                           3 [line-bottom-data line-right-data])
-        part (get parts target-part-index)]
+        [shape environment-points] (get parts target-part-index)
+        shape (ordinary-shared/adjust-shape shape width (-> width (/ 2) (* size) (/ 100)) context)
+        part [shape environment-points]]
     [:<>
      [field-shared/make-subfield
       (c/++ context :field)
       part
       :all]
-     [line/render line [line-one-data line-two-data] (case target-part-index
-                                                       0 point-top
-                                                       1 point-top
-                                                       2 point-bottom
-                                                       3 point-bottom) outline? context]
+     (ordinary-shared/adjusted-shape-outline
+      shape outline? context
+      [line/render line [line-one-data line-two-data] (case target-part-index
+                                                        0 point-top
+                                                        1 point-top
+                                                        2 point-bottom
+                                                        3 point-bottom) outline? context])
      [cottising/render-chevron-cottise
       (c/++ context :cottising :cottise-1)
       :cottise-2 :cottise-1
