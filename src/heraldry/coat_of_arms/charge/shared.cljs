@@ -302,11 +302,13 @@
              (when outline?
                [fimbriation/dilate-and-fill-path
                 charge-shape
+                nil
                 (+ thickness outline/stroke-width)
                 (outline/color context) context
                 :corner (-> fimbriation :corner)])
              [fimbriation/dilate-and-fill-path
               charge-shape
+              nil
               (cond-> thickness
                 outline? (- outline/stroke-width))
               (-> fimbriation
@@ -321,11 +323,13 @@
              (when outline?
                [fimbriation/dilate-and-fill-path
                 charge-shape
+                nil
                 (+ thickness outline/stroke-width)
                 (outline/color context) context
                 :corner (-> fimbriation :corner)])
              [fimbriation/dilate-and-fill-path
               charge-shape
+              nil
               (cond-> thickness
                 outline? (- outline/stroke-width))
               (-> fimbriation
