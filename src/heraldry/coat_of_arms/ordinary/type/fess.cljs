@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -23,41 +24,42 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
         opposite-line-style (-> (line/options (c/++ context :opposite-line))
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    {:origin {:point {:type :choice
-                      :choices [[strings/fess-point :fess]
-                                [strings/chief-point :chief]
-                                [strings/base-point :base]
-                                [strings/honour-point :honour]
-                                [strings/nombril-point :nombril]
-                                [strings/top :top]
-                                [strings/bottom :bottom]]
-                      :default :fess
-                      :ui {:label strings/point}}
-              :alignment {:type :choice
-                          :choices position/alignment-choices
-                          :default :middle
-                          :ui {:label strings/alignment
-                               :form-type :radio-select}}
-              :offset-y {:type :range
-                         :min -45
-                         :max 45
-                         :default 0
-                         :ui {:label strings/offset-y
-                              :step 0.1}}
-              :ui {:label strings/origin
-                   :form-type :position}}
-     :line line-style
-     :opposite-line opposite-line-style
-     :geometry {:size {:type :range
-                       :min 0.1
-                       :max 90
-                       :default 25
-                       :ui {:label strings/size
-                            :step 0.1}}
-                :ui {:label strings/geometry
-                     :form-type :geometry}}
-     :outline? options/plain-outline?-option
-     :cottising (cottising/add-cottising context 2)}))
+    (-> {:origin {:point {:type :choice
+                          :choices [[strings/fess-point :fess]
+                                    [strings/chief-point :chief]
+                                    [strings/base-point :base]
+                                    [strings/honour-point :honour]
+                                    [strings/nombril-point :nombril]
+                                    [strings/top :top]
+                                    [strings/bottom :bottom]]
+                          :default :fess
+                          :ui {:label strings/point}}
+                  :alignment {:type :choice
+                              :choices position/alignment-choices
+                              :default :middle
+                              :ui {:label strings/alignment
+                                   :form-type :radio-select}}
+                  :offset-y {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label strings/offset-y
+                                  :step 0.1}}
+                  :ui {:label strings/origin
+                       :form-type :position}}
+         :line line-style
+         :opposite-line opposite-line-style
+         :geometry {:size {:type :range
+                           :min 0.1
+                           :max 90
+                           :default 25
+                           :ui {:label strings/size
+                                :step 0.1}}
+                    :ui {:label strings/geometry
+                         :form-type :geometry}}
+         :outline? options/plain-outline?-option
+         :cottising (cottising/add-cottising context 2)}
+        (ordinary-shared/add-humetty-and-voided context))))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment
@@ -74,6 +76,7 @@
         origin-point (position/calculate origin environment :fess)
         left (assoc (:left points) :y (:y origin-point))
         right (assoc (:right points) :y (:y origin-point))
+        width (:width environment)
         height (:height environment)
         band-height (-> size
                         ((util/percent-of height)))
@@ -134,23 +137,28 @@
                                               :real-end real-end
                                               :context context
                                               :environment environment)
-        part [["M" (v/add first-left
-                          line-one-start)
-               (path/stitch line-one)
-               (infinity/path :clockwise
-                              [:right :right]
-                              [(v/add first-right
-                                      line-one-start)
-                               (v/add second-right
-                                      line-reversed-start)])
-               (path/stitch line-reversed)
-               (infinity/path :clockwise
-                              [:left :left]
-                              [(v/add second-left
-                                      line-reversed-start)
-                               (v/add first-left
-                                      line-one-start)])
-               "z"]
+        shape (ordinary-shared/adjust-shape
+               ["M" (v/add first-left
+                           line-one-start)
+                (path/stitch line-one)
+                (infinity/path :clockwise
+                               [:right :right]
+                               [(v/add first-right
+                                       line-one-start)
+                                (v/add second-right
+                                       line-reversed-start)])
+                (path/stitch line-reversed)
+                (infinity/path :clockwise
+                               [:left :left]
+                               [(v/add second-left
+                                       line-reversed-start)
+                                (v/add first-left
+                                       line-one-start)])
+                "z"]
+               width
+               band-height
+               context)
+        part [shape
               [(v/v (:x right)
                     (:y first-right))
                (v/v (:x left)
@@ -165,8 +173,11 @@
       (c/++ context :field)
       part
       :all]
-     [line/render line [line-one-data] first-left outline? context]
-     [line/render opposite-line [line-reversed-data] second-right outline? context]
+     (ordinary-shared/adjusted-shape-outline
+      shape outline? context
+      [:<>
+       [line/render line [line-one-data] first-left outline? context]
+       [line/render opposite-line [line-reversed-data] second-right outline? context]])
      [cottising/render-fess-cottise
       (c/++ cottise-context :cottising :cottise-1)
       :cottise-2 :cottise-1
