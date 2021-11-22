@@ -11,6 +11,7 @@
     (cond-> {:voided? {:type :boolean
                        :ui {:label strings/voided}}
              :ui {:label strings/voided
+                  :tooltip strings/unstable-warning
                   :form-type :voided}}
       voided? (assoc :corner {:type :choice
                               :choices [[strings/corner-round :round]

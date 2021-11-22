@@ -523,3 +523,7 @@
 (def humetty
   {:en "Humetty / Couped"
    :de "Schwebend / Abgeschnitten"})
+
+(def unstable-warning
+  {:en "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens."
+   :de "Das kann manchmal merkwürdige Ergebnisse liefern, versuche in dem Fall der Linie ein kleines Offset zu geben oder die Parameter leicht anzupassen."})

@@ -11,6 +11,7 @@
     (cond-> {:humetty? {:type :boolean
                         :ui {:label strings/humetty}}
              :ui {:label strings/humetty
+                  :tooltip strings/unstable-warning
                   :form-type :humetty}}
       humetty? (assoc :corner {:type :choice
                                :choices [[strings/corner-round :round]
