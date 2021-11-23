@@ -13,7 +13,9 @@
    [{:en "Columns"
      :de "Spalten"} :heraldry.charge-group.type/columns]
    [{:en "Arc"
-     :de "Bogen"} :heraldry.charge-group.type/arc]])
+     :de "Bogen"} :heraldry.charge-group.type/arc]
+   [{:en "In orle"
+     :de "Bordweise"} :heraldry.charge-group.type/in-orle]])
 
 (def type-map
   (util/choices->map type-choices))
@@ -114,6 +116,35 @@
                                 :default false
                                 :ui {:label {:en "Rotate charges"
                                              :de "Wappenfiguren rotieren"}}}})))
+
+(defmethod interface/options :heraldry.charge-group.type/in-orle [_context]
+  (-> shared-options
+      (dissoc :origin)
+      (merge {:distance {:type :range
+                         :min 0
+                         :max 30
+                         :default 10
+                         :ui {:label strings/distance
+                              :step 0.1}}
+              :offset {:type :range
+                       :min -1
+                       :max 1
+                       :default 0
+                       :ui {:label strings/offset
+                            :step 0.01}}
+              :slots {:type :range
+                      :min 1
+                      :max 30
+                      :default 5
+                      :integer? true
+                      :ui {:label strings/number
+                           :form-type :charge-group-slot-number}}
+              ;; TODO: this should be added at some point, but there are some issues
+              ;; around corners, so I'll leave it for now
+              #_#_:rotate-charges? {:type :boolean
+                                    :default false
+                                    :ui {:label {:en "Rotate charges"
+                                                 :de "Wappenfiguren rotieren"}}}})))
 
 (defmethod interface/options-subscriptions :heraldry.component/charge-group [_context]
   options/shared-options-subscriptions)

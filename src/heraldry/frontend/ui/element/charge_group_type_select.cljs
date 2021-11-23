@@ -19,7 +19,10 @@
                                                                                     {:slots [0]}])
                                 (and (-> new-type
                                          (= :heraldry.charge-group.type/arc))
-                                     (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0]))))))))
+                                     (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0])
+                                (and (-> new-type
+                                         (= :heraldry.charge-group.type/in-orle))
+                                     (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0 0 0 0]))))))))
 
 (defmethod ui-interface/form-element :charge-group-type-select [{:keys [path] :as context}]
   [radio-select/radio-select context

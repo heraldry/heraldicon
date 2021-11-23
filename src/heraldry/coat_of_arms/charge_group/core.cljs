@@ -1,10 +1,11 @@
 (ns heraldry.coat-of-arms.charge-group.core
   (:require
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
-   [heraldry.coat-of-arms.escutcheon :as escutcheon]
+   [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
    [heraldry.util :as util]))
 
@@ -35,7 +36,8 @@
     (case (interface/get-sanitized-data (c/++ context :type))
       :heraldry.charge-group.type/rows :strips
       :heraldry.charge-group.type/columns :strips
-      :heraldry.charge-group.type/arc :arc)))
+      :heraldry.charge-group.type/arc :arc
+      :heraldry.charge-group.type/in-orle :in-orle)))
 
 (defmethod calculate-points :strips [{:keys [environment] :as context}]
   (let [charge-group-type (interface/get-sanitized-data (c/++ context :type))
@@ -119,6 +121,50 @@
      :slot-spacing {:width (/ distance 1.2)
                     :height (/ distance 1.2)}}))
 
+(defmethod calculate-points :in-orle [{:keys [environment] :as context}]
+  (let [distance (interface/get-sanitized-data (c/++ context :distance))
+        offset (interface/get-sanitized-data (c/++ context :offset))
+        slots (interface/get-raw-data (c/++ context :slots))
+        num-charges (interface/get-list-size (c/++ context :charges))
+        num-slots (interface/get-list-size (c/++ context :slots))
+        environment-shape (environment/effective-shape environment)
+        width (:width environment)
+        distance ((util/percent-of width) distance)
+        bordure-shape (environment/shrink-shape environment-shape distance :round)
+        points (:points environment)
+        shape-path (path/new-path bordure-shape)
+        path-length (.getTotalLength shape-path)
+        step-t (/ path-length (max num-slots 1))
+        offset-t (* offset step-t)
+        fess (:fess points)
+        top (:top points)
+        intersection (v/find-first-intersection-of-ray
+                      fess top
+                      {:shape {:paths [bordure-shape]}})
+        start-t (-> intersection
+                    :t2
+                    (* path-length)
+                    (+ offset-t))
+        charge-space (min (* distance 2) step-t)]
+    {:slot-positions (->> slots
+                          (map-indexed (fn [slot-index charge-index]
+                                         (let [slot-t (-> slot-index
+                                                          (* step-t)
+                                                          (+ start-t)
+                                                          (mod path-length))]
+                                           {:point (-> shape-path
+                                                       (.getPointAtLength slot-t)
+                                                       (js->clj :keywordize-keys true))
+                                            :slot-path (-> context :path (conj :slots slot-index))
+                                            :charge-index (if (and (int? charge-index)
+                                                                   (< -1 charge-index num-charges))
+                                                            charge-index
+                                                            nil)
+                                            :angle 0})))
+                          vec)
+     :slot-spacing {:width (/ charge-space 1.2)
+                    :height (/ charge-space 1.2)}}))
+
 (defmethod interface/render-component :heraldry.component/charge-group [{:keys [path environment] :as context}]
   (let [origin (interface/get-sanitized-data (c/++ context :origin))
         rotate-charges? (interface/get-sanitized-data (c/++ context :rotate-charges?))
@@ -142,8 +188,13 @@
                                                 angle)}))])]))
 
 (defmethod interface/blazon-component :heraldry.component/charge-group [context]
-  (let [{:keys [slot-positions]} (calculate-points (-> context
-                                                       (assoc :environment escutcheon/flag-3-2)))
+  ;; TODO: no need to calculate all positions here
+  (let [{:keys [slot-positions]} (calculate-points
+                                  (-> context
+                                      (assoc :environment
+                                             {:width 200
+                                              :height 200
+                                              :shape {:paths ["M-100,-100 h200 v200 h-200 z"]}})))
         used-charges (->> (group-by :charge-index slot-positions)
                           (map (fn [[k v]]
                                  [k (count v)]))
