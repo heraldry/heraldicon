@@ -334,10 +334,10 @@
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}
                  :anchor {:point :angle
-                          :angle -180}}]
+                          :angle 180}}]
       :slots [0 0 0 0 0 0 0]}
      {[:charges 0 :anchor :point] :angle
-      [:charges 0 :anchor :angle] -180}]
+      [:charges 0 :anchor :angle] 180}]
     [{:en "In annullo (follow)"
       :de "Kreis (folgend)"} :in-annullo-follow
      {:type :heraldry.charge-group.type/arc
@@ -346,10 +346,10 @@
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}
                  :anchor {:point :angle
-                          :angle -90}}]
+                          :angle 90}}]
       :slots [0 0 0 0 0 0 0]}
      {[:charges 0 :anchor :point] :angle
-      [:charges 0 :anchor :angle] -90}]
+      [:charges 0 :anchor :angle] 90}]
     [{:en "Sheaf of"
       :de "Garbenweise"} :sheaf-of
      {:type :heraldry.charge-group.type/arc
