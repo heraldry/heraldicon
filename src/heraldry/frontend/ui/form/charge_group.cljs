@@ -163,6 +163,8 @@
                  :render-options-path [:example-coa :render-options]
                  :environment {:width 200
                                :height 200
+                               :points {:fess {:x 0 :y 0}
+                                        :top {:x 0 :y -100}}
                                :shape {:paths ["M-100,-100 h200 v200 h-200 z"]}}}
         {:keys [slot-positions
                 slot-spacing]} (charge-group/calculate-points context)
