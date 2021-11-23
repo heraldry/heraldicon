@@ -527,3 +527,19 @@
 (def unstable-warning
   {:en "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens."
    :de "Das kann manchmal merkwürdige Ergebnisse liefern, versuche in dem Fall der Linie ein kleines Offset zu geben oder die Parameter leicht anzupassen."})
+
+(def in-orle
+  {:en "In orle"
+   :de "Bordweise"})
+
+(def arc
+  {:en "Arc"
+   :de "Bogen"})
+
+(def rows
+  {:en "Rows"
+   :de "Zeilen"})
+
+(def columns
+  {:en "Columns"
+   :de "Spalten"})
