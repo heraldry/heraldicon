@@ -1,10 +1,7 @@
 (ns heraldry.math.vector
   (:require
-   ["path-intersection" :as -path-intersection]
+   ["paper" :refer [Path]]
    [heraldry.math.core :as math]))
-
-(def path-intersection
-  (memoize -path-intersection))
 
 (defn v [x y]
   {:x x
@@ -165,11 +162,24 @@
        (filter #(not= (select-keys % [:x :y])
                       (select-keys point [:x :y])))))
 
+(defn -path-intersection [path1 path2]
+  (let [p1 (new Path path1)
+        p2 (new Path path2)]
+    (into []
+          (map (fn [^js/Object location]
+                 {:x (.. location -point -x)
+                  :y (.. location -point -y)
+                  :t1 (/ (.. location -offset) (.-length p1))
+                  :t2 (/ (.. location -intersection -offset) (.-length p2))}))
+          (.getIntersections p1 p2))))
+
+(def path-intersection
+  (memoize -path-intersection))
+
 (defn inside-shape? [point shape]
   (let [ray (str "M" (->str point) "l" 10000 "," 9000)
         intersections (into []
                             (map #(-> (path-intersection ray %)
-                                      (js->clj :keywordize-keys true)
                                       prune-duplicates
                                       (prune-point point)))
                             (:paths shape))]
@@ -221,9 +231,8 @@
                            (map-indexed (fn [parent-idx shape]
                                           (into []
                                                 (mapcat (fn [path]
-                                                          (-> (path-intersection line-path path)
-                                                              (js->clj :keywordize-keys true)
-                                                              (->> (map #(assoc % :parent-index parent-idx))))))
+                                                          (->> (path-intersection line-path path)
+                                                               (map #(assoc % :parent-index parent-idx)))))
                                                 (:paths shape))))
                            (apply concat)
                            (filter #(inside-environment? % environment))
@@ -246,7 +255,7 @@
     (-> intersections
         (->> (filter (comp pos? :t1)))
         select-fn
-        (select-keys [:x :y]))))
+        (select-keys [:x :y :t1 :t2]))))
 
 (defn angle-to-point [p1 p2]
   (let [d (sub p2 p1)
