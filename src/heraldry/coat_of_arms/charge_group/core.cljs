@@ -195,6 +195,7 @@
                                              {:width 200
                                               :height 200
                                               :shape {:paths ["M-100,-100 h200 v200 h-200 z"]}})))
+        charge-group-type (interface/get-raw-data (c/++ context :type))
         used-charges (->> (group-by :charge-index slot-positions)
                           (map (fn [[k v]]
                                  [k (count v)]))
@@ -210,4 +211,6 @@
                                                             (c/++ :charges charge-index)
                                                             (cond->
                                                               (> number 1) (assoc-in [:blazonry :pluralize?] true))))))
-                       used-charges)))))
+                       used-charges))
+                 (when (= charge-group-type :heraldry.charge-group.type/in-orle)
+                   " in orle"))))
