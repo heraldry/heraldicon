@@ -95,8 +95,8 @@
     ;; Escutcheon paths are clockwise, so testing for that
     ;; first should avoid having to do both calculations in
     ;; most cases.
-    (if (<= (.-area outline-left)
-            (.-area original-path))
+    (if (<= (Math/abs (.-area outline-left))
+            (Math/abs (.-area original-path)))
       (.-pathData outline-left)
       (-> PaperOffset
           (.offset
