@@ -8,14 +8,10 @@
    [heraldry.util :as util]))
 
 (def type-choices
-  [[{:en "Rows"
-     :de "Zeilen"} :heraldry.charge-group.type/rows]
-   [{:en "Columns"
-     :de "Spalten"} :heraldry.charge-group.type/columns]
-   [{:en "Arc"
-     :de "Bogen"} :heraldry.charge-group.type/arc]
-   [{:en "In orle"
-     :de "Bordweise"} :heraldry.charge-group.type/in-orle]])
+  [[strings/rows :heraldry.charge-group.type/rows]
+   [strings/columns :heraldry.charge-group.type/columns]
+   [strings/arc :heraldry.charge-group.type/arc]
+   [strings/in-orle :heraldry.charge-group.type/in-orle]])
 
 (def type-map
   (util/choices->map type-choices))

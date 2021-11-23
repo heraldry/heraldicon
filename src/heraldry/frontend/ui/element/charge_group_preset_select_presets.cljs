@@ -1,4 +1,5 @@
-(ns heraldry.frontend.ui.element.charge-group-preset-select-presets)
+(ns heraldry.frontend.ui.element.charge-group-preset-select-presets
+  (:require [heraldry.strings :as strings]))
 
 (def presets
   [[{:en "Ordinaries"
@@ -308,8 +309,7 @@
                 :slots [0 nil nil nil 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 0 0 0 0]}]}]]
-   [{:en "Arc"
-     :de "Bogen"}
+   [strings/arc
     [{:en "In annullo"
       :de "Kreis"} :in-annullo
      {:type :heraldry.charge-group.type/arc
@@ -350,6 +350,18 @@
       :slots [0 0 0 0 0 0 0]}
      {[:charges 0 :anchor :point] :angle
       [:charges 0 :anchor :angle] 90}]
+    ]
+   [{:en "Others"
+     :de "Weitere"}
+    [strings/in-orle :in-orle
+     {:type :heraldry.charge-group.type/in-orle
+      :distance 10
+      :charges [{:type :heraldry.charge.type/roundel
+                 :field {:type :heraldry.field.type/plain
+                         :tincture :azure}
+                 :geometry {:size 10}}]
+      :slots [0 0 0 0 0 0 0 0]}
+     {}]
     [{:en "Sheaf of"
       :de "Garbenweise"} :sheaf-of
      {:type :heraldry.charge-group.type/arc
