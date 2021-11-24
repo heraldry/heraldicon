@@ -201,9 +201,12 @@
 
 (defn tinctured-field [{:keys [tincture-mapping
                                svg-export?
-                               select-component-fn] :as context} & {:keys [mask-id
-                                                                           transform]}]
-  (let [tincture (interface/get-sanitized-data context)
+                               select-component-fn] :as context}
+
+                       & {:keys [mask-id
+                                 transform]}]
+  (let [tincture (interface/get-sanitized-data (c/++ context :tincture))
+        pattern-scaling (interface/get-sanitized-data (c/++ context :pattern-scaling))
         theme (interface/render-option :theme context)
         theme (if (and (:svg-export? context)
                        (= theme :all))
@@ -219,11 +222,12 @@
     (conj (if mask-id
             [:g {:mask (str "url(#" mask-id ")")}]
             [:<>])
-          [:rect {:x -500
-                  :y -500
-                  :width 1100
-                  :height 1100
-                  :transform transform
+          [:rect {:x -1000
+                  :y -1000
+                  :width 2000
+                  :height 2000
+                  :transform (cond-> transform
+                               pattern-scaling (str "scale(" pattern-scaling "," pattern-scaling ")"))
                   :fill colour
                   :on-click (when (and (not svg-export?)
                                        select-component-fn)
