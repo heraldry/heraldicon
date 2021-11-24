@@ -295,10 +295,10 @@
        [tr strings/save]]]]))
 
 (defn collection-form []
-  (if @(rf/subscribe [:get (conj form-db-path :id)])
-    (rf/dispatch [:set-title @(rf/subscribe [:get (conj form-db-path :name)])])
-    (rf/dispatch [:set-title [tr {:en "Create Collection"
-                                  :de "Neue Sammlung"}]]))
+  (rf/dispatch [:set-title-from-path-or-default
+                (conj form-db-path :name)
+                {:en "Create Collection"
+                 :de "Neue Sammlung"}])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"

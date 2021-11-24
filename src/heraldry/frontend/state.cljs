@@ -111,6 +111,14 @@
   (fn [db [_ value]]
     (assoc-in db title-path value)))
 
+(macros/reg-event-db :set-title-from-path-or-default
+  (fn [db [_ path default]]
+    (let [current (get-in db title-path)
+          new-title (or (get-in db path) default)]
+      (if (not= new-title current)
+        (assoc-in db title-path new-title)
+        db))))
+
 (macros/reg-event-db :update
   (fn [db [_ path update-fn]]
     (update-in db path update-fn)))
