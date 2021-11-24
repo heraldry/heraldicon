@@ -5,28 +5,29 @@
    [heraldry.frontend.state :as state]
    [re-frame.core :as rf]))
 
-(defn can-undo? [db path]
-  (let [history (get-in db (shared/history-path path))
-        index (get-in db (shared/index-path path))]
-    (and (-> history count (>= index))
+(rf/reg-sub ::can-undo?
+  (fn [[_ path] _]
+    [(rf/subscribe [:get-list-size (shared/history-path path)])
+     (rf/subscribe [:get (shared/index-path path)])])
+
+  (fn [[history-length index] [_ _path]]
+    (and (-> history-length (>= index))
          (pos? index))))
 
-(defn can-redo? [db path]
-  (let [history (get-in db (shared/history-path path))
-        index (get-in db (shared/index-path path))]
-    (-> history count dec (> index))))
-
-(rf/reg-sub ::can-undo?
-  (fn [db [_ path]]
-    (can-undo? db path)))
-
 (rf/reg-sub ::can-redo?
-  (fn [db [_ path]]
-    (can-redo? db path)))
+  (fn [[_ path] _]
+    [(rf/subscribe [:get-list-size (shared/history-path path)])
+     (rf/subscribe [:get (shared/index-path path)])])
+
+  (fn [[history-length index] [_ _path]]
+    (-> history-length dec (> index))))
 
 (rf/reg-sub ::identifier-changed?
-  (fn [db [_ path identifier]]
-    (not= (get-in db (shared/identifier-path path)) identifier)))
+  (fn [[_ path _] _]
+    (rf/subscribe [:get (shared/identifier-path path)]))
+
+  (fn [known-identifier [_ _ identifier]]
+    (not= known-identifier identifier)))
 
 (defn restore-state [db path index-fn]
   (let [index-path (shared/index-path path)
