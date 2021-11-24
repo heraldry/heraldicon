@@ -47,6 +47,7 @@
     [:inherit-environment?
      :type
      :tincture
+     :pattern-scaling
      :line
      :opposite-line
      :extra-line
@@ -66,7 +67,9 @@
       [:div {:style {:margin-bottom "1em"}}]
       (for [idx (range (interface/get-list-size (c/++ context :fields)))]
         ^{:key idx}
-        [tincture-select/tincture-select (c/++ context :fields idx :tincture)])])])
+        [:<>
+         [tincture-select/tincture-select (c/++ context :fields idx :tincture)]
+         [ui-interface/form-element (c/++ context :fields idx :pattern-scaling)]])])])
 
 (defn parent-context [{:keys [path] :as context}]
   (let [index (last path)

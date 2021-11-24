@@ -271,7 +271,7 @@
                     :height 1100
                     :fill (str "url(#" pattern-id-prefix "-" idx ")")}]]
            [tincture/tinctured-field
-            (c/++ context :fields idx :tincture)
+            (c/++ context :fields idx)
             :mask-id mask-id]])))
      (when outline?
        [:rect {:x -500

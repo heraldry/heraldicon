@@ -91,7 +91,8 @@
     [:origin :point]
     [:direction-anchor :point]
     [:anchor :point]
-    [:geometry :size-mode]})
+    [:geometry :size-mode]
+    [:tincture]})
 
 (defmethod interface/options :heraldry.component/field [context]
   (let [path (:path context)
