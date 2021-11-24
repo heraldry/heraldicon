@@ -25,8 +25,11 @@
     (can-redo? db path)))
 
 (rf/reg-sub ::identifier-changed?
-  (fn [db [_ path identifier]]
-    (not= (get-in db (shared/identifier-path path)) identifier)))
+  (fn [[_ path _] _]
+    (rf/subscribe [:get (shared/identifier-path path)]))
+
+  (fn [known-identifier [_ _ identifier]]
+    (not= known-identifier identifier)))
 
 (defn restore-state [db path index-fn]
   (let [index-path (shared/index-path path)
