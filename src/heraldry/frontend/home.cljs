@@ -25,6 +25,49 @@
     [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
      "group some features and new development and post an update here, so it is easy to stay informed."]]
 
+   [:h3 "2021-11-25 - Bordure/orle, in orle charge groups, chevronny"]
+   [:div.release-row
+    [:div.info
+     [:p "Changes and new features:"]
+     [:ul
+      [:li "Bordures and orles"
+       [:ul
+        [:li "there now are bordure and orle ordinaries with arbitrary thickness/distance to the edge"]
+        [:li "so far they don't allow line styles other than straight, which follows the surrounding field edge"]]]
+
+      [:li "Humetty/couped and voided ordinaries"
+       [:ul
+        [:li "ordinaries can now be made humetty/couped"]
+        [:li "ordinaries can now be voided, this also honours the line style of the surrounding ordinary"]
+        [:li "ordinaries also can be humetty/couped and voided"]]]
+
+      [:li "Charge groups can be arranged in orle"
+       [:ul
+        [:li "this allows arranging N charges in orle, based on the surrounding field edge"]
+        [:li "use the distance and offset arguments to adjust where exactly the charges end up"]]]
+
+      [:li "Others"
+       [:ul
+        [:li "chevronny now is a field partition, configurable in most aspects, like other field partitions"]
+        [:li "fur fields now have an additional 'pattern scaling' option to scale, you've guessed it, the pattern, "
+         "which is useful for artistic preferences or in charges, where smaller ermine spots make more sense"]
+        [:li "fields are clickable again in the rendering to select them more easily"]
+        [:li "landscapes can now be added if raster graphics are embedded in an SVG and uploaded as charge, this also can be used for diapering"]
+        [:li "a new community theme 'Content Cranium' and a silly theme that transitions through ALL themes"]
+        [:li "there are a few more escutcheon choices for Norman shields and flag variants"]
+        [:li "the interface should be MUCH faster now due to a rewrite of large parts of it"]
+        [:li "there's a dedicated "
+         [:li [:a {:href "https://discord.gg/EGbMW8dth2" :target "_blank"} "Discord"]
+          " server now, where my username is " [:em "or#5915"]]]]]
+
+      [:li "Known issues"
+       [:ul
+        [:li "the path for the bordure/orle and charge group in orle positions sometimes can have unexpected glitches, if that happens try to resize it a little or change the distance to the field edge"]
+        [:li "charges sometimes block underlying fields when trying to click them, that's a technical issue with the way the browser works, hopefully it can be addressed someday"]]]]]
+
+    [:div
+     (release-image "/img/2021-11-25-release-update.png")]]
+
    [:h3 "2021-10-25 - Supporters, compartments, mantling, charge library improvements"]
    [:div.release-row
     [:div.info
