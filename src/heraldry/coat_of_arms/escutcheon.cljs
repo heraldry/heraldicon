@@ -402,8 +402,8 @@
    #'french-modern
    #'english
    #'flag-3-2
-   #'flag-2-1
    #'flag-5-3
+   #'flag-2-1
    #'rectangle])
 
 (def kinds-map
