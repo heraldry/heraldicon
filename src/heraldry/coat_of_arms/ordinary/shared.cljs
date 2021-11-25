@@ -35,11 +35,13 @@
         humetty? (interface/get-sanitized-data (c/++ context :humetty :humetty?))]
     [:<>
      (cond
-       humetty? [:g (outline/style context)
-                 [:path {:d (s/join "" (:paths shape))}]]
-       (and voided?
-            outline?) [:g (outline/style context)
-                       [:path {:d (-> shape :paths last)}]]
+       (and outline?
+            humetty?) [:g (outline/style context)
+                       [:path {:d (s/join "" (:paths shape))}]]
+       (and outline?
+            voided?) [:g (outline/style context)
+                      [:path {:d (-> shape :paths last)}]]
        :else nil)
-     (when-not humetty?
+     (when (and outline?
+                (not humetty?))
        default-outline)]))
