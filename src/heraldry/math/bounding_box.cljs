@@ -15,7 +15,7 @@
 (defn bounding-box-from-paths [paths]
   (let [points (mapcat
                 #(-> %
-                     path/new-path
+                     path/parse-path
                      (path/points 50))
                 paths)
         box (min-max-x-y points)]

@@ -1,7 +1,6 @@
 (ns heraldry.math.svg.path
   (:require
    ["paper" :refer [Path Point]]
-   ["svg-path-properties" :as svg-path-properties]
    [clojure.string :as s]
    [heraldry.math.vector :as v]))
 
@@ -67,7 +66,7 @@
                        (map bezier-to-relative curve)))))
 
 (defn points [^js/Object path n]
-  (let [length (.getTotalLength path)
+  (let [length (.-length path)
         n (if (= n :length)
             (-> length
                 Math/floor
@@ -75,13 +74,8 @@
             n)]
     (mapv (fn [i]
             (let [x (-> length (* i) (/ (dec n)))
-                  p (.getPointAtLength path x)]
+                  p (.getPointAt path x)]
               (v/v (.-x p) (.-y p)))) (range n))))
 
 (defn clean-path [d]
   (s/replace d #"l *0 *[, ] *0" ""))
-
-(defn new-path [d]
-  (->> d
-       clean-path
-       (new svg-path-properties/svgPathProperties)))

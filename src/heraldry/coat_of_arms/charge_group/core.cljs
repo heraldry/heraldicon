@@ -132,8 +132,8 @@
         distance ((util/percent-of width) distance)
         bordure-shape (environment/shrink-shape environment-shape distance :round)
         points (:points environment)
-        shape-path (path/new-path bordure-shape)
-        path-length (.getTotalLength shape-path)
+        shape-path (path/parse-path bordure-shape)
+        path-length (.-length shape-path)
         step-t (/ path-length (max num-slots 1))
         offset-t (* offset step-t)
         fess (:fess points)
@@ -153,8 +153,9 @@
                                                           (+ start-t)
                                                           (mod path-length))]
                                            {:point (-> shape-path
-                                                       (.getPointAtLength slot-t)
-                                                       (js->clj :keywordize-keys true))
+                                                       (.getPointAt slot-t)
+                                                       (as-> p
+                                                         (v/v (.-x p) (.-y p))))
                                             :slot-path (-> context :path (conj :slots slot-index))
                                             :charge-index (if (and (int? charge-index)
                                                                    (< -1 charge-index num-charges))
