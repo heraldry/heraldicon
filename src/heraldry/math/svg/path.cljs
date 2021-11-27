@@ -10,7 +10,7 @@
 (defn stitch [path]
   ;; TODO: this can be improved, it already broke some things and caused unexpected behaviour,
   ;; because the 'e' was not part of the pattern
-  (s/replace path #"^M[ ]*[0-9.e-]+[, -] *[0-9.e-]+" ""))
+  (s/replace path #"^M[ ]*-?[0-9.e]+[, ] *-?[0-9.e]+" ""))
 
 (defn make-path [v]
   (cond
