@@ -69,9 +69,8 @@
                        [(-> line-pattern
                             (->> (into ["M" 0 0]))
                             path/make-path
-                            path/reverse-path
-                            :path
                             path/parse-path
+                            path/reverse
                             (path/scale -1 1)
                             (path/to-svg :relative? true))]
                        line-pattern)
@@ -401,9 +400,11 @@
                       :line
                       (->> (into ["M" 0 0]))
                       path/make-path)
-        {line-reversed-start :start
-         line-reversed :path} (-> line-path
-                                  path/reverse-path)
+        reversed-path (-> line-path
+                          path/parse-path
+                          path/reverse)
+        line-reversed-start (path/get-start-pos reversed-path)
+        line-reversed  (path/to-svg reversed-path :from-zero? true)
         line-start (:line-start line-data)
         line-end (-> line-start
                      (v/add line-reversed-start)

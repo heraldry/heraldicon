@@ -1,9 +1,7 @@
 (ns heraldry.math.svg.path
   (:require
    ["paper" :refer [Path Point]]
-   ["svg-path-parse" :as svg-path-parse]
    ["svg-path-properties" :as svg-path-properties]
-   ["svg-path-reverse" :as svg-path-reverse]
    [clojure.string :as s]
    [heraldry.math.vector :as v]))
 
@@ -41,32 +39,18 @@
 (defn reverse [path]
   (doto path .reverse))
 
-(defn to-svg [^js/Object path & {:keys [relative?]}]
+(defn to-svg [^js/Object path & {:keys [relative?
+                                        from-zero?]}]
   (cond-> (.-pathData path)
-    relative? stitch))
+    (or relative?
+        from-zero?) stitch
+    from-zero? (->> (str "M0,0 "))))
 
-(defn reverse-path [path]
-  (-> path
-      svg-path-reverse/reverse
-      svg-path-parse/pathParse
-      .relNormalize
-      (js->clj :keywordize-keys true)
-      (as-> path
-        (let [[move & rest] (:segments path)
-              [x y] (:args move)
-              adjusted-path (assoc path :segments (into [{:type "M" :args [0 0]}] rest))]
-          {:start (v/v x y)
-           :path (-> adjusted-path
-                     clj->js
-                     svg-path-parse/serializePath)}))))
-
-(defn normalize-path-relative [path]
-  (-> path
-      svg-path-reverse/reverse
-      svg-path-reverse/reverse
-      svg-path-parse/pathParse
-      .relNormalize
-      svg-path-parse/serializePath))
+(defn get-start-pos [^js/Object path]
+  (let [path-data (.-pathData path)
+        regex #"^M[ ]*(-?[0-9.e]+)[, ] *(-?[0-9.e]+).*"
+        [_ x y] (re-matches regex path-data)]
+    (v/v (js/parseFloat x) (js/parseFloat y))))
 
 (defn move-to [p]
   (str "M" (v/->str p)))
