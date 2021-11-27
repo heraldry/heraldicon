@@ -1,9 +1,9 @@
 (ns heraldry.math.svg.path
   (:require
+   ["paper" :refer [Path Point]]
    ["svg-path-parse" :as svg-path-parse]
    ["svg-path-properties" :as svg-path-properties]
    ["svg-path-reverse" :as svg-path-reverse]
-   ["svgpath" :as svgpath]
    [clojure.string :as s]
    [heraldry.math.vector :as v]))
 
@@ -22,10 +22,9 @@
     :else (str v)))
 
 (defn translate [path dx dy]
-  (-> path
-      svgpath
-      (.translate dx dy)
-      .toString))
+  (-> (new Path path)
+      (.translate (new Point dx dy))
+      .-pathData))
 
 (defn reverse-path [path]
   (-> path
