@@ -194,11 +194,11 @@
         (let [effective-icon (if selected?
                                (:selected icon)
                                (:default icon))
-              icon-style {:width "0.9em"
-                          :height "1em"
-                          :margin-right "0.25em"
-                          :transform "translate(0,0.1em)"}]
-          (js/console.log :oi effective-icon)
+              icon-style {:width "14px"
+                          :height "16px"
+                          :margin-right "5px"
+                          :vertical-align "top"
+                          :transform "translate(0,3px)"}]
           (if (-> effective-icon vector?)
             (update-in effective-icon [1 :style] merge icon-style)
             [:img {:src effective-icon
