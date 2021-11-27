@@ -8,6 +8,7 @@
    [heraldry.frontend.ui.form.cottise :as cottise]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
+   [heraldry.static :as static]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
@@ -60,7 +61,8 @@
     :manual-blazon]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/ordinary [context]
-  (let [cottising-options (interface/get-relevant-options (c/++ context :cottising))
+  (let [ordinary-type (interface/get-raw-data (c/++ context :type))
+        cottising-options (interface/get-relevant-options (c/++ context :cottising))
         cottise-1 (interface/get-raw-data (c/++ context :cottising :cottise-1))
         cottise-2 (interface/get-raw-data (c/++ context :cottising :cottise-2))
         cottise-opposite-1 (interface/get-raw-data (c/++ context :cottising :cottise-opposite-1))
@@ -134,6 +136,10 @@
                                   (rf/dispatch-sync [:set cottise-extra-2-context default/cottise])
                                   (state/dispatch-on-event % [:ui-component-node-select (:path cottise-extra-2-context) {:open? true}]))}))]
     {:title (ordinary/title context)
+     :icon {:default (static/static-url
+                      (str "/svg/ordinary-type-" (name ordinary-type) "-unselected.svg"))
+            :selected (static/static-url
+                       (str "/svg/ordinary-type-" (name ordinary-type) "-selected.svg"))}
      :validation @(rf/subscribe [:validate-ordinary context])
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
