@@ -14,6 +14,7 @@
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
+   [heraldry.static :as static]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
@@ -325,6 +326,10 @@
                                                (charge-options/title (c/++ context :charges 0))
                                                {:en "various"
                                                 :de "verschiedenen"}))
+     :icon {:default (static/static-url
+                      (str "/svg/charge-group-preset-three.svg"))
+            :selected (static/static-url
+                       (str "/svg/charge-group-preset-three-selected.svg"))}
      :buttons [{:icon "fas fa-plus"
                 :title strings/add
                 :menu [{:title strings/charge
