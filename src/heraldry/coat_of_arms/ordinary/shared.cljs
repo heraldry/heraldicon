@@ -30,7 +30,7 @@
           humetty? (humetty/coup base-width (c/++ context :humetty))
           voided? (voided/void base-thickness (c/++ context :voided))))))
 
-(defn adjusted-shape-outline [shape outline? context default-outline]
+(defn adjusted-shape-outline [shape outline? context line-and-fimbriation]
   (let [voided? (interface/get-sanitized-data (c/++ context :voided :voided?))
         humetty? (interface/get-sanitized-data (c/++ context :humetty :humetty?))]
     [:<>
@@ -42,6 +42,5 @@
             voided?) [:g (outline/style context)
                       [:path {:d (-> shape :paths last)}]]
        :else nil)
-     (when (and outline?
-                (not humetty?))
-       default-outline)]))
+     (when-not humetty?
+       line-and-fimbriation)]))
