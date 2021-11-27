@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -12,8 +13,7 @@
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
-   [heraldry.util :as util]
-   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]))
+   [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/bend-sinister)
 
