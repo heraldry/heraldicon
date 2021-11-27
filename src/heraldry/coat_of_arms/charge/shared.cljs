@@ -1,6 +1,5 @@
 (ns heraldry.coat-of-arms.charge.shared
   (:require
-   ["svgpath" :as svgpath]
    [clojure.string :as s]
    [heraldry.coat-of-arms.angle :as angle]
    [heraldry.coat-of-arms.field.shared :as field-shared]
@@ -238,17 +237,16 @@
           charge-shape {:paths (into []
                                      (map #(-> %
                                                path/make-path
-                                               (->
-                                                (svgpath)
-                                                (.scale scale-x scale-y)
-                                                (.toString))
+                                               path/parse-path
+                                               (path/scale scale-x scale-y)
                                                (cond->
-                                                 squiggly? squiggly/squiggly-path
-                                                 (not= angle 0) (->
-                                                                 (svgpath)
-                                                                 (.rotate angle)
-                                                                 (.toString)))
-                                               (path/translate (:x origin-point) (:y origin-point))))
+                                                 squiggly? (->
+                                                            path/to-svg
+                                                            squiggly/squiggly-path
+                                                            path/parse-path)
+                                                 (not= angle 0) (.rotate angle))
+                                               (path/translate (:x origin-point) (:y origin-point))
+                                               path/to-svg))
                                      (:paths shape))}
           [min-x max-x min-y max-y] (bounding-box/rotate charge-top-left
                                                          (v/add charge-top-left

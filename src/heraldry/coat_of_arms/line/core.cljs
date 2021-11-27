@@ -1,7 +1,5 @@
 (ns heraldry.coat-of-arms.line.core
   (:require
-   ["svgpath" :as svgpath]
-   [clojure.string :as s]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.line.type.angled :as angled]
    [heraldry.coat-of-arms.line.type.bevilled :as bevilled]
@@ -73,10 +71,9 @@
                             path/make-path
                             path/reverse-path
                             :path
-                            svgpath
-                            (.scale -1 1)
-                            .toString
-                            (s/replace "M0 0" ""))]
+                            path/parse-path
+                            (path/scale -1 1)
+                            (path/to-svg :relative? true))]
                        line-pattern)
         {:keys [line-base
                 line-min
@@ -413,9 +410,9 @@
                      (v/sub base-end))
         line-path (if reversed?
                     (-> line-reversed
-                        svgpath
-                        (.scale -1 1)
-                        .toString)
+                        path/parse-path
+                        (path/scale -1 1)
+                        path/to-svg)
                     line-path)
         [line-start line-end] (if reversed?
                                 [(v/dot line-end (v/v -1 1))
@@ -433,11 +430,11 @@
                (-> line-path
                    (cond->
                      squiggly? (squiggly/squiggly-path :seed seed))
-                   svgpath
+                   path/parse-path
                    (cond->
-                     effective-flipped? (.scale 1 -1))
-                   (.rotate angle)
-                   .toString))
+                     effective-flipped? (path/scale 1 -1))
+                   (path/rotate angle)
+                   path/to-svg))
         (assoc :line-start (when line-start (v/rotate line-start angle)))
         (assoc :line-end (when line-end (v/rotate (v/add base-end line-end) angle)))
         (assoc :up (v/rotate (v/v 0 -50) angle))
