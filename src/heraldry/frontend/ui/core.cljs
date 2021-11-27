@@ -146,10 +146,10 @@
 
 (rf/reg-sub :element-removable?
   (fn [[_ {:keys [path]}] _]
-    (rf/subscribe [:get path]))
+    (rf/subscribe [:get (conj path :type)]))
 
-  (fn [element _]
-    (not (shield-separator/shield-separator? element))))
+  (fn [element-type _]
+    (not (shield-separator/shield-separator? {:type element-type}))))
 
 ;; functions
 
