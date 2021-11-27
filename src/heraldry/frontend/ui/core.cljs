@@ -64,32 +64,6 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
-;; subs
-
-
-(rf/reg-sub :component-node
-  (fn [[_ {:keys [path]}] _]
-    [(rf/subscribe [:ui-component-node-open? path])
-     (rf/subscribe [:ui-component-node-selected-path])])
-
-  (fn [[open? selected-component-path] [_ {:keys [path] :as context}]]
-    (merge {:open? open?
-            :selected? (= path selected-component-path)
-            :selectable? true}
-           (ui-interface/component-node-data context))))
-
-(rf/reg-sub :component-form
-  (fn [[_ context] _]
-    (rf/subscribe [:component-node context]))
-
-  (fn [{:keys [title]} [_ context]]
-    (merge
-     {:title title
-      :context context}
-     (ui-interface/component-form-data context))))
-
-;; events
-
 (macros/reg-event-db :add-element
   (fn [db [_ {:keys [path]} value {:keys [post-fn selected-element-path-fn]}]]
     (let [elements (-> (get-in db path)
@@ -148,13 +122,17 @@
   (fn [[_ {:keys [path]}] _]
     (rf/subscribe [:get (conj path :type)]))
 
-  (fn [element-type _]
+  (fn [element-type _context]
     (not (shield-separator/shield-separator? {:type element-type}))))
 
-;; functions
+(defn raw-component-node [{:keys [path] :as context}]
+  (merge {:open? @(rf/subscribe [:ui-component-node-open? path])
+          :selected? (= path @(rf/subscribe [:ui-component-node-selected-path]))
+          :selectable? true}
+         (ui-interface/component-node-data context)))
 
 (defn component-node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
-  (let [node-data @(rf/subscribe [:component-node context])
+  (let [node-data (raw-component-node context)
         node-title (:title node-data)
         {:keys [open?
                 selected?
@@ -264,9 +242,16 @@
                      [component-node (merge node-render-options
                                             {:path node-path})])])]])
 
+(defn raw-component-form [context]
+  (let [node-data (raw-component-node context)]
+    (merge
+     {:title (:title node-data)
+      :context context}
+     (ui-interface/component-form-data context))))
+
 (defn component-form [context]
   (let [{:keys [title context form]} (when context
-                                       @(rf/subscribe [:component-form context]))]
+                                       (raw-component-form context))]
     [:div.ui-component
      [:div.ui-component-header
       [:h1
