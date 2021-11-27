@@ -118,7 +118,7 @@
                    mask-id "preview-mask"
                    icon [:svg {:version "1.1"
                                :xmlns "http://www.w3.org/2000/svg"
-                               :xmlns:xlink "http://www.w3.org/1999/xlink"
+                               :xmlnsXlink "http://www.w3.org/1999/xlink"
                                :viewBox (str "0 0 120 140")
                                :preserveAspectRatio "xMidYMin slice"}
                          [:g {:transform "translate(10,10)"}
