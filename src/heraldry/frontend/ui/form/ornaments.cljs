@@ -56,22 +56,22 @@
      :nodes (->> (range num-elements)
                  reverse
                  (map (fn [idx]
-                        (let [motto-context (c/++ elements-context idx)
-                              removable? @(rf/subscribe [:element-removable? motto-context])]
-                          {:context motto-context
+                        (let [ornament-context (c/++ elements-context idx)
+                              removable? @(rf/subscribe [:element-removable? ornament-context])]
+                          {:context ornament-context
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :tooltip strings/move-down
-                                              :handler #(state/dispatch-on-event % [:move-element motto-context (dec idx)])}
+                                              :handler #(state/dispatch-on-event % [:move-element ornament-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-elements))
                                               :tooltip strings/move-up
-                                              :handler #(state/dispatch-on-event % [:move-element motto-context (inc idx)])}]
+                                              :handler #(state/dispatch-on-event % [:move-element ornament-context (inc idx)])}]
                                       removable? (conj {:icon "far fa-trash-alt"
                                                         :tooltip strings/remove
                                                         :handler #(state/dispatch-on-event
                                                                    %
-                                                                   [:remove-element motto-context
+                                                                   [:remove-element ornament-context
                                                                     shield-separator/remove-element-options])}))}))))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/ornaments [_context]
