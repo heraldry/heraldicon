@@ -2,12 +2,14 @@
   (:require
    [heraldry.coat-of-arms.default :as default]
    [heraldry.coat-of-arms.field.core :as field]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
+   [heraldry.static :as static]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -94,6 +96,7 @@
 (defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
   (let [field-type (interface/get-raw-data (c/++ context :type))
         ref? (= field-type :heraldry.field.type/ref)
+        tincture (interface/get-raw-data (c/++ context :tincture))
         components-context (c/++ context :components)
         num-components (interface/get-list-size components-context)]
     {:title (util/combine ": "
@@ -105,6 +108,48 @@
                                                (c/++ (interface/get-raw-data
                                                       (c/++ context :index))))))
                              (field/title context))])
+     :icon (if (= field-type :heraldry.field.type/plain)
+             (let [[scale-x
+                    scale-y
+                    translate-x
+                    translate-y] (if (= tincture :none)
+                                   [5 6 0 0]
+                                   [10 10 -15 -40])
+                   mask-id "preview-mask"
+                   icon [:svg {:version "1.1"
+                               :xmlns "http://www.w3.org/2000/svg"
+                               :xmlns:xlink "http://www.w3.org/1999/xlink"
+                               :viewBox (str "0 0 120 140")
+                               :preserveAspectRatio "xMidYMin slice"}
+                         [:g {:transform "translate(10,10)"}
+                          [:mask {:id mask-id}
+                           [:rect {:x 0
+                                   :y 0
+                                   :width 100
+                                   :height 120
+                                   :stroke "none"
+                                   :fill "#fff"}]]
+                          [:g {:mask (str "url(#" mask-id ")")}
+                           [:g {:transform (str "translate(" translate-x "," translate-y ")")}
+                            [:rect {:x 0
+                                    :y 0
+                                    :width 100
+                                    :height 120
+                                    :stroke "none"
+                                    :fill (tincture/pick tincture context)
+                                    :transform (str "scale(" scale-x "," scale-y ")")}]]]
+                          [:rect {:x 0
+                                  :y 0
+                                  :width 100
+                                  :height 120
+                                  :stroke "#000"
+                                  :fill "none"}]]]]
+               {:default icon
+                :selected icon})
+             {:default (static/static-url
+                        (str "/svg/field-type-" (name field-type) "-unselected.svg"))
+              :selected (static/static-url
+                         (str "/svg/field-type-" (name field-type) "-selected.svg"))})
      :validation @(rf/subscribe [:validate-field context])
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
