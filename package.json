@@ -20,8 +20,7 @@
     "svg-path-parse": "^1.1.3",
     "svg-path-properties": "^1.0.11",
     "svg-path-reverse": "^1.3.0",
-    "svgo-browser": "^1.3.8",
-    "svgpath": "^2.3.1"
+    "svgo-browser": "^1.3.8"
   },
   "devDependencies": {
     "clj-kondo": "^2021.09.25",
