@@ -209,16 +209,9 @@
                    original-angle))]
     (-> curve
         path/curve-to-relative
-        (cond->
-          reverse? (->
-                    path/reverse-path
-                    :path)
-          (not reverse?) (->
-                          path/reverse-path
-                          :path
-                          path/reverse-path
-                          :path))
         path/parse-path
+        (cond->
+          reverse? path/reverse)
         (path/scale scale scale)
         (path/rotate angle)
         (path/to-svg :relative? true))))
