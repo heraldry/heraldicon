@@ -21,10 +21,29 @@
     (sequential? v) (s/join " " (map make-path v))
     :else (str v)))
 
+(defn parse-path [path]
+  (new Path path))
+
 (defn translate [path dx dy]
-  (-> (new Path path)
-      (.translate (new Point dx dy))
-      .-pathData))
+  (.translate path dx dy))
+
+(defn scale [path sx sy & {:keys [center]
+                           :or {center v/zero}}]
+  (.scale path sx sy (when center
+                       (new Point (:x center) (:y center)))))
+
+(defn rotate [path angle & {:keys [center]
+                            :or {center v/zero}}]
+  (.rotate path angle (when center
+                        (new Point (:x center) (:y center)))))
+
+#_{:clj-kondo/ignore [:redefined-var]}
+(defn reverse [path]
+  (doto path .reverse))
+
+(defn to-svg [^js/Object path & {:keys [relative?]}]
+  (cond-> (.-pathData path)
+    relative? stitch))
 
 (defn reverse-path [path]
   (-> path

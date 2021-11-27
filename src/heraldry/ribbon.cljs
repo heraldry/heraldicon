@@ -1,7 +1,5 @@
 (ns heraldry.ribbon
   (:require
-   ["svgpath" :as svgpath]
-   [clojure.string :as s]
    [heraldry.context :as c]
    [heraldry.font :as font]
    [heraldry.interface :as interface]
@@ -220,11 +218,10 @@
                           :path
                           path/reverse-path
                           :path))
-        svgpath
-        (.scale scale scale)
-        (.rotate angle)
-        .toString
-        (s/replace "M0 0" ""))))
+        path/parse-path
+        (path/scale scale scale)
+        (path/rotate angle)
+        (path/to-svg :relative? true))))
 
 (defn project-bottom-edge [top-curve start-edge-vector end-edge-vector]
   (let [original-start (ffirst top-curve)

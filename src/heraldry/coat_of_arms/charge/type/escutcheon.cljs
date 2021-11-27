@@ -39,9 +39,10 @@
              env-fess (-> env :points :fess)
              offset (v/mul env-fess -1)]
          {:shape {:paths (into []
-                               (map #(path/translate %
-                                                     (:x offset)
-                                                     (:y offset)))
+                               (map #(-> %
+                                         path/parse-path
+                                         (path/translate (:x offset) (:y offset))
+                                         path/to-svg))
                                (-> env :shape :paths))}
           :charge-top-left offset
           :charge-width (:width env)

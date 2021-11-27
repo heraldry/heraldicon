@@ -2,9 +2,9 @@
   (:require
    ["paper" :refer [Path]]
    ["paperjs-offset" :refer [PaperOffset]]
-   ["svgpath" :as svgpath]
    [clojure.string :as s]
    [heraldry.math.bounding-box :as bounding-box]
+   [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
 
 (defn create [shape {:keys [bounding-box context] :as meta}]
@@ -67,10 +67,10 @@
     (-> environment
         (assoc :shape {:paths (into []
                                     (map #(-> %
-                                              svgpath
-                                              (.translate (:x offset) (:y offset))
-                                              (.scale scale-factor)
-                                              (.toString)))
+                                              path/parse-path
+                                              (path/translate (:x offset) (:y offset))
+                                              (path/scale scale-factor scale-factor)
+                                              path/to-svg))
                                     (-> environment :shape :paths))})
         (update :width * scale-factor)
         (update :height * scale-factor)
