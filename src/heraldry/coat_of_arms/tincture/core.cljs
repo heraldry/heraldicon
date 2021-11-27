@@ -231,7 +231,7 @@
                   :fill colour
                   :on-click (when (and (not svg-export?)
                                        select-component-fn)
-                              #(select-component-fn % (c/-- context)))
+                              #(select-component-fn % context))
                   :style (merge
                           {:cursor "pointer"}
                           (when animation
