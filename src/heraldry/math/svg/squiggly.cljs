@@ -25,7 +25,7 @@
                  [seed path]
                  path))
   (let [points (-> path
-                   path/new-path
+                   path/parse-path
                    (path/points :length))
         points (vec (concat [(first points)]
                             (map jiggle (partition 3 1 points))
