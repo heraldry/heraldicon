@@ -162,7 +162,8 @@
                 nodes
                 buttons
                 annotation
-                validation]} node-data
+                validation
+                icon]} node-data
         openable? (-> nodes count pos?)
         title (or node-title title)
         buttons (concat buttons parent-buttons)]
@@ -188,6 +189,21 @@
                                   "fa-angle-right")}]]
         [:span.node-icon
          [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
+
+      (when icon
+        (let [effective-icon (if selected?
+                               (:selected icon)
+                               (:default icon))
+              icon-style {:width "0.9em"
+                          :height "1em"
+                          :margin-right "0.25em"
+                          :transform "translate(0,0.1em)"}]
+          (js/console.log :oi effective-icon)
+          (if (-> effective-icon vector?)
+            (update-in effective-icon [1 :style] merge icon-style)
+            [:img {:src effective-icon
+                   :style icon-style}])))
+
       [tr title]
 
       annotation
@@ -231,6 +247,13 @@
           ^{:key node-context} [:li [component-node node-context
                                      :title title :parent-buttons buttons]])])]))
 
+(def node-render-options
+  {:render-options {:theme :wappenwiki
+                    :outline? true
+                    :escutcheon :rectangle
+                    :escutcheon-shadow? true}
+   :render-options-path [:context :render-options]})
+
 (defn component-tree [paths]
   [:div.ui-tree
    [:ul
@@ -238,7 +261,8 @@
       ^{:key idx} [:li
                    (if (= node-path :spacer)
                      [:div {:style {:height "1em"}}]
-                     [component-node {:path node-path}])])]])
+                     [component-node (merge node-render-options
+                                            {:path node-path})])])]])
 
 (defn component-form [context]
   (let [{:keys [title context form]} (when context
@@ -255,4 +279,5 @@
 (defn selected-component []
   (let [selected-component-path @(rf/subscribe [:ui-component-node-selected-path])]
     [component-form (when selected-component-path
-                      {:path selected-component-path})]))
+                      (merge node-render-options
+                             {:path selected-component-path}))]))
