@@ -46,7 +46,8 @@
        [:div.option
         [submenu/submenu context {:en "Select Charge"
                                   :de "Wappenfigur auswählen"}
-         (charge-options/title charge-context) {:style {:width "21.5em"}}
+         ;; TODO: this could have a proper preview of the charge
+         [tr (charge-options/title charge-context)] {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
            [charge-type-choice (:path charge-context) key display-name :selected? (= key value)])
