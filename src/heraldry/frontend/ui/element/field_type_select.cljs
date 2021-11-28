@@ -11,6 +11,7 @@
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
+   [heraldry.util :as util]
    [re-frame.core :as rf]))
 
 ;; TODO: this needs some more thinking, currently it creates dummy contexts to access db data
@@ -60,18 +61,21 @@
   (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
     (set-field-type db path new-type num-fields-x num-fields-y num-base-fields)))
 
-(defn field-type-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(let [;; TODO: this should move into the event handler
-                                         field-path (vec (drop-last path))
-                                         field @(rf/subscribe [:get field-path])
-                                         new-field (assoc field :type key)
-                                         {:keys [num-fields-x
-                                                 num-fields-y
-                                                 num-base-fields]} (:layout (options/sanitize-or-nil
-                                                                             new-field
-                                                                             (interface/options {:path [:context :dummy]
-                                                                                                 :dummy new-field})))]
-                                     (state/dispatch-on-event % [:set-field-type field-path key num-fields-x num-fields-y num-base-fields]))}
+(defn field-type-choice [path key display-name & {:keys [selected?
+                                                         on-click?]
+                                                  :or {on-click? true}}]
+  [:div.choice.tooltip {:on-click (when on-click?
+                                    #(let [;; TODO: this should move into the event handler
+                                           field-path (vec (drop-last path))
+                                           field @(rf/subscribe [:get field-path])
+                                           new-field (assoc field :type key)
+                                           {:keys [num-fields-x
+                                                   num-fields-y
+                                                   num-base-fields]} (:layout (options/sanitize-or-nil
+                                                                               new-field
+                                                                               (interface/options {:path [:context :dummy]
+                                                                                                   :dummy new-field})))]
+                                       (state/dispatch-on-event % [:set-field-type field-path key num-fields-x num-fields-y num-base-fields])))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url
@@ -87,18 +91,25 @@
           value (or current-value
                     inherited
                     default)
+          choice-map (util/choices->map choices)
+          choice-name (get choice-map value)
           label (:label ui)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
         [submenu/submenu context {:en "Select Division"
-                                  :de "Teilung auswählen"} (get field-options/field-map value) {:style {:width "21.5em"}}
+                                  :de "Teilung auswählen"}
+         [:div
+          [:div
+           [tr choice-name]]
+          [value-mode-select/value-mode-select context
+           :display-fn field-options/field-map]
+          [field-type-choice path value choice-name :on-click? false]]
+         {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
-           [field-type-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select context
-         :display-fn field-options/field-map]]])))
+           [field-type-choice path key display-name :selected? (= key value)])]]])))
 
 (defmethod ui-interface/form-element :field-type-select [context]
   [field-type-select context])
