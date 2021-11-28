@@ -138,7 +138,7 @@
 (defn title [context]
   (let [field-type (interface/get-sanitized-data (c/++ context :type))]
     (if (= field-type :heraldry.field.type/plain)
-      (-> (interface/get-raw-data (c/++ context :tincture))
+      (-> (interface/get-sanitized-data (c/++ context :tincture))
           tincture/translate-tincture
           util/upper-case-first)
       (get field-options/field-map field-type))))
