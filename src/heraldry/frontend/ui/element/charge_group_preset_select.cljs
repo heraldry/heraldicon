@@ -42,8 +42,9 @@
                 :de "Vorauswahl"}]]
    [:div.option
     [submenu/submenu context {:en "Select Charge Group Preset"
-                              :de "Wappenfigurgruppen Vorauswahl"} {:en "Select"
-                                                                    :de "Auswählen"} {:style {:width "21.5em"}}
+                              :de "Wappenfigurgruppen Vorauswahl"}
+     [tr {:en "Select"
+          :de "Auswählen"}] {:style {:width "21.5em"}}
      (for [[group-name & group] charge-group-preset-select-presets/presets]
        ^{:key group-name}
        [:<>

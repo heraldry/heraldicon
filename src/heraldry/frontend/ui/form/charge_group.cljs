@@ -233,8 +233,8 @@
                 (when-not (zero? offset)
                   strings/shifted)])]
     [:div {:style {:position "relative"}}
-     [submenu/submenu context type-str title {:style {:width "20em"}
-                                              :class "submenu-strip-form"}
+     [submenu/submenu context type-str [tr title] {:style {:width "20em"}
+                                                   :class "submenu-strip-form"}
       (ui-interface/form-elements
        context
        [:slots
@@ -286,6 +286,7 @@
              num-strips (interface/get-list-size strips-context)]
          [:div.ui-setting
           [:label [tr type-plural-str]
+           " "
            [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip
                                                             strips-context default/charge-group-strip])}
             [:i.fas.fa-plus] " " [tr strings/add]]]
