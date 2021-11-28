@@ -48,7 +48,8 @@
           [:div
            [tr choice-name]
            [value-mode-select/value-mode-select context]]
-          [theme-choice context value choice-name :on-click? false]]
+          [:div {:style {:transform "translate(-0.4em,0)"}}
+           [theme-choice context value choice-name :on-click? false]]]
          {:style {:width "22em"}}
          (for [[group-name & group] choices]
            ^{:key group-name}

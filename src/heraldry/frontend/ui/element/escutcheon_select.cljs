@@ -43,7 +43,8 @@
           [:div
            [tr choice-name]
            [value-mode-select/value-mode-select context]]
-          [escutcheon-choice context value choice-name :on-click? false]]
+          [:div {:style {:transform "translate(-0.333em,0)"}}
+           [escutcheon-choice context value choice-name :on-click? false]]]
          {:style {:width "17.5em"
                   :vertical-align "top"}}
          (for [[display-name key] choices]
