@@ -96,7 +96,7 @@
 (defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
   (let [field-type (interface/get-raw-data (c/++ context :type))
         ref? (= field-type :heraldry.field.type/ref)
-        tincture (interface/get-raw-data (c/++ context :tincture))
+        tincture (interface/get-sanitized-data (c/++ context :tincture))
         components-context (c/++ context :components)
         num-components (interface/get-list-size components-context)]
     {:title (util/combine ": "
