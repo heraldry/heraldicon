@@ -51,8 +51,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context label link-name {:style {:width "22em"}
-                                                  :class "submenu-fimbriation"}
+        [submenu/submenu context label [tr link-name] {:style {:width "22em"}
+                                                       :class "submenu-fimbriation"}
          (ui-interface/form-elements
           context
           [:mode

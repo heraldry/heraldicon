@@ -44,8 +44,10 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context label link-name {:style {:width "24em"}
-                                                  :class "submenu-line"}
+        [submenu/submenu context label
+         [tr link-name]
+         {:style {:width "24em"}
+          :class "submenu-line"}
          (ui-interface/form-elements
           context
           [:type
