@@ -41,12 +41,12 @@
         submenu-open? @(rf/subscribe [:ui-submenu-open? submenu-id])]
     [:div.ui-submenu-setting {:style {:display "inline-block"}
                               :on-click #(.stopPropagation %)}
-     [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-open submenu-id])}
-      [tr link-name]]
      (when submenu-open?
        [:div.ui-component.ui-submenu extra
         [:div.ui-component-header [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-close submenu-id])}
                                    [:i.far.fa-times-circle]]
          " " [tr title]]
         (into [:div.content]
-              content)])]))
+              content)])
+     [:a {:on-click #(state/dispatch-on-event % [:ui-submenu-open submenu-id])}
+      link-name]]))
