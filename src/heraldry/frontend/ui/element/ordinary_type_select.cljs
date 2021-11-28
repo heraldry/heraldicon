@@ -40,8 +40,11 @@
                                                  %
                                                  (options/sanitize-or-nil % (interface/options {:path %}))))))))
 
-(defn ordinary-type-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key])}
+(defn ordinary-type-choice [path key display-name & {:keys [selected?
+                                                            on-click?]
+                                                     :or {on-click? true}}]
+  [:div.choice.tooltip {:on-click (when on-click?
+                                    #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key]))}
    [:img.clickable {:style {:width "5em"
                             :height "5.7em"}
                     :src (static/static-url
@@ -57,18 +60,25 @@
           value (or current-value
                     inherited
                     default)
+          choice-map (util/choices->map choices)
+          choice-name (get choice-map value)
           label (:label ui)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
         [submenu/submenu context {:en "Select Ordinary"
-                                  :de "Heroldsbild auswählen"} (get ordinary-options/ordinary-map value) {:style {:width "21.5em"}}
+                                  :de "Heroldsbild auswählen"}
+         [:div
+          [:div
+           [tr choice-name]
+           [value-mode-select/value-mode-select context
+            :display-fn ordinary-options/ordinary-map]]
+          [ordinary-type-choice path value choice-name :on-click? false]]
+         {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}
-           [ordinary-type-choice path key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select context
-         :display-fn ordinary-options/ordinary-map]]])))
+           [ordinary-type-choice path key display-name :selected? (= key value)])]]])))
 
 (defmethod ui-interface/form-element :ordinary-type-select [context]
   [ordinary-type-select context])
