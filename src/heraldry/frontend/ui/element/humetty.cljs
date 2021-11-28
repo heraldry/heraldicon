@@ -45,8 +45,8 @@
               [:h3 {:style {:text-align "center"}} [tr tooltip]]
               [:i]]])])
        [:div.option
-        [submenu/submenu context label link-name {:style {:width "22em"}
-                                                  :class "submenu-humetty"}
+        [submenu/submenu context label [tr link-name] {:style {:width "22em"}
+                                                       :class "submenu-humetty"}
          (ui-interface/form-elements
           context
           [:humetty?
