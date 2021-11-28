@@ -105,7 +105,8 @@
            [tr choice-name]]
           [value-mode-select/value-mode-select context
            :display-fn field-options/field-map]
-          [field-type-choice path value choice-name :on-click? false]]
+          [:div {:style {:transform "translate(-0.3333em,0)"}}
+           [field-type-choice path value choice-name :on-click? false]]]
          {:style {:width "21.5em"}}
          (for [[display-name key] choices]
            ^{:key key}

@@ -41,7 +41,8 @@
           [:div
            [tr choice-name]
            [value-mode-select/value-mode-select context]]
-          [line-type-choice context value choice-name :on-click? false]]
+          [:div {:style {:transform "translate(-0.6em,0)"}}
+           [line-type-choice context value choice-name :on-click? false]]]
          {:style {:width "24em"}}
          (for [[display-name key] choices]
            ^{:key display-name}
