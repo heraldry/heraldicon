@@ -9,8 +9,11 @@
    [heraldry.static :as static]
    [heraldry.util :as util]))
 
-(defn escutcheon-choice [context key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set context key])}
+(defn escutcheon-choice [context key display-name & {:keys [selected?
+                                                            on-click?]
+                                                     :or {on-click? true}}]
+  [:div.choice.tooltip {:on-click (when on-click?
+                                    #(state/dispatch-on-event % [:set context key]))}
    [:img.clickable {:style {:width "4em"
                             :vertical-align "top"}
                     :src (static/static-url
@@ -27,18 +30,25 @@
                     inherited
                     default)
           label (:label ui)
-          choice-map (util/choices->map choices)]
+          choice-map (util/choices->map choices)
+          choice-name (get choice-map value)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context {:en "Select Escutcheon"
-                                  :de "Schild auswählen"} (get choice-map value) {:style {:width "17.5em"
-                                                                                          :vertical-align "top"}}
+        [submenu/submenu context
+         {:en "Select Escutcheon"
+          :de "Schild auswählen"}
+         [:div
+          [:div
+           [tr choice-name]
+           [value-mode-select/value-mode-select context]]
+          [escutcheon-choice context value choice-name :on-click? false]]
+         {:style {:width "17.5em"
+                  :vertical-align "top"}}
          (for [[display-name key] choices]
            ^{:key key}
-           [escutcheon-choice context key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select context]]])))
+           [escutcheon-choice context key display-name :selected? (= key value)])]]])))
 
 (defmethod ui-interface/form-element :escutcheon-select [context]
   [escutcheon-select context])
