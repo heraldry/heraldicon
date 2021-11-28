@@ -90,8 +90,8 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context label link-name {:style {:width "22em"}
-                                                  :class "submenu-field-layout"}
+        [submenu/submenu context label [tr link-name] {:style {:width "22em"}
+                                                       :class "submenu-field-layout"}
          (ui-interface/form-elements
           context
           [:num-base-fields
