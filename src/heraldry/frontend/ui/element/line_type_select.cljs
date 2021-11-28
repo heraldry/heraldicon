@@ -1,16 +1,19 @@
 (ns heraldry.frontend.ui.element.line-type-select
   (:require
-   [heraldry.coat-of-arms.line.core :as line]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
-   [heraldry.static :as static]))
+   [heraldry.static :as static]
+   [heraldry.util :as util]))
 
-(defn line-type-choice [context key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:set context key])}
+(defn line-type-choice [context key display-name & {:keys [selected?
+                                                           on-click?]
+                                                    :or {on-click? true}}]
+  [:div.choice.tooltip {:on-click (when on-click?
+                                    #(state/dispatch-on-event % [:set context key]))}
    [:img.clickable {:style {:width "7.5em"}
                     :src (static/static-url
                           (str "/svg/line-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
@@ -25,17 +28,24 @@
           label (:label ui)
           value (or current-value
                     inherited
-                    default)]
+                    default)
+          choice-map (util/choices->map choices)
+          choice-name (get choice-map value)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
         [submenu/submenu context {:en "Select Line Type"
-                                  :de "Schnitt auswählen"} (get line/line-map value) {:style {:width "24em"}}
+                                  :de "Schnitt auswählen"}
+         [:div
+          [:div
+           [tr choice-name]
+           [value-mode-select/value-mode-select context]]
+          [line-type-choice context value choice-name :on-click? false]]
+         {:style {:width "24em"}}
          (for [[display-name key] choices]
            ^{:key display-name}
-           [line-type-choice context key display-name :selected? (= key value)])]
-        [value-mode-select/value-mode-select context]]])))
+           [line-type-choice context key display-name :selected? (= key value)])]]])))
 
 (defmethod ui-interface/form-element :line-type-select [context]
   [line-type-select context])
