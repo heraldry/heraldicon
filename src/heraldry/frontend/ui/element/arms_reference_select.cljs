@@ -34,7 +34,7 @@
          [:label [tr label]])
        [:div.option
         [submenu/submenu context {:en "Select Arms"
-                                  :de "Wappen auswählen"} arms-title nil
+                                  :de "Wappen auswählen"} [tr arms-title] nil
          [arms-select/list-arms (link-to-arms context)]]]])))
 
 (defmethod ui-interface/form-element :arms-reference-select [context]
