@@ -1,5 +1,6 @@
 {:paths ["src"
-         "backend/src"]
+         "backend/src"
+         "gettext"]
 
  :deps {binaryage/devtools {:mvn/version "1.0.4"}
         borkdude/sci {:mvn/version "0.2.7"}
@@ -17,4 +18,5 @@
         reagent/reagent {:mvn/version "1.1.0"}
         thheller/shadow-cljs {:mvn/version "2.16.4"}
         zprint/zprint {:mvn/version "1.1.2"}
-        com.taoensso/tufte {:mvn/version "2.2.0"}}}
+        com.taoensso/tufte {:mvn/version "2.2.0"}
+        brightin/pottery {:mvn/version "0.0.4"}}}
