@@ -1,0 +1,75 @@
+#: src/heraldry/render_options.cljs
+msgid "Escutcheon"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Shiny"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Colours"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Hatching"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Everything (Helms, etc.)"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Coat of Arms with Helm"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Scope"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Shield angle"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Half"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "2/3"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Full"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Escutcheon outline"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Draw outline"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Escutcheon shadow (ignored for export)"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Squiggly lines (can be slow)"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Texture"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Preview original (don't replace colours)"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Simulate surface"
+msgstr ""
+
+#: src/heraldry/render_options.cljs
+msgid "Theme"
+msgstr ""
