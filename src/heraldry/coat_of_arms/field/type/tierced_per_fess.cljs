@@ -7,6 +7,7 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -14,8 +15,7 @@
 
 (def field-type :heraldry.field.type/tierced-per-fess)
 
-(defmethod field-interface/display-name field-type [_] {:en "Tierced per fess"
-                                                        :de "Zweimal geteilt"})
+(defmethod field-interface/display-name field-type [_] (string "Tierced per fess"))
 
 (defmethod field-interface/part-names field-type [_] ["chief" "fess" "base"])
 

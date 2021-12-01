@@ -4,14 +4,14 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/fretty)
 
-(defmethod field-interface/display-name field-type [_] {:en "Fretty"
-                                                        :de "Flechtgitter"})
+(defmethod field-interface/display-name field-type [_] (string "Fretty"))
 
 (defmethod field-interface/part-names field-type [_] nil)
 

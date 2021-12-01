@@ -170,6 +170,114 @@ msgstr "Bogenwinkel"
 msgid "Rotate charges"
 msgstr "Wappenfiguren rotieren"
 
+#: src/heraldry/coat_of_arms/field/type/barry.cljs
+msgid "Barry"
+msgstr "Geteilt vielfach"
+
+#: src/heraldry/coat_of_arms/field/type/bendy.cljs
+msgid "Bendy"
+msgstr "Schräggeteilt vielfach"
+
+#: src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs
+msgid "Bendy sinister"
+msgstr "Schräglinksgeteilt vielfach"
+
+#: src/heraldry/coat_of_arms/field/type/chequy.cljs
+msgid "Chequy"
+msgstr "Geschacht"
+
+#: src/heraldry/coat_of_arms/field/type/chevronny.cljs
+msgid "Chevronny"
+msgstr "Gesparrt"
+
+#: src/heraldry/coat_of_arms/field/type/counterchanged.cljs
+msgid "Counterchanged"
+msgstr "Verwechselt"
+
+#: src/heraldry/coat_of_arms/field/type/fretty.cljs
+msgid "Fretty"
+msgstr "Flechtgitter"
+
+#: src/heraldry/coat_of_arms/field/type/gyronny.cljs
+msgid "Gyronny"
+msgstr "Geständert"
+
+#: src/heraldry/coat_of_arms/field/type/lozengy.cljs
+msgid "Lozengy"
+msgstr "Schräggewürfelt"
+
+#: src/heraldry/coat_of_arms/field/type/masony.cljs
+msgid "Masony"
+msgstr "Gemauert"
+
+#: src/heraldry/coat_of_arms/field/type/paly.cljs
+msgid "Paly"
+msgstr "Gespalten vielfach"
+
+#: src/heraldry/coat_of_arms/field/type/papellony.cljs
+msgid "Papellony"
+msgstr "Bogenschuppenfeh"
+
+#: src/heraldry/coat_of_arms/field/type/per_bend.cljs
+msgid "Per bend"
+msgstr "Schräggeteilt"
+
+#: src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs
+msgid "Per bend sinister"
+msgstr "Schräglinksgeteilt"
+
+#: src/heraldry/coat_of_arms/field/type/per_chevron.cljs
+msgid "Per chevron"
+msgstr "Sparrenweise geteilt"
+
+#: src/heraldry/coat_of_arms/field/type/per_fess.cljs
+msgid "Per fess"
+msgstr "Geteilt"
+
+#: src/heraldry/coat_of_arms/field/type/per_pale.cljs
+msgid "Per pale"
+msgstr "Gespalten"
+
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs
+msgid "Per pile"
+msgstr "Gespalten mit einer Spitze"
+
+#: src/heraldry/coat_of_arms/field/type/per_saltire.cljs
+msgid "Per saltire"
+msgstr "Schräggeviert"
+
+#: src/heraldry/coat_of_arms/field/type/plain.cljs
+msgid "Plain"
+msgstr "Ungeteilt"
+
+#: src/heraldry/coat_of_arms/field/type/potenty.cljs
+msgid "Potenty"
+msgstr "Krückenfeh"
+
+#: src/heraldry/coat_of_arms/field/type/quartered.cljs
+msgid "Quartered"
+msgstr "Geviert"
+
+#: src/heraldry/coat_of_arms/field/type/quarterly.cljs
+msgid "Quarterly NxM"
+msgstr "Geviert NxM"
+
+#: src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs
+msgid "Tierced per fess"
+msgstr "Zweimal geteilt"
+
+#: src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs
+msgid "Tierced per pale"
+msgstr "Zweimal gespalten"
+
+#: src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs
+msgid "Tierced per pall"
+msgstr "Deichselschnitt"
+
+#: src/heraldry/coat_of_arms/field/type/vairy.cljs
+msgid "Vairy"
+msgstr "Feh"
+
 #: src/heraldry/frontend/arms_library.cljs
 msgid "Blazon"
 msgstr "Blasonierung"

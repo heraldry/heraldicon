@@ -3,13 +3,13 @@
    [heraldry.coat-of-arms.field.interface :as field-interface]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
 (def field-type :heraldry.field.type/plain)
 
-(defmethod field-interface/display-name field-type [_] {:en "Plain"
-                                                        :de "Ungeteilt"})
+(defmethod field-interface/display-name field-type [_] (string "Plain"))
 
 (defmethod field-interface/part-names field-type [_] [])
 

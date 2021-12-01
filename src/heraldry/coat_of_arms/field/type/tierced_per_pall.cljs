@@ -9,6 +9,7 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.chevron :as chevron]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
@@ -18,8 +19,7 @@
 
 (def field-type :heraldry.field.type/tierced-per-pall)
 
-(defmethod field-interface/display-name field-type [_] {:en "Tierced per pall"
-                                                        :de "Deichselschnitt"})
+(defmethod field-interface/display-name field-type [_] (string "Tierced per pall"))
 
 (defmethod field-interface/part-names field-type [_] ["middle" "side I" "side II"])
 

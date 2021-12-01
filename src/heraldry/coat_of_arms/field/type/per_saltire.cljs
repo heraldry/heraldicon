@@ -8,6 +8,7 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.shared.saltire :as saltire]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,8 +17,7 @@
 
 (def field-type :heraldry.field.type/per-saltire)
 
-(defmethod field-interface/display-name field-type [_] {:en "Per saltire"
-                                                        :de "Schräggeviert"})
+(defmethod field-interface/display-name field-type [_] (string "Per saltire"))
 
 (defmethod field-interface/part-names field-type [_] ["chief" "dexter" "sinister" "base"])
 

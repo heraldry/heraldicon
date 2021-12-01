@@ -6,6 +6,7 @@
    [heraldry.coat-of-arms.field.type.barry :as barry]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
@@ -13,8 +14,7 @@
 
 (def field-type :heraldry.field.type/bendy-sinister)
 
-(defmethod field-interface/display-name field-type [_] {:en "Bendy sinister"
-                                                        :de "Schräglinksgeteilt vielfach"})
+(defmethod field-interface/display-name field-type [_] (string "Bendy sinister"))
 
 (defmethod field-interface/part-names field-type [_] nil)
 

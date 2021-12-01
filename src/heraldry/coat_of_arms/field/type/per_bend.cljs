@@ -6,6 +6,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -14,8 +15,7 @@
 
 (def field-type :heraldry.field.type/per-bend)
 
-(defmethod field-interface/display-name field-type [_] {:en "Per bend"
-                                                        :de "Schräggeteilt"})
+(defmethod field-interface/display-name field-type [_] (string "Per bend"))
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
