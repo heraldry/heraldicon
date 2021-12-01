@@ -2,6 +2,7 @@
   (:require
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -63,8 +64,7 @@
                             :min -90
                             :max 90
                             :default 0
-                            :ui {:label {:en "Strip angle"
-                                         :de "Streifenwinkel"}
+                            :ui {:label (string "Strip angle")
                                  :step 1}}})))
 
 (defmethod interface/options :heraldry.charge-group.type/rows [context]
@@ -79,15 +79,13 @@
                             :min -180
                             :max 180
                             :default 0
-                            :ui {:label {:en "Start angle"
-                                         :de "Startwinkel"}
+                            :ui {:label (string "Start angle")
                                  :step 1}}
               :arc-angle {:type :range
                           :min 0
                           :max 360
                           :default 360
-                          :ui {:label {:en "Arc angle"
-                                       :de "Bogenwinkel"}
+                          :ui {:label (string "Arc angle")
                                :step 1}}
               :slots {:type :range
                       :min 1
@@ -110,8 +108,7 @@
                                  :step 0.01}}
               :rotate-charges? {:type :boolean
                                 :default false
-                                :ui {:label {:en "Rotate charges"
-                                             :de "Wappenfiguren rotieren"}}}})))
+                                :ui {:label (string "Rotate charges")}}})))
 
 (defmethod interface/options :heraldry.charge-group.type/in-orle [_context]
   (-> shared-options
@@ -139,8 +136,7 @@
               ;; around corners, so I'll leave it for now
               #_#_:rotate-charges? {:type :boolean
                                     :default false
-                                    :ui {:label {:en "Rotate charges"
-                                                 :de "Wappenfiguren rotieren"}}}})))
+                                    :ui {:label (string "Rotate charges")}}})))
 
 (defmethod interface/options-subscriptions :heraldry.component/charge-group [_context]
   options/shared-options-subscriptions)
