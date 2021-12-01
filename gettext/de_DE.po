@@ -1332,6 +1332,18 @@ msgstr "Bordweise"
 msgid "Sheaf of"
 msgstr "Garbenweise"
 
+#: src/heraldry/frontend/ui/element/colours.cljs
+msgid "Function"
+msgstr "Funktion"
+
+#: src/heraldry/frontend/ui/element/colours.cljs
+msgid "Shading"
+msgstr "Schattierung"
+
+#: src/heraldry/frontend/ui/element/colours.cljs
+msgid "Highlight"
+msgstr "Highlight"
+
 #: src/heraldry/coat_of_arms/attributes.cljs
 #: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 msgid "None"
@@ -1588,6 +1600,7 @@ msgstr "Schild"
 msgid "Shiny"
 msgstr "Glanz"
 
+#: src/heraldry/frontend/ui/element/colours.cljs
 #: src/heraldry/render_options.cljs
 msgid "Colours"
 msgstr "Farben"

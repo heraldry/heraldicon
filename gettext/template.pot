@@ -1282,6 +1282,18 @@ msgstr ""
 msgid "Sheaf of"
 msgstr ""
 
+#: src/heraldry/frontend/ui/element/colours.cljs
+msgid "Function"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/colours.cljs
+msgid "Shading"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/colours.cljs
+msgid "Highlight"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 msgid "None"
 msgstr ""
@@ -1504,7 +1516,7 @@ msgstr ""
 msgid "Shiny"
 msgstr ""
 
-#: src/heraldry/render_options.cljs
+#: src/heraldry/frontend/ui/element/colours.cljs src/heraldry/render_options.cljs
 msgid "Colours"
 msgstr ""
 
