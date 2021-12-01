@@ -385,10 +385,6 @@ msgid "Slipped"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/attributes.cljs
-msgid "Helmet"
-msgstr "Helm"
-
-#: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Barred"
 msgstr ""
 
@@ -829,6 +825,163 @@ msgstr "Vierung / Obereck"
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 msgid "Saltire"
 msgstr "Andreaskreuz"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "WappenWiki (default)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Web"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "RAL Traffic"
+msgstr "Verkehrsfarben"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "All of them!"
+msgstr "Alle!"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia default"
+msgstr "Wikipedia Default"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia web"
+msgstr "Wikipedia Web"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia Bajuvarian"
+msgstr "Wikipedia Bayern"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia Brandenburg"
+msgstr "Wikipedia Brandenburg"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia Württemberg"
+msgstr "Wikipedia Württemberg"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia France"
+msgstr "Wikipedia Frankreich"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia Hungary"
+msgstr "Wikipedia Ungarn"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia Spain"
+msgstr "Wikipedia Spanien"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia Sweden"
+msgstr "Wikipedia Schweden"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Wikipedia Switzerland"
+msgstr "Wikipedia Schweiz"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Community"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Metal"
+msgstr "Metall"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Argent"
+msgstr "Silber"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Or"
+msgstr "Gold"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Colour"
+msgstr "Farbe"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Azure"
+msgstr "Blau"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Gules"
+msgstr "Rot"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Purpure"
+msgstr "Purpur"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Sable"
+msgstr "Schwarz"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Vert"
+msgstr "Grün"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Fur"
+msgstr "Pelzwerk"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Ermine"
+msgstr "Hermelin"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Ermines"
+msgstr "Gegenhermelin"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Erminois"
+msgstr "Goldhermelin"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Pean"
+msgstr "Gegenhermelin in Gold"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Stain"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Sanguine"
+msgstr "Blutrot"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Murrey"
+msgstr "Braunrot"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Tenné"
+msgstr "Orange"
+
+#: src/heraldry/coat_of_arms/attributes.cljs
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Helmet"
+msgstr "Helm"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Light"
+msgstr "Hell"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Medium"
+msgstr "Medium"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Dark"
+msgstr "Dunkel"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "None (can be changed)"
+msgstr "Keine (kann verändert werden)"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Proper"
+msgstr "Natürlich"
 
 #: src/heraldry/frontend/arms_library.cljs
 msgid "Blazon"
