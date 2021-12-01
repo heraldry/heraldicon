@@ -154,6 +154,58 @@ msgstr ""
 msgid "Rotate charges"
 msgstr ""
 
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Blazon"
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "(beta, not complete)"
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Arms saved, new version:"
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Copied URL for sharing."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Arms need to be public and saved for exporting."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Need to be logged in."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Save your changes first."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Arms need to be public and saved for sharing."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Need to be logged in and arms must be saved."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Need to be logged in and own the arms."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Create Arms"
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Here you can create and view coats of arms. You explicitly have to save your coat of arms as public and add a license, if you want to share the link and allow others to view it."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "However, SVG/PNG links can be viewed by anyone."
+msgstr ""
+
 #: src/heraldry/frontend/attribution.cljs
 msgid "by"
 msgstr ""
