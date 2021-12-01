@@ -6,6 +6,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.checkbox :as checkbox]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]
@@ -56,8 +57,7 @@
                                :white-space "nowrap"
                                :max-height "30em"
                                :overflow "scroll"}}
-      [:label [tr {:en "Colours"
-                   :de "Farben"}]]
+      [:label [tr (string "Colours")]]
       [:div.option
        (if (seq colours)
          [:table {:cell-spacing 0}
@@ -73,21 +73,18 @@
              [:a {:href "#"
                   :on-click #(state/dispatch-on-event
                               % [:set [:ui :colours :sort path] :modifier])}
-              [tr {:en "Function"
-                   :de "Funktion"}]
+              [tr (string "Function")]
               (when (= sort-column :modifier)
                 [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
             [:td {:style header-td-style}
              [:a {:href "#"
                   :on-click #(state/dispatch-on-event
                               % [:set [:ui :colours :sort path] :qualifier])}
-              [tr {:en "Shading"
-                   :de "Schattierung"}]
+              [tr (string "Shading")]
               (when (= sort-column :qualifier)
                 [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
             [:td {:style header-td-style}
-             [tr {:en "Highlight"
-                  :de "Highlight"}]]]
+             [tr (string "Highlight")]]]
            [:tr {:style {:height "0.5em"}}
             [:td]
             [:td]
