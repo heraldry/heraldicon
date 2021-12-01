@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.semy.options
   (:require
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]))
@@ -54,8 +55,7 @@
 
        :rectangular? {:type :boolean
                       :default false
-                      :ui {:label {:en "Rectangular grid"
-                                   :de "Rechteckiges Gitter"}}}
+                      :ui {:label (string "Rectangular grid")}}
        :manual-blazon {:type :text
                        :default nil
                        :ui {:label strings/manual-blazon}}}))

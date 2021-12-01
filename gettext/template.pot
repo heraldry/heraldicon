@@ -870,6 +870,10 @@ msgstr ""
 msgid "Saltire"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/semy/options.cljs
+msgid "Rectangular grid"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "WappenWiki (default)"
 msgstr ""
@@ -1360,6 +1364,10 @@ msgstr ""
 
 #: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 msgid "Select Ribbon"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/semy_layout.cljs
+msgid "fields"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
