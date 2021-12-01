@@ -219,10 +219,6 @@ msgid "About"
 msgstr ""
 
 #: src/heraldry/frontend/header.cljs
-msgid "Users"
-msgstr ""
-
-#: src/heraldry/frontend/header.cljs
 msgid "Contact"
 msgstr ""
 
@@ -506,6 +502,14 @@ msgstr ""
 msgid "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number.
 
 Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."
+msgstr ""
+
+#: src/heraldry/frontend/user_library.cljs
+msgid "User"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
+msgid "Users"
 msgstr ""
 
 #: src/heraldry/motto.cljs
