@@ -1145,6 +1145,22 @@ msgstr ""
 "Sammlungen explizit als öffentlich markieren eine Lizenz angeben, wenn du "
 "anderen den Zugriff erlauben und den Link teilen möchtest."
 
+#: src/heraldry/frontend/filter.cljs
+msgid "Mine only"
+msgstr "Nur meine"
+
+#: src/heraldry/frontend/filter.cljs
+msgid "All"
+msgstr "Alle"
+
+#: src/heraldry/frontend/filter.cljs
+msgid "Public"
+msgstr "Öffentlich"
+
+#: src/heraldry/frontend/filter.cljs
+msgid "Private"
+msgstr "Privat"
+
 #: src/heraldry/frontend/header.cljs
 msgid "News"
 msgstr "Neuigkeiten"
