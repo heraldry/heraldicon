@@ -5,6 +5,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [re-frame.core :as rf]))
@@ -109,8 +110,7 @@
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
                                :white-space "nowrap"}}
-      [:label [tr {:en "Tags"
-                   :de "Tags"}]]
+      [:label [tr (string "Tags")]]
       [:div.option
        [:input {:value value
                 :on-change on-change

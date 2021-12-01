@@ -8,6 +8,7 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
@@ -98,8 +99,7 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context {:en "Select Division"
-                                  :de "Teilung auswählen"}
+        [submenu/submenu context (string "Select Partition")
          [:div
           [:div
            [tr choice-name]]

@@ -9,6 +9,7 @@
    [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
    [heraldry.strings :as strings]))
@@ -44,8 +45,7 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context {:en "Select Charge"
-                                  :de "Wappenfigur auswählen"}
+        [submenu/submenu context (string "Select Charge")
          ;; TODO: this could have a proper preview of the charge
          [tr (charge-options/title charge-context)] {:style {:width "21.5em"}}
          (for [[display-name key] choices]

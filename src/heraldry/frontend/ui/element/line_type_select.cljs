@@ -5,6 +5,7 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
    [heraldry.util :as util]))
@@ -35,8 +36,7 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context {:en "Select Line Type"
-                                  :de "Schnitt auswählen"}
+        [submenu/submenu context (string "Select Line Type")
          [:div
           [:div
            [tr choice-name]

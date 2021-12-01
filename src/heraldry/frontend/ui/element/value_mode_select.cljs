@@ -3,6 +3,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.hover-menu :as hover-menu]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
@@ -37,14 +38,13 @@
                              first)
         menu (cond-> []
                (and (some? inherited)
-                    (some? default)) (conj {:title (util/str-tr "Default (" (display-fn default) ")")
+                    (some? default)) (conj {:title (util/str-tr (string "Default") " (" (display-fn default) ")")
                                             :icon "fas fa-redo"
                                             :handler (handler-for-value default)})
                (or (some? inherited)
                    (some? default)) (conj {:title (util/str-tr (if (some? inherited)
-                                                                 {:en "Inherited"
-                                                                  :de "Geerbt"}
-                                                                 "Auto")
+                                                                 (string "Inherited")
+                                                                 (string "Auto"))
                                                                " (" (display-fn (or inherited default)) ")")
                                            :icon (if (some? current-value)
                                                    "far fa-square"
@@ -64,8 +64,7 @@
                       "far fa-check-square"
                       "far fa-square")
         menu (cond-> menu
-               (seq menu) (conj {:title [tr {:en "Manual"
-                                             :de "Manuell"}]
+               (seq menu) (conj {:title [tr (string "Manual")]
                                  :icon manual-icon
                                  :handler (handler-for-value effective-value)}))]
 

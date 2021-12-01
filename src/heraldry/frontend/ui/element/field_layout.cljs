@@ -6,6 +6,7 @@
    [heraldry.frontend.ui.element.range :as range]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -24,13 +25,11 @@
                       (util/str-tr (util/combine "x"
                                                  [(:num-fields-x layout)
                                                   (:num-fields-y layout)])
-                                   {:en " fields"
-                                    :de " Felder"}))
+                                   (string "fields")))
           changes (filter identity
                           [main-name
                            (when (options/changed? :num-base-fields layout options)
-                             (util/str-tr (:num-base-fields layout) {:en " base fields"
-                                                                     :de " Basisfelder"}))
+                             (util/str-tr (:num-base-fields layout) " " (string "base fields")))
                            (when (some #(options/changed? % layout options)
                                        [:offset-x :offset-y])
                              strings/shifted)
