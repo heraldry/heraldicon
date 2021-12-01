@@ -2,6 +2,7 @@
   (:require
    [heraldry.context :as c]
    [heraldry.font :as font]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.bezier :as bezier]
    [heraldry.math.catmullrom :as catmullrom]
@@ -23,16 +24,14 @@
                 :default 0
                 :min -90
                 :max 90
-                :ui {:label {:en "Edge angle"
-                             :de "Kantenwinkel"}
+                :ui {:label (string "Edge angle")
                      :step 1
-                     :tooltip "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully."}}
+                     :tooltip (string "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully.")}}
    :end-split {:type :range
                :default 0
                :min 0
                :max 80
-               :ui {:label {:en "End split"
-                            :de "Spaltung am Ende"}
+               :ui {:label (string "End split")
                     :step 1}}
    :outline? {:type :boolean
               :default true
@@ -120,12 +119,9 @@
                         vec)}))
 
 (def segment-type-choices
-  [[{:en "Text"
-     :de "Text"} :heraldry.ribbon.segment/foreground-with-text]
-   [{:en "Foreground"
-     :de "Vorderseite"} :heraldry.ribbon.segment/foreground]
-   [{:en "Background"
-     :de "Rückseite"} :heraldry.ribbon.segment/background]])
+  [[(string "Text") :heraldry.ribbon.segment/foreground-with-text]
+   [(string "Foreground") :heraldry.ribbon.segment/foreground]
+   [(string "Background") :heraldry.ribbon.segment/background]])
 
 (def segment-type-map
   (util/choices->map segment-type-choices))
@@ -165,8 +161,7 @@
                              :default 0.8
                              :min 0.01
                              :max 1
-                             :ui {:label {:en "Font scale"
-                                          :de "Schrift-Faktor"}
+                             :ui {:label (string "Font scale")
                                   :step 0.01}}
                 :spacing {:type :range
                           :default 0.1

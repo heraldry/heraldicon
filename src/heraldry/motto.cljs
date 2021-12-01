@@ -3,6 +3,7 @@
    [heraldry.coat-of-arms.geometry :as geometry]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.ribbon :as ribbon]
@@ -64,10 +65,8 @@
                                     :form-type :tincture-select}}
 
          :tincture-background {:type :choice
-                               :choices (assoc tinctures-without-furs 0 [{:en "Other / Metal"
-                                                                          :de "Andere / Metall"}
-                                                                         [{:en "Darkened foreground"
-                                                                           :de "Vorderseite verdunkelt"} :none]
+                               :choices (assoc tinctures-without-furs 0 [(string "Other / Metal")
+                                                                         [(string "Darkened foreground") :none]
                                                                          [(tincture/tincture-map :argent) :argent]
                                                                          [(tincture/tincture-map :or) :or]])
                                :default :none

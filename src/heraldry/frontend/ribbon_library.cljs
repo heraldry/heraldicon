@@ -14,6 +14,7 @@
    [heraldry.frontend.ui.core :as ui]
    [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldry.frontend.user :as user]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.bezier :as bezier]
    [heraldry.math.catmullrom :as catmullrom]
@@ -388,8 +389,7 @@
           (state/invalidate-cache-without-current form-db-path [ribbon-id 0])
           (invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             (util/str-tr {:en "Ribbon saved, new version: "
-                                           :de "Band gespeichert, neue Version: "} (:version response))])
+                             (util/str-tr (string "Ribbon saved, new version: ") (:version response))])
           (reife/push-state :view-ribbon-by-id {:id (id-for-url ribbon-id)}))
         (modal/stop-loading)
         (catch :default e
@@ -483,8 +483,7 @@
 (defn ribbon-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
-                {:en "Create Ribbon"
-                 :de "Neues Band"}])
+                (string "Create Ribbon")])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -554,15 +553,7 @@
     [:div {:style {:padding "15px"}}
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}
-      [tr {:en [:p
-                "Here you can view and create ribbons to be used in coats of arms. By default your ribbons "
-                "are private, so only you can see and use them. If you want to make them public, then you "
-                [:b "must"] " provide a license."]
-           :de [:p
-                "Hier kannst du Bänder für Mottos erstellen und ansehen, die in Wappen benutzt werden können. "
-                "Deine Bänder sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich "
-                "machen möchtest, dann "
-                [:b "mußt"] " du eine Lizenz angeben."]}]]
+      [tr (string "Here you can view and create ribbons to be used in coats of arms. By default your ribbons are private, so only you can see and use them. If you want to make them public, then you must provide a license.")]]
      [:button.button.primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])

@@ -210,6 +210,18 @@ msgstr ""
 msgid "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
 msgstr ""
 
+#: src/heraldry/frontend/ribbon_library.cljs
+msgid "Ribbon saved, new version: "
+msgstr ""
+
+#: src/heraldry/frontend/ribbon_library.cljs
+msgid "Create Ribbon"
+msgstr ""
+
+#: src/heraldry/frontend/ribbon_library.cljs
+msgid "Here you can view and create ribbons to be used in coats of arms. By default your ribbons are private, so only you can see and use them. If you want to make them public, then you must provide a license."
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/attribution.cljs
 msgid "no license"
 msgstr ""
@@ -350,6 +362,14 @@ msgstr ""
 msgid "Sheaf of"
 msgstr ""
 
+#: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
+msgid "None"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
+msgid "Select Ribbon"
+msgstr ""
+
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "slot"
 msgstr ""
@@ -380,6 +400,88 @@ msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "various"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it."
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Topology"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "The ribbon curve can be interpreted in many ways, depending on what is fore-/background and which segments overlap which."
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned."
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Apply a preset after you edited the ribbon curve and changed the number of segments."
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Layering presets"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Middle outwards"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Left to right"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Right to left"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Flow presets"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Stacked"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Spiral clockwise"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Spiral counter-clockwise"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Nebuly"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Start presets"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Apply presets"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Invert"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number.
+
+Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."
+msgstr ""
+
+#: src/heraldry/motto.cljs
+msgid "Other / Metal"
+msgstr ""
+
+#: src/heraldry/motto.cljs
+msgid "Darkened foreground"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/charge/type/escutcheon.cljs src/heraldry/render_options.cljs
@@ -456,6 +558,34 @@ msgstr ""
 
 #: src/heraldry/render_options.cljs
 msgid "Theme"
+msgstr ""
+
+#: src/heraldry/ribbon.cljs
+msgid "Edge angle"
+msgstr ""
+
+#: src/heraldry/ribbon.cljs
+msgid "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully."
+msgstr ""
+
+#: src/heraldry/ribbon.cljs
+msgid "End split"
+msgstr ""
+
+#: src/heraldry/ribbon.cljs
+msgid "Text"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs src/heraldry/ribbon.cljs
+msgid "Foreground"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs src/heraldry/ribbon.cljs
+msgid "Background"
+msgstr ""
+
+#: src/heraldry/ribbon.cljs
+msgid "Font scale"
 msgstr ""
 
 #: src/heraldry/shared.cljs
