@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.texture :as texture]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
@@ -18,8 +19,7 @@
                             {:type :choice
                              :choices escutcheon/choices
                              :default :none
-                             :ui {:label {:en "Escutcheon"
-                                          :de "Schild"}
+                             :ui {:label (string "Escutcheon")
                                   :form-type :escutcheon-select}}
                             {:type :choice
                              :choices (drop 1 escutcheon/choices)
@@ -29,10 +29,8 @@
     (cond-> {:escutcheon escutcheon-option
 
              :mode {:type :choice
-                    :choices [[{:en "Colours"
-                                :de "Farben"} :colours]
-                              [{:en "Hatching"
-                                :de "Schraffur"} :hatching]]
+                    :choices [[(string "Colours") :colours]
+                              [(string "Hatching") :hatching]]
                     :default :colours
                     :ui {:label strings/mode
                          :form-type :radio-select}}
@@ -40,68 +38,53 @@
              :texture {:type :choice
                        :choices texture/choices
                        :default :none
-                       :ui {:label {:en "Texture"
-                                    :de "Textur"}}}
+                       :ui {:label (string "Texture")}}
 
              :shiny? {:type :boolean
                       :default false
-                      :ui {:label {:en "Shiny"
-                                   :de "Glanz"}}}
+                      :ui {:label (string "Shiny")}}
 
              :escutcheon-shadow? {:type :boolean
                                   :default false
-                                  :ui {:label {:en "Escutcheon shadow (ignored for export)"
-                                               :de "Schildschatten (beim Export ignoriert)"}}}
+                                  :ui {:label (string "Escutcheon shadow (ignored for export)")}}
 
              :escutcheon-outline? {:type :boolean
                                    :default false
-                                   :ui {:label {:en "Escutcheon outline"
-                                                :de "Schildumrandung"}}}
+                                   :ui {:label (string "Escutcheon outline")}}
 
              :outline? {:type :boolean
                         :default false
-                        :ui {:label {:en "Draw outline"
-                                     :de "Zeichne Umrandung"}}}
+                        :ui {:label (string "Draw outline")}}
 
              :squiggly? {:type :boolean
                          :default false
-                         :ui {:label {:en "Squiggly lines (can be slow)"
-                                      :de "Schörkelige Linien (kann langsam sein)"}}}
+                         :ui {:label (string "Squiggly lines (can be slow)")}}
 
              :preview-original? {:type :boolean
-                                 :ui {:label {:en "Preview original (don't replace colours)"
-                                              :de "Original anzeigen (Farben nicht ersetzen)"}}}
+                                 :ui {:label (string "Preview original (don't replace colours)")}}
              :coat-of-arms-angle {:type :range
                                   :default 0
                                   :min -45
                                   :max 45
-                                  :ui {:label {:en "Shield angle"
-                                               :de "Schildwinkel"}
-                                       :additional-values [[{:en "Half"
-                                                             :de "Halb"} 22.5]
-                                                           ["2/3" 30]
-                                                           [{:en "Full"
-                                                             :de "Voll"} 45]]
+                                  :ui {:label (string "Shield angle")
+                                       :additional-values [[(string "Half") 22.5]
+                                                           [(string "2/3") 30]
+                                                           [(string "Full") 45]]
                                        :step 1}}
              :scope {:type :choice
-                     :choices [[{:en "Everything (Helms, etc.)"
-                                 :de "Vollwappen (Helme, etc.)"} :achievement]
-                               [{:en "Coat of Arms with Helm"
-                                 :de "Wappen mit Helmzier"} :coat-of-arms-and-helm]
+                     :choices [[(string "Everything (Helms, etc.)") :achievement]
+                               [(string "Coat of Arms with Helm") :coat-of-arms-and-helm]
                                [strings/coat-of-arms :coat-of-arms]]
                      :default :achievement
-                     :ui {:label {:en "Scope"
-                                  :de "Umfang"}}}}
+                     :ui {:label (string "Scope")}}}
 
       (not= texture :none) (assoc :texture-displacement?
                                   {:type :boolean
                                    :default false
-                                   :ui {:label {:en "Simulate surface"
-                                                :de "Oberfläche simulieren"}}})
+                                   :ui {:label (string "Simulate surface")}})
 
       (= mode :colours) (assoc :theme {:type :choice
                                        :choices tincture/theme-choices
                                        :default tincture/default-theme
-                                       :ui {:label {:en "Theme"
-                                                    :de "Farbschema"}
+                                       :ui {:label (string "Theme")
                                             :form-type :theme-select}}))))
