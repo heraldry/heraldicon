@@ -262,6 +262,22 @@ msgstr ""
 msgid "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
 msgstr ""
 
+#: src/heraldry/frontend/collection_library.cljs
+msgid "Collection saved, new version:"
+msgstr ""
+
+#: src/heraldry/frontend/collection_library.cljs
+msgid "Need to be logged in and own the collection."
+msgstr ""
+
+#: src/heraldry/frontend/collection_library.cljs
+msgid "Create Collection"
+msgstr ""
+
+#: src/heraldry/frontend/collection_library.cljs
+msgid "Here you can view and create collections of coats of arms. You explicitly have to save your collection as public and add a license, if you want to share the link and allow others to view it."
+msgstr ""
+
 #: src/heraldry/frontend/header.cljs
 msgid "News"
 msgstr ""
