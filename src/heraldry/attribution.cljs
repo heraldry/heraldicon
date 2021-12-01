@@ -4,11 +4,10 @@
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def license-choices
-  [[strings/none :none]
+  [[(string "None") :none]
    [(string "CC Attribution") :cc-attribution]
    [(string "CC Attribution-ShareAlike") :cc-attribution-share-alike]
    [(string "CC Attribution-NonCommercial-ShareAlike") :cc-attribution-non-commercial-share-alike]

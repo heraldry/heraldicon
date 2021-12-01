@@ -11,8 +11,7 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.options :as options]
-   [heraldry.strings :as strings]))
+   [heraldry.options :as options]))
 
 (defn arm-diagonal [origin-point anchor-point]
   (-> (v/sub anchor-point origin-point)
@@ -33,36 +32,36 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))
         anchor-point-option {:type :choice
-                             :choices [[strings/top-left :top-left]
-                                       [strings/top-right :top-right]
-                                       [strings/angle :angle]]
+                             :choices [[(string "Top-left") :top-left]
+                                       [(string "Top-right") :top-right]
+                                       [(string "Angle") :angle]]
                              :default :top-left
-                             :ui {:label strings/point}}
+                             :ui {:label (string "Point")}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     (-> {:origin {:point {:type :choice
-                          :choices [[strings/fess-point :fess]
-                                    [strings/chief-point :chief]
-                                    [strings/base-point :base]]
+                          :choices [[(string "Fess") :fess]
+                                    [(string "Chief") :chief]
+                                    [(string "Base") :base]]
                           :default :fess
-                          :ui {:label strings/point}}
+                          :ui {:label (string "Point")}}
                   :offset-x {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label strings/offset-x
+                             :ui {:label (string "Offset x")
                                   :step 0.1}}
                   :offset-y {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label strings/offset-y
+                             :ui {:label (string "Offset y")
                                   :step 0.1}}
-                  :ui {:label strings/origin
+                  :ui {:label (string "Origin")
                        :form-type :position}}
          :anchor (cond-> {:point anchor-point-option
-                          :ui {:label strings/anchor
+                          :ui {:label (string "Anchor")
                                :form-type :position}}
 
                    (= current-anchor-point
@@ -70,20 +69,20 @@
                                              :min -80
                                              :max 80
                                              :default -45
-                                             :ui {:label strings/angle}})
+                                             :ui {:label (string "Angle")}})
 
                    (not= current-anchor-point
                          :angle) (assoc :offset-x {:type :range
                                                    :min -45
                                                    :max 45
                                                    :default 0
-                                                   :ui {:label strings/offset-x
+                                                   :ui {:label (string "Offset x")
                                                         :step 0.1}}
                                         :offset-y {:type :range
                                                    :min -45
                                                    :max 45
                                                    :default 0
-                                                   :ui {:label strings/offset-y
+                                                   :ui {:label (string "Offset y")
                                                         :step 0.1}}))
          :line line-style
          :opposite-line opposite-line-style

@@ -8,8 +8,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]))
+   [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/escutcheon)
 
@@ -21,7 +20,7 @@
       (assoc :escutcheon {:type :choice
                           :choices (assoc-in (vec escutcheon/choices) [0 0] (string "Root"))
                           :default :none
-                          :ui {:label strings/escutcheon
+                          :ui {:label (string "Escutcheon")
                                :form-type :escutcheon-select}})))
 
 (defmethod charge-interface/render-charge charge-type

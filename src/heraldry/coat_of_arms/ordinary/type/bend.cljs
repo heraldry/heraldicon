@@ -13,7 +13,6 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/bend)
@@ -26,42 +25,42 @@
         opposite-line-style (-> (line/options (c/++ context :opposite-line))
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))
         origin-point-option {:type :choice
-                             :choices [[strings/fess-point :fess]
-                                       [strings/chief-point :chief]
-                                       [strings/base-point :base]
-                                       [strings/honour-point :honour]
-                                       [strings/nombril-point :nombril]
-                                       [strings/top-left :top-left]
-                                       [strings/bottom-right :bottom-right]]
+                             :choices [[(string "Fess") :fess]
+                                       [(string "Chief") :chief]
+                                       [(string "Base") :base]
+                                       [(string "Honour") :honour]
+                                       [(string "Nombril") :nombril]
+                                       [(string "Top-left") :top-left]
+                                       [(string "Bottom-right") :bottom-right]]
                              :default :top-left
-                             :ui {:label strings/point}}
+                             :ui {:label (string "Point")}}
         current-origin-point (options/get-value
                               (interface/get-raw-data (c/++ context :origin :point))
                               origin-point-option)
         anchor-point-option {:type :choice
                              :choices (case current-origin-point
-                                        :top-left [[strings/fess-point :fess]
-                                                   [strings/chief-point :chief]
-                                                   [strings/base-point :base]
-                                                   [strings/honour-point :honour]
-                                                   [strings/nombril-point :nombril]
-                                                   [strings/bottom-right :bottom-right]
-                                                   [strings/angle :angle]]
-                                        :bottom-right [[strings/fess-point :fess]
-                                                       [strings/chief-point :chief]
-                                                       [strings/base-point :base]
-                                                       [strings/honour-point :honour]
-                                                       [strings/nombril-point :nombril]
-                                                       [strings/top-left :top-left]
-                                                       [strings/angle :angle]]
-                                        [[strings/top-left :top-left]
-                                         [strings/bottom-right :bottom-right]
-                                         [strings/angle :angle]])
+                                        :top-left [[(string "Fess") :fess]
+                                                   [(string "Chief") :chief]
+                                                   [(string "Base") :base]
+                                                   [(string "Honour") :honour]
+                                                   [(string "Nombril") :nombril]
+                                                   [(string "Bottom-right") :bottom-right]
+                                                   [(string "Angle") :angle]]
+                                        :bottom-right [[(string "Fess") :fess]
+                                                       [(string "Chief") :chief]
+                                                       [(string "Base") :base]
+                                                       [(string "Honour") :honour]
+                                                       [(string "Nombril") :nombril]
+                                                       [(string "Top-left") :top-left]
+                                                       [(string "Angle") :angle]]
+                                        [[(string "Top-left") :top-left]
+                                         [(string "Bottom-right") :bottom-right]
+                                         [(string "Angle") :angle]])
                              :default (case current-origin-point
                                         :top-left :fess
                                         :bottom-right :fess
                                         :top-left)
-                             :ui {:label strings/point}}
+                             :ui {:label (string "Point")}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
@@ -69,24 +68,24 @@
                   :alignment {:type :choice
                               :choices position/alignment-choices
                               :default :middle
-                              :ui {:label strings/alignment
+                              :ui {:label (string "Alignment")
                                    :form-type :radio-select}}
                   :offset-x {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label strings/offset-x
+                             :ui {:label (string "Offset x")
                                   :step 0.1}}
                   :offset-y {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label strings/offset-y
+                             :ui {:label (string "Offset y")
                                   :step 0.1}}
-                  :ui {:label strings/origin
+                  :ui {:label (string "Origin")
                        :form-type :position}}
          :anchor (cond-> {:point anchor-point-option
-                          :ui {:label strings/anchor
+                          :ui {:label (string "Anchor")
                                :form-type :position}}
 
                    (= current-anchor-point
@@ -94,25 +93,25 @@
                                              :min 0
                                              :max 360
                                              :default 45
-                                             :ui {:label strings/angle}})
+                                             :ui {:label (string "Angle")}})
 
                    (not= current-anchor-point
                          :angle) (assoc :alignment {:type :choice
                                                     :choices position/alignment-choices
                                                     :default :middle
-                                                    :ui {:label strings/alignment
+                                                    :ui {:label (string "Alignment")
                                                          :form-type :radio-select}}
                                         :offset-x {:type :range
                                                    :min -45
                                                    :max 45
                                                    :default 0
-                                                   :ui {:label strings/offset-x
+                                                   :ui {:label (string "Offset x")
                                                         :step 0.1}}
                                         :offset-y {:type :range
                                                    :min -45
                                                    :max 45
                                                    :default 0
-                                                   :ui {:label strings/offset-y
+                                                   :ui {:label (string "Offset y")
                                                         :step 0.1}}))
          :line line-style
          :opposite-line opposite-line-style
@@ -120,9 +119,9 @@
                            :min 0.1
                            :max 90
                            :default 25
-                           :ui {:label strings/size
+                           :ui {:label (string "Size")
                                 :step 0.1}}
-                    :ui {:label strings/geometry
+                    :ui {:label (string "Geometry")
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 2)}

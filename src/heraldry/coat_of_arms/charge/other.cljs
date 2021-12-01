@@ -20,7 +20,6 @@
    [heraldry.math.svg.core :as svg]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defmethod interface/options :heraldry.charge.type/other [context]
@@ -37,13 +36,13 @@
                                  :min 0
                                  :max 1
                                  :default 1
-                                 :ui {:label strings/shadow
+                                 :ui {:label (string "Shadow")
                                       :step 0.01}}
                         :highlight {:type :range
                                     :min 0
                                     :max 1
                                     :default 1
-                                    :ui {:label strings/highlight
+                                    :ui {:label (string "Highlight")
                                          :step 0.01}}
                         :ui {:label (string "Tinctures")
                              :form-type :tincture-modifiers}})

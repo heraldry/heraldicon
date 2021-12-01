@@ -16,7 +16,6 @@
    [heraldry.frontend.ui.element.user-select :as user-select]
    [heraldry.frontend.user :as user]
    [heraldry.gettext :refer [string]]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -48,7 +47,7 @@
        #(invalidate-charges-cache-for-user user-id)
        :remove-empty-groups? true
        :hide-ownership-filter? true]
-      [:div [tr strings/loading]])))
+      [:div [tr (string "Loading...")]])))
 
 (defn invalidate-arms-cache-for-user [user-id]
   (state/invalidate-cache [:user-arms] user-id))
@@ -64,7 +63,7 @@
        arms-library/link-to-arms
        #(invalidate-arms-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div [tr strings/loading]])))
+      [:div [tr (string "Loading...")]])))
 
 (defn invalidate-collection-cache-for-user [user-id]
   (state/invalidate-cache [:user-collections] user-id))
@@ -80,7 +79,7 @@
        collection-library/link-to-collection
        #(invalidate-collection-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div [tr strings/loading]])))
+      [:div [tr (string "Loading...")]])))
 
 (defn user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
@@ -101,15 +100,15 @@
       [:h3 [tr (util/str-tr (string "User") ": " (:username user-info-data))]]]
      [:div.no-scrollbar {:style {:grid-area "collections"
                                  :overflow-y "scroll"}}
-      [:h4 [tr strings/collections]]
+      [:h4 [tr (string "Collections")]]
       [view-collections-for-user user-id]]
      [:div.no-scrollbar {:style {:grid-area "arms"
                                  :overflow-y "scroll"}}
-      [:h4 [tr strings/arms]]
+      [:h4 [tr (string "Arms")]]
       [view-arms-for-user user-id]]
      [:div.no-scrollbar {:style {:grid-area "charges"
                                  :overflow-y "scroll"}}
-      [:h4 [tr strings/charges]]
+      [:h4 [tr (string "Charges")]]
       [view-charges-for-user user-id]]]))
 
 (defn view-user [username]

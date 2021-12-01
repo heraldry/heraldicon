@@ -2,8 +2,7 @@
   (:require
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.options :as options]
-   [heraldry.strings :as strings]))
+   [heraldry.options :as options]))
 
 (defmethod interface/options-subscriptions :heraldry.component/semy [_context]
   options/shared-options-subscriptions)
@@ -14,43 +13,43 @@
                                :max 20
                                :default 6
                                :integer? true
-                               :ui {:label strings/num-columns}}
+                               :ui {:label (string "Number of columns")}}
                 :num-fields-y {:type :range
                                :min 1
                                :max 20
                                :default 6
                                :integer? true
-                               :ui {:label strings/num-rows}}
+                               :ui {:label (string "Number of rows")}}
                 :offset-x {:type :range
                            :min -1
                            :max 1
                            :default 0
-                           :ui {:label strings/offset-x
+                           :ui {:label (string "Offset x")
                                 :step 0.01}}
                 :offset-y {:type :range
                            :min -1
                            :max 1
                            :default 0
-                           :ui {:label strings/offset-y
+                           :ui {:label (string "Offset y")
                                 :step 0.01}}
                 :stretch-x {:type :range
                             :min 0.5
                             :max 2
                             :default 1
-                            :ui {:label strings/stretch-x
+                            :ui {:label (string "Stretch x")
                                  :step 0.01}}
                 :stretch-y {:type :range
                             :min 0.5
                             :max 2
                             :default 1
-                            :ui {:label strings/stretch-y
+                            :ui {:label (string "Stretch y")
                                  :step 0.01}}
                 :rotation {:type :range
                            :min -90
                            :max 90
                            :default 0
-                           :ui {:label strings/rotation}}
-                :ui {:label strings/layout
+                           :ui {:label (string "Rotation")}}
+                :ui {:label (string "Layout")
                      :form-type :semy-layout}}
 
        :rectangular? {:type :boolean
@@ -58,4 +57,4 @@
                       :ui {:label (string "Rectangular grid")}}
        :manual-blazon {:type :text
                        :default nil
-                       :ui {:label strings/manual-blazon}}}))
+                       :ui {:label (string "Manual blazon")}}}))

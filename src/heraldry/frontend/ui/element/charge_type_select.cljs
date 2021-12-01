@@ -11,8 +11,7 @@
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.static :as static]
-   [heraldry.strings :as strings]))
+   [heraldry.static :as static]))
 
 (macros/reg-event-db :update-charge
   (fn [db [_ path changes]]
@@ -77,7 +76,7 @@
                                                     [:attitude :facing]))])}
                   (:name charge-data)])
                #(state/invalidate-cache [:all-charges] :all-charges)]
-              [:div [tr strings/loading]])])]]])))
+              [:div [tr (string "Loading...")]])])]]])))
 
 (defmethod ui-interface/form-element :charge-type-select [context]
   [charge-type-select context])

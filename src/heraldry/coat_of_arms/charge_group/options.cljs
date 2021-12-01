@@ -5,14 +5,13 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def type-choices
-  [[strings/rows :heraldry.charge-group.type/rows]
-   [strings/columns :heraldry.charge-group.type/columns]
-   [strings/arc :heraldry.charge-group.type/arc]
-   [strings/in-orle :heraldry.charge-group.type/in-orle]])
+  [[(string "Rows") :heraldry.charge-group.type/rows]
+   [(string "Columns") :heraldry.charge-group.type/columns]
+   [(string "Arc") :heraldry.charge-group.type/arc]
+   [(string "In orle") :heraldry.charge-group.type/in-orle]])
 
 (def type-map
   (util/choices->map type-choices))
@@ -20,31 +19,31 @@
 (def type-option
   {:type :choice
    :choices type-choices
-   :ui {:label strings/type
+   :ui {:label (string "Type")
         :form-type :charge-group-type-select}})
 
 (def shared-options
   {:origin {:point {:type :choice
                     :choices position/point-choices
                     :default :fess
-                    :ui {:label strings/point}}
+                    :ui {:label (string "Point")}}
             :offset-x {:type :range
                        :min -45
                        :max 45
                        :default 0
-                       :ui {:label strings/offset-x
+                       :ui {:label (string "Offset x")
                             :step 0.1}}
             :offset-y {:type :range
                        :min -45
                        :max 45
                        :default 0
-                       :ui {:label strings/offset-y
+                       :ui {:label (string "Offset y")
                             :step 0.1}}
-            :ui {:label strings/origin
+            :ui {:label (string "Origin")
                  :form-type :position}}
    :manual-blazon {:type :text
                    :default nil
-                   :ui {:label strings/manual-blazon}}})
+                   :ui {:label (string "Manual blazon")}}})
 
 (defn rows-or-columns [_context]
   (-> shared-options
@@ -52,13 +51,13 @@
                         :min 1
                         :max 100
                         :default 40
-                        :ui {:label strings/spacing
+                        :ui {:label (string "Spacing")
                              :step 0.1}}
               :stretch {:type :range
                         :min 0
                         :max 5
                         :default 1
-                        :ui {:label strings/stretch
+                        :ui {:label (string "Stretch")
                              :step 0.01}}
               :strip-angle {:type :range
                             :min -90
@@ -92,19 +91,19 @@
                       :max 20
                       :default 5
                       :integer? true
-                      :ui {:label strings/number
+                      :ui {:label (string "Number")
                            :form-type :charge-group-slot-number}}
               :radius {:type :range
                        :min 0
                        :max 100
                        :default 30
-                       :ui {:label strings/radius
+                       :ui {:label (string "Radius")
                             :step 0.1}}
               :arc-stretch {:type :range
                             :min 0
                             :max 5
                             :default 1
-                            :ui {:label strings/stretch
+                            :ui {:label (string "Stretch")
                                  :step 0.01}}
               :rotate-charges? {:type :boolean
                                 :default false
@@ -117,20 +116,20 @@
                          :min 0
                          :max 30
                          :default 10
-                         :ui {:label strings/distance
+                         :ui {:label (string "Distance")
                               :step 0.1}}
               :offset {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label strings/offset
+                       :ui {:label (string "Offset")
                             :step 0.01}}
               :slots {:type :range
                       :min 1
                       :max 30
                       :default 5
                       :integer? true
-                      :ui {:label strings/number
+                      :ui {:label (string "Number")
                            :form-type :charge-group-slot-number}}
               ;; TODO: this should be added at some point, but there are some issues
               ;; around corners, so I'll leave it for now
@@ -156,17 +155,17 @@
            :max 10
            :default 3
            :integer? true
-           :ui {:label strings/number
+           :ui {:label (string "Number")
                 :form-type :charge-group-slot-number}}
    :stretch {:type :range
              :min 0
              :max 5
              :default 1
-             :ui {:label strings/stretch
+             :ui {:label (string "Stretch")
                   :step 0.01}}
    :offset {:type :range
             :min -3
             :max 3
             :default 0
-            :ui {:label strings/offset
+            :ui {:label (string "Offset")
                  :step 0.01}}})

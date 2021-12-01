@@ -6,8 +6,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.ribbon :as ribbon]
-   [heraldry.strings :as strings]))
+   [heraldry.ribbon :as ribbon]))
 
 (def tinctures-without-furs
   (-> tincture/choices
@@ -19,9 +18,9 @@
 
 (def type-option
   {:type :choice
-   :choices [[strings/motto :heraldry.motto.type/motto]
-             [strings/slogan :heraldry.motto.type/slogan]]
-   :ui {:label strings/type}})
+   :choices [[(string "Motto") :heraldry.motto.type/motto]
+             [(string "Slogan") :heraldry.motto.type/slogan]]
+   :ui {:label (string "Type")}})
 
 (defmethod interface/options-subscriptions :heraldry.component/motto [_context]
   options/shared-options-subscriptions)
@@ -30,32 +29,32 @@
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
         motto-type (interface/get-raw-data (c/++ context :type))]
     (-> {:origin {:point {:type :choice
-                          :choices [[strings/top :top]
-                                    [strings/bottom :bottom]]
+                          :choices [[(string "Top") :top]
+                                    [(string "Bottom") :bottom]]
                           :default (case motto-type
                                      :heraldry.motto.type/slogan :top
                                      :bottom)
-                          :ui {:label strings/point}}
+                          :ui {:label (string "Point")}}
                   :offset-x {:type :range
                              :min -100
                              :max 100
                              :default 0
-                             :ui {:label strings/offset-x
+                             :ui {:label (string "Offset x")
                                   :step 0.1}}
                   :offset-y {:type :range
                              :min -100
                              :max 100
                              :default 0
-                             :ui {:label strings/offset-y
+                             :ui {:label (string "Offset y")
                                   :step 0.1}}
-                  :ui {:label strings/origin
+                  :ui {:label (string "Origin")
                        :form-type :position}}
          :geometry (-> geometry/default-options
                        (select-keys [:size :ui])
                        (assoc-in [:size :min] 5)
                        (assoc-in [:size :max] 300)
                        (assoc-in [:size :default] 100))
-         :ribbon-variant {:ui {:label strings/ribbon
+         :ribbon-variant {:ui {:label (string "Ribbon")
                                :form-type :ribbon-reference-select}}
 
          :tincture-foreground {:type :choice

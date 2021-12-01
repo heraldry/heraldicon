@@ -12,8 +12,7 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.options :as options]
-   [heraldry.strings :as strings]))
+   [heraldry.options :as options]))
 
 (def ordinary-type :heraldry.ordinary.type/quarter)
 
@@ -29,27 +28,27 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:origin {:point {:type :choice
-                          :choices [[strings/fess-point :fess]
-                                    [strings/chief-point :chief]
-                                    [strings/base-point :base]
-                                    [strings/honour-point :honour]
-                                    [strings/nombril-point :nombril]
-                                    [strings/top :top]
-                                    [strings/bottom :bottom]]
+                          :choices [[(string "Fess") :fess]
+                                    [(string "Chief") :chief]
+                                    [(string "Base") :base]
+                                    [(string "Honour") :honour]
+                                    [(string "Nombril") :nombril]
+                                    [(string "Top") :top]
+                                    [(string "Bottom") :bottom]]
                           :default :fess
-                          :ui {:label strings/point}}
+                          :ui {:label (string "Point")}}
                   :alignment {:type :choice
                               :choices position/alignment-choices
                               :default :middle
-                              :ui {:label strings/alignment
+                              :ui {:label (string "Alignment")
                                    :form-type :radio-select}}
                   :offset-y {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label strings/offset-y
+                             :ui {:label (string "Offset y")
                                   :step 0.1}}
-                  :ui {:label strings/origin
+                  :ui {:label (string "Origin")
                        :form-type :position}}
          :line line-style
          :opposite-line opposite-line-style
@@ -59,15 +58,15 @@
                              [(string "Dexter-base") :dexter-base]
                              [(string "Sinister-base") :sinister-base]]
                    :default :dexter-chief
-                   :ui {:label strings/variant
+                   :ui {:label (string "Variant")
                         :form-type :select}}
          :geometry {:size {:type :range
                            :min 10
                            :max 150
                            :default 100
-                           :ui {:label strings/size
+                           :ui {:label (string "Size")
                                 :step 0.1}}
-                    :ui {:label strings/geometry
+                    :ui {:label (string "Geometry")
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}

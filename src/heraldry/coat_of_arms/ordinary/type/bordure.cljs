@@ -8,7 +8,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/bordure)
@@ -20,7 +19,7 @@
                :min 0.1
                :max 35
                :default 10
-               :ui {:label strings/thickness
+               :ui {:label (string "Thickness")
                     :step 0.1}}
    :outline? options/plain-outline?-option})
 

@@ -23,7 +23,6 @@
    [heraldry.math.vector :as v]
    [heraldry.render :as render]
    [heraldry.ribbon :as ribbon]
-   [heraldry.strings :as strings]
    [heraldry.util :as util :refer [id-for-url]]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -415,7 +414,7 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path strings/copy-created])
+    (rf/dispatch-sync [:set-form-message form-db-path (string "Created an unsaved copy.")])
     (reife/push-state :create-ribbon)))
 
 (defn button-row []
@@ -449,7 +448,7 @@
         :on-click (if can-copy?
                     copy-to-new-clicked
                     #(js/alert "Need to be logged in and arms must be saved."))}
-       [tr strings/copy-to-new]]
+       [tr (string "Copy to new")]]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")
@@ -458,12 +457,12 @@
                     #(js/alert "Need to be logged in and own the arms."))
         :style {:flex "initial"
                 :margin-left "10px"}}
-       [tr strings/save]]]]))
+       [tr (string "Save")]]]]))
 
 (defn attribution []
   (let [attribution-data (attribution/for-ribbon {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr strings/attribution]]
+     [:h3 [tr (string "Attribution")]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
@@ -476,7 +475,7 @@
                :style (when-not (= edit-mode :none)
                         {:color "#ffffff"
                          :background-color "#ff8020"})}
-      [tr strings/edit]]
+      [tr (string "Edit")]]
      (when-not (= edit-mode :none)
        " Shift - add point, Alt - remove points")]))
 
@@ -519,7 +518,7 @@
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]
-        [:div [tr strings/not-found]]))))
+        [:div [tr (string "Not found")]]))))
 
 (defn link-to-ribbon [ribbon & {:keys [type-prefix?]}]
   (let [ribbon-id (-> ribbon
@@ -545,7 +544,7 @@
       [ribbon-form])))
 
 (defn view-list-ribbons []
-  (rf/dispatch [:set-title strings/ribbons])
+  (rf/dispatch [:set-title (string "Ribbons")])
   (let [[status ribbons] (state/async-fetch-data
                           [:all-ribbons]
                           :all-ribbons
@@ -559,11 +558,11 @@
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-ribbon))}
-      [tr strings/create]]
+      [tr (string "Create")]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
         [ribbon-select/component ribbons link-to-ribbon invalidate-ribbons-cache]
-        [:div [tr strings/loading]])]]))
+        [:div [tr (string "Loading...")]])]]))
 
 (defn view-ribbon-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

@@ -1,7 +1,7 @@
 (ns heraldry.collection.options
   (:require
-   [heraldry.interface :as interface]
-   [heraldry.strings :as strings]))
+   [heraldry.gettext :refer [string]]
+   [heraldry.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry.component/collection [_context]
   #{})
@@ -11,4 +11,4 @@
                  :default 6
                  :min 1
                  :max 10
-                 :ui {:label strings/num-columns}}})
+                 :ui {:label (string "Number of columns")}}})

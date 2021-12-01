@@ -11,8 +11,7 @@
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.options :as options]
-   [heraldry.strings :as strings]))
+   [heraldry.options :as options]))
 
 (def field-type :heraldry.field.type/quartered)
 
@@ -30,28 +29,28 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))]
     {:origin {:point {:type :choice
-                      :choices [[strings/chief-point :chief]
-                                [strings/base-point :base]
-                                [strings/fess-point :fess]
-                                [strings/dexter-point :dexter]
-                                [strings/sinister-point :sinister]
-                                [strings/honour-point :honour]
-                                [strings/nombril-point :nombril]]
+                      :choices [[(string "Chief") :chief]
+                                [(string "Base") :base]
+                                [(string "Fess") :fess]
+                                [(string "Dexter") :dexter]
+                                [(string "Sinister") :sinister]
+                                [(string "Honour") :honour]
+                                [(string "Nombril") :nombril]]
                       :default :fess
-                      :ui {:label strings/point}}
+                      :ui {:label (string "Point")}}
               :offset-x {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label strings/offset-x
+                         :ui {:label (string "Offset x")
                               :step 0.1}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label strings/offset-y
+                         :ui {:label (string "Offset y")
                               :step 0.1}}
-              :ui {:label strings/origin
+              :ui {:label (string "Origin")
                    :form-type :position}}
      :line line-style
      :opposite-line opposite-line-style

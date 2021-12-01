@@ -18,7 +18,6 @@
    [heraldry.frontend.user :as user]
    [heraldry.gettext :refer [string]]
    [heraldry.render :as render]
-   [heraldry.strings :as strings]
    [heraldry.util :as util :refer [id-for-url]]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -291,7 +290,7 @@
                                            #(js/alert (tr (string "Need to be logged in and own the collection."))))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       [tr strings/save]]]]))
+       [tr (string "Save")]]]]))
 
 (defn collection-form []
   (rf/dispatch [:set-title-from-path-or-default
@@ -349,7 +348,7 @@
   (state/invalidate-cache list-db-path user-id))
 
 (defn view-list-collection []
-  (rf/dispatch [:set-title strings/collections])
+  (rf/dispatch [:set-title (string "Collections")])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
@@ -359,7 +358,7 @@
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-collection))}
-    [tr strings/create]]
+    [tr (string "Create")]]
    [:div {:style {:padding-top "0.5em"}}
     [list-collections]]])
 
@@ -378,7 +377,7 @@
     (when (= status :done)
       (if collection-data
         [collection-form]
-        [:div [tr strings/not-found]]))))
+        [:div [tr (string "Not found")]]))))
 
 (defn view-collection-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

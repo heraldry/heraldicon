@@ -9,8 +9,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]))
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/paly)
 
@@ -26,28 +25,28 @@
                              :max 20
                              :default 6
                              :integer? true
-                             :ui {:label strings/subfields-x
+                             :ui {:label (string "Subfields x")
                                   :form-type :field-layout-num-fields-x}}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
-                                :ui {:label strings/base-fields
+                                :ui {:label (string "Base fields")
                                      :form-type :field-layout-num-base-fields}}
               :offset-x {:type :range
                          :min -1
                          :max 1
                          :default 0
-                         :ui {:label strings/offset-x
+                         :ui {:label (string "Offset x")
                               :step 0.01}}
               :stretch-x {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label strings/stretch-x
+                          :ui {:label (string "Stretch x")
                                :step 0.01}}
-              :ui {:label strings/layout
+              :ui {:label (string "Layout")
                    :form-type :field-layout}}
      :line line-style}))
 

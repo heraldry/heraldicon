@@ -12,7 +12,6 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/label)
@@ -21,33 +20,33 @@
 
 (defmethod interface/options ordinary-type [context]
   (-> {:origin {:point {:type :choice
-                        :choices [[strings/fess-point :fess]
-                                  [strings/chief-point :chief]
-                                  [strings/base-point :base]
-                                  [strings/honour-point :honour]
-                                  [strings/nombril-point :nombril]
-                                  [strings/top :top]
-                                  [strings/bottom :bottom]]
+                        :choices [[(string "Fess") :fess]
+                                  [(string "Chief") :chief]
+                                  [(string "Base") :base]
+                                  [(string "Honour") :honour]
+                                  [(string "Nombril") :nombril]
+                                  [(string "Top") :top]
+                                  [(string "Bottom") :bottom]]
                         :default :chief
-                        :ui {:label strings/point}}
+                        :ui {:label (string "Point")}}
                 :alignment {:type :choice
                             :choices position/alignment-choices
                             :default :middle
-                            :ui {:label strings/alignment
+                            :ui {:label (string "Alignment")
                                  :form-type :radio-select}}
                 :offset-y {:type :range
                            :min -45
                            :max 45
                            :default 0
-                           :ui {:label strings/offset-y
+                           :ui {:label (string "Offset y")
                                 :step 0.1}}
-                :ui {:label strings/origin
+                :ui {:label (string "Origin")
                      :form-type :position}}
        :variant {:type :choice
                  :choices [[(string "Full") :full]
                            [(string "Truncated") :truncated]]
                  :default :full
-                 :ui {:label strings/variant
+                 :ui {:label (string "Variant")
                       :form-type :radio-select}}
        :num-points {:type :range
                     :min 2
@@ -59,33 +58,33 @@
                          :min 2
                          :max 90
                          :default 10
-                         :ui {:label strings/size
+                         :ui {:label (string "Size")
                               :step 0.1}}
                   :width {:type :range
                           :min 10
                           :max 150
                           :default 66
-                          :ui {:label strings/width
+                          :ui {:label (string "Width")
                                :step 0.1}}
                   :thickness {:type :range
                               :min 0
                               :max 20
                               :default 5
-                              :ui {:label strings/bar-thickness
+                              :ui {:label (string "Bar thickness")
                                    :step 0.1}}
                   :eccentricity {:type :range
                                  :min 0
                                  :max 1
                                  :default 0
-                                 :ui {:label strings/eccentricity
+                                 :ui {:label (string "Eccentricity")
                                       :step 0.01}}
                   :stretch {:type :range
                             :min 0.33
                             :max 10
                             :default 2
-                            :ui {:label strings/stretch
+                            :ui {:label (string "Stretch")
                                  :step 0.01}}
-                  :ui {:label strings/geometry
+                  :ui {:label (string "Geometry")
                        :form-type :geometry}}
        :outline? options/plain-outline?-option
        :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))

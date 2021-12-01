@@ -6,7 +6,6 @@
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/masony)
@@ -20,47 +19,47 @@
                :min 0
                :max 0.5
                :default 0.1
-               :ui {:label strings/thickness
+               :ui {:label (string "Thickness")
                     :step 0.01}}
    :layout {:num-fields-x {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label strings/subfields-x
+                           :ui {:label (string "Subfields x")
                                 :form-type :field-layout-num-fields-x}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label strings/subfields-y
+                           :ui {:label (string "Subfields y")
                                 :form-type :field-layout-num-fields-y}}
             :offset-x {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label strings/offset-x
+                       :ui {:label (string "Offset x")
                             :step 0.01}}
             :offset-y {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label strings/offset-y
+                       :ui {:label (string "Offset y")
                             :step 0.01}}
             :stretch-x {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label strings/stretch-x
+                        :ui {:label (string "Stretch x")
                              :step 0.01}}
             :stretch-y {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label strings/stretch-y
+                        :ui {:label (string "Stretch y")
                              :step 0.01}}
-            :ui {:label strings/layout
+            :ui {:label (string "Layout")
                  :form-type :field-layout}}})
 
 (defn masony-default [part-width part-height thickness]

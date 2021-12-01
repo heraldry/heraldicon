@@ -28,7 +28,7 @@
    [heraldry.render-options] ;; needed for side effects
    [heraldry.ribbon :as ribbon]
    [heraldry.state] ;; needed for side effects
-   [heraldry.strings :as strings]))
+   ))
 
 (.setup paper (new Size 500 500))
 
@@ -41,9 +41,9 @@
 (defmethod interface/options :heraldry.component/arms-general [context]
   {:name {:type :text
           :default ""
-          :ui {:label strings/name}}
+          :ui {:label (string "Name")}}
    :is-public {:type :boolean
-               :ui {:label strings/make-public}}
+               :ui {:label (string "Make public")}}
    :attribution (attribution/options (c/++ context :attribution))
    :tags {:ui {:form-type :tags}}})
 
@@ -56,9 +56,9 @@
 (defmethod interface/options :heraldry.component/collection-general [context]
   {:name {:type :text
           :default ""
-          :ui {:label strings/name}}
+          :ui {:label (string "Name")}}
    :is-public {:type :boolean
-               :ui {:label strings/make-public}}
+               :ui {:label (string "Make public")}}
    :attribution (attribution/options (c/++ context :attribution))
    :tags {:ui {:form-type :tags}}
    :font font/default-options})
@@ -73,9 +73,9 @@
 (defmethod interface/options :heraldry.component/charge-general [context]
   (cond-> {:name {:type :text
                   :default ""
-                  :ui {:label strings/name}}
+                  :ui {:label (string "Name")}}
            :is-public {:type :boolean
-                       :ui {:label strings/make-public}}
+                       :ui {:label (string "Make public")}}
            :attribution (attribution/options (c/++ context :attribution))
            :tags {:ui {:form-type :tags}}
            :type {:type :text
@@ -108,9 +108,9 @@
 (defmethod interface/options :heraldry.component/ribbon-general [context]
   {:name {:type :text
           :default ""
-          :ui {:label strings/name}}
+          :ui {:label (string "Name")}}
    :is-public {:type :boolean
-               :ui {:label strings/make-public}}
+               :ui {:label (string "Make public")}}
    :attribution (attribution/options (c/++ context :attribution))
    :ribbon (ribbon/options context)
    :tags {:ui {:form-type :tags}}})

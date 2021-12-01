@@ -16,7 +16,6 @@
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.static :as static]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (macros/reg-event-db :cycle-charge-index
@@ -228,9 +227,9 @@
                                    (string "slot")
                                    (string "slots")))
                 (when-not (= stretch 1)
-                  strings/stretched)
+                  (string "stretched"))
                 (when-not (zero? offset)
-                  strings/shifted)])]
+                  (string "shifted"))])]
     [:div {:style {:position "relative"}}
      [submenu/submenu context type-str [tr title] {:style {:width "20em"}
                                                    :class "submenu-strip-form"}
@@ -284,7 +283,7 @@
            " "
            [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip
                                                             strips-context default/charge-group-strip])}
-            [:i.fas.fa-plus] " " [tr strings/add]]]
+            [:i.fas.fa-plus] " " [tr (string "Add")]]]
 
           [:div.option.charge-group-strips
            [:ul
@@ -325,8 +324,8 @@
             :selected (static/static-url
                        (str "/svg/charge-group-preset-three-selected.svg"))}
      :buttons [{:icon "fas fa-plus"
-                :title strings/add
-                :menu [{:title strings/charge
+                :title (string "Add")
+                :menu [{:title (string "Charge")
                         :handler #(state/dispatch-on-event % [:add-element charges-context default/charge])}]}]
      :nodes (concat (->> (range num-charges)
                          reverse
@@ -335,15 +334,15 @@
                                   {:context charge-context
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip strings/move-down
+                                              :tooltip (string "move down")
                                               :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-context])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-charges))
-                                              :tooltip strings/move-up
+                                              :tooltip (string "move up")
                                               :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-context])}
                                              {:icon "far fa-trash-alt"
                                               :disabled? (= num-charges 1)
-                                              :tooltip strings/remove
+                                              :tooltip (string "remove")
                                               :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-context])}]})))
                          vec))}))
 

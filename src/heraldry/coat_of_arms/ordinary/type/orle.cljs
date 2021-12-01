@@ -8,7 +8,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/orle)
@@ -20,13 +19,13 @@
                :min 0.1
                :max 20
                :default 10
-               :ui {:label strings/thickness
+               :ui {:label (string "Thickness")
                     :step 0.1}}
    :distance {:type :range
               :min 0.1
               :max 30
               :default 5
-              :ui {:label strings/distance
+              :ui {:label (string "Distance")
                    :step 0.1}}
    :outline? options/plain-outline?-option})
 

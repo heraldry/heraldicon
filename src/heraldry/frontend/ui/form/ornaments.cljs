@@ -7,7 +7,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.shield-separator :as shield-separator]
-   [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
 (defn form [_context]
@@ -22,35 +21,35 @@
                   [:sup {:style {:color "#d40"}}
                    "alpha"]
                   [:div.bottom
-                   [:p strings/alpha-feature]]]
+                   [:p (string "This feature is incomplete and likely going to change, so use with caution. :)")]]]
      :buttons [{:icon "fas fa-plus"
-                :title strings/add
-                :menu [{:title strings/mantling
+                :title (string "Add")
+                :menu [{:title (string "Mantling")
                         :handler #(state/dispatch-on-event % [:add-element elements-context
                                                               default/mantling-charge
                                                               shield-separator/add-element-insert-at-bottom-options])}
-                       {:title strings/compartment
+                       {:title (string "Compartment")
                         :handler #(state/dispatch-on-event % [:add-element elements-context
                                                               default/compartment-charge
                                                               shield-separator/add-element-insert-at-bottom-options])}
-                       {:title strings/supporter-left
+                       {:title (string "Supporter-left")
                         :handler #(state/dispatch-on-event % [:add-element elements-context
                                                               default/supporter-left-charge
                                                               shield-separator/add-element-options])}
-                       {:title strings/supporter-right
+                       {:title (string "Supporter-right")
                         :handler #(state/dispatch-on-event % [:add-element elements-context
                                                               default/supporter-right-charge
                                                               shield-separator/add-element-options])}
-                       {:title strings/motto
+                       {:title (string "Motto")
                         :handler #(state/dispatch-on-event % [:add-element elements-context default/motto
                                                               shield-separator/add-element-options])}
-                       {:title strings/slogan
+                       {:title (string "Slogan")
                         :handler #(state/dispatch-on-event % [:add-element elements-context default/slogan
                                                               shield-separator/add-element-options])}
-                       {:title strings/charge
+                       {:title (string "Charge")
                         :handler #(state/dispatch-on-event % [:add-element elements-context default/ornament-charge
                                                               shield-separator/add-element-options])}
-                       {:title strings/charge-group
+                       {:title (string "Charge group")
                         :handler #(state/dispatch-on-event % [:add-element elements-context default/ornament-charge-group
                                                               shield-separator/add-element-options])}]}]
      :nodes (->> (range num-elements)
@@ -61,14 +60,14 @@
                           {:context ornament-context
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip strings/move-down
+                                              :tooltip (string "move down")
                                               :handler #(state/dispatch-on-event % [:move-element ornament-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-elements))
-                                              :tooltip strings/move-up
+                                              :tooltip (string "move up")
                                               :handler #(state/dispatch-on-event % [:move-element ornament-context (inc idx)])}]
                                       removable? (conj {:icon "far fa-trash-alt"
-                                                        :tooltip strings/remove
+                                                        :tooltip (string "remove")
                                                         :handler #(state/dispatch-on-event
                                                                    %
                                                                    [:remove-element ornament-context

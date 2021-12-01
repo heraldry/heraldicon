@@ -3,10 +3,10 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
-   [heraldry.options :as options]
-   [heraldry.strings :as strings]))
+   [heraldry.options :as options]))
 
 (defn add-cottise-options [options key context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -16,24 +16,24 @@
     (assoc options
            key
            {:line (-> line-style
-                      (assoc-in [:ui :label] strings/line))
+                      (assoc-in [:ui :label] (string "Line")))
             :opposite-line (-> opposite-line-style
-                               (assoc-in [:ui :label] strings/opposite-line))
+                               (assoc-in [:ui :label] (string "Opposite line")))
             :distance {:type :range
                        :min -10
                        :max 20
                        :default 2
-                       :ui {:label strings/distance
+                       :ui {:label (string "Distance")
                             :step 0.1}}
             :thickness {:type :range
                         :min 0.1
                         :max 20
                         :default 2
-                        :ui {:label strings/thickness
+                        :ui {:label (string "Thickness")
                              :step 0.1}}
             :outline? {:type :boolean
                        :default false
-                       :ui {:label strings/outline}}
+                       :ui {:label (string "Outline")}}
             :ui {:form-type :cottising}})))
 
 (defn add-cottising [context num]

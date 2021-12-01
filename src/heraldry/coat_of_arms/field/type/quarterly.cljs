@@ -8,8 +8,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]))
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/quarterly)
 
@@ -23,53 +22,53 @@
                            :max 20
                            :default 3
                            :integer? true
-                           :ui {:label strings/subfields-x
+                           :ui {:label (string "Subfields x")
                                 :form-type :field-layout-num-fields-x}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 4
                            :integer? true
-                           :ui {:label strings/subfields-y
+                           :ui {:label (string "Subfields y")
                                 :form-type :field-layout-num-fields-y}}
             :num-base-fields {:type :range
                               :min 2
                               :max 8
                               :default 2
                               :integer? true
-                              :ui {:label strings/base-fields
+                              :ui {:label (string "Base fields")
                                    :form-type :field-layout-num-base-fields}}
             :offset-x {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label strings/offset-x
+                       :ui {:label (string "Offset x")
                             :step 0.01}}
             :offset-y {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label strings/offset-y
+                       :ui {:label (string "Offset y")
                             :step 0.01}}
             :stretch-x {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label strings/stretch-x
+                        :ui {:label (string "Stretch x")
                              :step 0.01}}
             :stretch-y {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label strings/stretch-y
+                        :ui {:label (string "Stretch y")
                              :step 0.01}}
             :rotation {:type :range
                        :min -90
                        :max 90
                        :default 0
-                       :ui {:label strings/rotation
+                       :ui {:label (string "Rotation")
                             :step 0.01}}
-            :ui {:label strings/layout
+            :ui {:label (string "Layout")
                  :form-type :field-layout}}})
 
 (defmethod field-interface/render-field field-type

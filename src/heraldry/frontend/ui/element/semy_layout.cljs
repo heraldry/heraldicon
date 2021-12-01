@@ -6,7 +6,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -25,12 +24,12 @@
           changes [main-name
                    (when (some #(options/changed? % sanitized-layout options)
                                [:offset-x :offset-y])
-                     strings/shifted)
+                     (string "shifted"))
                    (when (some #(options/changed? % sanitized-layout options)
                                [:stretch-x :stretch-y])
-                     strings/stretched)
+                     (string "stretched"))
                    (when (options/changed? :rotation sanitized-layout options)
-                     strings/rotated)]]
+                     (string "rotated"))]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 
