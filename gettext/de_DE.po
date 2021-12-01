@@ -244,10 +244,6 @@ msgid "About"
 msgstr "Infos"
 
 #: src/heraldry/frontend/header.cljs
-msgid "Users"
-msgstr "Benutzer"
-
-#: src/heraldry/frontend/header.cljs
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -561,6 +557,14 @@ msgstr ""
 "\n"
 "Note: wende die Vorauswahl an nachdem sich die Anzahl der Segmente in der "
 "Kurve ändert. Das überschreibt die Änderungen hier, aber im Mo"
+
+#: src/heraldry/frontend/user_library.cljs
+msgid "User"
+msgstr "Benutzer"
+
+#: src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
+msgid "Users"
+msgstr "Benutzer"
 
 #: src/heraldry/motto.cljs
 msgid "Other / Metal"
