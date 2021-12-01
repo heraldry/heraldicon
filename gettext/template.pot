@@ -958,10 +958,6 @@ msgstr ""
 msgid "Tenné"
 msgstr ""
 
-#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/tincture/core.cljs
-msgid "Helmet"
-msgstr ""
-
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Light"
 msgstr ""
@@ -1324,6 +1320,22 @@ msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "various"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/tincture/core.cljs src/heraldry/frontend/ui/form/helm.cljs
+msgid "Helmet"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/helm.cljs
+msgid "Torse"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/helm.cljs
+msgid "Crest charge"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/helm.cljs
+msgid "Helm"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
