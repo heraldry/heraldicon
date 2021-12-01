@@ -7,6 +7,7 @@
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,8 +17,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/label)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Label"
-                                                              :de "Turnierkragen"})
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Label"))
 
 (defmethod interface/options ordinary-type [context]
   (-> {:origin {:point {:type :choice

@@ -9,6 +9,7 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.chevron :as chevron]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
@@ -19,8 +20,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/chevron)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Chevron"
-                                                              :de "Sparren"})
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Chevron"))
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))

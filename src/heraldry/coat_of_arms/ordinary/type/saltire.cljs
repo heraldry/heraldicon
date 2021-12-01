@@ -9,6 +9,7 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.saltire :as saltire]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -18,8 +19,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/saltire)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Saltire"
-                                                              :de "Andreaskreuz"})
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Saltire"))
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))

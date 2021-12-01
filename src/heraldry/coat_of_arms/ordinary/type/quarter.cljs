@@ -8,6 +8,7 @@
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,8 +17,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/quarter)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Quarter / Canton"
-                                                              :de "Vierung / Obereck"})
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Quarter / Canton"))
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))

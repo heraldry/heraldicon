@@ -278,6 +278,74 @@ msgstr "Deichselschnitt"
 msgid "Vairy"
 msgstr "Feh"
 
+#: src/heraldry/coat_of_arms/ordinary/type/base.cljs
+msgid "Base"
+msgstr "Schildfuß"
+
+#: src/heraldry/coat_of_arms/ordinary/type/bend.cljs
+msgid "Bend"
+msgstr "Schrägbalken"
+
+#: src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs
+msgid "Bend sinister"
+msgstr "Schräglinksbalken"
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs
+msgid "Bordure"
+msgstr "Schildbord"
+
+#: src/heraldry/coat_of_arms/ordinary/type/chevron.cljs
+msgid "Chevron"
+msgstr "Sparren"
+
+#: src/heraldry/coat_of_arms/ordinary/type/chief.cljs
+msgid "Chief"
+msgstr "Schildhaupt"
+
+#: src/heraldry/coat_of_arms/ordinary/type/cross.cljs
+msgid "Cross"
+msgstr "Kreuz"
+
+#: src/heraldry/coat_of_arms/ordinary/type/fess.cljs
+msgid "Fess"
+msgstr "Balken"
+
+#: src/heraldry/coat_of_arms/ordinary/type/gore.cljs
+msgid "Gore"
+msgstr "Gore"
+
+#: src/heraldry/coat_of_arms/ordinary/type/label.cljs
+msgid "Label"
+msgstr "Turnierkragen"
+
+#: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "Orle"
+msgstr "Innenbord"
+
+#: src/heraldry/coat_of_arms/ordinary/type/pale.cljs
+msgid "Pale"
+msgstr "Pfahl"
+
+#: src/heraldry/coat_of_arms/ordinary/type/pall.cljs
+msgid "Pall"
+msgstr "Deichsel"
+
+#: src/heraldry/coat_of_arms/ordinary/type/pile.cljs
+msgid "Pile"
+msgstr "Spitze"
+
+#: src/heraldry/coat_of_arms/ordinary/type/point.cljs
+msgid "Point"
+msgstr "Schrägeck"
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Quarter / Canton"
+msgstr "Vierung / Obereck"
+
+#: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
+msgid "Saltire"
+msgstr "Andreaskreuz"
+
 #: src/heraldry/frontend/arms_library.cljs
 msgid "Blazon"
 msgstr "Blasonierung"

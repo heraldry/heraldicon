@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -12,8 +13,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/bordure)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Bordure"
-                                                              :de "Schildbord"})
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Bordure"))
 
 (defmethod interface/options ordinary-type [_context]
   {:thickness {:type :range
