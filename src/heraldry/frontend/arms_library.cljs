@@ -16,6 +16,7 @@
    [heraldry.frontend.ui.core :as ui]
    [heraldry.frontend.ui.element.arms-select :as arms-select]
    [heraldry.frontend.user :as user]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.render :as render]
    [heraldry.strings :as strings]
@@ -85,11 +86,9 @@
 (defn blazonry []
   [:div.blazonry
    [:h3
-    [tr {:en "Blazon"
-         :de "Blasonierung"}]
+    [tr (string "Blazon")]
     [:span {:style {:font-size "0.75em"}}
-     [tr {:en " (beta, not complete)"
-          :de " (beta und derzeit nur Englisch)"}]]]
+     " " [tr (string "(beta, not complete)")]]]
    [:div.blazon
     (util/tr-raw (interface/blazon {:path (conj form-db-path :coat-of-arms)}) :en)]])
 
@@ -151,8 +150,7 @@
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path
-                           (util/str-tr {:en "Arms saved, new version: "
-                                         :de "Wappen gespeichert, neue Version: "} (:version response))])
+                           (util/str-tr (string "Arms saved, new version:") " " (:version response))])
         (reife/push-state :view-arms-by-id {:id (util/id-for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
@@ -185,8 +183,7 @@
 (defn share-button-clicked [_event]
   (let [short-url (util/short-url @(rf/subscribe [:get form-db-path]))]
     (copy-to-clipboard short-url)
-    (rf/dispatch [:set-form-message form-db-path {:en "Copied URL for sharing."
-                                                  :de "URL zum Teilen kopiert"}])))
+    (rf/dispatch [:set-form-message form-db-path (string "Copied URL for sharing.")])))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
@@ -222,29 +219,23 @@
      [:div.buttons {:style {:display "flex"}}
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
-                       :title (when-not can-export? (tr {:en "Arms need to be public and saved for exporting."
-                                                         :de "Das Wappen muß öffentlich und gespeichert sein zum Exportieren."}))
+                       :title (when-not can-export? (tr (string "Arms need to be public and saved for exporting.")))
                        :on-click (if can-export?
                                    generate-svg-clicked
                                    (if (not logged-in?)
-                                     #(js/alert (tr {:en "Need to be logged in."
-                                                     :de "Du mußt eingeloggt sein."}))
-                                     #(js/alert (tr {:en "Save your changes first."
-                                                     :de "Speichere deine Änderungen erst."}))))
+                                     #(js/alert (tr (string "Need to be logged in.")))
+                                     #(js/alert (tr (string "Save your changes first.")))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "SVG"]
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
-                       :title (when-not can-export? (tr {:en "Arms need to be public and saved for exporting."
-                                                         :de "Das Wappen muß öffentlich und gespeichert sein zum Exportieren."}))
+                       :title (when-not can-export? (tr (string "Arms need to be public and saved for exporting.")))
                        :on-click (if can-export?
                                    generate-png-clicked
                                    (if (not logged-in?)
-                                     #(js/alert (tr {:en "Need to be logged in."
-                                                     :de "Du mußt eingeloggt sein."}))
-                                     #(js/alert (tr {:en "Save your changes first."
-                                                     :de "Speichere deine Änderungen erst."}))))
+                                     #(js/alert (tr (string "Need to be logged in.")))
+                                     #(js/alert (tr (string "Save your changes first.")))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "PNG"]
@@ -252,8 +243,7 @@
         [:button.button {:style {:flex "initial"
                                  :color "#777"}
                          :class (when-not can-share? "disabled")
-                         :title (when-not can-share? (tr {:en "Arms need to be public and saved for sharing."
-                                                          :de "Das Wappen muß öffentlich und gespeichert sein zum Teilen."}))
+                         :title (when-not can-share? (tr (string "Arms need to be public and saved for sharing.")))
                          :on-click share-button-clicked}
          [:i.fas.fa-share-alt]])
       [:div {:style {:flex "auto"}}]
@@ -264,15 +254,13 @@
                 :margin-left "10px"}
         :on-click (if can-copy?
                     copy-to-new-clicked
-                    #(js/alert (tr {:en "Need to be logged in and arms must be saved."
-                                    :de "Du mußt eingeloggt sein und das Wappen gespeichert haben."})))}
+                    #(js/alert (tr (string "Need to be logged in and arms must be saved."))))}
        [tr strings/copy-to-new]]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
                                            save-arms-clicked
-                                           #(js/alert (tr {:en "Need to be logged in and own the arms."
-                                                           :de "Du mußt eingeloggt und der Besitzer des Wappens sein."})))
+                                           #(js/alert (tr (string "Need to be logged in and own the arms."))))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
        [tr strings/save]]]]))
@@ -280,8 +268,7 @@
 (defn arms-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
-                {:en "Create Arms"
-                 :de "Neues Wappen"}])
+                (string "Create Arms")])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -343,19 +330,8 @@
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [tr {:en [:<>
-              [:p
-               "Here you can create and view coats of arms. You explicitly have to save your coat of arms as "
-               [:b "public"] " and add a license, if you want to share the link and allow others to view it."]
-              [:p
-               "However, SVG/PNG links can be viewed by anyone."]]
-         :de [:<>
-              [:p
-               "Hier kannst du Wappen erstellen und ansehen. "
-               "Du mußt deine Wappen explizit als "
-               [:b "öffentlich"] " markieren eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest."]
-              [:p
-               "SVG/PNG Links können auch für private Wappen geteilt und von jedem angesehen werden."]]}]]
+    [:p [tr (string "Here you can create and view coats of arms. You explicitly have to save your coat of arms as public and add a license, if you want to share the link and allow others to view it.")]]
+    [:p [tr (string "However, SVG/PNG links can be viewed by anyone.")]]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])

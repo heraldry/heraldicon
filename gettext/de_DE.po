@@ -170,6 +170,66 @@ msgstr "Bogenwinkel"
 msgid "Rotate charges"
 msgstr "Wappenfiguren rotieren"
 
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Blazon"
+msgstr "Blasonierung"
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "(beta, not complete)"
+msgstr "(beta und derzeit nur Englisch)"
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Arms saved, new version:"
+msgstr "Wappen gespeichert, neue Version:"
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Copied URL for sharing."
+msgstr "URL zum Teilen kopiert."
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Arms need to be public and saved for exporting."
+msgstr "Das Wappen muß öffentlich und gespeichert sein zum Exportieren."
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Need to be logged in."
+msgstr "Du mußt eingeloggt sein."
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Save your changes first."
+msgstr "Speichere deine Änderungen erst."
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Arms need to be public and saved for sharing."
+msgstr "Das Wappen muß öffentlich und gespeichert sein zum Teilen."
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Need to be logged in and arms must be saved."
+msgstr "Du mußt eingeloggt sein und das Wappen gespeichert haben."
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Need to be logged in and own the arms."
+msgstr "Du mußt eingeloggt und der Besitzer des Wappens sein."
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "Create Arms"
+msgstr "Neues Wappen"
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid ""
+"Here you can create and view coats of arms. You explicitly have to save your "
+"coat of arms as public and add a license, if you want to share the link and "
+"allow others to view it."
+msgstr ""
+"Hier kannst du Wappen erstellen und ansehen. Du mußt deine Wappen explizit "
+"als öffentlich markieren eine Lizenz angeben, wenn du anderen den Zugriff "
+"erlauben und den Link teilen möchtest."
+
+#: src/heraldry/frontend/arms_library.cljs
+msgid "However, SVG/PNG links can be viewed by anyone."
+msgstr ""
+"SVG/PNG Links können auch für private Wappen geteilt und von jedem angesehen "
+"werden."
+
 #: src/heraldry/frontend/attribution.cljs
 msgid "by"
 msgstr "von"
