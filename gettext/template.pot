@@ -154,6 +154,114 @@ msgstr ""
 msgid "Rotate charges"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/field/type/barry.cljs
+msgid "Barry"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/bendy.cljs
+msgid "Bendy"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs
+msgid "Bendy sinister"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/chequy.cljs
+msgid "Chequy"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/chevronny.cljs
+msgid "Chevronny"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/counterchanged.cljs
+msgid "Counterchanged"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/fretty.cljs
+msgid "Fretty"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/gyronny.cljs
+msgid "Gyronny"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/lozengy.cljs
+msgid "Lozengy"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/masony.cljs
+msgid "Masony"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/paly.cljs
+msgid "Paly"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/papellony.cljs
+msgid "Papellony"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_bend.cljs
+msgid "Per bend"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs
+msgid "Per bend sinister"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_chevron.cljs
+msgid "Per chevron"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_fess.cljs
+msgid "Per fess"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_pale.cljs
+msgid "Per pale"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs
+msgid "Per pile"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_saltire.cljs
+msgid "Per saltire"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/plain.cljs
+msgid "Plain"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/potenty.cljs
+msgid "Potenty"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/quartered.cljs
+msgid "Quartered"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/quarterly.cljs
+msgid "Quarterly NxM"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs
+msgid "Tierced per fess"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs
+msgid "Tierced per pale"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs
+msgid "Tierced per pall"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/vairy.cljs
+msgid "Vairy"
+msgstr ""
+
 #: src/heraldry/frontend/arms_library.cljs
 msgid "Blazon"
 msgstr ""

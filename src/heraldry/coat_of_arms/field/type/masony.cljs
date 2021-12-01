@@ -4,14 +4,14 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/masony)
 
-(defmethod field-interface/display-name field-type [_] {:en "Masony"
-                                                        :de "Gemauert"})
+(defmethod field-interface/display-name field-type [_] (string "Masony"))
 
 (defmethod field-interface/part-names field-type [_] nil)
 

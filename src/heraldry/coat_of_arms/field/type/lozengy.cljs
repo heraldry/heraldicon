@@ -4,6 +4,7 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.strings :as strings]
@@ -11,8 +12,7 @@
 
 (def field-type :heraldry.field.type/lozengy)
 
-(defmethod field-interface/display-name field-type [_] {:en "Lozengy"
-                                                        :de "Schräggewürfelt"})
+(defmethod field-interface/display-name field-type [_] (string "Lozengy"))
 
 (defmethod field-interface/part-names field-type [_] nil)
 

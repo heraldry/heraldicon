@@ -8,6 +8,7 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.chevron :as chevron]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
@@ -17,8 +18,7 @@
 
 (def field-type :heraldry.field.type/per-chevron)
 
-(defmethod field-interface/display-name field-type [_] {:en "Per chevron"
-                                                        :de "Sparrenweise geteilt"})
+(defmethod field-interface/display-name field-type [_] (string "Per chevron"))
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 

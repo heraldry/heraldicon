@@ -6,6 +6,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -13,8 +14,7 @@
 
 (def field-type :heraldry.field.type/per-pale)
 
-(defmethod field-interface/display-name field-type [_] {:en "Per pale"
-                                                        :de "Gespalten"})
+(defmethod field-interface/display-name field-type [_] (string "Per pale"))
 
 (defmethod field-interface/part-names field-type [_] ["dexter" "sinister"])
 

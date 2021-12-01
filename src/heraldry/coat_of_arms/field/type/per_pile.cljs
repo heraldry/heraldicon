@@ -7,6 +7,7 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.pile :as pile]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,8 +17,7 @@
 
 (def field-type :heraldry.field.type/per-pile)
 
-(defmethod field-interface/display-name field-type [_] {:en "Per pile"
-                                                        :de "Gepalten mit einer Spitze"})
+(defmethod field-interface/display-name field-type [_] (string "Per pile"))
 
 (defmethod field-interface/part-names field-type [_] nil)
 

@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -12,8 +13,7 @@
 
 (def field-type :heraldry.field.type/quarterly)
 
-(defmethod field-interface/display-name field-type [_] {:en "Quarterly NxM"
-                                                        :de "Geviert NxM"})
+(defmethod field-interface/display-name field-type [_] (string "Quarterly NxM"))
 
 (defmethod field-interface/part-names field-type [_] nil)
 
