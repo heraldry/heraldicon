@@ -545,6 +545,10 @@ msgid "various"
 msgstr "verschiedenen"
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Segments"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
 msgid ""
 "The SVG export embeds the fonts, but some programs might not display them "
 "correctly. At least Chrome should display it."
@@ -647,6 +651,78 @@ msgstr "Benutzer"
 #: src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
 msgid "Users"
 msgstr "Benutzer"
+
+#: src/heraldry/frontend/validation.cljs
+msgid "on"
+msgstr "auf"
+
+#: src/heraldry/frontend/validation.cljs
+msgid "breaks rule of tincture."
+msgstr "bricht Tingierungsregel."
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Main line"
+msgstr "Hauptlinie"
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Opposite line"
+msgstr "Gegenlinie"
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Extra line"
+msgstr "Extralinie"
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Fimbriation tinctures are both metals ("
+msgstr "Säumung Tinkturen sind beide Metalle ("
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Fimbriation tinctures are both colours ("
+msgstr "Säumung Tinkturen sind beide Farben ("
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Fimbriation metal tincture ("
+msgstr "Säumung Metall-Tinktur ("
+
+#: src/heraldry/frontend/validation.cljs
+msgid ") touches metal field ("
+msgstr ") berührt Metall-Feld ("
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Fimbriation colour tincture ("
+msgstr "Säumung Farb-Tinktur ("
+
+#: src/heraldry/frontend/validation.cljs
+msgid ") touches colour field ("
+msgstr ") berührt Farb-Feld ("
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Paly should have an even number of fields, for an odd number use pales."
+msgstr ""
+"Das Feld sollte in eine gerade Zahl von Felder gespalten sein, für ungerade "
+"Anzahl sollten Pfähle benutzt werden."
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Barry should have an even number of fields, for an odd number use bars."
+msgstr ""
+"Das Feld sollte in eine gerade Zahl von Felder geteilt sein, für ungerade "
+"Anzahl sollten Balken benutzt werden."
+
+#: src/heraldry/frontend/validation.cljs
+msgid ""
+"Bendy should have an even number of fields, for an odd number use bends."
+msgstr ""
+"Das Feld sollte in eine gerade Zahl von Felder geteilt sein, für ungerade "
+"Anzahl sollten Schrägbalken benutzt werden."
+
+#: src/heraldry/frontend/validation.cljs
+msgid "All source fields required for derivative work."
+msgstr ""
+"Alle Felder für die Quelle müssen ausgefüllt sein für abgeleitete Arbeit."
+
+#: src/heraldry/frontend/validation.cljs
+msgid "License required for public objects."
+msgstr "Lizenz benötigt für öffentliche Objekte."
 
 #: src/heraldry/motto.cljs
 msgid "Other / Metal"

@@ -499,6 +499,10 @@ msgid "various"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "Segments"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ribbon_general.cljs
 msgid "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it."
 msgstr ""
 
@@ -578,6 +582,70 @@ msgstr ""
 
 #: src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
 msgid "Users"
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "on"
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "breaks rule of tincture."
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Main line"
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Opposite line"
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Extra line"
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Fimbriation tinctures are both metals ("
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Fimbriation tinctures are both colours ("
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Fimbriation metal tincture ("
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid ") touches metal field ("
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Fimbriation colour tincture ("
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid ") touches colour field ("
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Paly should have an even number of fields, for an odd number use pales."
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Barry should have an even number of fields, for an odd number use bars."
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "Bendy should have an even number of fields, for an odd number use bends."
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "All source fields required for derivative work."
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "License required for public objects."
 msgstr ""
 
 #: src/heraldry/motto.cljs
