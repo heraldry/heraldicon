@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.embattled)
+(ns heraldry.coat-of-arms.line.type.embattled
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Embattled"
-                  :de "Zinnenschnitt"}
+  {:display-name (string "Embattled")
    :value :embattled}
   [{:keys [height
            width]}

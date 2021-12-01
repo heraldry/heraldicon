@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.invected)
+(ns heraldry.coat-of-arms.line.type.invected
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Invected"
-                  :de "Lappenschnitt"}
+  {:display-name (string "Invected")
    :value :invected}
   [{:keys [eccentricity
            height

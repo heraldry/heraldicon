@@ -645,10 +645,6 @@ msgstr "Schräggeviert"
 msgid "Plain"
 msgstr "Ungeteilt"
 
-#: src/heraldry/coat_of_arms/field/type/potenty.cljs
-msgid "Potenty"
-msgstr "Krückenfeh"
-
 #: src/heraldry/coat_of_arms/field/type/quartered.cljs
 msgid "Quartered"
 msgstr "Geviert"
@@ -672,6 +668,99 @@ msgstr "Deichselschnitt"
 #: src/heraldry/coat_of_arms/field/type/vairy.cljs
 msgid "Vairy"
 msgstr "Feh"
+
+#: src/heraldry/coat_of_arms/line/type/angled.cljs
+msgid "Angled"
+msgstr "Stufe"
+
+#: src/heraldry/coat_of_arms/line/type/bevilled.cljs
+msgid "Bevilled"
+msgstr "Z-förmig"
+
+#: src/heraldry/coat_of_arms/line/type/dancetty.cljs
+msgid "Dancetty"
+msgstr "Zickzackschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/dovetailed.cljs
+msgid "Dovetailed"
+msgstr "Schwalbenschwanzschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/embattled.cljs
+msgid "Embattled"
+msgstr "Zinnenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/embattled_grady.cljs
+msgid "Embattled grady"
+msgstr "Stufengiebelschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/embattled_in_crosses.cljs
+msgid "Embattled in crosses"
+msgstr "Kreuzzinnenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/enarched.cljs
+msgid "Enarched / Embowed"
+msgstr "Bogenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/engrailed.cljs
+msgid "Engrailed"
+msgstr "Dornenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/fir_tree_topped.cljs
+msgid "Fir-tree topped"
+msgstr "Tannenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/fir_twigged.cljs
+msgid "Fir-twigged"
+msgstr "Tannenreisschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/indented.cljs
+msgid "Indented"
+msgstr "Zahnschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/invected.cljs
+msgid "Invected"
+msgstr "Lappenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/nebuly.cljs
+msgid "Nebuly"
+msgstr "Wolkenschnitt"
+
+#: src/heraldry/coat_of_arms/field/type/potenty.cljs
+#: src/heraldry/coat_of_arms/line/type/potenty.cljs
+msgid "Potenty"
+msgstr "Krückenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/raguly.cljs
+msgid "Raguly"
+msgstr "Schrägzinnenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/rayonny_flaming.cljs
+msgid "Rayonny (flaming)"
+msgstr "Flammenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/rayonny_spiked.cljs
+msgid "Rayonny (spiked)"
+msgstr "Spitzen-Flammen-Schnitt"
+
+#: src/heraldry/coat_of_arms/line/type/straight.cljs
+msgid "Straight"
+msgstr "Gerade"
+
+#: src/heraldry/coat_of_arms/line/type/thorny.cljs
+msgid "Thorny"
+msgstr "Dornenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/urdy.cljs
+msgid "Urdy"
+msgstr "Eisenhutschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/wavy.cljs
+msgid "Wavy / undy"
+msgstr "Wellenschnitt"
+
+#: src/heraldry/coat_of_arms/line/type/wolf_toothed.cljs
+msgid "Wolf toothed"
+msgstr "Wolfzahnschnitt"
 
 #: src/heraldry/coat_of_arms/ordinary/type/base.cljs
 msgid "Base"
@@ -1189,8 +1278,8 @@ msgid "Spiral counter-clockwise"
 msgstr "Spirale linksrum"
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
-msgid "Nebuly"
-msgstr "Abwechselnd"
+msgid "Waves"
+msgstr "Wellen"
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
 msgid "Start presets"

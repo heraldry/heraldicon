@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.indented)
+(ns heraldry.coat-of-arms.line.type.indented
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Indented"
-                  :de "Zahnschnitt"}
+  {:display-name (string "Indented")
    :value :indented}
   [{:keys [height
            width]}

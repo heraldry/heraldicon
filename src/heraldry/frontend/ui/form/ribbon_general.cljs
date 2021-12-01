@@ -290,7 +290,7 @@
        [[(string "Stacked") :stacked]
         [(string "Spiral clockwise") :spiral-clockwise]
         [(string "Spiral counter-clockwise") :spiral-counter-clockwise]
-        [(string "Nebuly") :nebuly]]]
+        [(string "Waves") :nebuly]]]
 
       [select/raw-select
        {:path start-path}

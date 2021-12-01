@@ -1,10 +1,10 @@
 (ns heraldry.coat-of-arms.line.type.fir-tree-topped
   (:require
+   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (defn pattern
-  {:display-name {:en "Fir-tree topped"
-                  :de "Tannenschnitt"}
+  {:display-name (string "Fir-tree topped")
    :value :fir-tree-topped}
   [{:keys [eccentricity height width]}
    _line-options]

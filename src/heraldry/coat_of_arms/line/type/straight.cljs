@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.straight)
+(ns heraldry.coat-of-arms.line.type.straight
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn full
-  {:display-name {:en "Straight"
-                  :de "Gerade"}
+  {:display-name (string "Straight")
    :value :straight
    :full? true}
   [{:keys [width]}

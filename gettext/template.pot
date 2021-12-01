@@ -626,10 +626,6 @@ msgstr ""
 msgid "Plain"
 msgstr ""
 
-#: src/heraldry/coat_of_arms/field/type/potenty.cljs
-msgid "Potenty"
-msgstr ""
-
 #: src/heraldry/coat_of_arms/field/type/quartered.cljs
 msgid "Quartered"
 msgstr ""
@@ -652,6 +648,98 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/field/type/vairy.cljs
 msgid "Vairy"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/angled.cljs
+msgid "Angled"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/bevilled.cljs
+msgid "Bevilled"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/dancetty.cljs
+msgid "Dancetty"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/dovetailed.cljs
+msgid "Dovetailed"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/embattled.cljs
+msgid "Embattled"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/embattled_grady.cljs
+msgid "Embattled grady"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/embattled_in_crosses.cljs
+msgid "Embattled in crosses"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/enarched.cljs
+msgid "Enarched / Embowed"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/engrailed.cljs
+msgid "Engrailed"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/fir_tree_topped.cljs
+msgid "Fir-tree topped"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/fir_twigged.cljs
+msgid "Fir-twigged"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/indented.cljs
+msgid "Indented"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/invected.cljs
+msgid "Invected"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/nebuly.cljs
+msgid "Nebuly"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/line/type/potenty.cljs
+msgid "Potenty"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/raguly.cljs
+msgid "Raguly"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/rayonny_flaming.cljs
+msgid "Rayonny (flaming)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/rayonny_spiked.cljs
+msgid "Rayonny (spiked)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/straight.cljs
+msgid "Straight"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/thorny.cljs
+msgid "Thorny"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/urdy.cljs
+msgid "Urdy"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/wavy.cljs
+msgid "Wavy / undy"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/type/wolf_toothed.cljs
+msgid "Wolf toothed"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/base.cljs
@@ -1123,7 +1211,7 @@ msgid "Spiral counter-clockwise"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
-msgid "Nebuly"
+msgid "Waves"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs

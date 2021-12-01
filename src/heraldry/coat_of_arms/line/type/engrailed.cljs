@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.engrailed)
+(ns heraldry.coat-of-arms.line.type.engrailed
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Engrailed"
-                  :de "Dornenschnitt"}
+  {:display-name (string "Engrailed")
    :value :engrailed}
   [{:keys [eccentricity
            height

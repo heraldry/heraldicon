@@ -1,10 +1,10 @@
 (ns heraldry.coat-of-arms.line.type.potenty
   (:require
+   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (defn pattern
-  {:display-name {:en "Potenty"
-                  :de "Krückenschnitt"}
+  {:display-name (string "Potenty")
    :value :potenty}
   [{:keys [height
            eccentricity

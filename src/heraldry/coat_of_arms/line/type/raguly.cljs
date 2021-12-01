@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.raguly)
+(ns heraldry.coat-of-arms.line.type.raguly
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Raguly"
-                  :de "Schrägzinnenschnitt"}
+  {:display-name (string "Raguly")
    :value :raguly}
   [{:keys [eccentricity
            height

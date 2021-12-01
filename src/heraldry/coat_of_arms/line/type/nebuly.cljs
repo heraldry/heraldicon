@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.nebuly)
+(ns heraldry.coat-of-arms.line.type.nebuly
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Nebuly"
-                  :de "Wolkenschnitt"}
+  {:display-name (string "Nebuly")
    :value :nebuly}
   [{:keys [eccentricity
            height
