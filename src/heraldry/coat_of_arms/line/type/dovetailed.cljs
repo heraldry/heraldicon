@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.dovetailed)
+(ns heraldry.coat-of-arms.line.type.dovetailed
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Dovetailed"
-                  :de "Schwalbenschwanzschnitt"}
+  {:display-name (string "Dovetailed")
    :value :dovetailed}
   [{:keys [eccentricity
            height

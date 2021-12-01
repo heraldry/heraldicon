@@ -1,10 +1,10 @@
 (ns heraldry.coat-of-arms.line.type.enarched
   (:require
+   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (defn full
-  {:display-name {:en "Enarched / Embowed"
-                  :de "Bogenschnitt"}
+  {:display-name (string "Enarched / Embowed")
    :value :enarched
    :full? true}
   [{:keys [height width eccentricity] :as _line-data}

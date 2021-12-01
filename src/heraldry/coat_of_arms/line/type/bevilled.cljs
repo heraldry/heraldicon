@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.bevilled)
+(ns heraldry.coat-of-arms.line.type.bevilled
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn full
-  {:display-name {:en "Bevilled"
-                  :de "Z-förmig"}
+  {:display-name (string "Bevilled")
    :value :bevilled
    :full? true}
   [{:keys [height width

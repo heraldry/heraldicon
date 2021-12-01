@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.fir-twigged)
+(ns heraldry.coat-of-arms.line.type.fir-twigged
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Fir-twigged"
-                  :de "Tannenreisschnitt"}
+  {:display-name (string "Fir-twigged")
    :value :fir-twigged}
   [{:keys [height width]}
    _line-options]

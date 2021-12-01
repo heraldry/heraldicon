@@ -1,10 +1,9 @@
 (ns heraldry.coat-of-arms.line.type.embattled-in-crosses
-  (:require
-   [heraldry.util :as util]))
+  (:require [heraldry.gettext :refer [string]]
+            [heraldry.util :as util]))
 
 (defn pattern
-  {:display-name {:en "Embattled in crosses"
-                  :de "Kreuzzinnenschnitt"}
+  {:display-name (string "Embattled in crosses")
    :value :embattled-in-crosses}
   [{:keys [height
            eccentricity

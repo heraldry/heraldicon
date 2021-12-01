@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.type.rayonny-flaming
   (:require
+   [heraldry.gettext :refer [string]]
    [heraldry.math.vector :as v]
    [heraldry.util :as util]))
 
@@ -30,8 +31,7 @@
      (v/rotate (v/dot end vf) angle)]))
 
 (defn pattern
-  {:display-name {:en "Rayonny (flaming)"
-                  :de "Flammenschnitt"}
+  {:display-name (string "Rayonny (flaming)")
    :value :rayonny-flaming}
   [{:keys [eccentricity
            height

@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.type.rayonny-spiked
   (:require
+   [heraldry.gettext :refer [string]]
    [heraldry.math.vector :as v]
    [heraldry.util :as util]))
 
@@ -35,8 +36,7 @@
      (v/rotate (v/dot end vf) angle)]))
 
 (defn pattern
-  {:display-name {:en "Rayonny (spiked)"
-                  :de "Spitzen-Flammen-Schnitt"}
+  {:display-name (string "Rayonny (spiked)")
    :value :rayonny-spiked}
   [{:keys [eccentricity
            height

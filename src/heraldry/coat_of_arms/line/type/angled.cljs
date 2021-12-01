@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.angled)
+(ns heraldry.coat-of-arms.line.type.angled
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn full
-  {:display-name {:en "Angled"
-                  :de "Stufe"}
+  {:display-name (string "Angled")
    :value :angled
    :full? true}
   [{:keys [width eccentricity] :as _line-data}

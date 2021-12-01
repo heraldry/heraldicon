@@ -1,8 +1,8 @@
-(ns heraldry.coat-of-arms.line.type.urdy)
+(ns heraldry.coat-of-arms.line.type.urdy
+  (:require [heraldry.gettext :refer [string]]))
 
 (defn pattern
-  {:display-name {:en "Urdy"
-                  :de "Eisenhutschnitt"}
+  {:display-name (string "Urdy")
    :value :urdy}
   [{:keys [eccentricity
            height
