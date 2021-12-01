@@ -1240,6 +1240,14 @@ msgstr "Einloggen"
 msgid "Register"
 msgstr "Registrieren"
 
+#: src/heraldry/frontend/history/core.cljs
+msgid "undo"
+msgstr "rückgängig"
+
+#: src/heraldry/frontend/history/core.cljs
+msgid "redo"
+msgstr "wiederholen"
+
 #: src/heraldry/frontend/ribbon_library.cljs
 msgid "Ribbon saved, new version: "
 msgstr "Band gespeichert, neue Version: "

@@ -1194,6 +1194,14 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
+#: src/heraldry/frontend/history/core.cljs
+msgid "undo"
+msgstr ""
+
+#: src/heraldry/frontend/history/core.cljs
+msgid "redo"
+msgstr ""
+
 #: src/heraldry/frontend/ribbon_library.cljs
 msgid "Ribbon saved, new version: "
 msgstr ""
