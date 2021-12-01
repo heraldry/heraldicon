@@ -546,7 +546,7 @@ msgstr "verschiedenen"
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
 msgid "Segments"
-msgstr ""
+msgstr "Segmente"
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
 msgid ""
