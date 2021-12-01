@@ -7,11 +7,10 @@
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def themes
-  [[strings/general
+  [[(string "General")
     [(string "WappenWiki (default)") :wappenwiki theme/theme-wappenwiki]
     [(string "Web") :theme-web theme/theme-web]
     [(string "RAL Traffic") :ral-traffic theme/theme-ral-traffic]
@@ -67,7 +66,7 @@
 
 (def choices
   [[(string "Metal")
-    [strings/void :none]
+    [(string "Void") :none]
     [(string "Argent") :argent]
     [(string "Or") :or]]
    [(string "Colour")

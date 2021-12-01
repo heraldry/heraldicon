@@ -7,7 +7,6 @@
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])
@@ -123,7 +122,7 @@
         {:disabled (-> value (or "") s/trim count zero?)
          :on-click on-click
          :type "button"}
-        [tr strings/add]]
+        [tr (string "Add")]]
        [:div {:style {:padding-top "10px"}}
         [tags-view (keys tags)
          :on-delete #(delete-tag-clicked path %)]]]]]))

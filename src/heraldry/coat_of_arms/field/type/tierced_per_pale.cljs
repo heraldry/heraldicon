@@ -10,8 +10,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]))
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/tierced-per-pale)
 
@@ -23,28 +22,28 @@
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]
     {:origin {:point {:type :choice
-                      :choices [[strings/fess-point :fess]
-                                [strings/dexter-point :dexter]
-                                [strings/sinister-point :sinister]
-                                [strings/left :left]
-                                [strings/right :right]]
+                      :choices [[(string "Fess") :fess]
+                                [(string "Dexter") :dexter]
+                                [(string "Sinister") :sinister]
+                                [(string "Left") :left]
+                                [(string "Right") :right]]
                       :default :fess
-                      :ui {:label strings/point}}
+                      :ui {:label (string "Point")}}
               :offset-x {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label strings/offset-x
+                         :ui {:label (string "Offset x")
                               :step 0.1}}
-              :ui {:label strings/origin
+              :ui {:label (string "Origin")
                    :form-type :position}}
      :layout {:stretch-x {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label strings/stretch-x
+                          :ui {:label (string "Stretch x")
                                :step 0.01}}
-              :ui {:label strings/layout
+              :ui {:label (string "Layout")
                    :form-type :field-layout}}
      :line line-style}))
 

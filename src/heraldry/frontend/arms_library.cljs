@@ -19,7 +19,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.render :as render]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -39,7 +38,7 @@
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
       [:<>
-       [:h3 [tr strings/charges]]
+       [:h3 [tr (string "Charges")]]
        [:ul
         (doall
          (for [charge charges-data]
@@ -55,7 +54,7 @@
                           (map ribbon/fetch-ribbon-data))]
     (when (-> ribbons-data first :id)
       [:<>
-       [:h3 [tr strings/ribbons]]
+       [:h3 [tr (string "Ribbons")]]
        [:ul
         (doall
          (for [ribbon ribbons-data]
@@ -68,7 +67,7 @@
 (defn attribution []
   (let [attribution-data (attribution/for-arms {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr strings/attribution]]
+     [:h3 [tr (string "Attribution")]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]
      [charge-attribution]
@@ -177,7 +176,7 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path strings/copy-created])
+    (rf/dispatch-sync [:set-form-message form-db-path (string "Created an unsaved copy.")])
     (reife/push-state :create-arms)))
 
 (defn share-button-clicked [_event]
@@ -255,7 +254,7 @@
         :on-click (if can-copy?
                     copy-to-new-clicked
                     #(js/alert (tr (string "Need to be logged in and arms must be saved."))))}
-       [tr strings/copy-to-new]]
+       [tr (string "Copy to new")]]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
@@ -263,7 +262,7 @@
                                            #(js/alert (tr (string "Need to be logged in and own the arms."))))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       [tr strings/save]]]]))
+       [tr (string "Save")]]]]))
 
 (defn arms-form []
   (rf/dispatch [:set-title-from-path-or-default
@@ -310,7 +309,7 @@
     (when (= status :done)
       (if arms-data
         [arms-form]
-        [:div [tr strings/not-found]]))))
+        [:div [tr (string "Not found")]]))))
 
 (defn link-to-arms [arms]
   (let [arms-id (-> arms
@@ -326,7 +325,7 @@
   [arms-select/list-arms link-to-arms])
 
 (defn view-list-arms []
-  (rf/dispatch [:set-title strings/arms])
+  (rf/dispatch [:set-title (string "Arms")])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
@@ -337,7 +336,7 @@
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-arms))}
-    [tr strings/create]]
+    [tr (string "Create")]]
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
 

@@ -9,8 +9,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
-   [heraldry.options :as options]
-   [heraldry.strings :as strings]))
+   [heraldry.options :as options]))
 
 (def field-type :heraldry.field.type/bendy)
 
@@ -22,42 +21,42 @@
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)
         origin-point-option {:type :choice
-                             :choices [[strings/fess-point :fess]
-                                       [strings/chief-point :chief]
-                                       [strings/base-point :base]
-                                       [strings/honour-point :honour]
-                                       [strings/nombril-point :nombril]
-                                       [strings/top-left :top-left]
-                                       [strings/bottom-right :bottom-right]]
+                             :choices [[(string "Fess") :fess]
+                                       [(string "Chief") :chief]
+                                       [(string "Base") :base]
+                                       [(string "Honour") :honour]
+                                       [(string "Nombril") :nombril]
+                                       [(string "Top-left") :top-left]
+                                       [(string "Bottom-right") :bottom-right]]
                              :default :top-left
-                             :ui {:label strings/point}}
+                             :ui {:label (string "Point")}}
         current-origin-point (options/get-value
                               (interface/get-raw-data (c/++ context :origin :point))
                               origin-point-option)
         anchor-point-option {:type :choice
                              :choices (case current-origin-point
-                                        :top-left [[strings/fess-point :fess]
-                                                   [strings/chief-point :chief]
-                                                   [strings/base-point :base]
-                                                   [strings/honour-point :honour]
-                                                   [strings/nombril-point :nombril]
-                                                   [strings/bottom-right :bottom-right]
-                                                   [strings/angle :angle]]
-                                        :bottom-right [[strings/fess-point :fess]
-                                                       [strings/chief-point :chief]
-                                                       [strings/base-point :base]
-                                                       [strings/honour-point :honour]
-                                                       [strings/nombril-point :nombril]
-                                                       [strings/top-left :top-left]
-                                                       [strings/angle :angle]]
-                                        [[strings/top-left :top-left]
-                                         [strings/bottom-right :bottom-right]
-                                         [strings/angle :angle]])
+                                        :top-left [[(string "Fess") :fess]
+                                                   [(string "Chief") :chief]
+                                                   [(string "Base") :base]
+                                                   [(string "Honour") :honour]
+                                                   [(string "Nombril") :nombril]
+                                                   [(string "Bottom-right") :bottom-right]
+                                                   [(string "Angle") :angle]]
+                                        :bottom-right [[(string "Fess") :fess]
+                                                       [(string "Chief") :chief]
+                                                       [(string "Base") :base]
+                                                       [(string "Honour") :honour]
+                                                       [(string "Nombril") :nombril]
+                                                       [(string "Top-left") :top-left]
+                                                       [(string "Angle") :angle]]
+                                        [[(string "Top-left") :top-left]
+                                         [(string "Bottom-right") :bottom-right]
+                                         [(string "Angle") :angle]])
                              :default (case current-origin-point
                                         :top-left :fess
                                         :bottom-right :fess
                                         :top-left)
-                             :ui {:label strings/point}}
+                             :ui {:label (string "Point")}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
@@ -66,18 +65,18 @@
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label strings/offset-x
+                         :ui {:label (string "Offset x")
                               :step 0.1}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label strings/offset-y
+                         :ui {:label (string "Offset y")
                               :step 0.1}}
-              :ui {:label strings/origin
+              :ui {:label (string "Origin")
                    :form-type :position}}
      :anchor (cond-> {:point anchor-point-option
-                      :ui {:label strings/anchor
+                      :ui {:label (string "Anchor")
                            :form-type :position}}
 
                (= current-anchor-point
@@ -85,48 +84,48 @@
                                          :min 0
                                          :max 360
                                          :default 45
-                                         :ui {:label strings/angle}})
+                                         :ui {:label (string "Angle")}})
 
                (not= current-anchor-point
                      :angle) (assoc :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label strings/offset-x
+                                               :ui {:label (string "Offset x")
                                                     :step 0.1}}
                                     :offset-y {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label strings/offset-y
+                                               :ui {:label (string "Offset y")
                                                     :step 0.1}}))
      :layout {:num-fields-y {:type :range
                              :min 1
                              :max 20
                              :default 6
                              :integer? true
-                             :ui {:label strings/subfields-y
+                             :ui {:label (string "Subfields y")
                                   :form-type :field-layout-num-fields-y}}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
-                                :ui {:label strings/base-fields
+                                :ui {:label (string "Base fields")
                                      :form-type :field-layout-num-base-fields}}
               :offset-y {:type :range
                          :min -1
                          :max 1
                          :default 0
-                         :ui {:label strings/offset-y
+                         :ui {:label (string "Offset y")
                               :step 0.01}}
               :stretch-y {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label strings/stretch-y
+                          :ui {:label (string "Stretch y")
                                :step 0.01}}
-              :ui {:label strings/layout
+              :ui {:label (string "Layout")
                    :form-type :field-layout}}
      :line line-style}))
 

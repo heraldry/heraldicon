@@ -10,7 +10,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tags :as tags]
    [heraldry.frontend.user :as user]
-   [heraldry.strings :as strings]
+   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -248,7 +248,7 @@
                                       [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
                                     " "
                                     [link-fn (-> node :data)]
-                                    [tr strings/by]
+                                    [tr (string "by")]
                                     [:a {:href (attribution/full-url-for-username username)
                                          :target "_blank"} username]]
                                    [charge-properties charge]])))}]])

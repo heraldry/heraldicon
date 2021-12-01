@@ -23,7 +23,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.math.svg.core :as svg]
    [heraldry.render :as render]
-   [heraldry.strings :as strings]
    [heraldry.util :as util :refer [id-for-url]]
    [hickory.core :as hickory]
    [re-frame.core :as rf]
@@ -285,7 +284,7 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path strings/copy-created])
+    (rf/dispatch-sync [:set-form-message form-db-path (string "Created an unsaved copy.")])
     (reife/push-state :create-charge)))
 
 (defn button-row []
@@ -342,7 +341,7 @@
         :on-click (if can-copy?
                     copy-to-new-clicked
                     #(js/alert (tr (string "Need to be logged in and charge must be saved."))))}
-       [tr strings/copy-to-new]]
+       [tr (string "Copy to new")]]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")
@@ -351,12 +350,12 @@
                     #(js/alert (tr (string "Need to be logged in and own the charge."))))
         :style {:flex "initial"
                 :margin-left "10px"}}
-       [tr strings/save]]]]))
+       [tr (string "Save")]]]]))
 
 (defn attribution []
   (let [attribution-data (attribution/for-charge {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr strings/attribution]]
+     [:h3 [tr (string "Attribution")]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
@@ -399,7 +398,7 @@
     (when (= status :done)
       (if charge-data
         [charge-form]
-        [:div [tr strings/not-found]]))))
+        [:div [tr (string "Not found")]]))))
 
 (defn link-to-charge [charge & {:keys [type-prefix?]}]
   (let [charge-id (-> charge
@@ -426,7 +425,7 @@
       [charge-form])))
 
 (defn view-list-charges []
-  (rf/dispatch [:set-title strings/charges])
+  (rf/dispatch [:set-title (string "Charges")])
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
                           :all-charges
@@ -441,11 +440,11 @@
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-charge))}
-      [tr strings/create]]
+      [tr (string "Create")]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
         [charge-select/component charges link-to-charge invalidate-charges-cache]
-        [:div [tr strings/loading]])]]))
+        [:div [tr (string "Loading...")]])]]))
 
 (defn view-charge-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

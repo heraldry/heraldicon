@@ -9,8 +9,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]))
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/per-pale)
 
@@ -20,20 +19,20 @@
 
 (defmethod interface/options field-type [context]
   {:origin {:point {:type :choice
-                    :choices [[strings/fess-point :fess]
-                              [strings/dexter-point :dexter]
-                              [strings/sinister-point :sinister]
-                              [strings/left :left]
-                              [strings/right :right]]
+                    :choices [[(string "Fess") :fess]
+                              [(string "Dexter") :dexter]
+                              [(string "Sinister") :sinister]
+                              [(string "Left") :left]
+                              [(string "Right") :right]]
                     :default :fess
-                    :ui {:label strings/point}}
+                    :ui {:label (string "Point")}}
             :offset-x {:type :range
                        :min -45
                        :max 45
                        :default 0
-                       :ui {:label strings/offset-x
+                       :ui {:label (string "Offset x")
                             :step 0.1}}
-            :ui {:label strings/origin
+            :ui {:label (string "Origin")
                  :form-type :position}}
    :line (line/options (c/++ context :line))})
 

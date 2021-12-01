@@ -14,7 +14,6 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/saltire)
@@ -27,44 +26,44 @@
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
         anchor-point-option {:type :choice
-                             :choices [[strings/top-left :top-left]
-                                       [strings/top-right :top-right]
-                                       [strings/bottom-left :bottom-left]
-                                       [strings/bottom-right :bottom-right]
-                                       [strings/angle :angle]]
+                             :choices [[(string "Top-left") :top-left]
+                                       [(string "Top-right") :top-right]
+                                       [(string "Bottom-left") :bottom-left]
+                                       [(string "Bottom-right") :bottom-right]
+                                       [(string "Angle") :angle]]
                              :default :top-left
-                             :ui {:label strings/point}}
+                             :ui {:label (string "Point")}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     ;; TODO: perhaps there should be origin options for the corners?
     ;; so one can align fro top-left to bottom-right
     (-> {:origin {:point {:type :choice
-                          :choices [[strings/chief-point :chief]
-                                    [strings/base-point :base]
-                                    [strings/fess-point :fess]
-                                    [strings/dexter-point :dexter]
-                                    [strings/sinister-point :sinister]
-                                    [strings/honour-point :honour]
-                                    [strings/nombril-point :nombril]]
+                          :choices [[(string "Chief") :chief]
+                                    [(string "Base") :base]
+                                    [(string "Fess") :fess]
+                                    [(string "Dexter") :dexter]
+                                    [(string "Sinister") :sinister]
+                                    [(string "Honour") :honour]
+                                    [(string "Nombril") :nombril]]
                           :default :fess
-                          :ui {:label strings/point}}
+                          :ui {:label (string "Point")}}
                   :offset-x {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label strings/offset-x
+                             :ui {:label (string "Offset x")
                                   :step 0.1}}
                   :offset-y {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label strings/offset-y
+                             :ui {:label (string "Offset y")
                                   :step 0.1}}
-                  :ui {:label strings/origin
+                  :ui {:label (string "Origin")
                        :form-type :position}}
          :anchor (cond-> {:point anchor-point-option
-                          :ui {:label strings/anchor
+                          :ui {:label (string "Anchor")
                                :form-type :position}}
 
                    (= current-anchor-point
@@ -72,34 +71,34 @@
                                              :min 10
                                              :max 80
                                              :default 45
-                                             :ui {:label strings/angle}})
+                                             :ui {:label (string "Angle")}})
 
                    (not= current-anchor-point
                          :angle) (assoc :alignment {:type :choice
                                                     :choices position/alignment-choices
                                                     :default :middle
-                                                    :ui {:label strings/alignment
+                                                    :ui {:label (string "Alignment")
                                                          :form-type :radio-select}}
                                         :offset-x {:type :range
                                                    :min -45
                                                    :max 45
                                                    :default 0
-                                                   :ui {:label strings/offset-x
+                                                   :ui {:label (string "Offset x")
                                                         :step 0.1}}
                                         :offset-y {:type :range
                                                    :min -45
                                                    :max 45
                                                    :default 0
-                                                   :ui {:label strings/offset-y
+                                                   :ui {:label (string "Offset y")
                                                         :step 0.1}}))
          :line line-style
          :geometry {:size {:type :range
                            :min 0.1
                            :max 90
                            :default 25
-                           :ui {:label strings/size
+                           :ui {:label (string "Size")
                                 :step 0.1}}
-                    :ui {:label strings/geometry
+                    :ui {:label (string "Geometry")
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}

@@ -35,10 +35,6 @@ msgid "License"
 msgstr ""
 
 #: src/heraldry/attribution.cljs
-msgid "Attribution"
-msgstr ""
-
-#: src/heraldry/attribution.cljs
 msgid "License version"
 msgstr ""
 
@@ -147,10 +143,6 @@ msgid "In her piety"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/attributes.cljs
-msgid "Issuant"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Overt"
 msgstr ""
 
@@ -239,7 +231,7 @@ msgid "Pierced"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/attributes.cljs
-msgid "Voided"
+msgid "Supporter"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/attributes.cljs
@@ -454,6 +446,10 @@ msgstr ""
 msgid "Toothed"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Shadow"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/charge/other.cljs
 msgid "Tinctures"
 msgstr ""
@@ -535,6 +531,14 @@ msgid "Arc angle"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/charge_group/options.cljs
+msgid "Number"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs
+msgid "Radius"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs
 msgid "Rotate charges"
 msgstr ""
 
@@ -572,6 +576,10 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/field/type/fretty.cljs
 msgid "Fretty"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/fretty.cljs
+msgid "Gap"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/field/type/gyronny.cljs
@@ -638,6 +646,10 @@ msgstr ""
 msgid "Quarterly NxM"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/field/type/barry.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chequy.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/paly.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs
+msgid "Base fields"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs
 msgid "Tierced per fess"
 msgstr ""
@@ -652,6 +664,38 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/field/type/vairy.cljs
 msgid "Vairy"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/chequy.cljs src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/lozengy.cljs src/heraldry/coat_of_arms/field/type/masony.cljs src/heraldry/coat_of_arms/field/type/paly.cljs src/heraldry/coat_of_arms/field/type/papellony.cljs src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs src/heraldry/coat_of_arms/field/type/vairy.cljs
+msgid "Subfields x"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/barry.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chequy.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/lozengy.cljs src/heraldry/coat_of_arms/field/type/masony.cljs src/heraldry/coat_of_arms/field/type/papellony.cljs src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs src/heraldry/coat_of_arms/field/type/vairy.cljs
+msgid "Subfields y"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/geometry.cljs
+msgid "Reversed"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/line/core.cljs
+msgid "Offset"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Base line"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/geometry.cljs src/heraldry/coat_of_arms/line/core.cljs
+msgid "Mirrored"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Flipped"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/cottising.cljs src/heraldry/coat_of_arms/line/core.cljs
+msgid "Line"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/line/fimbriation.cljs
@@ -766,10 +810,6 @@ msgstr ""
 msgid "Wolf toothed"
 msgstr ""
 
-#: src/heraldry/coat_of_arms/ordinary/type/base.cljs
-msgid "Base"
-msgstr ""
-
 #: src/heraldry/coat_of_arms/ordinary/type/bend.cljs
 msgid "Bend"
 msgstr ""
@@ -786,16 +826,8 @@ msgstr ""
 msgid "Chevron"
 msgstr ""
 
-#: src/heraldry/coat_of_arms/ordinary/type/chief.cljs
-msgid "Chief"
-msgstr ""
-
 #: src/heraldry/coat_of_arms/ordinary/type/cross.cljs
 msgid "Cross"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/ordinary/type/fess.cljs
-msgid "Fess"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/gore.cljs
@@ -814,8 +846,20 @@ msgstr ""
 msgid "Number of points"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/ordinary/type/label.cljs
+msgid "Bar thickness"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs
+msgid "Eccentricity"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
 msgid "Orle"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/cottising.cljs src/heraldry/coat_of_arms/humetty.cljs src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "Distance"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/pale.cljs
@@ -824,6 +868,10 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/pall.cljs
 msgid "Pall"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs
+msgid "Issuant"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/pile.cljs
@@ -842,8 +890,20 @@ msgstr ""
 msgid "Anchor-Point"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/geometry.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs
+msgid "Stretch"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/ordinary/type/point.cljs
-msgid "Point"
+msgid "Point ordinary"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/point.cljs
+msgid "Width"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs src/heraldry/coat_of_arms/ordinary/type/point.cljs
+msgid "Height"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
@@ -866,8 +926,104 @@ msgstr ""
 msgid "Sinister-base"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/field/type/vairy.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/point.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Variant"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 msgid "Saltire"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
+msgid "Anchor"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/geometry.cljs src/heraldry/coat_of_arms/ordinary/type/base.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/chief.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
+msgid "Size"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/geometry.cljs src/heraldry/coat_of_arms/ordinary/type/base.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/chief.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/point.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
+msgid "Geometry"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pale.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Fess"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/chief.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Chief"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/base.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Base"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pale.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/point.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Dexter"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pale.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/point.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Sinister"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Honour"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Nombril"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Top-left"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Top-right"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Bottom-left"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Bottom-right"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Angle"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Middle"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs
+msgid "Alignment"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/position.cljs
+msgid "Position"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/semy/options.cljs
+msgid "Number of rows"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/chequy.cljs src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/lozengy.cljs src/heraldry/coat_of_arms/field/type/masony.cljs src/heraldry/coat_of_arms/field/type/paly.cljs src/heraldry/coat_of_arms/field/type/papellony.cljs src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/vairy.cljs src/heraldry/coat_of_arms/semy/options.cljs
+msgid "Stretch x"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/barry.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chequy.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/lozengy.cljs src/heraldry/coat_of_arms/field/type/masony.cljs src/heraldry/coat_of_arms/field/type/papellony.cljs src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/vairy.cljs src/heraldry/coat_of_arms/semy/options.cljs
+msgid "Stretch y"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/lozengy.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs src/heraldry/coat_of_arms/semy/options.cljs
+msgid "Rotation"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/barry.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chequy.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/lozengy.cljs src/heraldry/coat_of_arms/field/type/masony.cljs src/heraldry/coat_of_arms/field/type/paly.cljs src/heraldry/coat_of_arms/field/type/papellony.cljs src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/vairy.cljs src/heraldry/coat_of_arms/semy/options.cljs
+msgid "Layout"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/semy/options.cljs
@@ -995,7 +1151,7 @@ msgid "Community"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
-msgid "Metal"
+msgid "Void"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
@@ -1004,10 +1160,6 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Or"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/tincture/core.cljs
-msgid "Colour"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
@@ -1086,6 +1238,34 @@ msgstr ""
 msgid "Proper"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/humetty.cljs src/heraldry/coat_of_arms/voided.cljs
+msgid "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens."
+msgstr ""
+
+#: src/heraldry/coat_of_arms/humetty.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/voided.cljs
+msgid "Round"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/humetty.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/voided.cljs
+msgid "Sharp"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/humetty.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/voided.cljs
+msgid "Bevel"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/humetty.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/voided.cljs
+msgid "Corners"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/semy/options.cljs src/heraldry/collection/options.cljs
+msgid "Number of columns"
+msgstr ""
+
+#: src/heraldry/font.cljs
+msgid "Font"
+msgstr ""
+
 #: src/heraldry/frontend/arms_library.cljs
 msgid "Blazon"
 msgstr ""
@@ -1136,10 +1316,6 @@ msgstr ""
 
 #: src/heraldry/frontend/arms_library.cljs
 msgid "However, SVG/PNG links can be viewed by anyone."
-msgstr ""
-
-#: src/heraldry/frontend/attribution.cljs
-msgid "by"
 msgstr ""
 
 #: src/heraldry/frontend/attribution.cljs
@@ -1266,12 +1442,44 @@ msgstr ""
 msgid "Ribbon saved, new version: "
 msgstr ""
 
+#: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/ribbon_library.cljs
+msgid "Created an unsaved copy."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/ribbon_library.cljs
+msgid "Copy to new"
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/collection_library.cljs src/heraldry/frontend/ribbon_library.cljs
+msgid "Save"
+msgstr ""
+
+#: src/heraldry/attribution.cljs src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/ribbon_library.cljs
+msgid "Attribution"
+msgstr ""
+
+#: src/heraldry/frontend/ribbon_library.cljs
+msgid "Edit"
+msgstr ""
+
 #: src/heraldry/frontend/ribbon_library.cljs
 msgid "Create Ribbon"
 msgstr ""
 
+#: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/collection_library.cljs src/heraldry/frontend/ribbon_library.cljs
+msgid "Not found"
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/header.cljs src/heraldry/frontend/ribbon_library.cljs
+msgid "Ribbons"
+msgstr ""
+
 #: src/heraldry/frontend/ribbon_library.cljs
 msgid "Here you can view and create ribbons to be used in coats of arms. By default your ribbons are private, so only you can see and use them. If you want to make them public, then you must provide a license."
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/collection_library.cljs src/heraldry/frontend/ribbon_library.cljs
+msgid "Create"
 msgstr ""
 
 #: src/heraldry/frontend/ui/element/arms_reference_select.cljs
@@ -1398,7 +1606,7 @@ msgstr ""
 msgid "Frame"
 msgstr ""
 
-#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
 msgid "Arc"
 msgstr ""
 
@@ -1418,7 +1626,7 @@ msgstr ""
 msgid "Others"
 msgstr ""
 
-#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
 msgid "In orle"
 msgstr ""
 
@@ -1438,7 +1646,7 @@ msgstr ""
 msgid "Shading"
 msgstr ""
 
-#: src/heraldry/frontend/ui/element/colours.cljs
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/charge/other.cljs src/heraldry/frontend/ui/element/colours.cljs
 msgid "Highlight"
 msgstr ""
 
@@ -1458,6 +1666,26 @@ msgstr ""
 msgid "reversed"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/humetty.cljs src/heraldry/frontend/ui/element/humetty.cljs
+msgid "Humetty / Couped"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/fimbriation.cljs src/heraldry/frontend/ui/element/geometry.cljs src/heraldry/frontend/ui/element/line.cljs
+msgid "adjusted"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/geometry.cljs src/heraldry/frontend/ui/element/line.cljs
+msgid "mirrored"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/line.cljs
+msgid "flipped"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/frontend/ui/element/line.cljs
+msgid "fimbriated"
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/line_type_select.cljs
 msgid "Select Line Type"
 msgstr ""
@@ -1466,16 +1694,20 @@ msgstr ""
 msgid "Select Ordinary"
 msgstr ""
 
-#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/frontend/ui/element/arms_reference_select.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
-msgid "None"
-msgstr ""
-
 #: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 msgid "Select Ribbon"
 msgstr ""
 
+#: src/heraldry/frontend/attribution.cljs src/heraldry/frontend/ui/element/arms_select.cljs src/heraldry/frontend/ui/element/charge_select.cljs src/heraldry/frontend/ui/element/collection_select.cljs src/heraldry/frontend/ui/element/ribbon_select.cljs
+msgid "by"
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/field_layout.cljs src/heraldry/frontend/ui/element/semy_layout.cljs
 msgid "fields"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/field_layout.cljs src/heraldry/frontend/ui/element/semy_layout.cljs
+msgid "rotated"
 msgstr ""
 
 #: src/heraldry/frontend/ui/element/tags.cljs
@@ -1486,11 +1718,15 @@ msgstr ""
 msgid "Select Colour Theme"
 msgstr ""
 
+#: src/heraldry/attribution.cljs src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/texture.cljs src/heraldry/frontend/filter.cljs src/heraldry/frontend/ui/element/arms_reference_select.cljs src/heraldry/frontend/ui/element/colours.cljs src/heraldry/frontend/ui/element/fimbriation.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs src/heraldry/frontend/ui/element/tincture_modifiers.cljs
+msgid "None"
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/tincture_select.cljs
 msgid "Select Tincture"
 msgstr ""
 
-#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+#: src/heraldry/frontend/ui/element/field_layout.cljs src/heraldry/frontend/ui/element/value_mode_select.cljs
 msgid "Default"
 msgstr ""
 
@@ -1506,12 +1742,32 @@ msgstr ""
 msgid "Manual"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/voided.cljs src/heraldry/frontend/ui/element/voided.cljs
+msgid "Voided"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/geometry.cljs src/heraldry/frontend/ui/element/humetty.cljs src/heraldry/frontend/ui/element/line.cljs src/heraldry/frontend/ui/element/voided.cljs
+msgid "resized"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/humetty.cljs src/heraldry/frontend/ui/element/voided.cljs
+msgid "No"
+msgstr ""
+
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "slot"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "slots"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/field_layout.cljs src/heraldry/frontend/ui/element/geometry.cljs src/heraldry/frontend/ui/element/semy_layout.cljs src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "stretched"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/field_layout.cljs src/heraldry/frontend/ui/element/semy_layout.cljs src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "shifted"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
@@ -1522,11 +1778,11 @@ msgstr ""
 msgid "Column"
 msgstr ""
 
-#: src/heraldry/frontend/ui/form/charge_group.cljs
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "Rows"
 msgstr ""
 
-#: src/heraldry/frontend/ui/form/charge_group.cljs
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "Columns"
 msgstr ""
 
@@ -1540,6 +1796,34 @@ msgstr ""
 
 #: src/heraldry/frontend/ui/form/collection_element.cljs
 msgid "<no name>"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/cottise.cljs
+msgid "Cottise"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pale.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/position.cljs src/heraldry/frontend/ui/form/cottise.cljs
+msgid "Left"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pale.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/position.cljs src/heraldry/frontend/ui/form/cottise.cljs
+msgid "Right"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/cottise.cljs
+msgid "opposite"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/cottise.cljs
+msgid "extra"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/field.cljs
+msgid "Change"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/field.cljs
+msgid "Ordinary"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/field.cljs
@@ -1566,8 +1850,56 @@ msgstr ""
 msgid "Helms and crests"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/field/type/plain.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/frontend/ui/element/tincture_select.cljs src/heraldry/frontend/ui/form/motto.cljs
+msgid "Tincture"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/frontend/ui/form/ornaments.cljs
 msgid "Ornaments"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/helms.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "This feature is incomplete and likely going to change, so use with caution. :)"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/tags.cljs src/heraldry/frontend/ui/form/charge_group.cljs src/heraldry/frontend/ui/form/collection.cljs src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/ui/form/helm.cljs src/heraldry/frontend/ui/form/ordinary.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Add"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Mantling"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Compartment"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Supporter-left"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Supporter-right"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Charge"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Charge group"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs src/heraldry/frontend/ui/form/collection.cljs src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/ui/form/helm.cljs src/heraldry/frontend/ui/form/helms.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "move down"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs src/heraldry/frontend/ui/form/collection.cljs src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/ui/form/helm.cljs src/heraldry/frontend/ui/form/helms.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "move up"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs src/heraldry/frontend/ui/form/collection.cljs src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/ui/form/helm.cljs src/heraldry/frontend/ui/form/helms.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "remove"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/render_options.cljs
@@ -1652,6 +1984,10 @@ msgid "Segments can be background, foreground, or foreground with text and their
 Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."
 msgstr ""
 
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/tincture/core.cljs src/heraldry/frontend/ui/form/arms_general.cljs src/heraldry/frontend/ui/form/charge_general.cljs src/heraldry/frontend/ui/form/collection_general.cljs src/heraldry/frontend/ui/form/ribbon_general.cljs
+msgid "General"
+msgstr ""
+
 #: src/heraldry/frontend/ui/form/semy.cljs
 msgid "Semy of"
 msgstr ""
@@ -1660,12 +1996,40 @@ msgstr ""
 msgid "Shield layer"
 msgstr ""
 
+#: src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/ribbon_library.cljs src/heraldry/frontend/ui/element/arms_select.cljs src/heraldry/frontend/ui/element/charge_type_select.cljs src/heraldry/frontend/ui/element/collection_select.cljs src/heraldry/frontend/ui/element/ribbon_select.cljs src/heraldry/frontend/ui/element/user_select.cljs src/heraldry/frontend/user_library.cljs
+msgid "Loading..."
+msgstr ""
+
 #: src/heraldry/frontend/user_library.cljs
 msgid "User"
 msgstr ""
 
+#: src/heraldry/frontend/collection_library.cljs src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
+msgid "Collections"
+msgstr ""
+
+#: src/heraldry/collection/element.cljs src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/header.cljs src/heraldry/frontend/ui/form/collection.cljs src/heraldry/frontend/user_library.cljs
+msgid "Arms"
+msgstr ""
+
+#: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
+msgid "Charges"
+msgstr ""
+
 #: src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
 msgid "Users"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs src/heraldry/frontend/validation.cljs
+msgid "Metal"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/frontend/validation.cljs
+msgid "Fimbriation"
+msgstr ""
+
+#: src/heraldry/frontend/validation.cljs
+msgid "field"
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
@@ -1676,20 +2040,28 @@ msgstr ""
 msgid "breaks rule of tincture."
 msgstr ""
 
+#: src/heraldry/coat_of_arms/tincture/core.cljs src/heraldry/frontend/validation.cljs
+msgid "Colour"
+msgstr ""
+
 #: src/heraldry/frontend/validation.cljs
 msgid "Main line"
 msgstr ""
 
-#: src/heraldry/frontend/validation.cljs
+#: src/heraldry/coat_of_arms/cottising.cljs src/heraldry/coat_of_arms/line/core.cljs src/heraldry/frontend/validation.cljs
 msgid "Opposite line"
 msgstr ""
 
-#: src/heraldry/frontend/validation.cljs
+#: src/heraldry/coat_of_arms/line/core.cljs src/heraldry/frontend/validation.cljs
 msgid "Extra line"
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
 msgid "Fimbriation tinctures are both metals ("
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/frontend/ui/element/fimbriation.cljs src/heraldry/frontend/validation.cljs
+msgid "and"
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
@@ -1732,12 +2104,44 @@ msgstr ""
 msgid "License required for public objects."
 msgstr ""
 
+#: src/heraldry/frontend/ui/form/motto.cljs src/heraldry/frontend/ui/form/ornaments.cljs src/heraldry/motto.cljs
+msgid "Motto"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/motto.cljs src/heraldry/frontend/ui/form/ornaments.cljs src/heraldry/motto.cljs
+msgid "Slogan"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/line/core.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/position.cljs src/heraldry/frontend/ui/form/cottise.cljs src/heraldry/motto.cljs
+msgid "Top"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/line/core.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/position.cljs src/heraldry/frontend/ui/form/cottise.cljs src/heraldry/motto.cljs
+msgid "Bottom"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pale.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs src/heraldry/motto.cljs
+msgid "Point"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pale.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/motto.cljs
+msgid "Origin"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/motto.cljs src/heraldry/motto.cljs
+msgid "Ribbon"
+msgstr ""
+
 #: src/heraldry/motto.cljs
 msgid "Other / Metal"
 msgstr ""
 
 #: src/heraldry/motto.cljs
 msgid "Darkened foreground"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/core.cljs src/heraldry/coat_of_arms/semy/options.cljs src/heraldry/options.cljs
+msgid "Manual blazon"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/charge/type/escutcheon.cljs src/heraldry/render_options.cljs
@@ -1756,12 +2160,20 @@ msgstr ""
 msgid "Hatching"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/frontend/ui/element/value_mode_select.cljs src/heraldry/render_options.cljs
+msgid "Mode"
+msgstr ""
+
 #: src/heraldry/render_options.cljs
 msgid "Everything (Helms, etc.)"
 msgstr ""
 
 #: src/heraldry/render_options.cljs
 msgid "Coat of Arms with Helm"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/coat_of_arms.cljs src/heraldry/render_options.cljs
+msgid "Coat of Arms"
 msgstr ""
 
 #: src/heraldry/render_options.cljs
@@ -1816,6 +2228,10 @@ msgstr ""
 msgid "Theme"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/cottising.cljs src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/masony.cljs src/heraldry/coat_of_arms/field/type/papellony.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/ordinary/type/bordure.cljs src/heraldry/coat_of_arms/ordinary/type/orle.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/voided.cljs src/heraldry/ribbon.cljs
+msgid "Thickness"
+msgstr ""
+
 #: src/heraldry/ribbon.cljs
 msgid "Edge angle"
 msgstr ""
@@ -1826,6 +2242,10 @@ msgstr ""
 
 #: src/heraldry/ribbon.cljs
 msgid "End split"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/cottising.cljs src/heraldry/options.cljs src/heraldry/ribbon.cljs
+msgid "Outline"
 msgstr ""
 
 #: src/heraldry/ribbon.cljs
@@ -1840,8 +2260,36 @@ msgstr ""
 msgid "Background"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/charge/options.cljs src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/line/core.cljs src/heraldry/coat_of_arms/ordinary/options.cljs src/heraldry/motto.cljs src/heraldry/ribbon.cljs
+msgid "Type"
+msgstr ""
+
+#: src/heraldry/ribbon.cljs
+msgid "Layer"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chequy.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/lozengy.cljs src/heraldry/coat_of_arms/field/type/masony.cljs src/heraldry/coat_of_arms/field/type/paly.cljs src/heraldry/coat_of_arms/field/type/papellony.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_pale.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pale.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/field/type/vairy.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/pale.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs src/heraldry/coat_of_arms/semy/options.cljs src/heraldry/motto.cljs src/heraldry/ribbon.cljs
+msgid "Offset x"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/field/type/barry.cljs src/heraldry/coat_of_arms/field/type/bendy.cljs src/heraldry/coat_of_arms/field/type/bendy_sinister.cljs src/heraldry/coat_of_arms/field/type/chequy.cljs src/heraldry/coat_of_arms/field/type/chevronny.cljs src/heraldry/coat_of_arms/field/type/fretty.cljs src/heraldry/coat_of_arms/field/type/gyronny.cljs src/heraldry/coat_of_arms/field/type/lozengy.cljs src/heraldry/coat_of_arms/field/type/masony.cljs src/heraldry/coat_of_arms/field/type/papellony.cljs src/heraldry/coat_of_arms/field/type/per_bend.cljs src/heraldry/coat_of_arms/field/type/per_bend_sinister.cljs src/heraldry/coat_of_arms/field/type/per_chevron.cljs src/heraldry/coat_of_arms/field/type/per_fess.cljs src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/field/type/per_saltire.cljs src/heraldry/coat_of_arms/field/type/potenty.cljs src/heraldry/coat_of_arms/field/type/quartered.cljs src/heraldry/coat_of_arms/field/type/quarterly.cljs src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs src/heraldry/coat_of_arms/field/type/vairy.cljs src/heraldry/coat_of_arms/ordinary/type/bend.cljs src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs src/heraldry/coat_of_arms/ordinary/type/chevron.cljs src/heraldry/coat_of_arms/ordinary/type/cross.cljs src/heraldry/coat_of_arms/ordinary/type/fess.cljs src/heraldry/coat_of_arms/ordinary/type/gore.cljs src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/coat_of_arms/ordinary/type/pall.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs src/heraldry/coat_of_arms/ordinary/type/quarter.cljs src/heraldry/coat_of_arms/ordinary/type/saltire.cljs src/heraldry/coat_of_arms/position.cljs src/heraldry/coat_of_arms/semy/options.cljs src/heraldry/motto.cljs src/heraldry/ribbon.cljs
+msgid "Offset y"
+msgstr ""
+
 #: src/heraldry/ribbon.cljs
 msgid "Font scale"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/line/core.cljs src/heraldry/ribbon.cljs
+msgid "Spacing"
+msgstr ""
+
+#: src/heraldry/collection/element.cljs src/heraldry/shared.cljs
+msgid "Name"
+msgstr ""
+
+#: src/heraldry/shared.cljs
+msgid "Make public"
 msgstr ""
 
 #: src/heraldry/shared.cljs

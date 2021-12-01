@@ -5,8 +5,7 @@
    [heraldry.frontend.route :as route]
    [heraldry.frontend.user :as user]
    [heraldry.gettext :refer [string]]
-   [heraldry.static :as static]
-   [heraldry.strings :as strings]))
+   [heraldry.static :as static]))
 
 (defn view []
   (let [user-data (user/data)]
@@ -26,10 +25,10 @@
      [:ul.nav-menu {:style {:flex 1}}
       [route/nav-link {:to :home} [tr (string "News")]]
       [route/nav-link {:to :about} [tr (string "About")]]
-      [route/nav-link {:to :collections} [tr strings/collections]]
-      [route/nav-link {:to :arms} [tr strings/arms]]
-      [route/nav-link {:to :charges} [tr strings/charges]]
-      [route/nav-link {:to :ribbons} [tr strings/ribbons]]
+      [route/nav-link {:to :collections} [tr (string "Collections")]]
+      [route/nav-link {:to :arms} [tr (string "Arms")]]
+      [route/nav-link {:to :charges} [tr (string "Charges")]]
+      [route/nav-link {:to :ribbons} [tr (string "Ribbons")]]
       (when (-> user-data :username ((config/get :admins)))
         [route/nav-link {:to :users} [tr (string "Users")]])
       [route/nav-link {:to :contact} [tr (string "Contact")]]

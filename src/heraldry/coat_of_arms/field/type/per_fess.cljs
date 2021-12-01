@@ -9,8 +9,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]))
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/per-fess)
 
@@ -20,22 +19,22 @@
 
 (defmethod interface/options field-type [context]
   {:origin {:point {:type :choice
-                    :choices [[strings/fess-point :fess]
-                              [strings/chief-point :chief]
-                              [strings/base-point :base]
-                              [strings/honour-point :honour]
-                              [strings/nombril-point :nombril]
-                              [strings/top :top]
-                              [strings/bottom :bottom]]
+                    :choices [[(string "Fess") :fess]
+                              [(string "Chief") :chief]
+                              [(string "Base") :base]
+                              [(string "Honour") :honour]
+                              [(string "Nombril") :nombril]
+                              [(string "Top") :top]
+                              [(string "Bottom") :bottom]]
                     :default :fess
-                    :ui {:label strings/point}}
+                    :ui {:label (string "Point")}}
             :offset-y {:type :range
                        :min -45
                        :max 45
                        :default 0
-                       :ui {:label strings/offset-y
+                       :ui {:label (string "Offset y")
                             :step 0.1}}
-            :ui {:label strings/origin
+            :ui {:label (string "Origin")
                  :form-type :position}}
    :line (line/options (c/++ context :line))})
 

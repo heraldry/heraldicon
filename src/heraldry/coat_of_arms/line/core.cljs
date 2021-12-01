@@ -27,12 +27,12 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.svg.squiggly :as squiggly]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
@@ -151,7 +151,7 @@
   {:type :choice
    :choices choices
    :default :straight
-   :ui {:label strings/type
+   :ui {:label (string "Type")
         :form-type :line-type-select}})
 
 (def default-options
@@ -159,45 +159,45 @@
                   :min 0
                   :max 1
                   :default 0.5
-                  :ui {:label strings/eccentricity
+                  :ui {:label (string "Eccentricity")
                        :step 0.01}}
    :height {:type :range
             :min 0
             :max 3
             :default 1
-            :ui {:label strings/height
+            :ui {:label (string "Height")
                  :step 0.01}}
    :width {:type :range
            :min 2
            :max 100
            :default 10
-           :ui {:label strings/width
+           :ui {:label (string "Width")
                 :step 0.01}}
    :offset {:type :range
             :min -1
             :max 3
             :default 0
-            :ui {:label strings/offset
+            :ui {:label (string "Offset")
                  :step 0.01}}
    :spacing {:type :range
              :min 0
              :max 5
              :default 0
-             :ui {:label strings/spacing
+             :ui {:label (string "Spacing")
                   :step 0.01}}
    :base-line {:type :choice
-               :choices [[strings/bottom :bottom]
-                         [strings/middle :middle]
-                         [strings/top :top]]
+               :choices [[(string "Bottom") :bottom]
+                         [(string "Middle") :middle]
+                         [(string "Top") :top]]
                :default :middle
-               :ui {:label strings/base-line
+               :ui {:label (string "Base line")
                     :form-type :radio-select}}
    :mirrored? {:type :boolean
                :default false
-               :ui {:label strings/mirrored}}
+               :ui {:label (string "Mirrored")}}
    :flipped? {:type :boolean
               :default false
-              :ui {:label strings/flipped}}})
+              :ui {:label (string "Flipped")}}})
 
 (defn options [{:keys [path] :as context} & {:keys [fimbriation?]
                                              :or {fimbriation? true}}]
@@ -371,9 +371,9 @@
           (cond->
             fimbriation? (assoc :fimbriation (fimbriation/options (c/++ context :fimbriation))))
           (assoc :ui {:label (case kind
-                               :opposite-line strings/opposite-line
-                               :extra-line strings/extra-line
-                               strings/line)
+                               :opposite-line (string "Opposite line")
+                               :extra-line (string "Extra line")
+                               (string "Line"))
                       :form-type :line})))))
 
 (defn create-raw [{:keys [type] :or {type :straight} :as line} length

@@ -5,7 +5,6 @@
    [heraldry.frontend.ui.element.hover-menu :as hover-menu]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defn value-mode-select [context & {:keys [display-fn disabled? on-change default-option]}]
@@ -75,7 +74,7 @@
                       :position "absolute"}}
         [hover-menu/hover-menu
          context
-         strings/mode
+         (string "Mode")
          menu
          [:i.ui-icon {:class "fas fa-cog"}]
          :disabled? disabled?]])]))

@@ -12,7 +12,6 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/base)
@@ -27,9 +26,9 @@
                            :min 0.1
                            :max 75
                            :default 25
-                           :ui {:label strings/size
+                           :ui {:label (string "Size")
                                 :step 0.1}}
-                    :ui {:label strings/geometry
+                    :ui {:label (string "Geometry")
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}

@@ -3,11 +3,10 @@
    [goog.string :as gstring]
    [heraldry.colour :as colour]
    [heraldry.gettext :refer [string]]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def attitude-choices
-  [[strings/none :none]
+  [[(string "None") :none]
    [(string "Beasts")
     [(string "Cadent") :cadent]
     [(string "Couchant") :couchant]
@@ -48,7 +47,7 @@
   (util/choices->map attitude-choices))
 
 (def facing-choices
-  [[strings/none :none]
+  [[(string "None") :none]
    [(string "To dexter (default)") :to-dexter]
    [(string "To sinister") :to-sinister]
    [(string "Affronté") :affronte]
@@ -62,14 +61,14 @@
   (util/choices->map facing-choices))
 
 (def attribute-choices
-  [[strings/general
+  [[(string "General")
     [(string "Erased") :erased]
     [(string "Pierced") :pierced]
     [(string "Voided") :voided]]
    [(string "Ornaments")
-    [strings/mantling :mantling]
-    [strings/compartment :compartment]
-    [strings/supporter :supporter]]
+    [(string "Mantling") :mantling]
+    [(string "Compartment") :compartment]
+    [(string "Supporter") :supporter]]
    [(string "Tail")
     [(string "Coward") :coward]
     [(string "Defamed") :defamed]
@@ -133,7 +132,7 @@
                  [(string "Primary") :primary]
                  [(string "Secondary") :secondary]
                  [(string "Tertiary") :tertiary]
-                 [strings/outline :outline]
+                 [(string "Outline") :outline]
                  [(string "Shadow (alpha)") :shadow]
                  [(string "Highlight (alpha)") :highlight]
                  [(string "Layer separator") :layer-separator]]]
@@ -163,8 +162,8 @@
     {:kind :shadow
      :key (keyword (str (name kind) "-" keyword-suffix))
      :name (util/str-tr qualifier-name " " (if (= kind :shadow)
-                                             strings/shadow
-                                             strings/highlight))
+                                             (string "Shadow")
+                                             (string "Highlight")))
      :colour colour}))
 
 (def qualifier-percentages

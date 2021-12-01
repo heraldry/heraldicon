@@ -12,12 +12,11 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/point)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Point"))
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Point ordinary"))
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -26,22 +25,22 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:line line-style
          :variant {:type :choice
-                   :choices [[strings/dexter :dexter]
-                             [strings/sinister :sinister]]
+                   :choices [[(string "Dexter") :dexter]
+                             [(string "Sinister") :sinister]]
                    :default :dexter
-                   :ui {:label strings/variant
+                   :ui {:label (string "Variant")
                         :form-type :select}}
          :geometry {:width {:type :range
                             :min 10
                             :max 100
                             :default 50
-                            :ui {:label strings/width}}
+                            :ui {:label (string "Width")}}
                     :height {:type :range
                              :min 10
                              :max 100
                              :default 50
-                             :ui {:label strings/height}}
-                    :ui {:label strings/geometry
+                             :ui {:label (string "Height")}}
+                    :ui {:label (string "Geometry")
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}

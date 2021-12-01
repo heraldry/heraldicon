@@ -2,28 +2,28 @@
   (:require
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defn options [context]
   (let [voided? (interface/get-raw-data (c/++ context :voided?))]
     (cond-> {:voided? {:type :boolean
-                       :ui {:label strings/voided}}
-             :ui {:label strings/voided
-                  :tooltip strings/unstable-warning
+                       :ui {:label (string "Voided")}}
+             :ui {:label (string "Voided")
+                  :tooltip (string "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.")
                   :form-type :voided}}
       voided? (assoc :corner {:type :choice
-                              :choices [[strings/corner-round :round]
-                                        [strings/corner-sharp :sharp]
-                                        [strings/corner-bevel :bevel]]
+                              :choices [[(string "Round") :round]
+                                        [(string "Sharp") :sharp]
+                                        [(string "Bevel") :bevel]]
                               :default :sharp
-                              :ui {:label strings/corner}}
+                              :ui {:label (string "Corners")}}
                      :thickness {:type :range
                                  :min 1
                                  :max 45
                                  :default 10
-                                 :ui {:label strings/thickness}}))))
+                                 :ui {:label (string "Thickness")}}))))
 
 (defn void [shape base-thickness {:keys [environment] :as context}]
   (let [shape (if (map? shape)

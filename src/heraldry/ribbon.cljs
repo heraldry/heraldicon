@@ -10,7 +10,6 @@
    [heraldry.math.curve :as curve]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defn options [_context]
@@ -18,7 +17,7 @@
                :default 30
                :min 5
                :max 150
-               :ui {:label strings/thickness
+               :ui {:label (string "Thickness")
                     :step 0.1}}
    :edge-angle {:type :range
                 :default 0
@@ -35,7 +34,7 @@
                     :step 1}}
    :outline? {:type :boolean
               :default true
-              :ui {:label strings/outline}}})
+              :ui {:label (string "Outline")}}})
 
 (defn curve-segments [full-curve
                       last-index end-t last-edge-vector
@@ -129,7 +128,7 @@
 (def type-option
   {:type :choice
    :choices segment-type-choices
-   :ui {:label strings/type
+   :ui {:label (string "Type")
         :form-type :radio-select}})
 
 (defmethod interface/options-subscriptions :heraldry.component/ribbon-segment [_context]
@@ -140,7 +139,7 @@
                  :min 0
                  :max 100
                  :integer? true
-                 :ui {:label strings/layer}}}
+                 :ui {:label (string "Layer")}}}
       (cond->
         (= (interface/get-raw-data (c/++ context :type))
            :heraldry.ribbon.segment/foreground-with-text)
@@ -149,13 +148,13 @@
                            :default 0
                            :min -0.5
                            :max 0.5
-                           :ui {:label strings/offset-x
+                           :ui {:label (string "Offset x")
                                 :step 0.01}}
                 :offset-y {:type :range
                            :default 0
                            :min -0.5
                            :max 0.5
-                           :ui {:label strings/offset-y
+                           :ui {:label (string "Offset y")
                                 :step 0.01}}
                 :font-scale {:type :range
                              :default 0.8
@@ -167,7 +166,7 @@
                           :default 0.1
                           :min -0.5
                           :max 2
-                          :ui {:label strings/spacing
+                          :ui {:label (string "Spacing")
                                :step 0.01}}
                 :text {:type :text
                        :default ""}

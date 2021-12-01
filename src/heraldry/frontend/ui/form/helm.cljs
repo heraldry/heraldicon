@@ -7,7 +7,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.shield-separator :as shield-separator]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -56,7 +55,7 @@
                            (str (inc (last path)) ". ")) (string "Helm"))
      :buttons (when (seq add-menu)
                 [{:icon "fas fa-plus"
-                  :title strings/add
+                  :title (string "Add")
                   :menu add-menu}])
      :nodes (->> (range num-components)
                  reverse
@@ -66,15 +65,15 @@
                           {:context component-context
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip strings/move-down
+                                              :tooltip (string "move down")
                                               :handler #(state/dispatch-on-event % [:move-element component-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
-                                              :tooltip strings/move-up
+                                              :tooltip (string "move up")
                                               :handler #(state/dispatch-on-event % [:move-element component-context (inc idx)])}]
                                       removable? (conj
                                                   {:icon "far fa-trash-alt"
-                                                   :tooltip strings/remove
+                                                   :tooltip (string "remove")
                                                    :handler #(state/dispatch-on-event
                                                               %
                                                               [:remove-element component-context

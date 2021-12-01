@@ -4,8 +4,7 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
-   [heraldry.interface :as interface]
-   [heraldry.strings :as strings]))
+   [heraldry.interface :as interface]))
 
 (def field-type :heraldry.field.type/plain)
 
@@ -18,7 +17,7 @@
     (cond-> {:tincture {:type :choice
                         :choices tincture/choices
                         :default :none
-                        :ui {:label strings/tincture
+                        :ui {:label (string "Tincture")
                              :form-type :tincture-select}}}
       (tincture/furs tincture) (assoc :pattern-scaling {:type :range
                                                         :min 0.1

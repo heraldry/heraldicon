@@ -5,8 +5,7 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
-   [heraldry.interface :as interface]
-   [heraldry.strings :as strings]))
+   [heraldry.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry.component/render-options [_context]
   #{[:mode]
@@ -24,7 +23,7 @@
                             {:type :choice
                              :choices (drop 1 escutcheon/choices)
                              :default :heater
-                             :ui {:label strings/escutcheon
+                             :ui {:label (string "Escutcheon")
                                   :form-type :escutcheon-select}})]
     (cond-> {:escutcheon escutcheon-option
 
@@ -32,7 +31,7 @@
                     :choices [[(string "Colours") :colours]
                               [(string "Hatching") :hatching]]
                     :default :colours
-                    :ui {:label strings/mode
+                    :ui {:label (string "Mode")
                          :form-type :radio-select}}
 
              :texture {:type :choice
@@ -74,7 +73,7 @@
              :scope {:type :choice
                      :choices [[(string "Everything (Helms, etc.)") :achievement]
                                [(string "Coat of Arms with Helm") :coat-of-arms-and-helm]
-                               [strings/coat-of-arms :coat-of-arms]]
+                               [(string "Coat of Arms") :coat-of-arms]]
                      :default :achievement
                      :ui {:label (string "Scope")}}}
 

@@ -15,47 +15,46 @@
    [heraldry.math.svg.squiggly :as squiggly]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defn options [context]
   (let [origin-point-option {:type :choice
-                             :choices [[strings/fess-point :fess]
-                                       [strings/chief-point :chief]
-                                       [strings/base-point :base]
-                                       [strings/dexter-point :dexter]
-                                       [strings/sinister-point :sinister]
-                                       [strings/honour-point :honour]
-                                       [strings/nombril-point :nombril]
-                                       [strings/top-left :top-left]
-                                       [strings/top :top]
-                                       [strings/top-right :top-right]
-                                       [strings/left :left]
-                                       [strings/right :right]
-                                       [strings/bottom-left :bottom-left]
-                                       [strings/bottom :bottom]
-                                       [strings/bottom-right :bottom-right]]
+                             :choices [[(string "Fess") :fess]
+                                       [(string "Chief") :chief]
+                                       [(string "Base") :base]
+                                       [(string "Dexter") :dexter]
+                                       [(string "Sinister") :sinister]
+                                       [(string "Honour") :honour]
+                                       [(string "Nombril") :nombril]
+                                       [(string "Top-left") :top-left]
+                                       [(string "Top") :top]
+                                       [(string "Top-right") :top-right]
+                                       [(string "Left") :left]
+                                       [(string "Right") :right]
+                                       [(string "Bottom-left") :bottom-left]
+                                       [(string "Bottom") :bottom]
+                                       [(string "Bottom-right") :bottom-right]]
                              :default :fess
-                             :ui {:label strings/point}}
+                             :ui {:label (string "Point")}}
         anchor-point-option {:type :choice
-                             :choices [[strings/top-left :top-left]
-                                       [strings/top :top]
-                                       [strings/top-right :top-right]
-                                       [strings/left :left]
-                                       [strings/right :right]
-                                       [strings/bottom-left :bottom-left]
-                                       [strings/bottom :bottom]
-                                       [strings/bottom-right :bottom-right]
-                                       [strings/fess-point :fess]
-                                       [strings/chief-point :chief]
-                                       [strings/base-point :base]
-                                       [strings/dexter-point :dexter]
-                                       [strings/sinister-point :sinister]
-                                       [strings/honour-point :honour]
-                                       [strings/nombril-point :nombril]
-                                       [strings/angle :angle]]
+                             :choices [[(string "Top-left") :top-left]
+                                       [(string "Top") :top]
+                                       [(string "Top-right") :top-right]
+                                       [(string "Left") :left]
+                                       [(string "Right") :right]
+                                       [(string "Bottom-left") :bottom-left]
+                                       [(string "Bottom") :bottom]
+                                       [(string "Bottom-right") :bottom-right]
+                                       [(string "Fess") :fess]
+                                       [(string "Chief") :chief]
+                                       [(string "Base") :base]
+                                       [(string "Dexter") :dexter]
+                                       [(string "Sinister") :sinister]
+                                       [(string "Honour") :honour]
+                                       [(string "Nombril") :nombril]
+                                       [(string "Angle") :angle]]
                              :default :angle
-                             :ui {:label strings/anchor}}
+                             :ui {:label (string "Anchor")}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
@@ -64,18 +63,18 @@
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label strings/offset-x
+                         :ui {:label (string "Offset x")
                               :step 0.1}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label strings/offset-y
+                         :ui {:label (string "Offset y")
                               :step 0.1}}
-              :ui {:label strings/origin
+              :ui {:label (string "Origin")
                    :form-type :position}}
      :anchor (cond-> {:point anchor-point-option
-                      :ui {:label strings/anchor
+                      :ui {:label (string "Anchor")
                            :form-type :position}}
 
                (= current-anchor-point
@@ -83,20 +82,20 @@
                                          :min 0
                                          :max 360
                                          :default 0
-                                         :ui {:label strings/angle}})
+                                         :ui {:label (string "Angle")}})
 
                (not= current-anchor-point
                      :angle) (assoc :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label strings/offset-x
+                                               :ui {:label (string "Offset x")
                                                     :step 0.1}}
                                     :offset-y {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label strings/offset-y
+                                               :ui {:label (string "Offset y")
                                                     :step 0.1}}))
      :geometry geometry/default-options
      :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
@@ -112,7 +111,7 @@
                               [(string "Primary") :primary]
                               [(string "Remove") :remove]]
                     :default :keep
-                    :ui {:label strings/outline}}
+                    :ui {:label (string "Outline")}}
      :vertical-mask {:type :range
                      :default 0
                      :min -100

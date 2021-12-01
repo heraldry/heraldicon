@@ -9,7 +9,6 @@
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defn tincture-choice [context key display-name & {:keys [selected?
@@ -36,7 +35,7 @@
           value (options/get-value current-value option)
           choice-map (util/choices->map choices)
           choice-name (get choice-map value)
-          label (or (:label ui) strings/tincture)]
+          label (or (:label ui) (string "Tincture"))]
       [:div.ui-setting
        (when label
          [:label [tr label]])

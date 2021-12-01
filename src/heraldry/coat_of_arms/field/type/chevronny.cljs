@@ -13,8 +13,7 @@
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.options :as options]
-   [heraldry.strings :as strings]))
+   [heraldry.options :as options]))
 
 (def field-type :heraldry.field.type/chevronny)
 
@@ -32,29 +31,29 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
         anchor-point-option {:type :choice
-                             :choices [[strings/top-left :top-left]
-                                       [strings/top :top]
-                                       [strings/top-right :top-right]
-                                       [strings/left :left]
-                                       [strings/right :right]
-                                       [strings/bottom-left :bottom-left]
-                                       [strings/bottom :bottom]
-                                       [strings/bottom-right :bottom-right]
-                                       [strings/fess-point :fess]
-                                       [strings/chief-point :chief]
-                                       [strings/base-point :base]
-                                       [strings/dexter-point :dexter]
-                                       [strings/sinister-point :sinister]
-                                       [strings/honour-point :honour]
-                                       [strings/nombril-point :nombril]
-                                       [strings/angle :angle]]
+                             :choices [[(string "Top-left") :top-left]
+                                       [(string "Top") :top]
+                                       [(string "Top-right") :top-right]
+                                       [(string "Left") :left]
+                                       [(string "Right") :right]
+                                       [(string "Bottom-left") :bottom-left]
+                                       [(string "Bottom") :bottom]
+                                       [(string "Bottom-right") :bottom-right]
+                                       [(string "Fess") :fess]
+                                       [(string "Chief") :chief]
+                                       [(string "Base") :base]
+                                       [(string "Dexter") :dexter]
+                                       [(string "Sinister") :sinister]
+                                       [(string "Honour") :honour]
+                                       [(string "Nombril") :nombril]
+                                       [(string "Angle") :angle]]
                              :default :angle
-                             :ui {:label strings/point}}
+                             :ui {:label (string "Point")}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     {:anchor (cond-> {:point anchor-point-option
-                      :ui {:label strings/anchor
+                      :ui {:label (string "Anchor")
                            :form-type :position}}
 
                (= current-anchor-point
@@ -62,48 +61,48 @@
                                          :min 10
                                          :max 170
                                          :default 45
-                                         :ui {:label strings/angle}})
+                                         :ui {:label (string "Angle")}})
 
                (not= current-anchor-point
                      :angle) (assoc :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label strings/offset-x
+                                               :ui {:label (string "Offset x")
                                                     :step 0.1}}
                                     :offset-y {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label strings/offset-y
+                                               :ui {:label (string "Offset y")
                                                     :step 0.1}}))
      :layout {:num-fields-y {:type :range
                              :min 1
                              :max 20
                              :default 6
                              :integer? true
-                             :ui {:label strings/subfields-y
+                             :ui {:label (string "Subfields y")
                                   :form-type :field-layout-num-fields-y}}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
-                                :ui {:label strings/base-fields
+                                :ui {:label (string "Base fields")
                                      :form-type :field-layout-num-base-fields}}
               :offset-y {:type :range
                          :min -3
                          :max 3
                          :default 0
-                         :ui {:label strings/offset-y
+                         :ui {:label (string "Offset y")
                               :step 0.01}}
               :stretch-y {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label strings/stretch-y
+                          :ui {:label (string "Stretch y")
                                :step 0.01}}
-              :ui {:label strings/layout
+              :ui {:label (string "Layout")
                    :form-type :field-layout}}
      :line line-style
      :opposite-line opposite-line-style}))

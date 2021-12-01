@@ -2,7 +2,7 @@
   (:require
    [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.strings :as strings]))
+   [heraldry.gettext :refer [string]]))
 
 (defn form [context]
   (ui-interface/form-elements
@@ -11,7 +11,7 @@
     :manual-blazon]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/coat-of-arms [context]
-  {:title strings/coat-of-arms
+  {:title (string "Coat of Arms")
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod ui-interface/component-form-data :heraldry.component/coat-of-arms [_context]

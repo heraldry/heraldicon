@@ -10,8 +10,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
-   [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]))
+   [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/tierced-per-fess)
 
@@ -23,30 +22,30 @@
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]
     {:origin {:point {:type :choice
-                      :choices [[strings/fess-point :fess]
-                                [strings/chief-point :chief]
-                                [strings/base-point :base]
-                                [strings/honour-point :honour]
-                                [strings/nombril-point :nombril]
-                                [strings/top :top]
-                                [strings/bottom :bottom]]
+                      :choices [[(string "Fess") :fess]
+                                [(string "Chief") :chief]
+                                [(string "Base") :base]
+                                [(string "Honour") :honour]
+                                [(string "Nombril") :nombril]
+                                [(string "Top") :top]
+                                [(string "Bottom") :bottom]]
                       :default :fess
-                      :ui {:label strings/point}}
+                      :ui {:label (string "Point")}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label strings/offset-y
+                         :ui {:label (string "Offset y")
                               :step 0.1}}
-              :ui {:label strings/origin
+              :ui {:label (string "Origin")
                    :form-type :position}}
      :layout {:stretch-y {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label strings/stretch-y
+                          :ui {:label (string "Stretch y")
                                :step 0.01}}
-              :ui {:label strings/layout
+              :ui {:label (string "Layout")
                    :form-type :field-layout}}
      :line line-style}))
 

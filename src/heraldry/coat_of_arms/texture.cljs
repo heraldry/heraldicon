@@ -2,11 +2,10 @@
   (:require
    [heraldry.config :as config]
    [heraldry.gettext :refer [string]]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def textures
-  [[strings/none :none nil 0]
+  [[(string "None") :none nil 0]
    [(string "Cloth (rough)") :cloth-rough "/textures/cloth-rough.jpg" 1]
    [(string "Cloth (smooth)") :cloth-smooth "/textures/cloth-smooth.jpg" 1]
    [(string "Felt") :felt "/textures/felt.jpg" 1]

@@ -4,9 +4,9 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -18,7 +18,7 @@
 
   (fn [[options fimbriation] [_ _context]]
     (let [main-name (case (:mode fimbriation)
-                      :none strings/none
+                      :none (string "None")
                       :single (util/str-tr (-> fimbriation
                                                :tincture-1
                                                tincture/translate-tincture
@@ -28,7 +28,7 @@
                                                tincture/translate-tincture
                                                util/upper-case-first)
                                            " "
-                                           strings/and
+                                           (string "and")
                                            " "
                                            (-> fimbriation
                                                :tincture-2
@@ -37,7 +37,7 @@
           changes [main-name
                    (when (some #(options/changed? % fimbriation options)
                                [:alignment :thickness-1 :thickness-2])
-                     strings/adjusted)]]
+                     (string "adjusted"))]]
 
       (-> (util/combine ", " changes)
           util/upper-case-first))))

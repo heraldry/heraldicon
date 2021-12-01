@@ -11,9 +11,9 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (defn tincture-modifiers-submenu [context]
@@ -87,7 +87,7 @@
                                    (util/combine ", ")
                                    s/lower-case
                                    util/upper-case-first)
-                              strings/none)
+                              (string "None"))
             link-name (if (-> tinctures-title count (> 30))
                         (str (subs tinctures-title 0 27) "...")
                         tinctures-title)]

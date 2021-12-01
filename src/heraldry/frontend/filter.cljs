@@ -9,7 +9,6 @@
    [heraldry.frontend.ui.element.search-field :as search-field]
    [heraldry.frontend.ui.element.tags :as tags]
    [heraldry.gettext :refer [string]]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -103,7 +102,7 @@
        :on-click #(rf/dispatch [:filter-toggle-tag filter-tags-path %])
        :selected filter-tags]]
      (if (empty? filtered-items)
-       [:div [tr strings/none]]
+       [:div [tr (string "None")]]
        [display-fn
         :items filtered-items
         :filtered? filtered?])]))

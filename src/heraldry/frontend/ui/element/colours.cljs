@@ -8,7 +8,6 @@
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -157,7 +156,7 @@
                                :border-left "1px solid #888"}}
                   [checkbox/checkbox (c/<< context :path [:ui :colours :show colour])
                    :option {:type :boolean}]]])))]]
-         [tr strings/none])]]]))
+         [tr (string "None")])]]]))
 
 (defmethod ui-interface/form-element :colours [context]
   [form context])

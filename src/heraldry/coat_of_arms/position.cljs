@@ -1,25 +1,25 @@
 (ns heraldry.coat-of-arms.position
   (:require
+   [heraldry.gettext :refer [string]]
    [heraldry.math.vector :as v]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def point-choices
-  [[strings/fess-point :fess]
-   [strings/chief-point :chief]
-   [strings/base-point :base]
-   [strings/dexter-point :dexter]
-   [strings/sinister-point :sinister]
-   [strings/honour-point :honour]
-   [strings/nombril-point :nombril]
-   [strings/top-left :top-left]
-   [strings/top :top]
-   [strings/top-right :top-right]
-   [strings/left :left]
-   [strings/right :right]
-   [strings/bottom-left :bottom-left]
-   [strings/bottom :bottom]
-   [strings/bottom-right :bottom-right]])
+  [[(string "Fess") :fess]
+   [(string "Chief") :chief]
+   [(string "Base") :base]
+   [(string "Dexter") :dexter]
+   [(string "Sinister") :sinister]
+   [(string "Honour") :honour]
+   [(string "Nombril") :nombril]
+   [(string "Top-left") :top-left]
+   [(string "Top") :top]
+   [(string "Top-right") :top-right]
+   [(string "Left") :left]
+   [(string "Right") :right]
+   [(string "Bottom-left") :bottom-left]
+   [(string "Bottom") :bottom]
+   [(string "Bottom-right") :bottom-right]])
 
 (def point-choices-x
   (->> point-choices
@@ -33,30 +33,30 @@
    #{:chief :honour :fess :nombril :base}))
 
 (def anchor-point-choices
-  [[strings/top-left :top-left]
-   [strings/top :top]
-   [strings/top-right :top-right]
-   [strings/left :left]
-   [strings/right :right]
-   [strings/bottom-left :bottom-left]
-   [strings/bottom :bottom]
-   [strings/bottom-right :bottom-right]
-   [strings/fess-point :fess]
-   [strings/chief-point :chief]
-   [strings/base-point :base]
-   [strings/dexter-point :dexter]
-   [strings/sinister-point :sinister]
-   [strings/honour-point :honour]
-   [strings/nombril-point :nombril]
-   [strings/angle :angle]])
+  [[(string "Top-left") :top-left]
+   [(string "Top") :top]
+   [(string "Top-right") :top-right]
+   [(string "Left") :left]
+   [(string "Right") :right]
+   [(string "Bottom-left") :bottom-left]
+   [(string "Bottom") :bottom]
+   [(string "Bottom-right") :bottom-right]
+   [(string "Fess") :fess]
+   [(string "Chief") :chief]
+   [(string "Base") :base]
+   [(string "Dexter") :dexter]
+   [(string "Sinister") :sinister]
+   [(string "Honour") :honour]
+   [(string "Nombril") :nombril]
+   [(string "Angle") :angle]])
 
 (def anchor-point-map
   (util/choices->map anchor-point-choices))
 
 (def alignment-choices
-  [[strings/left :left]
-   [strings/middle :middle]
-   [strings/right :right]])
+  [[(string "Left") :left]
+   [(string "Middle") :middle]
+   [(string "Right") :right]])
 
 (def alignment-map
   (util/choices->map alignment-choices))
@@ -65,30 +65,30 @@
   {:point {:type :choice
            :choices point-choices
            :default :fess
-           :ui {:label strings/point}}
+           :ui {:label (string "Point")}}
    :alignment {:type :choice
                :choices alignment-choices
                :default :middle
-               :ui {:label strings/alignment
+               :ui {:label (string "Alignment")
                     :form-type :radio-select}}
    :angle {:type :range
            :min 0
            :max 360
            :default 0
-           :ui {:label strings/angle}}
+           :ui {:label (string "Angle")}}
    :offset-x {:type :range
               :min -45
               :max 45
               :default 0
-              :ui {:label strings/offset-x
+              :ui {:label (string "Offset x")
                    :step 0.1}}
    :offset-y {:type :range
               :min -45
               :max 45
               :default 0
-              :ui {:label strings/offset-y
+              :ui {:label (string "Offset y")
                    :step 0.1}}
-   :ui {:label strings/position
+   :ui {:label (string "Position")
         :form-type :position}})
 
 (def anchor-default-options

@@ -11,7 +11,6 @@
    [heraldry.interface :as interface]
    [heraldry.math.curve :as curve]
    [heraldry.ribbon :as ribbon]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -315,7 +314,7 @@
        :tooltip (string "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number.\n\nNote: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this.")]])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [context]
-  {:title strings/general
+  {:title (string "General")
    :validation @(rf/subscribe [:validate-ribbon-general context])})
 
 (defmethod ui-interface/component-form-data :heraldry.component/ribbon-general [_context]

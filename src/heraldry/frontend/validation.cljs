@@ -6,7 +6,6 @@
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.gettext :refer [string]]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -86,23 +85,23 @@
       (= #{:metal}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (util/str-tr strings/metal
+                     :message (util/str-tr (string "Metal")
                                            " "
                                            (if fimbriated?
-                                             strings/fimbriation
-                                             strings/field) " (" (list-tinctures own-tinctures)
+                                             (string "Fimbriation")
+                                             (string "field")) " (" (list-tinctures own-tinctures)
                                            ") " (string "on") " "
-                                           strings/metal " " strings/field " (" (list-tinctures parent-tinctures)
+                                           (string "Metal") " " (string "field") " (" (list-tinctures parent-tinctures)
                                            ") " (string "breaks rule of tincture."))}
       (= #{:colour}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (util/str-tr strings/colour
+                     :message (util/str-tr (string "Colour")
                                            " " (if fimbriated?
-                                                 strings/fimbriation
-                                                 strings/field) " (" (list-tinctures own-tinctures)
+                                                 (string "Fimbriation")
+                                                 (string "field")) " (" (list-tinctures own-tinctures)
                                            ") " (string "on") " "
-                                           strings/colour " " strings/field " (" (list-tinctures parent-tinctures)
+                                           (string "Colour") " " (string "field") " (" (list-tinctures parent-tinctures)
                                            ") " (string "breaks rule of tincture."))})))
 
 (rf/reg-sub :validate-tinctures
@@ -158,7 +157,7 @@
                              :message (util/str-tr
                                        (string "Fimbriation tinctures are both metals (")
                                        (tincture/translate-tincture fimbriation-tincture-1)
-                                       " " strings/and " "
+                                       " " (string "and") " "
                                        (tincture/translate-tincture fimbriation-tincture-2)
                                        ").")})
 
@@ -168,7 +167,7 @@
                               :message (util/str-tr
                                         (string "Fimbriation tinctures are both colours (")
                                         (tincture/translate-tincture fimbriation-tincture-1)
-                                        " " strings/and " "
+                                        " " (string "and") " "
                                         (tincture/translate-tincture fimbriation-tincture-2)
                                         ").")})
 

@@ -9,7 +9,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -32,15 +31,15 @@
                              (util/str-tr (:num-base-fields layout) " " (string "base fields")))
                            (when (some #(options/changed? % layout options)
                                        [:offset-x :offset-y])
-                             strings/shifted)
+                             (string "shifted"))
                            (when (some #(options/changed? % layout options)
                                        [:stretch-x :stretch-y])
-                             strings/stretched)
+                             (string "stretched"))
                            (when (options/changed? :rotation layout options)
-                             strings/rotated)])
+                             (string "rotated"))])
           changes (if (seq changes)
                     changes
-                    [strings/default])]
+                    [(string "Default")])]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 

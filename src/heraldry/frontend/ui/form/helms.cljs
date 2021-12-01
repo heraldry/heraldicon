@@ -5,8 +5,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.gettext :refer [string]]
-   [heraldry.interface :as interface]
-   [heraldry.strings :as strings]))
+   [heraldry.interface :as interface]))
 
 (defn form [_context]
   [:<>])
@@ -20,7 +19,7 @@
                   [:sup {:style {:color "#d40"}}
                    "alpha"]
                   [:div.bottom
-                   [:p strings/alpha-feature]]]
+                   [:p (string "This feature is incomplete and likely going to change, so use with caution. :)")]]]
      :buttons [{:icon "fas fa-plus"
                 :handler #(state/dispatch-on-event % [:add-element elements-context default/helm])}]
      :nodes (->> (range num-helms)
@@ -29,14 +28,14 @@
                           {:context helm-context
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
-                                      :tooltip strings/move-down
+                                      :tooltip (string "move down")
                                       :handler #(state/dispatch-on-event % [:move-element helm-context (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-helms))
-                                      :tooltip strings/move-up
+                                      :tooltip (string "move up")
                                       :handler #(state/dispatch-on-event % [:move-element helm-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
-                                      :tooltip strings/remove
+                                      :tooltip (string "remove")
                                       :handler #(state/dispatch-on-event % [:remove-element helm-context])}]}))))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/helms [_context]

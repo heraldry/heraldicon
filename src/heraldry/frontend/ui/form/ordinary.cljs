@@ -7,9 +7,9 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.form.cottise :as cottise]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
-   [heraldry.strings :as strings]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db :remove-cottise
@@ -142,7 +142,7 @@
                        (str "/svg/ordinary-type-" (name ordinary-type) "-selected.svg"))}
      :validation @(rf/subscribe [:validate-ordinary context])
      :buttons [{:icon "fas fa-plus"
-                :title strings/add
+                :title (string "Add")
                 :disabled? (empty? menu)
                 :menu menu}]
      :nodes (cond-> [{:context (c/++ context :field)}]

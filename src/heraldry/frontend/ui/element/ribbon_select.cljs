@@ -10,7 +10,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tags :as tags]
    [heraldry.frontend.user :as user]
-   [heraldry.strings :as strings]
+   [heraldry.gettext :refer [string]]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -77,7 +77,9 @@
                 [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
               " "
               [link-fn ribbon]
-              [tr strings/by]
+              " "
+              [tr (string "by")]
+              " "
               [:a {:href (attribution/full-url-for-username username)
                    :target "_blank"} username]
               " "
@@ -95,4 +97,4 @@
        ribbon-list
        link-to-ribbon
        #(invalidate-ribbon-cache :all)]
-      [:div [tr strings/loading]])))
+      [:div [tr (string "Loading...")]])))

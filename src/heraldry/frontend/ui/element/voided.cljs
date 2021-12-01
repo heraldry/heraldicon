@@ -3,9 +3,9 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -18,15 +18,15 @@
   (fn [[options voided] [_ _path]]
     (let [changes (concat
                    (when (:voided? voided)
-                     [strings/voided])
+                     [(string "Voided")])
                    (when (and (:voided? voided)
                               (some #(options/changed? % voided options)
                                     [:thickness]))
-                     [strings/resized]))]
+                     [(string "resized")]))]
       (if (seq changes)
         (-> (util/combine ", " changes)
             util/upper-case-first)
-        strings/no))))
+        (string "No")))))
 
 (defn voided-submenu [context]
   (when-let [options (interface/get-relevant-options context)]

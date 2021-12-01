@@ -6,7 +6,6 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -20,15 +19,15 @@
     (let [changes (concat
                    (when (some #(options/changed? % geometry options)
                                [:size :width :height :thickness])
-                     [strings/resized])
+                     [(string "resized")])
                    (when (some #(options/changed? % geometry options)
                                [:eccentricity])
-                     [strings/adjusted])
+                     [(string "adjusted")])
                    (when (some #(options/changed? % geometry options)
                                [:stretch])
-                     [strings/stretched])
+                     [(string "stretched")])
                    (when (:mirrored? geometry)
-                     [strings/mirrored-lc])
+                     [(string "mirrored")])
                    (when (:reversed? geometry)
                      [(string "reversed")]))]
       (if (seq changes)

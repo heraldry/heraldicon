@@ -11,9 +11,9 @@
    [heraldry.coat-of-arms.charge.type.roundel :as roundel]
    [heraldry.coat-of-arms.charge.type.rustre :as rustre]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.strings :as strings]
    [heraldry.util :as util]))
 
 (def charges
@@ -38,7 +38,7 @@
 (def type-option
   {:type :choice
    :choices choices
-   :ui {:label strings/type
+   :ui {:label (string "Type")
         :form-type :charge-type-select}})
 
 ;; TODO: part-of-semy? and part-of-charge-group? got lost somewhere along the way,
