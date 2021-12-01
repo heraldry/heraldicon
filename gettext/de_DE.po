@@ -665,6 +665,26 @@ msgstr "Deichselschnitt"
 msgid "Vairy"
 msgstr "Feh"
 
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Single"
+msgstr "Einfach"
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Double"
+msgstr "Doppelt"
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Even"
+msgstr "Gleichmäßig"
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Outside"
+msgstr "Außen"
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Inside"
+msgstr "Innen"
+
 #: src/heraldry/coat_of_arms/line/type/angled.cljs
 msgid "Angled"
 msgstr "Stufe"

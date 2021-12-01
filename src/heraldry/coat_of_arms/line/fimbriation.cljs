@@ -5,6 +5,7 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -12,21 +13,16 @@
 
 (def type-choices
   [[strings/none :none]
-   [{:en "Single"
-     :de "Einfach"} :single]
-   [{:en "Double"
-     :de "Doppelt"} :double]])
+   [(string "Single") :single]
+   [(string "Double") :double]])
 
 (def type-map
   (util/choices->map type-choices))
 
 (def alignment-choices
-  [[{:en "Even"
-     :de "Gleichmäßig"} :even]
-   [{:en "Outside"
-     :de "Außen"} :outside]
-   [{:en "Inside"
-     :de "Innen"} :inside]])
+  [[(string "Even") :even]
+   [(string "Outside") :outside]
+   [(string "Inside") :inside]])
 
 (def alignment-map
   (util/choices->map alignment-choices))
