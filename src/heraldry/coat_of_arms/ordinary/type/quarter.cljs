@@ -54,14 +54,10 @@
          :line line-style
          :opposite-line opposite-line-style
          :variant {:type :choice
-                   :choices [[{:en "Dexter-chief"
-                               :de "Heraldisch rechts-oben"} :dexter-chief]
-                             [{:en "Sinister-chief"
-                               :de "Heraldisch links-oben"} :sinister-chief]
-                             [{:en "Dexter-base"
-                               :de "Heraldisch rechts-unten"} :dexter-base]
-                             [{:en "Sinister-base"
-                               :de "Heraldisch links-unten"} :sinister-base]]
+                   :choices [[(string "Dexter-chief") :dexter-chief]
+                             [(string "Sinister-chief") :sinister-chief]
+                             [(string "Dexter-base") :dexter-base]
+                             [(string "Sinister-base") :sinister-base]]
                    :default :dexter-chief
                    :ui {:label strings/variant
                         :form-type :select}}

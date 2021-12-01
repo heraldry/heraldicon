@@ -30,6 +30,7 @@
    [heraldry.coat-of-arms.field.type.tierced-per-pall :as tierced-per-pall]
    [heraldry.coat-of-arms.field.type.vairy :as vairy]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -74,8 +75,7 @@
 (def type-option
   {:type :choice
    :choices choices
-   :ui {:label {:en "Partition"
-                :de "Teilung"}
+   :ui {:label (string "Partition")
         :form-type :field-type-select}})
 
 (defmethod interface/options-subscriptions :heraldry.component/field [_context]
@@ -122,5 +122,4 @@
                ref?)) (assoc :inherit-environment?
                              {:type :boolean
                               :default false
-                              :ui {:label {:en "Inherit environment (e.g. for dimidiation)"
-                                           :de "Umgebung erben (e.g. für Halbierung)"}}}))))
+                              :ui {:label (string "Inherit environment (e.g. for dimidiation)")}}))))

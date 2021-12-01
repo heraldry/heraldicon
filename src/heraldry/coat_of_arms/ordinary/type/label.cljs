@@ -44,10 +44,8 @@
                 :ui {:label strings/origin
                      :form-type :position}}
        :variant {:type :choice
-                 :choices [[{:en "Full"
-                             :de "Durchgehend"} :full]
-                           [{:en "Truncated"
-                             :de "Schwebend"} :truncated]]
+                 :choices [[(string "Full") :full]
+                           [(string "Truncated") :truncated]]
                  :default :full
                  :ui {:label strings/variant
                       :form-type :radio-select}}
@@ -56,8 +54,7 @@
                     :max 16
                     :default 3
                     :integer? true
-                    :ui {:label {:en "Number of points"
-                                 :de "Anzahl Lätze"}}}
+                    :ui {:label (string "Number of points")}}
        :geometry {:size {:type :range
                          :min 2
                          :max 90

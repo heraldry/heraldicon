@@ -561,6 +561,14 @@ msgstr "Bogenwinkel"
 msgid "Rotate charges"
 msgstr "Wappenfiguren rotieren"
 
+#: src/heraldry/coat_of_arms/field/options.cljs
+msgid "Partition"
+msgstr "Teilung"
+
+#: src/heraldry/coat_of_arms/field/options.cljs
+msgid "Inherit environment (e.g. for dimidiation)"
+msgstr "Umgebung erben (e.g. für Halbierung)"
+
 #: src/heraldry/coat_of_arms/field/type/barry.cljs
 msgid "Barry"
 msgstr "Geteilt vielfach"
@@ -640,6 +648,10 @@ msgstr "Schräggeviert"
 #: src/heraldry/coat_of_arms/field/type/plain.cljs
 msgid "Plain"
 msgstr "Ungeteilt"
+
+#: src/heraldry/coat_of_arms/field/type/plain.cljs
+msgid "Pattern scaling"
+msgstr "Musterskalierung"
 
 #: src/heraldry/coat_of_arms/field/type/quartered.cljs
 msgid "Quartered"
@@ -818,6 +830,14 @@ msgstr "Gore"
 msgid "Label"
 msgstr "Turnierkragen"
 
+#: src/heraldry/coat_of_arms/ordinary/type/label.cljs
+msgid "Truncated"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/label.cljs
+msgid "Number of points"
+msgstr "Anzahl Lätze"
+
 #: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
 msgid "Orle"
 msgstr "Innenbord"
@@ -834,6 +854,21 @@ msgstr "Deichsel"
 msgid "Pile"
 msgstr "Spitze"
 
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/pile.cljs
+msgid "Size mode"
+msgstr "Größenmodus"
+
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/pile.cljs
+msgid "Edge"
+msgstr "Kante"
+
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/pile.cljs
+msgid "Anchor-Point"
+msgstr "Anker-Punkt"
+
 #: src/heraldry/coat_of_arms/ordinary/type/point.cljs
 msgid "Point"
 msgstr "Schrägeck"
@@ -841,6 +876,22 @@ msgstr "Schrägeck"
 #: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
 msgid "Quarter / Canton"
 msgstr "Vierung / Obereck"
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Dexter-chief"
+msgstr "Heraldisch rechts-oben"
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Sinister-chief"
+msgstr "Heraldisch links-oben"
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Dexter-base"
+msgstr "Heraldisch rechts-unten"
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Sinister-base"
+msgstr "Heraldisch links-unten"
 
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 msgid "Saltire"
@@ -1649,6 +1700,7 @@ msgstr "Halb"
 msgid "2/3"
 msgstr "2/3"
 
+#: src/heraldry/coat_of_arms/ordinary/type/label.cljs
 #: src/heraldry/render_options.cljs
 msgid "Full"
 msgstr "Voll"

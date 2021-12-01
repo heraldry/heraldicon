@@ -24,8 +24,7 @@
                                                         :min 0.1
                                                         :max 3
                                                         :default 1
-                                                        :ui {:label {:en "Pattern scaling"
-                                                                     :de "Musterskalierung"}
+                                                        :ui {:label (string "Pattern scaling")
                                                              :step 0.01}}))))
 
 (defmethod field-interface/render-field field-type
