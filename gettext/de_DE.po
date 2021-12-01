@@ -897,6 +897,66 @@ msgstr "Andreaskreuz"
 msgid "Rectangular grid"
 msgstr "Rechteckiges Gitter"
 
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Cloth (rough)"
+msgstr "Stoff (rau)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Cloth (smooth)"
+msgstr "Stoff (glatt)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Felt"
+msgstr "Filz"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Glass (frosted)"
+msgstr "Glas (matt)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Marble"
+msgstr "Marmor"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (brushed 1)"
+msgstr "Metall (gebürstet 1)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (brushed 2)"
+msgstr "Metall (gebürstet 2)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (rough)"
+msgstr "Metall (rau)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (scraped)"
+msgstr "Metall (zerkratzt)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (smooth)"
+msgstr "Metall (glatt)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Mosaic"
+msgstr "Mosaik"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Satin"
+msgstr "Satin"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Stone"
+msgstr "Stein"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Stone (rough)"
+msgstr "Stein (rau)"
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Wood"
+msgstr "Holz"
+
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "WappenWiki (default)"
 msgstr ""

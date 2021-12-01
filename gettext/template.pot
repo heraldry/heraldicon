@@ -874,6 +874,66 @@ msgstr ""
 msgid "Rectangular grid"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Cloth (rough)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Cloth (smooth)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Felt"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Glass (frosted)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Marble"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (brushed 1)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (brushed 2)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (rough)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (scraped)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Metal (smooth)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Mosaic"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Satin"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Stone"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Stone (rough)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/texture.cljs
+msgid "Wood"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "WappenWiki (default)"
 msgstr ""
