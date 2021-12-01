@@ -4,6 +4,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.strings :as strings]))
 
@@ -13,8 +14,7 @@
 (defmethod ui-interface/component-node-data :heraldry.component/helms [context]
   (let [elements-context (c/++ context :elements)
         num-helms (interface/get-list-size elements-context)]
-    {:title {:en "Helms and crests"
-             :de "Helme und Helmzier"}
+    {:title (string "Helms and crests")
      :annotation [:div.tooltip.info {:style {:display "inline-block"
                                              :margin-left "0.2em"}}
                   [:sup {:style {:color "#d40"}}

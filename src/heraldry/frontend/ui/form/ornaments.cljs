@@ -4,6 +4,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.shield-separator :as shield-separator]
    [heraldry.strings :as strings]
@@ -15,8 +16,7 @@
 (defmethod ui-interface/component-node-data :heraldry.component/ornaments [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
-    {:title {:en "Ornaments"
-             :de "Prachtstücke"}
+    {:title (string "Ornaments")
      :annotation [:div.tooltip.info {:style {:display "inline-block"
                                              :margin-left "0.2em"}}
                   [:sup {:style {:color "#d40"}}

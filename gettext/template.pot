@@ -243,10 +243,6 @@ msgid "Voided"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/attributes.cljs
-msgid "Ornaments"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Tail"
 msgstr ""
 
@@ -1398,6 +1394,14 @@ msgstr ""
 msgid "various"
 msgstr ""
 
+#: src/heraldry/frontend/ui/form/collection_element.cljs
+msgid "<no name>"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/field.cljs
+msgid "Semy"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/tincture/core.cljs src/heraldry/frontend/ui/form/helm.cljs
 msgid "Helmet"
 msgstr ""
@@ -1412,6 +1416,18 @@ msgstr ""
 
 #: src/heraldry/frontend/ui/form/helm.cljs
 msgid "Helm"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/helms.cljs
+msgid "Helms and crests"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Ornaments"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/render_options.cljs
+msgid "Render Options"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
@@ -1490,6 +1506,14 @@ msgstr ""
 msgid "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number.
 
 Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/semy.cljs
+msgid "Semy of"
+msgstr ""
+
+#: src/heraldry/frontend/ui/shield_separator.cljs
+msgid "Shield layer"
 msgstr ""
 
 #: src/heraldry/frontend/user_library.cljs

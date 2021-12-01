@@ -3,6 +3,7 @@
    [heraldry.coat-of-arms.charge.options :as charge-options]
    [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (defn form [context]
@@ -15,8 +16,8 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/semy [context]
   (let [charge-context (c/++ context :charge)]
-    {:title (util/str-tr {:en "Semy of "
-                          :de "Besät mit "}
+    {:title (util/str-tr (string "Semy of")
+                         " "
                          (charge-options/title charge-context))
      :nodes [{:context charge-context}]}))
 

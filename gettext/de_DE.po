@@ -257,10 +257,6 @@ msgid "Voided"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/attributes.cljs
-msgid "Ornaments"
-msgstr "Prachtstücke"
-
-#: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Tail"
 msgstr "Schwanz"
 
@@ -1131,7 +1127,7 @@ msgstr "Quelle: "
 
 #: src/heraldry/frontend/attribution.cljs
 msgid "unnamed"
-msgstr "unbenamt"
+msgstr "unbenannt"
 
 #: src/heraldry/frontend/attribution.cljs
 msgid "unsaved data"
@@ -1452,6 +1448,14 @@ msgstr "Gruppe von "
 msgid "various"
 msgstr "verschiedenen"
 
+#: src/heraldry/frontend/ui/form/collection_element.cljs
+msgid "<no name>"
+msgstr "<unbenannt>"
+
+#: src/heraldry/frontend/ui/form/field.cljs
+msgid "Semy"
+msgstr "Besähung"
+
 #: src/heraldry/coat_of_arms/attributes.cljs
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 #: src/heraldry/frontend/ui/form/helm.cljs
@@ -1469,6 +1473,19 @@ msgstr "Helmzier Figur"
 #: src/heraldry/frontend/ui/form/helm.cljs
 msgid "Helm"
 msgstr "Helm"
+
+#: src/heraldry/frontend/ui/form/helms.cljs
+msgid "Helms and crests"
+msgstr "Helme und Helmzier"
+
+#: src/heraldry/coat_of_arms/attributes.cljs
+#: src/heraldry/frontend/ui/form/ornaments.cljs
+msgid "Ornaments"
+msgstr "Prachtstücke"
+
+#: src/heraldry/frontend/ui/form/render_options.cljs
+msgid "Render Options"
+msgstr ""
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
 msgid "Segments"
@@ -1569,6 +1586,14 @@ msgstr ""
 "\n"
 "Note: wende die Vorauswahl an nachdem sich die Anzahl der Segmente in der "
 "Kurve ändert. Das überschreibt die Änderungen hier, aber im Mo"
+
+#: src/heraldry/frontend/ui/form/semy.cljs
+msgid "Semy of"
+msgstr "Besät mit"
+
+#: src/heraldry/frontend/ui/shield_separator.cljs
+msgid "Shield layer"
+msgstr "Schildebene"
 
 #: src/heraldry/frontend/user_library.cljs
 msgid "User"
