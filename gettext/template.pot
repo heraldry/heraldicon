@@ -1274,6 +1274,18 @@ msgstr ""
 msgid "Here you can view and create ribbons to be used in coats of arms. By default your ribbons are private, so only you can see and use them. If you want to make them public, then you must provide a license."
 msgstr ""
 
+#: src/heraldry/frontend/ui/element/arms_reference_select.cljs
+msgid "Select Arms"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/attributes.cljs
+msgid "Attributes"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/attributes.cljs
+msgid "Add attribute"
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/attribution.cljs
 msgid "no license"
 msgstr ""
@@ -1414,6 +1426,10 @@ msgstr ""
 msgid "Sheaf of"
 msgstr ""
 
+#: src/heraldry/frontend/ui/element/charge_type_select.cljs
+msgid "Select Charge"
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/colours.cljs
 msgid "Function"
 msgstr ""
@@ -1426,7 +1442,31 @@ msgstr ""
 msgid "Highlight"
 msgstr ""
 
-#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
+#: src/heraldry/frontend/ui/element/escutcheon_select.cljs
+msgid "Select Escutcheon"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/field_layout.cljs
+msgid "base fields"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/field_type_select.cljs
+msgid "Select Partition"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/geometry.cljs
+msgid "reversed"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/line_type_select.cljs
+msgid "Select Line Type"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/ordinary_type_select.cljs
+msgid "Select Ordinary"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/frontend/ui/element/arms_reference_select.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 msgid "None"
 msgstr ""
 
@@ -1434,8 +1474,36 @@ msgstr ""
 msgid "Select Ribbon"
 msgstr ""
 
-#: src/heraldry/frontend/ui/element/semy_layout.cljs
+#: src/heraldry/frontend/ui/element/field_layout.cljs src/heraldry/frontend/ui/element/semy_layout.cljs
 msgid "fields"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/tags.cljs
+msgid "Tags"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/theme_select.cljs
+msgid "Select Colour Theme"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/tincture_select.cljs
+msgid "Select Tincture"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+msgid "Default"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+msgid "Inherited"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+msgid "Auto"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+msgid "Manual"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs

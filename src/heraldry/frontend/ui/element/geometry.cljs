@@ -3,6 +3,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -29,8 +30,7 @@
                    (when (:mirrored? geometry)
                      [strings/mirrored-lc])
                    (when (:reversed? geometry)
-                     [{:en "reversed"
-                       :de "umgedreht"}]))]
+                     [(string "reversed")]))]
       (if (seq changes)
         (-> (util/combine ", " changes)
             util/upper-case-first)

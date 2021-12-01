@@ -1327,6 +1327,18 @@ msgstr ""
 "benutzen. Wenn du sie öffentlich machen möchtest, dann mußt du eine Lizenz "
 "angeben."
 
+#: src/heraldry/frontend/ui/element/arms_reference_select.cljs
+msgid "Select Arms"
+msgstr "Wappen auswählen"
+
+#: src/heraldry/frontend/ui/element/attributes.cljs
+msgid "Attributes"
+msgstr "Attribute"
+
+#: src/heraldry/frontend/ui/element/attributes.cljs
+msgid "Add attribute"
+msgstr "Attribut hinzufügen"
+
 #: src/heraldry/frontend/ui/element/attribution.cljs
 msgid "no license"
 msgstr "keine Lizenz"
@@ -1341,7 +1353,7 @@ msgstr "Vorauswahl"
 
 #: src/heraldry/frontend/ui/element/charge_group_preset_select.cljs
 msgid "Select Charge Group Preset"
-msgstr "Wappenfigurgruppen Vorauswahl"
+msgstr "Wappenfigur auswählen"
 
 #: src/heraldry/frontend/ui/element/charge_group_preset_select.cljs
 msgid "Select"
@@ -1467,6 +1479,10 @@ msgstr "Bordweise"
 msgid "Sheaf of"
 msgstr "Garbenweise"
 
+#: src/heraldry/frontend/ui/element/charge_type_select.cljs
+msgid "Select Charge"
+msgstr "Wappenfigur auswählen"
+
 #: src/heraldry/frontend/ui/element/colours.cljs
 msgid "Function"
 msgstr "Funktion"
@@ -1479,7 +1495,32 @@ msgstr "Schattierung"
 msgid "Highlight"
 msgstr "Highlight"
 
+#: src/heraldry/frontend/ui/element/escutcheon_select.cljs
+msgid "Select Escutcheon"
+msgstr "Schild auswählen"
+
+#: src/heraldry/frontend/ui/element/field_layout.cljs
+msgid "base fields"
+msgstr "Basisfelder"
+
+#: src/heraldry/frontend/ui/element/field_type_select.cljs
+msgid "Select Partition"
+msgstr "Teilung auswählen"
+
+#: src/heraldry/frontend/ui/element/geometry.cljs
+msgid "reversed"
+msgstr "umgedreht"
+
+#: src/heraldry/frontend/ui/element/line_type_select.cljs
+msgid "Select Line Type"
+msgstr "Schnitt auswählen"
+
+#: src/heraldry/frontend/ui/element/ordinary_type_select.cljs
+msgid "Select Ordinary"
+msgstr "Heroldsbild auswählen"
+
 #: src/heraldry/coat_of_arms/attributes.cljs
+#: src/heraldry/frontend/ui/element/arms_reference_select.cljs
 #: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 msgid "None"
 msgstr "Keins"
@@ -1488,9 +1529,38 @@ msgstr "Keins"
 msgid "Select Ribbon"
 msgstr "Band auswählen"
 
+#: src/heraldry/frontend/ui/element/field_layout.cljs
 #: src/heraldry/frontend/ui/element/semy_layout.cljs
 msgid "fields"
 msgstr "Felder"
+
+#: src/heraldry/frontend/ui/element/tags.cljs
+msgid "Tags"
+msgstr "Tags"
+
+#: src/heraldry/frontend/ui/element/theme_select.cljs
+msgid "Select Colour Theme"
+msgstr "Farbschema auswählen"
+
+#: src/heraldry/frontend/ui/element/tincture_select.cljs
+msgid "Select Tincture"
+msgstr "Tinktur auswählen"
+
+#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+msgid "Default"
+msgstr "Default"
+
+#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+msgid "Inherited"
+msgstr "Geerbt"
+
+#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+msgid "Auto"
+msgstr "Auto"
+
+#: src/heraldry/frontend/ui/element/value_mode_select.cljs
+msgid "Manual"
+msgstr "Manuell"
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "slot"
