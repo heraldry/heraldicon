@@ -978,11 +978,6 @@ msgstr "Braunrot"
 msgid "Tenné"
 msgstr "Orange"
 
-#: src/heraldry/coat_of_arms/attributes.cljs
-#: src/heraldry/coat_of_arms/tincture/core.cljs
-msgid "Helmet"
-msgstr "Helm"
-
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Light"
 msgstr "Hell"
@@ -1377,6 +1372,24 @@ msgstr "Gruppe von "
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "various"
 msgstr "verschiedenen"
+
+#: src/heraldry/coat_of_arms/attributes.cljs
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+#: src/heraldry/frontend/ui/form/helm.cljs
+msgid "Helmet"
+msgstr "Helm"
+
+#: src/heraldry/frontend/ui/form/helm.cljs
+msgid "Torse"
+msgstr "Helmwulst"
+
+#: src/heraldry/frontend/ui/form/helm.cljs
+msgid "Crest charge"
+msgstr "Helmzier Figur"
+
+#: src/heraldry/frontend/ui/form/helm.cljs
+msgid "Helm"
+msgstr "Helm"
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
 msgid "Segments"
