@@ -8,6 +8,7 @@
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -17,8 +18,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/fess)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Fess"
-                                                              :de "Balken"})
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Fess"))
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))

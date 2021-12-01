@@ -7,6 +7,7 @@
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -20,7 +21,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/gore)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] "Gore")
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Gore"))
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))

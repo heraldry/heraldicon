@@ -8,6 +8,7 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.pile :as pile]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -17,8 +18,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/pile)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] {:en "Pile"
-                                                              :de "Spitze"})
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Pile"))
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
