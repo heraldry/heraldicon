@@ -74,8 +74,7 @@
                           :choices [[strings/thickness :thickness]
                                     [strings/angle :angle]]
                           :default :thickness
-                          :ui {:label {:en "Size mode"
-                                       :de "Größenmodus"}
+                          :ui {:label (string "Size mode")
                                :form-type :radio-select}}
         current-size-mode (options/get-value
                            (interface/get-raw-data (c/++ context :geometry :size-mode))
@@ -135,10 +134,8 @@
                                                :ui {:label strings/offset-y
                                                     :step 0.1}}
                                     :type {:type :choice
-                                           :choices [[{:en "Edge"
-                                                       :de "Kante"} :edge]
-                                                     [{:en "Point"
-                                                       :de "Spitze"} :point]]
+                                           :choices [[(string "Edge") :edge]
+                                                     [(string "Anchor-Point") :point]]
                                            :default :edge
                                            :ui {:label strings/mode
                                                 :form-type :radio-select}}))

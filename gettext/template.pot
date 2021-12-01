@@ -542,6 +542,14 @@ msgstr ""
 msgid "Rotate charges"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/field/options.cljs
+msgid "Partition"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/options.cljs
+msgid "Inherit environment (e.g. for dimidiation)"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/field/type/barry.cljs
 msgid "Barry"
 msgstr ""
@@ -620,6 +628,10 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/field/type/plain.cljs
 msgid "Plain"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/plain.cljs
+msgid "Pattern scaling"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/field/type/quartered.cljs
@@ -798,6 +810,14 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/ordinary/type/label.cljs
+msgid "Truncated"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/label.cljs
+msgid "Number of points"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
 msgid "Orle"
 msgstr ""
@@ -814,12 +834,40 @@ msgstr ""
 msgid "Pile"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs
+msgid "Size mode"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs
+msgid "Edge"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/field/type/per_pile.cljs src/heraldry/coat_of_arms/ordinary/type/pile.cljs
+msgid "Anchor-Point"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/ordinary/type/point.cljs
 msgid "Point"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
 msgid "Quarter / Canton"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Dexter-chief"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Sinister-chief"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Dexter-base"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
+msgid "Sinister-base"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
@@ -1564,7 +1612,7 @@ msgstr ""
 msgid "2/3"
 msgstr ""
 
-#: src/heraldry/render_options.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/label.cljs src/heraldry/render_options.cljs
 msgid "Full"
 msgstr ""
 
