@@ -646,6 +646,26 @@ msgstr ""
 msgid "Vairy"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Single"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Double"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Even"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Outside"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Inside"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/line/type/angled.cljs
 msgid "Angled"
 msgstr ""
