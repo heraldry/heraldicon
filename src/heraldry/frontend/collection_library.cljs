@@ -16,6 +16,7 @@
    [heraldry.frontend.ui.form.collection-element :as collection-element]
    [heraldry.frontend.ui.shared :as shared]
    [heraldry.frontend.user :as user]
+   [heraldry.gettext :refer [string]]
    [heraldry.render :as render]
    [heraldry.strings :as strings]
    [heraldry.util :as util :refer [id-for-url]]
@@ -61,8 +62,7 @@
         (rf/dispatch-sync [:set list-db-path nil])
         (state/invalidate-cache list-db-path (:user-id user-data))
         (rf/dispatch-sync [:set-form-message form-db-path
-                           (util/str-tr {:en "Collection saved, new version: "
-                                         :de "Sammlung gespeichert, neue Version: "} (:version response))])
+                           (util/str-tr (string "Collection saved, new version:") " " (:version response))])
         (reife/push-state :view-collection-by-id {:id (id-for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)
@@ -288,8 +288,7 @@
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
                                            save-collection-clicked
-                                           #(js/alert (tr {:en "Need to be logged in and own the collection."
-                                                           :de "Du mußt eingeloggt und der Besitzer der Sammlung sein."})))
+                                           #(js/alert (tr (string "Need to be logged in and own the collection."))))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
        [tr strings/save]]]]))
@@ -297,8 +296,7 @@
 (defn collection-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
-                {:en "Create Collection"
-                 :de "Neue Sammlung"}])
+                (string "Create Collection")])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -355,14 +353,7 @@
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [tr {:en [:p
-              "Here you can view and create collections of coats of arms. "
-              "You explicitly have to save your collection as "
-              [:b "public"] " and add a license, if you want to share the link and allow others to view it."]
-         :de [:p
-              "Hier kannst du Sammlungen von Wappen erstellen und ansehen. "
-              "Du mußt deine Sammlungen explizit als "
-              [:b "öffentlich"] " markieren eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest."]}]]
+    [tr (string "Here you can view and create collections of coats of arms. You explicitly have to save your collection as public and add a license, if you want to share the link and allow others to view it.")]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])

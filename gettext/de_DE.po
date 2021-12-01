@@ -295,6 +295,28 @@ msgstr ""
 "angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, dann "
 "gib auch die Quelle und die Lizenz der Quelle an."
 
+#: src/heraldry/frontend/collection_library.cljs
+msgid "Collection saved, new version:"
+msgstr "Sammlung gespeichert, neue Version:"
+
+#: src/heraldry/frontend/collection_library.cljs
+msgid "Need to be logged in and own the collection."
+msgstr "Du mußt eingeloggt und der Besitzer der Sammlung sein."
+
+#: src/heraldry/frontend/collection_library.cljs
+msgid "Create Collection"
+msgstr "Neue Sammlung"
+
+#: src/heraldry/frontend/collection_library.cljs
+msgid ""
+"Here you can view and create collections of coats of arms. You explicitly "
+"have to save your collection as public and add a license, if you want to "
+"share the link and allow others to view it."
+msgstr ""
+"Hier kannst du Sammlungen von Wappen erstellen und ansehen. Du mußt deine "
+"Sammlungen explizit als öffentlich markieren eine Lizenz angeben, wenn du "
+"anderen den Zugriff erlauben und den Link teilen möchtest."
+
 #: src/heraldry/frontend/header.cljs
 msgid "News"
 msgstr "Neuigkeiten"
