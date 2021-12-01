@@ -1,11 +1,9 @@
 (ns heraldry.frontend.ui.element.charge-group-preset-select-presets
-  (:require [heraldry.strings :as strings]))
+  (:require [heraldry.gettext :refer [string]]))
 
 (def presets
-  [[{:en "Ordinaries"
-     :de "Heroldsbilder"}
-    [{:en "Fesswise"
-      :de "Balkenweise"} :fesswise
+  [[(string "Ordinaries")
+    [(string "Fesswise") :fesswise
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 25
@@ -15,8 +13,7 @@
                          :tincture :azure}}]
       :strips [{:type :heraldry.component/charge-group-strip
                 :slots [0 0 0]}]}]
-    [{:en "Palewise"
-      :de "Pfahlweise"} :palewise
+    [(string "Palewise") :palewise
      {:type :heraldry.charge-group.type/columns
       :strip-angle 0
       :spacing 20
@@ -26,8 +23,7 @@
                          :tincture :azure}}]
       :strips [{:type :heraldry.component/charge-group-strip
                 :slots [0 0 0]}]}]
-    [{:en "Bendwise"
-      :de "Schrägbalkenweise"} :bendwise
+    [(string "Bendwise") :bendwise
      {:type :heraldry.charge-group.type/rows
       :strip-angle 45
       :spacing 25
@@ -37,8 +33,7 @@
                          :tincture :azure}}]
       :strips [{:type :heraldry.component/charge-group-strip
                 :slots [0 0 0]}]}]
-    [{:en "Bendwise (sinister)"
-      :de "Schräglinksbalenweise"} :bendwise-sinister
+    [(string "Bendwise (sinister)") :bendwise-sinister
      {:type :heraldry.charge-group.type/rows
       :strip-angle -45
       :spacing 25
@@ -48,8 +43,7 @@
                          :tincture :azure}}]
       :strips [{:type :heraldry.component/charge-group-strip
                 :slots [0 0 0]}]}]
-    [{:en "Chevronwise"
-      :de "Sparrenweise"} :chevronwise
+    [(string "Chevronwise") :chevronwise
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 30
@@ -63,8 +57,7 @@
                 :slots [0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 nil 0]}]}]
-    [{:en "In cross"
-      :de "Kreuzweise"} :in-cross
+    [(string "In cross") :in-cross
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 20
@@ -82,8 +75,7 @@
                 :slots [nil nil 0 nil nil]}
                {:type :heraldry.component/charge-group-strip
                 :slots [nil nil 0 nil nil]}]}]
-    [{:en "In saltire"
-      :de "Schräggekreuzt"} :in-saltire
+    [(string "In saltire") :in-saltire
      {:type :heraldry.charge-group.type/rows
       :strip-angle 45
       :spacing 20
@@ -101,8 +93,7 @@
                 :slots [nil nil 0 nil nil]}
                {:type :heraldry.component/charge-group-strip
                 :slots [nil nil 0 nil nil]}]}]
-    [{:en "In pall"
-      :de "Deichselweise"} :in-pall
+    [(string "In pall") :in-pall
      {:type :heraldry.charge-group.type/columns
       :strip-angle 0
       :spacing 14
@@ -122,8 +113,7 @@
                 :slots [nil 0 nil nil nil]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 nil nil nil nil]}]}]
-    [{:en "Three above bend"
-      :de "Drei über Schrägbalken"} :three-in-above-bend
+    [(string "Three above bend") :three-in-above-bend
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 30
@@ -136,8 +126,7 @@
                 :slots [0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [nil 0]}]}]
-    [{:en "Three below bend"
-      :de "Drei unter Schrägbalken"} :three-below-bend
+    [(string "Three below bend") :three-below-bend
      {:type :heraldry.charge-group.type/rows
       :strip-angle 45
       :spacing 50
@@ -150,10 +139,8 @@
                 :slots [0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0]}]}]]
-   [{:en "Triangular"
-     :de "Dreieckig"}
-    [{:en "Three"
-      :de "Drei"} :three
+   [(string "Triangular")
+    [(string "Three") :three
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 40
@@ -165,8 +152,7 @@
                 :slots [0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0]}]}]
-    [{:en "Three (inverted)"
-      :de "Drei (invertiert)"} :three-inverted
+    [(string "Three (inverted)") :three-inverted
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 40
@@ -179,8 +165,7 @@
                {:type :heraldry.component/charge-group-strip
                 :slots [0 0]}]}]
 
-    [{:en "Three (columns)"
-      :de "Drei (Spalten)"} :three-columns
+    [(string "Three (columns)") :three-columns
      {:type :heraldry.charge-group.type/columns
       :strip-angle 0
       :spacing 30
@@ -192,8 +177,7 @@
                 :slots [0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0]}]}]
-    [{:en "Three (columns, inverted)"
-      :de "Drei (Spalten, invertiert)"} :three-columns-inverted
+    [(string "Three (columns, inverted)") :three-columns-inverted
      {:type :heraldry.charge-group.type/columns
       :strip-angle 0
       :spacing 30
@@ -205,8 +189,7 @@
                 :slots [0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 0]}]}]
-    [{:en "Six"
-      :de "Sechs"} :six
+    [(string "Six") :six
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 30
@@ -220,10 +203,8 @@
                 :slots [0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0]}]}]]
-   [{:en "Grid"
-     :de "Gitter"}
-    [{:en "Square"
-      :de "Quadrat"} :square
+   [(string "Grid")
+    [(string "Square") :square
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 25
@@ -237,8 +218,7 @@
                 :slots [0 0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 0 0]}]}]
-    [{:en "Diamond"
-      :de "Diamant"} :diamond
+    [(string "Diamond") :diamond
      {:type :heraldry.charge-group.type/rows
       :strip-angle 45
       :spacing 25
@@ -252,8 +232,7 @@
                 :slots [0 0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 0 0]}]}]
-    [{:en "Semy rows"
-      :de "Gesäte Reihen"} :semy-rows
+    [(string "Semy rows") :semy-rows
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 20
@@ -271,8 +250,7 @@
                 :slots [0 0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 0 0 0]}]}]
-    [{:en "Semy columns"
-      :de "Gesäte Spalten"} :semy-columns
+    [(string "Semy columns") :semy-columns
      {:type :heraldry.charge-group.type/columns
       :strip-angle 0
       :spacing 17
@@ -290,8 +268,7 @@
                 :slots [0 0 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 0 0 0]}]}]
-    [{:en "Frame"
-      :de "Rahmen"} :frame
+    [(string "Frame") :frame
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
       :spacing 17
@@ -309,16 +286,14 @@
                 :slots [0 nil nil nil 0]}
                {:type :heraldry.component/charge-group-strip
                 :slots [0 0 0 0 0]}]}]]
-   [strings/arc
-    [{:en "In annullo"
-      :de "Kreis"} :in-annullo
+   [(string "Arc")
+    [(string "In annullo") :in-annullo
      {:type :heraldry.charge-group.type/arc
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
       :slots [0 0 0 0 0 0 0]}]
-    [{:en "Arc"
-      :de "Bogen"} :arc
+    [(string "Arc") :arc
      {:type :heraldry.charge-group.type/arc
       :start-angle 10
       :arc-angle 180
@@ -326,8 +301,7 @@
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
       :slots [0 0 0 0 0]}]
-    [{:en "In annullo (point to center)"
-      :de "Kreis (Richtung Mittelpunkt)"} :arc-point-to-center
+    [(string "In annullo (point to center)") :arc-point-to-center
      {:type :heraldry.charge-group.type/arc
       :rotate-charges? true
       :charges [{:type :heraldry.charge.type/billet
@@ -338,8 +312,7 @@
       :slots [0 0 0 0 0 0 0]}
      {[:charges 0 :anchor :point] :angle
       [:charges 0 :anchor :angle] 180}]
-    [{:en "In annullo (follow)"
-      :de "Kreis (folgend)"} :in-annullo-follow
+    [(string "In annullo (follow)") :in-annullo-follow
      {:type :heraldry.charge-group.type/arc
       :rotate-charges? true
       :charges [{:type :heraldry.charge.type/billet
@@ -351,9 +324,8 @@
      {[:charges 0 :anchor :point] :angle
       [:charges 0 :anchor :angle] 90}]
     ]
-   [{:en "Others"
-     :de "Weitere"}
-    [strings/in-orle :in-orle
+   [(string "Others")
+    [(string "In orle") :in-orle
      {:type :heraldry.charge-group.type/in-orle
       :distance 10
       :charges [{:type :heraldry.charge.type/roundel
@@ -362,8 +334,7 @@
                  :geometry {:size 10}}]
       :slots [0 0 0 0 0 0 0 0]}
      {}]
-    [{:en "Sheaf of"
-      :de "Garbenweise"} :sheaf-of
+    [(string "Sheaf of") :sheaf-of
      {:type :heraldry.charge-group.type/arc
       :start-angle -45
       :arc-angle 90

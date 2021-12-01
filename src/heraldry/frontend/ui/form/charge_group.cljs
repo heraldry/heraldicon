@@ -12,6 +12,7 @@
     :as charge-group-preset-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.static :as static]
@@ -224,10 +225,8 @@
                ", "
                [(util/str-tr num-slots
                              " " (if (= num-slots 1)
-                                   {:en "slot"
-                                    :de "Slot"}
-                                   {:en "slots"
-                                    :de "Slots"}))
+                                   (string "slot")
+                                   (string "slots")))
                 (when-not (= stretch 1)
                   strings/stretched)
                 (when-not (zero? offset)
@@ -247,16 +246,12 @@
                        :heraldry.charge-group.type/columns}
                      charge-group-type)
         type-str (case charge-group-type
-                   :heraldry.charge-group.type/rows {:en "Row"
-                                                     :de "Zeile"}
-                   :heraldry.charge-group.type/columns {:en "Column"
-                                                        :de "Spalte"}
+                   :heraldry.charge-group.type/rows (string "Row")
+                   :heraldry.charge-group.type/columns (string "Column")
                    nil)
         type-plural-str (case charge-group-type
-                          :heraldry.charge-group.type/rows {:en "Rows"
-                                                            :de "Zeilen"}
-                          :heraldry.charge-group.type/columns {:en "Columns"
-                                                               :de "Spalten"}
+                          :heraldry.charge-group.type/rows (string "Rows")
+                          :heraldry.charge-group.type/columns (string "Columns")
                           nil)]
     [:div {:style {:display "table-cell"
                    :vertical-align "top"}}
@@ -322,11 +317,9 @@
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [context]
   (let [charges-context (c/++ context :charges)
         num-charges (interface/get-list-size charges-context)]
-    {:title (util/str-tr {:en "Charge group of "
-                          :de "Gruppe von "} (if (= num-charges 1)
-                                               (charge-options/title (c/++ context :charges 0))
-                                               {:en "various"
-                                                :de "verschiedenen"}))
+    {:title (util/str-tr (string "Charge group of ") (if (= num-charges 1)
+                                                       (charge-options/title (c/++ context :charges 0))
+                                                       (string "various")))
      :icon {:default (static/static-url
                       (str "/svg/charge-group-preset-three.svg"))
             :selected (static/static-url

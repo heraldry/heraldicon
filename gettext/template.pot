@@ -74,6 +74,22 @@ msgstr ""
 msgid "Rustre"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/charge_group/options.cljs
+msgid "Strip angle"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs
+msgid "Start angle"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs
+msgid "Arc angle"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge_group/options.cljs
+msgid "Rotate charges"
+msgstr ""
+
 #: src/heraldry/frontend/charge_library.cljs
 msgid "Charge saved, new version: "
 msgstr ""
@@ -100,6 +116,170 @@ msgstr ""
 
 #: src/heraldry/frontend/charge_library.cljs
 msgid "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select.cljs
+msgid "Presets"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select.cljs
+msgid "Select Charge Group Preset"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select.cljs
+msgid "Select"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Ordinaries"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Fesswise"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Palewise"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Bendwise"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Bendwise (sinister)"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Chevronwise"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "In cross"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "In saltire"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "In pall"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Three above bend"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Three below bend"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Triangular"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Three"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Three (inverted)"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Three (columns)"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Three (columns, inverted)"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Six"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Grid"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Square"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Diamond"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Semy rows"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Semy columns"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Frame"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Arc"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "In annullo"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "In annullo (point to center)"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "In annullo (follow)"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Others"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "In orle"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/charge_group_preset_select_presets.cljs
+msgid "Sheaf of"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "slot"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "slots"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "Row"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "Column"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "Rows"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "Columns"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "Charge group of "
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/charge_group.cljs
+msgid "various"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/charge/type/escutcheon.cljs src/heraldry/render_options.cljs

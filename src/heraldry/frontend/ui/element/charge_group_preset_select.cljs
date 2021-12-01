@@ -5,6 +5,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.charge-group-preset-select-presets :as charge-group-preset-select-presets]
    [heraldry.frontend.ui.element.submenu :as submenu]
+   [heraldry.gettext :refer [string]]
    [heraldry.static :as static]))
 
 (macros/reg-event-db :select-charge-group-preset
@@ -38,13 +39,10 @@
 
 (defn charge-group-preset-select [{:keys [path] :as context}]
   [:div.ui-setting
-   [:label [tr {:en "Presets"
-                :de "Vorauswahl"}]]
+   [:label [tr (string "Presets")]]
    [:div.option
-    [submenu/submenu context {:en "Select Charge Group Preset"
-                              :de "Wappenfigurgruppen Vorauswahl"}
-     [tr {:en "Select"
-          :de "Auswählen"}] {:style {:width "21.5em"}}
+    [submenu/submenu context (string "Select Charge Group Preset")
+     [tr (string "Select")] {:style {:width "21.5em"}}
      (for [[group-name & group] charge-group-preset-select-presets/presets]
        ^{:key group-name}
        [:<>
