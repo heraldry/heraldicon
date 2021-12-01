@@ -20,6 +20,7 @@
    [heraldry.collection.options] ;; needed for side effects
    [heraldry.context :as c]
    [heraldry.font :as font]
+   [heraldry.gettext :refer [string]]
    [heraldry.helm] ;; needed for side effects
    [heraldry.interface :as interface]
    [heraldry.motto] ;; needed for side effects
@@ -78,30 +79,25 @@
            :attribution (attribution/options (c/++ context :attribution))
            :tags {:ui {:form-type :tags}}
            :type {:type :text
-                  :ui {:label {:en "Charge type"
-                               :de "Wappenfigurtyp"}}}
+                  :ui {:label (string "Charge type")}}
            :attributes {:ui {:form-type :attributes}}
            :landscape? {:type :boolean
-                        :ui {:label {:en "Landscape"
-                                     :de "Landschaft"}
+                        :ui {:label (string "Landscape")
                              :tooltip "Keep the SVG as-is, embedded graphics also are allowed. This is only a good idea if you want to use images as landscape backgrounds."}}}
     (not (interface/get-raw-data (c/++ context :landscape?)))
     (merge {:attitude {:type :choice
                        :choices attributes/attitude-choices
                        :default :none
-                       :ui {:label {:en "Attitude"
-                                    :de "Haltung"}}}
+                       :ui {:label (string "Attitude")}}
             :facing {:type :choice
                      :choices attributes/facing-choices
                      :default :none
-                     :ui {:label {:en "Facing"
-                                  :de "Blickrichtung"}}}
+                     :ui {:label (string "Facing")}}
             :colours {:ui {:form-type :colours}}
             :fixed-tincture {:type :choice
                              :choices tincture/fixed-tincture-choices
                              :default :none
-                             :ui {:label {:en "Fixed tincture"
-                                          :de "Feste Tinktur"}}}})))
+                             :ui {:label (string "Fixed tincture")}}})))
 
 (defmethod interface/options-subscriptions :heraldry.component/ribbon-general [_context]
   #{[:attribution :license]

@@ -3,15 +3,131 @@ msgstr ""
 "Project-Id-Version: heraldry/armory\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.0\n"
-"Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: de_DE\n"
 
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Eyed"
+msgstr "Augen"
+
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Toothed"
+msgstr "Zähne"
+
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Tinctures"
+msgstr "Tinkturen"
+
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Ignore layer separator"
+msgstr "Ebenentrenner ignorieren"
+
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid ""
+"If the charge contains a layer separator for the shield, then this can "
+"disable it."
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Keep"
+msgstr "Anzeigen"
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Transparent"
+msgstr "Transparent"
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Primary"
+msgstr "Primär"
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Remove"
+msgstr "Entfernen"
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Vertical mask"
+msgstr "Vertikale Maske"
+
+#: src/heraldry/coat_of_arms/charge/type/annulet.cljs
+msgid "Annulet"
+msgstr "Ring"
+
+#: src/heraldry/coat_of_arms/charge/type/billet.cljs
+msgid "Billet"
+msgstr "Schindel"
+
+#: src/heraldry/coat_of_arms/charge/type/crescent.cljs
+msgid "Crescent"
+msgstr "Halbmond"
+
+#: src/heraldry/coat_of_arms/charge/type/escutcheon.cljs
+msgid "Root"
+msgstr "Ursprung"
+
+#: src/heraldry/coat_of_arms/charge/type/fusil.cljs
+msgid "Fusil"
+msgstr "Wecke"
+
+#: src/heraldry/coat_of_arms/charge/type/lozenge.cljs
+msgid "Lozenge"
+msgstr "Raute"
+
+#: src/heraldry/coat_of_arms/charge/type/mascle.cljs
+msgid "Mascle"
+msgstr "Fensterraute"
+
+#: src/heraldry/coat_of_arms/charge/type/roundel.cljs
+msgid "Roundel"
+msgstr "Kugel"
+
+#: src/heraldry/coat_of_arms/charge/type/rustre.cljs
+msgid "Rustre"
+msgstr "Durchbohrte Raute"
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Charge saved, new version: "
+msgstr "Wappenfigur gespeichert, neue Version: "
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Upload SVG"
+msgstr "SVG hochladen"
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Original"
+msgstr "Original"
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Need to be logged in and charge must be saved."
+msgstr "Du mußt eingeloggt sein und die Wappenfigur gespeichert haben."
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Need to be logged in and own the charge."
+msgstr "Du mußt eingeloggt und der Besitzer der Wappenfigur sein."
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Create Charge"
+msgstr "Neue Wappenfigur"
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid ""
+"Here you can view and create charges to be used in coats of arms. By default "
+"your charges are private, so only you can see and use them. If you want to "
+"make them public, then you must provide a license and attribution, if it is "
+"based on previous work."
+msgstr ""
+"Hier kannst du Wappenfiguren erstellen und ansehen, die in Wappen benutzt "
+"werden können. Deine Wappenfiguren sind privat, nur du kannst sie sehen und "
+"benutzen. Wenn du sie öffentlich machen möchtest, dann mußt du eine Lizenz "
+"angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, dann "
+"gib auch die Quelle und die Lizenz der Quelle an."
+
+#: src/heraldry/coat_of_arms/charge/type/escutcheon.cljs
 #: src/heraldry/render_options.cljs
 msgid "Escutcheon"
 msgstr "Schild"
@@ -87,3 +203,23 @@ msgstr "Oberfläche simulieren"
 #: src/heraldry/render_options.cljs
 msgid "Theme"
 msgstr "Farbschema"
+
+#: src/heraldry/shared.cljs
+msgid "Charge type"
+msgstr "Wappenfigurtyp"
+
+#: src/heraldry/shared.cljs
+msgid "Landscape"
+msgstr "Landschaft"
+
+#: src/heraldry/shared.cljs
+msgid "Attitude"
+msgstr "Haltung"
+
+#: src/heraldry/shared.cljs
+msgid "Facing"
+msgstr "Blickrichtung"
+
+#: src/heraldry/shared.cljs
+msgid "Fixed tincture"
+msgstr "Feste Tinktur"

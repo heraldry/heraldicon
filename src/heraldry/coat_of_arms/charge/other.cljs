@@ -14,6 +14,7 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.colour :as colour]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
    [heraldry.math.svg.core :as svg]
@@ -27,13 +28,11 @@
       (assoc :tincture {:eyed {:type :choice
                                :choices tincture/choices
                                :default :argent
-                               :ui {:label {:en "Eyed"
-                                            :de "Augen"}}}
+                               :ui {:label (string "Eyed")}}
                         :toothed {:type :choice
                                   :choices tincture/choices
                                   :default :argent
-                                  :ui {:label {:en "Toothed"
-                                               :de "Zähne"}}}
+                                  :ui {:label (string "Toothed")}}
                         :shadow {:type :range
                                  :min 0
                                  :max 1
@@ -46,15 +45,13 @@
                                     :default 1
                                     :ui {:label strings/highlight
                                          :step 0.01}}
-                        :ui {:label {:en "Tinctures"
-                                     :de "Tinkturen"}
+                        :ui {:label (string "Tinctures")
                              :form-type :tincture-modifiers}})
       (assoc :ignore-layer-separator?
              {:type :boolean
               :default false
-              :ui {:label {:en "Ignore layer separator"
-                           :de "Ebenentrenner ignorieren"}
-                   :tooltip "If the charge contains a layer separator for the shield, then this can disable it."}})))
+              :ui {:label (string "Ignore layer separator")
+                   :tooltip (string "If the charge contains a layer separator for the shield, then this can disable it.")}})))
 
 (defn placeholder-colour-modifier [placeholder-colours colour]
   (attributes/tincture-modifier (get placeholder-colours colour)))
