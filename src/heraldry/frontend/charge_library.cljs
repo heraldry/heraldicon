@@ -20,6 +20,7 @@
    [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.frontend.ui.shared :as shared]
    [heraldry.frontend.user :as user]
+   [heraldry.gettext :refer [string]]
    [heraldry.math.svg.core :as svg]
    [heraldry.render :as render]
    [heraldry.strings :as strings]
@@ -258,8 +259,7 @@
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             (util/str-tr {:en "Charge saved, new version: "
-                                           :de "Wappenfigur gespeichert, neue Version: "} (:version response))])
+                             (util/str-tr (string "Charge saved, new version: ") (:version response))])
           (reife/push-state :view-charge-by-id {:id (id-for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
@@ -318,8 +318,7 @@
                               :width "auto"
                               :flex "initial"
                               :margin-right "10px"}}
-       [tr {:en "Upload SVG"
-            :de "SVG hochladen"}]
+       [tr (string "Upload SVG")]
        [:input {:type "file"
                 :accept "image/svg+xml"
                 :id "upload"
@@ -333,8 +332,7 @@
              :style {:flex "initial"
                      :padding-top "0.5em"
                      :white-space "nowrap"}}
-         [tr {:en "Original"
-              :de "Original"}]])
+         [tr (string "Original")]])
       [:div {:style {:flex "auto"}}]
       [:button.button
        {:type "button"
@@ -343,16 +341,14 @@
                 :margin-left "10px"}
         :on-click (if can-copy?
                     copy-to-new-clicked
-                    #(js/alert (tr {:en "Need to be logged in and charge must be saved."
-                                    :de "Du mußt eingeloggt sein und die Wappenfigur gespeichert haben."})))}
+                    #(js/alert (tr (string "Need to be logged in and charge must be saved."))))}
        [tr strings/copy-to-new]]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")
         :on-click (if can-save?
                     save-charge-clicked
-                    #(js/alert (tr {:en "Need to be logged in and own the charge."
-                                    :de "Du mußt eingeloggt und der Besitzer der Wappenfigur sein."})))
+                    #(js/alert (tr (string "Need to be logged in and own the charge."))))
         :style {:flex "initial"
                 :margin-left "10px"}}
        [tr strings/save]]]]))
@@ -367,8 +363,7 @@
 (defn charge-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
-                {:en "Create Charge"
-                 :de "Neue Wappenfigur"}])
+                (string "Create Charge")])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
                                                                      example-coa-db-path]])
   [:div {:style {:display "grid"
@@ -439,19 +434,8 @@
     [:div {:style {:padding "15px"}}
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}
-      [tr {:en [:<>
-                [:p
-                 "Here you can view and create charges to be used in coats of arms. By default your charges "
-                 "are private, so only you can see and use them. If you want to make them public, then you "
-                 [:b "must"] " provide a license and attribution, if it is based on previous work."]]
-
-           :de [:<>
-                [:p
-                 "Hier kannst du Wappenfiguren erstellen und ansehen, die in Wappen benutzt werden können. "
-                 "Deine Wappenfiguren sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich "
-                 "machen möchtest, dann "
-                 [:b "mußt"] " du eine Lizenz angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, "
-                 "dann gib auch die Quelle und die Lizenz der Quelle an."]]}]]
+      [:p
+       [tr (string "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work.")]]]
      [:button.button.primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])

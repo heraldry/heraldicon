@@ -1,4 +1,108 @@
-#: src/heraldry/render_options.cljs
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Eyed"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Toothed"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Tinctures"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "Ignore layer separator"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/other.cljs
+msgid "If the charge contains a layer separator for the shield, then this can disable it."
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Keep"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Transparent"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Primary"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Remove"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+msgid "Vertical mask"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/annulet.cljs
+msgid "Annulet"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/billet.cljs
+msgid "Billet"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/crescent.cljs
+msgid "Crescent"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/escutcheon.cljs
+msgid "Root"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/fusil.cljs
+msgid "Fusil"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/lozenge.cljs
+msgid "Lozenge"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/mascle.cljs
+msgid "Mascle"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/roundel.cljs
+msgid "Roundel"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/rustre.cljs
+msgid "Rustre"
+msgstr ""
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Charge saved, new version: "
+msgstr ""
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Upload SVG"
+msgstr ""
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Original"
+msgstr ""
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Need to be logged in and charge must be saved."
+msgstr ""
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Need to be logged in and own the charge."
+msgstr ""
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Create Charge"
+msgstr ""
+
+#: src/heraldry/frontend/charge_library.cljs
+msgid "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/type/escutcheon.cljs src/heraldry/render_options.cljs
 msgid "Escutcheon"
 msgstr ""
 
@@ -72,4 +176,24 @@ msgstr ""
 
 #: src/heraldry/render_options.cljs
 msgid "Theme"
+msgstr ""
+
+#: src/heraldry/shared.cljs
+msgid "Charge type"
+msgstr ""
+
+#: src/heraldry/shared.cljs
+msgid "Landscape"
+msgstr ""
+
+#: src/heraldry/shared.cljs
+msgid "Attitude"
+msgstr ""
+
+#: src/heraldry/shared.cljs
+msgid "Facing"
+msgstr ""
+
+#: src/heraldry/shared.cljs
+msgid "Fixed tincture"
 msgstr ""

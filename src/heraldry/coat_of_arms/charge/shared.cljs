@@ -8,6 +8,7 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
    [heraldry.math.svg.path :as path]
@@ -106,21 +107,17 @@
                       (options/override-if-exists [:thickness-2 :max :max] 50)
                       (options/override-if-exists [:thickness-2 :max :default] 10))
      :outline-mode {:type :choice
-                    :choices [[{:en "Keep"
-                                :de "Anzeigen"} :keep]
-                              ["Transparent" :transparent]
-                              [{:en "Primary"
-                                :de "Primär"} :primary]
-                              [{:en "Remove"
-                                :de "Entfernen"} :remove]]
+                    :choices [[(string "Keep") :keep]
+                              [(string "Transparent") :transparent]
+                              [(string "Primary") :primary]
+                              [(string "Remove") :remove]]
                     :default :keep
                     :ui {:label strings/outline}}
      :vertical-mask {:type :range
                      :default 0
                      :min -100
                      :max 100
-                     :ui {:label {:en "Vertical mask"
-                                  :de "Vertikale Maske"}
+                     :ui {:label (string "Vertical mask")
                           :step 1}}}))
 
 (defn make-charge

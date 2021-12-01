@@ -2,13 +2,13 @@
   (:require
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
    [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/crescent)
 
-(defmethod charge-interface/display-name charge-type [_] {:en "Crescent"
-                                                          :de "Halbmond"})
+(defmethod charge-interface/display-name charge-type [_] (string "Crescent"))
 
 (defmethod interface/options charge-type [context]
   (-> (charge-shared/options context)

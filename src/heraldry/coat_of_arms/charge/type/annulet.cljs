@@ -2,13 +2,13 @@
   (:require
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
    [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/annulet)
 
-(defmethod charge-interface/display-name charge-type [_] {:en "Annulet"
-                                                          :de "Ring"})
+(defmethod charge-interface/display-name charge-type [_] (string "Annulet"))
 
 (defmethod interface/options charge-type [context]
   (-> (charge-shared/options context)
