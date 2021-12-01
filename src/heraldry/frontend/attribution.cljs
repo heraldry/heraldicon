@@ -3,8 +3,8 @@
    [heraldry.attribution :as attribution]
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
-   [heraldry.interface :as interface]
-   [heraldry.strings :as strings]))
+   [heraldry.gettext :refer [string]]
+   [heraldry.interface :as interface]))
 
 (defn general [context attribution-type]
   [:div.credit
@@ -32,43 +32,38 @@
        [:<>
         [:a {:href url
              :target "_blank"} title]
-        [tr strings/by]
+        " "
+        [tr (string "by")]
+        " "
         [:a {:href (attribution/full-url-for-username username)
              :target "_blank"} username]
         " "
         (case (or license :none)
-          :none [tr {:en "is private"
-                     :de "ist privat"}]
-          :public-domain [tr {:en "is in the public domain"
-                              :de "ist gemeinfrei"}]
-          [:<> [tr {:en "is licensed under "
-                    :de "ist lizensiert unter "}]
+          :none [tr (string "is private")]
+          :public-domain [tr (string "is in the public domain")]
+          [:<> [tr (string "is licensed under ")]
            [:a {:href license-url :target "_blank"} license-display-name]])
         (when (= nature :derivative)
           [:div.sub-credit
-           [tr {:en "source: "
-                :de "Quelle: "}]
+           [tr (string "source: ")]
            (if (-> source-name count pos?)
              [:a {:href source-link
                   :target "_blank"} " " source-name]
-             [tr {:en "unnamed"
-                  :de "unbenamt"}])
+             [tr (string "unnamed")])
            (when (-> source-creator-name count pos?)
              [:<>
-              [tr strings/by]
+              " "
+              [tr (string "by")]
+              " "
               [:a {:href source-creator-link
                    :target "_blank"} source-creator-name]])
            " "
            (case (or source-license :none)
-             :none [tr {:en "is private"
-                        :de "ist privat"}]
-             :public-domain [tr {:en "is in the public domain"
-                                 :de "ist gemeinfrei"}]
-             [:<> [tr {:en "is licensed under "
-                       :de "ist lizensiert unter "}]
+             :none [tr (string "is private")]
+             :public-domain [tr (string "is in the public domain")]
+             [:<> [tr (string "is licensed under ")]
               [:a {:href source-license-url :target "_blank"} source-license-display-name]])])])
-     [tr {:en "unsaved data"
-          :de "ungespeicherte Daten"}])])
+     [tr (string "unsaved data")])])
 
 (defn for-charge [context]
   [general context :charge])

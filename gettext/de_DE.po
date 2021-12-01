@@ -12,6 +12,70 @@ msgstr ""
 "X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: src/heraldry/attribution.cljs
+msgid "CC Attribution"
+msgstr "CC Attribution"
+
+#: src/heraldry/attribution.cljs
+msgid "CC Attribution-ShareAlike"
+msgstr "CC Attribution-ShareAlike"
+
+#: src/heraldry/attribution.cljs
+msgid "CC Attribution-NonCommercial-ShareAlike"
+msgstr "CC Attribution-NonCommercial-ShareAlike"
+
+#: src/heraldry/attribution.cljs
+msgid "Public Domain"
+msgstr "Gemeinfrei"
+
+#: src/heraldry/attribution.cljs
+msgid "Own work"
+msgstr "Selbstgemacht"
+
+#: src/heraldry/attribution.cljs
+msgid "Derivative"
+msgstr "Abgeleitet"
+
+#: src/heraldry/attribution.cljs
+msgid "public domain"
+msgstr "gemeinfrei"
+
+#: src/heraldry/attribution.cljs
+msgid "none"
+msgstr "keine"
+
+#: src/heraldry/attribution.cljs
+msgid "License"
+msgstr "Lizenz"
+
+#: src/heraldry/attribution.cljs
+msgid "Attribution"
+msgstr "Attribuierung"
+
+#: src/heraldry/attribution.cljs
+msgid "License version"
+msgstr "Lizenzversion"
+
+#: src/heraldry/attribution.cljs
+msgid "Source license"
+msgstr "Lizenz der Quelle"
+
+#: src/heraldry/attribution.cljs
+msgid "Source name"
+msgstr "Name der Quelle"
+
+#: src/heraldry/attribution.cljs
+msgid "Source link"
+msgstr "Link zur Quelle"
+
+#: src/heraldry/attribution.cljs
+msgid "Creator name"
+msgstr "Name des Schöpfers"
+
+#: src/heraldry/attribution.cljs
+msgid "Creator link"
+msgstr "Link zum Schöpfer"
+
 #: src/heraldry/coat_of_arms/charge/other.cljs
 msgid "Eyed"
 msgstr "Augen"
@@ -106,6 +170,34 @@ msgstr "Bogenwinkel"
 msgid "Rotate charges"
 msgstr "Wappenfiguren rotieren"
 
+#: src/heraldry/frontend/attribution.cljs
+msgid "by"
+msgstr "von"
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "is private"
+msgstr "ist privat"
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "is in the public domain"
+msgstr "ist gemeinfrei"
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "is licensed under "
+msgstr "ist lizensiert unter "
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "source: "
+msgstr "Quelle: "
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "unnamed"
+msgstr "unbenamt"
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "unsaved data"
+msgstr "ungespeicherte Daten"
+
 #: src/heraldry/frontend/charge_library.cljs
 msgid "Charge saved, new version: "
 msgstr "Wappenfigur gespeichert, neue Version: "
@@ -142,6 +234,14 @@ msgstr ""
 "benutzen. Wenn du sie öffentlich machen möchtest, dann mußt du eine Lizenz "
 "angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, dann "
 "gib auch die Quelle und die Lizenz der Quelle an."
+
+#: src/heraldry/frontend/ui/element/attribution.cljs
+msgid "no license"
+msgstr "keine Lizenz"
+
+#: src/heraldry/frontend/ui/element/attribution.cljs
+msgid "Autofill for known sources"
+msgstr "Vorauswahl für bekannte Quellen"
 
 #: src/heraldry/frontend/ui/element/charge_group_preset_select.cljs
 msgid "Presets"
@@ -403,3 +503,15 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
+
+#~ msgid "4.0 (default)"
+#~ msgstr "4.0 (default)"
+
+#~ msgid "3.0"
+#~ msgstr "3.0"
+
+#~ msgid "2.5"
+#~ msgstr "2.5"
+
+#~ msgid "2.0"
+#~ msgstr "2.0"
