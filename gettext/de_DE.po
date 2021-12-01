@@ -235,6 +235,38 @@ msgstr ""
 "angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, dann "
 "gib auch die Quelle und die Lizenz der Quelle an."
 
+#: src/heraldry/frontend/header.cljs
+msgid "News"
+msgstr "Neuigkeiten"
+
+#: src/heraldry/frontend/header.cljs
+msgid "About"
+msgstr "Infos"
+
+#: src/heraldry/frontend/header.cljs
+msgid "Users"
+msgstr "Benutzer"
+
+#: src/heraldry/frontend/header.cljs
+msgid "Contact"
+msgstr "Kontakt"
+
+#: src/heraldry/frontend/header.cljs
+msgid "Account"
+msgstr "Konto"
+
+#: src/heraldry/frontend/header.cljs
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: src/heraldry/frontend/header.cljs
+msgid "Login"
+msgstr "Einloggen"
+
+#: src/heraldry/frontend/header.cljs
+msgid "Register"
+msgstr "Registrieren"
+
 #: src/heraldry/frontend/ribbon_library.cljs
 msgid "Ribbon saved, new version: "
 msgstr "Band gespeichert, neue Version: "

@@ -210,6 +210,38 @@ msgstr ""
 msgid "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
 msgstr ""
 
+#: src/heraldry/frontend/header.cljs
+msgid "News"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs
+msgid "About"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs
+msgid "Users"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs
+msgid "Contact"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs
+msgid "Account"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs
+msgid "Logout"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs
+msgid "Login"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs
+msgid "Register"
+msgstr ""
+
 #: src/heraldry/frontend/ribbon_library.cljs
 msgid "Ribbon saved, new version: "
 msgstr ""
