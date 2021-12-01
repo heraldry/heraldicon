@@ -1,3 +1,67 @@
+#: src/heraldry/attribution.cljs
+msgid "CC Attribution"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "CC Attribution-ShareAlike"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "CC Attribution-NonCommercial-ShareAlike"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Public Domain"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Own work"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Derivative"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "public domain"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "none"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "License"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Attribution"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "License version"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Source license"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Source name"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Source link"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Creator name"
+msgstr ""
+
+#: src/heraldry/attribution.cljs
+msgid "Creator link"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/charge/other.cljs
 msgid "Eyed"
 msgstr ""
@@ -90,6 +154,34 @@ msgstr ""
 msgid "Rotate charges"
 msgstr ""
 
+#: src/heraldry/frontend/attribution.cljs
+msgid "by"
+msgstr ""
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "is private"
+msgstr ""
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "is in the public domain"
+msgstr ""
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "is licensed under "
+msgstr ""
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "source: "
+msgstr ""
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "unnamed"
+msgstr ""
+
+#: src/heraldry/frontend/attribution.cljs
+msgid "unsaved data"
+msgstr ""
+
 #: src/heraldry/frontend/charge_library.cljs
 msgid "Charge saved, new version: "
 msgstr ""
@@ -116,6 +208,14 @@ msgstr ""
 
 #: src/heraldry/frontend/charge_library.cljs
 msgid "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/attribution.cljs
+msgid "no license"
+msgstr ""
+
+#: src/heraldry/frontend/ui/element/attribution.cljs
+msgid "Autofill for known sources"
 msgstr ""
 
 #: src/heraldry/frontend/ui/element/charge_group_preset_select.cljs

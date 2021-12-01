@@ -1,16 +1,16 @@
 (ns heraldry.frontend.ui.element.attribution
   (:require
    [heraldry.attribution :as attribution]
+   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.options :as options]
    [heraldry.util :as util]
-   [re-frame.core :as rf]
-   [heraldry.context :as c]))
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :attribution-submenu-link-name
   (fn [[_ context] _]
@@ -22,8 +22,7 @@
     (let [main-name (attribution/nature-map nature)
           changes [main-name
                    (if (= license :none)
-                     {:en "no license"
-                      :de "keine Lizenz"}
+                     (string "no license")
                      (attribution/license-display-name license license-version))]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
@@ -49,8 +48,7 @@
              nil
              :none
              "Presets"
-             [[{:en "Autofill for known sources"
-                :de "Vorauswahl für bekannte Quellen"} :none]
+             [[(string "Autofill for known sources") :none]
               ["WappenWiki" :wappenwiki]
               ["Wikimedia" :wikimedia]
               ["Wikimedia (Sodacan)" :wikimedia-sodacan]
