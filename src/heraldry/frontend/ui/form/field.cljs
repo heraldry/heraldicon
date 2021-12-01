@@ -8,6 +8,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
    [heraldry.strings :as strings]
@@ -165,8 +166,7 @@
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/charge])}
                                  {:title strings/charge-group
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/charge-group])}
-                                 {:title {:en "Semy"
-                                          :de "Besähung"}
+                                 {:title (string "Semy")
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}]
                   (non-mandatory-part-of-parent? context)
                   (conj {:icon "fas fa-undo"

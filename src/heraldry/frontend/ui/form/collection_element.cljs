@@ -2,6 +2,7 @@
   (:require
    [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -37,8 +38,7 @@
     {:title (util/str-tr (inc index) ": "
                          (if (-> name count pos?)
                            name
-                           {:en "<no name>"
-                            :de "<unbenannt>"}))}))
+                           (string "<no name>")))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/collection-element [_context]
   {:form form})
