@@ -1102,6 +1102,22 @@ msgstr ""
 msgid "Here you can view and create collections of coats of arms. You explicitly have to save your collection as public and add a license, if you want to share the link and allow others to view it."
 msgstr ""
 
+#: src/heraldry/frontend/filter.cljs
+msgid "Mine only"
+msgstr ""
+
+#: src/heraldry/frontend/filter.cljs
+msgid "All"
+msgstr ""
+
+#: src/heraldry/frontend/filter.cljs
+msgid "Public"
+msgstr ""
+
+#: src/heraldry/frontend/filter.cljs
+msgid "Private"
+msgstr ""
+
 #: src/heraldry/frontend/header.cljs
 msgid "News"
 msgstr ""
