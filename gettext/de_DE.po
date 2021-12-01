@@ -893,6 +893,10 @@ msgstr "Heraldisch links-unten"
 msgid "Saltire"
 msgstr "Andreaskreuz"
 
+#: src/heraldry/coat_of_arms/semy/options.cljs
+msgid "Rectangular grid"
+msgstr "Rechteckiges Gitter"
+
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "WappenWiki (default)"
 msgstr ""
@@ -1415,6 +1419,10 @@ msgstr "Keins"
 #: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 msgid "Select Ribbon"
 msgstr "Band auswählen"
+
+#: src/heraldry/frontend/ui/element/semy_layout.cljs
+msgid "fields"
+msgstr "Felder"
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "slot"

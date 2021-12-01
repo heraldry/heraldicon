@@ -3,6 +3,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.strings :as strings]
@@ -19,8 +20,8 @@
     (let [sanitized-layout (options/sanitize layout options)
           main-name (util/str-tr (:num-fields-x sanitized-layout) "x"
                                  (:num-fields-y sanitized-layout)
-                                 {:en " fields"
-                                  :de " Felder"})
+                                 " "
+                                 (string "fields"))
           changes [main-name
                    (when (some #(options/changed? % sanitized-layout options)
                                [:offset-x :offset-y])
