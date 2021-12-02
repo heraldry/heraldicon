@@ -172,8 +172,10 @@
 
 (defn tr-raw [data language]
   (if (map? data)
-    (or (get data language)
-        (get data :en))
+    (let [translated (get data language)]
+      (if (some-> translated count pos?)
+        translated
+        (get data :en)))
     data))
 
 (defn translate [keyword]
