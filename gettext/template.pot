@@ -1814,7 +1814,7 @@ msgstr ""
 msgid "Select Colour Theme"
 msgstr ""
 
-#: src/heraldry/attribution.cljs src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/texture.cljs src/heraldry/frontend/filter.cljs src/heraldry/frontend/ui/element/arms_reference_select.cljs src/heraldry/frontend/ui/element/colours.cljs src/heraldry/frontend/ui/element/fimbriation.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs src/heraldry/frontend/ui/element/tincture_modifiers.cljs
+#: src/heraldry/attribution.cljs src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/escutcheon.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/texture.cljs src/heraldry/frontend/filter.cljs src/heraldry/frontend/ui/element/arms_reference_select.cljs src/heraldry/frontend/ui/element/colours.cljs src/heraldry/frontend/ui/element/fimbriation.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs src/heraldry/frontend/ui/element/tincture_modifiers.cljs
 msgid "None"
 msgstr ""
 
