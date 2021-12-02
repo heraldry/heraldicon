@@ -21,11 +21,11 @@
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)
         origin-point-option {:type :choice
-                             :choices [[(string "Fess") :fess]
-                                       [(string "Chief") :chief]
-                                       [(string "Base") :base]
-                                       [(string "Honour") :honour]
-                                       [(string "Nombril") :nombril]
+                             :choices [[(string "Fess [point]") :fess]
+                                       [(string "Chief [point]") :chief]
+                                       [(string "Base [point]") :base]
+                                       [(string "Honour [point]") :honour]
+                                       [(string "Nombril [point]") :nombril]
                                        [(string "Top-left") :top-left]
                                        [(string "Bottom-right") :bottom-right]]
                              :default :top-left
@@ -35,18 +35,18 @@
                               origin-point-option)
         anchor-point-option {:type :choice
                              :choices (case current-origin-point
-                                        :top-left [[(string "Fess") :fess]
-                                                   [(string "Chief") :chief]
-                                                   [(string "Base") :base]
-                                                   [(string "Honour") :honour]
-                                                   [(string "Nombril") :nombril]
+                                        :top-left [[(string "Fess [point]") :fess]
+                                                   [(string "Chief [point]") :chief]
+                                                   [(string "Base [point]") :base]
+                                                   [(string "Honour [point]") :honour]
+                                                   [(string "Nombril [point]") :nombril]
                                                    [(string "Bottom-right") :bottom-right]
                                                    [(string "Angle") :angle]]
-                                        :bottom-right [[(string "Fess") :fess]
-                                                       [(string "Chief") :chief]
-                                                       [(string "Base") :base]
-                                                       [(string "Honour") :honour]
-                                                       [(string "Nombril") :nombril]
+                                        :bottom-right [[(string "Fess [point]") :fess]
+                                                       [(string "Chief [point]") :chief]
+                                                       [(string "Base [point]") :base]
+                                                       [(string "Honour [point]") :honour]
+                                                       [(string "Nombril [point]") :nombril]
                                                        [(string "Top-left") :top-left]
                                                        [(string "Angle") :angle]]
                                         [[(string "Top-left") :top-left]

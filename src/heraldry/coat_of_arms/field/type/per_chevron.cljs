@@ -29,10 +29,10 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
         direction-anchor-point-option {:type :choice
-                                       :choices [[(string "Chief") :chief]
-                                                 [(string "Base") :base]
-                                                 [(string "Dexter") :dexter]
-                                                 [(string "Sinister") :sinister]
+                                       :choices [[(string "Chief [point]") :chief]
+                                                 [(string "Base [point]") :base]
+                                                 [(string "Dexter [point]") :dexter]
+                                                 [(string "Sinister [point]") :sinister]
                                                  [(string "Top-left") :top-left]
                                                  [(string "Top-right") :top-right]
                                                  [(string "Bottom-left") :bottom-left]
@@ -110,11 +110,11 @@
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     {:origin {:point {:type :choice
-                      :choices [[(string "Fess") :fess]
-                                [(string "Chief") :chief]
-                                [(string "Base") :base]
-                                [(string "Honour") :honour]
-                                [(string "Nombril") :nombril]
+                      :choices [[(string "Fess [point]") :fess]
+                                [(string "Chief [point]") :chief]
+                                [(string "Base [point]") :base]
+                                [(string "Honour [point]") :honour]
+                                [(string "Nombril [point]") :nombril]
                                 [(string "Top-left") :top-left]
                                 [(string "Top") :top]
                                 [(string "Top-right") :top-right]

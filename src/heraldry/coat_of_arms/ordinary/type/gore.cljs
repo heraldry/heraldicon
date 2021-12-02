@@ -41,9 +41,9 @@
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     (-> {:origin {:point {:type :choice
-                          :choices [[(string "Fess") :fess]
-                                    [(string "Chief") :chief]
-                                    [(string "Base") :base]]
+                          :choices [[(string "Fess [point]") :fess]
+                                    [(string "Chief [point]") :chief]
+                                    [(string "Base [point]") :base]]
                           :default :fess
                           :ui {:label (string "Point")}}
                   :offset-x {:type :range

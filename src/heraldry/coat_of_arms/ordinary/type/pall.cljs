@@ -35,10 +35,10 @@
                              (options/override-if-exists [:base-line] nil)
                              (options/override-if-exists [:fimbriation :alignment :default] :outside))
         direction-anchor-point-option {:type :choice
-                                       :choices [[(string "Chief") :chief]
-                                                 [(string "Base") :base]
-                                                 [(string "Dexter") :dexter]
-                                                 [(string "Sinister") :sinister]
+                                       :choices [[(string "Chief [point]") :chief]
+                                                 [(string "Base [point]") :base]
+                                                 [(string "Dexter [point]") :dexter]
+                                                 [(string "Sinister [point]") :sinister]
                                                  [(string "Top-left") :top-left]
                                                  [(string "Top") :top]
                                                  [(string "Top-right") :top-right]
@@ -128,13 +128,13 @@
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     (-> {:origin {:point {:type :choice
-                          :choices [[(string "Chief") :chief]
-                                    [(string "Base") :base]
-                                    [(string "Fess") :fess]
-                                    [(string "Dexter") :dexter]
-                                    [(string "Sinister") :sinister]
-                                    [(string "Honour") :honour]
-                                    [(string "Nombril") :nombril]
+                          :choices [[(string "Chief [point]") :chief]
+                                    [(string "Base [point]") :base]
+                                    [(string "Fess [point]") :fess]
+                                    [(string "Dexter [point]") :dexter]
+                                    [(string "Sinister [point]") :sinister]
+                                    [(string "Honour [point]") :honour]
+                                    [(string "Nombril [point]") :nombril]
                                     [(string "Top-left") :top-left]
                                     [(string "Top") :top]
                                     [(string "Top-right") :top-right]

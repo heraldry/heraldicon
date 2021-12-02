@@ -25,9 +25,9 @@
         opposite-line-style (-> (line/options (c/++ context :opposite-line))
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:origin {:point {:type :choice
-                          :choices [[(string "Fess") :fess]
-                                    [(string "Dexter") :dexter]
-                                    [(string "Sinister") :sinister]
+                          :choices [[(string "Fess [point]") :fess]
+                                    [(string "Dexter [point]") :dexter]
+                                    [(string "Sinister [point]") :sinister]
                                     [(string "Left") :left]
                                     [(string "Right") :right]]
                           :default :fess
