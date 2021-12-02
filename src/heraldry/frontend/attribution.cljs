@@ -45,7 +45,8 @@
            [:a {:href license-url :target "_blank"} license-display-name]])
         (when (= nature :derivative)
           [:div.sub-credit
-           [tr (string "source: ")]
+           [tr (string "source")]
+           ": "
            (if (-> source-name count pos?)
              [:a {:href source-link
                   :target "_blank"} " " source-name]

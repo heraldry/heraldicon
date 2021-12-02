@@ -1427,7 +1427,7 @@ msgid "is licensed under "
 msgstr ""
 
 #: src/heraldry/frontend/attribution.cljs
-msgid "source: "
+msgid "source"
 msgstr ""
 
 #: src/heraldry/frontend/attribution.cljs
