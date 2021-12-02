@@ -2113,10 +2113,6 @@ msgstr "Öffentlich"
 msgid "Private"
 msgstr "Privat"
 
-#: src/heraldry/frontend/header.cljs
-msgid "News"
-msgstr "Neuigkeiten"
-
 #: src/heraldry/frontend/about.cljs src/heraldry/frontend/header.cljs
 msgid "About"
 msgstr "Infos"
@@ -2148,6 +2144,32 @@ msgstr "rückgängig"
 #: src/heraldry/frontend/history/core.cljs
 msgid "redo"
 msgstr "wiederholen"
+
+#: src/heraldry/frontend/home.cljs
+msgid "Home"
+msgstr "Neuigkeiten"
+
+#: src/heraldry/frontend/header.cljs src/heraldry/frontend/home.cljs
+msgid "News"
+msgstr "Neuigkeiten"
+
+#: src/heraldry/frontend/home.cljs
+msgid ""
+"In many cases new features are rolled out incrementally, without big "
+"release. But now and then I'll group some features and new development and "
+"post an update here, so it is easy to stay informed."
+msgstr ""
+"In den meisten Fällen werden Features inkrementell freigegeben. Aber ab und "
+"an gruppiere ich die wichtigsten Features und neue Entwicklungen und fasse "
+"sie in einem Update hier zusammen, damit es einen Überblick gibt."
+
+#: src/heraldry/frontend/home.cljs
+msgid ""
+"These updates are not translated, because that'd be a lot of work. Maybe "
+"someday... :)"
+msgstr ""
+"Diese Updates sind derzeit nicht übersetzt, weil es sehr viel Arbeit wäre. "
+"Vielleicht eines Tages... :)"
 
 #: src/heraldry/frontend/ribbon_library.cljs
 msgid "Ribbon saved, new version: "
