@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.line.core
   (:require
+   [clojure.string :as s]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.line.type.angled :as angled]
    [heraldry.coat-of-arms.line.type.bevilled :as bevilled]
@@ -109,7 +110,7 @@
      :line-start (v/v 0 line-base)}))
 
 (def lines
-  [#'straight/full
+  [#'straight/pattern
    #'invected/pattern
    #'engrailed/pattern
    #'embattled/pattern
@@ -129,20 +130,23 @@
    #'wolf-toothed/pattern
    #'rayonny-flaming/pattern
    #'rayonny-spiked/pattern
-   #'angled/full
-   #'bevilled/full
-   #'enarched/full])
+   #'angled/pattern
+   #'bevilled/pattern
+   #'enarched/pattern])
 
-(def kinds-function-map
+(defn get-line-identifier [pattern]
+  (-> pattern meta :ns name (s/split ".") last keyword))
+
+(def kinds-pattern-map
   (->> lines
-       (map (fn [function]
-              [(-> function meta :value) function]))
+       (map (fn [pattern]
+              [(get-line-identifier pattern) (deref pattern)]))
        (into {})))
 
 (def choices
   (->> lines
-       (map (fn [function]
-              [(-> function meta :display-name) (-> function meta :value)]))))
+       (map (fn [pattern]
+              [(-> pattern deref :display-name) (get-line-identifier pattern)]))))
 
 (def line-map
   (util/choices->map choices))
@@ -378,14 +382,13 @@
 
 (defn create-raw [{:keys [type] :or {type :straight} :as line} length
                   & {:keys [angle flipped? context seed reversed?] :as line-options}]
-  (let [line-function (get kinds-function-map type)
+  (let [pattern-data (get kinds-pattern-map type)
+        line-function (:function pattern-data)
         line-options-values (cond-> line #_(options/sanitize line (options line))
                               (= type :straight) (-> (assoc :width length)
                                                      (assoc :offset 0)))
         base-end (v/v length 0)
-        line-data (if (-> line-function
-                          meta
-                          :full?)
+        line-data (if (:full? pattern-data)
                     (full-line
                      line-options-values
                      length
