@@ -850,6 +850,10 @@ msgstr "Außen"
 msgid "Inside"
 msgstr "Innen"
 
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Fimbriation"
+msgstr "Säumung"
+
 #: src/heraldry/coat_of_arms/line/type/angled.cljs
 msgid "Angled"
 msgstr "Stufe"
@@ -1657,6 +1661,10 @@ msgid "Community"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Metal"
+msgstr "Metall"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Void"
 msgstr "Leer"
 
@@ -1667,6 +1675,10 @@ msgstr "Silber"
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Or"
 msgstr "Gold"
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Colour"
+msgstr "Farbe"
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Azure"
@@ -2414,6 +2426,11 @@ msgstr "Basisfelder"
 msgid "Select Partition"
 msgstr "Teilung auswählen"
 
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+#: src/heraldry/frontend/ui/element/fimbriation.cljs
+msgid "and"
+msgstr "und"
+
 #: src/heraldry/frontend/ui/element/geometry.cljs
 msgid "reversed"
 msgstr "umgedreht"
@@ -3006,32 +3023,21 @@ msgstr "Du mußt eingeloggt sein."
 msgid "Users"
 msgstr "Benutzer"
 
-#: src/heraldry/coat_of_arms/tincture/core.cljs
 #: src/heraldry/frontend/validation.cljs
-msgid "Metal"
-msgstr "Metall"
-
-#: src/heraldry/coat_of_arms/line/fimbriation.cljs
-#: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation"
-msgstr "Säumung"
+msgid "Metal fimbriation (%s) on metal field (%s) breaks rule of tincture."
+msgstr "Metall-Säumung (%s) auf Metall-Feld (%s) verletzt Tingierungsregel."
 
 #: src/heraldry/frontend/validation.cljs
-msgid "field"
-msgstr "Feld"
+msgid "Metal field (%s) on metal field (%s) breaks rule of tincture."
+msgstr "Metall-Feld (%s) auf Metall-Feld (%s) verletzt Tingierungsregel."
 
 #: src/heraldry/frontend/validation.cljs
-msgid "on"
-msgstr "auf"
+msgid "Colour fimbriation (%s) on colour field (%s) breaks rule of tincture."
+msgstr "Farb-Säumung (%s) auf Metall-Feld (%s) verletzt Tingierungsregel."
 
 #: src/heraldry/frontend/validation.cljs
-msgid "breaks rule of tincture."
-msgstr "bricht Tingierungsregel."
-
-#: src/heraldry/coat_of_arms/tincture/core.cljs
-#: src/heraldry/frontend/validation.cljs
-msgid "Colour"
-msgstr "Farbe"
+msgid "Colour field (%s) on colour field (%s) breaks rule of tincture."
+msgstr "Farb-Feld (%s) auf Farb-Feld (%s) verletzt Tingierungsregel."
 
 #: src/heraldry/frontend/validation.cljs
 msgid "Main line"
@@ -3049,34 +3055,26 @@ msgid "Extra line"
 msgstr "Extralinie"
 
 #: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation tinctures are both metals ("
-msgstr "Säumung Tinkturen sind beide Metalle ("
-
-#: src/heraldry/coat_of_arms/line/fimbriation.cljs
-#: src/heraldry/frontend/ui/element/fimbriation.cljs
-#: src/heraldry/frontend/validation.cljs
-msgid "and"
-msgstr "und"
+msgid ""
+"Fimbriation tinctures are both metals (%s and %s), breaks rule of tincture."
+msgstr ""
+"Säumungstinkturen sind beide Metalle (%s und %s), verletzt Tingierungsregel."
 
 #: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation tinctures are both colours ("
-msgstr "Säumung Tinkturen sind beide Farben ("
+msgid ""
+"Fimbriation tinctures are both colours (%s and %s), breaks rule of tincture."
+msgstr ""
+"Säumungstinkturen sind beide Farben (%s und %s), verletzt Tingierungsregel."
 
 #: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation metal tincture ("
-msgstr "Säumung Metall-Tinktur ("
+msgid ""
+"Metal fimbriation (%s) touching metal field (%s) breaks rule of tincture."
+msgstr "Metall-Säumung (%s) auf Metall-Feld (%s) verletzt Tingierungsregel."
 
 #: src/heraldry/frontend/validation.cljs
-msgid ") touches metal field ("
-msgstr ") berührt Metall-Feld ("
-
-#: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation colour tincture ("
-msgstr "Säumung Farb-Tinktur ("
-
-#: src/heraldry/frontend/validation.cljs
-msgid ") touches colour field ("
-msgstr ") berührt Farb-Feld ("
+msgid ""
+"Colour fimbriation (%s) touching colour field (%s) breaks rule of tincture."
+msgstr "Farb-Säumung (%s) auf Metall-Feld (%s) verletzt Tingierungsregel."
 
 #: src/heraldry/frontend/validation.cljs
 msgid "Paly should have an even number of fields, for an odd number use pales."
@@ -3503,6 +3501,39 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
+
+#~ msgid ""
+#~ "Fimbriation metal tincture (%s) touching metal field (%s) breaks rule of "
+#~ "tincture."
+#~ msgstr ""
+#~ "Metall-Säumung (%s) berührt Metall-Feld (%s), verletzt Tingierungsregel."
+
+#~ msgid ""
+#~ "Fimbriation colour tincture (%s) touching colour field (%s) breaks rule "
+#~ "of tincture."
+#~ msgstr ""
+#~ "Farb-Säumung (%s) berührt Farb-Feld (%s), verletzt Tingierungsregel."
+
+#~ msgid "field"
+#~ msgstr "Feld"
+
+#~ msgid "on"
+#~ msgstr "auf"
+
+#~ msgid "breaks rule of tincture."
+#~ msgstr "bricht Tingierungsregel."
+
+#~ msgid "Fimbriation metal tincture ("
+#~ msgstr "Säumung Metall-Tinktur ("
+
+#~ msgid ") touches metal field ("
+#~ msgstr ") berührt Metall-Feld ("
+
+#~ msgid "Fimbriation colour tincture ("
+#~ msgstr "Säumung Farb-Tinktur ("
+
+#~ msgid ") touches colour field ("
+#~ msgstr ") berührt Farb-Feld ("
 
 #~ msgid "New password:"
 #~ msgstr "Neues Passwort"

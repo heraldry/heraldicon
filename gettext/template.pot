@@ -802,6 +802,10 @@ msgstr ""
 msgid "Inside"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs
+msgid "Fimbriation"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/line/type/angled.cljs
 msgid "Angled"
 msgstr ""
@@ -1247,6 +1251,10 @@ msgid "Community"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Metal"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Void"
 msgstr ""
 
@@ -1256,6 +1264,10 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Or"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/tincture/core.cljs
+msgid "Colour"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
@@ -1854,6 +1866,10 @@ msgstr ""
 msgid "Select Partition"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/frontend/ui/element/fimbriation.cljs
+msgid "and"
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/geometry.cljs
 msgid "reversed"
 msgstr ""
@@ -2312,28 +2328,20 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: src/heraldry/coat_of_arms/tincture/core.cljs src/heraldry/frontend/validation.cljs
-msgid "Metal"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/frontend/validation.cljs
-msgid "Fimbriation"
+#: src/heraldry/frontend/validation.cljs
+msgid "Metal fimbriation (%s) on metal field (%s) breaks rule of tincture."
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
-msgid "field"
+msgid "Metal field (%s) on metal field (%s) breaks rule of tincture."
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
-msgid "on"
+msgid "Colour fimbriation (%s) on colour field (%s) breaks rule of tincture."
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
-msgid "breaks rule of tincture."
-msgstr ""
-
-#: src/heraldry/coat_of_arms/tincture/core.cljs src/heraldry/frontend/validation.cljs
-msgid "Colour"
+msgid "Colour field (%s) on colour field (%s) breaks rule of tincture."
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
@@ -2349,31 +2357,19 @@ msgid "Extra line"
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation tinctures are both metals ("
-msgstr ""
-
-#: src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/frontend/ui/element/fimbriation.cljs src/heraldry/frontend/validation.cljs
-msgid "and"
+msgid "Fimbriation tinctures are both metals (%s and %s), breaks rule of tincture."
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation tinctures are both colours ("
+msgid "Fimbriation tinctures are both colours (%s and %s), breaks rule of tincture."
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation metal tincture ("
+msgid "Metal fimbriation (%s) touching metal field (%s) breaks rule of tincture."
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
-msgid ") touches metal field ("
-msgstr ""
-
-#: src/heraldry/frontend/validation.cljs
-msgid "Fimbriation colour tincture ("
-msgstr ""
-
-#: src/heraldry/frontend/validation.cljs
-msgid ") touches colour field ("
+msgid "Colour fimbriation (%s) touching colour field (%s) breaks rule of tincture."
 msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
