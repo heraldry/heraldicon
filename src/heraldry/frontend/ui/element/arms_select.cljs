@@ -77,7 +77,9 @@
                 [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
               " "
               [link-fn arms]
+              " "
               [tr (string "by")]
+              " "
               [:a {:href (attribution/full-url-for-username username)
                    :target "_blank"} username]
               " "
