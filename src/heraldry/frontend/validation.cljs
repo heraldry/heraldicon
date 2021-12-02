@@ -85,24 +85,21 @@
       (= #{:metal}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (util/str-tr (string "Metal")
-                                           " "
-                                           (if fimbriated?
-                                             (string "Fimbriation")
-                                             (string "field")) " (" (list-tinctures own-tinctures)
-                                           ") " (string "on") " "
-                                           (string "Metal") " " (string "field") " (" (list-tinctures parent-tinctures)
-                                           ") " (string "breaks rule of tincture."))}
+                     :message (util/format-tr (tr
+                                               (if fimbriated?
+                                                 (string "Metal fimbriation (%s) on metal field (%s) breaks rule of tincture.")
+                                                 (string "Metal field (%s) on metal field (%s) breaks rule of tincture.")))
+                                              (list-tinctures own-tinctures)
+                                              (list-tinctures parent-tinctures))}
       (= #{:colour}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (util/str-tr (string "Colour")
-                                           " " (if fimbriated?
-                                                 (string "Fimbriation")
-                                                 (string "field")) " (" (list-tinctures own-tinctures)
-                                           ") " (string "on") " "
-                                           (string "Colour") " " (string "field") " (" (list-tinctures parent-tinctures)
-                                           ") " (string "breaks rule of tincture."))})))
+                     :message (util/format-tr (tr
+                                               (if fimbriated?
+                                                 (string "Colour fimbriation (%s) on colour field (%s) breaks rule of tincture.")
+                                                 (string "Colour field (%s) on colour field (%s) breaks rule of tincture.")))
+                                              (list-tinctures own-tinctures)
+                                              (list-tinctures parent-tinctures))})))
 
 (rf/reg-sub :validate-tinctures
   (fn [[_ field-context parent-field-context fimbriation-context] _]
@@ -144,52 +141,43 @@
            main-check (conj (-> main-check
                                 (update :message (fn [message]
                                                    (util/str-tr (case which
-                                                                  :line (string "Main line")
-                                                                  :opposite-line (string "Opposite line")
-                                                                  :extra-line (string "Extra line")
+                                                                  :line (util/str-tr (string "Main line") ": ")
+                                                                  :opposite-line (util/str-tr (string "Opposite line") ": ")
+                                                                  :extra-line (util/str-tr (string "Extra line") ": ")
                                                                   nil)
-                                                                ": "
                                                                 message)))))
 
            (= fimbriation-tincture-1-kind
               fimbriation-tincture-2-kind
               :metal) (conj {:level :note
-                             :message (util/str-tr
-                                       (string "Fimbriation tinctures are both metals (")
-                                       (tincture/translate-tincture fimbriation-tincture-1)
-                                       " " (string "and") " "
-                                       (tincture/translate-tincture fimbriation-tincture-2)
-                                       ").")})
+                             :message (util/format-tr (tr
+                                                       (string "Fimbriation tinctures are both metals (%s and %s), breaks rule of tincture."))
+                                                      (tincture/translate-tincture fimbriation-tincture-1)
+                                                      (tincture/translate-tincture fimbriation-tincture-2))})
 
            (= fimbriation-tincture-1-kind
               fimbriation-tincture-2-kind
               :colour) (conj {:level :note
-                              :message (util/str-tr
-                                        (string "Fimbriation tinctures are both colours (")
-                                        (tincture/translate-tincture fimbriation-tincture-1)
-                                        " " (string "and") " "
-                                        (tincture/translate-tincture fimbriation-tincture-2)
-                                        ").")})
+                              :message (util/format-tr (tr
+                                                        (string "Fimbriation tinctures are both colours (%s and %s), breaks rule of tincture."))
+                                                       (tincture/translate-tincture fimbriation-tincture-1)
+                                                       (tincture/translate-tincture fimbriation-tincture-2))})
 
            (= (set [fimbriation-tincture-1-kind])
               field-tincture-kinds
               #{:metal}) (conj {:level :note
-                                :message (util/str-tr
-                                          (string "Fimbriation metal tincture (")
-                                          (tincture/translate-tincture fimbriation-tincture-1)
-                                          (string ") touches metal field (")
-                                          (list-tinctures field-tinctures)
-                                          ").")})
+                                :message (util/format-tr (tr
+                                                          (string "Metal fimbriation (%s) touching metal field (%s) breaks rule of tincture."))
+                                                         (tincture/translate-tincture fimbriation-tincture-1)
+                                                         (list-tinctures field-tinctures))})
 
            (= (set [fimbriation-tincture-1-kind])
               field-tincture-kinds
               #{:colour}) (conj {:level :note
-                                 :message (util/str-tr
-                                           (string "Fimbriation colour tincture (")
-                                           (tincture/translate-tincture fimbriation-tincture-1)
-                                           (string ") touches colour field (")
-                                           (list-tinctures field-tinctures)
-                                           ").")}))]))))
+                                 :message (util/format-tr (tr
+                                                           (string "Colour fimbriation (%s) touching colour field (%s) breaks rule of tincture."))
+                                                          (tincture/translate-tincture fimbriation-tincture-1)
+                                                          (list-tinctures field-tinctures))}))]))))
 
 (defn sort-validations [validations]
   (sort-by (fn [validation]
