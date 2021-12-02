@@ -24,10 +24,11 @@
                     :src (static/static-url (if (= key :all)
                                               "/img/psychedelic.png"
                                               (str "/svg/theme-" (name key) ".svg")))}]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}}
-     [tr display-name]]
-    [:i]]])
+   (when on-click?
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}}
+       [tr display-name]]
+      [:i]])])
 
 (defn theme-select [context]
   (when-let [option (interface/get-relevant-options context)]

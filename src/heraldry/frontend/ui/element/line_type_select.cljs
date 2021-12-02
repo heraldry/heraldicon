@@ -18,9 +18,10 @@
    [:img.clickable {:style {:width "7.5em"}
                     :src (static/static-url
                           (str "/svg/line-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} [tr display-name]]
-    [:i]]])
+   (when on-click?
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} [tr display-name]]
+      [:i]])])
 
 (defn line-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
