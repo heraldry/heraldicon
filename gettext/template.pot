@@ -1606,14 +1606,6 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: src/heraldry/frontend/header.cljs
-msgid "Login"
-msgstr ""
-
-#: src/heraldry/frontend/header.cljs
-msgid "Register"
-msgstr ""
-
 #: src/heraldry/frontend/history/core.cljs
 msgid "undo"
 msgstr ""
@@ -2019,10 +2011,6 @@ msgid "extra"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/field.cljs
-msgid "Change"
-msgstr ""
-
-#: src/heraldry/frontend/ui/form/field.cljs
 msgid "Ordinary"
 msgstr ""
 
@@ -2194,6 +2182,106 @@ msgstr ""
 
 #: src/heraldry/frontend/ui/shield_separator.cljs
 msgid "Shield layer"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Username required for password reset."
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Username"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Password"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Forgotten password"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Cancel"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs src/heraldry/frontend/user.cljs
+msgid "Login"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Passwords don't match."
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Registration completed"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Email"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Password again"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs src/heraldry/frontend/user.cljs
+msgid "Register"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "A new code was sent to your email address."
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "A confirmation code was sent to your email address."
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Confirmation code"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Resend code"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Confirm"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "New password"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "New password again"
+msgstr ""
+
+#: src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/user.cljs
+msgid "Change"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Password reset completed"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "A password reset confirmation code was sent to your email address."
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Reset password"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Register Confirmation"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Change Temporary Password"
+msgstr ""
+
+#: src/heraldry/frontend/user.cljs
+msgid "Reset Forgotten Password"
 msgstr ""
 
 #: src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/ribbon_library.cljs src/heraldry/frontend/ui/element/arms_select.cljs src/heraldry/frontend/ui/element/charge_type_select.cljs src/heraldry/frontend/ui/element/collection_select.cljs src/heraldry/frontend/ui/element/ribbon_select.cljs src/heraldry/frontend/ui/element/user_select.cljs src/heraldry/frontend/user_library.cljs
