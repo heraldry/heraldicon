@@ -11,4 +11,4 @@
       (->> (map (fn [k]
                   [k (get-in DICT [k s])]))
            (into {}))
-      (assoc :en (s/replace s #" \[.*\]" ""))))
+      (assoc :en (s/replace s #" \[.*\]$" ""))))

@@ -1928,6 +1928,31 @@ msgstr ""
 "Sammlungen explizit als öffentlich markieren eine Lizenz angeben, wenn du "
 "anderen den Zugriff erlauben und den Link teilen möchtest."
 
+#: src/heraldry/frontend/contact.cljs
+msgid "Infos"
+msgstr ""
+
+#: src/heraldry/frontend/contact.cljs
+msgid ""
+"You can email me at oliver [at] heraldry.digital for feedback, questions, "
+"complaints, feature requests, or deep and meaningful friendship."
+msgstr ""
+"Du kannst mich per Email erreichen: oliver [at] heraldry.digital, für "
+"Feedback, Fragen, Beschwerden, Feature-Wünsche oder tiefe und "
+"bedeutungsvolle Freundschaft."
+
+#: src/heraldry/frontend/contact.cljs
+msgid "The project can be found here, if you want to get involved"
+msgstr ""
+
+#: src/heraldry/frontend/contact.cljs
+msgid "I can be found here"
+msgstr "Ich kann hier gefunden werden"
+
+#: src/heraldry/frontend/contact.cljs
+msgid "my username is"
+msgstr "mein Nutzername ist"
+
 #: src/heraldry/frontend/filter.cljs
 msgid "Mine only"
 msgstr "Nur meine"
@@ -1952,7 +1977,7 @@ msgstr "Neuigkeiten"
 msgid "About"
 msgstr "Infos"
 
-#: src/heraldry/frontend/header.cljs
+#: src/heraldry/frontend/contact.cljs src/heraldry/frontend/header.cljs
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -3218,6 +3243,12 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
+
+#~ msgid "The project is on"
+#~ msgstr "Das Projekt ist hier:"
+
+#~ msgid "if you want to get involved in some way."
+#~ msgstr "falls du in irgendeiner Weise mithelfen möchtest."
 
 #~ msgid "Label"
 #~ msgstr "Turnierkragen"
