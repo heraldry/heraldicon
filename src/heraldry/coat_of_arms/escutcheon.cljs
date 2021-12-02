@@ -1,11 +1,11 @@
 (ns heraldry.coat-of-arms.escutcheon
   (:require
    [heraldry.coat-of-arms.field.environment :as environment]
+   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def heater
-  {:display-name {:en "Heater"
-                  :de "Dreieckschild"}
+  {:display-name (string "Heater")
    ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
    :environment (environment/create
                  (str "m 0,0"
@@ -19,8 +19,7 @@
                   :bounding-box [-3 3 0 (+ 2 5.196152422706632)]})})
 
 (def square-french
-  {:display-name {:en "Square French"
-                  :de "Französische Form"}
+  {:display-name (string "Square French")
    :environment (environment/create
                  (str "m 0,0"
                       "v 15.7"
@@ -32,8 +31,7 @@
                   :bounding-box [0 (* 2 12) 0 (+ 15.7 13)]})})
 
 (def square-iberian
-  {:display-name {:en "Square Iberian"
-                  :de "Halbrundschild / Spanische Form"}
+  {:display-name (string "Square Iberian")
    :environment (environment/create
                  (str "m 0,0"
                       "h 5"
@@ -45,8 +43,7 @@
                   :bounding-box [-5 5 0 (+ 7 5)]})})
 
 (def square-czech
-  {:display-name {:en "Square Czech"
-                  :de "Tschechische Form"}
+  {:display-name (string "Square Czech")
    :environment (environment/create
                  ;; diff(sqrt(r*r - x*x))
                  ;; solve(-24/sqrt(r^2 - 24^2) - (-35/4)) ~ 24.156226
@@ -59,8 +56,7 @@
                   :bounding-box [0 56 0 56.5]})})
 
 (def french-modern
-  {:display-name {:en "French modern"
-                  :de "Französische Form (modern) / Rechteck"}
+  {:display-name (string "French modern")
    :environment (environment/create
                  (str "m 0,0"
                       "h 7"
@@ -78,8 +74,7 @@
                   :bounding-box [-7 7 0 (* 2 8)]})})
 
 (def lozenge
-  {:display-name {:en "Lozenge"
-                  :de "Rautenform / Damenschild"}
+  {:display-name (string "Lozenge [escutcheon]")
    :environment (environment/create
                  (str "m 0,0"
                       "L 5,6.5"
@@ -91,8 +86,7 @@
                   :points {:fess {:x 0 :y 6.5}}})})
 
 (def oval
-  {:display-name {:en "Oval"
-                  :de "Ovale Form"}
+  {:display-name (string "Oval")
    :environment (environment/create
                  (str "m 0,0"
                       "A 5 6.8 0 0 1 5,6.5"
@@ -105,8 +99,7 @@
                   :points {:fess {:x 0 :y 6.5}}})})
 
 (def roundel
-  {:display-name {:en "Roundel"
-                  :de "Runde Form"}
+  {:display-name (string "Roundel [escutcheon]")
    :environment (environment/create
                  (str "m 0,0"
                       "a 5 5 0 0 1 0,10"
@@ -117,8 +110,7 @@
                   :points {:fess {:x 0 :y 5}}})})
 
 (def swiss
-  {:display-name {:en "Swiss"
-                  :de "Schweizer Form"}
+  {:display-name (string "Swiss [escutcheon]")
    ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
    :environment (environment/create
                  (str "m 0,0"
@@ -133,8 +125,7 @@
                   :bounding-box [-3 3 0 (+ 2 5.196152422706632)]})})
 
 (def english
-  {:display-name {:en "English"
-                  :de "Englische Form"}
+  {:display-name (string "English [escutcheon]")
    :environment (environment/create
                  (str "m 0,0"
                       "h 8"
@@ -154,8 +145,7 @@
                   :bounding-box [-8 8 0 (+ (* 2 8) 1)]})})
 
 (def polish
-  {:display-name {:en "Polish"
-                  :de "Polnische Form"}
+  {:display-name (string "Polish [escutcheon]")
    :environment (environment/create
                  (str "m 43.402145,5e-7 "
                       "c -8.662508,0 -14.063932,7.322064 -27.53457,9.380727 0.01086,7.9371285
@@ -178,8 +168,7 @@
                   :points {:fess {:x 50 :y 60}}})})
 
 (def polish-19th-century
-  {:display-name {:en "Polish 19th century"
-                  :de "Polnische Form (19. Jh)"}
+  {:display-name (string "Polish 19th century")
    :environment (environment/create
                  (str
                   "M 9.5919374,7.6420451e-7 6.7196191e-7,9.9320533 "
@@ -196,7 +185,7 @@
                   :points {:fess {:x 50 :y 60}}})})
 
 (def renaissance
-  {:display-name "Renaissance"
+  {:display-name (string "Renaissance [escutcheon]")
    :environment (environment/create
                  (str
                   "M 43.672061,112.35743 "
@@ -215,8 +204,7 @@
                   :points {:fess {:x 50 :y 55}}})})
 
 (def rectangle
-  {:display-name {:en "Rectangle"
-                  :de "Einfaches Rechteck"}
+  {:display-name (string "Rectangle [escutcheon]")
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -229,8 +217,7 @@
                   :points {:fess {:x 5 :y 6}}})})
 
 (def flag-3-2
-  {:display-name {:en "Flag (3:2)"
-                  :de "Flagge (3:2)"}
+  {:display-name (string "Flag (3:2)")
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -243,8 +230,7 @@
                   :points {:fess {:x 1.5 :y 1}}})})
 
 (def flag-2-1
-  {:display-name {:en "Flag (2:1)"
-                  :de "Flagge (2:1)"}
+  {:display-name (string "Flag (2:1)")
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -257,8 +243,7 @@
                   :points {:fess {:x 1 :y 0.5}}})})
 
 (def flag-5-3
-  {:display-name {:en "Flag (5:3)"
-                  :de "Flagge (5:3)"}
+  {:display-name (string "Flag (5:3)")
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -271,8 +256,7 @@
                   :points {:fess {:x 2.5 :y 1.5}}})})
 
 (def wedge
-  {:display-name {:en "Wedge"
-                  :de "Dreieckschild (eingekerbt)"}
+  {:display-name (string "Wedge [escutcheon]")
    ;; sqrt(3) / 2 * 6 + 2 ~ 7.196152422706632
    :environment (let [height 7.196152422706632
                       hole-x 1
@@ -289,8 +273,7 @@
                     :bounding-box [-3 3 0 7.196152422706632]}))})
 
 (def kite
-  {:display-name {:en "Kite"
-                  :de "Drachenschild"}
+  {:display-name (string "Kite")
    :environment (let [width 1
                       height 2
                       half-width (/ width 2)
@@ -318,8 +301,7 @@
                     :points {:fess {:x 0 :y half-width}}}))})
 
 (def norman
-  {:display-name {:en "Norman (late)"
-                  :de "Normannenschild (spät)"}
+  {:display-name (string "Norman (late)")
    :environment (let [width 5
                       height 8
                       half-width (/ width 2)
@@ -338,8 +320,7 @@
                     :points {:fess {:x 0 :y half-width}}}))})
 
 (def norman-rounded
-  {:display-name {:en "Rounded Norman (late)"
-                  :de "Abgerundetes Normannenschild (spät)"}
+  {:display-name (string "Rounded Norman (late)")
    :environment (let [width 5
                       height 8
                       d (/ height 15)

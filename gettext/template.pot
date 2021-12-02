@@ -542,6 +542,90 @@ msgstr ""
 msgid "Rotate charges"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Heater"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Square French"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Square Iberian"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Square Czech"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "French modern"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Lozenge [escutcheon]"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Oval"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Roundel [escutcheon]"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Swiss [escutcheon]"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "English [escutcheon]"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Polish [escutcheon]"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Polish 19th century"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Renaissance [escutcheon]"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Rectangle [escutcheon]"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag (3:2)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag (2:1)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag (5:3)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Wedge [escutcheon]"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Kite"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Norman (late)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Rounded Norman (late)"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/field/options.cljs
 msgid "Partition"
 msgstr ""

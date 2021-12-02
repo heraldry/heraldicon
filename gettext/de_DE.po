@@ -562,6 +562,90 @@ msgstr "Radius"
 msgid "Rotate charges"
 msgstr "Wappenfiguren rotieren"
 
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Heater"
+msgstr "Dreieckschild"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Square French"
+msgstr "Französische form"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Square Iberian"
+msgstr "Halbrundschild / Spanische Form"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Square Czech"
+msgstr "Tschechische Form"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "French modern"
+msgstr "Französische Form (modern) / Rechteck"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Lozenge [escutcheon]"
+msgstr "Rautenform / Damenschild"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Oval"
+msgstr "Ovale Form"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Roundel [escutcheon]"
+msgstr "Runde Form"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Swiss [escutcheon]"
+msgstr "Schweizer Form"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "English [escutcheon]"
+msgstr "Englische Form"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Polish [escutcheon]"
+msgstr "Polnische Form"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Polish 19th century"
+msgstr "Polnische Form (19. Jh)"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Renaissance [escutcheon]"
+msgstr "Renaissance"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Rectangle [escutcheon]"
+msgstr "Einfaches Rechteck"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag (3:2)"
+msgstr "Flagge (3:2)"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag (2:1)"
+msgstr "Flagge (2:1)"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag (5:3)"
+msgstr "Flagge (5:3)"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Wedge [escutcheon]"
+msgstr "Dreieckschild (eingekerbt)"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Kite"
+msgstr "Drachenschild"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Norman (late)"
+msgstr "Normannenschild (spät)"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Rounded Norman (late)"
+msgstr "Abgerundetes Normannenschild (spät)"
+
 #: src/heraldry/coat_of_arms/field/options.cljs
 msgid "Partition"
 msgstr "Teilung"

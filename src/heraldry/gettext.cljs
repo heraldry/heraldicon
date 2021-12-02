@@ -2,7 +2,8 @@
   (:require-macros [heraldry.gettext :refer [inline-dict]]))
 
 (def DICT
-  {:de (inline-dict "de_DE.po")})
+  {:de (inline-dict "de_DE.po")
+   :en (inline-dict "en_GB.po")})
 
 (defn string [s]
   (-> DICT
@@ -10,4 +11,7 @@
       (->> (map (fn [k]
                   [k (get-in DICT [k s])]))
            (into {}))
-      (assoc :en s)))
+      (update :en (fn [en-s]
+                    (if (-> en-s count pos?)
+                      en-s
+                      s)))))
