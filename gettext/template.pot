@@ -2183,9 +2183,7 @@ msgid "Invert"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
-msgid "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number.
-
-Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."
+msgid "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number. Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this."
 msgstr ""
 
 #: src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/tincture/core.cljs src/heraldry/frontend/ui/form/arms_general.cljs src/heraldry/frontend/ui/form/charge_general.cljs src/heraldry/frontend/ui/form/collection_general.cljs src/heraldry/frontend/ui/form/ribbon_general.cljs
