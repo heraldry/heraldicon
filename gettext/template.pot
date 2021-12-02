@@ -1590,10 +1590,6 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-#: src/heraldry/frontend/header.cljs
-msgid "News"
-msgstr ""
-
 #: src/heraldry/frontend/about.cljs src/heraldry/frontend/header.cljs
 msgid "About"
 msgstr ""
@@ -1624,6 +1620,22 @@ msgstr ""
 
 #: src/heraldry/frontend/history/core.cljs
 msgid "redo"
+msgstr ""
+
+#: src/heraldry/frontend/home.cljs
+msgid "Home"
+msgstr ""
+
+#: src/heraldry/frontend/header.cljs src/heraldry/frontend/home.cljs
+msgid "News"
+msgstr ""
+
+#: src/heraldry/frontend/home.cljs
+msgid "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."
+msgstr ""
+
+#: src/heraldry/frontend/home.cljs
+msgid "These updates are not translated, because that'd be a lot of work. Maybe someday... :)"
 msgstr ""
 
 #: src/heraldry/frontend/ribbon_library.cljs

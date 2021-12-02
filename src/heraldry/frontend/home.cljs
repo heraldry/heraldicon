@@ -1,5 +1,7 @@
 (ns heraldry.frontend.home
   (:require
+   [heraldry.frontend.language :refer [tr]]
+   [heraldry.gettext :refer [string]]
    [heraldry.static :as static]
    [re-frame.core :as rf]))
 
@@ -12,7 +14,7 @@
             :alt "release update overview"}]]))
 
 (defn view []
-  (rf/dispatch [:set-title "Home"])
+  (rf/dispatch [:set-title (string "Home")])
   [:div
    {:style {:padding "10px"
             :text-align "justify"
@@ -21,9 +23,9 @@
             :margin "auto"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [:h2 "News"]
-    [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll "
-     "group some features and new development and post an update here, so it is easy to stay informed."]]
+    [:h2 [tr (string "News")]]
+    [:p [tr (string "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed.")]]
+    [:p [tr (string "These updates are not translated, because that'd be a lot of work. Maybe someday... :)")]]]
 
    [:h3 "2021-11-25 - Bordure/orle, in orle charge groups, chevronny"]
    [:div.release-row
