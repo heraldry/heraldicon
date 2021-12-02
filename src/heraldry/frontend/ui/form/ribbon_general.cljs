@@ -311,7 +311,7 @@
 
       [ribbon-segments-form
        (c/++ context :ribbon)
-       :tooltip (string "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number.\n\nNote: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this.")]])])
+       :tooltip (string "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number. Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this.")]])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [context]
   {:title (string "General")

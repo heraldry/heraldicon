@@ -2854,14 +2854,15 @@ msgstr "Invertieren"
 #: src/heraldry/frontend/ui/form/ribbon_general.cljs
 msgid ""
 "Segments can be background, foreground, or foreground with text and their "
-"rendering order is determined by the layer number"
+"rendering order is determined by the layer number. Note: apply a preset "
+"after introducing new segments or removing segments in the curve. This will "
+"overwrite changes here, but right now there's no good way to preserve this."
 msgstr ""
 "Segmente können Vorderseite oder Rückseite oder Vorderseite mit Text "
 "repräsentieren, und ihrer Render-Reihenfolge wird durch die Layer-Zahl "
-"angegeben.\n"
-"\n"
-"Note: wende die Vorauswahl an nachdem sich die Anzahl der Segmente in der "
-"Kurve ändert. Das überschreibt die Änderungen hier, aber im Mo"
+"angegeben. Note: wende die Vorauswahl an nachdem sich die Anzahl der "
+"Segmente in der Kurve ändert. Das überschreibt die Änderungen hier, aber im "
+"Moment gibt es keinen guten Weg, diese Änderungen beizubehalten."
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 #: src/heraldry/coat_of_arms/tincture/core.cljs
@@ -3501,6 +3502,17 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
+
+#~ msgid ""
+#~ "Segments can be background, foreground, or foreground with text and their "
+#~ "rendering order is determined by the layer number"
+#~ msgstr ""
+#~ "Segmente können Vorderseite oder Rückseite oder Vorderseite mit Text "
+#~ "repräsentieren, und ihrer Render-Reihenfolge wird durch die Layer-Zahl "
+#~ "angegeben.\n"
+#~ "\n"
+#~ "Note: wende die Vorauswahl an nachdem sich die Anzahl der Segmente in der "
+#~ "Kurve ändert. Das überschreibt die Änderungen hier, aber im Mo"
 
 #~ msgid ""
 #~ "Fimbriation metal tincture (%s) touching metal field (%s) breaks rule of "
