@@ -172,9 +172,8 @@
 
 (defn tr-raw [data language]
   (if (map? data)
-    (get data
-         language
-         (get data :en))
+    (or (get data language)
+        (get data :en))
     data))
 
 (defn translate [keyword]

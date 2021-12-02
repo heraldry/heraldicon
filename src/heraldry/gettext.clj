@@ -18,5 +18,6 @@
 
 (comment
   (gettext-do-scan!)
+
   ;;
   )
