@@ -1858,8 +1858,8 @@ msgid "is licensed under "
 msgstr "ist lizensiert unter "
 
 #: src/heraldry/frontend/attribution.cljs
-msgid "source: "
-msgstr "Quelle: "
+msgid "source"
+msgstr "Quelle"
 
 #: src/heraldry/frontend/attribution.cljs
 msgid "unnamed"
@@ -2299,6 +2299,7 @@ msgid "Select Colour Theme"
 msgstr "Farbschema auswählen"
 
 #: src/heraldry/attribution.cljs src/heraldry/coat_of_arms/attributes.cljs
+#: src/heraldry/coat_of_arms/escutcheon.cljs
 #: src/heraldry/coat_of_arms/line/fimbriation.cljs
 #: src/heraldry/coat_of_arms/texture.cljs src/heraldry/frontend/filter.cljs
 #: src/heraldry/frontend/ui/element/arms_reference_select.cljs
