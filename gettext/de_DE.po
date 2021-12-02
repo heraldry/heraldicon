@@ -2129,14 +2129,6 @@ msgstr "Konto"
 msgid "Logout"
 msgstr "Ausloggen"
 
-#: src/heraldry/frontend/header.cljs
-msgid "Login"
-msgstr "Einloggen"
-
-#: src/heraldry/frontend/header.cljs
-msgid "Register"
-msgstr "Registrieren"
-
 #: src/heraldry/frontend/history/core.cljs
 msgid "undo"
 msgstr "rückgängig"
@@ -2636,10 +2628,6 @@ msgid "extra"
 msgstr "extra"
 
 #: src/heraldry/frontend/ui/form/field.cljs
-msgid "Change"
-msgstr "Ändern"
-
-#: src/heraldry/frontend/ui/form/field.cljs
 msgid "Ordinary"
 msgstr "Heroldsbild"
 
@@ -2874,6 +2862,108 @@ msgstr "Besät mit"
 #: src/heraldry/frontend/ui/shield_separator.cljs
 msgid "Shield layer"
 msgstr "Schildebene"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Username required for password reset."
+msgstr "Benutzername benötigt für Passwort zurücksetzen."
+
+#: src/heraldry/frontend/user.cljs
+msgid "Username"
+msgstr "Benutzername"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Password"
+msgstr "Passwort"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Forgotten password"
+msgstr "Passwort vergessen"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Cancel"
+msgstr "Abbruch"
+
+#: src/heraldry/frontend/header.cljs src/heraldry/frontend/user.cljs
+msgid "Login"
+msgstr "Einloggen"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Passwords don't match."
+msgstr "Passwörter sind nicht gleich."
+
+#: src/heraldry/frontend/user.cljs
+msgid "Registration completed"
+msgstr "Registrierung abgeschlossen"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Email"
+msgstr "Email"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Password again"
+msgstr "Passwort nochmal"
+
+#: src/heraldry/frontend/header.cljs src/heraldry/frontend/user.cljs
+msgid "Register"
+msgstr "Registrieren"
+
+#: src/heraldry/frontend/user.cljs
+msgid "A new code was sent to your email address."
+msgstr "Ein neuer Bestätitungscode wurde an deine Emailadresse geschickt."
+
+#: src/heraldry/frontend/user.cljs
+msgid "A confirmation code was sent to your email address."
+msgstr "Ein Bestätitungscode wurde an deine Emailadresse geschickt."
+
+#: src/heraldry/frontend/user.cljs
+msgid "Confirmation code"
+msgstr "Bestätigungscode"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Resend code"
+msgstr "Code erneut senden"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#: src/heraldry/frontend/user.cljs
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: src/heraldry/frontend/user.cljs
+msgid "New password again"
+msgstr "Neues Passwort nochmal"
+
+#: src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/user.cljs
+msgid "Change"
+msgstr "Ändern"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Password reset completed"
+msgstr "Password zurückgesetzt"
+
+#: src/heraldry/frontend/user.cljs
+msgid "A password reset confirmation code was sent to your email address."
+msgstr ""
+"Ein Bestätigungscode für das Zurücksetzen des Passworts wurde an deine "
+"Emailadresse geschickt."
+
+#: src/heraldry/frontend/user.cljs
+msgid "Reset password"
+msgstr "Passwort zurücksetzen"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Register Confirmation"
+msgstr "Registrierung bestätigen"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Change Temporary Password"
+msgstr "Temporäres Passwort ändern"
+
+#: src/heraldry/frontend/user.cljs
+msgid "Reset Forgotten Password"
+msgstr "Vergessenes Passwort zurücksetzen"
 
 #: src/heraldry/frontend/charge_library.cljs
 #: src/heraldry/frontend/ribbon_library.cljs
@@ -3413,6 +3503,9 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
+
+#~ msgid "New password:"
+#~ msgstr "Neues Passwort"
 
 #~ msgid "The project is on"
 #~ msgstr "Das Projekt ist hier:"

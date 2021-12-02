@@ -1,5 +1,6 @@
 (ns heraldry.frontend.modal
   (:require
+   [heraldry.frontend.language :refer [tr]]
    [re-frame.core :as rf]))
 
 (def dialog-db-path
@@ -32,7 +33,7 @@
        [:<>
         [:div.modal-background {:on-click #(clear)}]
         [:div.modal.dialog
-         [:div.modal-header title]
+         [:div.modal-header [tr title]]
          [:div.modal-content content]]])
      (when loader
        [:<>
