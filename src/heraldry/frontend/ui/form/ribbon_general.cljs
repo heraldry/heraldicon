@@ -48,12 +48,12 @@
                                   (= mod2 1) (- n 1)
                                   (zero? mod2) (+ n 1)))
 
-    :nebuly (let [mod4 (mod n 4)]
-              (cond
-                (= mod4 2) (+ n 2)
-                (and (zero? mod4)
-                     (not (zero? n))) (- n 2)
-                :else n))))
+    :waves (let [mod4 (mod n 4)]
+             (cond
+               (= mod4 2) (+ n 2)
+               (and (zero? mod4)
+                    (not (zero? n))) (- n 2)
+               :else n))))
 
 (defn type-fn [mode n segment-length]
   (if (case mode
@@ -140,7 +140,7 @@
                                                                    Math/abs)
                                             effective-flow-idx (cond-> effective-type-idx
                                                                  (#{:stacked
-                                                                    :nebuly} flow-mode :stacked) (->> (- even-max-num-curves)))]
+                                                                    :waves} flow-mode :stacked) (->> (- even-max-num-curves)))]
                                         {:type (type-fn start-mode effective-type-idx
                                                         (/ (curve/length curve)
                                                            total-length))
@@ -289,7 +289,7 @@
        [[(string "Stacked") :stacked]
         [(string "Spiral clockwise") :spiral-clockwise]
         [(string "Spiral counter-clockwise") :spiral-counter-clockwise]
-        [(string "Waves") :nebuly]]]
+        [(string "Waves") :waves]]]
 
       [select/raw-select
        {:path start-path}
