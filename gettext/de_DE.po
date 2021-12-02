@@ -2908,6 +2908,10 @@ msgstr "Wappen"
 msgid "Charges"
 msgstr "Wappenfiguren"
 
+#: src/heraldry/frontend/account.cljs src/heraldry/frontend/user_library.cljs
+msgid "You need to be logged in."
+msgstr "Du mußt eingeloggt sein."
+
 #: src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
 msgid "Users"
 msgstr "Benutzer"

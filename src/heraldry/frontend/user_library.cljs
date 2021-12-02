@@ -121,7 +121,7 @@
 
 (defn not-logged-in []
   [:div {:style {:padding "15px"}}
-   "You need to be logged in."])
+   [tr (string "You need to be logged in.")]])
 
 (defn view-user-by-username [{:keys [parameters]}]
   (let [username (-> parameters :path :username)]
