@@ -2216,6 +2216,10 @@ msgstr ""
 msgid "Charges"
 msgstr ""
 
+#: src/heraldry/frontend/account.cljs src/heraldry/frontend/user_library.cljs
+msgid "You need to be logged in."
+msgstr ""
+
 #: src/heraldry/frontend/header.cljs src/heraldry/frontend/user_library.cljs
 msgid "Users"
 msgstr ""
