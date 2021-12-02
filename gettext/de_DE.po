@@ -943,6 +943,10 @@ msgstr "Wellenschnitt"
 msgid "Wolf toothed"
 msgstr "Wolfzahnschnitt"
 
+#: src/heraldry/coat_of_arms/ordinary/type/base.cljs
+msgid "Base [ordinary]"
+msgstr "Schildfuß"
+
 #: src/heraldry/coat_of_arms/ordinary/type/bend.cljs
 msgid "Bend"
 msgstr "Schrägbalken"
@@ -959,16 +963,24 @@ msgstr "Schildbord"
 msgid "Chevron"
 msgstr "Sparren"
 
+#: src/heraldry/coat_of_arms/ordinary/type/chief.cljs
+msgid "Chief [ordinary]"
+msgstr "Schildhaupt"
+
 #: src/heraldry/coat_of_arms/ordinary/type/cross.cljs
 msgid "Cross"
 msgstr "Kreuz"
+
+#: src/heraldry/coat_of_arms/ordinary/type/fess.cljs
+msgid "Fess [ordinary]"
+msgstr "Balken"
 
 #: src/heraldry/coat_of_arms/ordinary/type/gore.cljs
 msgid "Gore"
 msgstr "Gore"
 
 #: src/heraldry/coat_of_arms/ordinary/type/label.cljs
-msgid "Label"
+msgid "Label [ordinary]"
 msgstr "Turnierkragen"
 
 #: src/heraldry/coat_of_arms/ordinary/type/label.cljs
@@ -1043,7 +1055,7 @@ msgid "Stretch"
 msgstr "Streckung"
 
 #: src/heraldry/coat_of_arms/ordinary/type/point.cljs
-msgid "Point ordinary"
+msgid "Point [ordinary]"
 msgstr "Schrägeck"
 
 #: src/heraldry/coat_of_arms/line/core.cljs
@@ -1178,8 +1190,8 @@ msgstr "Geometrie"
 #: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 #: src/heraldry/coat_of_arms/position.cljs
-msgid "Fess"
-msgstr "Balken"
+msgid "Fess [point]"
+msgstr "Herzstelle"
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
 #: src/heraldry/coat_of_arms/field/type/bendy.cljs
@@ -1198,7 +1210,6 @@ msgstr "Balken"
 #: src/heraldry/coat_of_arms/ordinary/type/bend.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/chevron.cljs
-#: src/heraldry/coat_of_arms/ordinary/type/chief.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/cross.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/fess.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/gore.cljs
@@ -1208,8 +1219,8 @@ msgstr "Balken"
 #: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 #: src/heraldry/coat_of_arms/position.cljs
-msgid "Chief"
-msgstr "Schildhaupt"
+msgid "Chief [point]"
+msgstr "Oberstelle"
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
 #: src/heraldry/coat_of_arms/field/type/bendy.cljs
@@ -1225,7 +1236,6 @@ msgstr "Schildhaupt"
 #: src/heraldry/coat_of_arms/field/type/quartered.cljs
 #: src/heraldry/coat_of_arms/field/type/tierced_per_fess.cljs
 #: src/heraldry/coat_of_arms/field/type/tierced_per_pall.cljs
-#: src/heraldry/coat_of_arms/ordinary/type/base.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/bend.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/bend_sinister.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/chevron.cljs
@@ -1238,8 +1248,8 @@ msgstr "Schildhaupt"
 #: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 #: src/heraldry/coat_of_arms/position.cljs
-msgid "Base"
-msgstr "Schildfuß"
+msgid "Base [point]"
+msgstr "Unterstelle"
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
 #: src/heraldry/coat_of_arms/field/type/chevronny.cljs
@@ -1259,8 +1269,8 @@ msgstr "Schildfuß"
 #: src/heraldry/coat_of_arms/ordinary/type/point.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 #: src/heraldry/coat_of_arms/position.cljs
-msgid "Dexter"
-msgstr "Heraldisch rechts"
+msgid "Dexter [point]"
+msgstr "Rechte Hüftstelle"
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
 #: src/heraldry/coat_of_arms/field/type/chevronny.cljs
@@ -1280,8 +1290,8 @@ msgstr "Heraldisch rechts"
 #: src/heraldry/coat_of_arms/ordinary/type/point.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 #: src/heraldry/coat_of_arms/position.cljs
-msgid "Sinister"
-msgstr "Heraldisch links"
+msgid "Sinister [point]"
+msgstr "Linke Hüftstelle"
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
 #: src/heraldry/coat_of_arms/field/type/bendy.cljs
@@ -1308,7 +1318,7 @@ msgstr "Heraldisch links"
 #: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 #: src/heraldry/coat_of_arms/position.cljs
-msgid "Honour"
+msgid "Honour [point]"
 msgstr "Ortstelle"
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
@@ -1336,7 +1346,7 @@ msgstr "Ortstelle"
 #: src/heraldry/coat_of_arms/ordinary/type/quarter.cljs
 #: src/heraldry/coat_of_arms/ordinary/type/saltire.cljs
 #: src/heraldry/coat_of_arms/position.cljs
-msgid "Nombril"
+msgid "Nombril [point]"
 msgstr "Fersenstelle"
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
@@ -3207,6 +3217,21 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
+
+#~ msgid "Label"
+#~ msgstr "Turnierkragen"
+
+#~ msgid "Fess"
+#~ msgstr "Balken"
+
+#~ msgid "Chief"
+#~ msgstr "Schildhaupt"
+
+#~ msgid "Base"
+#~ msgstr "Schildfuß"
+
+#~ msgid "Nombril"
+#~ msgstr "Fersenstelle"
 
 #, fuzzy
 #~| msgid "Opposite line"

@@ -16,15 +16,15 @@
 
 (def ordinary-type :heraldry.ordinary.type/label)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Label"))
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Label [ordinary]"))
 
 (defmethod interface/options ordinary-type [context]
   (-> {:origin {:point {:type :choice
-                        :choices [[(string "Fess") :fess]
-                                  [(string "Chief") :chief]
-                                  [(string "Base") :base]
-                                  [(string "Honour") :honour]
-                                  [(string "Nombril") :nombril]
+                        :choices [[(string "Fess [point]") :fess]
+                                  [(string "Chief [point]") :chief]
+                                  [(string "Base [point]") :base]
+                                  [(string "Honour [point]") :honour]
+                                  [(string "Nombril [point]") :nombril]
                                   [(string "Top") :top]
                                   [(string "Bottom") :bottom]]
                         :default :chief

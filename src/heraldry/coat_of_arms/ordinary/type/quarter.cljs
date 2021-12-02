@@ -28,11 +28,11 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:origin {:point {:type :choice
-                          :choices [[(string "Fess") :fess]
-                                    [(string "Chief") :chief]
-                                    [(string "Base") :base]
-                                    [(string "Honour") :honour]
-                                    [(string "Nombril") :nombril]
+                          :choices [[(string "Fess [point]") :fess]
+                                    [(string "Chief [point]") :chief]
+                                    [(string "Base [point]") :base]
+                                    [(string "Honour [point]") :honour]
+                                    [(string "Nombril [point]") :nombril]
                                     [(string "Top") :top]
                                     [(string "Bottom") :bottom]]
                           :default :fess

@@ -16,7 +16,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/chief)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Chief"))
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Chief [ordinary]"))
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))

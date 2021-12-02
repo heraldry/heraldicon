@@ -16,7 +16,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/point)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Point ordinary"))
+(defmethod ordinary-interface/display-name ordinary-type [_] (string "Point [ordinary]"))
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -25,8 +25,8 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:line line-style
          :variant {:type :choice
-                   :choices [[(string "Dexter") :dexter]
-                             [(string "Sinister") :sinister]]
+                   :choices [[(string "Dexter [point]") :dexter]
+                             [(string "Sinister [point]") :sinister]]
                    :default :dexter
                    :ui {:label (string "Variant")
                         :form-type :select}}

@@ -29,13 +29,13 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))]
     {:origin {:point {:type :choice
-                      :choices [[(string "Chief") :chief]
-                                [(string "Base") :base]
-                                [(string "Fess") :fess]
-                                [(string "Dexter") :dexter]
-                                [(string "Sinister") :sinister]
-                                [(string "Honour") :honour]
-                                [(string "Nombril") :nombril]]
+                      :choices [[(string "Chief [point]") :chief]
+                                [(string "Base [point]") :base]
+                                [(string "Fess [point]") :fess]
+                                [(string "Dexter [point]") :dexter]
+                                [(string "Sinister [point]") :sinister]
+                                [(string "Honour [point]") :honour]
+                                [(string "Nombril [point]") :nombril]]
                       :default :fess
                       :ui {:label (string "Point")}}
               :offset-x {:type :range

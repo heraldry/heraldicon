@@ -5,13 +5,13 @@
    [heraldry.util :as util]))
 
 (def point-choices
-  [[(string "Fess") :fess]
-   [(string "Chief") :chief]
-   [(string "Base") :base]
-   [(string "Dexter") :dexter]
-   [(string "Sinister") :sinister]
-   [(string "Honour") :honour]
-   [(string "Nombril") :nombril]
+  [[(string "Fess [point]") :fess]
+   [(string "Chief [point]") :chief]
+   [(string "Base [point]") :base]
+   [(string "Dexter [point]") :dexter]
+   [(string "Sinister [point]") :sinister]
+   [(string "Honour [point]") :honour]
+   [(string "Nombril [point]") :nombril]
    [(string "Top-left") :top-left]
    [(string "Top") :top]
    [(string "Top-right") :top-right]
@@ -41,13 +41,13 @@
    [(string "Bottom-left") :bottom-left]
    [(string "Bottom") :bottom]
    [(string "Bottom-right") :bottom-right]
-   [(string "Fess") :fess]
-   [(string "Chief") :chief]
-   [(string "Base") :base]
-   [(string "Dexter") :dexter]
-   [(string "Sinister") :sinister]
-   [(string "Honour") :honour]
-   [(string "Nombril") :nombril]
+   [(string "Fess [point]") :fess]
+   [(string "Chief [point]") :chief]
+   [(string "Base [point]") :base]
+   [(string "Dexter [point]") :dexter]
+   [(string "Sinister [point]") :sinister]
+   [(string "Honour [point]") :honour]
+   [(string "Nombril [point]") :nombril]
    [(string "Angle") :angle]])
 
 (def anchor-point-map
