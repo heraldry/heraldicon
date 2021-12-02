@@ -81,9 +81,10 @@
                             :height "4.5em"}
                     :src (static/static-url
                           (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} [tr display-name]]
-    [:i]]])
+   (when on-click?
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} [tr display-name]]
+      [:i]])])
 
 (defn field-type-select [{:keys [path] :as context}]
   (when-let [option (interface/get-relevant-options context)]

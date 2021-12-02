@@ -23,9 +23,10 @@
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url (str "/svg/tincture-" (name key) ".svg"))}]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} [tr display-name]]
-    [:i]]])
+   (when on-click?
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} [tr display-name]]
+      [:i]])])
 
 (defn tincture-select [context & {:keys [default-option]}]
   (when-let [option (or (interface/get-relevant-options context)

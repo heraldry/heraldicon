@@ -19,9 +19,10 @@
                             :vertical-align "top"}
                     :src (static/static-url
                           (str "/svg/escutcheon-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} [tr display-name]]
-    [:i]]])
+   (when on-click?
+     [:div.bottom
+      [:h3 {:style {:text-align "center"}} [tr display-name]]
+      [:i]])])
 
 (defn escutcheon-select [context]
   (when-let [option (interface/get-relevant-options context)]
