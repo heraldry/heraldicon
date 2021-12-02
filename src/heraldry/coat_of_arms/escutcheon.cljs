@@ -376,8 +376,7 @@
   (->> escutcheons
        (map (fn [v]
               [(-> v deref :display-name) (-> v meta :name keyword)]))
-       (into [[{:en "None"
-                :de "Keins"} :none]])))
+       (into [[(string "None") :none]])))
 
 (def choice-map
   (util/choices->map choices))
