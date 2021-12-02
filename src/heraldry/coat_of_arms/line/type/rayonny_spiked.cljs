@@ -35,20 +35,19 @@
      (v/rotate (v/dot anchor4 vf) angle)
      (v/rotate (v/dot end vf) angle)]))
 
-(defn pattern
+(def pattern
   {:display-name (string "Rayonny (spiked)")
-   :value :rayonny-spiked}
-  [{:keys [eccentricity
-           height
-           width]}
-   _line-options]
-  (let [half-width (/ width 2)
-        quarter-width (/ half-width 2)
-        height (* 1.2 width height)
-        line-up (curvy-line (v/v (* half-width 0.4) (- height)) eccentricity true)
-        line-down (curvy-line (v/v (* half-width 0.6) height) eccentricity false)]
-    {:pattern (concat line-up line-down
-                      ["l" quarter-width (- height)]
-                      ["l" quarter-width height])
-     :min (- height)
-     :max 0}))
+   :function (fn [{:keys [eccentricity
+                          height
+                          width]}
+                  _line-options]
+               (let [half-width (/ width 2)
+                     quarter-width (/ half-width 2)
+                     height (* 1.2 width height)
+                     line-up (curvy-line (v/v (* half-width 0.4) (- height)) eccentricity true)
+                     line-down (curvy-line (v/v (* half-width 0.6) height) eccentricity false)]
+                 {:pattern (concat line-up line-down
+                                   ["l" quarter-width (- height)]
+                                   ["l" quarter-width height])
+                  :min (- height)
+                  :max 0}))})

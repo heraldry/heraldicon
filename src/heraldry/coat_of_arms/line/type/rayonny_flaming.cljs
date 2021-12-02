@@ -30,17 +30,16 @@
      (v/rotate (v/dot anchor4 vf) angle)
      (v/rotate (v/dot end vf) angle)]))
 
-(defn pattern
+(def pattern
   {:display-name (string "Rayonny (flaming)")
-   :value :rayonny-flaming}
-  [{:keys [eccentricity
-           height
-           width]}
-   _line-options]
-  (let [quarter-width (/ width 4)
-        height (* 1.2 width height)
-        line-up (curvy-line (v/v quarter-width (- height)) eccentricity true)
-        line-down (curvy-line (v/v quarter-width height) eccentricity false)]
-    {:pattern (concat line-up line-down line-up line-down)
-     :min (- height)
-     :max 0}))
+   :function (fn [{:keys [eccentricity
+                          height
+                          width]}
+                  _line-options]
+               (let [quarter-width (/ width 4)
+                     height (* 1.2 width height)
+                     line-up (curvy-line (v/v quarter-width (- height)) eccentricity true)
+                     line-down (curvy-line (v/v quarter-width height) eccentricity false)]
+                 {:pattern (concat line-up line-down line-up line-down)
+                  :min (- height)
+                  :max 0}))})
