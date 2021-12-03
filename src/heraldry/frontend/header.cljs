@@ -3,9 +3,29 @@
    [heraldry.config :as config]
    [heraldry.frontend.language :as language :refer [tr]]
    [heraldry.frontend.route :as route]
+   [heraldry.frontend.state :as state]
    [heraldry.frontend.user :as user]
    [heraldry.gettext :refer [string]]
-   [heraldry.static :as static]))
+   [heraldry.static :as static]
+   [re-frame.core :as rf]))
+
+(def user-menu-open?-path
+  [:ui :menu :user-menu :open?])
+
+(rf/reg-sub ::menu-open?
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [open? _]
+    open?))
+
+(rf/reg-event-db ::toggle-menu-open?
+  (fn [db [_ path]]
+    (update-in db path not)))
+
+(rf/reg-event-db ::clear-menu-open?
+  (fn [db [_ path]]
+    (assoc-in db path nil)))
 
 (defn view []
   (let [user-data (user/data)]
@@ -34,12 +54,22 @@
       [route/nav-link {:to :contact} [tr (string "Contact")]]
       [:span {:style {:width "5em"}}]
       [:li [language/selector]]
+      [:span {:style {:width "1em"}}]
       (if (:logged-in? user-data)
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
-         {:style {:min-width "6em"}}
+         {:style {:min-width "6em"}
+          :on-mouse-leave #(rf/dispatch [::clear-menu-open?
+                                         user-menu-open?-path])}
          [:<>
-          [:a.nav-menu-link {:href "#"} (str "@" (:username user-data))]
+          [:a.nav-menu-link {:href "#"
+                             :on-click #(state/dispatch-on-event % [::toggle-menu-open?
+                                                                    user-menu-open?-path])}
+           (str "@" (:username user-data) " ")]
           [:ul.nav-menu.nav-menu-children
+           {:style {:display (if @(rf/subscribe [::menu-open?
+                                                 user-menu-open?-path])
+                               "block"
+                               "none")}}
            [route/nav-link {:to :account} [tr (string "Account")]]
            [:li.nav-menu-item
             [:a.nav-menu-link {:href "#"
