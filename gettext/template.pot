@@ -1567,10 +1567,6 @@ msgid "Here you can view and create collections of coats of arms. You explicitly
 msgstr ""
 
 #: src/heraldry/frontend/contact.cljs
-msgid "Infos"
-msgstr ""
-
-#: src/heraldry/frontend/contact.cljs
 msgid "You can email me at oliver [at] heraldry.digital for feedback, questions, complaints, feature requests, or deep and meaningful friendship."
 msgstr ""
 

@@ -78,51 +78,51 @@ msgstr "Tiere"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Cadent"
-msgstr ""
+msgstr "Absteigend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Couchant"
-msgstr ""
+msgstr "Liegend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Courant"
-msgstr ""
+msgstr "Laufend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Dormant"
-msgstr ""
+msgstr "Schlafend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Pascuant"
-msgstr ""
+msgstr "Äsend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Passant"
-msgstr ""
+msgstr "Schreitend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Rampant"
-msgstr ""
+msgstr "Aufrecht"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Salient"
-msgstr ""
+msgstr "Aufspringend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Segreant"
-msgstr ""
+msgstr "Aufrecht / Segreant"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Sejant"
-msgstr ""
+msgstr "Sitzend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Sejant erect"
-msgstr ""
+msgstr "Aufgerichtet sitzend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Statant"
-msgstr ""
+msgstr "Stehend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Two beasts"
@@ -130,15 +130,15 @@ msgstr "Zwei Tiere"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Addorsed"
-msgstr ""
+msgstr "Adossiert"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Combatant"
-msgstr ""
+msgstr "Zugewendet / Kämpferisch"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Respectant"
-msgstr ""
+msgstr "Zugewendet / Respekt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Winged creatures"
@@ -146,39 +146,39 @@ msgstr "Geflügelte Kreaturen"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Displayed"
-msgstr ""
+msgstr "Schwungfedernd erhebend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "In her piety"
-msgstr ""
+msgstr "Heraldischer Pelikan"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Overt"
-msgstr ""
+msgstr "Schwungfedern gesenkt, Flügel über dem Rücken"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Recursant"
-msgstr ""
+msgstr "Rücksehend (Vogel)"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Rising"
-msgstr ""
+msgstr "Flugbereit"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Vigilant"
-msgstr ""
+msgstr "Einbeinig stehend (Vogel)"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Volant"
-msgstr ""
+msgstr "Fliegend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Vulning herself"
-msgstr ""
+msgstr "Sich aufspießend (Pelikan)"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Sea creatures"
@@ -186,15 +186,15 @@ msgstr "Wasser-Kreaturen"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Hauriant"
-msgstr ""
+msgstr "Aufrecht (Fisch)"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Naiant"
-msgstr ""
+msgstr "Schwimmend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Urinant"
-msgstr ""
+msgstr "Tauchend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Serpents"
@@ -202,47 +202,47 @@ msgstr "Schlangen"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Glissant"
-msgstr ""
+msgstr "Kriechend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Nowed"
-msgstr ""
+msgstr "Verknotet"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "To dexter (default)"
-msgstr ""
+msgstr "Nach heraldisch rechts"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "To sinister"
-msgstr ""
+msgstr "Nach heraldisch links"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Affronté"
-msgstr ""
+msgstr "Zugewendet"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "En arrière"
-msgstr ""
+msgstr "Der Rücken zugewendet"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Guardant"
-msgstr ""
+msgstr "Hersehend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "In trian aspect"
-msgstr ""
+msgstr "3/4 zugewendet"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Reguardant"
-msgstr ""
+msgstr "Rücksehend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Erased"
-msgstr ""
+msgstr "Abgerissen"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Pierced"
-msgstr ""
+msgstr "Durchbohrt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Supporter"
@@ -254,131 +254,131 @@ msgstr "Schwanz"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Coward"
-msgstr ""
+msgstr "Mit untergeschlagenem Schwanz"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Defamed"
-msgstr ""
+msgstr "Ohne Schwanz"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Double queued"
-msgstr ""
+msgstr "Doppelschwänzig"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Tail nowed"
-msgstr ""
+msgstr "Verknoteter Schwanz"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Queue fourché saltire reverse"
-msgstr ""
+msgstr "Gespaltener, invertiert gekreuzter Schwanz"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Queue fourché saltire"
-msgstr ""
+msgstr "Gespaltener, gekreuzter Schwanz"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Queue fourché"
-msgstr ""
+msgstr "Gespaltener Schwanz"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Fauna"
-msgstr ""
+msgstr "Fauna"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Armed"
-msgstr ""
+msgstr "Bewehrt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Attired"
-msgstr ""
+msgstr "Mit Geweih"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Beaked"
-msgstr ""
+msgstr "Beschnabelt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Combed"
-msgstr ""
+msgstr "Bekammt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Eyed (peacock)"
-msgstr ""
+msgstr "Beaugt (Pfau)"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Finned"
-msgstr ""
+msgstr "Geflosst"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Incensed"
-msgstr ""
+msgstr "Feuerspeiend"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Langued"
-msgstr ""
+msgstr "Gezungt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Legged"
-msgstr ""
+msgstr "Mit Beinen"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Maned"
-msgstr ""
+msgstr "Bemähnt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Orbed"
-msgstr ""
+msgstr "Beaugt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Tailed"
-msgstr ""
+msgstr "Mit Schwanz"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Unguled"
-msgstr ""
+msgstr "Behuft"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Wattled"
-msgstr ""
+msgstr "Kehlig"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Winged"
-msgstr ""
+msgstr "Geflügelt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Flora"
-msgstr ""
+msgstr "Flora"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Barbed"
-msgstr ""
+msgstr "Bebutzt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Bladed"
-msgstr ""
+msgstr "Gestielt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Fructed"
-msgstr ""
+msgstr "Befruchtet"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Leaved"
-msgstr ""
+msgstr "Beblättert"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Seeded"
-msgstr ""
+msgstr "Besamt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Slipped"
-msgstr ""
+msgstr "Gestielt / mit Stengel"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Barred"
-msgstr ""
+msgstr "Bebügelt (Helm)"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Trimmed"
-msgstr ""
+msgstr "Dekoriert"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Other"
@@ -386,43 +386,43 @@ msgstr "Andere"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Caparisoned"
-msgstr ""
+msgstr "Mit Wappendecke"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Collared"
-msgstr ""
+msgstr "Behalsbandet"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Garnished"
-msgstr ""
+msgstr "Beschlagen"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Handled"
-msgstr ""
+msgstr "Gestielt (Werkzeug)"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Hilted"
-msgstr ""
+msgstr "Gegrifft"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Illuminated"
-msgstr ""
+msgstr "Beleuchtet"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Hooded"
-msgstr ""
+msgstr "Mit Haube"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Masoned"
-msgstr ""
+msgstr "Gemauert"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Pommeled"
-msgstr ""
+msgstr "Beknauft"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Stringed"
-msgstr ""
+msgstr "Bespannt"
 
 #: src/heraldry/coat_of_arms/attributes.cljs
 msgid "Technical"
@@ -480,6 +480,8 @@ msgid ""
 "If the charge contains a layer separator for the shield, then this can "
 "disable it."
 msgstr ""
+"Wenn eine Wappenfigur einen Ebenentrenner enthält, dann kann er hiermit "
+"ausgeschaltet werden."
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
 msgid "Keep"
@@ -684,7 +686,7 @@ msgstr "Flechtgitter"
 
 #: src/heraldry/coat_of_arms/field/type/fretty.cljs
 msgid "Gap"
-msgstr ""
+msgstr "Lücke"
 
 #: src/heraldry/coat_of_arms/field/type/gyronny.cljs
 msgid "Gyronny"
@@ -1602,11 +1604,11 @@ msgstr "Holz"
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "WappenWiki (default)"
-msgstr ""
+msgstr "WappenWiki (default)"
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Web"
-msgstr ""
+msgstr "Web"
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "RAL Traffic"
@@ -1658,7 +1660,7 @@ msgstr "Wikipedia Schweiz"
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Community"
-msgstr ""
+msgstr "Gemeinschaft"
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Metal"
@@ -1722,7 +1724,7 @@ msgstr "Gegenhermelin in Gold"
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Stain"
-msgstr ""
+msgstr "Sekundärfarben"
 
 #: src/heraldry/coat_of_arms/tincture/core.cljs
 msgid "Sanguine"
@@ -2085,10 +2087,6 @@ msgstr ""
 "anderen den Zugriff erlauben und den Link teilen möchtest."
 
 #: src/heraldry/frontend/contact.cljs
-msgid "Infos"
-msgstr ""
-
-#: src/heraldry/frontend/contact.cljs
 msgid ""
 "You can email me at oliver [at] heraldry.digital for feedback, questions, "
 "complaints, feature requests, or deep and meaningful friendship."
@@ -2099,7 +2097,7 @@ msgstr ""
 
 #: src/heraldry/frontend/contact.cljs
 msgid "The project can be found here, if you want to get involved"
-msgstr ""
+msgstr "Das Projekt gibt es auf dieser Seite, falls du mithelfen möchtest"
 
 #: src/heraldry/frontend/contact.cljs
 msgid "I can be found here"
@@ -2692,6 +2690,8 @@ msgid ""
 "This feature is incomplete and likely going to change, so use with "
 "caution. :)"
 msgstr ""
+"Dieses Feature ist noch nicht fertig und wird sich wahrscheinlich noch "
+"ändern, benutze es mit Vorsicht. :)"
 
 #: src/heraldry/frontend/ui/element/tags.cljs
 #: src/heraldry/frontend/ui/form/charge_group.cljs
@@ -3502,6 +3502,9 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
+
+#~ msgid "Infos"
+#~ msgstr "I"
 
 #~ msgid ""
 #~ "Segments can be background, foreground, or foreground with text and their "
