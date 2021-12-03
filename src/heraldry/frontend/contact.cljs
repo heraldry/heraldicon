@@ -5,7 +5,7 @@
    [re-frame.core :as rf]))
 
 (defn view []
-  (rf/dispatch [:set-title (string "Infos")])
+  (rf/dispatch [:set-title (string "Contact")])
   [:div {:style {:padding "10px"
                  :text-align "justify"
                  :min-width "30em"
