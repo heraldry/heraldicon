@@ -489,7 +489,6 @@ li.nav-menu-item a:hover {
 }
 
 .nav-menu-children {
-  display: none;
   position: absolute;
   left: 0;
   z-index: 3;
@@ -497,11 +496,6 @@ li.nav-menu-item a:hover {
   border-top: 0;
   width: 100%;
   background: #fff;
-}
-
-.nav-menu-allow-hover:hover > .nav-menu-children {
-  display: block;
-  position: absolute;
 }
 
 .nav-menu-item.selected {
