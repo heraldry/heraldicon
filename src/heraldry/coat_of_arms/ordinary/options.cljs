@@ -51,10 +51,6 @@
 (def ordinary-map
   (util/choices->map choices))
 
-(defn set-line-defaults [options]
-  (-> options
-      (options/override-if-exists [:fimbriation :alignment :default] :outside)))
-
 (def type-option
   {:type :choice
    :choices choices

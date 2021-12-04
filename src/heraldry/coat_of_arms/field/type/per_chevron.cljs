@@ -25,7 +25,7 @@
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil))
-        opposite-line-style (-> (line/options (c/++ context :opposite-line))
+        opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
         direction-anchor-point-option {:type :choice

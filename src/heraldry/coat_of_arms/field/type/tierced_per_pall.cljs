@@ -28,11 +28,13 @@
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil))
         opposite-line-style (-> (line/options (c/++ context :opposite-line)
-                                              :fimbriation? false)
+                                              :fimbriation? false
+                                              :inherited-options line-style)
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
         extra-line-style (-> (line/options (c/++ context :extra-line)
-                                           :fimbriation? false)
+                                           :fimbriation? false
+                                           :inherited-options line-style)
                              (options/override-if-exists [:offset :min] 0)
                              (options/override-if-exists [:base-line] nil))
         direction-anchor-point-option {:type :choice

@@ -203,14 +203,14 @@
               :default false
               :ui {:label (string "Flipped")}}})
 
-(defn options [{:keys [path] :as context} & {:keys [fimbriation?]
+(defn options [{:keys [path] :as context} & {:keys [fimbriation?
+                                                    inherited-options]
                                              :or {fimbriation? true}}]
   (let [kind (last path)
-        inherited (when (#{:opposite-line
-                           :extra-line} kind)
+        inherited (when inherited-options
                     (let [line-context (-> context c/-- (c/++ :line))]
                       (options/sanitize (interface/get-raw-data line-context)
-                                        (options line-context :fimbriation? fimbriation?))))
+                                        inherited-options)))
         effective-type-option (cond-> type-option
                                 inherited (assoc :default (:type inherited)))]
     (when-let [type (options/get-value (interface/get-raw-data (c/++ context :type)) effective-type-option)]
@@ -373,7 +373,8 @@
           (assoc :type type-option)
           (options/populate-inheritance inherited)
           (cond->
-            fimbriation? (assoc :fimbriation (fimbriation/options (c/++ context :fimbriation))))
+            fimbriation? (assoc :fimbriation (fimbriation/options (c/++ context :fimbriation)
+                                                                  :inherited-options (:fimbriation inherited-options))))
           (assoc :ui {:label (case kind
                                :opposite-line (string "Opposite line")
                                :extra-line (string "Extra line")
