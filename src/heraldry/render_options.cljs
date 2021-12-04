@@ -24,7 +24,9 @@
                              :choices (drop 1 escutcheon/choices)
                              :default :heater
                              :ui {:label (string "Escutcheon")
-                                  :form-type :escutcheon-select}})]
+                                  :form-type :escutcheon-select}})
+        escutcheon (-> context (c/++ :escutcheon) interface/get-raw-data
+                       (or (-> escutcheon-option :choices first second)))]
     (cond-> {:escutcheon escutcheon-option
 
              :mode {:type :choice
@@ -76,6 +78,8 @@
                                [(string "Coat of Arms") :coat-of-arms]]
                      :default :achievement
                      :ui {:label (string "Scope")}}}
+
+      (= escutcheon :flag) (merge escutcheon/flag-options)
 
       (not= texture :none) (assoc :texture-displacement?
                                   {:type :boolean

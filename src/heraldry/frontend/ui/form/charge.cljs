@@ -12,6 +12,9 @@
    context
    [:type
     :escutcheon
+    :flag-aspect-ratio-preset
+    :flag-height
+    :flag-width
     :origin
     :anchor
     :geometry

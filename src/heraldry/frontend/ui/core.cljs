@@ -19,6 +19,7 @@
    [heraldry.frontend.ui.element.field-layout] ;; needed for side effects
    [heraldry.frontend.ui.element.field-type-select] ;; needed for side effects
    [heraldry.frontend.ui.element.fimbriation] ;; needed for side effects
+   [heraldry.frontend.ui.element.flag-aspect-ratio-preset-select] ;; needed for side effects
    [heraldry.frontend.ui.element.geometry] ;; needed for side effects
    [heraldry.frontend.ui.element.hover-menu :as hover-menu] ;; needed for side effects
    [heraldry.frontend.ui.element.humetty] ;; needed for side effects

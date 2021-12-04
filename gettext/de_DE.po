@@ -621,16 +621,8 @@ msgid "Rectangle [escutcheon]"
 msgstr "Einfaches Rechteck"
 
 #: src/heraldry/coat_of_arms/escutcheon.cljs
-msgid "Flag (3:2)"
-msgstr "Flagge (3:2)"
-
-#: src/heraldry/coat_of_arms/escutcheon.cljs
-msgid "Flag (2:1)"
-msgstr "Flagge (2:1)"
-
-#: src/heraldry/coat_of_arms/escutcheon.cljs
-msgid "Flag (5:3)"
-msgstr "Flagge (5:3)"
+msgid "Flag"
+msgstr "Flagge"
 
 #: src/heraldry/coat_of_arms/escutcheon.cljs
 msgid "Wedge [escutcheon]"
@@ -647,6 +639,22 @@ msgstr "Normannenschild (spät)"
 #: src/heraldry/coat_of_arms/escutcheon.cljs
 msgid "Rounded Norman (late)"
 msgstr "Abgerundetes Normannenschild (spät)"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Select ratio"
+msgstr "Seitenverhältnis"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Aspect ratio preset"
+msgstr "Seitenverhältnis Vorauswahl"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag width"
+msgstr "Flaggenbreite"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag height"
+msgstr "Flaggenhöhe"
 
 #: src/heraldry/coat_of_arms/field/options.cljs
 msgid "Partition"
@@ -3502,6 +3510,15 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
+
+#~ msgid "Flag (3:2)"
+#~ msgstr "Flagge (3:2)"
+
+#~ msgid "Flag (2:1)"
+#~ msgstr "Flagge (2:1)"
+
+#~ msgid "Flag (5:3)"
+#~ msgstr "Flagge (5:3)"
 
 #~ msgid "Infos"
 #~ msgstr "I"

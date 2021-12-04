@@ -599,15 +599,7 @@ msgid "Rectangle [escutcheon]"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/escutcheon.cljs
-msgid "Flag (3:2)"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/escutcheon.cljs
-msgid "Flag (2:1)"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/escutcheon.cljs
-msgid "Flag (5:3)"
+msgid "Flag"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/escutcheon.cljs
@@ -624,6 +616,22 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/escutcheon.cljs
 msgid "Rounded Norman (late)"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Select ratio"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Aspect ratio preset"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag width"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag height"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/field/options.cljs
