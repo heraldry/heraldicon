@@ -11,7 +11,7 @@
 (defn add-cottise-options [options key context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
-        opposite-line-style (-> (line/options (c/++ context :opposite-line))
+        opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (assoc options
            key

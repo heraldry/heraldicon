@@ -32,12 +32,11 @@
    :default :none
    :ui {:form-type :radio-select}})
 
-(defn options [{:keys [path] :as context}]
-  (let [line-kind (-> path drop-last last #{:opposite-line :extra-line})
-        inherited (when line-kind
+(defn options [context & {:keys [inherited-options]}]
+  (let [inherited (when inherited-options
                     (let [line-fimbriation-context (-> context (c/-- 2) (c/++ :line :fimbriation))]
                       (options/sanitize (interface/get-raw-data line-fimbriation-context)
-                                        (options line-fimbriation-context))))
+                                        inherited-options)))
         effective-mode-option (cond-> mode-option
                                 inherited (assoc :default (:mode inherited)))
         mode (options/get-value (interface/get-raw-data (c/++ context :mode)) effective-mode-option)]
