@@ -216,8 +216,8 @@
                   :bounding-box [0 10 0 12]
                   :points {:fess {:x 5 :y 6}}})})
 
-(def flag-3-2
-  {:display-name (string "Flag (3:2)")
+(def flag-2-3
+  {:display-name (string "Flag (2:3)")
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -229,8 +229,8 @@
                   :bounding-box [0 3 0 2]
                   :points {:fess {:x 1.5 :y 1}}})})
 
-(def flag-2-1
-  {:display-name (string "Flag (2:1)")
+(def flag-1-2
+  {:display-name (string "Flag (1:2)")
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -242,8 +242,8 @@
                   :bounding-box [0 2 0 1]
                   :points {:fess {:x 1 :y 0.5}}})})
 
-(def flag-5-3
-  {:display-name (string "Flag (5:3)")
+(def flag-3-5
+  {:display-name (string "Flag (3:5)")
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -361,9 +361,9 @@
    #'norman
    #'french-modern
    #'english
-   #'flag-3-2
-   #'flag-5-3
-   #'flag-2-1
+   #'flag-2-3
+   #'flag-3-5
+   #'flag-1-2
    #'rectangle])
 
 (def kinds-map
