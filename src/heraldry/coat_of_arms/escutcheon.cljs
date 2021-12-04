@@ -368,7 +368,6 @@
   (util/choices->map choices))
 
 (defn field [escutcheon-type flag-width flag-height swallow-tail]
-  (js/console.log :oi escutcheon-type flag-width flag-height swallow-tail)
   (let [escutcheon-data (get kinds-map escutcheon-type)]
     (if (= escutcheon-type :flag)
       ((:function escutcheon-data) flag-width flag-height swallow-tail)
