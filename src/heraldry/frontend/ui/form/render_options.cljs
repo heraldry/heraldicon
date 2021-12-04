@@ -8,6 +8,9 @@
    context
    [:scope
     :escutcheon
+    :flag-aspect-ratio-preset
+    :flag-height
+    :flag-width
     :mode
     :theme
     :texture

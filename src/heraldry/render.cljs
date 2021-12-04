@@ -37,7 +37,9 @@
         theme (interface/render-option :theme context)
         texture (interface/render-option :texture context)
         texture-displacement? (interface/render-option :texture-displacement? context)
-        shield (escutcheon/field escutcheon)
+        flag-width (interface/render-option :flag-width context)
+        flag-height (interface/render-option :flag-height context)
+        shield (escutcheon/field escutcheon flag-width flag-height)
         environment (-> (environment/transform-to-width shield width)
                         (cond->
                           squiggly? (update-in [:shape :paths]
@@ -121,8 +123,7 @@
                  [field-shared/render (-> context
                                           (c/++ :field)
                                           (assoc :environment environment)
-                                          (dissoc :metadata-path)
-                                          (assoc :root-escutcheon escutcheon))]]]]
+                                          (dissoc :metadata-path))]]]]
               (when (or escutcheon-outline?
                         outline?)
                 [:g (outline/style context)

@@ -216,34 +216,19 @@
                   :bounding-box [0 10 0 12]
                   :points {:fess {:x 5 :y 6}}})})
 
-(def flag-2-3
-  {:display-name (string "Flag (2:3)")
-   :environment (environment/create
-                 (str
-                  "M 0,0"
-                  "h 3"
-                  "v 2"
-                  "h -3"
-                  "z")
-                 {:context :root
-                  :bounding-box [0 3 0 2]
-                  :points {:fess {:x 1.5 :y 1}}})})
-
-(def flag-1-2
-  {:display-name (string "Flag (1:2)")
-   :environment (environment/create
-                 (str
-                  "M 0,0"
-                  "h 2"
-                  "v 1"
-                  "h -2"
-                  "z")
-                 {:context :root
-                  :bounding-box [0 2 0 1]
-                  :points {:fess {:x 1 :y 0.5}}})})
-
-(def flag-3-5
-  {:display-name (string "Flag (3:5)")
+(def flag
+  {:display-name (string "Flag")
+   :function (fn [width height]
+               (environment/create
+                (str
+                 "M 0,0"
+                 "h " width
+                 "v " height
+                 "h " (- width)
+                 "z")
+                {:context :root
+                 :bounding-box [0 width 0 height]
+                 :points {:fess {:x (/ width 2) :y (/ height 2)}}}))
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -361,9 +346,7 @@
    #'norman
    #'french-modern
    #'english
-   #'flag-2-3
-   #'flag-3-5
-   #'flag-1-2
+   #'flag
    #'rectangle])
 
 (def kinds-map
@@ -381,5 +364,61 @@
 (def choice-map
   (util/choices->map choices))
 
-(defn field [type]
-  (:environment (get kinds-map type)))
+(defn field [escutcheon-type flag-width flag-height]
+  (let [escutcheon-data (get kinds-map escutcheon-type)]
+    (if (= escutcheon-type :flag)
+      ((:function escutcheon-data) flag-width flag-height)
+      (:environment escutcheon-data))))
+
+(def flag-options
+  {:flag-aspect-ratio-preset {:type :choice
+                              :choices [[(util/str-tr "--- " (string "Select ratio") " ---") :none]
+                                        ["2:3 (most common)" :preset-2-3]
+                                        ["1:2 (common)" :preset-1-2]
+                                        ["3:5 (common)" :preset-3-5]
+                                        ["1:1" :preset-1-1]
+                                        ["3:4" :preset-3-4]
+                                        ["4:3" :preset-4-3]
+                                        ["4:5" :preset-4-5]
+                                        ["4:7" :preset-4-7]
+                                        ["5:7" :preset-5-7]
+                                        ["5:8" :preset-5-8]
+                                        ["6:7" :preset-6-7]
+                                        ["6:13" :preset-6-13]
+                                        ["7:10" :preset-7-10]
+                                        ["7:11" :preset-7-11]
+                                        ["7:13" :preset-7-13]
+                                        ["7:17" :preset-7-17]
+                                        ["8:11" :preset-8-11]
+                                        ["9:16" :preset-9-16]
+                                        ["10:17" :preset-10-17]
+                                        ["10:19" :preset-10-19]
+                                        ["11:18" :preset-11-18]
+                                        ["11:19" :preset-11-19]
+                                        ["11:20" :preset-11-20]
+                                        ["11:28" :preset-11-28]
+                                        ["13:15" :preset-13-15]
+                                        ["15:22" :preset-15-22]
+                                        ["16:25" :preset-16-25]
+                                        ["16:27" :preset-16-27]
+                                        ["17:26" :preset-17-26]
+                                        ["18:25" :preset-18-25]
+                                        ["19:36" :preset-19-36]
+                                        ["22:41" :preset-22-41]
+                                        ["28:37" :preset-28-37]]
+                              :ui {:label (string "Aspect ratio preset")
+                                   :form-type :flag-aspect-ratio-preset-select}}
+
+   :flag-width {:type :range
+                :default 3
+                :min 0.1
+                :max 41
+                :ui {:label (string "Flag width")
+                     :step 0.01}}
+
+   :flag-height {:type :range
+                 :default 2
+                 :min 0.1
+                 :max 41
+                 :ui {:label (string "Flag height")
+                      :step 0.01}}})
