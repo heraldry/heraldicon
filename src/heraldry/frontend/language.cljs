@@ -73,6 +73,7 @@
                          "none")}}
      (doall
       (for [language-code (keys known-languages)]
+        ^{:key language-code}
         [:li.nav-menu-item
          [:a.nav-menu-link
           [language-flag language-code

@@ -53,7 +53,7 @@
         [route/nav-link {:to :users} [tr (string "Users")]])
       [route/nav-link {:to :contact} [tr (string "Contact")]]
       [:span {:style {:width "5em"}}]
-      [:li [language/selector]]
+      [language/selector]
       [:span {:style {:width "1em"}}]
       (if (:logged-in? user-data)
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
