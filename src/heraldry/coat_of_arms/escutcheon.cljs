@@ -218,17 +218,20 @@
 
 (def flag
   {:display-name (string "Flag")
-   :function (fn [width height]
-               (environment/create
-                (str
-                 "M 0,0"
-                 "h " width
-                 "v " height
-                 "h " (- width)
-                 "z")
-                {:context :root
-                 :bounding-box [0 width 0 height]
-                 :points {:fess {:x (/ width 2) :y (/ height 2)}}}))
+   :function (fn [width height swallow-tail]
+               (let [swallow-tail-point-x (-> width (* swallow-tail) (/ 100))
+                     swallow-tail-point-y (/ height 2)]
+                 (environment/create
+                  (str
+                   "M 0,0"
+                   "h " width
+                   "l " (- swallow-tail-point-x) ", " swallow-tail-point-y
+                   "l " swallow-tail-point-x ", " swallow-tail-point-y
+                   "h " (- width)
+                   "z")
+                  {:context :root
+                   :bounding-box [0 width 0 height]
+                   :points {:fess {:x (/ width 2) :y (/ height 2)}}})))
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -364,10 +367,11 @@
 (def choice-map
   (util/choices->map choices))
 
-(defn field [escutcheon-type flag-width flag-height]
+(defn field [escutcheon-type flag-width flag-height swallow-tail]
+  (js/console.log :oi escutcheon-type flag-width flag-height swallow-tail)
   (let [escutcheon-data (get kinds-map escutcheon-type)]
     (if (= escutcheon-type :flag)
-      ((:function escutcheon-data) flag-width flag-height)
+      ((:function escutcheon-data) flag-width flag-height swallow-tail)
       (:environment escutcheon-data))))
 
 (def flag-options
@@ -421,4 +425,11 @@
                  :min 0.1
                  :max 41
                  :ui {:label (string "Flag height")
-                      :step 0.01}}})
+                      :step 0.01}}
+
+   :flag-swallow-tail {:type :range
+                       :default 0
+                       :min 0
+                       :max 100
+                       :ui {:label (string "Flag swallow tail")
+                            :step 0.01}}})

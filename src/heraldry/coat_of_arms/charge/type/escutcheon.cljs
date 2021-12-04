@@ -42,11 +42,13 @@
                     (escutcheon/field
                      (interface/render-option :escutcheon context)
                      (interface/render-option :flag-width context)
-                     (interface/render-option :flag-height context))
+                     (interface/render-option :flag-height context)
+                     (interface/render-option :flag-swallow-tail context))
                     (escutcheon/field
                      escutcheon
                      (interface/get-sanitized-data (c/++ context :flag-width))
-                     (interface/get-sanitized-data (c/++ context :flag-height))))
+                     (interface/get-sanitized-data (c/++ context :flag-height))
+                     (interface/get-sanitized-data (c/++ context :flag-swallow-tail))))
                   width)
              env-fess (-> env :points :fess)
              offset (v/mul env-fess -1)]
