@@ -77,7 +77,8 @@
         [:li.nav-menu-item
          [:a.nav-menu-link
           [language-flag language-code
-           :on-click #(rf/dispatch [::set-language language-code])]]]))]]])
+           :on-click #(state/dispatch-on-event
+                       % [::set-language language-code])]]]))]]])
 
 (defn tr [data]
   (when data

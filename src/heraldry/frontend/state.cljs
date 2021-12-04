@@ -157,7 +157,9 @@
 
 (defn dispatch-on-event [event effect]
   (rf/dispatch effect)
-  (.stopPropagation event))
+  (doto event
+    .preventDefault
+    .stopPropagation))
 
 (defn set-async-fetch-data [db-path query-id data]
   (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
