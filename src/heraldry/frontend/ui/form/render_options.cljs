@@ -11,6 +11,7 @@
     :flag-aspect-ratio-preset
     :flag-height
     :flag-width
+    :flag-swallow-tail
     :mode
     :theme
     :texture

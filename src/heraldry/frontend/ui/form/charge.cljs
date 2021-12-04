@@ -15,6 +15,7 @@
     :flag-aspect-ratio-preset
     :flag-height
     :flag-width
+    :flag-swallow-tail
     :origin
     :anchor
     :geometry
