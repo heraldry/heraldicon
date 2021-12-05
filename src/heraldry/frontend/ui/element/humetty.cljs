@@ -6,34 +6,28 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 ;; TODO: probably can be improved with better subscriptions
-(rf/reg-sub :humetty-submenu-link-name
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/options context])
-     (rf/subscribe [:heraldry.state/sanitized-data context])])
-
-  (fn [[options humetty] [_ _path]]
-    (let [changes (concat
-                   (when (:humetty? humetty)
-                     [(string "Humetty / Couped")])
-                   (when (and (:humetty? humetty)
-                              (some #(options/changed? % humetty options)
-                                    [:distance]))
-                     [(string "resized")]))]
-      (if (seq changes)
-        (-> (util/combine ", " changes)
-            util/upper-case-first)
-        (string "No")))))
+(defn submenu-link-name [options humetty]
+  (let [changes (concat
+                 (when (:humetty? humetty)
+                   [(string "Humetty / Couped")])
+                 (when (and (:humetty? humetty)
+                            (some #(options/changed? % humetty options)
+                                  [:distance]))
+                   [(string "resized")]))]
+    (if (seq changes)
+      (-> (util/combine ", " changes)
+          util/upper-case-first)
+      (string "No"))))
 
 (defn humetty-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
           tooltip (:tooltip ui)
-          link-name @(rf/subscribe [:humetty-submenu-link-name context])]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]

@@ -7,6 +7,7 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.text-field :as text-field]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.validation :as validation]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.curve :as curve]
@@ -315,7 +316,7 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [context]
   {:title (string "General")
-   :validation @(rf/subscribe [:validate-ribbon-general context])})
+   :validation (validation/validate-ribbon-general context)})
 
 (defmethod ui-interface/component-form-data :heraldry.component/ribbon-general [_context]
   {:form form})

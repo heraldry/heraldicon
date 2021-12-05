@@ -13,35 +13,30 @@
    [re-frame.core :as rf]))
 
 ;; TODO: probably can be improved with better subscriptions
-(rf/reg-sub :field-layout-submenu-link-name
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/options context])
-     (rf/subscribe [:heraldry.state/sanitized-data context])])
-
-  (fn [[options layout] [_ _context]]
-    (let [main-name (when (or (:num-fields-x options)
-                              (:num-fields-y options))
-                      (util/str-tr (util/combine "x"
-                                                 [(:num-fields-x layout)
-                                                  (:num-fields-y layout)])
-                                   (string "fields")))
-          changes (filter identity
-                          [main-name
-                           (when (options/changed? :num-base-fields layout options)
-                             (util/str-tr (:num-base-fields layout) " " (string "base fields")))
-                           (when (some #(options/changed? % layout options)
-                                       [:offset-x :offset-y])
-                             (string "shifted"))
-                           (when (some #(options/changed? % layout options)
-                                       [:stretch-x :stretch-y])
-                             (string "stretched"))
-                           (when (options/changed? :rotation layout options)
-                             (string "rotated"))])
-          changes (if (seq changes)
-                    changes
-                    [(string "Default")])]
-      (-> (util/combine ", " changes)
-          util/upper-case-first))))
+(defn submenu-link-name [options layout]
+  (let [main-name (when (or (:num-fields-x options)
+                            (:num-fields-y options))
+                    (util/str-tr (util/combine "x"
+                                               [(:num-fields-x layout)
+                                                (:num-fields-y layout)])
+                                 (string "fields")))
+        changes (filter identity
+                        [main-name
+                         (when (options/changed? :num-base-fields layout options)
+                           (util/str-tr (:num-base-fields layout) " " (string "base fields")))
+                         (when (some #(options/changed? % layout options)
+                                     [:offset-x :offset-y])
+                           (string "shifted"))
+                         (when (some #(options/changed? % layout options)
+                                     [:stretch-x :stretch-y])
+                           (string "stretched"))
+                         (when (options/changed? :rotation layout options)
+                           (string "rotated"))])
+        changes (if (seq changes)
+                  changes
+                  [(string "Default")])]
+    (-> (util/combine ", " changes)
+        util/upper-case-first)))
 
 (macros/reg-event-db :set-field-layout-num-fields-x
   (fn [db [_ path value]]
@@ -83,7 +78,7 @@
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:field-layout-submenu-link-name context])]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])

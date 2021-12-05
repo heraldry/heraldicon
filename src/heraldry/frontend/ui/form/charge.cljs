@@ -3,9 +3,9 @@
    [heraldry.coat-of-arms.charge.options :as charge-options]
    [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.validation :as validation]
    [heraldry.interface :as interface]
-   [heraldry.static :as static]
-   [re-frame.core :as rf]))
+   [heraldry.static :as static]))
 
 (defn form [context]
   (ui-interface/form-elements
@@ -40,7 +40,7 @@
                         (str "/svg/charge-type-roundel-unselected.svg"))
               :selected (static/static-url
                          (str "/svg/charge-type-roundel-selected.svg"))})
-     :validation @(rf/subscribe [:validate-charge context])
+     :validation (validation/validate-charge context)
      :nodes [{:context (c/++ context :field)}]}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/charge [_context]

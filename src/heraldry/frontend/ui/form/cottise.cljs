@@ -2,10 +2,10 @@
   (:require
    [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.validation :as validation]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 (defn form [context]
   (ui-interface/form-elements
@@ -49,7 +49,7 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/cottise [context]
   {:title (cottise-name context)
-   :validation @(rf/subscribe [:validate-cottise context])
+   :validation (validation/validate-cottise context)
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod ui-interface/component-form-data :heraldry.component/cottise [_context]

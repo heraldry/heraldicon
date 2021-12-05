@@ -6,32 +6,26 @@
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 ;; TODO: probably can be improved with better subscriptions
-(rf/reg-sub :position-submenu-link-name
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/options context])
-     (rf/subscribe [:heraldry.state/sanitized-data context])])
-
-  (fn [[options position] [_ _context]]
-    (let [changes [(-> position
-                       :point
-                       position/anchor-point-map)
-                   (when (some #(options/changed? % position options)
-                               [:offset-x :offset-y :angle])
-                     "adjusted")
-                   (when (options/changed? :alignment position options)
-                     "aligned")]]
-      (-> (util/combine ", " changes)
-          util/upper-case-first))))
+(defn submenu-link-name [options position]
+  (let [changes [(-> position
+                     :point
+                     position/anchor-point-map)
+                 (when (some #(options/changed? % position options)
+                             [:offset-x :offset-y :angle])
+                   "adjusted")
+                 (when (options/changed? :alignment position options)
+                   "aligned")]]
+    (-> (util/combine ", " changes)
+        util/upper-case-first)))
 
 (defn position-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:position-submenu-link-name context])]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
