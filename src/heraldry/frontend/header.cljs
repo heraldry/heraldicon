@@ -62,8 +62,9 @@
                                          user-menu-open?-path])}
          [:<>
           [:a.nav-menu-link {:href "#"
-                             :on-click #(state/dispatch-on-event % [::toggle-menu-open?
-                                                                    user-menu-open?-path])}
+                             :on-click #(state/dispatch-on-event-and-prevent-default
+                                         % [::toggle-menu-open?
+                                            user-menu-open?-path])}
            (str "@" (:username user-data) " ")]
           [:ul.nav-menu.nav-menu-children
            {:style {:display (if @(rf/subscribe [::menu-open?
