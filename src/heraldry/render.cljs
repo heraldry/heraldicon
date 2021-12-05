@@ -40,7 +40,10 @@
         flag-width (interface/render-option :flag-width context)
         flag-height (interface/render-option :flag-height context)
         flag-swallow-tail (interface/render-option :flag-swallow-tail context)
-        shield (escutcheon/field escutcheon flag-width flag-height flag-swallow-tail)
+        flag-tail-point-height (interface/render-option :flag-tail-point-height context)
+        flag-tail-tongue (interface/render-option :flag-tail-tongue context)
+        shield (escutcheon/field escutcheon flag-width flag-height flag-swallow-tail
+                                 flag-tail-point-height flag-tail-tongue)
         environment (-> (environment/transform-to-width shield width)
                         (cond->
                           squiggly? (update-in [:shape :paths]

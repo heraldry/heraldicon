@@ -12,6 +12,8 @@
     :flag-height
     :flag-width
     :flag-swallow-tail
+    :flag-tail-point-height
+    :flag-tail-tongue
     :mode
     :theme
     :texture
