@@ -61,7 +61,7 @@
                                    language-menu-open?-path])}
    [:<>
     [:a.nav-menu-link {:href "#"
-                       :on-click #(state/dispatch-on-event
+                       :on-click #(state/dispatch-on-event-and-prevent-default
                                    % [:heraldry.frontend.header/toggle-menu-open?
                                       language-menu-open?-path])}
      [language-flag @(rf/subscribe [::selected-language])]
@@ -77,7 +77,7 @@
         [:li.nav-menu-item
          [:a.nav-menu-link
           [language-flag language-code
-           :on-click #(state/dispatch-on-event
+           :on-click #(state/dispatch-on-event-and-prevent-default
                        % [::set-language language-code])]]]))]]])
 
 (defn tr [data]
