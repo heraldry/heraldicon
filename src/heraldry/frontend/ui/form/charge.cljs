@@ -16,6 +16,8 @@
     :flag-height
     :flag-width
     :flag-swallow-tail
+    :flag-tail-point-height
+    :flag-tail-tongue
     :origin
     :anchor
     :geometry

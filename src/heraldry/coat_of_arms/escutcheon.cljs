@@ -218,15 +218,23 @@
 
 (def flag
   {:display-name (string "Flag")
-   :function (fn [width height swallow-tail]
-               (let [swallow-tail-point-x (-> width (* swallow-tail) (/ 100))
-                     swallow-tail-point-y (/ height 2)]
+   :function (fn [width height swallow-tail tail-point-height tail-tongue]
+               (let [swallow-tail-point-dx (-> width (* swallow-tail) (/ 100))
+                     dy (-> height (* tail-point-height) (/ 100))
+                     half-dy (/ dy 2)
+                     swallow-tail-point-top-dist (-> (/ height 2)
+                                                     (- half-dy))
+                     tail-tongue-point-dx (-> swallow-tail-point-dx
+                                              (* tail-tongue)
+                                              (/ 100))]
                  (environment/create
                   (str
                    "M 0,0"
                    "h " width
-                   "l " (- swallow-tail-point-x) ", " swallow-tail-point-y
-                   "l " swallow-tail-point-x ", " swallow-tail-point-y
+                   "l " (- swallow-tail-point-dx) ", " swallow-tail-point-top-dist
+                   "l " tail-tongue-point-dx ", " half-dy
+                   "l " (- tail-tongue-point-dx) ", " half-dy
+                   "l " swallow-tail-point-dx ", " swallow-tail-point-top-dist
                    "h " (- width)
                    "z")
                   {:context :root
@@ -367,10 +375,10 @@
 (def choice-map
   (util/choices->map choices))
 
-(defn field [escutcheon-type flag-width flag-height swallow-tail]
+(defn field [escutcheon-type flag-width flag-height swallow-tail tail-point-height tail-tongue]
   (let [escutcheon-data (get kinds-map escutcheon-type)]
     (if (= escutcheon-type :flag)
-      ((:function escutcheon-data) flag-width flag-height swallow-tail)
+      ((:function escutcheon-data) flag-width flag-height swallow-tail tail-point-height tail-tongue)
       (:environment escutcheon-data))))
 
 (def flag-options
@@ -431,4 +439,18 @@
                        :min 0
                        :max 100
                        :ui {:label (string "Flag swallow tail")
-                            :step 0.01}}})
+                            :step 0.01}}
+
+   :flag-tail-point-height {:type :range
+                            :default 0
+                            :min 0
+                            :max 90
+                            :ui {:label (string "Flag tail point height")
+                                 :step 0.01}}
+
+   :flag-tail-tongue {:type :range
+                      :default 0
+                      :min 0
+                      :max 100
+                      :ui {:label (string "Flag tongue")
+                           :step 0.01}}})
