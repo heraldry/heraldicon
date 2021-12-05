@@ -656,6 +656,18 @@ msgstr "Flaggenbreite"
 msgid "Flag height"
 msgstr "Flaggenhöhe"
 
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag swallow tail"
+msgstr "Schwalbenschwanz"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag tail point height"
+msgstr "Aussparungshöhe"
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag tongue"
+msgstr "Flaggenzunge"
+
 #: src/heraldry/coat_of_arms/field/options.cljs
 msgid "Partition"
 msgstr "Teilung"
