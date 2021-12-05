@@ -634,6 +634,18 @@ msgstr ""
 msgid "Flag height"
 msgstr ""
 
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag swallow tail"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag tail point height"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/escutcheon.cljs
+msgid "Flag tongue"
+msgstr ""
+
 #: src/heraldry/coat_of_arms/field/options.cljs
 msgid "Partition"
 msgstr ""
