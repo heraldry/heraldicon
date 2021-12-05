@@ -212,6 +212,7 @@
 
 (def charge-options-subscriptions
   #{[:type]
+    [:escutcheon]
     [:anchor :point]
     [:variant]
     [:data]
