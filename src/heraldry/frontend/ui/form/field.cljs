@@ -8,11 +8,11 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.validation :as validation]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 (macros/reg-event-db :override-field-part-reference
   (fn [db [_ path]]
@@ -152,7 +152,7 @@
                         (str "/svg/field-type-" (name field-type) "-unselected.svg"))
               :selected (static/static-url
                          (str "/svg/field-type-" (name field-type) "-selected.svg"))})
-     :validation @(rf/subscribe [:validate-field context])
+     :validation (validation/validate-field context)
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
                   :title (string "Change")

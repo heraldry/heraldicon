@@ -8,7 +8,8 @@
    [heraldry.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry.component/render-options [_context]
-  #{[:mode]
+  #{[:escutcheon]
+    [:mode]
     [:texture]})
 
 (defmethod interface/options :heraldry.component/render-options [context]

@@ -6,8 +6,8 @@
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.gettext :refer [string]]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.interface :as interface]
+   [heraldry.util :as util]))
 
 (def level-order
   {:error 0
@@ -26,46 +26,30 @@
     :error "#b30000"
     "#ccc"))
 
-(rf/reg-sub :field-tinctures-for-validation
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :type)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :tincture)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :fields 0 :type)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :fields 0 :tincture)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :fields 1 :type)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :fields 1 :tincture)])])
-
-  (fn [[field-type
-        tincture
-        subfield-1-type
-        subfield-1-tincture
-        subfield-2-type
-        subfield-2-tincture] [_ _context]]
-    (let [field-type (some-> field-type name keyword)
-          subfield-1-type (some-> subfield-1-type name keyword)
-          subfield-2-type (some-> subfield-2-type name keyword)]
-      (when field-type
-        (cond-> #{}
-          (= field-type :plain) (conj tincture)
-          (and (not= field-type :plain)
-               (= subfield-1-type :plain)
-               subfield-1-tincture) (conj subfield-1-tincture)
-          (and (not= field-type :plain)
-               (= subfield-2-type :plain)
-               subfield-2-tincture) (conj subfield-2-tincture)
-          ;; at least one of the subfields is not a plain field, but we'll stop here, only
-          ;; report that there's more with the magical :mixed tincture
-          (and (not= field-type :plain)
-               (or (not= subfield-1-type :plain)
-                   (not= subfield-2-type :plain))) (conj :mixed))))))
-
-(rf/reg-sub :fimbriation-tinctures-for-validation
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :tincture-1)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :tincture-2)])])
-
-  (fn [[tincture-1 tincture-2] [_ _context]]
-    [tincture-1 tincture-2]))
+(defn field-tinctures-for-validation [context]
+  (let [field-type (interface/get-sanitized-data (c/++ context :type))
+        tincture (interface/get-sanitized-data (c/++ context :tincture))
+        subfield-1-type (interface/get-sanitized-data (c/++ context :fields 0 :type))
+        subfield-1-tincture (interface/get-sanitized-data (c/++ context :fields 0 :tincture))
+        subfield-2-type (interface/get-sanitized-data (c/++ context :fields 1 :type))
+        subfield-2-tincture (interface/get-sanitized-data (c/++ context :fields 1 :tincture))
+        field-type (some-> field-type name keyword)
+        subfield-1-type (some-> subfield-1-type name keyword)
+        subfield-2-type (some-> subfield-2-type name keyword)]
+    (when field-type
+      (cond-> #{}
+        (= field-type :plain) (conj tincture)
+        (and (not= field-type :plain)
+             (= subfield-1-type :plain)
+             subfield-1-tincture) (conj subfield-1-tincture)
+        (and (not= field-type :plain)
+             (= subfield-2-type :plain)
+             subfield-2-tincture) (conj subfield-2-tincture)
+        ;; at least one of the subfields is not a plain field, but we'll stop here, only
+        ;; report that there's more with the magical :mixed tincture
+        (and (not= field-type :plain)
+             (or (not= subfield-1-type :plain)
+                 (not= subfield-2-type :plain))) (conj :mixed)))))
 
 (defn list-tinctures [tinctures]
   (->> tinctures
@@ -101,18 +85,12 @@
                                               (list-tinctures own-tinctures)
                                               (list-tinctures parent-tinctures))})))
 
-(rf/reg-sub :validate-tinctures
-  (fn [[_ field-context parent-field-context fimbriation-context] _]
-    [(rf/subscribe [:field-tinctures-for-validation field-context])
-     (rf/subscribe [:field-tinctures-for-validation parent-field-context])
-     (rf/subscribe [:fimbriation-tinctures-for-validation fimbriation-context])
-     (rf/subscribe [:heraldry.state/options fimbriation-context])])
-
-  (fn [[field-tinctures
-        parent-field-tinctures
-        [fimbriation-tincture-1
-         fimbriation-tincture-2]
-        fimbriation-options] [_ field-context _parent-field-context fimbriation-context]]
+(defn validate-tinctures [field-context parent-field-context fimbriation-context]
+  (let [field-tinctures (field-tinctures-for-validation field-context)
+        parent-field-tinctures (field-tinctures-for-validation parent-field-context)
+        fimbriation-tincture-1 (interface/get-sanitized-data (c/++ fimbriation-context :tincture-1))
+        fimbriation-tincture-2 (interface/get-sanitized-data (c/++ fimbriation-context :tincture-2))
+        fimbriation-options (interface/get-relevant-options fimbriation-context)]
     (when (or fimbriation-options
               (= (-> field-context :path drop-last)
                  (-> fimbriation-context :path drop-last)))
@@ -185,104 +163,88 @@
               (-> validation :which which-order)])
            validations))
 
-(rf/reg-sub :validate-ordinary
-  (fn [[_ context] _]
-    (let [field-context (c/++ context :field)
-          parent-field-context (c/-- context 2)]
-      [(rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :line :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :opposite-line :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :extra-line :fimbriation)])]))
-
-  (fn [[main-validation & other-validations] [_ _context]]
-    (let [fimbriated? (some (comp :fimbriated? first) other-validations)
-          ;; if any of the line validations had fimbriations, then use all of them, because
-          ;; each need to be validated on their own then, the main one doesn't matter anymore;
-          ;; if on other other hand none of the line ones had fimbriation, then only the main
-          ;; check is relevant
-          validations (->> (if fimbriated?
-                             other-validations
-                             [main-validation])
-                           (map second))]
-      (->> validations
-           (apply concat)
-           (filter identity)
-           sort-validations))))
+(defn validate-ordinary [context]
+  (let [field-context (c/++ context :field)
+        parent-field-context (c/-- context 2)
+        main-validation (validate-tinctures field-context parent-field-context (c/++ context :fimbriation))
+        other-validations [(validate-tinctures field-context parent-field-context (c/++ context :line :fimbriation))
+                           (validate-tinctures field-context parent-field-context (c/++ context :opposite-line :fimbriation))
+                           (validate-tinctures field-context parent-field-context (c/++ context :extra-line :fimbriation))]
+        fimbriated? (some (comp :fimbriated? first) other-validations)
+        ;; if any of the line validations had fimbriations, then use all of them, because
+        ;; each need to be validated on their own then, the main one doesn't matter anymore;
+        ;; if on other other hand none of the line ones had fimbriation, then only the main
+        ;; check is relevant
+        validations (->> (if fimbriated?
+                           other-validations
+                           [main-validation])
+                         (map second))]
+    (->> validations
+         (apply concat)
+         (filter identity)
+         sort-validations)))
 
 ;; TODO: probably a bug, this derefs subscriptions inside the subscription building function
-(rf/reg-sub :validate-charge
-  (fn [[_ context] _]
-    (let [field-context (c/++ context :field)
-          parent-semy-context (c/-- context)
-          parent-charge-group-context (c/-- context 2)
-          parent-type (some->
-                       (or
-                        @(rf/subscribe [:get (c/++ parent-semy-context :type)])
-                        @(rf/subscribe [:get (c/++ parent-charge-group-context :type)]))
-                       component/type->component-type)
-          parent-field-context (case parent-type
-                                 :heraldry.component/charge-group (c/-- parent-charge-group-context 2)
-                                 :heraldry.component/semy (c/-- parent-semy-context 2)
-                                 (c/-- context 2))]
-      (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :fimbriation)])))
-
-  (fn [main-validation [_ _context]]
+(defn validate-charge [context]
+  (let [field-context (c/++ context :field)
+        parent-semy-context (c/-- context)
+        parent-charge-group-context (c/-- context 2)
+        parent-type (some->
+                     (or
+                      (interface/get-raw-data (c/++ parent-semy-context :type))
+                      (interface/get-raw-data (c/++ parent-charge-group-context :type)))
+                     component/type->component-type)
+        parent-field-context (case parent-type
+                               :heraldry.component/charge-group (c/-- parent-charge-group-context 2)
+                               :heraldry.component/semy (c/-- parent-semy-context 2)
+                               (c/-- context 2))
+        main-validation (validate-tinctures field-context parent-field-context (c/++ context :fimbriation))]
     (sort-validations (second main-validation))))
 
-(rf/reg-sub :validate-cottise
-  (fn [[_ context] _]
-    (let [field-context (c/++ context :field)
-          parent-field-context (-> context
-                                   (c/-- 2)
-                                   (c/++ :field))]
-      [(rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :line :fimbriation)])
-       (rf/subscribe [:validate-tinctures field-context parent-field-context (c/++ context :opposite-line :fimbriation)])]))
+(defn validate-cottise [context]
+  (let [field-context (c/++ context :field)
+        parent-field-context (-> context
+                                 (c/-- 2)
+                                 (c/++ :field))
+        main-validation (validate-tinctures field-context parent-field-context (c/++ context :fimbriation))
+        other-validations [(validate-tinctures field-context parent-field-context (c/++ context :line :fimbriation))
+                           (validate-tinctures field-context parent-field-context (c/++ context :opposite-line :fimbriation))]
+        fimbriated? (some (comp :fimbriated? first) other-validations)
+        ;; if any of the line validations had fimbriations, then use all of them, because
+        ;; each need to be validated on their own then, the main one doesn't matter anymore;
+        ;; if on other other hand none of the line ones had fimbriation, then only the main
+        ;; check is relevant
+        validations (->> (if fimbriated?
+                           other-validations
+                           [main-validation])
+                         (map second))]
+    (->> validations
+         (apply concat)
+         (filter identity)
+         sort-validations)))
 
-  (fn [[main-validation & other-validations] [_ _context]]
-    (let [fimbriated? (some (comp :fimbriated? first) other-validations)
-          ;; if any of the line validations had fimbriations, then use all of them, because
-          ;; each need to be validated on their own then, the main one doesn't matter anymore;
-          ;; if on other other hand none of the line ones had fimbriation, then only the main
-          ;; check is relevant
-          validations (->> (if fimbriated?
-                             other-validations
-                             [main-validation])
-                           (map second))]
-      (->> validations
-           (apply concat)
-           (filter identity)
-           sort-validations))))
+(defn  validate-field [context]
+  (let [field-type (-> (interface/get-raw-data (c/++ context :type)) name keyword)
+        num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
+        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))]
+    (cond-> []
+      (and (= field-type :paly)
+           (odd? num-fields-x)) (conj {:level :warning
+                                       :message (string "Paly should have an even number of fields, for an odd number use pales.")})
+      (and (= field-type :barry)
+           (odd? num-fields-y)) (conj {:level :warning
+                                       :message (string "Barry should have an even number of fields, for an odd number use bars.")})
+      (and (#{:bendy :bendy-sinister} field-type)
+           (odd? num-fields-y)) (conj {:level :warning
+                                       :message (string "Bendy should have an even number of fields, for an odd number use bends.")}))))
 
-(rf/reg-sub :validate-field
-  (fn [[_ context] _]
-    [(rf/subscribe [:get (c/++ context :type)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :layout :num-fields-x)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :layout :num-fields-y)])])
-
-  (fn [[field-type num-fields-x num-fields-y] [_ _context]]
-    (let [field-type (-> field-type name keyword)]
-      (cond-> []
-        (and (= field-type :paly)
-             (odd? num-fields-x)) (conj {:level :warning
-                                         :message (string "Paly should have an even number of fields, for an odd number use pales.")})
-        (and (= field-type :barry)
-             (odd? num-fields-y)) (conj {:level :warning
-                                         :message (string "Barry should have an even number of fields, for an odd number use bars.")})
-        (and (#{:bendy :bendy-sinister} field-type)
-             (odd? num-fields-y)) (conj {:level :warning
-                                         :message (string "Bendy should have an even number of fields, for an odd number use bends.")})))))
-
-(rf/reg-sub :validate-attribution
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :nature)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-license)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-name)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-link)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-creator-name)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :source-creator-link)])])
-
-  (fn [[nature & source-fields] [_ _context]]
+(defn validate-attribution [context]
+  (let [nature (interface/get-sanitized-data (c/++ context :nature))
+        source-fields [(interface/get-sanitized-data (c/++ context :source-license))
+                       (interface/get-sanitized-data (c/++ context :source-name))
+                       (interface/get-sanitized-data (c/++ context :source-link))
+                       (interface/get-sanitized-data (c/++ context :source-creator-name))
+                       (interface/get-sanitized-data (c/++ context :source-creator-link))]]
     (when (and (= nature :derivative)
                (seq (filter (fn [value]
                               (if (keyword? value)
@@ -291,56 +253,37 @@
       [{:level :error
         :message (string "All source fields required for derivative work.")}])))
 
-(rf/reg-sub :validate-is-public
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :is-public)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :attribution :license)])])
-
-  (fn [[is-public license] [_ _context]]
+(defn validate-is-public [context]
+  (let [is-public (interface/get-sanitized-data (c/++ context :is-public))
+        license (interface/get-sanitized-data (c/++ context :attribution :license))]
     (when (and is-public (= license :none))
       [{:level :error
         :message (string "License required for public objects.")}])))
 
-(rf/reg-sub :validate-arms-general
-  (fn [[_ context] _]
-    [(rf/subscribe [:validate-is-public context])
-     (rf/subscribe [:validate-attribution (c/++ context :attribution)])])
-
-  (fn [[is-public
-        attribution] [_ _context]]
+(defn validate-arms-general [context]
+  (let [is-public (validate-is-public context)
+        attribution (validate-attribution (c/++ context :attribution))]
     (concat
      is-public
      attribution)))
 
-(rf/reg-sub :validate-charge-general
-  (fn [[_ context] _]
-    [(rf/subscribe [:validate-is-public context])
-     (rf/subscribe [:validate-attribution (c/++ context :attribution)])])
-
-  (fn [[is-public
-        attribution] [_ _context]]
+(defn validate-charge-general [context]
+  (let [is-public (validate-is-public context)
+        attribution (validate-attribution (c/++ context :attribution))]
     (concat
      is-public
      attribution)))
 
-(rf/reg-sub :validate-collection-general
-  (fn [[_ context] _]
-    [(rf/subscribe [:validate-is-public context])
-     (rf/subscribe [:validate-attribution (c/++ context :attribution)])])
-
-  (fn [[is-public
-        attribution] [_ _context]]
+(defn validate-collection-general [context]
+  (let [is-public (validate-is-public context)
+        attribution (validate-attribution (c/++ context :attribution))]
     (concat
      is-public
      attribution)))
 
-(rf/reg-sub :validate-ribbon-general
-  (fn [[_ context] _]
-    [(rf/subscribe [:validate-is-public context])
-     (rf/subscribe [:validate-attribution (c/++ context :attribution)])])
-
-  (fn [[is-public
-        attribution] [_ _context]]
+(defn validate-ribbon-general [context]
+  (let [is-public (validate-is-public context)
+        attribution (validate-attribution (c/++ context :attribution))]
     (concat
      is-public
      attribution)))

@@ -1,8 +1,8 @@
 (ns heraldry.frontend.ui.form.arms-general
   (:require
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
-   [re-frame.core :as rf]))
+   [heraldry.frontend.validation :as validation]
+   [heraldry.gettext :refer [string]]))
 
 (defn form [context]
   [:<>
@@ -17,7 +17,7 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/arms-general [context]
   {:title (string "General")
-   :validation @(rf/subscribe [:validate-arms-general context])})
+   :validation (validation/validate-arms-general context)})
 
 (defmethod ui-interface/component-form-data :heraldry.component/arms-general [_context]
   {:form form})

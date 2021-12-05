@@ -17,6 +17,7 @@
    [heraldry.frontend.ui.shared :as shared]
    [heraldry.frontend.user :as user]
    [heraldry.gettext :refer [string]]
+   [heraldry.interface :as interface]
    [heraldry.render :as render]
    [heraldry.util :as util :refer [id-for-url]]
    [re-frame.core :as rf]
@@ -121,7 +122,7 @@
                                [:arms-references arms-id version]
                                [arms-id version]
                                #(arms-select/fetch-arms arms-id version nil)))
-        collection-render-options @(rf/subscribe [:heraldry.state/sanitized-data {:path (conj form-db-path :render-options)}])
+        collection-render-options (interface/get-sanitized-data {:path (conj form-db-path :render-options)})
         {:keys [result
                 environment]} (render/coat-of-arms
                                (-> shared/coa-select-option-context
@@ -154,10 +155,10 @@
   (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :collection :elements index)]))
 
 (defn render-collection [& {:keys [allow-adding?]}]
-  (let [font (some-> @(rf/subscribe [:get (conj form-db-path :font)])
+  (let [font (some-> (interface/get-raw-data {:path (conj form-db-path :font)})
                      font/css-string)
-        num-columns @(rf/subscribe [:heraldry.state/sanitized-data {:path (conj form-db-path :collection :num-columns)}])
-        num-elements @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)])
+        num-columns (interface/get-sanitized-data {:path (conj form-db-path :collection :num-columns)})
+        num-elements (interface/get-list-size {:path (conj form-db-path :collection :elements)})
         name @(rf/subscribe [:get (conj form-db-path :name)])
         num-rows (inc (quot num-elements
                             num-columns))
@@ -232,7 +233,7 @@
                                 [:arms-references arms-id version]
                                 [arms-id version]
                                 #(arms-select/fetch-arms arms-id version nil)))
-          collection-render-options @(rf/subscribe [:heraldry.state/sanitized-data {:path (conj form-db-path :render-options)}])]
+          collection-render-options (interface/get-sanitized-data {:path (conj form-db-path :render-options)})]
       (when (or (not arms-id)
                 (= status :done))
         (let [{:keys [result

@@ -1,7 +1,6 @@
 (ns heraldry.frontend.ui.element.attribution
   (:require
    [heraldry.attribution :as attribution]
-   [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
@@ -12,20 +11,14 @@
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
-(rf/reg-sub :attribution-submenu-link-name
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/sanitized-data (c/++ context :nature)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :license)])
-     (rf/subscribe [:heraldry.state/sanitized-data (c/++ context :license-version)])])
-
-  (fn [[nature license license-version] [_ _path]]
-    (let [main-name (attribution/nature-map nature)
-          changes [main-name
-                   (if (= license :none)
-                     (string "no license")
-                     (attribution/license-display-name license license-version))]]
-      (-> (util/combine ", " changes)
-          util/upper-case-first))))
+(defn submenu-link-name [{:keys [nature license license-version]}]
+  (let [main-name (attribution/nature-map nature)
+        changes [main-name
+                 (if (= license :none)
+                   (string "no license")
+                   (attribution/license-display-name license license-version))]]
+    (-> (util/combine ", " changes)
+        util/upper-case-first)))
 
 (macros/reg-event-db :merge-attribution
   (fn [db [_ path data]]
@@ -35,7 +28,7 @@
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:attribution-submenu-link-name context])]
+          link-name (submenu-link-name (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])

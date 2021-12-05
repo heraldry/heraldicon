@@ -7,39 +7,33 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 ;; TODO: likely can be further improved by reading out the various description strings
 ;; in separate subscriptions
-(rf/reg-sub :line-submenu-link-name
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/options context])
-     (rf/subscribe [:heraldry.state/sanitized-data context])])
-
-  (fn [[options line] [_ _path]]
-    (let [changes [(-> line :type line/line-map)
-                   (when (some #(options/changed? % line options)
-                               [:eccentricity :spacing :offset :base-line])
-                     (string "adjusted"))
-                   (when (some #(options/changed? % line options)
-                               [:width :height])
-                     (string "resized"))
-                   (when (:mirrored? line)
-                     (string "mirrored"))
-                   (when (:flipped? line)
-                     (string "flipped"))
-                   (when (and (-> line :fimbriation :mode)
-                              (-> line :fimbriation :mode (not= :none)))
-                     (string "fimbriated"))]]
-      (-> (util/combine ", " changes)
-          util/upper-case-first))))
+(defn submenu-link-name[options line]
+  (let [changes [(-> line :type line/line-map)
+                 (when (some #(options/changed? % line options)
+                             [:eccentricity :spacing :offset :base-line])
+                   (string "adjusted"))
+                 (when (some #(options/changed? % line options)
+                             [:width :height])
+                   (string "resized"))
+                 (when (:mirrored? line)
+                   (string "mirrored"))
+                 (when (:flipped? line)
+                   (string "flipped"))
+                 (when (and (-> line :fimbriation :mode)
+                            (-> line :fimbriation :mode (not= :none)))
+                   (string "fimbriated"))]]
+    (-> (util/combine ", " changes)
+        util/upper-case-first)))
 
 (defn line-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:line-submenu-link-name context])]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])

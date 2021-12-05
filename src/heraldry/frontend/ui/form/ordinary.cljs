@@ -7,6 +7,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.form.cottise :as cottise]
    [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.validation :as validation]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
@@ -140,7 +141,7 @@
                       (str "/svg/ordinary-type-" (name ordinary-type) "-unselected.svg"))
             :selected (static/static-url
                        (str "/svg/ordinary-type-" (name ordinary-type) "-selected.svg"))}
-     :validation @(rf/subscribe [:validate-ordinary context])
+     :validation (validation/validate-ordinary context)
      :buttons [{:icon "fas fa-plus"
                 :title (string "Add")
                 :disabled? (empty? menu)

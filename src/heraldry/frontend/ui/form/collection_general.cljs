@@ -2,8 +2,8 @@
   (:require
    [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
-   [re-frame.core :as rf]))
+   [heraldry.frontend.validation :as validation]
+   [heraldry.gettext :refer [string]]))
 
 (defn form [context]
   [:<>
@@ -20,7 +20,7 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/collection-general [context]
   {:title (string "General")
-   :validation @(rf/subscribe [:validate-collection-general context])})
+   :validation (validation/validate-collection-general context)})
 
 (defmethod ui-interface/component-form-data :heraldry.component/collection-general [_context]
   {:form form})

@@ -3,8 +3,8 @@
    [heraldry.context :as c]
    [heraldry.frontend.ui.element.checkbox :as checkbox]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
-   [re-frame.core :as rf]))
+   [heraldry.frontend.validation :as validation]
+   [heraldry.gettext :refer [string]]))
 
 (defn form [context]
   [:<>
@@ -27,7 +27,7 @@
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge-general [context]
   {:title (string "General")
-   :validation @(rf/subscribe [:validate-charge-general context])})
+   :validation (validation/validate-charge-general context)})
 
 (defmethod ui-interface/component-form-data :heraldry.component/charge-general [_context]
   {:form form})

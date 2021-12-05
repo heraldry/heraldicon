@@ -6,40 +6,34 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 ;; TODO: probably can be improved with better subscriptions
-(rf/reg-sub :geometry-submenu-link-name
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/options context])
-     (rf/subscribe [:heraldry.state/sanitized-data context])])
-
-  (fn [[options geometry] [_ _path]]
-    (let [changes (concat
-                   (when (some #(options/changed? % geometry options)
-                               [:size :width :height :thickness])
-                     [(string "resized")])
-                   (when (some #(options/changed? % geometry options)
-                               [:eccentricity])
-                     [(string "adjusted")])
-                   (when (some #(options/changed? % geometry options)
-                               [:stretch])
-                     [(string "stretched")])
-                   (when (:mirrored? geometry)
-                     [(string "mirrored")])
-                   (when (:reversed? geometry)
-                     [(string "reversed")]))]
-      (if (seq changes)
-        (-> (util/combine ", " changes)
-            util/upper-case-first)
-        "Default"))))
+(defn submenu-link-name [options geometry]
+  (let [changes (concat
+                 (when (some #(options/changed? % geometry options)
+                             [:size :width :height :thickness])
+                   [(string "resized")])
+                 (when (some #(options/changed? % geometry options)
+                             [:eccentricity])
+                   [(string "adjusted")])
+                 (when (some #(options/changed? % geometry options)
+                             [:stretch])
+                   [(string "stretched")])
+                 (when (:mirrored? geometry)
+                   [(string "mirrored")])
+                 (when (:reversed? geometry)
+                   [(string "reversed")]))]
+    (if (seq changes)
+      (-> (util/combine ", " changes)
+          util/upper-case-first)
+      "Default")))
 
 (defn geometry-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:geometry-submenu-link-name context])]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])

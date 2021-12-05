@@ -7,46 +7,40 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]))
 
 ;; TODO: can probably be improved with better subscriptions
-(rf/reg-sub :fimbriation-submenu-link-name
-  (fn [[_ context] _]
-    [(rf/subscribe [:heraldry.state/options context])
-     (rf/subscribe [:heraldry.state/sanitized-data context])])
+(defn submenu-link-name [options fimbriation]
+  (let [main-name (case (:mode fimbriation)
+                    :none (string "None")
+                    :single (util/str-tr (-> fimbriation
+                                             :tincture-1
+                                             tincture/translate-tincture
+                                             util/upper-case-first))
+                    :double (util/str-tr (-> fimbriation
+                                             :tincture-1
+                                             tincture/translate-tincture
+                                             util/upper-case-first)
+                                         " "
+                                         (string "and")
+                                         " "
+                                         (-> fimbriation
+                                             :tincture-2
+                                             tincture/translate-tincture
+                                             util/upper-case-first)))
+        changes [main-name
+                 (when (some #(options/changed? % fimbriation options)
+                             [:alignment :thickness-1 :thickness-2])
+                   (string "adjusted"))]]
 
-  (fn [[options fimbriation] [_ _context]]
-    (let [main-name (case (:mode fimbriation)
-                      :none (string "None")
-                      :single (util/str-tr (-> fimbriation
-                                               :tincture-1
-                                               tincture/translate-tincture
-                                               util/upper-case-first))
-                      :double (util/str-tr (-> fimbriation
-                                               :tincture-1
-                                               tincture/translate-tincture
-                                               util/upper-case-first)
-                                           " "
-                                           (string "and")
-                                           " "
-                                           (-> fimbriation
-                                               :tincture-2
-                                               tincture/translate-tincture
-                                               util/upper-case-first)))
-          changes [main-name
-                   (when (some #(options/changed? % fimbriation options)
-                               [:alignment :thickness-1 :thickness-2])
-                     (string "adjusted"))]]
-
-      (-> (util/combine ", " changes)
-          util/upper-case-first))))
+    (-> (util/combine ", " changes)
+        util/upper-case-first)))
 
 (defn fimbriation-submenu [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:fimbriation-submenu-link-name context])]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
