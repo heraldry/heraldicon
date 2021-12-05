@@ -57,7 +57,7 @@
                                             :ui {:label (string "Corners")}}
                                    :thickness-1 {:type :range
                                                  :min 1
-                                                 :max 10
+                                                 :max 30
                                                  :default 6
                                                  :ui {:label (string "Thickness")
                                                       :step 0.01}}
@@ -69,7 +69,7 @@
                                    )
           (= mode :double) (assoc :thickness-2 {:type :range
                                                 :min 1
-                                                :max 10
+                                                :max 30
                                                 :default 3
                                                 :ui {:label (util/str-tr (string "Thickness") " 2")
                                                      :step 0.01}}
