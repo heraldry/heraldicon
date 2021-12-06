@@ -321,10 +321,10 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-clj-kondo@^2021.10.19:
-  version "2021.10.19"
-  resolved "https://registry.yarnpkg.com/clj-kondo/-/clj-kondo-2021.10.19.tgz#80d50add703e842fe7d9c6b943d7c33884ed27ca"
-  integrity sha512-8si9sCWj+MpWCkKyJiStmJI5p+yPMd7TEMHRaNlPXply8iH5axbrBIYJtdRkU6XD3oEB7bcr1yA/689oqT3ygA==
+clj-kondo@^2021.12.1:
+  version "2021.12.1"
+  resolved "https://registry.yarnpkg.com/clj-kondo/-/clj-kondo-2021.12.1.tgz#6222e0e92c3403cb081ad3dc1a29c727e91202e5"
+  integrity sha512-CPmDP1l69KdnZeqa1uYxCvjBknUyeoGv+6SENuk2hGFd6cbxvUVLxg1oc2ndaSe1eNhKK0q4KNtDY6xpYhF3ZA==
   dependencies:
     binwrap "^0.2.2"
     request "^2.88.0"
@@ -1081,10 +1081,10 @@ json-schema-traverse@^0.4.1:
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
   integrity sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==
 
-json-schema@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.2.3.tgz#b480c892e59a2f05954ce727bd3f2a4e882f9e13"
-  integrity sha1-tIDIkuWaLwWVTOcnvT8qTogvnhM=
+json-schema@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.4.0.tgz#f7de4cf6efab838ebaeb3236474cbba5a1930ab5"
+  integrity sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==
 
 json-stringify-safe@~5.0.1:
   version "5.0.1"
@@ -1092,13 +1092,13 @@ json-stringify-safe@~5.0.1:
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
 
 jsprim@^1.2.2:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/jsprim/-/jsprim-1.4.1.tgz#313e66bc1e5cc06e438bc1b7499c2e5c56acb6a2"
-  integrity sha1-MT5mvB5cwG5Di8G3SZwuXFastqI=
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/jsprim/-/jsprim-1.4.2.tgz#712c65533a15c878ba59e9ed5f0e26d5b77c5feb"
+  integrity sha512-P2bSOMAc/ciLz6DzgjVlGJP9+BrJWu5UDGK70C2iweC5QBIeFf0ZXRvGjEj2uYgrY2MkAAhsSWHDWlFtEroZWw==
   dependencies:
     assert-plus "1.0.0"
     extsprintf "1.3.0"
-    json-schema "0.2.3"
+    json-schema "0.4.0"
     verror "1.10.0"
 
 levn@~0.3.0:
@@ -1148,24 +1148,12 @@ miller-rabin@^4.0.0:
     bn.js "^4.0.0"
     brorand "^1.0.1"
 
-mime-db@1.47.0:
-  version "1.47.0"
-  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.47.0.tgz#8cb313e59965d3c05cfbf898915a267af46a335c"
-  integrity sha512-QBmA/G2y+IfeS4oktet3qRZ+P5kPhCKRXxXnQEudYqUaEioAU1/Lq2us3D/t1Jfo4hE9REQPrbB7K5sOczJVIw==
-
 mime-db@1.51.0:
   version "1.51.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.51.0.tgz#d9ff62451859b18342d960850dc3cfb77e63fb0c"
   integrity sha512-5y8A56jg7XVQx2mbv1lu49NR4dokRnhZYTtL+KGfaa27uq4pSTXkwQkFJl4pkRMyNFz/EtYDSkiiEHx3F7UN6g==
 
-mime-types@^2.1.12:
-  version "2.1.30"
-  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.30.tgz#6e7be8b4c479825f85ed6326695db73f9305d62d"
-  integrity sha512-crmjA4bLtR8m9qLpHvgxSChT+XoSlZi8J4n/aIdn3z92e/U47Z0V/yl+Wh9W046GgFVAmoNR/fmdbZYcSSIUeg==
-  dependencies:
-    mime-db "1.47.0"
-
-mime-types@~2.1.19:
+mime-types@^2.1.12, mime-types@~2.1.19:
   version "2.1.34"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.34.tgz#5a712f9ec1503511a945803640fafe09d3793c24"
   integrity sha512-6cP692WwGIs9XXdOO4++N+7qjqv0rqxxVvJ3VHPh/Sc9mVZcQP+ZGhkKiTvWMQRr2tbHkJP/Yn7Y0npb3ZBs4A==
