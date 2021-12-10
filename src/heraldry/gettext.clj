@@ -10,7 +10,7 @@
 (defn gettext-do-scan! []
   (pottery/scan-codebase!
    {:dir "src"
-    :template-file (io/file "gettext/template.pot")
+    :template-file (io/file "gettext/template.po")
     :extract-fn (pottery/make-extractor
                  ['string (s :guard string?)] s
                  [(:or 'string) & _] (pottery-scan/extraction-warning

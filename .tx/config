@@ -3,7 +3,7 @@ host = https://www.transifex.com
 
 [o:heraldry-digital:p:armory:r:translation]
 file_filter  = gettext/<lang>.po
-source_file  = gettext/template.pot
-type         = POT
+source_file  = gettext/template.po
+type         = PO
 minimum_perc = 0
 
