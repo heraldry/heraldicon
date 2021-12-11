@@ -1,16 +1,21 @@
+#
+# Translators:
+# Oliver <oliver.runge@gmail.com>, 2021
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: heraldry/armory\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"Last-Translator: Oliver <oliver.runge@gmail.com>, 2021\n"
+"Language-Team: German (Germany) (https://www.transifex.com/heraldry-digital/"
+"teams/128463/de_DE/)\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: src/heraldry/attribution.cljs
 msgid "CC Attribution"
@@ -3125,6 +3130,18 @@ msgstr ""
 msgid "License required for public objects."
 msgstr "Lizenz benötigt für öffentliche Objekte."
 
+#: src/heraldry/gettext.cljs
+msgid "English"
+msgstr "Englisch"
+
+#: src/heraldry/gettext.cljs
+msgid "German"
+msgstr "Deutsch"
+
+#: src/heraldry/gettext.cljs
+msgid "Russian"
+msgstr "Russisch"
+
 #: src/heraldry/frontend/ui/form/motto.cljs
 #: src/heraldry/frontend/ui/form/ornaments.cljs src/heraldry/motto.cljs
 msgid "Motto"
@@ -3522,97 +3539,3 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
-
-#~ msgid "Flag (3:2)"
-#~ msgstr "Flagge (3:2)"
-
-#~ msgid "Flag (2:1)"
-#~ msgstr "Flagge (2:1)"
-
-#~ msgid "Flag (5:3)"
-#~ msgstr "Flagge (5:3)"
-
-#~ msgid "Infos"
-#~ msgstr "I"
-
-#~ msgid ""
-#~ "Segments can be background, foreground, or foreground with text and their "
-#~ "rendering order is determined by the layer number"
-#~ msgstr ""
-#~ "Segmente können Vorderseite oder Rückseite oder Vorderseite mit Text "
-#~ "repräsentieren, und ihrer Render-Reihenfolge wird durch die Layer-Zahl "
-#~ "angegeben.\n"
-#~ "\n"
-#~ "Note: wende die Vorauswahl an nachdem sich die Anzahl der Segmente in der "
-#~ "Kurve ändert. Das überschreibt die Änderungen hier, aber im Mo"
-
-#~ msgid ""
-#~ "Fimbriation metal tincture (%s) touching metal field (%s) breaks rule of "
-#~ "tincture."
-#~ msgstr ""
-#~ "Metall-Säumung (%s) berührt Metall-Feld (%s), verletzt Tingierungsregel."
-
-#~ msgid ""
-#~ "Fimbriation colour tincture (%s) touching colour field (%s) breaks rule "
-#~ "of tincture."
-#~ msgstr ""
-#~ "Farb-Säumung (%s) berührt Farb-Feld (%s), verletzt Tingierungsregel."
-
-#~ msgid "field"
-#~ msgstr "Feld"
-
-#~ msgid "on"
-#~ msgstr "auf"
-
-#~ msgid "breaks rule of tincture."
-#~ msgstr "bricht Tingierungsregel."
-
-#~ msgid "Fimbriation metal tincture ("
-#~ msgstr "Säumung Metall-Tinktur ("
-
-#~ msgid ") touches metal field ("
-#~ msgstr ") berührt Metall-Feld ("
-
-#~ msgid "Fimbriation colour tincture ("
-#~ msgstr "Säumung Farb-Tinktur ("
-
-#~ msgid ") touches colour field ("
-#~ msgstr ") berührt Farb-Feld ("
-
-#~ msgid "New password:"
-#~ msgstr "Neues Passwort"
-
-#~ msgid "The project is on"
-#~ msgstr "Das Projekt ist hier:"
-
-#~ msgid "if you want to get involved in some way."
-#~ msgstr "falls du in irgendeiner Weise mithelfen möchtest."
-
-#~ msgid "Label"
-#~ msgstr "Turnierkragen"
-
-#~ msgid "Fess"
-#~ msgstr "Balken"
-
-#~ msgid "Chief"
-#~ msgstr "Schildhaupt"
-
-#~ msgid "Base"
-#~ msgstr "Schildfuß"
-
-#~ msgid "Nombril"
-#~ msgstr "Fersenstelle"
-
-#, fuzzy
-#~| msgid "Opposite line"
-#~ msgid "Opposite ine"
-#~ msgstr "Gegenlinie"
-
-#~ msgid "3.0"
-#~ msgstr "3.0"
-
-#~ msgid "2.5"
-#~ msgstr "2.5"
-
-#~ msgid "2.0"
-#~ msgstr "2.0"
