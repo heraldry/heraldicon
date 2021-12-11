@@ -7,6 +7,7 @@
    [goog.crypt :as crypt]
    [goog.crypt.base64 :as b64]
    [heraldry.config :as config]
+   [heraldry.gettext :refer [known-languages]]
    [taoensso.timbre :as log]))
 
 (def -current-id
@@ -196,7 +197,8 @@
       upper-case-first))
 
 (defn combine [separator words]
-  (let [translated (->> [:en :de]
+  (let [translated (->> known-languages
+                        keys
                         (map (fn [language]
                                [language
                                 (->> words
@@ -219,7 +221,8 @@
       translated)))
 
 (defn str-tr [& strs]
-  (let [translated (->> [:en :de]
+  (let [translated (->> known-languages
+                        keys
                         (map (fn [language]
                                [language
                                 (->> strs
