@@ -2132,6 +2132,23 @@ msgstr "Ich kann hier gefunden werden"
 msgid "my username is"
 msgstr "mein Nutzername ist"
 
+#: src/heraldry/frontend/contact.cljs
+msgid "Translation"
+msgstr "Übersetzung"
+
+#: src/heraldry/frontend/contact.cljs
+msgid ""
+"Not all strings have been translated yet. If you want to help out or correct "
+"something, or want to add your own language, then reach out on Discord or the"
+msgstr ""
+"Nicht alle Texte sind übersetzt. Wenn du mithelfen, etwas korrigieren oder "
+"deine eigene Sprache hinzufügen möchtest, dann komm bei Discord vorbei oder "
+"direkt beim"
+
+#: src/heraldry/frontend/contact.cljs
+msgid "transifex project"
+msgstr "transifex Projekt"
+
 #: src/heraldry/frontend/filter.cljs
 msgid "Mine only"
 msgstr "Nur meine"

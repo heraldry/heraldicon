@@ -31,4 +31,11 @@
      :allowtransparency "true",
      :height "500",
      :width "350",
-     :src "https://discord.com/widget?id=847884812836012072&theme=dark"}]])
+     :src "https://discord.com/widget?id=847884812836012072&theme=dark"}]
+   [:h2 [tr (string "Translation")]]
+   [:p
+    [tr (string "Not all strings have been translated yet. If you want to help out or correct something, or want to add your own language, then reach out on Discord or the")]
+    " "
+    [:a {:href "https://www.transifex.com/heraldry-digital/armory/" :target "_blank"}
+     [tr (string "transifex project")]]
+    "."]])

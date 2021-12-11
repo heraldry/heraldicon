@@ -1602,6 +1602,18 @@ msgstr ""
 msgid "my username is"
 msgstr ""
 
+#: src/heraldry/frontend/contact.cljs
+msgid "Translation"
+msgstr ""
+
+#: src/heraldry/frontend/contact.cljs
+msgid "Not all strings have been translated yet. If you want to help out or correct something, or want to add your own language, then reach out on Discord or the"
+msgstr ""
+
+#: src/heraldry/frontend/contact.cljs
+msgid "transifex project"
+msgstr ""
+
 #: src/heraldry/frontend/filter.cljs
 msgid "Mine only"
 msgstr ""
