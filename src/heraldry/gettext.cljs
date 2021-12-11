@@ -4,7 +4,7 @@
   (:require-macros [heraldry.gettext :refer [inline-dict]]))
 
 (def DICT
-  {:de (inline-dict "de_DE.po")
+  {:de (inline-dict "de.po")
    :ru (inline-dict "ru.po")})
 
 (defn string [s]
