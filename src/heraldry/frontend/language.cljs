@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
-   [heraldry.static :as static]
+   [heraldry.gettext :refer [known-languages]]
    [heraldry.util :as util]
    [hodgepodge.core :refer [get-item local-storage set-item]]
    [re-frame.core :as rf]))
@@ -16,10 +16,6 @@
 
 (def local-storage-language-name
   "hd-language")
-
-(def known-languages
-  {:en (static/static-url "/img/flag-united-kingdom.svg")
-   :de (static/static-url "/img/flag-germany.svg")})
 
 (defn store-language-setting [language]
   (set-item local-storage local-storage-language-name language))
@@ -47,12 +43,24 @@
                             (s/starts-with? loaded-language ":") (-> (subs 1) keyword))]
       (set-language db loaded-language))))
 
+(defn tr [data]
+  (when data
+    (util/tr-raw data @(rf/subscribe [::selected-language]))))
+
 (defn language-flag [language-code & {:keys [on-click]}]
-  [:img {:src (get known-languages language-code)
-         :on-click on-click
-         :style {:width "2em"
-                 :filter "drop-shadow(0 0 5px #888)";
-                 :vertical-align "middle"}}])
+  (let [[title img-url] (get known-languages language-code)
+        img [:img {:src img-url
+                   :on-click on-click
+                   :style {:width "2em"
+                           :filter "drop-shadow(0 0 5px #888)";
+                           :vertical-align "middle"}}]]
+    (if on-click
+      [:div.tooltip
+       img
+       [:div.bottom
+        [:center [tr title]]
+        [:i]]]
+      img)))
 
 (defn selector []
   [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
@@ -79,7 +87,3 @@
           [language-flag language-code
            :on-click #(state/dispatch-on-event-and-prevent-default
                        % [::set-language language-code])]]]))]]])
-
-(defn tr [data]
-  (when data
-    (util/tr-raw data @(rf/subscribe [::selected-language]))))

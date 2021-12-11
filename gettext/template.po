@@ -2406,6 +2406,18 @@ msgstr ""
 msgid "License required for public objects."
 msgstr ""
 
+#: src/heraldry/gettext.cljs
+msgid "English"
+msgstr ""
+
+#: src/heraldry/gettext.cljs
+msgid "German"
+msgstr ""
+
+#: src/heraldry/gettext.cljs
+msgid "Russian"
+msgstr ""
+
 #: src/heraldry/frontend/ui/form/motto.cljs src/heraldry/frontend/ui/form/ornaments.cljs src/heraldry/motto.cljs
 msgid "Motto"
 msgstr ""
