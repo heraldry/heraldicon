@@ -1,4 +1,4 @@
-(ns heraldry.coat-of-arms.metadata
+(ns heraldry.svg.metadata
   (:require
    [heraldry.attribution :as attribution]
    [heraldry.context :as c]
