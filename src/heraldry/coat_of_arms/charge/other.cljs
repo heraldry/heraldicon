@@ -9,7 +9,6 @@
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.field.shared :as field-shared]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-   [heraldry.coat-of-arms.metadata :as metadata]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.colour :as colour]
@@ -20,6 +19,7 @@
    [heraldry.math.svg.core :as svg]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
+   [heraldry.svg.metadata :as svg-metadata]
    [heraldry.util :as util]))
 
 (defmethod interface/options :heraldry.charge.type/other [context]
@@ -596,7 +596,7 @@
                    landscape?) unadjusted-charge
                highlight-colours? adjusted-charge
                :else [:g
-                      [metadata/attribution
+                      [svg-metadata/attribution
                        {:path [:context :charge-data]
                         :charge-data full-charge-data}
                        :charge]
