@@ -31,7 +31,8 @@
 
 (rf/reg-event-db ::add-metadata
   (fn [db [_ context name value]]
-    (let [name (util/sanitize-string name)]
+    (let [name (util/sanitize-string name)
+          value (util/sanitize-string value)]
       (update-in db (:path context) (fn [metadata]
                                       (-> metadata
                                           (remove-metadata-name name)
