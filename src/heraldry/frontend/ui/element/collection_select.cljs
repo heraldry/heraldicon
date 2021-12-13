@@ -64,7 +64,7 @@
      :collection-list
      user-data
      collection-list
-     [:name :username :tags]
+     [:name :username :metadata :tags]
      (fn [& {:keys [items]}]
        [:ul.collection-list
         (doall
