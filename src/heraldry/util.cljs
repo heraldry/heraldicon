@@ -287,3 +287,20 @@
 
 (defn index-of [item coll]
   (count (take-while (partial not= item) coll)))
+
+(defn sanitize-string [data]
+  (-> data
+      (or "")
+      (s/replace #"  *" " ")
+      s/trim))
+
+(defn sanitize-keyword [data]
+  (-> (if (keyword? data)
+        (name data)
+        data)
+      sanitize-string
+      s/lower-case
+      (s/replace #"[^a-z-]" "-")
+      (s/replace #"^--*" "")
+      (s/replace #"--*$" "")
+      keyword))
