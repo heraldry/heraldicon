@@ -9,8 +9,8 @@
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.metadata :as metadata]
-   [re-frame.core :as rf]
-   [heraldry.util :as util]))
+   [heraldry.util :as util]
+   [re-frame.core :as rf]))
 
 (def name-path [:ui :metadata :new-name])
 (def value-path [:ui :metadata :new-value])
@@ -40,7 +40,9 @@
 (defn on-add [context]
   (let [name (interface/get-raw-data {:path name-path})
         value (interface/get-raw-data {:path value-path})]
-    (rf/dispatch [::add-metadata context name value])))
+    (rf/dispatch-sync [::add-metadata context name value])
+    (rf/dispatch-sync [:set name-path ""])
+    (rf/dispatch-sync [:set value-path ""])))
 
 (rf/reg-event-db ::remove-metadata
   (fn [db [_ context name]]
