@@ -224,7 +224,7 @@
      :charge-list
      user-data
      charge-list
-     [:name :type :attitude :facing :attributes :colours :username]
+     [:name :type :attitude :facing :attributes :colours :username :metadata :tags]
      (fn [& {:keys [items filtered?]}]
        [:div.tree
         [tree-for-charge-map

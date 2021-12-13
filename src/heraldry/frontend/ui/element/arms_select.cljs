@@ -64,7 +64,7 @@
      :arms-list
      user-data
      arms-list
-     [:name :username :tags]
+     [:name :username :metadata :tags]
      (fn [& {:keys [items]}]
        [:ul.arms-list
         (doall

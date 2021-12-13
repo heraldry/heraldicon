@@ -268,6 +268,8 @@
   (cond
     (keyword? data) (-> data name s/lower-case (s/includes? word))
     (string? data) (-> data s/lower-case (s/includes? word))
+    (vector? data) (some (fn [e]
+                           (matches-word e word)) data)
     (map? data) (some (fn [[k v]]
                         (or (and (keyword? k)
                                  (matches-word k word)
