@@ -11,6 +11,7 @@
     [:name
      :attribution
      :is-public
+     :metadata
      :tags])
 
    [:div {:style {:height "1.5em"}}]])

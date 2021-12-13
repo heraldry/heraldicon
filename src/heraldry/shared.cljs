@@ -23,6 +23,7 @@
    [heraldry.gettext :refer [string]]
    [heraldry.helm] ;; needed for side effects
    [heraldry.interface :as interface]
+   [heraldry.metadata :as metadata]
    [heraldry.motto] ;; needed for side effects
    [heraldry.ornaments] ;; needed for side effects
    [heraldry.render-options] ;; needed for side effects
@@ -45,6 +46,7 @@
    :is-public {:type :boolean
                :ui {:label (string "Make public")}}
    :attribution (attribution/options (c/++ context :attribution))
+   :metadata (metadata/options (c/++ context :metadata))
    :tags {:ui {:form-type :tags}}})
 
 (defmethod interface/options-subscriptions :heraldry.component/collection-general [_context]
@@ -60,6 +62,7 @@
    :is-public {:type :boolean
                :ui {:label (string "Make public")}}
    :attribution (attribution/options (c/++ context :attribution))
+   :metadata (metadata/options (c/++ context :metadata))
    :tags {:ui {:form-type :tags}}
    :font font/default-options})
 
@@ -77,6 +80,7 @@
            :is-public {:type :boolean
                        :ui {:label (string "Make public")}}
            :attribution (attribution/options (c/++ context :attribution))
+           :metadata (metadata/options (c/++ context :metadata))
            :tags {:ui {:form-type :tags}}
            :type {:type :text
                   :ui {:label (string "Charge type")}}

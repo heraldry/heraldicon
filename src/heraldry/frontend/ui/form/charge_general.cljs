@@ -20,6 +20,7 @@
      :colours
      :fixed-tincture
      :attributes
+     :metadata
      :tags])
 
    ;; TODO: not ideal, probably should move this at some point
