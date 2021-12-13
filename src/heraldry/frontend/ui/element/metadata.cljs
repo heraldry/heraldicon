@@ -3,6 +3,7 @@
    [clojure.string :as s]
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
@@ -29,7 +30,7 @@
                   (= n name)))
         metadata))
 
-(rf/reg-event-db ::add-metadata
+(macros/reg-event-db ::add-metadata
   (fn [db [_ context name value]]
     (let [name (util/sanitize-string name)]
       (update-in db (:path context) (fn [metadata]
@@ -44,7 +45,7 @@
     (rf/dispatch-sync [:set name-path ""])
     (rf/dispatch-sync [:set value-path ""])))
 
-(rf/reg-event-db ::remove-metadata
+(macros/reg-event-db ::remove-metadata
   (fn [db [_ context name]]
     (update-in db (:path context) remove-metadata-name name)))
 
