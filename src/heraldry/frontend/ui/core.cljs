@@ -25,6 +25,7 @@
    [heraldry.frontend.ui.element.humetty] ;; needed for side effects
    [heraldry.frontend.ui.element.line] ;; needed for side effects
    [heraldry.frontend.ui.element.line-type-select] ;; needed for side effects
+   [heraldry.frontend.ui.element.metadata] ;; needed for side effects
    [heraldry.frontend.ui.element.ordinary-type-select] ;; needed for side effects
    [heraldry.frontend.ui.element.position] ;; needed for side effects
    [heraldry.frontend.ui.element.radio-select] ;; needed for side effects
