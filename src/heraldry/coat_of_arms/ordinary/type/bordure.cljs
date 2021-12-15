@@ -2,6 +2,7 @@
   (:require
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.context :as c]
@@ -14,13 +15,14 @@
 
 (defmethod ordinary-interface/display-name ordinary-type [_] (string "Bordure"))
 
-(defmethod interface/options ordinary-type [_context]
+(defmethod interface/options ordinary-type [context]
   {:thickness {:type :range
                :min 0.1
                :max 35
                :default 10
                :ui {:label (string "Thickness")
                     :step 0.1}}
+   :line (line/options (c/++ context :line))
    :outline? options/plain-outline?-option})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
@@ -28,11 +30,14 @@
   (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
+        line-type (interface/get-sanitized-data (c/++ context :line :type))
         points (:points environment)
         width (:width environment)
         thickness ((util/percent-of width) thickness)
         environment-shape (environment/effective-shape environment)
         bordure-shape (environment/shrink-shape environment-shape thickness :round)
+        bordure-shape (cond-> bordure-shape
+                        (not= line-type :straight) (line/modify-path (c/++ context :line)))
         part [{:paths [environment-shape
                        bordure-shape]}
               [(:top-left points)
