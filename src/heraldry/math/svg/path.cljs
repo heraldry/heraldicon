@@ -73,7 +73,7 @@
                 inc)
             n)]
     (mapv (fn [i]
-            (let [x (-> length (* i) (/ (dec n)))
+            (let [x (-> length (* i) (/ (dec n)) (min length))
                   p (.getPointAt path x)]
               (v/v (.-x p) (.-y p)))) (range n))))
 
