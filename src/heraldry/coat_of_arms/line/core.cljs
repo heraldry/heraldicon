@@ -35,7 +35,8 @@
    [heraldry.math.svg.squiggly :as squiggly]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]
-   [heraldry.util :as util]))
+   [heraldry.util :as util]
+   [heraldry.coat-of-arms.field.environment :as environment]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
                                       line-max :max}]
@@ -684,6 +685,15 @@
                            (v/add (v/mul (:normal p2) (- 1 t)))
                            v/normal)))))
 
+
+(defn -shape-at-y [path y]
+  (-> path
+      (environment/shrink-shape y :round)
+      path/parse-path))
+
+(def shape-at-y
+  (memoize -shape-at-y))
+
 (defn modify-path [path context]
   (let [{:keys [type
                 width]
@@ -738,12 +748,14 @@
                               (/ repetitions)
                               (+ x-in-pattern)
                               (+ offset))
-                point-on-curve (get-point-on-curve path-points path-x-steps x-on-path)
-                y-dir (:normal point-on-curve)]
-            (-> y-dir
-                (v/mul (:y real-point))
-                (v/add point-on-curve)
-                (select-keys [:x :y]))))
+                y-path (shape-at-y simplified-path (:y real-point))
+                l (-> x-on-path
+                      (mod full-length)
+                      (/ full-length))
+                y-path-length (path/length y-path)
+                p (->> (* l y-path-length)
+                       (.getPointAt ^js/Object y-path))]
+            (v/v (.-x p) (.-y p))))
         #_catmullrom/catmullrom
         #_path/curve-to-relative
         (->> (map-indexed (fn [idx p]

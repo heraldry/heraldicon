@@ -87,7 +87,9 @@
                           original-path
                           (- distance)
                           (clj->js {:join join
-                                    :insert false})))]
+                                    :insert false})))
+        area-smaller? (<= (Math/abs (.-area outline-left))
+                          (Math/abs (.-area original-path)))]
     ;; The path might be clockwise, then (- distance) is the
     ;; correct offset for the inner path; we expect that path
     ;; to surround a smaller area, so use it, if that's true, otherwise
@@ -95,8 +97,10 @@
     ;; Escutcheon paths are clockwise, so testing for that
     ;; first should avoid having to do both calculations in
     ;; most cases.
-    (if (<= (Math/abs (.-area outline-left))
-            (Math/abs (.-area original-path)))
+    (if (or (and area-smaller?
+                 (>= distance 0))
+            (and (not area-smaller?)
+                 (neg? distance)))
       (.-pathData outline-left)
       (-> PaperOffset
           (.offset
@@ -119,8 +123,10 @@
            distance distance]
       (cond
         (zero? distance) shape
-        (<= distance max-step) (shrink-step shape distance join)
-        :else (recur (shrink-step shape max-step join) (- distance max-step))))))
+        (<= (Math/abs distance) max-step) (shrink-step shape distance join)
+        :else (if (pos? distance)
+                (recur (shrink-step shape max-step join) (- distance max-step))
+                (recur (shrink-step shape (- max-step) join) (+ distance max-step)))))))
 
 (defn intersect-shapes [shape1 shape2]
   (-> (new Path shape1)
