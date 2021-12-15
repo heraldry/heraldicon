@@ -79,3 +79,6 @@
 
 (defn clean-path [d]
   (s/replace d #"l *0 *[, ] *0" ""))
+
+(defn length [path]
+  (.-length path))

@@ -30,6 +30,7 @@
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
+   [heraldry.math.catmullrom :as catmullrom]
    [heraldry.math.svg.path :as path]
    [heraldry.math.svg.squiggly :as squiggly]
    [heraldry.math.vector :as v]
@@ -54,7 +55,8 @@
                                  line-mirrored? :mirrored?
                                  spacing :spacing
                                  :as line}
-                                length line-function {:keys [reversed? mirrored?] :as line-options}]
+                                length line-function {:keys [reversed? mirrored?
+                                                             num-repetitions] :as line-options}]
   (let [{line-pattern :pattern
          :as pattern-data} (line-function line line-options)
         effective-mirrored? (-> line-mirrored?
@@ -81,12 +83,13 @@
         offset-length (* line-offset pattern-width)
         pattern-width (+ pattern-width
                          real-spacing)
-        repetitions (-> length
-                        (- offset-length)
-                        (/ pattern-width)
-                        Math/ceil
-                        int
-                        inc)
+        repetitions (or num-repetitions
+                        (-> length
+                            (- offset-length)
+                            (/ pattern-width)
+                            Math/ceil
+                            int
+                            inc))
         line-start (v/v (min 0 offset-length) line-base)]
     {:line (-> []
                (cond->
@@ -96,7 +99,8 @@
                vec)
      :line-min line-min
      :line-max line-max
-     :line-start line-start}))
+     :line-start line-start
+     :pattern-width pattern-width}))
 
 (defn full-line [line length line-function line-options]
   (let [{line-pattern :pattern
@@ -630,3 +634,120 @@
                           (#{:single :double} mode))))
        [:g (outline/style context)
         [:path {:d line-path}]])]))
+
+(defn -add-normals [points]
+  (->> (concat [(last points)]
+               points
+               [(first points)])
+       (partition 3 1)
+       (mapv (fn [[p1 p2 p3]]
+               (assoc p2 :normal (-> p3
+                                     (v/sub p1)
+                                     v/orthogonal
+                                     v/normal))))))
+
+(def add-normals
+  (memoize -add-normals))
+
+(defn -sample-path [path n]
+  (-> path
+      path/parse-path
+      (path/points n)))
+
+(def sample-path
+  (memoize -sample-path))
+
+(defn -simplify-path [path]
+  (-> path
+      ;; TODO: the number of sample points could be an option
+      (sample-path :length)
+      catmullrom/catmullrom
+      path/curve-to-relative))
+
+(def simplify-path
+  (memoize -simplify-path))
+
+(defn get-point-on-curve [points x-steps x]
+  (let [index (-> x
+                  (/ x-steps)
+                  Math/floor
+                  (mod (count points)))
+        next-index (-> index
+                       inc
+                       (mod (count points)))
+        p1 (get points index)
+        p2 (get points next-index)
+        t (mod x x-steps)]
+    (-> (v/mul p1 t)
+        (v/add (v/mul p2 (- 1 t)))
+        (assoc :normal (-> (v/mul (:normal p1) t)
+                           (v/add (v/mul (:normal p2) (- 1 t)))
+                           v/normal)))))
+
+(defn modify-path [path context]
+  (let [{:keys [type
+                width]
+         :as line} (interface/get-sanitized-data context)
+        pattern-data (get kinds-pattern-map type)
+        simplified-path (simplify-path path)
+        full-length (-> simplified-path
+                        path/parse-path
+                        path/length)
+        repetitions (-> (/ full-length width)
+                        Math/floor
+                        inc)
+        pattern-width (/ full-length repetitions)
+        sample-total (-> full-length
+                         (* 20)
+                         Math/floor)
+        path-points (-> simplified-path
+                        (sample-path sample-total)
+                        add-normals)
+        path-x-steps (/ full-length sample-total)
+        line-function (:function pattern-data)
+        {line-data :line
+         line-start :line-start
+         real-pattern-width :pattern-width} (pattern-line-with-offset
+                                             (-> line
+                                                 (assoc :width pattern-width)
+                                                 (assoc :offset 0))
+                                             pattern-width
+                                             line-function
+                                             {:num-repetitions 1})
+        offset (-> line
+                   :offset
+                   (or 0)
+                   (* pattern-width))
+        line-pattern-path (-> line-data
+                              path/make-path
+                              (->> (str "M0,0")))
+        line-pattern-parsed-path (path/parse-path line-pattern-path)
+        sample-per-pattern (-> line-pattern-parsed-path
+                               path/length
+                               (* 20))
+        line-pattern-points (-> line-pattern-parsed-path
+                                (path/points sample-per-pattern))]
+    (-> (for [pattern-i (range repetitions)
+              pattern-point line-pattern-points]
+          (let [real-point (-> (v/add pattern-point line-start)
+                               (v/mul pattern-width)
+                               (v/div real-pattern-width))
+                x-in-pattern (:x real-point)
+                x-on-path (-> pattern-i
+                              (* full-length)
+                              (/ repetitions)
+                              (+ x-in-pattern)
+                              (+ offset))
+                point-on-curve (get-point-on-curve path-points path-x-steps x-on-path)
+                y-dir (:normal point-on-curve)]
+            (-> y-dir
+                (v/mul (:y real-point))
+                (v/add point-on-curve)
+                (select-keys [:x :y]))))
+        #_catmullrom/catmullrom
+        #_path/curve-to-relative
+        (->> (map-indexed (fn [idx p]
+                            [(if (zero? idx)
+                               "M" "L") p])))
+        path/make-path
+        (str "z"))))
