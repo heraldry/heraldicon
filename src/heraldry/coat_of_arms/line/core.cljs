@@ -689,10 +689,19 @@
 (defn -shape-at-y [path y]
   (-> path
       (environment/shrink-shape y :round)
-      path/parse-path))
+      #_path/parse-path))
 
 (def shape-at-y
   (memoize -shape-at-y))
+
+(defn projected-point [path point-on-path y-value]
+  (let [y-dir (v/mul (:normal point-on-path) -1)
+        y-path (shape-at-y path y-value)
+        p (if (<= y-value 0.01)
+            point-on-path
+            (v/find-first-intersection-of-ray-dumb point-on-path y-dir {:shape {:paths [y-path]}}))]
+    (when (-> p (v/sub point-on-path) v/abs (- y-value) Math/abs (<= 0.01))
+      p)))
 
 (defn modify-path [path context]
   (let [{:keys [type
@@ -748,14 +757,11 @@
                               (/ repetitions)
                               (+ x-in-pattern)
                               (+ offset))
-                y-path (shape-at-y simplified-path (:y real-point))
-                l (-> x-on-path
-                      (mod full-length)
-                      (/ full-length))
-                y-path-length (path/length y-path)
-                p (->> (* l y-path-length)
-                       (.getPointAt ^js/Object y-path))]
-            (v/v (.-x p) (.-y p))))
+                point-on-curve (get-point-on-curve path-points path-x-steps x-on-path)
+                y-value (- (:y real-point))
+                p (projected-point simplified-path point-on-curve y-value)]
+            p))
+        (->> (filter identity))
         #_catmullrom/catmullrom
         #_path/curve-to-relative
         (->> (map-indexed (fn [idx p]
