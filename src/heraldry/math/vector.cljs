@@ -35,6 +35,17 @@
               (* x x)
               (* y y))))
 
+(defn dot-product [p1 p2]
+  (let [p1-length (abs p1)
+        p2-length (abs p2)
+        {:keys [x y]} (dot p1 p2)]
+    (if (or (zero? p1-length)
+            (zero? p2-length))
+      0
+      (-> (+ x y)
+          (/ p1-length)
+          (/ p2-length)))))
+
 (defn normal [v]
   (let [d (abs v)]
     (if (> d 0)

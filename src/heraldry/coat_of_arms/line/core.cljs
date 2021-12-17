@@ -684,6 +684,61 @@
                            (v/add (v/mul (:normal p2) (- 1 t)))
                            v/normal)))))
 
+(defn find-corners [points]
+  (let [d 10
+        num-points (count points)
+        cutoff-angle 45
+        cutoff-dot-product (-> cutoff-angle
+                               (* Math/PI)
+                               (/ 180)
+                               Math/cos
+                               Math/abs)
+        deduping-index-radius 20]
+    (->> (range num-points)
+         (map (fn [index]
+                (let [p (get points index)
+                      p1 (get points (mod (- index d) num-points))
+                      p2 (get points (mod (+ index d) num-points))
+                      arm1 (v/sub p1 p)
+                      arm2 (v/sub p2 p)
+                      dot-product (v/dot-product arm1 arm2)]
+                  [index dot-product])))
+         (reduce (fn [aggregator [index dot-product]]
+                   (if (< (Math/abs dot-product) cutoff-dot-product)
+                     (if-let [[last-index last-dot-product] (last aggregator)]
+                       (if (<= (- index last-index)
+                               deduping-index-radius)
+                         (if (< (Math/abs dot-product) (Math/abs last-dot-product))
+                           (-> aggregator
+                               pop
+                               (conj [index dot-product]))
+                           aggregator)
+                         (conj aggregator [index dot-product]))
+                       [[index dot-product]])
+                     aggregator))
+                 []))))
+
+(defn dist-to-corner [x [_ corner-x _] full-length]
+  (min (-> x (- corner-x) Math/abs)
+       (-> x (+ full-length) (- corner-x) Math/abs)
+       (-> x (- corner-x) (- full-length) Math/abs)))
+
+(defn process-y-value [x y full-length corners]
+  (let [radius 10
+        process-fn #_(constantly 0)
+        (fn [y dist]
+          (-> dist
+              (/ radius)
+              #_Math/sqrt
+              (* y)))]
+    (loop [[corner & rest] corners]
+      (if-not corner
+        y
+        (let [dist (dist-to-corner x corner full-length)]
+          (if (<= dist radius)
+            (process-fn y dist)
+            (recur rest)))))))
+
 (defn modify-path [path context environment]
   (let [{:keys [type
                 width]
@@ -726,6 +781,7 @@
                          (+ offset))
         path-points (-> guiding-path
                         (sample-path sample-total start-offset)
+                        ;; TODO: add normalization to clockwise
                         add-normals)
         line-pattern-path (-> line-data
                               path/make-path
@@ -735,7 +791,10 @@
                                path/length
                                (* 20))
         line-pattern-points (-> line-pattern-parsed-path
-                                (path/points sample-per-pattern))]
+                                (path/points sample-per-pattern))
+        corners (->> (find-corners path-points)
+                     (mapv (fn [[index dot-product]]
+                             [index (* index path-x-steps) dot-product])))]
     (-> (for [pattern-i (range repetitions)
               pattern-point line-pattern-points]
           (let [real-point (-> (v/add pattern-point line-start)
@@ -748,9 +807,10 @@
                               (+ x-in-pattern)
                               (+ offset))
                 point-on-curve (get-point-on-curve path-points path-x-steps x-on-path)
-                y-dir (:normal point-on-curve)]
+                y-dir (:normal point-on-curve)
+                y-value (process-y-value x-on-path (:y real-point) full-length corners)]
             (-> y-dir
-                (v/mul (:y real-point))
+                (v/mul y-value)
                 (v/add point-on-curve)
                 (select-keys [:x :y]))))
         #_catmullrom/catmullrom
