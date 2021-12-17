@@ -106,37 +106,48 @@
 
 (defn find-corners [points]
   (let [d 30
-        num-points (count points)
+        sample-total (count points)
         cutoff-angle 45
         cutoff-dot-product (-> cutoff-angle
                                (* Math/PI)
                                (/ 180)
                                Math/cos
                                Math/abs)
-        deduping-index-radius 30]
-    (->> (range num-points)
-         (map (fn [index]
-                (let [p (get points index)
-                      p1 (get points (mod (- index d) num-points))
-                      p2 (get points (mod (+ index d) num-points))
-                      arm1 (v/sub p1 p)
-                      arm2 (v/sub p2 p)
-                      dot-product (v/dot-product arm1 arm2)]
-                  [index dot-product])))
-         (reduce (fn [aggregator [index dot-product]]
-                   (if (< (Math/abs dot-product) cutoff-dot-product)
-                     (if-let [[last-index last-dot-product] (last aggregator)]
-                       (if (<= (- index last-index)
-                               deduping-index-radius)
-                         (if (< (Math/abs dot-product) (Math/abs last-dot-product))
-                           (-> aggregator
-                               pop
-                               (conj [index dot-product]))
-                           aggregator)
-                         (conj aggregator [index dot-product]))
-                       [[index dot-product]])
-                     aggregator))
-                 []))))
+        deduping-index-radius 30
+        raw-corners (->> (range sample-total)
+                         (map (fn [index]
+                                (let [p (get points index)
+                                      p1 (get points (mod (- index d) sample-total))
+                                      p2 (get points (mod (+ index d) sample-total))
+                                      arm1 (v/sub p1 p)
+                                      arm2 (v/sub p2 p)
+                                      dot-product (v/dot-product arm1 arm2)]
+                                  [index dot-product])))
+                         (reduce (fn [aggregator [index dot-product]]
+                                   (if (< (Math/abs dot-product) cutoff-dot-product)
+                                     (if-let [[last-index last-dot-product] (last aggregator)]
+                                       (if (<= (- index last-index)
+                                               deduping-index-radius)
+                                         (if (< (Math/abs dot-product) (Math/abs last-dot-product))
+                                           (-> aggregator
+                                               pop
+                                               (conj [index dot-product]))
+                                           aggregator)
+                                         (conj aggregator [index dot-product]))
+                                       [[index dot-product]])
+                                     aggregator))
+                                 []))
+        first-corner (first raw-corners)
+        last-corner (last raw-corners)]
+    (if (-> (first first-corner)
+            (+ sample-total)
+            (- (first last-corner))
+            Math/abs
+            (<= deduping-index-radius))
+      (-> raw-corners
+          drop-last
+          vec)
+      raw-corners)))
 
 (defn round-corners [path corner-radius]
   (if (zero? corner-radius)
@@ -154,28 +165,25 @@
                          (/ precision)
                          Math/floor)]
       (-> (loop [[corner & rest] corners
-                 new-path-points path-points
-                 index-offset 0]
+                 new-path-points []
+                 last-index 0
+                 final-index (count path-points)]
             (if-let [[index _] corner]
-              (let [num-points (count new-path-points)
-                    index (-> index
-                              (+ index-offset)
-                              (mod num-points))
-                    start-index (-> index
+              (let [start-index (-> index
                                     (- diff-index)
-                                    (mod num-points))
+                                    (mod sample-total))
                     end-index (-> index
                                   (+ diff-index)
-                                  (mod num-points))
-                    corner-p (get new-path-points index)
-                    start-p1  (get new-path-points start-index)
-                    start-p2 (get new-path-points (-> start-index
-                                                      inc
-                                                      (mod num-points)))
-                    end-p1 (get new-path-points end-index)
-                    end-p2 (get new-path-points (-> end-index
-                                                    dec
-                                                    (mod num-points)))
+                                  (mod sample-total))
+                    corner-p (get path-points index)
+                    start-p1 (get path-points start-index)
+                    start-p2 (get path-points (-> start-index
+                                                  inc
+                                                  (mod sample-total)))
+                    end-p1 (get path-points end-index)
+                    end-p2 (get path-points (-> end-index
+                                                dec
+                                                (mod sample-total)))
                     patch-path (-> [["M" start-p1]
                                     ["L" start-p2]
                                     ["C"
@@ -189,22 +197,18 @@
                                     ["L" end-p1]]
                                    make-path)
                     rounded-corner-points (sample-path patch-path 50 nil)
-                    [new-offset
-                     new-path-points] (if (< end-index start-index)
-                                        [(-> index-offset
-                                             (+ (count rounded-corner-points))
-                                             (- (inc end-index)))
-                                         (-> rounded-corner-points
-                                             (concat (subvec new-path-points (inc end-index) start-index))
-                                             vec)]
-                                        [(-> index-offset
-                                             (+ (count rounded-corner-points))
-                                             (- (inc (- end-index start-index))))
-                                         (-> (subvec new-path-points 0 start-index)
-                                             (concat rounded-corner-points)
-                                             (concat (subvec new-path-points (inc end-index)))
-                                             vec)])]
-                (recur rest new-path-points (mod new-offset num-points)))
-              new-path-points))
+                    new-last-index (inc end-index)
+                    new-final-index (if (> start-index end-index)
+                                      start-index
+                                      final-index)
+                    new-path-points (-> new-path-points
+                                        (cond->
+                                          (< start-index end-index) (concat (subvec path-points last-index start-index)))
+                                        (concat rounded-corner-points)
+                                        vec)]
+                (recur rest new-path-points new-last-index new-final-index))
+              (do
+                (cond-> new-path-points
+                  (< last-index final-index) (concat (subvec path-points last-index final-index))))))
           catmullrom/catmullrom
           curve-to-relative))))
