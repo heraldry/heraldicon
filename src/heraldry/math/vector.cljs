@@ -257,17 +257,6 @@
         select-fn
         (select-keys [:x :y :t1 :t2]))))
 
-(defn find-first-intersection-of-ray-dumb [origin direction-vector environment]
-  (let [line-end (-> direction-vector
-                     normal
-                     (mul 1000)
-                     (add origin))
-        intersections (find-intersections origin line-end environment)]
-    (-> intersections
-        (->> (filter (comp pos? :t1)))
-        first
-        (select-keys [:x :y :t1 :t2]))))
-
 (defn angle-to-point [p1 p2]
   (let [d (sub p2 p1)
         angle-rad (Math/atan2 (:y d) (:x d))]
