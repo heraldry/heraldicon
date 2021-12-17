@@ -65,7 +65,7 @@
     (s/join "" (concat [(move-to start)]
                        (map bezier-to-relative curve)))))
 
-(defn points [^js/Object path n]
+(defn points [^js/Object path n & {:keys [start-offset]}]
   (let [length (.-length path)
         n (if (= n :length)
             (-> length
@@ -73,7 +73,9 @@
                 inc)
             n)]
     (mapv (fn [i]
-            (let [x (-> length (* i) (/ (dec n)) (min length))
+            (let [x (if start-offset
+                      (-> length (* i) (/ (dec n)) (+ start-offset) (mod length))
+                      (-> length (* i) (/ (dec n)) (min length)))
                   p (.getPointAt path x)]
               (v/v (.-x p) (.-y p)))) (range n))))
 

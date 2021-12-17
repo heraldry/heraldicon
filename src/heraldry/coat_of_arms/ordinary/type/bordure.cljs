@@ -37,7 +37,8 @@
         environment-shape (environment/effective-shape environment)
         bordure-shape (environment/shrink-shape environment-shape thickness :round)
         bordure-shape (cond-> bordure-shape
-                        (not= line-type :straight) (line/modify-path (c/++ context :line)))
+                        (not= line-type :straight) (line/modify-path (c/++ context :line)
+                                                                     environment))
         part [{:paths [environment-shape
                        bordure-shape]}
               [(:top-left points)

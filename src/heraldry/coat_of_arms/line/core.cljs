@@ -649,10 +649,10 @@
 (def add-normals
   (memoize -add-normals))
 
-(defn -sample-path [path n]
+(defn -sample-path [path n start-offset]
   (-> path
       path/parse-path
-      (path/points n)))
+      (path/points n :start-offset start-offset)))
 
 (def sample-path
   (memoize -sample-path))
@@ -684,13 +684,13 @@
                            (v/add (v/mul (:normal p2) (- 1 t)))
                            v/normal)))))
 
-(defn modify-path [path context]
+(defn modify-path [path context environment]
   (let [{:keys [type
                 width]
          :as line} (interface/get-sanitized-data context)
         pattern-data (get kinds-pattern-map type)
-        simplified-path (simplify-path path)
-        full-length (-> simplified-path
+        guiding-path path #_(simplify-path path)
+        full-length (-> guiding-path
                         path/parse-path
                         path/length)
         repetitions (-> (/ full-length width)
@@ -700,9 +700,6 @@
         sample-total (-> full-length
                          (* 20)
                          Math/floor)
-        path-points (-> simplified-path
-                        (sample-path sample-total)
-                        add-normals)
         path-x-steps (/ full-length sample-total)
         line-function (:function pattern-data)
         {line-data :line
@@ -718,6 +715,18 @@
                    :offset
                    (or 0)
                    (* pattern-width))
+        fess (-> environment :points :fess)
+        top (-> environment :points :top)
+        intersection (v/find-first-intersection-of-ray
+                      fess top
+                      {:shape {:paths [guiding-path]}})
+        start-offset (-> intersection
+                         :t2
+                         (* full-length)
+                         (+ offset))
+        path-points (-> guiding-path
+                        (sample-path sample-total start-offset)
+                        add-normals)
         line-pattern-path (-> line-data
                               path/make-path
                               (->> (str "M0,0")))
