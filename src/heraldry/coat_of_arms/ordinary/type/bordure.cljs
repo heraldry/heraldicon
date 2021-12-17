@@ -8,6 +8,7 @@
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
+   [heraldry.math.svg.path :as path]
    [heraldry.options :as options]
    [heraldry.util :as util]))
 
@@ -22,12 +23,19 @@
                :default 10
                :ui {:label (string "Thickness")
                     :step 0.1}}
+   :corner-radius {:type :range
+                   :min 0
+                   :max 20
+                   :default 0
+                   :ui {:label (string "Corner radius")
+                        :step 0.1}}
    :line (line/options (c/++ context :line))
    :outline? options/plain-outline?-option})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
   (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
+        corner-radius (interface/get-sanitized-data (c/++ context :corner-radius))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         line-type (interface/get-sanitized-data (c/++ context :line :type))
@@ -36,7 +44,7 @@
         thickness ((util/percent-of width) thickness)
         environment-shape (environment/effective-shape environment)
         bordure-shape (environment/shrink-shape environment-shape thickness :round)
-        bordure-shape (cond-> bordure-shape
+        bordure-shape (cond-> (path/round-corners bordure-shape corner-radius)
                         (not= line-type :straight) (line/modify-path (c/++ context :line)
                                                                      environment))
         part [{:paths [environment-shape

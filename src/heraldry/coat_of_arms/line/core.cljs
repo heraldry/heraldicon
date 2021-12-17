@@ -30,7 +30,6 @@
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.math.catmullrom :as catmullrom]
    [heraldry.math.svg.path :as path]
    [heraldry.math.svg.squiggly :as squiggly]
    [heraldry.math.vector :as v]
@@ -649,24 +648,6 @@
 (def add-normals
   (memoize -add-normals))
 
-(defn -sample-path [path n start-offset]
-  (-> path
-      path/parse-path
-      (path/points n :start-offset start-offset)))
-
-(def sample-path
-  (memoize -sample-path))
-
-(defn -simplify-path [path]
-  (-> path
-      ;; TODO: the number of sample points could be an option
-      (sample-path :length)
-      catmullrom/catmullrom
-      path/curve-to-relative))
-
-(def simplify-path
-  (memoize -simplify-path))
-
 (defn get-point-on-curve [points x-steps x]
   (let [index (-> x
                   (/ x-steps)
@@ -683,40 +664,6 @@
         (assoc :normal (-> (v/mul (:normal p1) t)
                            (v/add (v/mul (:normal p2) (- 1 t)))
                            v/normal)))))
-
-(defn find-corners [points]
-  (let [d 10
-        num-points (count points)
-        cutoff-angle 45
-        cutoff-dot-product (-> cutoff-angle
-                               (* Math/PI)
-                               (/ 180)
-                               Math/cos
-                               Math/abs)
-        deduping-index-radius 20]
-    (->> (range num-points)
-         (map (fn [index]
-                (let [p (get points index)
-                      p1 (get points (mod (- index d) num-points))
-                      p2 (get points (mod (+ index d) num-points))
-                      arm1 (v/sub p1 p)
-                      arm2 (v/sub p2 p)
-                      dot-product (v/dot-product arm1 arm2)]
-                  [index dot-product])))
-         (reduce (fn [aggregator [index dot-product]]
-                   (if (< (Math/abs dot-product) cutoff-dot-product)
-                     (if-let [[last-index last-dot-product] (last aggregator)]
-                       (if (<= (- index last-index)
-                               deduping-index-radius)
-                         (if (< (Math/abs dot-product) (Math/abs last-dot-product))
-                           (-> aggregator
-                               pop
-                               (conj [index dot-product]))
-                           aggregator)
-                         (conj aggregator [index dot-product]))
-                       [[index dot-product]])
-                     aggregator))
-                 []))))
 
 (defn dist-to-corner [x [_ corner-x _] full-length]
   (min (-> x (- corner-x) Math/abs)
@@ -780,7 +727,7 @@
                          (* full-length)
                          (+ offset))
         path-points (-> guiding-path
-                        (sample-path sample-total start-offset)
+                        (path/sample-path sample-total start-offset)
                         ;; TODO: add normalization to clockwise
                         add-normals)
         line-pattern-path (-> line-data
@@ -792,7 +739,7 @@
                                (* 20))
         line-pattern-points (-> line-pattern-parsed-path
                                 (path/points sample-per-pattern))
-        corners (->> (find-corners path-points)
+        corners (->> (path/find-corners path-points)
                      (mapv (fn [[index dot-product]]
                              [index (* index path-x-steps) dot-product])))]
     (-> (for [pattern-i (range repetitions)
@@ -811,10 +758,7 @@
                 y-value (process-y-value x-on-path (:y real-point) full-length corners)]
             (-> y-dir
                 (v/mul y-value)
-                (v/add point-on-curve)
-                (select-keys [:x :y]))))
-        #_catmullrom/catmullrom
-        #_path/curve-to-relative
+                (v/add point-on-curve))))
         (->> (map-indexed (fn [idx p]
                             [(if (zero? idx)
                                "M" "L") p])))
