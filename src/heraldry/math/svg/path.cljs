@@ -125,28 +125,32 @@
                                   [index dot-product])))
                          (reduce (fn [aggregator [index dot-product]]
                                    (if (< (Math/abs dot-product) cutoff-dot-product)
-                                     (if-let [[last-index last-dot-product] (last aggregator)]
+                                     (if-let [{last-index :index
+                                               last-dot-product :dot-product} (last aggregator)]
                                        (if (<= (- index last-index)
                                                deduping-index-radius)
                                          (if (< (Math/abs dot-product) (Math/abs last-dot-product))
                                            (-> aggregator
                                                pop
-                                               (conj [index dot-product]))
+                                               (conj {:index index
+                                                      :dot-product dot-product}))
                                            aggregator)
-                                         (conj aggregator [index dot-product]))
-                                       [[index dot-product]])
+                                         (conj aggregator {:index index
+                                                           :dot-product dot-product}))
+                                       [{:index index
+                                         :dot-product dot-product}])
                                      aggregator))
                                  []))
         first-corner (first raw-corners)
         last-corner (last raw-corners)]
     (if (and (> (count raw-corners) 1)
-             (-> (first first-corner)
+             (-> (:index first-corner)
                  (+ sample-total)
-                 (- (first last-corner))
+                 (- (:index last-corner))
                  Math/abs
                  (<= deduping-index-radius)))
-      (if (< (second first-corner)
-             (second last-corner))
+      (if (< (:dot-product first-corner)
+             (:dot-product last-corner))
         (-> raw-corners
             drop-last
             vec)
@@ -176,7 +180,7 @@
                  new-path-points []
                  last-index 0
                  final-index (count path-points)]
-            (if-let [[index _] corner]
+            (if-let [{:keys [index]} corner]
               (let [start-index (-> index
                                     (- diff-index)
                                     (mod sample-total))

@@ -665,7 +665,7 @@
                            (v/add (v/mul (:normal p2) (- 1 t)))
                            v/normal)))))
 
-(defn dist-to-corner [x [_ corner-x _] full-length]
+(defn dist-to-corner [x {corner-x :x} full-length]
   (min (-> x (- corner-x) Math/abs)
        (-> x (+ full-length) (- corner-x) Math/abs)
        (-> x (- corner-x) (- full-length) Math/abs)))
@@ -742,8 +742,9 @@
         line-pattern-points (-> line-pattern-parsed-path
                                 (path/points sample-per-pattern))
         corners (->> (path/find-corners path-points precision 3)
-                     (mapv (fn [[index dot-product]]
-                             [index (* index path-x-steps) dot-product])))]
+                     (mapv (fn [{:keys [index]
+                                 :as corner}]
+                             (assoc corner :x (* index path-x-steps)))))]
     (-> (for [pattern-i (range repetitions)
               pattern-point line-pattern-points]
           (let [real-point (-> (v/add pattern-point line-start)
