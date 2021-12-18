@@ -37,7 +37,8 @@
                      :tooltip (string "This might smooth out some remaining corners, best used together with corner radius.")
                      :step 0.1}}
    :line (update-in (line/options (c/++ context :line)
-                                  :fimbriation? false)
+                                  :fimbriation? false
+                                  :corner-dampening? true)
                     [:type :choices]
                     (fn [choices]
                       (into []

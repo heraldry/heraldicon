@@ -199,6 +199,21 @@
                :default :middle
                :ui {:label (string "Base line")
                     :form-type :radio-select}}
+   :corner-dampening-radius {:type :range
+                             :min 0
+                             :max 50
+                             :default 0
+                             :ui {:label (string "Dampening radius")
+                                  :tooltip (string "How far around corners the dampening mode is applied.")
+                                  :step 0.01}}
+   :corner-dampening-mode {:type :choice
+                           :choices [[(string "Clamp to zero") :clamp-to-zero]
+                                     [(string "Linear dampening") :linear-dampening]
+                                     [(string "Square root dampening") :square-root-dampening]]
+                           :default :clamp-to-zero
+                           :ui {:label (string "Dampening mode")
+                                :tooltip (string "The way the line is adjusted near corners. Different styles work better with different modes")
+                                :step 0.01}}
    :mirrored? {:type :boolean
                :default false
                :ui {:label (string "Mirrored")}}
@@ -207,7 +222,8 @@
               :ui {:label (string "Flipped")}}})
 
 (defn options [{:keys [path] :as context} & {:keys [fimbriation?
-                                                    inherited-options]
+                                                    inherited-options
+                                                    corner-dampening?]
                                              :or {fimbriation? true}}]
   (let [kind (last path)
         inherited (when inherited-options
@@ -377,7 +393,11 @@
           (options/populate-inheritance inherited)
           (cond->
             fimbriation? (assoc :fimbriation (fimbriation/options (c/++ context :fimbriation)
-                                                                  :inherited-options (:fimbriation inherited-options))))
+                                                                  :inherited-options (:fimbriation inherited-options)))
+            corner-dampening? (merge (options/pick default-options
+                                                   [[:corner-dampening-radius]
+                                                    [:corner-dampening-mode]]
+                                                   {})))
           (assoc :ui {:label (case kind
                                :opposite-line (string "Opposite line")
                                :extra-line (string "Extra line")
@@ -670,25 +690,35 @@
        (-> x (+ full-length) (- corner-x) Math/abs)
        (-> x (- corner-x) (- full-length) Math/abs)))
 
-(defn process-y-value [x y full-length corners]
-  (let [radius 10
-        process-fn #_(constantly 0)
-        (fn [y dist]
-          (-> dist
-              (/ radius)
-              #_Math/sqrt
-              (* y)))]
-    (loop [[corner & rest] corners]
-      (if-not corner
-        y
-        (let [dist (dist-to-corner x corner full-length)]
-          (if (<= dist radius)
-            (process-fn y dist)
-            (recur rest)))))))
+(defn process-y-value [x y full-length corners dampening-radius dampening-mode]
+  (let [process-fn (case dampening-mode
+                     :clamp-to-zero (constantly 0)
+                     :linear-dampening (fn [y dist]
+                                         (-> dist
+                                             (/ dampening-radius)
+                                             (* y)))
+                     :square-root-dampening (fn [y dist]
+                                              (-> dist
+                                                  (/ dampening-radius)
+                                                  Math/sqrt
+                                                  (* y))))]
+    (if (zero? dampening-radius)
+      y
+      (if-let [dist (->> corners
+                         (keep (fn [corner]
+                                 (let [dist (dist-to-corner x corner full-length)]
+                                   (when (<= dist dampening-radius)
+                                     dist))))
+                         sort
+                         first)]
+        (process-fn y dist)
+        y))))
 
 (defn modify-path [path context environment]
   (let [{:keys [type
-                width]
+                width
+                corner-dampening-radius
+                corner-dampening-mode]
          :as line} (interface/get-sanitized-data context)
         pattern-data (get kinds-pattern-map type)
         guiding-path path #_(simplify-path path)
@@ -756,7 +786,8 @@
                               (+ offset))
                 point-on-curve (get-point-on-curve path-points path-x-steps x-on-path)
                 y-dir (:normal point-on-curve)
-                y-value (process-y-value x-on-path (:y real-point) full-length corners)]
+                y-value (process-y-value x-on-path (:y real-point) full-length corners
+                                         corner-dampening-radius corner-dampening-mode)]
             (-> y-dir
                 (v/mul y-value)
                 (v/add point-on-curve))))

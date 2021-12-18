@@ -40,7 +40,7 @@
        [:div.option
         [submenu/submenu context label
          [tr link-name]
-         {:style {:width "24em"}
+         {:style {:width "26em"}
           :class "submenu-line"}
          (ui-interface/form-elements
           context
@@ -51,6 +51,8 @@
            :spacing
            :offset
            :base-line
+           :corner-dampening-radius
+           :corner-dampening-mode
            :mirrored?
            :flipped?
            :fimbriation])]]])))
