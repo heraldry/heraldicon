@@ -30,7 +30,7 @@
                      :max 20
                      :default (case line-type
                                 :straight 0
-                                10)
+                                5)
                      :ui {:label (string "Corner radius")
                           :step 0.1}}
      :smoothness {:type :range
