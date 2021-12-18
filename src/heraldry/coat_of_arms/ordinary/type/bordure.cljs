@@ -36,9 +36,7 @@
      :smoothness {:type :range
                   :min 0
                   :max 20
-                  :default (case line-type
-                             :straight 0
-                             10)
+                  :default 0
                   :ui {:label (string "Smoothness")
                        :tooltip (string "This might smooth out some remaining corners, best used together with corner radius.")
                        :step 0.1}}
