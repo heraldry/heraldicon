@@ -700,10 +700,6 @@
                         inc)
         pattern-width (/ full-length repetitions)
         precision 0.05
-        sample-total (-> full-length
-                         (/ precision)
-                         Math/floor)
-        path-x-steps (/ full-length sample-total)
         line-function (:function pattern-data)
         {line-data :line
          line-start :line-start
@@ -728,9 +724,11 @@
                          (* full-length)
                          (+ offset))
         path-points (-> guiding-path
-                        (path/sample-path sample-total start-offset)
+                        (path/sample-path precision start-offset)
                         ;; TODO: add normalization to clockwise
                         add-normals)
+        sample-total (count path-points)
+        path-x-steps (/ full-length sample-total)
         line-pattern-path (-> line-data
                               path/make-path
                               (->> (str "M0,0")))

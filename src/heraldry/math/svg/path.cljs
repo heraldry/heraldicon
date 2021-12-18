@@ -86,18 +86,20 @@
 (defn length [path]
   (.-length path))
 
-(defn -sample-path [path n start-offset]
-  (-> path
-      parse-path
-      (points n :start-offset start-offset)))
+(defn -sample-path [path precision start-offset]
+  (let [parsed-path (parse-path path)
+        full-length (length parsed-path)
+        n (-> full-length
+              (/ precision)
+              Math/floor)]
+    (points parsed-path n :start-offset start-offset)))
 
 (def sample-path
   (memoize -sample-path))
 
-(defn -simplify-path [path]
+(defn -simplify-path [path smoothness]
   (-> path
-      ;; TODO: the number of sample points could be an option
-      (sample-path :length)
+      (sample-path smoothness)
       catmullrom/catmullrom
       curve-to-relative))
 
@@ -161,66 +163,86 @@
              vec))
       raw-corners)))
 
-(defn round-corners [path corner-radius]
-  (if (zero? corner-radius)
-    path
-    (let [precision 0.1
-          full-length (-> path
-                          parse-path
-                          length)
-          sample-total (-> full-length
-                           (/ precision)
-                           Math/floor)
-          path-points (sample-path path sample-total 0)
-          corners (find-corners path-points precision 3)
-          diff-index (-> corner-radius
-                         (/ precision)
-                         Math/floor)]
-      (-> (loop [[corner & rest] corners
-                 new-path-points []
-                 last-index 0
-                 final-index (count path-points)]
-            (if-let [{:keys [index]} corner]
-              (let [start-index (-> index
-                                    (- diff-index)
-                                    (mod sample-total))
-                    end-index (-> index
-                                  (+ diff-index)
-                                  (mod sample-total))
-                    corner-p (get path-points index)
-                    start-p1 (get path-points start-index)
-                    start-p2 (get path-points (-> start-index
-                                                  inc
-                                                  (mod sample-total)))
-                    end-p1 (get path-points end-index)
-                    end-p2 (get path-points (-> end-index
-                                                dec
-                                                (mod sample-total)))
-                    patch-path (-> [["M" start-p1]
-                                    ["L" start-p2]
-                                    ["C"
-                                     (-> start-p2
-                                         (v/add corner-p)
-                                         (v/div 2))
-                                     (-> end-p2
-                                         (v/add corner-p)
-                                         (v/div 2))
-                                     end-p2]
-                                    ["L" end-p1]]
-                                   make-path)
-                    rounded-corner-points (sample-path patch-path 50 nil)
-                    new-last-index (inc end-index)
-                    new-final-index (if (> start-index end-index)
-                                      start-index
-                                      final-index)
-                    new-path-points (-> new-path-points
-                                        (cond->
-                                          (< start-index end-index) (concat (subvec path-points last-index start-index)))
-                                        (concat rounded-corner-points)
-                                        vec)]
-                (recur rest new-path-points new-last-index new-final-index))
-              (do
-                (cond-> new-path-points
-                  (< last-index final-index) (concat (subvec path-points last-index final-index))))))
-          catmullrom/catmullrom
-          curve-to-relative))))
+(defn add-max-radius-to-corners [corners num-points]
+  (->> (concat [(last corners)] corners [(first corners)])
+       (partition 3 1)
+       (mapv (fn [[{previous-index :index} {index :index :as corner} {next-index :index}]]
+               (assoc corner
+                      :max-radius-left (-> index
+                                           (- previous-index)
+                                           (mod num-points)
+                                           (quot 2)
+                                           dec)
+                      :max-radius-right (-> next-index
+                                            (- index)
+                                            (mod num-points)
+                                            (quot 2)
+                                            dec))))))
+
+(defn round-corners [path corner-radius smoothness]
+  (cond-> (if (zero? corner-radius)
+            path
+            (let [precision 0.1
+                  path-points (sample-path path precision 0)
+                  sample-total (count path-points)
+                  corners (-> (find-corners path-points precision 3)
+                              (add-max-radius-to-corners (count path-points)))
+                  diff-index (-> corner-radius
+                                 (/ precision)
+                                 Math/floor)]
+              (-> (loop [[corner & rest] corners
+                         new-path-points []
+                         last-index 0
+                         final-index (count path-points)]
+                    (if-let [{:keys [index max-radius-left max-radius-right]} corner]
+                      (let [start-index (-> index
+                                            (- (min diff-index max-radius-left))
+                                            (mod sample-total))
+                            end-index (-> index
+                                          (+ (min diff-index max-radius-right))
+                                          (mod sample-total))
+                            corner-p (get path-points index)
+                            start-p1 (get path-points start-index)
+                            start-p2 (get path-points (-> start-index
+                                                          inc
+                                                          (mod sample-total)))
+                            end-p1 (get path-points end-index)
+                            end-p2 (get path-points (-> end-index
+                                                        dec
+                                                        (mod sample-total)))
+                            patch-path (-> [["M" start-p1]
+                                            ["L" start-p2]
+                                            ["C"
+                                             (-> corner-p
+                                                 (v/sub start-p2)
+                                                 (v/mul 0.5)
+                                                 (v/add start-p2))
+                                             (-> corner-p
+                                                 (v/sub end-p2)
+                                                 (v/mul 0.5)
+                                                 (v/add end-p2))
+                                             end-p2]
+                                            ["L" end-p1]]
+                                           make-path)
+                            rounded-corner-points (sample-path patch-path precision nil)
+                            new-last-index (inc end-index)
+                            new-final-index (if (> start-index end-index)
+                                              start-index
+                                              final-index)
+                            new-path-points (-> new-path-points
+                                                (cond->
+                                                  (< start-index end-index) (concat (subvec path-points last-index start-index)))
+                                                (concat rounded-corner-points)
+                                                vec)]
+                        (recur rest new-path-points new-last-index new-final-index))
+                      (do
+                        ;; TODO: there's a special case here if the last corner reaches
+                        ;; into the beginning of the path, then this algorithm doesn't
+                        ;; behave well and the last step pretty much doubles it, because
+                        ;; of this "rest" being added, and portion at the start of the
+                        ;; path not being removed
+                        (cond-> new-path-points
+                          (< last-index final-index) (concat (subvec path-points last-index final-index))))))
+                  catmullrom/catmullrom
+                  curve-to-relative)))
+    (pos? smoothness) (simplify-path smoothness)))

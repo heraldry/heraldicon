@@ -29,6 +29,13 @@
                    :default 0
                    :ui {:label (string "Corner radius")
                         :step 0.1}}
+   :smoothness {:type :range
+                :min 0
+                :max 20
+                :default 0
+                :ui {:label (string "Smoothness")
+                     :tooltip (string "This might smooth out some remaining corners, best used together with corner radius.")
+                     :step 0.1}}
    :line (line/options (c/++ context :line))
    :outline? options/plain-outline?-option})
 
@@ -36,6 +43,7 @@
   [{:keys [environment] :as context}]
   (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
         corner-radius (interface/get-sanitized-data (c/++ context :corner-radius))
+        smoothness (interface/get-sanitized-data (c/++ context :smoothness))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         line-type (interface/get-sanitized-data (c/++ context :line :type))
@@ -44,7 +52,7 @@
         thickness ((util/percent-of width) thickness)
         environment-shape (environment/effective-shape environment)
         bordure-shape (environment/shrink-shape environment-shape thickness :round)
-        bordure-shape (cond-> (path/round-corners bordure-shape corner-radius)
+        bordure-shape (cond-> (path/round-corners bordure-shape corner-radius smoothness)
                         (not= line-type :straight) (line/modify-path (c/++ context :line)
                                                                      environment))
         part [{:paths [environment-shape
