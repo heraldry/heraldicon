@@ -717,7 +717,7 @@
         (process-fn y dist)
         y))))
 
-(defn modify-path [path context environment]
+(defn modify-path [path context environment & {:keys [outer-shape?]}]
   (let [{:keys [type
                 width
                 corner-dampening-radius
@@ -798,7 +798,10 @@
             ;; the y-value will usually be negative, but the normals
             ;; will also point outwards from the shape, so this will
             ;; build a path on the inside of the shape
+            ;; however, if outer-shape? is true, then flip the normal
             (-> y-dir
+                (cond->
+                  outer-shape? (v/mul -1))
                 (v/mul y-value)
                 (v/add point-on-curve))))
         (->> (map-indexed (fn [idx p]
