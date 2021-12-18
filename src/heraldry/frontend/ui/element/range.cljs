@@ -31,7 +31,7 @@
                                           :margin-left "0.2em"}}
                [:i.fas.fa-question-circle]
                [:div.bottom
-                [:h3 {:style {:text-align "center"}} tooltip]
+                [:h3 {:style {:text-align "center"}} [tr tooltip]]
                 [:i]]])]
            [:div.option
             [:input {:type "range"
