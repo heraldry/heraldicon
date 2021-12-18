@@ -17,36 +17,42 @@
 (defmethod ordinary-interface/display-name ordinary-type [_] (string "Bordure"))
 
 (defmethod interface/options ordinary-type [context]
-  {:thickness {:type :range
-               :min 0.1
-               :max 35
-               :default 10
-               :ui {:label (string "Thickness")
-                    :step 0.1}}
-   :corner-radius {:type :range
-                   :min 0
-                   :max 20
-                   :default 0
-                   :ui {:label (string "Corner radius")
-                        :step 0.1}}
-   :smoothness {:type :range
-                :min 0
-                :max 20
-                :default 0
-                :ui {:label (string "Smoothness")
-                     :tooltip (string "This might smooth out some remaining corners, best used together with corner radius.")
-                     :step 0.1}}
-   :line (update-in (line/options (c/++ context :line)
-                                  :fimbriation? false
-                                  :corner-dampening? true)
-                    [:type :choices]
-                    (fn [choices]
-                      (into []
-                            (remove (fn [[_ line-type]]
-                                      (and (not= line-type :straight)
-                                           (-> line-type line/kinds-pattern-map :full?))))
-                            choices)))
-   :outline? options/plain-outline?-option})
+  (let [line-type (or (interface/get-raw-data (c/++ context :line :type))
+                      :straight)]
+    {:thickness {:type :range
+                 :min 0.1
+                 :max 35
+                 :default 10
+                 :ui {:label (string "Thickness")
+                      :step 0.1}}
+     :corner-radius {:type :range
+                     :min 0
+                     :max 20
+                     :default (case line-type
+                                :straight 0
+                                10)
+                     :ui {:label (string "Corner radius")
+                          :step 0.1}}
+     :smoothness {:type :range
+                  :min 0
+                  :max 20
+                  :default (case line-type
+                             :straight 0
+                             10)
+                  :ui {:label (string "Smoothness")
+                       :tooltip (string "This might smooth out some remaining corners, best used together with corner radius.")
+                       :step 0.1}}
+     :line (update-in (line/options (c/++ context :line)
+                                    :fimbriation? false
+                                    :corner-dampening? true)
+                      [:type :choices]
+                      (fn [choices]
+                        (into []
+                              (remove (fn [[_ line-type]]
+                                        (and (not= line-type :straight)
+                                             (-> line-type line/kinds-pattern-map :full?))))
+                              choices)))
+     :outline? options/plain-outline?-option}))
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
