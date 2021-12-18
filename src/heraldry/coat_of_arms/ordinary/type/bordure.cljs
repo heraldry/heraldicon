@@ -67,7 +67,8 @@
         environment-shape (environment/effective-shape environment)
         bordure-shape (environment/shrink-shape environment-shape thickness :round)
         bordure-shape (cond-> (path/round-corners bordure-shape corner-radius smoothness)
-                        (not= line-type :straight) (line/modify-path (c/++ context :line)
+                        (not= line-type :straight) (line/modify-path (interface/get-sanitized-data
+                                                                      (c/++ context :line))
                                                                      environment))
         part [{:paths [environment-shape
                        bordure-shape]}

@@ -717,13 +717,12 @@
         (process-fn y dist)
         y))))
 
-(defn modify-path [path context environment & {:keys [outer-shape?]}]
-  (let [{:keys [type
-                width
-                corner-dampening-radius
-                corner-dampening-mode]
-         :as line} (interface/get-sanitized-data context)
-        pattern-data (get kinds-pattern-map type)
+(defn -modify-path [path {:keys [type
+                                 width
+                                 corner-dampening-radius
+                                 corner-dampening-mode]
+                          :as line} environment & {:keys [outer-shape?]}]
+  (let [pattern-data (get kinds-pattern-map type)
         guiding-path (cond-> path
                        (not (path/clockwise? path)) (->
                                                      path/parse-path
@@ -809,3 +808,6 @@
                                "M" "L") p])))
         path/make-path
         (str "z"))))
+
+(def modify-path
+  (memoize -modify-path))

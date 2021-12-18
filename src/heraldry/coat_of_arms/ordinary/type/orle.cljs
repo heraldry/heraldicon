@@ -85,12 +85,14 @@
         environment-shape (environment/effective-shape environment)
         outer-shape (environment/shrink-shape environment-shape distance :round)
         outer-shape (cond-> (path/round-corners outer-shape corner-radius smoothness)
-                      (not= line-type :straight) (line/modify-path (c/++ context :line)
+                      (not= line-type :straight) (line/modify-path (interface/get-sanitized-data
+                                                                    (c/++ context :line))
                                                                    environment
                                                                    :outer-shape? true))
         inner-shape (environment/shrink-shape environment-shape (+ distance thickness) :round)
         inner-shape (cond-> (path/round-corners inner-shape corner-radius smoothness)
-                      (not= opposite-line-type :straight) (line/modify-path (c/++ context :opposite-line)
+                      (not= opposite-line-type :straight) (line/modify-path (interface/get-sanitized-data
+                                                                             (c/++ context :opposite-line))
                                                                             environment))
         part [{:paths [outer-shape
                        inner-shape]}
