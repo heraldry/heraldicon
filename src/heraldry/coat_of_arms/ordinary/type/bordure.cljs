@@ -36,8 +36,15 @@
                 :ui {:label (string "Smoothness")
                      :tooltip (string "This might smooth out some remaining corners, best used together with corner radius.")
                      :step 0.1}}
-   :line (line/options (c/++ context :line)
-                       :fimbriation? false)
+   :line (update-in (line/options (c/++ context :line)
+                                  :fimbriation? false)
+                    [:type :choices]
+                    (fn [choices]
+                      (into []
+                            (remove (fn [[_ line-type]]
+                                      (and (not= line-type :straight)
+                                           (-> line-type line/kinds-pattern-map :full?))))
+                            choices)))
    :outline? options/plain-outline?-option})
 
 (defmethod ordinary-interface/render-ordinary ordinary-type
