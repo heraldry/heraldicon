@@ -86,12 +86,15 @@
 (defn length [path]
   (.-length path))
 
-(defn -sample-path [path precision start-offset]
+(defn -sample-path [path & {:keys [start-offset
+                                   precision
+                                   num-points]}]
   (let [parsed-path (parse-path path)
         full-length (length parsed-path)
-        n (-> full-length
-              (/ precision)
-              Math/floor)]
+        n (or num-points
+              (-> full-length
+                  (/ precision)
+                  Math/floor))]
     (points parsed-path n :start-offset start-offset)))
 
 (def sample-path
@@ -99,7 +102,7 @@
 
 (defn -simplify-path [path smoothness]
   (-> path
-      (sample-path smoothness)
+      (sample-path :precision smoothness)
       catmullrom/catmullrom
       curve-to-relative))
 
@@ -183,7 +186,9 @@
   (cond-> (if (zero? corner-radius)
             path
             (let [precision 0.1
-                  path-points (sample-path path precision 0)
+                  path-points (sample-path path
+                                           :start-offset 0
+                                           :precision precision)
                   sample-total (count path-points)
                   corners (-> (find-corners path-points precision 3)
                               (add-max-radius-to-corners (count path-points)))
@@ -224,7 +229,8 @@
                                              end-p2]
                                             ["L" end-p1]]
                                            make-path)
-                            rounded-corner-points (sample-path patch-path precision nil)
+                            rounded-corner-points (sample-path patch-path
+                                                               :precision precision)
                             new-last-index (inc end-index)
                             new-final-index (if (> start-index end-index)
                                               start-index

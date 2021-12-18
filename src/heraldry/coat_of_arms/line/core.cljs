@@ -754,7 +754,8 @@
                          (* full-length)
                          (+ offset))
         path-points (-> guiding-path
-                        (path/sample-path precision start-offset)
+                        (path/sample-path :precision precision
+                                          :start-offset start-offset)
                         ;; TODO: add normalization to clockwise
                         add-normals)
         sample-total (count path-points)
