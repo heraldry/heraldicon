@@ -181,20 +181,30 @@
       raw-corners)))
 
 (defn add-max-radius-to-corners [corners num-points]
-  (->> (concat [(last corners)] corners [(first corners)])
-       (partition 3 1)
-       (mapv (fn [[{previous-index :index} {index :index :as corner} {next-index :index}]]
-               (assoc corner
-                      :max-radius-left (-> index
-                                           (- previous-index)
-                                           (mod num-points)
-                                           (quot 2)
-                                           dec)
-                      :max-radius-right (-> next-index
-                                            (- index)
-                                            (mod num-points)
-                                            (quot 2)
-                                            dec))))))
+  (case (count corners)
+    0 []
+    1 (let [corner (first corners)]
+        [(assoc corner
+                :max-radius-left (-> num-points
+                                     (quot 2)
+                                     dec)
+                :max-radius-right (-> num-points
+                                      (quot 2)
+                                      dec))])
+    (->> (concat [(last corners)] corners [(first corners)])
+         (partition 3 1)
+         (mapv (fn [[{previous-index :index} {index :index :as corner} {next-index :index}]]
+                 (assoc corner
+                        :max-radius-left (-> index
+                                             (- previous-index)
+                                             (mod num-points)
+                                             (quot 2)
+                                             dec)
+                        :max-radius-right (-> next-index
+                                              (- index)
+                                              (mod num-points)
+                                              (quot 2)
+                                              dec)))))))
 
 (defn round-corners [path corner-radius smoothness]
   (cond-> (if (zero? corner-radius)
