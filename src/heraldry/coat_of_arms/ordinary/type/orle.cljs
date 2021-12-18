@@ -51,13 +51,13 @@
                                 5)
                      :ui {:label (string "Corner radius")
                           :step 0.1}}
-     :smoothness {:type :range
-                  :min 0
-                  :max 20
-                  :default 0
-                  :ui {:label (string "Smoothness")
-                       :tooltip (string "This might smooth out some remaining corners, best used together with corner radius.")
-                       :step 0.1}}
+     :smoothing {:type :range
+                 :min 0
+                 :max 20
+                 :default 0
+                 :ui {:label (string "Smoothing")
+                      :tooltip (string "This might smooth out some remaining corners, best used together with corner radius.")
+                      :step 0.1}}
      :line (adjust-line-style
             (line/options (c/++ context :line)
                           :fimbriation? false
@@ -73,7 +73,7 @@
   (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
         distance (interface/get-sanitized-data (c/++ context :distance))
         corner-radius (interface/get-sanitized-data (c/++ context :corner-radius))
-        smoothness (interface/get-sanitized-data (c/++ context :smoothness))
+        smoothing (interface/get-sanitized-data (c/++ context :smoothing))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         line-type (interface/get-sanitized-data (c/++ context :line :type))
@@ -84,13 +84,13 @@
         thickness ((util/percent-of width) thickness)
         environment-shape (environment/effective-shape environment)
         outer-shape (environment/shrink-shape environment-shape distance :round)
-        outer-shape (cond-> (path/round-corners outer-shape corner-radius smoothness)
+        outer-shape (cond-> (path/round-corners outer-shape corner-radius smoothing)
                       (not= opposite-line-type :straight) (line/modify-path (interface/get-sanitized-data
                                                                              (c/++ context :opposite-line))
                                                                             environment
                                                                             :outer-shape? true))
         inner-shape (environment/shrink-shape environment-shape (+ distance thickness) :round)
-        inner-shape (cond-> (path/round-corners inner-shape corner-radius smoothness)
+        inner-shape (cond-> (path/round-corners inner-shape corner-radius smoothing)
                       (not= line-type :straight) (line/modify-path (interface/get-sanitized-data
                                                                     (c/++ context :line))
                                                                    environment))

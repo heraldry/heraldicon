@@ -100,9 +100,9 @@
 (def sample-path
   (memoize -sample-path))
 
-(defn -simplify-path [path smoothness]
+(defn -simplify-path [path smoothing]
   (-> path
-      (sample-path :precision smoothness)
+      (sample-path :precision smoothing)
       catmullrom/catmullrom
       curve-to-relative))
 
@@ -206,7 +206,7 @@
                                               (quot 2)
                                               dec)))))))
 
-(defn round-corners [path corner-radius smoothness]
+(defn round-corners [path corner-radius smoothing]
   (cond-> (if (zero? corner-radius)
             path
             (let [precision 0.1
@@ -274,4 +274,4 @@
                         (< last-index final-index) (concat (subvec path-points last-index final-index)))))
                   catmullrom/catmullrom
                   curve-to-relative)))
-    (pos? smoothness) (simplify-path smoothness)))
+    (pos? smoothing) (simplify-path smoothing)))

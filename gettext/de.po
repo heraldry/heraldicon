@@ -502,10 +502,6 @@ msgid "Primary"
 msgstr "Primär"
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
-msgid "Remove"
-msgstr "Entfernen"
-
-#: src/heraldry/coat_of_arms/charge/shared.cljs
 msgid "Vertical mask"
 msgstr "Vertikale Maske"
 
@@ -840,8 +836,32 @@ msgid "Offset"
 msgstr "Offset"
 
 #: src/heraldry/coat_of_arms/line/core.cljs
-msgid "Base line"
-msgstr "Basisline"
+msgid "Clamp to zero"
+msgstr "Auf Null setzen"
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Linear dampening"
+msgstr "Linear abflachen"
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Square root dampening"
+msgstr "Wurzel abflachen"
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Dampening mode"
+msgstr "Abflachmodus"
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid ""
+"The way the line is adjusted near corners. Different styles work better with "
+"different modes."
+msgstr ""
+"Die Art wie die Linie in der Nähe von Ecken angepaßt wird. Verschiedene "
+"Linienstile funktionieren besser mit verschiedenen Modi."
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Flipped"
+msgstr "Umgedreht"
 
 #: src/heraldry/coat_of_arms/geometry.cljs
 #: src/heraldry/coat_of_arms/line/core.cljs
@@ -849,8 +869,16 @@ msgid "Mirrored"
 msgstr "Gespiegelt"
 
 #: src/heraldry/coat_of_arms/line/core.cljs
-msgid "Flipped"
-msgstr "Umgedreht"
+msgid "Dampening radius"
+msgstr "Abflachungsradius"
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "How far around corners the dampening mode is applied."
+msgstr "In welcher Umgebung einer Ecke der Abflachungsmodus angewandt wird."
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Base line"
+msgstr "Basisline"
 
 #: src/heraldry/coat_of_arms/cottising.cljs
 #: src/heraldry/coat_of_arms/line/core.cljs
@@ -1041,6 +1069,25 @@ msgstr "Innenbord"
 #: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
 msgid "Distance"
 msgstr "Abstand"
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "Corner radius"
+msgstr "Rundungsradius"
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "Smoothing"
+msgstr "Glättung"
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid ""
+"This might smooth out some remaining corners, best used together with corner "
+"radius."
+msgstr ""
+"Damit lassen sich einige kleine Hügel und Ecken ausgleichen, funktioniert am "
+"besten mit einem Rundungsradius für Ecken."
 
 #: src/heraldry/coat_of_arms/ordinary/type/pale.cljs
 msgid "Pale"
@@ -2504,6 +2551,15 @@ msgstr "gesäumt"
 msgid "Select Line Type"
 msgstr "Schnitt auswählen"
 
+#: src/heraldry/frontend/ui/element/metadata.cljs
+msgid "Select Preset"
+msgstr "Vorauswahl"
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+#: src/heraldry/frontend/ui/element/metadata.cljs
+msgid "Remove"
+msgstr "Entfernen"
+
 #: src/heraldry/frontend/ui/element/ordinary_type_select.cljs
 msgid "Select Ordinary"
 msgstr "Heroldsbild auswählen"
@@ -2545,6 +2601,7 @@ msgstr "Farbschema auswählen"
 #: src/heraldry/frontend/ui/element/arms_reference_select.cljs
 #: src/heraldry/frontend/ui/element/colours.cljs
 #: src/heraldry/frontend/ui/element/fimbriation.cljs
+#: src/heraldry/frontend/ui/element/metadata.cljs
 #: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 #: src/heraldry/frontend/ui/element/tincture_modifiers.cljs
 msgid "None"
@@ -2735,6 +2792,7 @@ msgstr ""
 "Dieses Feature ist noch nicht fertig und wird sich wahrscheinlich noch "
 "ändern, benutze es mit Vorsicht. :)"
 
+#: src/heraldry/frontend/ui/element/metadata.cljs
 #: src/heraldry/frontend/ui/element/tags.cljs
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 #: src/heraldry/frontend/ui/form/collection.cljs
@@ -2995,6 +3053,7 @@ msgstr "Neues Passwort"
 msgid "New password again"
 msgstr "Neues Passwort nochmal"
 
+#: src/heraldry/frontend/ui/element/metadata.cljs
 #: src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/user.cljs
 msgid "Change"
 msgstr "Ändern"
@@ -3158,6 +3217,10 @@ msgstr "Deutsch"
 #: src/heraldry/gettext.cljs
 msgid "Russian"
 msgstr "Russisch"
+
+#: src/heraldry/metadata.cljs
+msgid "Metadata"
+msgstr "Metadaten"
 
 #: src/heraldry/frontend/ui/form/motto.cljs
 #: src/heraldry/frontend/ui/form/ornaments.cljs src/heraldry/motto.cljs
