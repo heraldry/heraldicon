@@ -104,8 +104,8 @@
 (def simplify-path
   (memoize -simplify-path))
 
-(defn find-corners [points]
-  (let [d 30
+(defn find-corners [points precision detection-radius]
+  (let [d (/ detection-radius precision)
         sample-total (count points)
         cutoff-angle 45
         cutoff-dot-product (-> cutoff-angle
@@ -113,7 +113,7 @@
                                (/ 180)
                                Math/cos
                                Math/abs)
-        deduping-index-radius 30
+        deduping-index-radius d
         raw-corners (->> (range sample-total)
                          (map (fn [index]
                                 (let [p (get points index)
@@ -139,14 +139,22 @@
                                  []))
         first-corner (first raw-corners)
         last-corner (last raw-corners)]
-    (if (-> (first first-corner)
-            (+ sample-total)
-            (- (first last-corner))
-            Math/abs
-            (<= deduping-index-radius))
-      (-> raw-corners
-          drop-last
-          vec)
+    (if (and (> (count raw-corners) 1)
+             (-> (first first-corner)
+                 (+ sample-total)
+                 (- (first last-corner))
+                 Math/abs
+                 (<= deduping-index-radius)))
+      (if (< (second first-corner)
+             (second last-corner))
+        (-> raw-corners
+            drop-last
+            vec)
+        (->> raw-corners
+             drop-last
+             (drop 1)
+             (concat [(last raw-corners)])
+             vec))
       raw-corners)))
 
 (defn round-corners [path corner-radius]
@@ -160,7 +168,7 @@
                            (/ precision)
                            Math/floor)
           path-points (sample-path path sample-total 0)
-          corners (find-corners path-points)
+          corners (find-corners path-points precision 3)
           diff-index (-> corner-radius
                          (/ precision)
                          Math/floor)]

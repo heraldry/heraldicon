@@ -699,8 +699,9 @@
                         Math/floor
                         inc)
         pattern-width (/ full-length repetitions)
+        precision 0.05
         sample-total (-> full-length
-                         (* 20)
+                         (/ precision)
                          Math/floor)
         path-x-steps (/ full-length sample-total)
         line-function (:function pattern-data)
@@ -736,10 +737,11 @@
         line-pattern-parsed-path (path/parse-path line-pattern-path)
         sample-per-pattern (-> line-pattern-parsed-path
                                path/length
-                               (* 20))
+                               (/ precision)
+                               Math/floor)
         line-pattern-points (-> line-pattern-parsed-path
                                 (path/points sample-per-pattern))
-        corners (->> (path/find-corners path-points)
+        corners (->> (path/find-corners path-points precision 3)
                      (mapv (fn [[index dot-product]]
                              [index (* index path-x-steps) dot-product])))]
     (-> (for [pattern-i (range repetitions)
