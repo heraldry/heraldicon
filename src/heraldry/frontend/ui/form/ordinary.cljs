@@ -55,7 +55,7 @@
     :distance
     :thickness
     :corner-radius
-    :smoothness
+    :smoothing
     :num-points
     :humetty
     :voided

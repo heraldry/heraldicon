@@ -212,7 +212,7 @@
                                      [(string "Square root dampening") :square-root-dampening]]
                            :default :clamp-to-zero
                            :ui {:label (string "Dampening mode")
-                                :tooltip (string "The way the line is adjusted near corners. Different styles work better with different modes")
+                                :tooltip (string "The way the line is adjusted near corners. Different styles work better with different modes.")
                                 :step 0.01}}
    :mirrored? {:type :boolean
                :default false

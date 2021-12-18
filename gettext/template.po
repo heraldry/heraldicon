@@ -475,10 +475,6 @@ msgid "Primary"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
-msgid "Remove"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/charge/shared.cljs
 msgid "Vertical mask"
 msgstr ""
 
@@ -787,7 +783,27 @@ msgid "Offset"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/line/core.cljs
-msgid "Base line"
+msgid "Clamp to zero"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Linear dampening"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Square root dampening"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Dampening mode"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "The way the line is adjusted near corners. Different styles work better with different modes."
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Flipped"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/geometry.cljs src/heraldry/coat_of_arms/line/core.cljs
@@ -795,7 +811,15 @@ msgid "Mirrored"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/line/core.cljs
-msgid "Flipped"
+msgid "Dampening radius"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "How far around corners the dampening mode is applied."
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Base line"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/cottising.cljs src/heraldry/coat_of_arms/line/core.cljs
@@ -980,6 +1004,18 @@ msgstr ""
 
 #: src/heraldry/coat_of_arms/charge_group/options.cljs src/heraldry/coat_of_arms/cottising.cljs src/heraldry/coat_of_arms/humetty.cljs src/heraldry/coat_of_arms/ordinary/type/orle.cljs
 msgid "Distance"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "Corner radius"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "Smoothing"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "This might smooth out some remaining corners, best used together with corner radius."
 msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/pale.cljs
@@ -1926,6 +1962,14 @@ msgstr ""
 msgid "Select Line Type"
 msgstr ""
 
+#: src/heraldry/frontend/ui/element/metadata.cljs
+msgid "Select Preset"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs src/heraldry/frontend/ui/element/metadata.cljs
+msgid "Remove"
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/ordinary_type_select.cljs
 msgid "Select Ordinary"
 msgstr ""
@@ -1954,7 +1998,7 @@ msgstr ""
 msgid "Select Colour Theme"
 msgstr ""
 
-#: src/heraldry/attribution.cljs src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/escutcheon.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/texture.cljs src/heraldry/frontend/filter.cljs src/heraldry/frontend/ui/element/arms_reference_select.cljs src/heraldry/frontend/ui/element/colours.cljs src/heraldry/frontend/ui/element/fimbriation.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs src/heraldry/frontend/ui/element/tincture_modifiers.cljs
+#: src/heraldry/attribution.cljs src/heraldry/coat_of_arms/attributes.cljs src/heraldry/coat_of_arms/escutcheon.cljs src/heraldry/coat_of_arms/line/fimbriation.cljs src/heraldry/coat_of_arms/texture.cljs src/heraldry/frontend/filter.cljs src/heraldry/frontend/ui/element/arms_reference_select.cljs src/heraldry/frontend/ui/element/colours.cljs src/heraldry/frontend/ui/element/fimbriation.cljs src/heraldry/frontend/ui/element/metadata.cljs src/heraldry/frontend/ui/element/ribbon_reference_select.cljs src/heraldry/frontend/ui/element/tincture_modifiers.cljs
 msgid "None"
 msgstr ""
 
@@ -2094,7 +2138,7 @@ msgstr ""
 msgid "This feature is incomplete and likely going to change, so use with caution. :)"
 msgstr ""
 
-#: src/heraldry/frontend/ui/element/tags.cljs src/heraldry/frontend/ui/form/charge_group.cljs src/heraldry/frontend/ui/form/collection.cljs src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/ui/form/helm.cljs src/heraldry/frontend/ui/form/ordinary.cljs src/heraldry/frontend/ui/form/ornaments.cljs
+#: src/heraldry/frontend/ui/element/metadata.cljs src/heraldry/frontend/ui/element/tags.cljs src/heraldry/frontend/ui/form/charge_group.cljs src/heraldry/frontend/ui/form/collection.cljs src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/ui/form/helm.cljs src/heraldry/frontend/ui/form/ordinary.cljs src/heraldry/frontend/ui/form/ornaments.cljs
 msgid "Add"
 msgstr ""
 
@@ -2298,7 +2342,7 @@ msgstr ""
 msgid "New password again"
 msgstr ""
 
-#: src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/user.cljs
+#: src/heraldry/frontend/ui/element/metadata.cljs src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/user.cljs
 msgid "Change"
 msgstr ""
 
@@ -2428,6 +2472,10 @@ msgstr ""
 
 #: src/heraldry/gettext.cljs
 msgid "Russian"
+msgstr ""
+
+#: src/heraldry/metadata.cljs
+msgid "Metadata"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/motto.cljs src/heraldry/frontend/ui/form/ornaments.cljs src/heraldry/motto.cljs
