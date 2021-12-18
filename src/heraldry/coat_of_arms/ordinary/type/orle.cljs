@@ -33,7 +33,7 @@
     {:thickness {:type :range
                  :min 0.1
                  :max 20
-                 :default 10
+                 :default 5
                  :ui {:label (string "Thickness")
                       :step 0.1}}
      :distance {:type :range
