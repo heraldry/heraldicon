@@ -235,14 +235,13 @@
                                                 (concat rounded-corner-points)
                                                 vec)]
                         (recur rest new-path-points new-last-index new-final-index))
-                      (do
-                        ;; TODO: there's a special case here if the last corner reaches
-                        ;; into the beginning of the path, then this algorithm doesn't
-                        ;; behave well and the last step pretty much doubles it, because
-                        ;; of this "rest" being added, and portion at the start of the
-                        ;; path not being removed
-                        (cond-> new-path-points
-                          (< last-index final-index) (concat (subvec path-points last-index final-index))))))
+                      ;; TODO: there's a special case here if the last corner reaches
+                      ;; into the beginning of the path, then this algorithm doesn't
+                      ;; behave well and the last step pretty much doubles it, because
+                      ;; of this "rest" being added, and portion at the start of the
+                      ;; path not being removed
+                      (cond-> new-path-points
+                        (< last-index final-index) (concat (subvec path-points last-index final-index)))))
                   catmullrom/catmullrom
                   curve-to-relative)))
     (pos? smoothness) (simplify-path smoothness)))
