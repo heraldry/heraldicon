@@ -109,6 +109,20 @@
 (def simplify-path
   (memoize -simplify-path))
 
+(defn clockwise? [path]
+  (let [points (sample-path path :num-points 20)]
+    (->> (conj points (first points))
+         (partition 2 1)
+         (map (fn [[{x1 :x y1 :y}
+                    {x2 :x y2 :y}]]
+                (* (- x2 x1) (+ y1 y2))))
+         (reduce + 0)
+         ;; we're in an upside down cartesian system, so negative
+         ;; here means clockwise, the case 0 means the path doesn't
+         ;; have a dominant clockwise or counter-clockwise portion,
+         ;; so "false" also is the correct value for that case
+         neg?)))
+
 (defn find-corners [points precision detection-radius]
   (let [d (/ detection-radius precision)
         sample-total (count points)
