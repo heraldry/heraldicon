@@ -660,6 +660,9 @@
                [(first points)])
        (partition 3 1)
        (mapv (fn [[p1 p2 p3]]
+               ;; this adds the normal to the LEFT in vector direction p1 -> p3,
+               ;; which for a clockwise closed path means the normals are pointing
+               ;; outwards
                (assoc p2 :normal (-> p3
                                      (v/sub p1)
                                      v/orthogonal
@@ -721,7 +724,11 @@
                 corner-dampening-mode]
          :as line} (interface/get-sanitized-data context)
         pattern-data (get kinds-pattern-map type)
-        guiding-path path #_(simplify-path path)
+        guiding-path (cond-> path
+                       (not (path/clockwise? path)) (->
+                                                     path/parse-path
+                                                     path/reverse
+                                                     path/to-svg))
         full-length (-> guiding-path
                         path/parse-path
                         path/length)
@@ -756,7 +763,6 @@
         path-points (-> guiding-path
                         (path/sample-path :precision precision
                                           :start-offset start-offset)
-                        ;; TODO: add normalization to clockwise
                         add-normals)
         sample-total (count path-points)
         path-x-steps (/ full-length sample-total)
@@ -789,6 +795,9 @@
                 y-dir (:normal point-on-curve)
                 y-value (process-y-value x-on-path (:y real-point) full-length corners
                                          corner-dampening-radius corner-dampening-mode)]
+            ;; the y-value will usually be negative, but the normals
+            ;; will also point outwards from the shape, so this will
+            ;; build a path on the inside of the shape
             (-> y-dir
                 (v/mul y-value)
                 (v/add point-on-curve))))
