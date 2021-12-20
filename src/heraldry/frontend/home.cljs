@@ -59,8 +59,8 @@
         [:li "there are a few more escutcheon choices for Norman shields and flag variants"]
         [:li "the interface should be MUCH faster now due to a rewrite of large parts of it"]
         [:li "there's a dedicated "
-         [:li [:a {:href "https://discord.gg/EGbMW8dth2" :target "_blank"} "Discord"]
-          " server now, where my username is " [:em "or#5915"]]]]]
+         [:a {:href "https://discord.gg/EGbMW8dth2" :target "_blank"} "Discord"]
+         " server now, where my username is " [:em "or#5915"]]]]
 
       [:li "Known issues"
        [:ul
