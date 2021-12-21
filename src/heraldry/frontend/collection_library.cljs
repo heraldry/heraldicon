@@ -155,7 +155,7 @@
   (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :collection :elements index)]))
 
 (defn render-collection [& {:keys [allow-adding?]}]
-  (let [font (some-> (interface/get-raw-data {:path (conj form-db-path :font)})
+  (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :font)})
                      font/css-string)
         num-columns (interface/get-sanitized-data {:path (conj form-db-path :collection :num-columns)})
         num-elements (interface/get-list-size {:path (conj form-db-path :collection :elements)})
