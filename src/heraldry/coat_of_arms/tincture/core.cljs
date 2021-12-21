@@ -152,7 +152,7 @@
                             (str "url(#" id ")"))
       (= mode :hatching) (or
                           (hatching/get-for tincture)
-                          "#888")
+                          "#eee")
       :else (or (lookup-colour tincture theme)
                 (get special tincture)
                 "url(#void)"))))
