@@ -32,7 +32,7 @@
       (assoc-in db slots-path (assoc slots slot-index new-value)))))
 
 (macros/reg-event-db :remove-charge-group-charge
-  (fn [db [_ path]]
+  (fn [db [_ {:keys [path]}]]
     (let [elements-path (drop-last path)
           strips-context (-> path
                              (->> (drop-last 2))
@@ -67,7 +67,7 @@
           (state/element-order-changed elements-path index nil)))))
 
 (macros/reg-event-db :move-charge-group-charge-up
-  (fn [db [_ path]]
+  (fn [db [_ {:keys [path]}]]
     (let [elements-path (drop-last path)
           strips-context (-> path
                              (->> (drop-last 2))
@@ -116,7 +116,7 @@
       (assoc-in db path elements))))
 
 (macros/reg-event-db :move-charge-group-charge-down
-  (fn [db [_ path]]
+  (fn [db [_ {:keys [path]}]]
     (let [elements-path (drop-last path)
           strips-context (-> path
                              (->> (drop-last 2))
