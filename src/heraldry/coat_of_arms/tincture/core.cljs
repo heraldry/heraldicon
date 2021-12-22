@@ -176,6 +176,9 @@
                                  transform]}]
   (let [tincture (interface/get-sanitized-data (c/++ context :tincture))
         pattern-scaling (interface/get-sanitized-data (c/++ context :pattern-scaling))
+        pattern-rotation (interface/get-sanitized-data (c/++ context :pattern-rotation))
+        pattern-offset-x (interface/get-sanitized-data (c/++ context :pattern-offset-x))
+        pattern-offset-y (interface/get-sanitized-data (c/++ context :pattern-offset-y))
         theme (interface/render-option :theme context)
         theme (if (and (:svg-export? context)
                        (= theme :all))
@@ -196,7 +199,12 @@
                   :width 2000
                   :height 2000
                   :transform (cond-> transform
-                               pattern-scaling (str "scale(" pattern-scaling "," pattern-scaling ")"))
+                               (and pattern-offset-x
+                                    pattern-offset-y) (str "translate("
+                                                           pattern-offset-x ","
+                                                           pattern-offset-y ")")
+                               pattern-scaling (str "scale(" pattern-scaling "," pattern-scaling ")")
+                               pattern-rotation (str "rotate(" pattern-rotation ")"))
                   :fill colour
                   :on-click (when (and (not svg-export?)
                                        select-component-fn)

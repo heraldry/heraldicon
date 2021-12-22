@@ -50,6 +50,9 @@
      :type
      :tincture
      :pattern-scaling
+     :pattern-rotation
+     :pattern-offset-x
+     :pattern-offset-y
      :line
      :opposite-line
      :extra-line
@@ -71,7 +74,10 @@
         ^{:key idx}
         [:<>
          [tincture-select/tincture-select (c/++ context :fields idx :tincture)]
-         [ui-interface/form-element (c/++ context :fields idx :pattern-scaling)]])])])
+         [ui-interface/form-element (c/++ context :fields idx :pattern-scaling)]
+         [ui-interface/form-element (c/++ context :fields idx :pattern-rotation)]
+         [ui-interface/form-element (c/++ context :fields idx :pattern-offset-x)]
+         [ui-interface/form-element (c/++ context :fields idx :pattern-offset-y)]])])])
 
 (defn parent-context [{:keys [path] :as context}]
   (let [index (last path)
