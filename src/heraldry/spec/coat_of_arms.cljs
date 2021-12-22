@@ -62,8 +62,8 @@
                                                           :heraldry.field.layout/stretch-y
                                                           :heraldry.field.layout/rotation])))
 (s/def :heraldry.field/fields (s/coll-of :heraldry/field :into []))
-(s/def :heraldry.field/outline? boolean?)
-(s/def :heraldry.field/inherit-environment? boolean?)
+(s/def :heraldry.field/outline? (s/nilable boolean?))
+(s/def :heraldry.field/inherit-environment? (s/nilable boolean?))
 (s/def :heraldry.field/components (s/coll-of #(or (s/valid? :heraldry/ordinary %)
                                                   (s/valid? :heraldry/charge %)
                                                   (s/valid? :heraldry/charge-group %)
