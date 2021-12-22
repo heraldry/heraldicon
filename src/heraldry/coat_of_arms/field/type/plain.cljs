@@ -24,7 +24,25 @@
                                                         :max 3
                                                         :default 1
                                                         :ui {:label (string "Pattern scaling")
-                                                             :step 0.01}}))))
+                                                             :step 0.01}}
+                                      :pattern-rotation {:type :range
+                                                         :min -180
+                                                         :max 180
+                                                         :default 0
+                                                         :ui {:label (string "Pattern rotation")
+                                                              :step 0.01}}
+                                      :pattern-offset-x {:type :range
+                                                         :min 0
+                                                         :max 10
+                                                         :default 0
+                                                         :ui {:label (string "Pattern offset x")
+                                                              :step 0.01}}
+                                      :pattern-offset-y {:type :range
+                                                         :min 0
+                                                         :max 10
+                                                         :default 0
+                                                         :ui {:label (string "Pattern offset y")
+                                                              :step 0.01}}))))
 
 (defmethod field-interface/render-field field-type
   [context]
