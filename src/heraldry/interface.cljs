@@ -39,25 +39,10 @@
 (defmethod options-subscriptions nil [_context]
   nil)
 
-(defn enrich-context-for-subscription [context]
-  (let [option-path @(rf/subscribe [:heraldry.state/option-path context])
-        option-context (c/<< context :path option-path)
-        component-type @(rf/subscribe [:heraldry.state/component-type option-context])
-        entity-type @(rf/subscribe [:get (:path (c/++ option-context :type))])]
-    (-> (select-keys
-         context
-         [:path
-          :render-options-path
-          :dispatch-value
-          :entity-type])
-        (assoc :subscription-dispatch-data {:option-path option-path
-                                            :component-type component-type
-                                            :entity-type entity-type}))))
-
 ;; TODO: this is one of the biggest potential bottle necks
 (defn get-relevant-options [{:keys [path] :as context}]
   (if (-> path first (not= :context))
-    @(rf/subscribe [:heraldry.state/options (enrich-context-for-subscription context)])
+    @(rf/subscribe [:heraldry.state/options (:path context)])
     (let [[options relative-path] (or (->> (range (count path) 0 -1)
                                            (keep (fn [idx]
                                                    (let [option-path (subvec path 0 idx)
@@ -90,7 +75,7 @@
     (let [data (get-raw-data context)
           options (get-relevant-options context)]
       (options/sanitize-value-or-data data options))
-    @(rf/subscribe [:heraldry.state/sanitized-data (enrich-context-for-subscription context)])))
+    @(rf/subscribe [:heraldry.state/sanitized-data (:path context)])))
 
 (defn get-list-size [{:keys [path] :as context}]
   (if (-> path first (= :context))
