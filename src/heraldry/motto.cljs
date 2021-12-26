@@ -5,7 +5,6 @@
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.options :as options]
    [heraldry.ribbon :as ribbon]))
 
 (def tinctures-without-furs
@@ -23,7 +22,8 @@
    :ui {:label (string "Type")}})
 
 (defmethod interface/options-subscriptions :heraldry.component/motto [_context]
-  options/shared-options-subscriptions)
+  #{[:type]
+    [:ribbon-variant]})
 
 (defmethod interface/options :heraldry.component/motto [context]
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
