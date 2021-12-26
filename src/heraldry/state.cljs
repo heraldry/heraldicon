@@ -26,30 +26,37 @@
   (fn [raw-type [_ path]]
     (component/effective-type path raw-type)))
 
+(rf/reg-sub ::options-subscriptions-data
+  (fn [[_ path] _]
+    [(rf/subscribe [::component-type path])
+     (rf/subscribe [:get (conj path :type)])])
+
+  (fn [[component-type entity-type] [_ path]]
+    ;; TODO: entity-type could be a line style, which here doesn't count as
+    ;; component on its own; probably would be cleaner to deal with that special
+    ;; case (and others?) in a less magical way than checking for a namespace
+    (when (or component-type
+              (some-> entity-type namespace))
+      (let [context {:path path
+                     :dispatch-value component-type
+                     :entity-type entity-type}]
+        (assoc context :required-subscriptions (interface/options-subscriptions context))))))
+
 (rf/reg-sub-raw ::options
   (fn [_app-db [_ path]]
     (reaction
      (when (seq path)
-       (let [component-type @(rf/subscribe [::component-type path])
-             entity-type @(rf/subscribe [:get (conj path :type)])]
-         ;; TODO: entity-type could be a line style, which here doesn't count as
-         ;; component on its own; probably would be cleaner to deal with that special
-         ;; case (and others?) in a less magical way than checking for a namespace
-         (if (or component-type
-                 (some-> entity-type namespace))
-           (let [context {:path path
-                          :dispatch-value component-type
-                          :entity-type entity-type}]
-             (-> context
-                 (assoc :subscriptions {:base-path path
-                                        :data (->> (interface/options-subscriptions context)
-                                                   (map (fn [relative-path]
-                                                          [relative-path
-                                                           @(rf/subscribe [:get (vec (concat path relative-path))])]))
-                                                   (into {}))})
-                 interface/options))
-           (-> @(rf/subscribe [::options (pop path)])
-               (get (last path)))))))))
+       (if-let [context @(rf/subscribe [::options-subscriptions-data path])]
+         (-> context
+             (assoc :subscriptions {:base-path path
+                                    :data (->> (:required-subscriptions context)
+                                               (map (fn [relative-path]
+                                                      [relative-path
+                                                       @(rf/subscribe [:get (vec (concat path relative-path))])]))
+                                               (into {}))})
+             interface/options)
+         (-> @(rf/subscribe [::options (pop path)])
+             (get (last path))))))))
 
 (rf/reg-sub ::sanitized-data
   (fn [[_ path] _]
