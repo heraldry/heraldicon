@@ -30,6 +30,7 @@
                                       :tooltip (string "move up")
                                       :handler #(state/dispatch-on-event % [:move-element element-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
+                                      :remove? true
                                       :tooltip (string "remove")
                                       :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
                  vec)}))

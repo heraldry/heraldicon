@@ -73,6 +73,7 @@
                                               :handler #(state/dispatch-on-event % [:move-element component-context (inc idx)])}]
                                       removable? (conj
                                                   {:icon "far fa-trash-alt"
+                                                   :remove? true
                                                    :tooltip (string "remove")
                                                    :handler #(state/dispatch-on-event
                                                               %
