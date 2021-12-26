@@ -13,7 +13,7 @@
 (rf/reg-sub :semy-layout-submenu-link-name
   (fn [[_ context] _]
     [(rf/subscribe [:get context])
-     (rf/subscribe [:heraldry.state/options context])])
+     (rf/subscribe [:heraldry.state/options (:path context)])])
 
   (fn [[layout options] [_ _path]]
     (let [sanitized-layout (options/sanitize layout options)

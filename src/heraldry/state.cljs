@@ -1,10 +1,10 @@
 (ns heraldry.state
   (:require
    [heraldry.component :as component]
-   [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf])
+  (:require-macros [reagent.ratom :refer [reaction]]))
 
 (rf/reg-sub :get
   (fn [db [_ path]]
@@ -20,66 +20,41 @@
     (count value)))
 
 (rf/reg-sub ::component-type
-  (fn [[_ context] _]
-    (rf/subscribe [:get (:path (c/++ context :type))]))
+  (fn [[_ path] _]
+    (rf/subscribe [:get (conj path :type)]))
 
-  (fn [raw-type [_ context]]
-    (component/effective-type (:path context) raw-type)))
+  (fn [raw-type [_ path]]
+    (component/effective-type path raw-type)))
 
-(rf/reg-sub ::options-for-component
-  (fn [[_ {:keys [subscription-dispatch-data] :as context}] _]
-    (let [{:keys [component-type
-                  entity-type]} subscription-dispatch-data]
-      (->> (interface/options-subscriptions
-            (-> context
-                (assoc :dispatch-value component-type)
-                (assoc :entity-type entity-type)))
-           (map (fn [relative-path]
-                  [relative-path (rf/subscribe [:get
-                                                (:path (apply c/++ context relative-path))])]))
-           (into {}))))
-
-  (fn [subscription-data [_ {:keys [subscription-dispatch-data] :as context}]]
-    (let [{:keys [component-type
-                  entity-type]} subscription-dispatch-data]
-      (when (or component-type entity-type)
-        (let [subscription-context (-> context
-                                       (assoc :dispatch-value component-type
-                                              :entity-type entity-type
-                                              :subscriptions {:base-path (:path context)
-                                                              :data subscription-data}))]
-          (interface/options subscription-context))))))
-
-(rf/reg-sub ::option-path
-  (fn [[_ {:keys [path] :as context}] _]
-    (->> (range (count path))
-         (mapv (fn [length]
-                 (rf/subscribe [::component-type (c/-- context length)])))))
-
-  (fn [component-types [_ {:keys [path]}]]
-    (->> component-types
-         (keep-indexed (fn [idx component-type]
-                         (when (and component-type
-                                    ;; some types are special in that they can't span their own
-                                    ;; option set, but they still have a component node representation
-                                    (not (#{:heraldry.component/cottise} component-type)))
-                           (subvec path 0 (-> path count (- idx))))))
-         first)))
-
-(rf/reg-sub ::options
-  (fn [[_ {:keys [subscription-dispatch-data] :as context}] _]
-    (let [option-path (:option-path subscription-dispatch-data)]
-      (rf/subscribe [::options-for-component (c/<< context :path option-path)])))
-
-  (fn [component-options [_ {:keys [path subscription-dispatch-data]}]]
-    (let [option-path (:option-path subscription-dispatch-data)
-          relative-path (-> option-path count (drop path) vec)]
-      (get-in component-options relative-path))))
+(rf/reg-sub-raw ::options
+  (fn [_app-db [_ path]]
+    (reaction
+     (when (seq path)
+       (let [component-type @(rf/subscribe [::component-type path])
+             entity-type @(rf/subscribe [:get (conj path :type)])]
+         ;; TODO: entity-type could be a line style, which here doesn't count as
+         ;; component on its own; probably would be cleaner to deal with that special
+         ;; case (and others?) in a less magical way than checking for a namespace
+         (if (or component-type
+                 (some-> entity-type namespace))
+           (let [context {:path path
+                          :dispatch-value component-type
+                          :entity-type entity-type}]
+             (-> context
+                 (assoc :subscriptions {:base-path path
+                                        :data (->> (interface/options-subscriptions context)
+                                                   (map (fn [relative-path]
+                                                          [relative-path
+                                                           @(rf/subscribe [:get (vec (concat path relative-path))])]))
+                                                   (into {}))})
+                 interface/options))
+           (-> @(rf/subscribe [::options (pop path)])
+               (get (last path)))))))))
 
 (rf/reg-sub ::sanitized-data
-  (fn [[_ {:keys [path] :as context}] _]
+  (fn [[_ path] _]
     [(rf/subscribe [:get path])
-     (rf/subscribe [::options context])])
+     (rf/subscribe [::options path])])
 
   (fn [[data options] [_ _path]]
     (options/sanitize-value-or-data data options)))
