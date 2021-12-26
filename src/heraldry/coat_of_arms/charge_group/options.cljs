@@ -4,7 +4,6 @@
    [heraldry.context :as c]
    [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
-   [heraldry.options :as options]
    [heraldry.util :as util]))
 
 (def type-choices
@@ -138,7 +137,7 @@
                                     :ui {:label (string "Rotate charges")}}})))
 
 (defmethod interface/options-subscriptions :heraldry.component/charge-group [_context]
-  options/shared-options-subscriptions)
+  #{[:type]})
 
 (defmethod interface/options :heraldry.component/charge-group [context]
   (-> context
@@ -147,7 +146,7 @@
       (assoc :type type-option)))
 
 (defmethod interface/options-subscriptions :heraldry.component/charge-group-strip [_context]
-  options/shared-options-subscriptions)
+  #{[:type]})
 
 (defmethod interface/options :heraldry.component/charge-group-strip [_context]
   {:slots {:type :range
