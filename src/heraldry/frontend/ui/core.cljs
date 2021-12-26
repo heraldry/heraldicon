@@ -163,7 +163,8 @@
                         "#000")}}
       (if openable?
         [:span.node-icon.clickable
-         {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])}
+         {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])
+          :style {:width "0.9em"}}
          [:i.fa.ui-icon {:class (if open?
                                   "fa-angle-down"
                                   "fa-angle-right")}]]
@@ -190,35 +191,41 @@
 
       (validation/render validation)
 
-      (when (seq buttons)
-        (doall
-         (for [[idx {:keys [icon menu handler disabled? tooltip title]}] (map-indexed vector buttons)]
-           (if menu
-             ^{:key idx}
-             [hover-menu/hover-menu
-              (c/++ context idx)
-              title
-              menu
-              [:i.ui-icon {:class icon
-                           :style {:margin-left "0.5em"
-                                   :font-size "0.8em"
-                                   :color (if disabled?
-                                            "#ccc"
-                                            "#777")
-                                   :cursor (when disabled? "not-allowed")}}]
-              :disabled? disabled?
-              :require-click? true]
-             ^{:key icon} [:span.node-icon
-                           {:class (when disabled? "disabled")
-                            :on-click (when-not disabled? handler)
-                            :title tooltip}
-                           [:i.ui-icon {:class icon
-                                        :style {:margin-left "0.5em"
-                                                :font-size "0.8em"
-                                                :color (if disabled?
-                                                         "#ccc"
-                                                         "#777")
-                                                :cursor (when disabled? "not-allowed")}}]]))))]
+      (into [:<>]
+            (comp (filter :menu)
+                  (map-indexed (fn [idx {:keys [icon menu disabled? title]}]
+                                 [hover-menu/hover-menu
+                                  (c/++ context idx)
+                                  title
+                                  menu
+                                  [:i.ui-icon {:class icon
+                                               :style {:margin-left "0.5em"
+                                                       :font-size "0.8em"
+                                                       :color (if disabled?
+                                                                "#ccc"
+                                                                "#777")
+                                                       :cursor (when disabled? "not-allowed")}}]
+                                  :disabled? disabled?
+                                  :require-click? true])))
+            buttons)
+
+      (into [:span {:style {:margin-left "0.5em"}}]
+            (comp (remove :menu)
+                  (map-indexed (fn [idx {:keys [icon handler disabled? tooltip remove?]}]
+                                 [:span.node-icon
+                                  {:class (when disabled? "disabled")
+                                   :title (tr tooltip)
+                                   :style {:margin-left (when (and (pos? idx)
+                                                                   remove?) "0.5em")}}
+                                  [:i.ui-icon {:class icon
+                                               :on-click (when-not disabled? handler)
+                                               :style {:font-size "0.8em"
+                                                       :color (if disabled?
+                                                                "#ccc"
+                                                                "#777")
+                                                       :cursor (when disabled? "not-allowed")}}]])))
+            buttons)]
+
      (when open?
        [:ul
         (for [{node-context :context
