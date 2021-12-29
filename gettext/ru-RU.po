@@ -493,10 +493,6 @@ msgid "Primary"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/charge/shared.cljs
-msgid "Remove"
-msgstr ""
-
-#: src/heraldry/coat_of_arms/charge/shared.cljs
 msgid "Vertical mask"
 msgstr ""
 
@@ -831,7 +827,29 @@ msgid "Offset"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/line/core.cljs
-msgid "Base line"
+msgid "Clamp to zero"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Linear dampening"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Square root dampening"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Dampening mode"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid ""
+"The way the line is adjusted near corners. Different styles work better with"
+" different modes."
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Flipped"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/geometry.cljs
@@ -840,7 +858,15 @@ msgid "Mirrored"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/line/core.cljs
-msgid "Flipped"
+msgid "Dampening radius"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "How far around corners the dampening mode is applied."
+msgstr ""
+
+#: src/heraldry/coat_of_arms/line/core.cljs
+msgid "Base line"
 msgstr ""
 
 #: src/heraldry/coat_of_arms/cottising.cljs
@@ -1032,6 +1058,23 @@ msgstr ""
 #: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
 msgid "Distance"
 msgstr "Расстояние"
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "Corner radius"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid "Smoothing"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/ordinary/type/bordure.cljs
+#: src/heraldry/coat_of_arms/ordinary/type/orle.cljs
+msgid ""
+"This might smooth out some remaining corners, best used together with corner"
+" radius."
+msgstr ""
 
 #: src/heraldry/coat_of_arms/ordinary/type/pale.cljs
 msgid "Pale"
@@ -2068,6 +2111,21 @@ msgstr "Меня можно найти здесь:"
 msgid "my username is"
 msgstr "Мое имя пользователя:"
 
+#: src/heraldry/frontend/contact.cljs
+msgid "Translation"
+msgstr ""
+
+#: src/heraldry/frontend/contact.cljs
+msgid ""
+"Not all strings have been translated yet. If you want to help out or correct"
+" something, or want to add your own language, then reach out on Discord or "
+"the"
+msgstr ""
+
+#: src/heraldry/frontend/contact.cljs
+msgid "transifex project"
+msgstr ""
+
 #: src/heraldry/frontend/filter.cljs
 msgid "Mine only"
 msgstr ""
@@ -2414,6 +2472,15 @@ msgstr ""
 msgid "Select Line Type"
 msgstr ""
 
+#: src/heraldry/frontend/ui/element/metadata.cljs
+msgid "Select Preset"
+msgstr ""
+
+#: src/heraldry/coat_of_arms/charge/shared.cljs
+#: src/heraldry/frontend/ui/element/metadata.cljs
+msgid "Remove"
+msgstr ""
+
 #: src/heraldry/frontend/ui/element/ordinary_type_select.cljs
 msgid "Select Ordinary"
 msgstr ""
@@ -2455,6 +2522,7 @@ msgstr ""
 #: src/heraldry/frontend/ui/element/arms_reference_select.cljs
 #: src/heraldry/frontend/ui/element/colours.cljs
 #: src/heraldry/frontend/ui/element/fimbriation.cljs
+#: src/heraldry/frontend/ui/element/metadata.cljs
 #: src/heraldry/frontend/ui/element/ribbon_reference_select.cljs
 #: src/heraldry/frontend/ui/element/tincture_modifiers.cljs
 msgid "None"
@@ -2645,6 +2713,7 @@ msgstr ""
 "Работу над этой функцией не завершено. Возможны изменения, поэтому "
 "используйте с осторожностью)"
 
+#: src/heraldry/frontend/ui/element/metadata.cljs
 #: src/heraldry/frontend/ui/element/tags.cljs
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 #: src/heraldry/frontend/ui/form/collection.cljs
@@ -2892,6 +2961,7 @@ msgstr "Новый пароль"
 msgid "New password again"
 msgstr "Повторите новый пароль"
 
+#: src/heraldry/frontend/ui/element/metadata.cljs
 #: src/heraldry/frontend/ui/form/field.cljs src/heraldry/frontend/user.cljs
 msgid "Change"
 msgstr "Сменить"
@@ -3033,6 +3103,22 @@ msgstr ""
 
 #: src/heraldry/frontend/validation.cljs
 msgid "License required for public objects."
+msgstr ""
+
+#: src/heraldry/gettext.cljs
+msgid "English"
+msgstr ""
+
+#: src/heraldry/gettext.cljs
+msgid "German"
+msgstr ""
+
+#: src/heraldry/gettext.cljs
+msgid "Russian"
+msgstr ""
+
+#: src/heraldry/metadata.cljs
+msgid "Metadata"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/motto.cljs
