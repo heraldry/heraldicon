@@ -7,7 +7,7 @@
    [goog.crypt :as crypt]
    [goog.crypt.base64 :as b64]
    [heraldry.config :as config]
-   [heraldry.gettext :refer [known-languages]]
+   [heraldry.gettext :refer [known-languages string]]
    [taoensso.timbre :as log]))
 
 (def -current-id
@@ -172,12 +172,13 @@
     (upper-case-first-str s)))
 
 (defn tr-raw [data language]
-  (if (map? data)
-    (let [translated (get data language)]
-      (if (some-> translated count pos?)
-        translated
-        (get data :en)))
-    data))
+  (cond
+    (keyword? data) (tr-raw (string data) language)
+    (map? data) (let [translated (get data language)]
+                  (if (some-> translated count pos?)
+                    translated
+                    (get data :en)))
+    :else data))
 
 (defn translate [keyword]
   (when keyword
@@ -204,6 +205,7 @@
                                 (->> words
                                      (map (fn [s]
                                             (if (or (string? s)
+                                                    (keyword? s)
                                                     (map? s))
                                               s
                                               (str s))))

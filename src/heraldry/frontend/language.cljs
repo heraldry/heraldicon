@@ -44,8 +44,7 @@
       (set-language db loaded-language))))
 
 (defn tr [data]
-  (when data
-    (util/tr-raw data @(rf/subscribe [::selected-language]))))
+  (util/tr-raw data @(rf/subscribe [::selected-language])))
 
 (defn language-flag [language-code & {:keys [on-click]}]
   (let [[title img-url] (get known-languages language-code)

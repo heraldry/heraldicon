@@ -1,0 +1,16 @@
+{
+    "menu": {
+        "news": "News",
+        "about": "About",
+        "collection-library": "Collections",
+        "arms-library": "Arms",
+        "charge-library": "Charges",
+        "ribbon-library": "Ribbons",
+        "users": "Users",
+        "contact": "Contact",
+        "account": "Account",
+        "login": "Login",
+        "logout": "Logout",
+        "register": "Register"
+    }
+}
