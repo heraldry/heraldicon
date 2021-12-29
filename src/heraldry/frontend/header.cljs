@@ -5,7 +5,6 @@
    [heraldry.frontend.route :as route]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [heraldry.static :as static]
    [re-frame.core :as rf]))
 
@@ -43,15 +42,15 @@
                     :style {:padding-right "5px"}} "Heraldry"]]
       [:sup {:style {:color "#d82"}} "beta"]]
      [:ul.nav-menu {:style {:flex 1}}
-      [route/nav-link {:to :home} [tr (string "News")]]
-      [route/nav-link {:to :about} [tr (string "About")]]
-      [route/nav-link {:to :collections} [tr (string "Collections")]]
-      [route/nav-link {:to :arms} [tr (string "Arms")]]
-      [route/nav-link {:to :charges} [tr (string "Charges")]]
-      [route/nav-link {:to :ribbons} [tr (string "Ribbons")]]
+      [route/nav-link {:to :home} [tr :strings.menu/news]]
+      [route/nav-link {:to :about} [tr :strings.menu/about]]
+      [route/nav-link {:to :collections} [tr :strings.menu/collection-library]]
+      [route/nav-link {:to :arms} [tr :strings.menu/arms-library]]
+      [route/nav-link {:to :charges} [tr :strings.menu/charge-library]]
+      [route/nav-link {:to :ribbons} [tr :strings.menu/ribbon-library]]
       (when (-> user-data :username ((config/get :admins)))
-        [route/nav-link {:to :users} [tr (string "Users")]])
-      [route/nav-link {:to :contact} [tr (string "Contact")]]
+        [route/nav-link {:to :users} [tr :strings.menu/users]])
+      [route/nav-link {:to :contact} [tr :strings.menu/contact]]
       [:span {:style {:width "5em"}}]
       [language/selector]
       [:span {:style {:width "1em"}}]
@@ -71,14 +70,14 @@
                                                  user-menu-open?-path])
                                "block"
                                "none")}}
-           [route/nav-link {:to :account} [tr (string "Account")]]
+           [route/nav-link {:to :account} [tr :strings.menu/account]]
            [:li.nav-menu-item
             [:a.nav-menu-link {:href "#"
-                               :on-click #(user/logout)} [tr (string "Logout")]]]]]]
+                               :on-click #(user/logout)} [tr :strings.menu/logout]]]]]]
         [:<>
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(user/login-modal)} [tr (string "Login")]]]
+                             :on-click #(user/login-modal)} [tr :strings.menu/login]]]
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(user/sign-up-modal)} [tr (string "Register")]]]])]]))
+                             :on-click #(user/sign-up-modal)} [tr :strings.menu/register]]]])]]))
