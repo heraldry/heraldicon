@@ -342,6 +342,11 @@
       "middle": "Middle",
       "right": "Right"
     },
+    "alignment-fimbriation-choice": {
+      "even": "Even",
+      "inside": "Inside",
+      "outside": "Outside"
+    },
     "anchor": "Anchor",
     "anchor-point-choice": {
       "angle": "Angle"
@@ -366,6 +371,11 @@
     },
     "corner-radius": "Corner radius",
     "dampening-mode": "Dampening mode",
+    "dampening-mode-choice": {
+      "clamp-to-zero": "Clamp to zero",
+      "linear-dampening": "Linear dampening",
+      "square-root-dampening": "Square root dampening"
+    },
     "dampening-radius": "Dampening radius",
     "distance": "Distance",
     "eccentricity": "Eccentricity",
@@ -384,6 +394,7 @@
     "flipped?": "Flipped",
     "font": "Font",
     "font-scale": "Font scale",
+    "function": "Function",
     "geometry": "Geometry",
     "height": "Height",
     "highlight": "Highlight",
@@ -442,6 +453,16 @@
     "rotate-charges?": "Rotate charges",
     "rotation": "Rotation",
     "row": "Row",
+    "select-arms": "Select Arms",
+    "select-charge": "Select Charge",
+    "select-colour-theme": "Select Colour Theme",
+    "select-line-type": "Select Line Type",
+    "select-ordinary": "Select Ordinary",
+    "select-partition": "Select Partition",
+    "select-preset": "Select Preset",
+    "select-ribbon": "Select Ribbon",
+    "select-tincture": "Select Tincture",
+    "shading": "Shading",
     "size": "Size",
     "size-mode": "Size mode",
     "size-mode-choice": {
@@ -467,6 +488,11 @@
       "none": "Darkened foreground"
     },
     "type": "Type",
+    "type-fimbriation-choice": {
+      "none": "None",
+      "double": "Double",
+      "single": "Single"
+    },
     "variant": "Variant",
     "variant-quarter-choice": {
       "dexter-base": "Dexter-base",
@@ -479,6 +505,8 @@
   },
   "tooltip": {
     "alpha-feature-warning": "This feature is incomplete and likely going to change, so use with caution. :)",
+    "dampening-mode": "The way the line is adjusted near corners. Different styles work better with different modes.",
+    "dampening-radius": "How far around corners the dampening mode is applied.",
     "humetty-warning": "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.",
     "move-up": "move up",
     "move-down": "move down",
@@ -499,6 +527,7 @@
     "opposite": "opposite",
     "private": "private",
     "public": "public",
+    "shield-layer": "Shield layer",
     "unnamed": "unnamed",
     "unsaved-data": "unsaved data"
   },
@@ -513,6 +542,9 @@
   "user": {
     "message": {
       "arms-need-to-be-public-and-saved-for-exporting": "Arms need to be public and saved for exporting.",
+      "arms-saved": "Arms saved, new version:",
+      "charge-saved": "Charge saved, new version:",
+      "collection-saved": "Collection saved, new version:",
       "confirmation-code-sent": "A confirmation code was sent to your email address.",
       "created-unsaved-copy": "Created an unsaved copy.",
       "need-to-be-logged-in": "You need to be logged in.",
@@ -521,6 +553,7 @@
       "password-reset-confirmation-code-sent": "A password reset confirmation code was sent to your email address.",
       "passwords-do-not0match": "Passwords don't match.",
       "registration-completed": "Registration completed",
+      "ribbon-saved": "Ribbon saved, new version:",
       "save-changes-first": "Save your changes first.",
       "username-required-for-password-reset": "Username required for password reset."
     },
@@ -627,6 +660,8 @@
     "charge-group": "Charge group",
     "collection": "Collection",
     "collections": "Collections",
+    "cottising": "Cottising",
+    "cottise": "Cottise",
     "extra-line": "Extra line",
     "helm": "Helm",
     "helms-and-crests": "Helms and crests",
