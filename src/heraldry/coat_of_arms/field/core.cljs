@@ -139,8 +139,7 @@
   (let [field-type (interface/get-sanitized-data (c/++ context :type))]
     (if (= field-type :heraldry.field.type/plain)
       (-> (interface/get-sanitized-data (c/++ context :tincture))
-          tincture/translate-tincture
-          util/upper-case-first)
+          tincture/translate-tincture)
       (get field-options/field-map field-type))))
 
 (defmethod interface/blazon-component :heraldry.component/field [context]
