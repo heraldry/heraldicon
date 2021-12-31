@@ -377,5 +377,12 @@
     "tincture": "Tincture",
     "type": "Type",
     "variant": "Variant"
+  },
+  "tooltip": {
+    "move-up": "move up",
+    "move-down": "move down",
+    "redo": "redo",
+    "remove": "remove",
+    "undo": "undo"
   }
 }
