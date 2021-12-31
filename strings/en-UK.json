@@ -336,6 +336,11 @@
     "title": "Render Options"
   },
   "option": {
+    "access-filter-choice": {
+      "all": "All",
+      "private": "Private",
+      "public": "Public"
+    },
     "alignment": "Alignment",
     "alignment-choice": {
       "left": "Left",
@@ -517,9 +522,12 @@
   },
   "miscellaneous": {
     "and": "and",
+    "auto": "Auto",
+    "beta-blazon": "(beta, not complete)",
     "by": "by",
     "extra": "extra",
     "fields": "fields",
+    "inherited": "Inherited",
     "loading": "Loading...",
     "not-found": "Not found",
     "mine-only": "Mine only",
