@@ -4,7 +4,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -29,8 +28,8 @@
        (when (-> relevant-elements count (> 1))
          (str (inc (util/index-of idx relevant-elements)) ". "))
        (if (= relevant-elements mottos)
-         (string "Motto")
-         (string "Slogan"))))))
+         :string.entity/motto
+         :string.entity/slogan)))))
 
 (defn form [context]
   [:<>
@@ -42,7 +41,7 @@
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
-                  :margin-bottom "0.5em"}} [tr (string "Tincture")]]
+                  :margin-bottom "0.5em"}} [tr :string.entity/tincture]]
 
    (ui-interface/form-elements
     context
@@ -52,7 +51,7 @@
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
-                  :margin-bottom "0.5em"}} [tr (string "Ribbon")]]
+                  :margin-bottom "0.5em"}} [tr :string.entity/ribbon]]
 
    [ui-interface/form-element (c/++ context :ribbon-variant)]
 

@@ -1,10 +1,9 @@
 (ns heraldry.coat-of-arms.line.type.thorny
   (:require
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def pattern
-  {:display-name (string "Thorny")
+  {:display-name :string.line.type/thorny
    :function (fn [{:keys [eccentricity
                           height
                           width]}

@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.indented
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.indented)
 
 (def pattern
-  {:display-name (string "Indented")
+  {:display-name :string.line.type/indented
    :function (fn [{:keys [height
                           width]}
                   _line-options]

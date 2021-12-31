@@ -6,35 +6,34 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/per-fess)
 
-(defmethod field-interface/display-name field-type [_] (string "Per fess"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/per-fess)
 
 (defmethod field-interface/part-names field-type [_] ["chief" "base"])
 
 (defmethod interface/options field-type [context]
   {:origin {:point {:type :choice
-                    :choices [[(string "Fess [point]") :fess]
-                              [(string "Chief [point]") :chief]
-                              [(string "Base [point]") :base]
-                              [(string "Honour [point]") :honour]
-                              [(string "Nombril [point]") :nombril]
-                              [(string "Top") :top]
-                              [(string "Bottom") :bottom]]
+                    :choices [[:string.option.point-choice/fess :fess]
+                              [:string.option.point-choice/chief :chief]
+                              [:string.option.point-choice/base :base]
+                              [:string.option.point-choice/honour :honour]
+                              [:string.option.point-choice/nombril :nombril]
+                              [:string.option.point-choice/top :top]
+                              [:string.option.point-choice/bottom :bottom]]
                     :default :fess
-                    :ui {:label (string "Point")}}
+                    :ui {:label :string.option/point}}
             :offset-y {:type :range
                        :min -45
                        :max 45
                        :default 0
-                       :ui {:label (string "Offset y")
+                       :ui {:label :string.option/offset-y
                             :step 0.1}}
-            :ui {:label (string "Origin")
+            :ui {:label :string.option/origin
                  :form-type :position}}
    :line (line/options (c/++ context :line))})
 

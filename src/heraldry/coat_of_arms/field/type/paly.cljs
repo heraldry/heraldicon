@@ -6,14 +6,13 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/paly)
 
-(defmethod field-interface/display-name field-type [_] (string "Paly"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/paly)
 
 (defmethod field-interface/part-names field-type [_] nil)
 
@@ -25,28 +24,28 @@
                              :max 20
                              :default 6
                              :integer? true
-                             :ui {:label (string "Subfields x")
+                             :ui {:label :string.option/subfields-x
                                   :form-type :field-layout-num-fields-x}}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
-                                :ui {:label (string "Base fields")
+                                :ui {:label :string.option/base-fields
                                      :form-type :field-layout-num-base-fields}}
               :offset-x {:type :range
                          :min -1
                          :max 1
                          :default 0
-                         :ui {:label (string "Offset x")
+                         :ui {:label :string.option/offset-x
                               :step 0.01}}
               :stretch-x {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label (string "Stretch x")
+                          :ui {:label :string.option/stretch-x
                                :step 0.01}}
-              :ui {:label (string "Layout")
+              :ui {:label :string.option/layout
                    :form-type :field-layout}}
      :line line-style}))
 

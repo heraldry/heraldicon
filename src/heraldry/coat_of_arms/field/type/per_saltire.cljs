@@ -8,7 +8,6 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.shared.saltire :as saltire]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,7 +15,7 @@
 
 (def field-type :heraldry.field.type/per-saltire)
 
-(defmethod field-interface/display-name field-type [_] (string "Per saltire"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/per-saltire)
 
 (defmethod field-interface/part-names field-type [_] ["chief" "dexter" "sinister" "base"])
 
@@ -31,44 +30,44 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
         anchor-point-option {:type :choice
-                             :choices [[(string "Top-left") :top-left]
-                                       [(string "Top-right") :top-right]
-                                       [(string "Bottom-left") :bottom-left]
-                                       [(string "Bottom-right") :bottom-right]
-                                       [(string "Angle") :angle]]
+                             :choices [[:string.option.point-choice/top-left :top-left]
+                                       [:string.option.point-choice/top-right :top-right]
+                                       [:string.option.point-choice/bottom-left :bottom-left]
+                                       [:string.option.point-choice/bottom-right :bottom-right]
+                                       [:string.option.anchor-point-choice/angle :angle]]
                              :default :top-left
-                             :ui {:label (string "Point")}}
+                             :ui {:label :string.option/point}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     ;; TODO: perhaps there should be origin options for the corners?
     ;; so one can align fro top-left to bottom-right
     {:origin {:point {:type :choice
-                      :choices [[(string "Chief [point]") :chief]
-                                [(string "Base [point]") :base]
-                                [(string "Fess [point]") :fess]
-                                [(string "Dexter [point]") :dexter]
-                                [(string "Sinister [point]") :sinister]
-                                [(string "Honour [point]") :honour]
-                                [(string "Nombril [point]") :nombril]]
+                      :choices [[:string.option.point-choice/chief :chief]
+                                [:string.option.point-choice/base :base]
+                                [:string.option.point-choice/fess :fess]
+                                [:string.option.point-choice/dexter :dexter]
+                                [:string.option.point-choice/sinister :sinister]
+                                [:string.option.point-choice/honour :honour]
+                                [:string.option.point-choice/nombril :nombril]]
                       :default :fess
-                      :ui {:label (string "Point")}}
+                      :ui {:label :string.option/point}}
               :offset-x {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset x")
+                         :ui {:label :string.option/offset-x
                               :step 0.1}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset y")
+                         :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label (string "Origin")
+              :ui {:label :string.option/origin
                    :form-type :position}}
      :anchor (cond-> {:point anchor-point-option
-                      :ui {:label (string "Anchor")
+                      :ui {:label :string.option/anchor
                            :form-type :position}}
 
                (= current-anchor-point
@@ -76,20 +75,20 @@
                                          :min 10
                                          :max 80
                                          :default 45
-                                         :ui {:label (string "Angle")}})
+                                         :ui {:label :string.option/angle}})
 
                (not= current-anchor-point
                      :angle) (assoc :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label (string "Offset x")
+                                               :ui {:label :string.option/offset-x
                                                     :step 0.1}}
                                     :offset-y {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label (string "Offset y")
+                                               :ui {:label :string.option/offset-y
                                                     :step 0.1}}))
      :line line-style
      :opposite-line opposite-line-style}))

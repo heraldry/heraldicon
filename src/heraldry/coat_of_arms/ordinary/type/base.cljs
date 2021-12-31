@@ -7,7 +7,6 @@
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,7 +15,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/base)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Base [ordinary]"))
+(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/base)
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -26,9 +25,9 @@
                            :min 0.1
                            :max 75
                            :default 25
-                           :ui {:label (string "Size")
+                           :ui {:label :string.option/size
                                 :step 0.1}}
-                    :ui {:label (string "Geometry")
+                    :ui {:label :string.option/geometry
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}

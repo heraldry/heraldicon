@@ -5,7 +5,6 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.charge-group-preset-select-presets :as charge-group-preset-select-presets]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.gettext :refer [string]]
    [heraldry.static :as static]))
 
 (macros/reg-event-db :select-charge-group-preset
@@ -39,10 +38,10 @@
 
 (defn charge-group-preset-select [{:keys [path] :as context}]
   [:div.ui-setting
-   [:label [tr (string "Presets")]]
+   [:label [tr :string.charge-group.presets/presets]]
    [:div.option
-    [submenu/submenu context (string "Select Charge Group Preset")
-     [tr (string "Select")] {:style {:width "21.5em"}}
+    [submenu/submenu context :string.charge-group/select-charge-group-preset
+     [tr :string.charge-group.presets/select] {:style {:width "21.5em"}}
      (for [[group-name & group] charge-group-preset-select-presets/presets]
        ^{:key group-name}
        [:<>

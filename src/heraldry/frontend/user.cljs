@@ -7,7 +7,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.modal :as modal]
    [heraldry.frontend.state :as state]
-   [heraldry.gettext :refer [string]]
    [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
@@ -103,7 +102,7 @@
     (if (-> username
             count
             zero?)
-      (rf/dispatch [:set-form-error (conj db-path :username) (string "Username required for password reset.")])
+      (rf/dispatch [:set-form-error (conj db-path :username) :string.user.message/username-required-for-password-reset])
       (do
         (modal/start-loading)
         (cognito/forgot-password
@@ -138,7 +137,7 @@
                   :name "username"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "Username"))
+                  :placeholder (tr :string.user/username)
                   :type "text"}]])]
      [text-field (conj db-path :password)
       (fn [& {:keys [value on-change]}]
@@ -147,7 +146,7 @@
                   :name "password"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "Password"))
+                  :placeholder (tr :string.user/password)
                   :type "password"}]])]
      [:a
       {:style {:margin-right "5px"}
@@ -156,7 +155,7 @@
                    (.preventDefault event)
                    (.stopPropagation event)
                    (forgotten-password-clicked db-path))}
-      [tr (string "Forgotten password")]]
+      [tr :string.user/forgotten-password]]
      [:div {:style {:text-align "right"
                     :margin-top "10px"}}
       [:button.button
@@ -165,21 +164,21 @@
         :on-click #(do
                      (rf/dispatch [:clear-form db-path])
                      (modal/clear))}
-       [tr (string "Cancel")]]
+       [tr :string.button/cancel]]
       [:button.button.primary {:type "submit"}
-       [tr (string "Login")]]]]))
+       [tr :string.menu/login]]]]))
 
 (defn sign-up-clicked [db-path]
   (let [{:keys [username email password password-again]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [:clear-form-errors])
     (if (not= password password-again)
-      (rf/dispatch [:set-form-error (conj db-path :password-again) (string "Passwords don't match.")])
+      (rf/dispatch [:set-form-error (conj db-path :password-again) :string.user.message/passwords-do-not0match])
       (do
         (modal/start-loading)
         (cognito/sign-up username password email
                          :on-success (fn [_user]
                                        (rf/dispatch [:clear-form db-path])
-                                       (login-modal (string "Registration completed"))
+                                       (login-modal :string.user.message/registration-completed)
                                        (modal/stop-loading))
                          :on-confirmation-needed (fn [user]
                                                    (rf/dispatch [:clear-form db-path])
@@ -208,46 +207,46 @@
      [text-field (conj db-path :username)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "username"} [tr (string "Username")]]
+         [:label {:for "username"} [tr :string.user/username]]
          [:input {:id "username"
                   :name "username"
                   :autoComplete "off"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "Username"))
+                  :placeholder (tr :string.user/username)
                   :type "text"}]])]
      [text-field (conj db-path :email)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "email"} [tr (string "Email")]]
+         [:label {:for "email"} [tr :string.user/email]]
          [:input {:id "email"
                   :name "email"
                   :autoComplete "off"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "Email"))
+                  :placeholder (tr :string.user/email)
                   :type "text"}]])]
      [text-field (conj db-path :password)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "password"} [tr (string "Password")]]
+         [:label {:for "password"} [tr :string.user/password]]
          [:input {:id "password"
                   :name "password"
                   :autoComplete "off"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "Password"))
+                  :placeholder (tr :string.user/password)
                   :type "password"}]])]
      [text-field (conj db-path :password-again)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "password-again"} [tr (string "Password again")]]
+         [:label {:for "password-again"} [tr :string.user/password-again]]
          [:input {:id "password-again"
                   :name "password-again"
                   :autoComplete "off"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "Password again"))
+                  :placeholder (tr :string.user/password-again)
                   :type "password"}]])]
      [:div {:style {:text-align "right"
                     :margin-top "10px"}}
@@ -257,9 +256,9 @@
         :on-click #(do
                      (rf/dispatch [:clear-form db-path])
                      (modal/clear))}
-       [tr (string "Cancel")]]
+       [tr :string.button/cancel]]
       [:button.button.primary {:type "submit"}
-       [tr (string "Register")]]]]))
+       [tr :string.menu/register]]]]))
 
 (defn confirm-clicked [db-path]
   (let [{:keys [code]} @(rf/subscribe [:get db-path])
@@ -270,7 +269,7 @@
     (cognito/confirm user code
                      :on-success (fn [_user]
                                    (rf/dispatch [:clear-form db-path])
-                                   (login-modal (string "Registration completed"))
+                                   (login-modal :string.user.message/registration-completed)
                                    (modal/stop-loading))
                      :on-failure (fn [error]
                                    (log/error "confirmation error:" error)
@@ -283,7 +282,7 @@
     (modal/start-loading)
     (cognito/resend-code user
                          :on-success (fn []
-                                       (js/alert (tr (string "A new code was sent to your email address.")))
+                                       (js/alert (tr :string.user.message/new-confirmation-code-sent))
                                        (modal/stop-loading))
                          :on-failure (fn [error]
                                        (log/error "resend code error:" error)
@@ -302,18 +301,18 @@
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
       :on-submit on-submit}
-     [:p [tr (string "A confirmation code was sent to your email address.")]]
+     [:p [tr :string.user.message/confirmation-code-sent]]
      (when error-message
        [:div.error-message [tr error-message]])
      [text-field (conj db-path :code)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "code"} [tr (string "Confirmation code")]]
+         [:label {:for "code"} [tr :string.user/confirmation-code]]
          [:input {:id "code"
                   :name "code"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "Confirmation code"))
+                  :placeholder (tr :string.user/confirmation-code)
                   :type "text"}]])]
      [:div {:style {:text-align "right"
                     :margin-top "10px"}}
@@ -321,8 +320,8 @@
        {:style {:margin-right "5px"}
         :type "button"
         :on-click #(resend-code-clicked db-path)}
-       [tr (string "Resend code")]]
-      [:button.button.primary {:type "submit"} [tr (string "Confirm")]]]]))
+       [tr :string.user.button/resend-code]]
+      [:button.button.primary {:type "submit"} [tr :string.user.button/confirm]]]]))
 
 (defn change-temporary-password-clicked [db-path]
   (let [user-data (data)
@@ -332,7 +331,7 @@
                 new-password-again]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [:clear-form-errors])
     (if (not= new-password new-password-again)
-      (rf/dispatch [:set-form-error (conj db-path :new-password-again) (string "Passwords don't match.")])
+      (rf/dispatch [:set-form-error (conj db-path :new-password-again) :string.user.message/passwords-do-not0match])
       (do
         (modal/start-loading)
         (cognito/complete-new-password-challenge
@@ -366,24 +365,24 @@
      [text-field (conj db-path :new-password)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "new-password"} [tr (string "New password")]]
+         [:label {:for "new-password"} [tr :string.user/new-password]]
          [:input {:id "new-password"
                   :name "new-password"
                   :value value
                   :on-change on-change
                   :autoComplete "off"
-                  :placeholder (tr (string "New password"))
+                  :placeholder (tr :string.user/new-password)
                   :type "password"}]])]
      [text-field (conj db-path :new-password-again)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "new-password-again"} [tr (string "New password again")]]
+         [:label {:for "new-password-again"} [tr :string.user/new-password-again]]
          [:input {:id "new-password-again"
                   :name "new-password-again"
                   :value value
                   :autoComplete "off"
                   :on-change on-change
-                  :placeholder (tr (string "New password again"))
+                  :placeholder (tr :string.user/new-password-again)
                   :type "password"}]])]
      [:div {:style {:text-align "right"
                     :margin-top "10px"}}
@@ -393,9 +392,9 @@
         :on-click #(do
                      (rf/dispatch [:clear-form db-path])
                      (modal/clear))}
-       [tr (string "Cancel")]]
+       [tr :string.button/cancel]]
       [:button.button.primary {:type "submit"}
-       [tr (string "Change")]]]]))
+       [tr :string.user.button/change]]]]))
 
 (defn reset-password-clicked [db-path]
   (let [{:keys [code
@@ -405,7 +404,7 @@
         user (:user user-data)]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (if (not= new-password new-password-again)
-      (rf/dispatch [:set-form-error (conj db-path :new-password-again) (string "Passwords don't match.")])
+      (rf/dispatch [:set-form-error (conj db-path :new-password-again) :string.user.message/passwords-do-not0match])
       (do
         (modal/start-loading)
         (cognito/confirm-password
@@ -414,7 +413,7 @@
          new-password
          :on-success (fn [_user]
                        (rf/dispatch [:clear-form db-path])
-                       (login-modal (string "Password reset completed"))
+                       (login-modal :string.user.message/password-reset-completed)
                        (modal/stop-loading))
          :on-failure (fn [error]
                        (log/error "password reset error:" error)
@@ -433,45 +432,45 @@
                       (when (-> event .-code (= "Enter"))
                         (on-submit event)))
       :on-submit on-submit}
-     [:p [tr (string "A password reset confirmation code was sent to your email address.")]]
+     [:p [tr :string.user.message/password-reset-confirmation-code-sent]]
      (when error-message
        [:div.error-message [tr error-message]])
      [text-field (conj db-path :code)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "code"} [tr (string "Confirmation code")]]
+         [:label {:for "code"} [tr :string.user/confirmation-code]]
          [:input {:id "code"
                   :name "code"
                   :autoComplete "off"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "Confirmation code"))
+                  :placeholder (tr :string.user/confirmation-code)
                   :type "text"}]])]
      [text-field (conj db-path :new-password)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "new-password"} [tr (string "New password")]]
+         [:label {:for "new-password"} [tr :string.user/new-password]]
          [:input {:id "new-password"
                   :name "new-password"
                   :autoComplete "off"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "New password"))
+                  :placeholder (tr :string.user/new-password)
                   :type "password"}]])]
      [text-field (conj db-path :new-password-again)
       (fn [& {:keys [value on-change]}]
         [:<>
-         [:label {:for "new-password-again"} [tr (string "New password again")]]
+         [:label {:for "new-password-again"} [tr :string.user/new-password-again]]
          [:input {:id "new-password-again"
                   :name "new-password-again"
                   :autoComplete "off"
                   :value value
                   :on-change on-change
-                  :placeholder (tr (string "New password again"))
+                  :placeholder (tr :string.user/new-password-again)
                   :type "password"}]])]
      [:div {:style {:text-align "right"
                     :margin-top "10px"}}
-      [:button.button.primary {:type "submit"} [tr (string "Reset password")]]]]))
+      [:button.button.primary {:type "submit"} [tr :string.user.button/reset-password]]]]))
 
 (defn logout []
   ;; TODO: logout via API
@@ -487,25 +486,25 @@
 
 (defn login-modal [& [title]]
   (let [db-path [:login-form]]
-    (modal/create (or title (string "Login")) [login-form db-path]
+    (modal/create (or title :string.menu/login) [login-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
 
 (defn sign-up-modal []
   (let [db-path [:sign-up-form]]
-    (modal/create (string "Register") [sign-up-form db-path]
+    (modal/create :string.menu/register [sign-up-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
 
 (defn confirmation-modal []
   (let [db-path [:confirmation-form]]
-    (modal/create (string "Register Confirmation") [confirmation-form db-path]
+    (modal/create :string.user/register-confirmation [confirmation-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
 
 (defn change-temporary-password-modal []
   (let [db-path [:change-temporary-password-form]]
-    (modal/create (string "Change Temporary Password") [change-temporary-password-form db-path]
+    (modal/create :string.user/change-temporary-password [change-temporary-password-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
 
 (defn password-reset-confirmation-modal []
   (let [db-path [:password-reset-confirmation-form]]
-    (modal/create (string "Reset Forgotten Password") [password-reset-confirmation-form db-path]
+    (modal/create :string.user/reset-forgotten-password [password-reset-confirmation-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))

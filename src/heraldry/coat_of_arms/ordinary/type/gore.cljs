@@ -7,7 +7,6 @@
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -20,7 +19,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/gore)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Gore"))
+(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/gore)
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -32,36 +31,36 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))
         anchor-point-option {:type :choice
-                             :choices [[(string "Top-left") :top-left]
-                                       [(string "Top-right") :top-right]
-                                       [(string "Angle") :angle]]
+                             :choices [[:string.option.point-choice/top-left :top-left]
+                                       [:string.option.point-choice/top-right :top-right]
+                                       [:string.option.anchor-point-choice/angle :angle]]
                              :default :top-left
-                             :ui {:label (string "Point")}}
+                             :ui {:label :string.option/point}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     (-> {:origin {:point {:type :choice
-                          :choices [[(string "Fess [point]") :fess]
-                                    [(string "Chief [point]") :chief]
-                                    [(string "Base [point]") :base]]
+                          :choices [[:string.option.point-choice/fess :fess]
+                                    [:string.option.point-choice/chief :chief]
+                                    [:string.option.point-choice/base :base]]
                           :default :fess
-                          :ui {:label (string "Point")}}
+                          :ui {:label :string.option/point}}
                   :offset-x {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label (string "Offset x")
+                             :ui {:label :string.option/offset-x
                                   :step 0.1}}
                   :offset-y {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label (string "Offset y")
+                             :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label (string "Origin")
+                  :ui {:label :string.option/origin
                        :form-type :position}}
          :anchor (cond-> {:point anchor-point-option
-                          :ui {:label (string "Anchor")
+                          :ui {:label :string.option/anchor
                                :form-type :position}}
 
                    (= current-anchor-point
@@ -69,20 +68,20 @@
                                              :min -80
                                              :max 80
                                              :default -45
-                                             :ui {:label (string "Angle")}})
+                                             :ui {:label :string.option/angle}})
 
                    (not= current-anchor-point
                          :angle) (assoc :offset-x {:type :range
                                                    :min -45
                                                    :max 45
                                                    :default 0
-                                                   :ui {:label (string "Offset x")
+                                                   :ui {:label :string.option/offset-x
                                                         :step 0.1}}
                                         :offset-y {:type :range
                                                    :min -45
                                                    :max 45
                                                    :default 0
-                                                   :ui {:label (string "Offset y")
+                                                   :ui {:label :string.option/offset-y
                                                         :step 0.1}}))
          :line line-style
          :opposite-line opposite-line-style

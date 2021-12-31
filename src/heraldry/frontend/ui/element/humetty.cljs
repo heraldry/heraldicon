@@ -3,7 +3,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -12,15 +11,15 @@
 (defn submenu-link-name [options humetty]
   (let [changes (concat
                  (when (:humetty? humetty)
-                   [(string "Humetty / Couped")])
+                   [:string.option/humetty])
                  (when (and (:humetty? humetty)
                             (some #(options/changed? % humetty options)
                                   [:distance]))
-                   [(string "resized")]))]
+                   [:string.submenu-summary/resized]))]
     (if (seq changes)
       (-> (util/combine ", " changes)
           util/upper-case-first)
-      (string "No"))))
+      :string.submenu-summary/no)))
 
 (defn humetty-submenu [context]
   (when-let [options (interface/get-relevant-options context)]

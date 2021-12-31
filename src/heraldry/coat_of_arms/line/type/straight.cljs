@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.straight
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.straight)
 
 (def pattern
-  {:display-name (string "Straight")
+  {:display-name :string.line.type/straight
    :full? true
    :function (fn [{:keys [width]}
                   _line-options]

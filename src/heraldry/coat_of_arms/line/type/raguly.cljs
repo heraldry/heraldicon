@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.raguly
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.raguly)
 
 (def pattern
-  {:display-name (string "Raguly")
+  {:display-name :string.line.type/raguly
    :function (fn [{:keys [eccentricity
                           height
                           width]}

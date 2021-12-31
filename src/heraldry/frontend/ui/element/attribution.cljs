@@ -6,7 +6,6 @@
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -15,7 +14,7 @@
   (let [main-name (attribution/nature-map nature)
         changes [main-name
                  (if (= license :none)
-                   (string "no license")
+                   :string.attribution/no-license
                    (attribution/license-display-name license license-version))]]
     (-> (util/combine ", " changes)
         util/upper-case-first)))
@@ -41,7 +40,7 @@
              nil
              :none
              "Presets"
-             [[(string "Autofill for known sources") :none]
+             [[:string.attribution/autofill :none]
               ["WappenWiki" :wappenwiki]
               ["Wikimedia" :wikimedia]
               ["Wikimedia (Sodacan)" :wikimedia-sodacan]

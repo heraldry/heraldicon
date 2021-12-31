@@ -4,14 +4,13 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.util :as util]))
 
 (def field-type :heraldry.field.type/lozengy)
 
-(defmethod field-interface/display-name field-type [_] (string "Lozengy"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/lozengy)
 
 (defmethod field-interface/part-names field-type [_] nil)
 
@@ -21,46 +20,46 @@
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label (string "Subfields x")
+                           :ui {:label :string.option/subfields-x
                                 :form-type :field-layout-num-fields-x}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label (string "Subfields y")
+                           :ui {:label :string.option/subfields-y
                                 :form-type :field-layout-num-fields-y}}
             :offset-x {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label (string "Offset x")
+                       :ui {:label :string.option/offset-x
                             :step 0.01}}
             :offset-y {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label (string "Offset y")
+                       :ui {:label :string.option/offset-y
                             :step 0.01}}
             :stretch-x {:type :range
                         :min 0.2
                         :max 3
                         :default 1
-                        :ui {:label (string "Stretch x")
+                        :ui {:label :string.option/stretch-x
                              :step 0.01}}
             :stretch-y {:type :range
                         :min 0.2
                         :max 3
                         :default 1
-                        :ui {:label (string "Stretch y")
+                        :ui {:label :string.option/stretch-y
                              :step 0.01}}
             :rotation {:type :range
                        :min -90
                        :max 90
                        :default 0
-                       :ui {:label (string "Rotation")
+                       :ui {:label :string.option/rotation
                             :step 0.01}}
-            :ui {:label (string "Layout")
+            :ui {:label :string.option/layout
                  :form-type :field-layout}}})
 
 (defmethod field-interface/render-field field-type

@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.angled
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.angled)
 
 (def pattern
-  {:display-name (string "Angled")
+  {:display-name :string.line.type/angled
    :full? true
    :function (fn [{:keys [width eccentricity] :as _line-data}
                   length

@@ -15,7 +15,6 @@
    [heraldry.frontend.ui.element.collection-select :as collection-select]
    [heraldry.frontend.ui.element.user-select :as user-select]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -47,7 +46,7 @@
        #(invalidate-charges-cache-for-user user-id)
        :remove-empty-groups? true
        :hide-ownership-filter? true]
-      [:div [tr (string "Loading...")]])))
+      [:div [tr :string.miscellaneous/loading]])))
 
 (defn invalidate-arms-cache-for-user [user-id]
   (state/invalidate-cache [:user-arms] user-id))
@@ -63,7 +62,7 @@
        arms-library/link-to-arms
        #(invalidate-arms-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div [tr (string "Loading...")]])))
+      [:div [tr :string.miscellaneous/loading]])))
 
 (defn invalidate-collection-cache-for-user [user-id]
   (state/invalidate-cache [:user-collections] user-id))
@@ -79,7 +78,7 @@
        collection-library/link-to-collection
        #(invalidate-collection-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div [tr (string "Loading...")]])))
+      [:div [tr :string.miscellaneous/loading]])))
 
 (defn user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
@@ -97,18 +96,18 @@
            :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
      [:div.no-scrollbar {:style {:grid-area "user-info"
                                  :overflow-y "scroll"}}
-      [:h3 [tr (util/str-tr (string "User") ": " (:username user-info-data))]]]
+      [:h3 [tr (util/str-tr :string.entity/user ": " (:username user-info-data))]]]
      [:div.no-scrollbar {:style {:grid-area "collections"
                                  :overflow-y "scroll"}}
-      [:h4 [tr (string "Collections")]]
+      [:h4 [tr :string.entity/collections]]
       [view-collections-for-user user-id]]
      [:div.no-scrollbar {:style {:grid-area "arms"
                                  :overflow-y "scroll"}}
-      [:h4 [tr (string "Arms")]]
+      [:h4 [tr :string.entity/arms]]
       [view-arms-for-user user-id]]
      [:div.no-scrollbar {:style {:grid-area "charges"
                                  :overflow-y "scroll"}}
-      [:h4 [tr (string "Charges")]]
+      [:h4 [tr :string.entity/charges]]
       [view-charges-for-user user-id]]]))
 
 (defn view-user [username]
@@ -121,7 +120,7 @@
 
 (defn not-logged-in []
   [:div {:style {:padding "15px"}}
-   [tr (string "You need to be logged in.")]])
+   [tr :string.user.message/need-to-be-logged-in]])
 
 (defn view-user-by-username [{:keys [parameters]}]
   (let [username (-> parameters :path :username)]
@@ -136,6 +135,6 @@
     [user-select/list-users link-to-user]))
 
 (defn view-list-users []
-  (rf/dispatch [:set-title (string "Users")])
+  (rf/dispatch [:set-title :string.menu/users])
   [:div {:style {:padding "15px"}}
    [list-all-users]])

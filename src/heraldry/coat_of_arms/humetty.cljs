@@ -2,28 +2,27 @@
   (:require
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
 (defn options [context]
   (let [humetty? (interface/get-raw-data (c/++ context :humetty?))]
     (cond-> {:humetty? {:type :boolean
-                        :ui {:label (string "Humetty / Couped")}}
-             :ui {:label (string "Humetty / Couped")
-                  :tooltip (string "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.")
+                        :ui {:label :string.option/humetty}}
+             :ui {:label :string.option/humetty
+                  :tooltip :string.tooltip/humetty-warning
                   :form-type :humetty}}
       humetty? (assoc :corner {:type :choice
-                               :choices [[(string "Round") :round]
-                                         [(string "Sharp") :sharp]
-                                         [(string "Bevel") :bevel]]
+                               :choices [[:string.option.corner-choice/round :round]
+                                         [:string.option.corner-choice/sharp :sharp]
+                                         [:string.option.corner-choice/bevel :bevel]]
                                :default :round
-                               :ui {:label (string "Corners")}}
+                               :ui {:label :string.option/corner}}
                       :distance {:type :range
                                  :min 1
                                  :max 45
                                  :default 5
-                                 :ui {:label (string "Distance")}}))))
+                                 :ui {:label :string.option/distance}}))))
 
 (defn coup [shape base-distance {:keys [environment] :as context}]
   (let [shape (if (map? shape)

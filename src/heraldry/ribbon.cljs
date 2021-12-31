@@ -2,7 +2,6 @@
   (:require
    [heraldry.context :as c]
    [heraldry.font :as font]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.bezier :as bezier]
    [heraldry.math.catmullrom :as catmullrom]
@@ -17,24 +16,24 @@
                :default 30
                :min 5
                :max 150
-               :ui {:label (string "Thickness")
+               :ui {:label :string.option/thickness
                     :step 0.1}}
    :edge-angle {:type :range
                 :default 0
                 :min -90
                 :max 90
-                :ui {:label (string "Edge angle")
+                :ui {:label :string.option/edge-angle
                      :step 1
-                     :tooltip (string "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully.")}}
+                     :tooltip :string.tooltip/edge-angle}}
    :end-split {:type :range
                :default 0
                :min 0
                :max 80
-               :ui {:label (string "End split")
+               :ui {:label :string.option/end-split
                     :step 1}}
    :outline? {:type :boolean
               :default true
-              :ui {:label (string "Outline")}}})
+              :ui {:label :string.charge.tincture-modifier.special/outline}}})
 
 (defn curve-segments [full-curve
                       last-index end-t last-edge-vector
@@ -118,9 +117,9 @@
                         vec)}))
 
 (def segment-type-choices
-  [[(string "Text") :heraldry.ribbon.segment/foreground-with-text]
-   [(string "Foreground") :heraldry.ribbon.segment/foreground]
-   [(string "Background") :heraldry.ribbon.segment/background]])
+  [[:string.ribbon.segment-type-choice/foreground-with-text :heraldry.ribbon.segment/foreground-with-text]
+   [:string.ribbon.segment-type-choice/foreground :heraldry.ribbon.segment/foreground]
+   [:string.ribbon.segment-type-choice/background :heraldry.ribbon.segment/background]])
 
 (def segment-type-map
   (util/choices->map segment-type-choices))
@@ -128,7 +127,7 @@
 (def type-option
   {:type :choice
    :choices segment-type-choices
-   :ui {:label (string "Type")
+   :ui {:label :string.option/type
         :form-type :radio-select}})
 
 (defmethod interface/options-subscriptions :heraldry.component/ribbon-segment [_context]
@@ -139,7 +138,7 @@
                  :min 0
                  :max 100
                  :integer? true
-                 :ui {:label (string "Layer")}}}
+                 :ui {:label :string.option/layer}}}
       (cond->
         (= (interface/get-raw-data (c/++ context :type))
            :heraldry.ribbon.segment/foreground-with-text)
@@ -148,25 +147,25 @@
                            :default 0
                            :min -0.5
                            :max 0.5
-                           :ui {:label (string "Offset x")
+                           :ui {:label :string.option/offset-x
                                 :step 0.01}}
                 :offset-y {:type :range
                            :default 0
                            :min -0.5
                            :max 0.5
-                           :ui {:label (string "Offset y")
+                           :ui {:label :string.option/offset-y
                                 :step 0.01}}
                 :font-scale {:type :range
                              :default 0.8
                              :min 0.01
                              :max 1
-                             :ui {:label (string "Font scale")
+                             :ui {:label :string.option/font-scale
                                   :step 0.01}}
                 :spacing {:type :range
                           :default 0.1
                           :min -0.5
                           :max 2
-                          :ui {:label (string "Spacing")
+                          :ui {:label :string.option/spacing
                                :step 0.01}}
                 :text {:type :text
                        :default ""}

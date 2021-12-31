@@ -1,19 +1,18 @@
 (ns heraldry.frontend.about
   (:require
    [heraldry.frontend.language :refer [tr]]
-   [heraldry.gettext :refer [string]]
    [heraldry.static :as static]
    [re-frame.core :as rf]))
 
 (defn view []
-  (rf/dispatch [:set-title (string "About")])
+  (rf/dispatch [:set-title :string.menu/about])
   [:div {:style {:padding "10px"
                  :text-align "justify"
                  :min-width "30em"
                  :max-width "60em"
                  :margin "auto"}}
-   [:h2 [tr (string "Welcome to Heraldry Digital")]]
-   [:h3 [tr (string "What's this about?")]]
+   [:h2 [tr :string.text.about/welcome-to-heraldry-digital]]
+   [:h3 [tr :string.text.about/what-is-this-about?]]
    [:img {:style {:width "30%"
                   :float "right"
                   :margin-left "20px"
@@ -22,30 +21,30 @@
           :alt "logo"}]
    [:p
     [:a {:href "https://en.wikipedia.org/wiki/Heraldry"
-         :target "_blank"} [tr (string "Heraldry")]]
+         :target "_blank"} [tr :string.entity/heraldry]]
     " "
-    [tr (string "is interesting and fun, but it has a myriad of conventions and rules, as it's been around for almost a millennium.")]]
+    [tr :string.text.about/heraldry-intro]]
    [:p
-    [tr (string "Creating a coat of arms is a time-consuming process and requires knowledge of various design tools. But even if you put in that time, the result usually is somewhat static, it can't easily be adjusted without more manual work, for instance to change the style, the tinctures, or the shape of the escutcheon.")]]
+    [tr :string.text.about/arms-creation-1-effort]]
    [:p
-    [tr (string "That is what Heraldry Digital wants to improve. You can describe a coat of arms, and let the rendering figure out the rest. After that it can be themed, the escutcheon can be changed, it can be used for impalement in other coats, charges can be swapped for other variants of a different style, etc..")]]
+    [tr :string.text.about/arms-creation-2-with-heraldry-digital]]
    [:p
-    [tr (string "Obviously it won't replace human skills and artistry, but it might provide a starting point to try out some concepts and generate a base of things that can be automated, e.g. divisions, ordinaries, and line styles.")]]
-   [:h3 [tr (string "Goals")]]
+    [tr :string.text.about/arms-creation-3-heraldry-digital-no-replacement-for-art]]
+   [:h3 [tr :string.text.about/goals]]
    [:ul
-    [:li [tr (string "Provide an open charge library, which anyone can add to")]]
-    [:li [tr (string "Provide means to create online armories for reference or research")]]
-    [:li [tr (string "Support as many heraldic concepts and elements as possible")]]]
-   [:h3 [tr (string "Status")]]
+    [:li [tr :string.text.about/goal-1-open-charge-library]]
+    [:li [tr :string.text.about/goal-2-open-arms-library]]
+    [:li [tr :string.text.about/goal-3-support-heraldic-concepts]]]
+   [:h3 [tr :string.text.about/status]]
    [:p
-    [tr (string "This entire website is pretty beta still, so please be patient if you run into bugs or missing features. See my contact details below to report anything weird.")]]
-   [:h3 [tr (string "Licensing")]]
+    [tr :string.text.about/status-site-still-beta]]
+   [:h3 [tr :string.text.about/licensing]]
    [:p
-    [tr (string "Charges and arms made public on this site require a Creative Commons license or be declared in the public domain. Derivative work requires attribution of the source, and the source license must be compatible with the chosen CC license.")]]
+    [tr :string.text.about/licensing-1-and-attribution-for-public-objects]]
    [:p
-    [tr (string "You can specify this while editing a charge or arms, and viewing or exporting work will include the license and attribution. It's your responsibility to provide this information, if you make the work public.")]]
+    [tr :string.text.about/licensing-2-how-to-specify-and-responsibility]]
    [:p
     [:em
-     [tr (string "If you see your work WITHOUT proper attribution or have other concerns or feedback regarding the implementation of these features, then please contact me.")]]]
+     [tr :string.text.about/licensing-3-contact-if-you-see-your-work-unattributed]]]
    [:p
-    [tr (string "Note: SVGs get the proper metadata of license/attribution for the coat of arms and all used charges, PNGs are a work in progress.")]]])
+    [tr :string.text.about/licensing-4-technical-info-on-attribution]]])

@@ -1,10 +1,9 @@
 (ns heraldry.coat-of-arms.line.type.enarched
   (:require
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def pattern
-  {:display-name (string "Enarched / Embowed")
+  {:display-name :string.line.type/enarched
    :full? true
    :function (fn [{:keys [height width eccentricity] :as _line-data}
                   length

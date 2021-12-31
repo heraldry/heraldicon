@@ -13,7 +13,6 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.colour :as colour]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
    [heraldry.math.svg.core :as svg]
@@ -27,30 +26,30 @@
       (assoc :tincture {:eyed {:type :choice
                                :choices tincture/choices
                                :default :argent
-                               :ui {:label (string "Eyed")}}
+                               :ui {:label :string.charge.tincture-modifier/eyed}}
                         :toothed {:type :choice
                                   :choices tincture/choices
                                   :default :argent
-                                  :ui {:label (string "Toothed")}}
+                                  :ui {:label :string.charge.tincture-modifier/toothed}}
                         :shadow {:type :range
                                  :min 0
                                  :max 1
                                  :default 1
-                                 :ui {:label (string "Shadow")
+                                 :ui {:label :string.option/shadow
                                       :step 0.01}}
                         :highlight {:type :range
                                     :min 0
                                     :max 1
                                     :default 1
-                                    :ui {:label (string "Highlight")
+                                    :ui {:label :string.option/highlight
                                          :step 0.01}}
-                        :ui {:label (string "Tinctures")
+                        :ui {:label :string.entity/tinctures
                              :form-type :tincture-modifiers}})
       (assoc :ignore-layer-separator?
              {:type :boolean
               :default false
-              :ui {:label (string "Ignore layer separator")
-                   :tooltip (string "If the charge contains a layer separator for the shield, then this can disable it.")}})))
+              :ui {:label :string.option/ignore-layer-separator?
+                   :tooltip :string.tooltip/ignore-layer-separator?}})))
 
 (defn placeholder-colour-modifier [placeholder-colours colour]
   (attributes/tincture-modifier (get placeholder-colours colour)))

@@ -7,7 +7,6 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -15,7 +14,7 @@
 
 (def field-type :heraldry.field.type/quartered)
 
-(defmethod field-interface/display-name field-type [_] (string "Quartered"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/quartered)
 
 (defmethod field-interface/part-names field-type [_] ["I" "II" "III" "IV"])
 
@@ -30,28 +29,28 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))]
     {:origin {:point {:type :choice
-                      :choices [[(string "Chief [point]") :chief]
-                                [(string "Base [point]") :base]
-                                [(string "Fess [point]") :fess]
-                                [(string "Dexter [point]") :dexter]
-                                [(string "Sinister [point]") :sinister]
-                                [(string "Honour [point]") :honour]
-                                [(string "Nombril [point]") :nombril]]
+                      :choices [[:string.option.point-choice/chief :chief]
+                                [:string.option.point-choice/base :base]
+                                [:string.option.point-choice/fess :fess]
+                                [:string.option.point-choice/dexter :dexter]
+                                [:string.option.point-choice/sinister :sinister]
+                                [:string.option.point-choice/honour :honour]
+                                [:string.option.point-choice/nombril :nombril]]
                       :default :fess
-                      :ui {:label (string "Point")}}
+                      :ui {:label :string.option/point}}
               :offset-x {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset x")
+                         :ui {:label :string.option/offset-x
                               :step 0.1}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset y")
+                         :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label (string "Origin")
+              :ui {:label :string.option/origin
                    :form-type :position}}
      :line line-style
      :opposite-line opposite-line-style

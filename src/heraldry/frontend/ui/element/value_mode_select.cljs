@@ -3,7 +3,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.hover-menu :as hover-menu]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
@@ -37,13 +36,13 @@
                              first)
         menu (cond-> []
                (and (some? inherited)
-                    (some? default)) (conj {:title (util/str-tr (string "Default") " (" (display-fn default) ")")
+                    (some? default)) (conj {:title (util/str-tr :string.submenu-summary/default " (" (display-fn default) ")")
                                             :icon "fas fa-redo"
                                             :handler (handler-for-value default)})
                (or (some? inherited)
                    (some? default)) (conj {:title (util/str-tr (if (some? inherited)
-                                                                 (string "Inherited")
-                                                                 (string "Auto"))
+                                                                 :string.miscellaneous/inherited
+                                                                 :string.miscellaneous/auto)
                                                                " (" (display-fn (or inherited default)) ")")
                                            :icon (if (some? current-value)
                                                    "far fa-square"
@@ -63,7 +62,7 @@
                       "far fa-check-square"
                       "far fa-square")
         menu (cond-> menu
-               (seq menu) (conj {:title [tr (string "Manual")]
+               (seq menu) (conj {:title [tr :string.miscellaneous/manual]
                                  :icon manual-icon
                                  :handler (handler-for-value effective-value)}))]
 
@@ -74,7 +73,7 @@
                       :position "absolute"}}
         [hover-menu/hover-menu
          context
-         (string "Mode")
+         :string.render-options/mode
          menu
          [:i.ui-icon {:class "fas fa-cog"}]
          :disabled? disabled?]])]))

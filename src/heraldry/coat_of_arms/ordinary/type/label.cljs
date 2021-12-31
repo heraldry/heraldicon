@@ -7,7 +7,6 @@
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,75 +15,75 @@
 
 (def ordinary-type :heraldry.ordinary.type/label)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Label [ordinary]"))
+(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/label)
 
 (defmethod interface/options ordinary-type [context]
   (-> {:origin {:point {:type :choice
-                        :choices [[(string "Fess [point]") :fess]
-                                  [(string "Chief [point]") :chief]
-                                  [(string "Base [point]") :base]
-                                  [(string "Honour [point]") :honour]
-                                  [(string "Nombril [point]") :nombril]
-                                  [(string "Top") :top]
-                                  [(string "Bottom") :bottom]]
+                        :choices [[:string.option.point-choice/fess :fess]
+                                  [:string.option.point-choice/chief :chief]
+                                  [:string.option.point-choice/base :base]
+                                  [:string.option.point-choice/honour :honour]
+                                  [:string.option.point-choice/nombril :nombril]
+                                  [:string.option.point-choice/top :top]
+                                  [:string.option.point-choice/bottom :bottom]]
                         :default :chief
-                        :ui {:label (string "Point")}}
+                        :ui {:label :string.option/point}}
                 :alignment {:type :choice
                             :choices position/alignment-choices
                             :default :middle
-                            :ui {:label (string "Alignment")
+                            :ui {:label :string.option/alignment
                                  :form-type :radio-select}}
                 :offset-y {:type :range
                            :min -45
                            :max 45
                            :default 0
-                           :ui {:label (string "Offset y")
+                           :ui {:label :string.option/offset-y
                                 :step 0.1}}
-                :ui {:label (string "Origin")
+                :ui {:label :string.option/origin
                      :form-type :position}}
        :variant {:type :choice
-                 :choices [[(string "Full") :full]
-                           [(string "Truncated") :truncated]]
+                 :choices [[:string.option.variant-label-choice/full :full]
+                           [:string.option.variant-label-choice/truncated :truncated]]
                  :default :full
-                 :ui {:label (string "Variant")
+                 :ui {:label :string.option/variant
                       :form-type :radio-select}}
        :num-points {:type :range
                     :min 2
                     :max 16
                     :default 3
                     :integer? true
-                    :ui {:label (string "Number of points")}}
+                    :ui {:label :string.option/number-of-points}}
        :geometry {:size {:type :range
                          :min 2
                          :max 90
                          :default 10
-                         :ui {:label (string "Size")
+                         :ui {:label :string.option/size
                               :step 0.1}}
                   :width {:type :range
                           :min 10
                           :max 150
                           :default 66
-                          :ui {:label (string "Width")
+                          :ui {:label :string.option/width
                                :step 0.1}}
                   :thickness {:type :range
                               :min 0
                               :max 20
                               :default 5
-                              :ui {:label (string "Bar thickness")
+                              :ui {:label :string.option/bar-thickness
                                    :step 0.1}}
                   :eccentricity {:type :range
                                  :min 0
                                  :max 1
                                  :default 0
-                                 :ui {:label (string "Eccentricity")
+                                 :ui {:label :string.option/eccentricity
                                       :step 0.01}}
                   :stretch {:type :range
                             :min 0.33
                             :max 10
                             :default 2
-                            :ui {:label (string "Stretch")
+                            :ui {:label :string.option/stretch
                                  :step 0.01}}
-                  :ui {:label (string "Geometry")
+                  :ui {:label :string.option/geometry
                        :form-type :geometry}}
        :outline? options/plain-outline?-option
        :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))

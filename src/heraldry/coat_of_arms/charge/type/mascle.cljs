@@ -2,13 +2,12 @@
   (:require
    [heraldry.coat-of-arms.charge.interface :as charge-interface]
    [heraldry.coat-of-arms.charge.shared :as charge-shared]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/mascle)
 
-(defmethod charge-interface/display-name charge-type [_] (string "Mascle"))
+(defmethod charge-interface/display-name charge-type [_] :string.charge.type/mascle)
 
 (defmethod interface/options charge-type [context]
   (-> (charge-shared/options context)

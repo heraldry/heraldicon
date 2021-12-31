@@ -10,7 +10,6 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tags :as tags]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -78,7 +77,7 @@
               " "
               [link-fn collection]
               " "
-              [tr (string "by")]
+              [tr :string.miscellaneous/by]
               " "
               [:a {:href (attribution/full-url-for-username username)
                    :target "_blank"} username]
@@ -98,4 +97,4 @@
        collection-list
        link-to-collection
        #(invalidate-collection-cache :all)]
-      [:div [tr (string "Loading...")]])))
+      [:div [tr :string.miscellaneous/loading]])))

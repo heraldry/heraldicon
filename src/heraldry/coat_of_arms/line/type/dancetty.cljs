@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.dancetty
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.dancetty)
 
 (def pattern
-  {:display-name (string "Dancetty")
+  {:display-name :string.line.type/dancetty
    :function (fn [{:keys [height
                           width]}
                   _line-options]

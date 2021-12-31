@@ -5,7 +5,6 @@
    [heraldry.frontend.ui.element.arms-select :as arms-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
@@ -28,12 +27,12 @@
                                  #(arms-select/fetch-arms arms-id version nil)))
           arms-title (-> arms-data
                          :name
-                         (or (string "None")))]
+                         (or :string.miscellaneous/none))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context (string "Select Arms") [tr arms-title] nil
+        [submenu/submenu context :string.option/select-arms [tr arms-title] nil
          [arms-select/list-arms (link-to-arms context)]]]])))
 
 (defmethod ui-interface/form-element :arms-reference-select [context]

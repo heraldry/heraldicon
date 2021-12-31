@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.fir-twigged
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.fir-twigged)
 
 (def pattern
-  {:display-name (string "Fir-twigged")
+  {:display-name :string.line.type/fir-twigged
    :function (fn [{:keys [height width]}
                   _line-options]
                (let [sqrt2 (Math/sqrt 2)

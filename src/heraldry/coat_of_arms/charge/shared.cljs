@@ -8,7 +8,6 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
    [heraldry.math.svg.path :as path]
@@ -19,42 +18,42 @@
 
 (defn options [context]
   (let [origin-point-option {:type :choice
-                             :choices [[(string "Fess [point]") :fess]
-                                       [(string "Chief [point]") :chief]
-                                       [(string "Base [point]") :base]
-                                       [(string "Dexter [point]") :dexter]
-                                       [(string "Sinister [point]") :sinister]
-                                       [(string "Honour [point]") :honour]
-                                       [(string "Nombril [point]") :nombril]
-                                       [(string "Top-left") :top-left]
-                                       [(string "Top") :top]
-                                       [(string "Top-right") :top-right]
-                                       [(string "Left") :left]
-                                       [(string "Right") :right]
-                                       [(string "Bottom-left") :bottom-left]
-                                       [(string "Bottom") :bottom]
-                                       [(string "Bottom-right") :bottom-right]]
+                             :choices [[:string.option.point-choice/fess :fess]
+                                       [:string.option.point-choice/chief :chief]
+                                       [:string.option.point-choice/base :base]
+                                       [:string.option.point-choice/dexter :dexter]
+                                       [:string.option.point-choice/sinister :sinister]
+                                       [:string.option.point-choice/honour :honour]
+                                       [:string.option.point-choice/nombril :nombril]
+                                       [:string.option.point-choice/top-left :top-left]
+                                       [:string.option.point-choice/top :top]
+                                       [:string.option.point-choice/top-right :top-right]
+                                       [:string.option.point-choice/left :left]
+                                       [:string.option.point-choice/right :right]
+                                       [:string.option.point-choice/bottom-left :bottom-left]
+                                       [:string.option.point-choice/bottom :bottom]
+                                       [:string.option.point-choice/bottom-right :bottom-right]]
                              :default :fess
-                             :ui {:label (string "Point")}}
+                             :ui {:label :string.option/point}}
         anchor-point-option {:type :choice
-                             :choices [[(string "Top-left") :top-left]
-                                       [(string "Top") :top]
-                                       [(string "Top-right") :top-right]
-                                       [(string "Left") :left]
-                                       [(string "Right") :right]
-                                       [(string "Bottom-left") :bottom-left]
-                                       [(string "Bottom") :bottom]
-                                       [(string "Bottom-right") :bottom-right]
-                                       [(string "Fess [point]") :fess]
-                                       [(string "Chief [point]") :chief]
-                                       [(string "Base [point]") :base]
-                                       [(string "Dexter [point]") :dexter]
-                                       [(string "Sinister [point]") :sinister]
-                                       [(string "Honour [point]") :honour]
-                                       [(string "Nombril [point]") :nombril]
-                                       [(string "Angle") :angle]]
+                             :choices [[:string.option.point-choice/top-left :top-left]
+                                       [:string.option.point-choice/top :top]
+                                       [:string.option.point-choice/top-right :top-right]
+                                       [:string.option.point-choice/left :left]
+                                       [:string.option.point-choice/right :right]
+                                       [:string.option.point-choice/bottom-left :bottom-left]
+                                       [:string.option.point-choice/bottom :bottom]
+                                       [:string.option.point-choice/bottom-right :bottom-right]
+                                       [:string.option.point-choice/fess :fess]
+                                       [:string.option.point-choice/chief :chief]
+                                       [:string.option.point-choice/base :base]
+                                       [:string.option.point-choice/dexter :dexter]
+                                       [:string.option.point-choice/sinister :sinister]
+                                       [:string.option.point-choice/honour :honour]
+                                       [:string.option.point-choice/nombril :nombril]
+                                       [:string.option.anchor-point-choice/angle :angle]]
                              :default :angle
-                             :ui {:label (string "Anchor")}}
+                             :ui {:label :string.option/anchor}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
@@ -63,18 +62,18 @@
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset x")
+                         :ui {:label :string.option/offset-x
                               :step 0.1}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset y")
+                         :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label (string "Origin")
+              :ui {:label :string.option/origin
                    :form-type :position}}
      :anchor (cond-> {:point anchor-point-option
-                      :ui {:label (string "Anchor")
+                      :ui {:label :string.option/anchor
                            :form-type :position}}
 
                (= current-anchor-point
@@ -82,20 +81,20 @@
                                          :min 0
                                          :max 360
                                          :default 0
-                                         :ui {:label (string "Angle")}})
+                                         :ui {:label :string.option/angle}})
 
                (not= current-anchor-point
                      :angle) (assoc :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label (string "Offset x")
+                                               :ui {:label :string.option/offset-x
                                                     :step 0.1}}
                                     :offset-y {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label (string "Offset y")
+                                               :ui {:label :string.option/offset-y
                                                     :step 0.1}}))
      :geometry geometry/default-options
      :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
@@ -106,17 +105,17 @@
                       (options/override-if-exists [:thickness-2 :max :max] 50)
                       (options/override-if-exists [:thickness-2 :max :default] 10))
      :outline-mode {:type :choice
-                    :choices [[(string "Keep") :keep]
-                              [(string "Transparent") :transparent]
-                              [(string "Primary") :primary]
-                              [(string "Remove") :remove]]
+                    :choices [[:string.option.outline-mode-choice/keep :keep]
+                              [:string.option.outline-mode-choice/transparent :transparent]
+                              [:string.option.outline-mode-choice/primary :primary]
+                              [:string.option.outline-mode-choice/remove :remove]]
                     :default :keep
-                    :ui {:label (string "Outline")}}
+                    :ui {:label :string.option/outline-mode}}
      :vertical-mask {:type :range
                      :default 0
                      :min -100
                      :max 100
-                     :ui {:label (string "Vertical mask")
+                     :ui {:label :string.option/vertical-mask
                           :step 1}}}))
 
 (defn make-charge

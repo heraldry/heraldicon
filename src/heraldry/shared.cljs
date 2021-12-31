@@ -20,7 +20,6 @@
    [heraldry.collection.options] ;; needed for side effects
    [heraldry.context :as c]
    [heraldry.font :as font]
-   [heraldry.gettext :refer [string]]
    [heraldry.helm] ;; needed for side effects
    [heraldry.interface :as interface]
    [heraldry.metadata :as metadata]
@@ -42,9 +41,9 @@
 (defmethod interface/options :heraldry.component/arms-general [context]
   {:name {:type :text
           :default ""
-          :ui {:label (string "Name")}}
+          :ui {:label :string.option/name}}
    :is-public {:type :boolean
-               :ui {:label (string "Make public")}}
+               :ui {:label :string.option/is-public}}
    :attribution (attribution/options (c/++ context :attribution))
    :metadata (metadata/options (c/++ context :metadata))
    :tags {:ui {:form-type :tags}}})
@@ -58,9 +57,9 @@
 (defmethod interface/options :heraldry.component/collection-general [context]
   {:name {:type :text
           :default ""
-          :ui {:label (string "Name")}}
+          :ui {:label :string.option/name}}
    :is-public {:type :boolean
-               :ui {:label (string "Make public")}}
+               :ui {:label :string.option/is-public}}
    :attribution (attribution/options (c/++ context :attribution))
    :metadata (metadata/options (c/++ context :metadata))
    :tags {:ui {:form-type :tags}}
@@ -76,32 +75,32 @@
 (defmethod interface/options :heraldry.component/charge-general [context]
   (cond-> {:name {:type :text
                   :default ""
-                  :ui {:label (string "Name")}}
+                  :ui {:label :string.option/name}}
            :is-public {:type :boolean
-                       :ui {:label (string "Make public")}}
+                       :ui {:label :string.option/is-public}}
            :attribution (attribution/options (c/++ context :attribution))
            :metadata (metadata/options (c/++ context :metadata))
            :tags {:ui {:form-type :tags}}
            :type {:type :text
-                  :ui {:label (string "Charge type")}}
+                  :ui {:label :string.option/charge-type}}
            :attributes {:ui {:form-type :attributes}}
            :landscape? {:type :boolean
-                        :ui {:label (string "Landscape")
+                        :ui {:label :string.option/landscape?
                              :tooltip "Keep the SVG as-is, embedded graphics also are allowed. This is only a good idea if you want to use images as landscape backgrounds."}}}
     (not (interface/get-raw-data (c/++ context :landscape?)))
     (merge {:attitude {:type :choice
                        :choices attributes/attitude-choices
                        :default :none
-                       :ui {:label (string "Attitude")}}
+                       :ui {:label :string.option/attitude}}
             :facing {:type :choice
                      :choices attributes/facing-choices
                      :default :none
-                     :ui {:label (string "Facing")}}
+                     :ui {:label :string.option/facing}}
             :colours {:ui {:form-type :colours}}
             :fixed-tincture {:type :choice
                              :choices tincture/fixed-tincture-choices
                              :default :none
-                             :ui {:label (string "Fixed tincture")}}})))
+                             :ui {:label :string.option/fixed-tincture}}})))
 
 (defmethod interface/options-subscriptions :heraldry.component/ribbon-general [_context]
   #{[:attribution :license]
@@ -112,9 +111,9 @@
 (defmethod interface/options :heraldry.component/ribbon-general [context]
   {:name {:type :text
           :default ""
-          :ui {:label (string "Name")}}
+          :ui {:label :string.option/name}}
    :is-public {:type :boolean
-               :ui {:label (string "Make public")}}
+               :ui {:label :string.option/is-public}}
    :attribution (attribution/options (c/++ context :attribution))
    :ribbon (ribbon/options context)
    :tags {:ui {:form-type :tags}}})

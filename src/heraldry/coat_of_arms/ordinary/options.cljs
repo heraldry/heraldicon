@@ -19,7 +19,6 @@
    [heraldry.coat-of-arms.ordinary.type.quarter :as quarter]
    [heraldry.coat-of-arms.ordinary.type.saltire :as saltire]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -54,7 +53,7 @@
 (def type-option
   {:type :choice
    :choices choices
-   :ui {:label (string "Type")
+   :ui {:label :string.option/type
         :form-type :ordinary-type-select}})
 
 (defmethod interface/options-subscriptions :heraldry.component/ordinary [_context]

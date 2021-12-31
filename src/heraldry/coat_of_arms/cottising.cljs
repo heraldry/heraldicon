@@ -3,7 +3,6 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.options :as options]))
@@ -16,24 +15,24 @@
     (assoc options
            key
            {:line (-> line-style
-                      (assoc-in [:ui :label] (string "Line")))
+                      (assoc-in [:ui :label] :string.entity/line))
             :opposite-line (-> opposite-line-style
-                               (assoc-in [:ui :label] (string "Opposite line")))
+                               (assoc-in [:ui :label] :string.entity/opposite-line))
             :distance {:type :range
                        :min -10
                        :max 20
                        :default 2
-                       :ui {:label (string "Distance")
+                       :ui {:label :string.option/distance
                             :step 0.1}}
             :thickness {:type :range
                         :min 0.1
                         :max 20
                         :default 2
-                        :ui {:label (string "Thickness")
+                        :ui {:label :string.option/thickness
                              :step 0.1}}
             :outline? {:type :boolean
                        :default false
-                       :ui {:label (string "Outline")}}
+                       :ui {:label :string.charge.tincture-modifier.special/outline}}
             :ui {:form-type :cottising}})))
 
 (defn add-cottising [context num]

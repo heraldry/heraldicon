@@ -3,7 +3,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]
@@ -20,16 +19,16 @@
           main-name (util/str-tr (:num-fields-x sanitized-layout) "x"
                                  (:num-fields-y sanitized-layout)
                                  " "
-                                 (string "fields"))
+                                 :string.miscellaneous/fields)
           changes [main-name
                    (when (some #(options/changed? % sanitized-layout options)
                                [:offset-x :offset-y])
-                     (string "shifted"))
+                     :string.submenu-summary/shifted)
                    (when (some #(options/changed? % sanitized-layout options)
                                [:stretch-x :stretch-y])
-                     (string "stretched"))
+                     :string.submenu-summary/stretched)
                    (when (options/changed? :rotation sanitized-layout options)
-                     (string "rotated"))]]
+                     :string.submenu-summary/rotated)]]
       (-> (util/combine ", " changes)
           util/upper-case-first))))
 

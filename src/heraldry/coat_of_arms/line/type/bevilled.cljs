@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.bevilled
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.bevilled)
 
 (def pattern
-  {:display-name (string "Bevilled")
+  {:display-name :string.line.type/bevilled
    :full? true
    :function (fn [{:keys [height width
                           eccentricity] :as _line-data}

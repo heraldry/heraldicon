@@ -16,7 +16,6 @@
    [heraldry.frontend.ui.core :as ui]
    [heraldry.frontend.ui.element.arms-select :as arms-select]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.render :as render]
    [heraldry.util :as util]
@@ -38,7 +37,7 @@
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
       [:<>
-       [:h3 [tr (string "Charges")]]
+       [:h3 [tr :string.entity/charges]]
        [:ul
         (doall
          (for [charge charges-data]
@@ -54,7 +53,7 @@
                           (map ribbon/fetch-ribbon-data))]
     (when (-> ribbons-data first :id)
       [:<>
-       [:h3 [tr (string "Ribbons")]]
+       [:h3 [tr :string.menu/ribbon-library]]
        [:ul
         (doall
          (for [ribbon ribbons-data]
@@ -67,7 +66,7 @@
 (defn attribution []
   (let [attribution-data (attribution/for-arms {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr (string "Attribution")]]
+     [:h3 [tr :string.attribution/title]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]
      [charge-attribution]
@@ -85,9 +84,9 @@
 (defn blazonry []
   [:div.blazonry
    [:h3
-    [tr (string "Blazon")]
+    [tr :string.entity/blazon]
     [:span {:style {:font-size "0.75em"}}
-     " " [tr (string "(beta, not complete)")]]]
+     " " [tr :string.miscellaneous/beta-blazon]]]
    [:div.blazon
     (util/tr-raw (interface/blazon {:path (conj form-db-path :coat-of-arms)}) :en)]])
 
@@ -149,7 +148,7 @@
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path
-                           (util/str-tr (string "Arms saved, new version:") " " (:version response))])
+                           (util/str-tr :string.user.message/arms-saved " " (:version response))])
         (reife/push-state :view-arms-by-id {:id (util/id-for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
@@ -176,13 +175,13 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path (string "Created an unsaved copy.")])
+    (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-arms)))
 
 (defn share-button-clicked [_event]
   (let [short-url (util/short-url @(rf/subscribe [:get form-db-path]))]
     (copy-to-clipboard short-url)
-    (rf/dispatch [:set-form-message form-db-path (string "Copied URL for sharing.")])))
+    (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
@@ -218,23 +217,23 @@
      [:div.buttons {:style {:display "flex"}}
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
-                       :title (when-not can-export? (tr (string "Arms need to be public and saved for exporting.")))
+                       :title (when-not can-export? (tr :string.user.message/arms-need-to-be-public-and-saved-for-exporting))
                        :on-click (if can-export?
                                    generate-svg-clicked
                                    (if (not logged-in?)
-                                     #(js/alert (tr (string "You need to be logged in.")))
-                                     #(js/alert (tr (string "Save your changes first.")))))
+                                     #(js/alert (tr :string.user.message/need-to-be-logged-in))
+                                     #(js/alert (tr :string.user.message/save-changes-first))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "SVG"]
       [:button.button {:type "button"
                        :class (when-not can-export? "disabled")
-                       :title (when-not can-export? (tr (string "Arms need to be public and saved for exporting.")))
+                       :title (when-not can-export? (tr :string.user.message/arms-need-to-be-public-and-saved-for-exporting))
                        :on-click (if can-export?
                                    generate-png-clicked
                                    (if (not logged-in?)
-                                     #(js/alert (tr (string "You need to be logged in.")))
-                                     #(js/alert (tr (string "Save your changes first.")))))
+                                     #(js/alert (tr :string.user.message/need-to-be-logged-in))
+                                     #(js/alert (tr :string.user.message/save-changes-first))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
        "PNG"]
@@ -242,7 +241,7 @@
         [:button.button {:style {:flex "initial"
                                  :color "#777"}
                          :class (when-not can-share? "disabled")
-                         :title (when-not can-share? (tr (string "Arms need to be public and saved for sharing.")))
+                         :title (when-not can-share? (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))
                          :on-click share-button-clicked}
          [:i.fas.fa-share-alt]])
       [:div {:style {:flex "auto"}}]
@@ -253,21 +252,21 @@
                 :margin-left "10px"}
         :on-click (if can-copy?
                     copy-to-new-clicked
-                    #(js/alert (tr (string "Need to be logged in and arms must be saved."))))}
-       [tr (string "Copy to new")]]
+                    #(js/alert (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved)))}
+       [tr :string.button/copy-to-new]]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
                                            save-arms-clicked
-                                           #(js/alert (tr (string "Need to be logged in and own the arms."))))
+                                           #(js/alert (tr :string.user.message/need-to-be-logged-in-and-own-the-arms)))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       [tr (string "Save")]]]]))
+       [tr :string.button/save]]]]))
 
 (defn arms-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
-                (string "Create Arms")])
+                :string.text.title/create-arms])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -309,7 +308,7 @@
     (when (= status :done)
       (if arms-data
         [arms-form]
-        [:div [tr (string "Not found")]]))))
+        [:div [tr :string.miscellaneous/not-found]]))))
 
 (defn link-to-arms [arms]
   (let [arms-id (-> arms
@@ -325,18 +324,18 @@
   [arms-select/list-arms link-to-arms])
 
 (defn view-list-arms []
-  (rf/dispatch [:set-title (string "Arms")])
+  (rf/dispatch [:set-title :string.entity/arms])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [:p [tr (string "Here you can create and view coats of arms. You explicitly have to save your coat of arms as public and add a license, if you want to share the link and allow others to view it.")]]
-    [:p [tr (string "However, SVG/PNG links can be viewed by anyone.")]]]
+    [:p [tr :string.text.arms-library/create-and-view-arms]]
+    [:p [tr :string.text.arms-library/svg-png-access-info]]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-arms))}
-    [tr (string "Create")]]
+    [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
 

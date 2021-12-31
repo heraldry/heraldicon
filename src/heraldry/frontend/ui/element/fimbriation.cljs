@@ -4,7 +4,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -12,7 +11,7 @@
 ;; TODO: can probably be improved with better subscriptions
 (defn submenu-link-name [options fimbriation]
   (let [main-name (case (:mode fimbriation)
-                    :none (string "None")
+                    :none :string.option.type-fimbriation-choice/none
                     :single (util/str-tr (-> fimbriation
                                              :tincture-1
                                              tincture/translate-tincture
@@ -22,7 +21,7 @@
                                              tincture/translate-tincture
                                              util/upper-case-first)
                                          " "
-                                         (string "and")
+                                         :string.miscellaneous/and
                                          " "
                                          (-> fimbriation
                                              :tincture-2
@@ -31,7 +30,7 @@
         changes [main-name
                  (when (some #(options/changed? % fimbriation options)
                              [:alignment :thickness-1 :thickness-2])
-                   (string "adjusted"))]]
+                   :string.submenu-summary/adjusted)]]
 
     (-> (util/combine ", " changes)
         util/upper-case-first)))

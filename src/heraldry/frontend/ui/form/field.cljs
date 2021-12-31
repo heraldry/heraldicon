@@ -9,7 +9,6 @@
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.frontend.validation :as validation]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
    [heraldry.util :as util]))
@@ -161,17 +160,17 @@
      :validation (validation/validate-field context)
      :buttons (if ref?
                 [{:icon "fas fa-sliders-h"
-                  :title (string "Change")
+                  :title :string.user.button/change
                   :handler #(state/dispatch-on-event % [:override-field-part-reference path])}]
                 (cond-> [{:icon "fas fa-plus"
-                          :title (string "Add")
-                          :menu [{:title (string "Ordinary")
+                          :title :string.button/add
+                          :menu [{:title :string.entity/ordinary
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/ordinary])}
-                                 {:title (string "Charge")
+                                 {:title :string.entity/charge
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/charge])}
-                                 {:title (string "Charge group")
+                                 {:title :string.entity/charge-group
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/charge-group])}
-                                 {:title (string "Semy")
+                                 {:title :string.entity/semy
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}]
                   (non-mandatory-part-of-parent? context)
                   (conj {:icon "fas fa-undo"
@@ -192,15 +191,15 @@
                                   {:context component-context
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip (string "move down")
+                                              :tooltip :string.tooltip/move-down
                                               :handler #(state/dispatch-on-event % [:move-element component-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
-                                              :tooltip (string "move up")
+                                              :tooltip :string.tooltip/move-up
                                               :handler #(state/dispatch-on-event % [:move-element component-context (inc idx)])}
                                              {:icon "far fa-trash-alt"
                                               :remove? true
-                                              :tooltip (string "remove")
+                                              :tooltip :string.tooltip/remove
                                               :handler #(state/dispatch-on-event % [:remove-element component-context])}]})))
                          vec))}))
 

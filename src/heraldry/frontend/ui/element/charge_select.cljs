@@ -10,7 +10,6 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tags :as tags]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -249,7 +248,7 @@
                                     " "
                                     [link-fn (-> node :data)]
                                     " "
-                                    [tr (string "by")]
+                                    [tr :string.miscellaneous/by]
                                     " "
                                     [:a {:href (attribution/full-url-for-username username)
                                          :target "_blank"} username]]

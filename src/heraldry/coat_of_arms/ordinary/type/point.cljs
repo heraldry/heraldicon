@@ -7,7 +7,6 @@
    [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,7 +15,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/point)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Point [ordinary]"))
+(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/point)
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -25,22 +24,22 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:line line-style
          :variant {:type :choice
-                   :choices [[(string "Dexter [point]") :dexter]
-                             [(string "Sinister [point]") :sinister]]
+                   :choices [[:string.option.point-choice/dexter :dexter]
+                             [:string.option.point-choice/sinister :sinister]]
                    :default :dexter
-                   :ui {:label (string "Variant")
+                   :ui {:label :string.option/variant
                         :form-type :select}}
          :geometry {:width {:type :range
                             :min 10
                             :max 100
                             :default 50
-                            :ui {:label (string "Width")}}
+                            :ui {:label :string.option/width}}
                     :height {:type :range
                              :min 10
                              :max 100
                              :default 50
-                             :ui {:label (string "Height")}}
-                    :ui {:label (string "Geometry")
+                             :ui {:label :string.option/height}}
+                    :ui {:label :string.option/geometry
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}

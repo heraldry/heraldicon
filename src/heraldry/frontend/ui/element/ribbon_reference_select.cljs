@@ -8,7 +8,6 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
@@ -58,12 +57,12 @@
                                    #(ribbon-select/fetch-ribbon ribbon-id version nil)))
           ribbon-title (-> ribbon-data
                            :name
-                           (or (string "None")))]
+                           (or :string.miscellaneous/none))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context (string "Select Ribbon") [tr ribbon-title] nil
+        [submenu/submenu context :string.option/select-ribbon [tr ribbon-title] nil
          [ribbon-select/list-ribbon (link-to-ribbon path)]]]])))
 
 (defmethod ui-interface/form-element :ribbon-reference-select [context]

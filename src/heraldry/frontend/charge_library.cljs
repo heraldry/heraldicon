@@ -20,7 +20,6 @@
    [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.frontend.ui.shared :as shared]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [heraldry.math.svg.core :as svg]
    [heraldry.render :as render]
    [heraldry.util :as util :refer [id-for-url]]
@@ -258,7 +257,7 @@
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             (util/str-tr (string "Charge saved, new version:") (:version response))])
+                             (util/str-tr :string.user.message/charge-saved (:version response))])
           (reife/push-state :view-charge-by-id {:id (id-for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
@@ -284,7 +283,7 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path (string "Created an unsaved copy.")])
+    (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-charge)))
 
 (defn button-row []
@@ -317,7 +316,7 @@
                               :width "auto"
                               :flex "initial"
                               :margin-right "10px"}}
-       [tr (string "Upload SVG")]
+       [tr :string.button/upload-svg]
        [:input {:type "file"
                 :accept "image/svg+xml"
                 :id "upload"
@@ -331,7 +330,7 @@
              :style {:flex "initial"
                      :padding-top "0.5em"
                      :white-space "nowrap"}}
-         [tr (string "Original")]])
+         [tr :string.miscellaneous/original]])
       [:div {:style {:flex "auto"}}]
       [:button.button
        {:type "button"
@@ -340,29 +339,29 @@
                 :margin-left "10px"}
         :on-click (if can-copy?
                     copy-to-new-clicked
-                    #(js/alert (tr (string "Need to be logged in and charge must be saved."))))}
-       [tr (string "Copy to new")]]
+                    #(js/alert (tr :string.user.message/need-to-be-logged-in-and-charge-must-be-saved)))}
+       [tr :string.button/copy-to-new]]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")
         :on-click (if can-save?
                     save-charge-clicked
-                    #(js/alert (tr (string "Need to be logged in and own the charge."))))
+                    #(js/alert (tr :string.user.message/need-to-be-logged-in-and-own-the-charge.)))
         :style {:flex "initial"
                 :margin-left "10px"}}
-       [tr (string "Save")]]]]))
+       [tr :string.button/save]]]]))
 
 (defn attribution []
   (let [attribution-data (attribution/for-charge {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr (string "Attribution")]]
+     [:h3 [tr :string.attribution/title]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
 (defn charge-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
-                (string "Create Charge")])
+                :string.text.title/create-charge])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
                                                                      example-coa-db-path]])
   [:div {:style {:display "grid"
@@ -398,7 +397,7 @@
     (when (= status :done)
       (if charge-data
         [charge-form]
-        [:div [tr (string "Not found")]]))))
+        [:div [tr :string.miscellaneous/not-found]]))))
 
 (defn link-to-charge [charge & {:keys [type-prefix?]}]
   (let [charge-id (-> charge
@@ -425,7 +424,7 @@
       [charge-form])))
 
 (defn view-list-charges []
-  (rf/dispatch [:set-title (string "Charges")])
+  (rf/dispatch [:set-title :string.entity/charges])
   (let [[status charges] (state/async-fetch-data
                           [:all-charges]
                           :all-charges
@@ -434,17 +433,17 @@
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}
       [:p
-       [tr (string "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work.")]]]
+       [tr :string.text.charge-library/create-and-view-charges]]]
      [:button.button.primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-charge))}
-      [tr (string "Create")]]
+      [tr :string.button/create]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
         [charge-select/component charges link-to-charge invalidate-charges-cache]
-        [:div [tr (string "Loading...")]])]]))
+        [:div [tr :string.miscellaneous/loading]])]]))
 
 (defn view-charge-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

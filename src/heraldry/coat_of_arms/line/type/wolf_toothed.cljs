@@ -1,10 +1,9 @@
 (ns heraldry.coat-of-arms.line.type.wolf-toothed
   (:require
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def pattern
-  {:display-name (string "Wolf toothed")
+  {:display-name :string.line.type/wolf-toothed
    :function (fn [{:keys [eccentricity
                           height
                           width]}
