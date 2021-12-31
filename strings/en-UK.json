@@ -518,5 +518,13 @@
     },
     "charge-group-of": "Charge group of ",
     "select-charge-group-preset": "Select Charge Group Preset"
+  },
+  "entity": {
+    "arms": "Arms",
+    "charge": "Charge",
+    "collection": "Collection",
+    "motto": "Motto",
+    "ribbon": "Ribbon",
+    "slogan": "Slogan"
   }
 }
