@@ -456,6 +456,7 @@
   },
   "user": {
     "message": {
+      "arms-need-to-be-public-and-saved-for-exporting": "Arms need to be public and saved for exporting.",
       "confirmation-code-sent": "A confirmation code was sent to your email address.",
       "created-unsaved-copy": "Created an unsaved copy.",
       "need-to-be-logged-in": "You need to be logged in.",
@@ -567,15 +568,20 @@
     "charge-group": "Charge group",
     "collection": "Collection",
     "extra-line": "Extra line",
+    "helm": "Helm",
+    "helms-and-crests": "Helms and crests",
     "line": "Line",
     "motto": "Motto",
     "opposite-line": "Opposite line",
     "ribbon": "Ribbon",
     "semy": "Semy",
-    "slogan": "Slogan"
+    "slogan": "Slogan",
+    "torse": "Torse",
+    "user": "User"
   },
   "submenu-summary": {
     "adjusted": "adjusted",
+    "base-fields": "base fields",
     "default": "Default",
     "fimbriated": "fimbriated",
     "flipped": "flipped",
