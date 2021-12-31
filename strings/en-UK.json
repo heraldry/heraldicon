@@ -326,7 +326,6 @@
     "title": "Render Options"
   },
   "position": {
-    "title": "Position",
     "point": {
       "angle": "Angle",
       "base": "Base [point]",
@@ -353,9 +352,30 @@
     }
   },
   "option": {
-    "point": "Point",
     "alignment": "Alignment",
+    "anchor": "Anchor",
+    "base-fields": "Base fields",
+    "distance": "Distance",
+    "geometry": "Geometry",
+    "is-public": "Make public",
+    "layout": "Layout",
+    "manual-blazon": "Manual blazon",
+    "name": "Name",
     "offset-x": "Offset x",
-    "offset-y": "Offset y"
+    "offset-y": "Offset y",
+    "origin": "Origin",
+    "point": "Point",
+    "position": "Position",
+    "rotation": "Rotation",
+    "size": "Size",
+    "stretch": "Stretch",
+    "stretch-x": "Stretch x",
+    "stretch-y": "Stretch y",
+    "subfields-x": "Subfields x",
+    "subfields-y": "Subfields y",
+    "thickness": "Thickness",
+    "tincture": "Tincture",
+    "type": "Type",
+    "variant": "Variant"
   }
 }
