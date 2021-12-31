@@ -672,6 +672,7 @@
     "helms-and-crests": "Helms and crests",
     "heraldry": "Heraldry",
     "line": "Line",
+    "main-line": "Main line",
     "metadata": "Metadata",
     "motto": "Motto",
     "opposite-line": "Opposite line",
@@ -758,5 +759,26 @@
     "square-iberian": "Square Iberian",
     "swiss": "Swiss [escutcheon]",
     "wedge": "Wedge [escutcheon]"
+  },
+  "validation": {
+    "attribution": {
+      "all-source-fields-required": "All source fields required for derivative work.",
+      "license-required-for-public-objects": "License required for public objects."
+    },
+    "partition": {
+      "barry-should-have-even-number-of-fields": "Barry should have an even number of fields, for an odd number use bars.",
+      "bendy-should-have-even-number-of-fields": "Bendy should have an even number of fields, for an odd number use bends.",
+      "paly-should-have-even-number-of-fields": "Paly should have an even number of fields, for an odd number use pales."
+    },
+    "rule-of-tincture": {
+      "colour-field-on-colour-field": "Colour field (%s) on colour field (%s) breaks rule of tincture.",
+      "colour-fimbriation-on-colour-field": "Colour fimbriation (%s) on colour field (%s) breaks rule of tincture.",
+      "colour-fimbriation-touches-colour-field": "Colour fimbriation (%s) touching colour field (%s) breaks rule of tincture.",
+      "fimbriation-tinctures-both-colour": "Fimbriation tinctures are both colours (%s and %s), breaks rule of tincture.",
+      "fimbriation-tinctures-both-metal": "Fimbriation tinctures are both metals (%s and %s), breaks rule of tincture.",
+      "metal-field-on-metal-field": "Metal field (%s) on metal field (%s) breaks rule of tincture.",
+      "metal-fimbriation-on-metal-field": "Metal fimbriation (%s) on metal field (%s) breaks rule of tincture.",
+      "metal-fimbriation-touches-metal-field": "Metal fimbriation (%s) touching metal field (%s) breaks rule of tincture."
+    }
   }
 }
