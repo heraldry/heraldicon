@@ -276,6 +276,16 @@
       "unguled": "Unguled",
       "wattled": "Wattled",
       "winged": "Winged"
+    },
+    "type": {
+      "annulet": "Annulet",
+      "billet": "Billet",
+      "crescent": "Crescent",
+      "fusil": "Fusil",
+      "lozenge": "Lozenge",
+      "mascle": "Mascle",
+      "roundel": "Roundel",
+      "rustre": "Rustre"
     }
   },
   "render-options": {
