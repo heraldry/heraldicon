@@ -1563,7 +1563,7 @@ msgid "is in the public domain"
 msgstr ""
 
 #: src/heraldry/frontend/attribution.cljs
-msgid "is licensed under "
+msgid "is licensed under"
 msgstr ""
 
 #: src/heraldry/frontend/attribution.cljs
@@ -1579,7 +1579,7 @@ msgid "unsaved data"
 msgstr ""
 
 #: src/heraldry/frontend/charge_library.cljs
-msgid "Charge saved, new version: "
+msgid "Charge saved, new version:"
 msgstr ""
 
 #: src/heraldry/frontend/charge_library.cljs
@@ -1707,7 +1707,7 @@ msgid "These updates are not translated, because that'd be a lot of work. Maybe 
 msgstr ""
 
 #: src/heraldry/frontend/ribbon_library.cljs
-msgid "Ribbon saved, new version: "
+msgid "Ribbon saved, new version:"
 msgstr ""
 
 #: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/ribbon_library.cljs
@@ -2067,7 +2067,7 @@ msgid "Columns"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
-msgid "Charge group of "
+msgid "Charge group of"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs

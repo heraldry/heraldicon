@@ -1,8 +1,8 @@
-# 
+#
 # Translators:
 # Max Ganiev, 2021
 # H Zenith, 2021
-# 
+#
 msgid ""
 msgstr ""
 "Last-Translator: H Zenith, 2021\n"
@@ -2027,7 +2027,7 @@ msgid "is in the public domain"
 msgstr "является общественным достоянием"
 
 #: src/heraldry/frontend/attribution.cljs
-msgid "is licensed under "
+msgid "is licensed under"
 msgstr "имеет лицензию:"
 
 #: src/heraldry/frontend/attribution.cljs
@@ -2043,7 +2043,7 @@ msgid "unsaved data"
 msgstr "несохраненные данные"
 
 #: src/heraldry/frontend/charge_library.cljs
-msgid "Charge saved, new version: "
+msgid "Charge saved, new version:"
 msgstr "Изменения сохранены. Новая версия:"
 
 #: src/heraldry/frontend/charge_library.cljs
@@ -2188,7 +2188,7 @@ msgid ""
 msgstr ""
 
 #: src/heraldry/frontend/ribbon_library.cljs
-msgid "Ribbon saved, new version: "
+msgid "Ribbon saved, new version:"
 msgstr ""
 
 #: src/heraldry/frontend/arms_library.cljs
@@ -2607,7 +2607,7 @@ msgid "Columns"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
-msgid "Charge group of "
+msgid "Charge group of"
 msgstr ""
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs

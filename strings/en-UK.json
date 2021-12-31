@@ -626,7 +626,7 @@
     "creator-link": "Creator link",
     "creator-name": "Creator name",
     "is-in-the-public-domain": "is in the public domain",
-    "is-licensed-under": "is licensed under ",
+    "is-licensed-under": "is licensed under",
     "is-private": "is private",
     "license": "License",
     "license-version": "License version",
@@ -677,7 +677,7 @@
       "three-inverted": "Three (inverted)",
       "triangular": "Triangular"
     },
-    "charge-group-of": "Charge group of ",
+    "charge-group-of": "Charge group of",
     "select-charge-group-preset": "Select Charge Group Preset",
     "various": "various"
   },
