@@ -333,6 +333,13 @@
       "right": "Right"
     },
     "anchor": "Anchor",
+    "anchor-point-choice": {
+      "angle": "Angle"
+    },
+    "anchor-type-choice": {
+      "edge": "Edge",
+      "anchor-point": "Anchor-Point"
+    },
     "arc-angle": "Arc angle",
     "base-fields": "Base fields",
     "column": "Column",
@@ -343,11 +350,17 @@
       "sharp": "Sharp"
     },
     "distance": "Distance",
+    "eccentricity": "Eccentricity",
+    "edge": "Edge",
+    "flipped?": "Flipped",
     "geometry": "Geometry",
+    "height": "Height",
+    "highlight": "Highlight",
     "humetty": "Humetty / Couped",
     "is-public": "Make public",
     "layout": "Layout",
     "manual-blazon": "Manual blazon",
+    "mirrored?": "Mirrored",
     "name": "Name",
     "number": "Number",
     "offset": "Offset",
@@ -356,7 +369,6 @@
     "origin": "Origin",
     "point": "Point",
     "point-choice": {
-      "angle": "Angle",
       "base": "Base [point]",
       "bottom": "Bottom",
       "bottom-left": "Bottom-left",
@@ -380,6 +392,13 @@
     "rotation": "Rotation",
     "row": "Row",
     "size": "Size",
+    "size-mode": "Size mode",
+    "size-mode-choice": {
+      "angle": "Angle",
+      "thickness": "Thickness"
+    },
+    "shadow": "Shadow",
+    "smoothing": "Smoothing",
     "spacing": "Spacing",
     "start-angle": "Start angle",
     "stretch": "Stretch",
@@ -391,7 +410,8 @@
     "thickness": "Thickness",
     "tincture": "Tincture",
     "type": "Type",
-    "variant": "Variant"
+    "variant": "Variant",
+    "width": "Width"
   },
   "tooltip": {
     "humetty-warning": "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.",
@@ -526,9 +546,14 @@
   "entity": {
     "arms": "Arms",
     "charge": "Charge",
+    "charge-group": "Charge group",
     "collection": "Collection",
+    "extra-line": "Extra line",
+    "line": "Line",
     "motto": "Motto",
+    "opposite-line": "Opposite line",
     "ribbon": "Ribbon",
+    "semy": "Semy",
     "slogan": "Slogan"
   },
   "submenu-summary": {
