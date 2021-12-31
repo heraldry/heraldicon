@@ -460,8 +460,20 @@
     "subfields-y": "Subfields y",
     "thickness": "Thickness",
     "tincture": "Tincture",
+    "tincture-background-group": {
+      "other-or-metal": "Other / Metal"
+    },
+    "tincture-background-choice": {
+      "none": "Darkened foreground"
+    },
     "type": "Type",
     "variant": "Variant",
+    "variant-quarter-choice": {
+      "dexter-base": "Dexter-base",
+      "dexter-chief": "Dexter-chief",
+      "sinister-base": "Sinister-base",
+      "sinister-chief": "Sinister-chief"
+    },
     "vertical-mask": "Vertical mask",
     "width": "Width"
   },
@@ -495,6 +507,7 @@
     "cancel": "Cancel",
     "copy-to-new": "Copy to new",
     "create": "Create",
+    "edit": "Edit",
     "save": "Save"
   },
   "user": {
@@ -608,6 +621,7 @@
   "entity": {
     "attributes": "Attributes",
     "arms": "Arms",
+    "blazon": "Blazon",
     "charge": "Charge",
     "charges": "Charges",
     "charge-group": "Charge group",
@@ -616,10 +630,12 @@
     "extra-line": "Extra line",
     "helm": "Helm",
     "helms-and-crests": "Helms and crests",
+    "heraldry": "Heraldry",
     "line": "Line",
     "metadata": "Metadata",
     "motto": "Motto",
     "opposite-line": "Opposite line",
+    "ordinary": "Ordinary",
     "ribbon": "Ribbon",
     "semy": "Semy",
     "slogan": "Slogan",
