@@ -427,5 +427,36 @@
     "register-confirmation": "Register Confirmation",
     "reset-forgotten-password": "Reset Forgotten Password",
     "username": "Username"
+  },
+  "attribution": {
+    "title": "Attribution",
+    "nature-choice": {
+      "derivative": "Derivative",
+      "own-work": "Own work"
+    },
+    "license-choice": {
+      "none": "None",
+      "cc-attribution": "CC Attribution",
+      "cc-attribution-non-commercial-share-alike": "CC Attribution-NonCommercial-ShareAlike",
+      "cc-attribution-share-alike": "CC Attribution-ShareAlike",
+      "public-domain": "Public Domain"
+    },
+    "license-display": {
+      "none": "none",
+      "public-domain": "public domain"
+    },
+    "autofill": "Autofill for known sources",
+    "creator-link": "Creator link",
+    "creator-name": "Creator name",
+    "is-in-the-public-domain": "is in the public domain",
+    "is-licensed-under": "is licensed under ",
+    "is-private": "is private",
+    "license": "License",
+    "license-version": "License version",
+    "no-license": "no license",
+    "source": "source",
+    "source-license": "Source license",
+    "source-link": "Source link",
+    "source-name": "Source name"
   }
 }
