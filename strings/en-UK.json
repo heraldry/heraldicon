@@ -520,7 +520,8 @@
       "triangular": "Triangular"
     },
     "charge-group-of": "Charge group of ",
-    "select-charge-group-preset": "Select Charge Group Preset"
+    "select-charge-group-preset": "Select Charge Group Preset",
+    "various": "various"
   },
   "entity": {
     "arms": "Arms",
@@ -529,5 +530,18 @@
     "motto": "Motto",
     "ribbon": "Ribbon",
     "slogan": "Slogan"
+  },
+  "submenu-summary": {
+    "adjusted": "adjusted",
+    "fimbriated": "fimbriated",
+    "flipped": "flipped",
+    "mirrored": "mirrored",
+    "resized": "resized",
+    "reversed": "reversed",
+    "rotated": "rotated",
+    "shifted": "shifted",
+    "slot": "slot",
+    "slots": "slots",
+    "stretched": "stretched"
   }
 }
