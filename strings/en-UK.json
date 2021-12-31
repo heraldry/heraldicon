@@ -357,8 +357,15 @@
     "arc-angle": "Arc angle",
     "base-fields": "Base fields",
     "column": "Column",
+    "corner": "Corners",
+    "corner-choice": {
+      "bevel": "Bevel",
+      "round": "Round",
+      "sharp": "Sharp"
+    },
     "distance": "Distance",
     "geometry": "Geometry",
+    "humetty": "Humetty / Couped",
     "is-public": "Make public",
     "layout": "Layout",
     "manual-blazon": "Manual blazon",
@@ -389,6 +396,7 @@
     "variant": "Variant"
   },
   "tooltip": {
+    "humetty-warning": "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.",
     "move-up": "move up",
     "move-down": "move down",
     "redo": "redo",
