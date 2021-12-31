@@ -277,5 +277,52 @@
       "wattled": "Wattled",
       "winged": "Winged"
     }
+  },
+  "render-options": {
+    "coat-of-arms-angle": "Shield angle",
+    "coat-of-arms-angle-presets": {
+      "two-thirds": "2/3",
+      "full": "Full",
+      "half": "Half"
+    },
+    "escutcheon": "Escutcheon",
+    "escutcheon-outline?": "Escutcheon outline",
+    "escutcheon-shadow?": "Escutcheon shadow (ignored for export)",
+    "mode": "Mode",
+    "mode-choice": {
+      "colours": "Colours",
+      "catching": "Hatching"
+    },
+    "outline?": "Draw outline",
+    "preview-original?": "Preview original (don't replace colours)",
+    "scope": "Scope",
+    "scope-choice": {
+      "achievement": "Everything (Helms, etc.)",
+      "coat-of-arms-and-helm": "Coat of Arms with Helm",
+      "coat-of-arms": "Coat of Arms"
+    },
+    "shiny?": "Shiny",
+    "simulate-surface": "Simulate surface",
+    "squiggly?": "Squiggly lines (can be slow)",
+    "texture": "Texture",
+    "texture-choice": {
+      "cloth-rough": "Cloth (rough)",
+      "cloth-smooth1": "Cloth (smooth)",
+      "felt": "Felt",
+      "glass-frosted": "Glass (frosted)",
+      "marble": "Marble",
+      "metal-brushed-1": "Metal (brushed 1)",
+      "metal-brushed-2": "Metal (brushed 2)",
+      "metal-rough": "Metal (rough)",
+      "metal-scraped": "Metal (scraped)",
+      "metal-smooth": "Metal (smooth)",
+      "mosaic": "Mosaic",
+      "satin": "Satin",
+      "stone": "Stone",
+      "stone-rough": "Stone (rough)",
+      "wood": "Wood"
+    },
+    "theme": "Theme",
+    "title": "Render Options"
   }
 }
