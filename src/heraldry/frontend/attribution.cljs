@@ -41,7 +41,7 @@
         (case (or license :none)
           :none [tr (string "is private")]
           :public-domain [tr (string "is in the public domain")]
-          [:<> [tr (string "is licensed under ")]
+          [:<> [tr (string "is licensed under")] " "
            [:a {:href license-url :target "_blank"} license-display-name]])
         (when (= nature :derivative)
           [:div.sub-credit
@@ -62,7 +62,7 @@
            (case (or source-license :none)
              :none [tr (string "is private")]
              :public-domain [tr (string "is in the public domain")]
-             [:<> [tr (string "is licensed under ")]
+             [:<> [tr (string "is licensed under") " "]
               [:a {:href source-license-url :target "_blank"} source-license-display-name]])])])
      [tr (string "unsaved data")])])
 

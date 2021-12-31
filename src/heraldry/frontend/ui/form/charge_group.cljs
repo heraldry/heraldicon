@@ -316,9 +316,9 @@
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [context]
   (let [charges-context (c/++ context :charges)
         num-charges (interface/get-list-size charges-context)]
-    {:title (util/str-tr (string "Charge group of ") (if (= num-charges 1)
-                                                       (charge-options/title (c/++ context :charges 0))
-                                                       (string "various")))
+    {:title (util/str-tr (string "Charge group of") " " (if (= num-charges 1)
+                                                          (charge-options/title (c/++ context :charges 0))
+                                                          (string "various")))
      :icon {:default (static/static-url
                       (str "/svg/charge-group-preset-three.svg"))
             :selected (static/static-url

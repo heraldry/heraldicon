@@ -1577,8 +1577,8 @@ msgid "is in the public domain"
 msgstr "ist gemeinfrei"
 
 #: src/heraldry/frontend/attribution.cljs
-msgid "is licensed under "
-msgstr "ist lizensiert unter "
+msgid "is licensed under"
+msgstr "ist lizensiert unter"
 
 #: src/heraldry/frontend/attribution.cljs
 msgid "source"
@@ -1593,8 +1593,8 @@ msgid "unsaved data"
 msgstr "ungespeicherte Daten"
 
 #: src/heraldry/frontend/charge_library.cljs
-msgid "Charge saved, new version: "
-msgstr "Wappenfigur gespeichert, neue Version: "
+msgid "Charge saved, new version:"
+msgstr "Wappenfigur gespeichert, neue Version:"
 
 #: src/heraldry/frontend/charge_library.cljs
 msgid "Upload SVG"
@@ -1721,8 +1721,8 @@ msgid "These updates are not translated, because that'd be a lot of work. Maybe 
 msgstr "Diese Updates sind derzeit nicht übersetzt, weil es sehr viel Arbeit wäre. Vielleicht eines Tages... :)"
 
 #: src/heraldry/frontend/ribbon_library.cljs
-msgid "Ribbon saved, new version: "
-msgstr "Band gespeichert, neue Version: "
+msgid "Ribbon saved, new version:"
+msgstr "Band gespeichert, neue Version:"
 
 #: src/heraldry/frontend/arms_library.cljs src/heraldry/frontend/charge_library.cljs src/heraldry/frontend/ribbon_library.cljs
 msgid "Created an unsaved copy."
@@ -2081,8 +2081,8 @@ msgid "Columns"
 msgstr "Spalten"
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
-msgid "Charge group of "
-msgstr "Gruppe von "
+msgid "Charge group of"
+msgstr "Gruppe von"
 
 #: src/heraldry/frontend/ui/form/charge_group.cljs
 msgid "various"
@@ -2699,4 +2699,3 @@ msgstr "Blickrichtung"
 #: src/heraldry/shared.cljs
 msgid "Fixed tincture"
 msgstr "Feste Tinktur"
-
