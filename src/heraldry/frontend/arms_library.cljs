@@ -222,7 +222,7 @@
                        :on-click (if can-export?
                                    generate-svg-clicked
                                    (if (not logged-in?)
-                                     #(js/alert (tr (string "Need to be logged in.")))
+                                     #(js/alert (tr (string "You need to be logged in.")))
                                      #(js/alert (tr (string "Save your changes first.")))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
@@ -233,7 +233,7 @@
                        :on-click (if can-export?
                                    generate-png-clicked
                                    (if (not logged-in?)
-                                     #(js/alert (tr (string "Need to be logged in.")))
+                                     #(js/alert (tr (string "You need to be logged in.")))
                                      #(js/alert (tr (string "Save your changes first.")))))
                        :style {:flex "initial"
                                :margin-right "10px"}}
