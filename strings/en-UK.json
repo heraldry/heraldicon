@@ -543,5 +543,38 @@
     "slot": "slot",
     "slots": "slots",
     "stretched": "stretched"
+  },
+  "ribbon": {
+    "button": {
+      "invert": "Invert"
+    },
+    "text": {
+      "apply-preset-after-change": "Apply a preset after you edited the ribbon curve and changed the number of segments.",
+      "segment-explanation": "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number. Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this.",
+      "svg-font-rendering-warning": "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it.",
+      "topology-explanation-1": "The ribbon curve can be interpreted in many ways, depending on what is fore-/background and which segments overlap which.",
+      "topology-explanation-2": "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned."
+    },
+    "apply-presets": "Apply presets",
+    "flow-presets": "Flow presets",
+    "flow-presets-choice": {
+      "spiral-clockwise": "Spiral clockwise",
+      "spiral-counter-clockwise": "Spiral counter-clockwise",
+      "stacked": "Stacked",
+      "waves": "Waves"
+    },
+    "start-presets": "Start presets",
+    "start-presets-choice": {
+      "background": "Background",
+      "foreground": "Foreground"
+    },
+    "layering-presets": "Layering presets",
+    "layering-presets-choice": {
+      "left-to-right": "Left to right",
+      "middle-outwards": "Middle outwards",
+      "right-to-left": "Right to left"
+    },
+    "segments": "Segments",
+    "topology": "Topology"
   }
 }
