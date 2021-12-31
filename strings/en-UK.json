@@ -384,5 +384,20 @@
     "redo": "redo",
     "remove": "remove",
     "undo": "undo"
+  },
+  "miscellaneous": {
+    "and": "and",
+    "by": "by",
+    "loading": "Loading...",
+    "not-found": "Not found",
+    "unnamed": "unnamed",
+    "unsaved-data": "unsaved data"
+  },
+  "button": {
+    "add": "Add",
+    "cancel": "Cancel",
+    "copy-to-new": "Copy to new",
+    "create": "Create",
+    "save": "Save"
   }
 }
