@@ -258,7 +258,7 @@
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             (util/str-tr (string "Charge saved, new version: ") (:version response))])
+                             (util/str-tr (string "Charge saved, new version:") (:version response))])
           (reife/push-state :view-charge-by-id {:id (id-for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e

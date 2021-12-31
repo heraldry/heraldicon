@@ -388,7 +388,7 @@
           (state/invalidate-cache-without-current form-db-path [ribbon-id 0])
           (invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             (util/str-tr (string "Ribbon saved, new version: ") (:version response))])
+                             (util/str-tr (string "Ribbon saved, new version:") (:version response))])
           (reife/push-state :view-ribbon-by-id {:id (id-for-url ribbon-id)}))
         (modal/stop-loading)
         (catch :default e
