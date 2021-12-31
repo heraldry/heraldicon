@@ -7,7 +7,6 @@
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.metadata :as metadata]
    [heraldry.util :as util]
@@ -55,8 +54,8 @@
           label (:label ui)
           num-metadata (interface/get-list-size context)
           link-name (if (pos? num-metadata)
-                      (util/str-tr (string "Change") " (" num-metadata ")")
-                      (string "None"))]
+                      (util/str-tr :string.user.button/change " (" num-metadata ")")
+                      :string.miscellaneous/none)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
@@ -73,7 +72,7 @@
               [select/raw-select-inline
                nil
                :custom
-               (into [[(string "Select Preset") :preset]]
+               (into [[:string.option/select-preset :preset]]
                      (map (fn [k]
                             [k k]))
                      (sort metadata/known-metadata-keys))
@@ -95,7 +94,7 @@
                               (-> value-value (or "") s/trim count zero?))
                 :on-click (partial on-add context)
                 :type "button"}
-               [tr (string "Add")]]]]
+               [tr :string.button/add]]]]
             [:hr]
             (doall
              (for [[n v] (sort metadata)]
@@ -114,7 +113,7 @@
                  [:button
                   {:on-click #(rf/dispatch [::remove-metadata context n])
                    :type "button"}
-                  [tr (string "Remove")]]]])
+                  [tr :string.option.outline-mode-choice/remove]]]])
              )])]]])))
 
 (defmethod ui-interface/form-element :metadata [context]

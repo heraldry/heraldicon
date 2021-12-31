@@ -9,7 +9,6 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.chevron :as chevron]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
@@ -18,7 +17,7 @@
 
 (def field-type :heraldry.field.type/tierced-per-pall)
 
-(defmethod field-interface/display-name field-type [_] (string "Tierced per pall"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/tierced-per-pall)
 
 (defmethod field-interface/part-names field-type [_] ["middle" "side I" "side II"])
 
@@ -38,83 +37,83 @@
                              (options/override-if-exists [:offset :min] 0)
                              (options/override-if-exists [:base-line] nil))
         direction-anchor-point-option {:type :choice
-                                       :choices [[(string "Chief [point]") :chief]
-                                                 [(string "Base [point]") :base]
-                                                 [(string "Dexter [point]") :dexter]
-                                                 [(string "Sinister [point]") :sinister]
-                                                 [(string "Top-left") :top-left]
-                                                 [(string "Top") :top]
-                                                 [(string "Top-right") :top-right]
-                                                 [(string "Left") :left]
-                                                 [(string "Right") :right]
-                                                 [(string "Bottom-left") :bottom-left]
-                                                 [(string "Bottom") :bottom]
-                                                 [(string "Bottom-right") :bottom-right]
-                                                 [(string "Angle") :angle]]
+                                       :choices [[:string.option.point-choice/chief :chief]
+                                                 [:string.option.point-choice/base :base]
+                                                 [:string.option.point-choice/dexter :dexter]
+                                                 [:string.option.point-choice/sinister :sinister]
+                                                 [:string.option.point-choice/top-left :top-left]
+                                                 [:string.option.point-choice/top :top]
+                                                 [:string.option.point-choice/top-right :top-right]
+                                                 [:string.option.point-choice/left :left]
+                                                 [:string.option.point-choice/right :right]
+                                                 [:string.option.point-choice/bottom-left :bottom-left]
+                                                 [:string.option.point-choice/bottom :bottom]
+                                                 [:string.option.point-choice/bottom-right :bottom-right]
+                                                 [:string.option.anchor-point-choice/angle :angle]]
                                        :default :top
-                                       :ui {:label (string "Point")}}
+                                       :ui {:label :string.option/point}}
         current-direction-anchor-point (options/get-value
                                         (interface/get-raw-data (c/++ context :direction-anchor :point))
                                         direction-anchor-point-option)
         anchor-point-option {:type :choice
                              :choices (case current-direction-anchor-point
-                                        :bottom [[(string "Bottom-left") :bottom-left]
-                                                 [(string "Bottom") :bottom]
-                                                 [(string "Bottom-right") :bottom-right]
-                                                 [(string "Left") :left]
-                                                 [(string "Right") :right]
-                                                 [(string "Angle") :angle]]
-                                        :top [[(string "Top-left") :top-left]
-                                              [(string "Top") :top]
-                                              [(string "Top-right") :top-right]
-                                              [(string "Left") :left]
-                                              [(string "Right") :right]
-                                              [(string "Angle") :angle]]
-                                        :left [[(string "Top-left") :top-left]
-                                               [(string "Left") :left]
-                                               [(string "Bottom-left") :bottom-left]
-                                               [(string "Top") :top]
-                                               [(string "Bottom") :bottom]
-                                               [(string "Angle") :angle]]
-                                        :right [[(string "Top-right") :top-right]
-                                                [(string "Right") :right]
-                                                [(string "Bottom-right") :bottom-right]
-                                                [(string "Top") :top]
-                                                [(string "Bottom") :bottom]
-                                                [(string "Angle") :angle]]
-                                        :bottom-left [[(string "Bottom-left") :bottom-left]
-                                                      [(string "Bottom") :bottom]
-                                                      [(string "Bottom-right") :bottom-right]
-                                                      [(string "Top-left") :top-left]
-                                                      [(string "Left") :left]
-                                                      [(string "Angle") :angle]]
-                                        :bottom-right [[(string "Bottom-left") :bottom-left]
-                                                       [(string "Bottom") :bottom]
-                                                       [(string "Bottom-right") :bottom-right]
-                                                       [(string "Right") :right]
-                                                       [(string "Top-right") :top-right]
-                                                       [(string "Angle") :angle]]
-                                        :top-left [[(string "Top-left") :top-left]
-                                                   [(string "Top") :top]
-                                                   [(string "Top-right") :top-right]
-                                                   [(string "Left") :left]
-                                                   [(string "Bottom-left") :bottom-left]
-                                                   [(string "Angle") :angle]]
-                                        :top-right [[(string "Top-left") :top-left]
-                                                    [(string "Top") :top]
-                                                    [(string "Top-right") :top-right]
-                                                    [(string "Left") :left]
-                                                    [(string "Bottom-right") :bottom-right]
-                                                    [(string "Angle") :angle]]
-                                        [[(string "Top-left") :top-left]
-                                         [(string "Top") :top]
-                                         [(string "Top-right") :top-right]
-                                         [(string "Left") :left]
-                                         [(string "Right") :right]
-                                         [(string "Bottom-left") :bottom-left]
-                                         [(string "Bottom") :bottom]
-                                         [(string "Bottom-right") :bottom-right]
-                                         [(string "Angle") :angle]])
+                                        :bottom [[:string.option.point-choice/bottom-left :bottom-left]
+                                                 [:string.option.point-choice/bottom :bottom]
+                                                 [:string.option.point-choice/bottom-right :bottom-right]
+                                                 [:string.option.point-choice/left :left]
+                                                 [:string.option.point-choice/right :right]
+                                                 [:string.option.anchor-point-choice/angle :angle]]
+                                        :top [[:string.option.point-choice/top-left :top-left]
+                                              [:string.option.point-choice/top :top]
+                                              [:string.option.point-choice/top-right :top-right]
+                                              [:string.option.point-choice/left :left]
+                                              [:string.option.point-choice/right :right]
+                                              [:string.option.anchor-point-choice/angle :angle]]
+                                        :left [[:string.option.point-choice/top-left :top-left]
+                                               [:string.option.point-choice/left :left]
+                                               [:string.option.point-choice/bottom-left :bottom-left]
+                                               [:string.option.point-choice/top :top]
+                                               [:string.option.point-choice/bottom :bottom]
+                                               [:string.option.anchor-point-choice/angle :angle]]
+                                        :right [[:string.option.point-choice/top-right :top-right]
+                                                [:string.option.point-choice/right :right]
+                                                [:string.option.point-choice/bottom-right :bottom-right]
+                                                [:string.option.point-choice/top :top]
+                                                [:string.option.point-choice/bottom :bottom]
+                                                [:string.option.anchor-point-choice/angle :angle]]
+                                        :bottom-left [[:string.option.point-choice/bottom-left :bottom-left]
+                                                      [:string.option.point-choice/bottom :bottom]
+                                                      [:string.option.point-choice/bottom-right :bottom-right]
+                                                      [:string.option.point-choice/top-left :top-left]
+                                                      [:string.option.point-choice/left :left]
+                                                      [:string.option.anchor-point-choice/angle :angle]]
+                                        :bottom-right [[:string.option.point-choice/bottom-left :bottom-left]
+                                                       [:string.option.point-choice/bottom :bottom]
+                                                       [:string.option.point-choice/bottom-right :bottom-right]
+                                                       [:string.option.point-choice/right :right]
+                                                       [:string.option.point-choice/top-right :top-right]
+                                                       [:string.option.anchor-point-choice/angle :angle]]
+                                        :top-left [[:string.option.point-choice/top-left :top-left]
+                                                   [:string.option.point-choice/top :top]
+                                                   [:string.option.point-choice/top-right :top-right]
+                                                   [:string.option.point-choice/left :left]
+                                                   [:string.option.point-choice/bottom-left :bottom-left]
+                                                   [:string.option.anchor-point-choice/angle :angle]]
+                                        :top-right [[:string.option.point-choice/top-left :top-left]
+                                                    [:string.option.point-choice/top :top]
+                                                    [:string.option.point-choice/top-right :top-right]
+                                                    [:string.option.point-choice/left :left]
+                                                    [:string.option.point-choice/bottom-right :bottom-right]
+                                                    [:string.option.anchor-point-choice/angle :angle]]
+                                        [[:string.option.point-choice/top-left :top-left]
+                                         [:string.option.point-choice/top :top]
+                                         [:string.option.point-choice/top-right :top-right]
+                                         [:string.option.point-choice/left :left]
+                                         [:string.option.point-choice/right :right]
+                                         [:string.option.point-choice/bottom-left :bottom-left]
+                                         [:string.option.point-choice/bottom :bottom]
+                                         [:string.option.point-choice/bottom-right :bottom-right]
+                                         [:string.option.anchor-point-choice/angle :angle]])
                              :default (case current-direction-anchor-point
                                         :bottom :bottom-left
                                         :top :top-right
@@ -126,50 +125,50 @@
                                         :top-right :right
                                         :angle :angle
                                         :bottom-left)
-                             :ui {:label (string "Point")}}
+                             :ui {:label :string.option/point}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     {:origin {:point {:type :choice
-                      :choices [[(string "Chief [point]") :chief]
-                                [(string "Base [point]") :base]
-                                [(string "Fess [point]") :fess]
-                                [(string "Dexter [point]") :dexter]
-                                [(string "Sinister [point]") :sinister]
-                                [(string "Honour [point]") :honour]
-                                [(string "Nombril [point]") :nombril]
-                                [(string "Top-left") :top-left]
-                                [(string "Top") :top]
-                                [(string "Top-right") :top-right]
-                                [(string "Left") :left]
-                                [(string "Right") :right]
-                                [(string "Bottom-left") :bottom-left]
-                                [(string "Bottom") :bottom]
-                                [(string "Bottom-right") :bottom-right]
-                                [(string "Angle") :angle]]
+                      :choices [[:string.option.point-choice/chief :chief]
+                                [:string.option.point-choice/base :base]
+                                [:string.option.point-choice/fess :fess]
+                                [:string.option.point-choice/dexter :dexter]
+                                [:string.option.point-choice/sinister :sinister]
+                                [:string.option.point-choice/honour :honour]
+                                [:string.option.point-choice/nombril :nombril]
+                                [:string.option.point-choice/top-left :top-left]
+                                [:string.option.point-choice/top :top]
+                                [:string.option.point-choice/top-right :top-right]
+                                [:string.option.point-choice/left :left]
+                                [:string.option.point-choice/right :right]
+                                [:string.option.point-choice/bottom-left :bottom-left]
+                                [:string.option.point-choice/bottom :bottom]
+                                [:string.option.point-choice/bottom-right :bottom-right]
+                                [:string.option.anchor-point-choice/angle :angle]]
                       :default :fess
-                      :ui {:label (string "Point")}}
+                      :ui {:label :string.option/point}}
               :alignment {:type :choice
                           :choices position/alignment-choices
                           :default :middle
-                          :ui {:label (string "Alignment")
+                          :ui {:label :string.option/alignment
                                :form-type :radio-select}}
               :offset-x {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset x")
+                         :ui {:label :string.option/offset-x
                               :step 0.1}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset y")
+                         :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label (string "Origin")
+              :ui {:label :string.option/origin
                    :form-type :position}}
      :direction-anchor (cond-> {:point direction-anchor-point-option
-                                :ui {:label (string "Issuant")
+                                :ui {:label :string.charge.attitude/issuant
                                      :form-type :position}}
 
                          (= current-direction-anchor-point
@@ -177,23 +176,23 @@
                                                    :min -180
                                                    :max 180
                                                    :default 0
-                                                   :ui {:label (string "Angle")}})
+                                                   :ui {:label :string.option/angle}})
 
                          (not= current-direction-anchor-point
                                :angle) (assoc :offset-x {:type :range
                                                          :min -45
                                                          :max 45
                                                          :default 0
-                                                         :ui {:label (string "Offset x")
+                                                         :ui {:label :string.option/offset-x
                                                               :step 0.1}}
                                               :offset-y {:type :range
                                                          :min -45
                                                          :max 45
                                                          :default 0
-                                                         :ui {:label (string "Offset y")
+                                                         :ui {:label :string.option/offset-y
                                                               :step 0.1}}))
      :anchor (cond-> {:point anchor-point-option
-                      :ui {:label (string "Anchor")
+                      :ui {:label :string.option/anchor
                            :form-type :position}}
 
                (= current-anchor-point
@@ -201,25 +200,25 @@
                                          :min 0
                                          :max 80
                                          :default 45
-                                         :ui {:label (string "Angle")}})
+                                         :ui {:label :string.option/angle}})
 
                (not= current-anchor-point
                      :angle) (assoc :alignment {:type :choice
                                                 :choices position/alignment-choices
                                                 :default :middle
-                                                :ui {:label (string "Alignment")
+                                                :ui {:label :string.option/alignment
                                                      :form-type :radio-select}}
                                     :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label (string "Offset x")
+                                               :ui {:label :string.option/offset-x
                                                     :step 0.1}}
                                     :offset-y {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label (string "Offset y")
+                                               :ui {:label :string.option/offset-y
                                                     :step 0.1}}))
      :line line-style
      :opposite-line opposite-line-style

@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.nebuly
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.nebuly)
 
 (def pattern
-  {:display-name (string "Nebuly")
+  {:display-name :string.line.type/nebuly
    :function (fn [{:keys [eccentricity
                           height
                           width]}

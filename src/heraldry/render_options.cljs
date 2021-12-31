@@ -4,7 +4,6 @@
    [heraldry.coat-of-arms.texture :as texture]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry.component/render-options [_context]
@@ -19,76 +18,76 @@
                             {:type :choice
                              :choices escutcheon/choices
                              :default :none
-                             :ui {:label (string "Escutcheon")
+                             :ui {:label :string.render-options/escutcheon
                                   :form-type :escutcheon-select}}
                             {:type :choice
                              :choices (drop 1 escutcheon/choices)
                              :default :heater
-                             :ui {:label (string "Escutcheon")
+                             :ui {:label :string.render-options/escutcheon
                                   :form-type :escutcheon-select}})
         escutcheon (-> context (c/++ :escutcheon) interface/get-raw-data
                        (or (-> escutcheon-option :choices first second)))]
     (cond-> {:escutcheon escutcheon-option
 
              :mode {:type :choice
-                    :choices [[(string "Colours") :colours]
-                              [(string "Hatching") :hatching]]
+                    :choices [[:string.render-options.mode-choice/colours :colours]
+                              [:string.render-options.mode-choice/catching :hatching]]
                     :default :colours
-                    :ui {:label (string "Mode")
+                    :ui {:label :string.render-options/mode
                          :form-type :radio-select}}
 
              :texture {:type :choice
                        :choices texture/choices
                        :default :none
-                       :ui {:label (string "Texture")}}
+                       :ui {:label :string.render-options/texture}}
 
              :shiny? {:type :boolean
                       :default false
-                      :ui {:label (string "Shiny")}}
+                      :ui {:label :string.render-options/shiny?}}
 
              :escutcheon-shadow? {:type :boolean
                                   :default false
-                                  :ui {:label (string "Escutcheon shadow (ignored for export)")}}
+                                  :ui {:label :string.render-options/escutcheon-shadow?}}
 
              :escutcheon-outline? {:type :boolean
                                    :default false
-                                   :ui {:label (string "Escutcheon outline")}}
+                                   :ui {:label :string.render-options/escutcheon-outline?}}
 
              :outline? {:type :boolean
                         :default false
-                        :ui {:label (string "Draw outline")}}
+                        :ui {:label :string.render-options/outline?}}
 
              :squiggly? {:type :boolean
                          :default false
-                         :ui {:label (string "Squiggly lines (can be slow)")}}
+                         :ui {:label :string.render-options/squiggly?}}
 
              :preview-original? {:type :boolean
-                                 :ui {:label (string "Preview original (don't replace colours)")}}
+                                 :ui {:label :string.render-options/preview-original?}}
              :coat-of-arms-angle {:type :range
                                   :default 0
                                   :min -45
                                   :max 45
-                                  :ui {:label (string "Shield angle")
-                                       :additional-values [[(string "Half") 22.5]
-                                                           [(string "2/3") 30]
-                                                           [(string "Full") 45]]
+                                  :ui {:label :string.render-options/coat-of-arms-angle
+                                       :additional-values [[:string.render-options.coat-of-arms-angle-presets/half 22.5]
+                                                           [:string.render-options.coat-of-arms-angle-presets/two-thirds 30]
+                                                           [:string.render-options.coat-of-arms-angle-presets/full 45]]
                                        :step 1}}
              :scope {:type :choice
-                     :choices [[(string "Everything (Helms, etc.)") :achievement]
-                               [(string "Coat of Arms with Helm") :coat-of-arms-and-helm]
-                               [(string "Coat of Arms") :coat-of-arms]]
+                     :choices [[:string.render-options.scope-choice/achievement :achievement]
+                               [:string.render-options.scope-choice/coat-of-arms-and-helm :coat-of-arms-and-helm]
+                               [:string.render-options.scope-choice/coat-of-arms :coat-of-arms]]
                      :default :achievement
-                     :ui {:label (string "Scope")}}}
+                     :ui {:label :string.render-options/scope}}}
 
       (= escutcheon :flag) (merge escutcheon/flag-options)
 
       (not= texture :none) (assoc :texture-displacement?
                                   {:type :boolean
                                    :default false
-                                   :ui {:label (string "Simulate surface")}})
+                                   :ui {:label :string.render-options/simulate-surface}})
 
       (= mode :colours) (assoc :theme {:type :choice
                                        :choices tincture/theme-choices
                                        :default tincture/default-theme
-                                       :ui {:label (string "Theme")
+                                       :ui {:label :string.render-options/theme
                                             :form-type :theme-select}}))))

@@ -5,7 +5,6 @@
    [heraldry.component :as component]
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
@@ -71,8 +70,8 @@
          own-kinds) {:level :warning
                      :message (util/format-tr (tr
                                                (if fimbriated?
-                                                 (string "Metal fimbriation (%s) on metal field (%s) breaks rule of tincture.")
-                                                 (string "Metal field (%s) on metal field (%s) breaks rule of tincture.")))
+                                                 :string.validation.rule-of-tincture/metal-fimbriation-on-metal-field
+                                                 :string.validation.rule-of-tincture/metal-field-on-metal-field))
                                               (list-tinctures own-tinctures)
                                               (list-tinctures parent-tinctures))}
       (= #{:colour}
@@ -80,8 +79,8 @@
          own-kinds) {:level :warning
                      :message (util/format-tr (tr
                                                (if fimbriated?
-                                                 (string "Colour fimbriation (%s) on colour field (%s) breaks rule of tincture.")
-                                                 (string "Colour field (%s) on colour field (%s) breaks rule of tincture.")))
+                                                 :string.validation.rule-of-tincture/colour-fimbriation-on-colour-field
+                                                 :string.validation.rule-of-tincture/colour-field-on-colour-field))
                                               (list-tinctures own-tinctures)
                                               (list-tinctures parent-tinctures))})))
 
@@ -119,9 +118,9 @@
            main-check (conj (-> main-check
                                 (update :message (fn [message]
                                                    (util/str-tr (case which
-                                                                  :line (util/str-tr (string "Main line") ": ")
-                                                                  :opposite-line (util/str-tr (string "Opposite line") ": ")
-                                                                  :extra-line (util/str-tr (string "Extra line") ": ")
+                                                                  :line (util/str-tr :string.entity/main-line ": ")
+                                                                  :opposite-line (util/str-tr :string.entity/opposite-line ": ")
+                                                                  :extra-line (util/str-tr :string.entity/extra-line ": ")
                                                                   nil)
                                                                 message)))))
 
@@ -129,7 +128,7 @@
               fimbriation-tincture-2-kind
               :metal) (conj {:level :note
                              :message (util/format-tr (tr
-                                                       (string "Fimbriation tinctures are both metals (%s and %s), breaks rule of tincture."))
+                                                       :string.validation.rule-of-tincture/fimbriation-tinctures-both-metal)
                                                       (tincture/translate-tincture fimbriation-tincture-1)
                                                       (tincture/translate-tincture fimbriation-tincture-2))})
 
@@ -137,7 +136,7 @@
               fimbriation-tincture-2-kind
               :colour) (conj {:level :note
                               :message (util/format-tr (tr
-                                                        (string "Fimbriation tinctures are both colours (%s and %s), breaks rule of tincture."))
+                                                        :string.validation.rule-of-tincture/fimbriation-tinctures-both-colour)
                                                        (tincture/translate-tincture fimbriation-tincture-1)
                                                        (tincture/translate-tincture fimbriation-tincture-2))})
 
@@ -145,7 +144,7 @@
               field-tincture-kinds
               #{:metal}) (conj {:level :note
                                 :message (util/format-tr (tr
-                                                          (string "Metal fimbriation (%s) touching metal field (%s) breaks rule of tincture."))
+                                                          :string.validation.rule-of-tincture/metal-fimbriation-touches-metal-field)
                                                          (tincture/translate-tincture fimbriation-tincture-1)
                                                          (list-tinctures field-tinctures))})
 
@@ -153,7 +152,7 @@
               field-tincture-kinds
               #{:colour}) (conj {:level :note
                                  :message (util/format-tr (tr
-                                                           (string "Colour fimbriation (%s) touching colour field (%s) breaks rule of tincture."))
+                                                           :string.validation.rule-of-tincture/colour-fimbriation-touches-colour-field)
                                                           (tincture/translate-tincture fimbriation-tincture-1)
                                                           (list-tinctures field-tinctures))}))]))))
 
@@ -230,13 +229,13 @@
     (cond-> []
       (and (= field-type :paly)
            (odd? num-fields-x)) (conj {:level :warning
-                                       :message (string "Paly should have an even number of fields, for an odd number use pales.")})
+                                       :message :string.validation.partition/paly-should-have-even-number-of-fields})
       (and (= field-type :barry)
            (odd? num-fields-y)) (conj {:level :warning
-                                       :message (string "Barry should have an even number of fields, for an odd number use bars.")})
+                                       :message :string.validation.partition/barry-should-have-even-number-of-fields})
       (and (#{:bendy :bendy-sinister} field-type)
            (odd? num-fields-y)) (conj {:level :warning
-                                       :message (string "Bendy should have an even number of fields, for an odd number use bends.")}))))
+                                       :message :string.validation.partition/bendy-should-have-even-number-of-fields}))))
 
 (defn validate-attribution [context]
   (let [nature (interface/get-sanitized-data (c/++ context :nature))
@@ -251,14 +250,14 @@
                                 (= value :none)
                                 (-> value (or "") s/trim count zero?))) source-fields)))
       [{:level :error
-        :message (string "All source fields required for derivative work.")}])))
+        :message :string.validation.attribution/all-source-fields-required}])))
 
 (defn validate-is-public [context]
   (let [is-public (interface/get-sanitized-data (c/++ context :is-public))
         license (interface/get-sanitized-data (c/++ context :attribution :license))]
     (when (and is-public (= license :none))
       [{:level :error
-        :message (string "License required for public objects.")}])))
+        :message :string.validation.attribution/license-required-for-public-objects}])))
 
 (defn validate-arms-general [context]
   (let [is-public (validate-is-public context)

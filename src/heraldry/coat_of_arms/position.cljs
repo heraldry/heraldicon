@@ -1,25 +1,24 @@
 (ns heraldry.coat-of-arms.position
   (:require
-   [heraldry.gettext :refer [string]]
    [heraldry.math.vector :as v]
    [heraldry.util :as util]))
 
 (def point-choices
-  [[(string "Fess [point]") :fess]
-   [(string "Chief [point]") :chief]
-   [(string "Base [point]") :base]
-   [(string "Dexter [point]") :dexter]
-   [(string "Sinister [point]") :sinister]
-   [(string "Honour [point]") :honour]
-   [(string "Nombril [point]") :nombril]
-   [(string "Top-left") :top-left]
-   [(string "Top") :top]
-   [(string "Top-right") :top-right]
-   [(string "Left") :left]
-   [(string "Right") :right]
-   [(string "Bottom-left") :bottom-left]
-   [(string "Bottom") :bottom]
-   [(string "Bottom-right") :bottom-right]])
+  [[:string.option.point-choice/fess :fess]
+   [:string.option.point-choice/chief :chief]
+   [:string.option.point-choice/base :base]
+   [:string.option.point-choice/dexter :dexter]
+   [:string.option.point-choice/sinister :sinister]
+   [:string.option.point-choice/honour :honour]
+   [:string.option.point-choice/nombril :nombril]
+   [:string.option.point-choice/top-left :top-left]
+   [:string.option.point-choice/top :top]
+   [:string.option.point-choice/top-right :top-right]
+   [:string.option.point-choice/left :left]
+   [:string.option.point-choice/right :right]
+   [:string.option.point-choice/bottom-left :bottom-left]
+   [:string.option.point-choice/bottom :bottom]
+   [:string.option.point-choice/bottom-right :bottom-right]])
 
 (def point-choices-x
   (->> point-choices
@@ -33,30 +32,30 @@
    #{:chief :honour :fess :nombril :base}))
 
 (def anchor-point-choices
-  [[(string "Top-left") :top-left]
-   [(string "Top") :top]
-   [(string "Top-right") :top-right]
-   [(string "Left") :left]
-   [(string "Right") :right]
-   [(string "Bottom-left") :bottom-left]
-   [(string "Bottom") :bottom]
-   [(string "Bottom-right") :bottom-right]
-   [(string "Fess [point]") :fess]
-   [(string "Chief [point]") :chief]
-   [(string "Base [point]") :base]
-   [(string "Dexter [point]") :dexter]
-   [(string "Sinister [point]") :sinister]
-   [(string "Honour [point]") :honour]
-   [(string "Nombril [point]") :nombril]
-   [(string "Angle") :angle]])
+  [[:string.option.point-choice/top-left :top-left]
+   [:string.option.point-choice/top :top]
+   [:string.option.point-choice/top-right :top-right]
+   [:string.option.point-choice/left :left]
+   [:string.option.point-choice/right :right]
+   [:string.option.point-choice/bottom-left :bottom-left]
+   [:string.option.point-choice/bottom :bottom]
+   [:string.option.point-choice/bottom-right :bottom-right]
+   [:string.option.point-choice/fess :fess]
+   [:string.option.point-choice/chief :chief]
+   [:string.option.point-choice/base :base]
+   [:string.option.point-choice/dexter :dexter]
+   [:string.option.point-choice/sinister :sinister]
+   [:string.option.point-choice/honour :honour]
+   [:string.option.point-choice/nombril :nombril]
+   [:string.option.anchor-point-choice/angle :angle]])
 
 (def anchor-point-map
   (util/choices->map anchor-point-choices))
 
 (def alignment-choices
-  [[(string "Left") :left]
-   [(string "Middle") :middle]
-   [(string "Right") :right]])
+  [[:string.option.alignment-choice/left :left]
+   [:string.option.alignment-choice/middle :middle]
+   [:string.option.alignment-choice/right :right]])
 
 (def alignment-map
   (util/choices->map alignment-choices))
@@ -65,30 +64,30 @@
   {:point {:type :choice
            :choices point-choices
            :default :fess
-           :ui {:label (string "Point")}}
+           :ui {:label :string.option/point}}
    :alignment {:type :choice
                :choices alignment-choices
                :default :middle
-               :ui {:label (string "Alignment")
+               :ui {:label :string.option/alignment
                     :form-type :radio-select}}
    :angle {:type :range
            :min 0
            :max 360
            :default 0
-           :ui {:label (string "Angle")}}
+           :ui {:label :string.option/angle}}
    :offset-x {:type :range
               :min -45
               :max 45
               :default 0
-              :ui {:label (string "Offset x")
+              :ui {:label :string.option/offset-x
                    :step 0.1}}
    :offset-y {:type :range
               :min -45
               :max 45
               :default 0
-              :ui {:label (string "Offset y")
+              :ui {:label :string.option/offset-y
                    :step 0.1}}
-   :ui {:label (string "Position")
+   :ui {:label :string.option/position
         :form-type :position}})
 
 (def anchor-default-options

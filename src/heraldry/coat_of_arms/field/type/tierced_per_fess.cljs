@@ -7,14 +7,13 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/tierced-per-fess)
 
-(defmethod field-interface/display-name field-type [_] (string "Tierced per fess"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/tierced-per-fess)
 
 (defmethod field-interface/part-names field-type [_] ["chief" "fess" "base"])
 
@@ -22,30 +21,30 @@
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]
     {:origin {:point {:type :choice
-                      :choices [[(string "Fess [point]") :fess]
-                                [(string "Chief [point]") :chief]
-                                [(string "Base [point]") :base]
-                                [(string "Honour [point]") :honour]
-                                [(string "Nombril [point]") :nombril]
-                                [(string "Top") :top]
-                                [(string "Bottom") :bottom]]
+                      :choices [[:string.option.point-choice/fess :fess]
+                                [:string.option.point-choice/chief :chief]
+                                [:string.option.point-choice/base :base]
+                                [:string.option.point-choice/honour :honour]
+                                [:string.option.point-choice/nombril :nombril]
+                                [:string.option.point-choice/top :top]
+                                [:string.option.point-choice/bottom :bottom]]
                       :default :fess
-                      :ui {:label (string "Point")}}
+                      :ui {:label :string.option/point}}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label (string "Offset y")
+                         :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label (string "Origin")
+              :ui {:label :string.option/origin
                    :form-type :position}}
      :layout {:stretch-y {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label (string "Stretch y")
+                          :ui {:label :string.option/stretch-y
                                :step 0.01}}
-              :ui {:label (string "Layout")
+              :ui {:label :string.option/layout
                    :form-type :field-layout}}
      :line line-style}))
 

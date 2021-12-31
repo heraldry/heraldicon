@@ -1,11 +1,10 @@
 (ns heraldry.coat-of-arms.escutcheon
   (:require
    [heraldry.coat-of-arms.field.environment :as environment]
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def heater
-  {:display-name (string "Heater")
+  {:display-name :string.escutcheon.type/heater
    ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
    :environment (environment/create
                  (str "m 0,0"
@@ -19,7 +18,7 @@
                   :bounding-box [-3 3 0 (+ 2 5.196152422706632)]})})
 
 (def square-french
-  {:display-name (string "Square French")
+  {:display-name :string.escutcheon.type/square-french
    :environment (environment/create
                  (str "m 0,0"
                       "v 15.7"
@@ -31,7 +30,7 @@
                   :bounding-box [0 (* 2 12) 0 (+ 15.7 13)]})})
 
 (def square-iberian
-  {:display-name (string "Square Iberian")
+  {:display-name :string.escutcheon.type/square-iberian
    :environment (environment/create
                  (str "m 0,0"
                       "h 5"
@@ -43,7 +42,7 @@
                   :bounding-box [-5 5 0 (+ 7 5)]})})
 
 (def square-czech
-  {:display-name (string "Square Czech")
+  {:display-name :string.escutcheon.type/square-czech
    :environment (environment/create
                  ;; diff(sqrt(r*r - x*x))
                  ;; solve(-24/sqrt(r^2 - 24^2) - (-35/4)) ~ 24.156226
@@ -56,7 +55,7 @@
                   :bounding-box [0 56 0 56.5]})})
 
 (def french-modern
-  {:display-name (string "French modern")
+  {:display-name :string.escutcheon.type/french-modern
    :environment (environment/create
                  (str "m 0,0"
                       "h 7"
@@ -74,7 +73,7 @@
                   :bounding-box [-7 7 0 (* 2 8)]})})
 
 (def lozenge
-  {:display-name (string "Lozenge [escutcheon]")
+  {:display-name :string.escutcheon.type/lozenge
    :environment (environment/create
                  (str "m 0,0"
                       "L 5,6.5"
@@ -86,7 +85,7 @@
                   :points {:fess {:x 0 :y 6.5}}})})
 
 (def oval
-  {:display-name (string "Oval")
+  {:display-name :string.escutcheon.type/oval
    :environment (environment/create
                  (str "m 0,0"
                       "A 5 6.8 0 0 1 5,6.5"
@@ -99,7 +98,7 @@
                   :points {:fess {:x 0 :y 6.5}}})})
 
 (def roundel
-  {:display-name (string "Roundel [escutcheon]")
+  {:display-name :string.escutcheon.type/roundel
    :environment (environment/create
                  (str "m 0,0"
                       "a 5 5 0 0 1 0,10"
@@ -110,7 +109,7 @@
                   :points {:fess {:x 0 :y 5}}})})
 
 (def swiss
-  {:display-name (string "Swiss [escutcheon]")
+  {:display-name :string.escutcheon.type/swiss
    ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
    :environment (environment/create
                  (str "m 0,0"
@@ -125,7 +124,7 @@
                   :bounding-box [-3 3 0 (+ 2 5.196152422706632)]})})
 
 (def english
-  {:display-name (string "English [escutcheon]")
+  {:display-name :string.escutcheon.type/english
    :environment (environment/create
                  (str "m 0,0"
                       "h 8"
@@ -145,7 +144,7 @@
                   :bounding-box [-8 8 0 (+ (* 2 8) 1)]})})
 
 (def polish
-  {:display-name (string "Polish [escutcheon]")
+  {:display-name :string.escutcheon.type/polish
    :environment (environment/create
                  (str "m 43.402145,5e-7 "
                       "c -8.662508,0 -14.063932,7.322064 -27.53457,9.380727 0.01086,7.9371285
@@ -168,7 +167,7 @@
                   :points {:fess {:x 50 :y 60}}})})
 
 (def polish-19th-century
-  {:display-name (string "Polish 19th century")
+  {:display-name :string.escutcheon.type/polish-19th-century
    :environment (environment/create
                  (str
                   "M 9.5919374,7.6420451e-7 6.7196191e-7,9.9320533 "
@@ -185,7 +184,7 @@
                   :points {:fess {:x 50 :y 60}}})})
 
 (def renaissance
-  {:display-name (string "Renaissance [escutcheon]")
+  {:display-name :string.escutcheon.type/renaissance
    :environment (environment/create
                  (str
                   "M 43.672061,112.35743 "
@@ -204,7 +203,7 @@
                   :points {:fess {:x 50 :y 55}}})})
 
 (def rectangle
-  {:display-name (string "Rectangle [escutcheon]")
+  {:display-name :string.escutcheon.type/rectangle
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -217,7 +216,7 @@
                   :points {:fess {:x 5 :y 6}}})})
 
 (def flag
-  {:display-name (string "Flag")
+  {:display-name :string.escutcheon.type/flag
    :function (fn [width height swallow-tail tail-point-height tail-tongue]
                (let [swallow-tail-point-dx (-> width (* swallow-tail) (/ 100))
                      dy (-> height (* tail-point-height) (/ 100))
@@ -252,7 +251,7 @@
                   :points {:fess {:x 2.5 :y 1.5}}})})
 
 (def wedge
-  {:display-name (string "Wedge [escutcheon]")
+  {:display-name :string.escutcheon.type/wedge
    ;; sqrt(3) / 2 * 6 + 2 ~ 7.196152422706632
    :environment (let [height 7.196152422706632
                       hole-x 1
@@ -269,7 +268,7 @@
                     :bounding-box [-3 3 0 7.196152422706632]}))})
 
 (def kite
-  {:display-name (string "Kite")
+  {:display-name :string.escutcheon.type/kite
    :environment (let [width 1
                       height 2
                       half-width (/ width 2)
@@ -297,7 +296,7 @@
                     :points {:fess {:x 0 :y half-width}}}))})
 
 (def norman
-  {:display-name (string "Norman (late)")
+  {:display-name :string.escutcheon.type/norman-late
    :environment (let [width 5
                       height 8
                       half-width (/ width 2)
@@ -316,7 +315,7 @@
                     :points {:fess {:x 0 :y half-width}}}))})
 
 (def norman-rounded
-  {:display-name (string "Rounded Norman (late)")
+  {:display-name :string.escutcheon.type/rounded-norman-late
    :environment (let [width 5
                       height 8
                       d (/ height 15)
@@ -370,7 +369,7 @@
   (->> escutcheons
        (map (fn [v]
               [(-> v deref :display-name) (-> v meta :name keyword)]))
-       (into [[(string "None") :none]])))
+       (into [[:string.escutcheon.type/none :none]])))
 
 (def choice-map
   (util/choices->map choices))
@@ -383,7 +382,7 @@
 
 (def flag-options
   {:flag-aspect-ratio-preset {:type :choice
-                              :choices [[(util/str-tr "--- " (string "Select ratio") " ---") :none]
+                              :choices [[(util/str-tr "--- " :string.escutcheon.type/select-ratio " ---") :none]
                                         ["2:3 (most common)" :preset-2-3]
                                         ["1:2 (common)" :preset-1-2]
                                         ["3:5 (common)" :preset-3-5]
@@ -417,40 +416,40 @@
                                         ["19:36" :preset-19-36]
                                         ["22:41" :preset-22-41]
                                         ["28:37" :preset-28-37]]
-                              :ui {:label (string "Aspect ratio preset")
+                              :ui {:label :string.option/aspect-ratio-preset
                                    :form-type :flag-aspect-ratio-preset-select}}
 
    :flag-width {:type :range
                 :default 3
                 :min 0.1
                 :max 41
-                :ui {:label (string "Flag width")
+                :ui {:label :string.option/flag-width
                      :step 0.01}}
 
    :flag-height {:type :range
                  :default 2
                  :min 0.1
                  :max 41
-                 :ui {:label (string "Flag height")
+                 :ui {:label :string.option/flag-height
                       :step 0.01}}
 
    :flag-swallow-tail {:type :range
                        :default 0
                        :min 0
                        :max 100
-                       :ui {:label (string "Flag swallow tail")
+                       :ui {:label :string.option/flag-swallow-tail
                             :step 0.01}}
 
    :flag-tail-point-height {:type :range
                             :default 0
                             :min 0
                             :max 90
-                            :ui {:label (string "Flag tail point height")
+                            :ui {:label :string.option/flag-tail-point-height
                                  :step 0.01}}
 
    :flag-tail-tongue {:type :range
                       :default 0
                       :min 0
                       :max 100
-                      :ui {:label (string "Flag tongue")
+                      :ui {:label :string.option/flag-tongue
                            :step 0.01}}})

@@ -5,22 +5,21 @@
    [heraldry.coat-of-arms.escutcheon :as escutcheon]
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/escutcheon)
 
-(defmethod charge-interface/display-name charge-type [_] (string "Escutcheon"))
+(defmethod charge-interface/display-name charge-type [_] :string.render-options/escutcheon)
 
 (defmethod interface/options charge-type [context]
   (let [escutcheon-option {:type :choice
                            :choices (-> escutcheon/choices
                                         vec
-                                        (assoc-in [0 0] (string "Root")))
+                                        (assoc-in [0 0] :string.escutcheon.type/root))
                            :default :none
-                           :ui {:label (string "Escutcheon")
+                           :ui {:label :string.render-options/escutcheon
                                 :form-type :escutcheon-select}}
         escutcheon (-> context (c/++ :escutcheon) interface/get-raw-data
                        (or (-> escutcheon-option :choices first second)))]

@@ -14,7 +14,6 @@
    [heraldry.frontend.ui.core :as ui]
    [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.bezier :as bezier]
    [heraldry.math.catmullrom :as catmullrom]
@@ -388,7 +387,7 @@
           (state/invalidate-cache-without-current form-db-path [ribbon-id 0])
           (invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             (util/str-tr (string "Ribbon saved, new version:") (:version response))])
+                             (util/str-tr :string.user.message/ribbon-saved (:version response))])
           (reife/push-state :view-ribbon-by-id {:id (id-for-url ribbon-id)}))
         (modal/stop-loading)
         (catch :default e
@@ -414,7 +413,7 @@
          (dissoc :first-version-created-at)
          (dissoc :is-current-version)
          (dissoc :name)))
-    (rf/dispatch-sync [:set-form-message form-db-path (string "Created an unsaved copy.")])
+    (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-ribbon)))
 
 (defn button-row []
@@ -448,7 +447,7 @@
         :on-click (if can-copy?
                     copy-to-new-clicked
                     #(js/alert "Need to be logged in and arms must be saved."))}
-       [tr (string "Copy to new")]]
+       [tr :string.button/copy-to-new]]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")
@@ -457,12 +456,12 @@
                     #(js/alert "Need to be logged in and own the arms."))
         :style {:flex "initial"
                 :margin-left "10px"}}
-       [tr (string "Save")]]]]))
+       [tr :string.button/save]]]]))
 
 (defn attribution []
   (let [attribution-data (attribution/for-ribbon {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr (string "Attribution")]]
+     [:h3 [tr :string.attribution/title]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
@@ -475,14 +474,14 @@
                :style (when-not (= edit-mode :none)
                         {:color "#ffffff"
                          :background-color "#ff8020"})}
-      [tr (string "Edit")]]
+      [tr :string.button/edit]]
      (when-not (= edit-mode :none)
        " Shift - add point, Alt - remove points")]))
 
 (defn ribbon-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
-                (string "Create Ribbon")])
+                :string.text.title/create-ribbon])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -518,7 +517,7 @@
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]
-        [:div [tr (string "Not found")]]))))
+        [:div [tr :string.miscellaneous/not-found]]))))
 
 (defn link-to-ribbon [ribbon & {:keys [type-prefix?]}]
   (let [ribbon-id (-> ribbon
@@ -544,7 +543,7 @@
       [ribbon-form])))
 
 (defn view-list-ribbons []
-  (rf/dispatch [:set-title (string "Ribbons")])
+  (rf/dispatch [:set-title :string.menu/ribbon-library])
   (let [[status ribbons] (state/async-fetch-data
                           [:all-ribbons]
                           :all-ribbons
@@ -552,17 +551,17 @@
     [:div {:style {:padding "15px"}}
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}
-      [tr (string "Here you can view and create ribbons to be used in coats of arms. By default your ribbons are private, so only you can see and use them. If you want to make them public, then you must provide a license.")]]
+      [tr :string.text.ribbon-library/create-and-view-ribbons]]
      [:button.button.primary
       {:on-click #(do
                     (rf/dispatch-sync [:clear-form-errors form-db-path])
                     (rf/dispatch-sync [:clear-form-message form-db-path])
                     (reife/push-state :create-ribbon))}
-      [tr (string "Create")]]
+      [tr :string.button/create]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
         [ribbon-select/component ribbons link-to-ribbon invalidate-ribbons-cache]
-        [:div [tr (string "Loading...")]])]]))
+        [:div [tr :string.miscellaneous/loading]])]]))
 
 (defn view-ribbon-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

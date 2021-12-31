@@ -6,14 +6,13 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
 
 (def field-type :heraldry.field.type/barry)
 
-(defmethod field-interface/display-name field-type [_] (string "Barry"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/barry)
 
 (defmethod field-interface/part-names field-type [_] nil)
 
@@ -23,28 +22,28 @@
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label (string "Subfields y")
+                           :ui {:label :string.option/subfields-y
                                 :form-type :field-layout-num-fields-y}}
             :num-base-fields {:type :range
                               :min 2
                               :max 8
                               :default 2
                               :integer? true
-                              :ui {:label (string "Base fields")
+                              :ui {:label :string.option/base-fields
                                    :form-type :field-layout-num-base-fields}}
             :offset-y {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label (string "Offset y")
+                       :ui {:label :string.option/offset-y
                             :step 0.01}}
             :stretch-y {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label (string "Stretch y")
+                        :ui {:label :string.option/stretch-y
                              :step 0.01}}
-            :ui {:label (string "Layout")
+            :ui {:label :string.option/layout
                  :form-type :field-layout}}
    :line (line/options (c/++ context :line)
                        :fimbriation? false)})

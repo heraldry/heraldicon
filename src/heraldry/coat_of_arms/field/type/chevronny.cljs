@@ -8,7 +8,6 @@
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.shared.chevron :as chevron]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.core :as math]
    [heraldry.math.svg.path :as path]
@@ -17,7 +16,7 @@
 
 (def field-type :heraldry.field.type/chevronny)
 
-(defmethod field-interface/display-name field-type [_] (string "Chevronny"))
+(defmethod field-interface/display-name field-type [_] :string.field.type/chevronny)
 
 (defmethod field-interface/part-names field-type [_] nil)
 
@@ -32,29 +31,29 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
         anchor-point-option {:type :choice
-                             :choices [[(string "Top-left") :top-left]
-                                       [(string "Top") :top]
-                                       [(string "Top-right") :top-right]
-                                       [(string "Left") :left]
-                                       [(string "Right") :right]
-                                       [(string "Bottom-left") :bottom-left]
-                                       [(string "Bottom") :bottom]
-                                       [(string "Bottom-right") :bottom-right]
-                                       [(string "Fess [point]") :fess]
-                                       [(string "Chief [point]") :chief]
-                                       [(string "Base [point]") :base]
-                                       [(string "Dexter [point]") :dexter]
-                                       [(string "Sinister [point]") :sinister]
-                                       [(string "Honour [point]") :honour]
-                                       [(string "Nombril [point]") :nombril]
-                                       [(string "Angle") :angle]]
+                             :choices [[:string.option.point-choice/top-left :top-left]
+                                       [:string.option.point-choice/top :top]
+                                       [:string.option.point-choice/top-right :top-right]
+                                       [:string.option.point-choice/left :left]
+                                       [:string.option.point-choice/right :right]
+                                       [:string.option.point-choice/bottom-left :bottom-left]
+                                       [:string.option.point-choice/bottom :bottom]
+                                       [:string.option.point-choice/bottom-right :bottom-right]
+                                       [:string.option.point-choice/fess :fess]
+                                       [:string.option.point-choice/chief :chief]
+                                       [:string.option.point-choice/base :base]
+                                       [:string.option.point-choice/dexter :dexter]
+                                       [:string.option.point-choice/sinister :sinister]
+                                       [:string.option.point-choice/honour :honour]
+                                       [:string.option.point-choice/nombril :nombril]
+                                       [:string.option.anchor-point-choice/angle :angle]]
                              :default :angle
-                             :ui {:label (string "Point")}}
+                             :ui {:label :string.option/point}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)]
     {:anchor (cond-> {:point anchor-point-option
-                      :ui {:label (string "Anchor")
+                      :ui {:label :string.option/anchor
                            :form-type :position}}
 
                (= current-anchor-point
@@ -62,48 +61,48 @@
                                          :min 10
                                          :max 170
                                          :default 45
-                                         :ui {:label (string "Angle")}})
+                                         :ui {:label :string.option/angle}})
 
                (not= current-anchor-point
                      :angle) (assoc :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label (string "Offset x")
+                                               :ui {:label :string.option/offset-x
                                                     :step 0.1}}
                                     :offset-y {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label (string "Offset y")
+                                               :ui {:label :string.option/offset-y
                                                     :step 0.1}}))
      :layout {:num-fields-y {:type :range
                              :min 1
                              :max 20
                              :default 6
                              :integer? true
-                             :ui {:label (string "Subfields y")
+                             :ui {:label :string.option/subfields-y
                                   :form-type :field-layout-num-fields-y}}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
-                                :ui {:label (string "Base fields")
+                                :ui {:label :string.option/base-fields
                                      :form-type :field-layout-num-base-fields}}
               :offset-y {:type :range
                          :min -3
                          :max 3
                          :default 0
-                         :ui {:label (string "Offset y")
+                         :ui {:label :string.option/offset-y
                               :step 0.01}}
               :stretch-y {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label (string "Stretch y")
+                          :ui {:label :string.option/stretch-y
                                :step 0.01}}
-              :ui {:label (string "Layout")
+              :ui {:label :string.option/layout
                    :form-type :field-layout}}
      :line line-style
      :opposite-line opposite-line-style}))

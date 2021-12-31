@@ -8,7 +8,6 @@
    [heraldry.frontend.ui.element.radio-select :as radio-select]
    [heraldry.frontend.ui.element.search-field :as search-field]
    [heraldry.frontend.ui.element.tags :as tags]
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
 
@@ -88,21 +87,21 @@
      (when-not hide-ownership-filter?
        [checkbox/checkbox {:path filter-own-path}
         :option {:type :boolean
-                 :ui {:label [tr (string "Mine only")]}}])
+                 :ui {:label [tr :string.miscellaneous/mine-only]}}])
      (when-not hide-access-filter?
        [radio-select/radio-select {:path filter-access-path}
         :option {:type :choice
                  :default :all
-                 :choices [[(string "All") :all]
-                           [(string "Public") :public]
-                           [(string "Private") :private]]}])
+                 :choices [[:string.option.access-filter-choice/all :all]
+                           [:string.option.access-filter-choice/public :public]
+                           [:string.option.access-filter-choice/private :private]]}])
 
      [:div
       [tags/tags-view tags-to-display
        :on-click #(rf/dispatch [:filter-toggle-tag filter-tags-path %])
        :selected filter-tags]]
      (if (empty? filtered-items)
-       [:div [tr (string "None")]]
+       [:div [tr :string.miscellaneous/none]]
        [display-fn
         :items filtered-items
         :filtered? filtered?])]))

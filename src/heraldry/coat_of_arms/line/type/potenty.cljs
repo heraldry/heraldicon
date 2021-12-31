@@ -1,10 +1,9 @@
 (ns heraldry.coat-of-arms.line.type.potenty
   (:require
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def pattern
-  {:display-name (string "Potenty")
+  {:display-name :string.line.type/potenty
    :function (fn [{:keys [height
                           eccentricity
                           width]}

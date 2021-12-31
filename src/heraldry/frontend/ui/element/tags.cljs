@@ -5,7 +5,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
@@ -109,7 +108,7 @@
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
                                :white-space "nowrap"}}
-      [:label [tr (string "Tags")]]
+      [:label [tr :string.entity/tags]]
       [:div.option
        [:input {:value value
                 :on-change on-change
@@ -122,7 +121,7 @@
         {:disabled (-> value (or "") s/trim count zero?)
          :on-click on-click
          :type "button"}
-        [tr (string "Add")]]
+        [tr :string.button/add]]
        [:div {:style {:padding-top "10px"}}
         [tags-view (keys tags)
          :on-delete #(delete-tag-clicked path %)]]]]]))

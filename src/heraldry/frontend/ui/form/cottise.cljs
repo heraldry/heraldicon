@@ -3,7 +3,6 @@
    [heraldry.context :as c]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.frontend.validation :as validation]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
@@ -23,28 +22,28 @@
                                                   (c/-- 2)
                                                   (c/++ :type)))]
     (util/str-tr
-     (string "Cottise")
+     :string.entity/cottise
      " "
      (-> (cond
            (#{:heraldry.ordinary.type/pale}
-            ordinary-type) {:cottise-1 (util/str-tr "1 " (string "Left"))
-                            :cottise-2 (util/str-tr "2 " (string "Left"))
-                            :cottise-opposite-1 (util/str-tr "1 " (string "Right"))
-                            :cottise-opposite-2 (util/str-tr "2 " (string "Right"))}
+            ordinary-type) {:cottise-1 (util/str-tr "1 " :string.miscellaneous/left)
+                            :cottise-2 (util/str-tr "2 " :string.miscellaneous/left)
+                            :cottise-opposite-1 (util/str-tr "1 " :string.miscellaneous/right)
+                            :cottise-opposite-2 (util/str-tr "2 " :string.miscellaneous/right)}
            (#{:heraldry.ordinary.type/fess
               :heraldry.ordinary.type/bend
               :heraldry.ordinary.type/bend-sinister
               :heraldry.ordinary.type/chevron}
-            ordinary-type) {:cottise-1 (util/str-tr "1 " (string "Top"))
-                            :cottise-2 (util/str-tr "2 " (string "Top"))
-                            :cottise-opposite-1 (util/str-tr "1 " (string "Bottom"))
-                            :cottise-opposite-2 (util/str-tr "2 " (string "Bottom"))}
+            ordinary-type) {:cottise-1 (util/str-tr "1 " :string.miscellaneous/top)
+                            :cottise-2 (util/str-tr "2 " :string.miscellaneous/top)
+                            :cottise-opposite-1 (util/str-tr "1 " :string.miscellaneous/bottom)
+                            :cottise-opposite-2 (util/str-tr "2 " :string.miscellaneous/bottom)}
            :else {:cottise-1 "1"
                   :cottise-2 "2"
-                  :cottise-opposite-1 (util/str-tr "1 " (string "opposite"))
-                  :cottise-opposite-2 (util/str-tr "2 " (string "opposite"))
-                  :cottise-extra-1 (util/str-tr "1 " (string "extra"))
-                  :cottise-extra-2 (util/str-tr "2 " (string "extra"))})
+                  :cottise-opposite-1 (util/str-tr "1 " :string.miscellaneous/opposite)
+                  :cottise-opposite-2 (util/str-tr "2 " :string.miscellaneous/opposite)
+                  :cottise-extra-1 (util/str-tr "1 " :string.miscellaneous/extra)
+                  :cottise-extra-2 (util/str-tr "2 " :string.miscellaneous/extra)})
          (get cottise-key)))))
 
 (defmethod ui-interface/component-node-data :heraldry.component/cottise [context]

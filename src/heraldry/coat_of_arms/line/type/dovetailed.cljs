@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.dovetailed
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.dovetailed)
 
 (def pattern
-  {:display-name (string "Dovetailed")
+  {:display-name :string.line.type/dovetailed
    :function (fn [{:keys [eccentricity
                           height
                           width]}

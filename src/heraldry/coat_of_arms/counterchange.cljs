@@ -1,5 +1,6 @@
 (ns heraldry.coat-of-arms.counterchange
-  (:require [re-frame.core :as rf]))
+  (:require
+   [re-frame.core :as rf]))
 
 (defn collect-tinctures [field {:keys [tincture-mapping]}]
   (->> field

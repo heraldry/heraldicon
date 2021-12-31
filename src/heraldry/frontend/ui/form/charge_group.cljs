@@ -12,7 +12,6 @@
     :as charge-group-preset-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.static :as static]
@@ -224,12 +223,12 @@
                ", "
                [(util/str-tr num-slots
                              " " (if (= num-slots 1)
-                                   (string "slot")
-                                   (string "slots")))
+                                   :string.submenu-summary/slot
+                                   :string.submenu-summary/slots))
                 (when-not (= stretch 1)
-                  (string "stretched"))
+                  :string.submenu-summary/stretched)
                 (when-not (zero? offset)
-                  (string "shifted"))])]
+                  :string.submenu-summary/shifted)])]
     [:div {:style {:position "relative"}}
      [submenu/submenu context type-str [tr title] {:style {:width "20em"}
                                                    :class "submenu-strip-form"}
@@ -245,12 +244,12 @@
                        :heraldry.charge-group.type/columns}
                      charge-group-type)
         type-str (case charge-group-type
-                   :heraldry.charge-group.type/rows (string "Row")
-                   :heraldry.charge-group.type/columns (string "Column")
+                   :heraldry.charge-group.type/rows :string.option/row
+                   :heraldry.charge-group.type/columns :string.option/column
                    nil)
         type-plural-str (case charge-group-type
-                          :heraldry.charge-group.type/rows (string "Rows")
-                          :heraldry.charge-group.type/columns (string "Columns")
+                          :heraldry.charge-group.type/rows :string.charge-group.type/rows
+                          :heraldry.charge-group.type/columns :string.charge-group.type/columns
                           nil)]
     [:div {:style {:display "table-cell"
                    :vertical-align "top"}}
@@ -283,7 +282,7 @@
            " "
            [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip
                                                             strips-context default/charge-group-strip])}
-            [:i.fas.fa-plus] " " [tr (string "Add")]]]
+            [:i.fas.fa-plus] " " [tr :string.button/add]]]
 
           [:div.option.charge-group-strips
            [:ul
@@ -316,16 +315,16 @@
 (defmethod ui-interface/component-node-data :heraldry.component/charge-group [context]
   (let [charges-context (c/++ context :charges)
         num-charges (interface/get-list-size charges-context)]
-    {:title (util/str-tr (string "Charge group of") " " (if (= num-charges 1)
-                                                          (charge-options/title (c/++ context :charges 0))
-                                                          (string "various")))
+    {:title (util/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)
+                                                                    (charge-options/title (c/++ context :charges 0))
+                                                                    :string.charge-group/various))
      :icon {:default (static/static-url
                       (str "/svg/charge-group-preset-three.svg"))
             :selected (static/static-url
                        (str "/svg/charge-group-preset-three-selected.svg"))}
      :buttons [{:icon "fas fa-plus"
-                :title (string "Add")
-                :menu [{:title (string "Charge")
+                :title :string.button/add
+                :menu [{:title :string.entity/charge
                         :handler #(state/dispatch-on-event % [:add-element charges-context default/charge])}]}]
      :nodes (concat (->> (range num-charges)
                          reverse
@@ -334,15 +333,15 @@
                                   {:context charge-context
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip (string "move down")
+                                              :tooltip :string.tooltip/move-down
                                               :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-context])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-charges))
-                                              :tooltip (string "move up")
+                                              :tooltip :string.tooltip/move-up
                                               :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-context])}
                                              {:icon "far fa-trash-alt"
                                               :disabled? (= num-charges 1)
-                                              :tooltip (string "remove")
+                                              :tooltip :string.tooltip/remove
                                               :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-context])}]})))
                          vec))}))
 

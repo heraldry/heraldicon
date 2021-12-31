@@ -5,28 +5,27 @@
    [heraldry.coat-of-arms.tincture.pattern :as pattern]
    [heraldry.coat-of-arms.tincture.theme :as theme]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
 (def themes
-  [[(string "General")
-    [(string "WappenWiki (default)") :wappenwiki theme/theme-wappenwiki]
-    [(string "Web") :theme-web theme/theme-web]
-    [(string "RAL Traffic") :ral-traffic theme/theme-ral-traffic]
-    [(string "All of them!") :all theme/theme-all]]
+  [[:string.theme.group/general
+    [:string.theme/wappenwiki :wappenwiki theme/theme-wappenwiki]
+    [:string.theme/web :theme-web theme/theme-web]
+    [:string.theme/ral-traffic :ral-traffic theme/theme-ral-traffic]
+    [:string.theme/all :all theme/theme-all]]
    ["Wikipedia"
-    [(string "Wikipedia default") :wikipedia-default theme/theme-wikipedia-default]
-    [(string "Wikipedia web") :wikipedia-web theme/theme-wikipedia-web]
-    [(string "Wikipedia Bajuvarian") :wikipedia-bajuvarian theme/theme-wikipedia-bajuvarian]
-    [(string "Wikipedia Brandenburg") :wikipedia-brandenburg theme/theme-wikipedia-brandenburg]
-    [(string "Wikipedia Württemberg") :wikipedia-wurttemberg theme/theme-wikipedia-wuerttemberg]
-    [(string "Wikipedia France") :wikipedia-france theme/theme-wikipedia-france]
-    [(string "Wikipedia Hungary") :wikipedia-hungary theme/theme-wikipedia-hungary]
-    [(string "Wikipedia Spain") :wikipedia-spain theme/theme-wikipedia-spain]
-    [(string "Wikipedia Sweden") :wikipedia-sweden theme/theme-wikipedia-sweden]
-    [(string "Wikipedia Switzerland") :wikipedia-switzerland theme/theme-wikipedia-switzerland]]
-   [(string "Community")
+    [:string.theme/wikipedia-default :wikipedia-default theme/theme-wikipedia-default]
+    [:string.theme/wikipedia-web :wikipedia-web theme/theme-wikipedia-web]
+    [:string.theme/wikipedia-bajuvarian :wikipedia-bajuvarian theme/theme-wikipedia-bajuvarian]
+    [:string.theme/wikipedia-brandenburg :wikipedia-brandenburg theme/theme-wikipedia-brandenburg]
+    [:string.theme/wikipedia-wurttemberg :wikipedia-wurttemberg theme/theme-wikipedia-wuerttemberg]
+    [:string.theme/wikipedia-france :wikipedia-france theme/theme-wikipedia-france]
+    [:string.theme/wikipedia-hungary :wikipedia-hungary theme/theme-wikipedia-hungary]
+    [:string.theme/wikipedia-spain :wikipedia-spain theme/theme-wikipedia-spain]
+    [:string.theme/wikipedia-sweden :wikipedia-sweden theme/theme-wikipedia-sweden]
+    [:string.theme/wikipedia-switzerland :wikipedia-switzerland theme/theme-wikipedia-switzerland]]
+   [:string.theme.group/community
     ["CMwhyK" :community-cmwhyk theme/theme-community-cmwhyk]
     ["Cotton Candy" :community-cotton-candy theme/theme-community-cotton-candy]
     ["Crystal Gems" :community-crystal-gems theme/theme-community-crystal-gems]
@@ -65,29 +64,29 @@
        (into {})))
 
 (def choices
-  [[(string "Metal")
-    [(string "Void") :none]
-    [(string "Argent") :argent]
-    [(string "Or") :or]]
-   [(string "Colour")
-    [(string "Azure") :azure]
-    [(string "Gules") :gules]
-    [(string "Purpure") :purpure]
-    [(string "Sable") :sable]
-    [(string "Vert") :vert]]
-   [(string "Fur")
-    [(string "Ermine") :ermine]
-    [(string "Ermines") :ermines]
-    [(string "Erminois") :erminois]
-    [(string "Pean") :pean]]
-   [(string "Stain")
-    [(string "Sanguine") :sanguine]
-    [(string "Murrey") :murrey]
-    [(string "Tenné") :tenne]]
-   [(string "Helmet")
-    [(string "Light") :helmet-light]
-    [(string "Medium") :helmet-medium]
-    [(string "Dark") :helmet-dark]]])
+  [[:string.tincture.group/metal
+    [:string.tincture/none :none]
+    [:string.tincture/argent :argent]
+    [:string.tincture/or :or]]
+   [:string.tincture.group/colour
+    [:string.tincture/azure :azure]
+    [:string.tincture/gules :gules]
+    [:string.tincture/purpure :purpure]
+    [:string.tincture/sable :sable]
+    [:string.tincture/vert :vert]]
+   [:string.tincture.group/fur
+    [:string.tincture/ermine :ermine]
+    [:string.tincture/ermines :ermines]
+    [:string.tincture/erminois :erminois]
+    [:string.tincture/pean :pean]]
+   [:string.tincture.group/stain
+    [:string.tincture/sanguine :sanguine]
+    [:string.tincture/murrey :murrey]
+    [:string.tincture/tenne :tenne]]
+   [:string.tincture.group/helmet
+    [:string.tincture/helmet-light :helmet-light]
+    [:string.tincture/helmet-medium :helmet-medium]
+    [:string.tincture/helmet-dark :helmet-dark]]])
 
 (def tincture-map
   (util/choices->map choices))
@@ -96,8 +95,8 @@
   (tincture-map keyword (util/translate keyword)))
 
 (def fixed-tincture-choices
-  (concat [[(string "None (can be changed)") :none]
-           [(string "Proper") :proper]]
+  (concat [[:string.tincture.special/none :none]
+           [:string.tincture.special/proper :proper]]
           choices))
 
 (defn kind [tincture]

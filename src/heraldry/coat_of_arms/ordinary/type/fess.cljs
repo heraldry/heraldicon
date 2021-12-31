@@ -8,7 +8,6 @@
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -17,7 +16,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/fess)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Fess [ordinary]"))
+(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/fess)
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -25,27 +24,27 @@
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:origin {:point {:type :choice
-                          :choices [[(string "Fess [point]") :fess]
-                                    [(string "Chief [point]") :chief]
-                                    [(string "Base [point]") :base]
-                                    [(string "Honour [point]") :honour]
-                                    [(string "Nombril [point]") :nombril]
-                                    [(string "Top") :top]
-                                    [(string "Bottom") :bottom]]
+                          :choices [[:string.option.point-choice/fess :fess]
+                                    [:string.option.point-choice/chief :chief]
+                                    [:string.option.point-choice/base :base]
+                                    [:string.option.point-choice/honour :honour]
+                                    [:string.option.point-choice/nombril :nombril]
+                                    [:string.option.point-choice/top :top]
+                                    [:string.option.point-choice/bottom :bottom]]
                           :default :fess
-                          :ui {:label (string "Point")}}
+                          :ui {:label :string.option/point}}
                   :alignment {:type :choice
                               :choices position/alignment-choices
                               :default :middle
-                              :ui {:label (string "Alignment")
+                              :ui {:label :string.option/alignment
                                    :form-type :radio-select}}
                   :offset-y {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label (string "Offset y")
+                             :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label (string "Origin")
+                  :ui {:label :string.option/origin
                        :form-type :position}}
          :line line-style
          :opposite-line opposite-line-style
@@ -53,9 +52,9 @@
                            :min 0.1
                            :max 90
                            :default 25
-                           :ui {:label (string "Size")
+                           :ui {:label :string.option/size
                                 :step 0.1}}
-                    :ui {:label (string "Geometry")
+                    :ui {:label :string.option/geometry
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 2)}

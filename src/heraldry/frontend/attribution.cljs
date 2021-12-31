@@ -3,7 +3,6 @@
    [heraldry.attribution :as attribution]
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]))
 
 (defn general [context attribution-type]
@@ -33,38 +32,38 @@
         [:a {:href url
              :target "_blank"} title]
         " "
-        [tr (string "by")]
+        [tr :string.miscellaneous/by]
         " "
         [:a {:href (attribution/full-url-for-username username)
              :target "_blank"} username]
         " "
         (case (or license :none)
-          :none [tr (string "is private")]
-          :public-domain [tr (string "is in the public domain")]
-          [:<> [tr (string "is licensed under")] " "
+          :none [tr :string.attribution/is-private]
+          :public-domain [tr :string.attribution/is-in-the-public-domain]
+          [:<> [tr :string.attribution/is-licensed-under] " "
            [:a {:href license-url :target "_blank"} license-display-name]])
         (when (= nature :derivative)
           [:div.sub-credit
-           [tr (string "source")]
+           [tr :string.attribution/source]
            ": "
            (if (-> source-name count pos?)
              [:a {:href source-link
                   :target "_blank"} " " source-name]
-             [tr (string "unnamed")])
+             [tr :string.miscellaneous/unnamed])
            (when (-> source-creator-name count pos?)
              [:<>
               " "
-              [tr (string "by")]
+              [tr :string.miscellaneous/by]
               " "
               [:a {:href source-creator-link
                    :target "_blank"} source-creator-name]])
            " "
            (case (or source-license :none)
-             :none [tr (string "is private")]
-             :public-domain [tr (string "is in the public domain")]
-             [:<> [tr (string "is licensed under") " "]
+             :none [tr :string.attribution/is-private]
+             :public-domain [tr :string.attribution/is-in-the-public-domain]
+             [:<> [tr :string.attribution/is-licensed-under " "]
               [:a {:href source-license-url :target "_blank"} source-license-display-name]])])])
-     [tr (string "unsaved data")])])
+     [tr :string.miscellaneous/unsaved-data])])
 
 (defn for-charge [context]
   [general context :charge])

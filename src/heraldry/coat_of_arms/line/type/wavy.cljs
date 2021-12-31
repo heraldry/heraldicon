@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.wavy
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.wavy)
 
 (def pattern
-  {:display-name (string "Wavy / undy")
+  {:display-name :string.line.type/wavy
    :function (fn [{:keys [eccentricity
                           height
                           width]}

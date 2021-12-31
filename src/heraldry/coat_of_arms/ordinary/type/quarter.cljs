@@ -8,7 +8,6 @@
    [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
@@ -16,7 +15,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/quarter)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] (string "Quarter / Canton"))
+(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/quarter)
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -28,45 +27,45 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:origin {:point {:type :choice
-                          :choices [[(string "Fess [point]") :fess]
-                                    [(string "Chief [point]") :chief]
-                                    [(string "Base [point]") :base]
-                                    [(string "Honour [point]") :honour]
-                                    [(string "Nombril [point]") :nombril]
-                                    [(string "Top") :top]
-                                    [(string "Bottom") :bottom]]
+                          :choices [[:string.option.point-choice/fess :fess]
+                                    [:string.option.point-choice/chief :chief]
+                                    [:string.option.point-choice/base :base]
+                                    [:string.option.point-choice/honour :honour]
+                                    [:string.option.point-choice/nombril :nombril]
+                                    [:string.option.point-choice/top :top]
+                                    [:string.option.point-choice/bottom :bottom]]
                           :default :fess
-                          :ui {:label (string "Point")}}
+                          :ui {:label :string.option/point}}
                   :alignment {:type :choice
                               :choices position/alignment-choices
                               :default :middle
-                              :ui {:label (string "Alignment")
+                              :ui {:label :string.option/alignment
                                    :form-type :radio-select}}
                   :offset-y {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label (string "Offset y")
+                             :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label (string "Origin")
+                  :ui {:label :string.option/origin
                        :form-type :position}}
          :line line-style
          :opposite-line opposite-line-style
          :variant {:type :choice
-                   :choices [[(string "Dexter-chief") :dexter-chief]
-                             [(string "Sinister-chief") :sinister-chief]
-                             [(string "Dexter-base") :dexter-base]
-                             [(string "Sinister-base") :sinister-base]]
+                   :choices [[:string.option.variant-quarter-choice/dexter-chief :dexter-chief]
+                             [:string.option.variant-quarter-choice/sinister-chief :sinister-chief]
+                             [:string.option.variant-quarter-choice/dexter-base :dexter-base]
+                             [:string.option.variant-quarter-choice/sinister-base :sinister-base]]
                    :default :dexter-chief
-                   :ui {:label (string "Variant")
+                   :ui {:label :string.option/variant
                         :form-type :select}}
          :geometry {:size {:type :range
                            :min 10
                            :max 150
                            :default 100
-                           :ui {:label (string "Size")
+                           :ui {:label :string.option/size
                                 :step 0.1}}
-                    :ui {:label (string "Geometry")
+                    :ui {:label :string.option/geometry
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}

@@ -1,7 +1,6 @@
 (ns heraldry.options
   (:require
    [clojure.walk :as walk]
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def option-types #{:range :choice :boolean :text})
@@ -9,12 +8,12 @@
 (def manual-blazon
   {:type :text
    :default nil
-   :ui {:label (string "Manual blazon")}})
+   :ui {:label :string.option/manual-blazon}})
 
 (def plain-outline?-option
   {:type :boolean
    :default false
-   :ui {:label (string "Outline")}})
+   :ui {:label :string.charge.tincture-modifier.special/outline}})
 
 (defn get-value [value options]
   (if (and (vector? value)

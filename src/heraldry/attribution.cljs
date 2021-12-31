@@ -2,16 +2,15 @@
   (:require
    [heraldry.config :as config]
    [heraldry.context :as c]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
 (def license-choices
-  [[(string "None") :none]
-   [(string "CC Attribution") :cc-attribution]
-   [(string "CC Attribution-ShareAlike") :cc-attribution-share-alike]
-   [(string "CC Attribution-NonCommercial-ShareAlike") :cc-attribution-non-commercial-share-alike]
-   [(string "Public Domain") :public-domain]])
+  [[:string.attribution.license-choice/none :none]
+   [:string.attribution.license-choice/cc-attribution :cc-attribution]
+   [:string.attribution.license-choice/cc-attribution-share-alike :cc-attribution-share-alike]
+   [:string.attribution.license-choice/cc-attribution-non-commercial-share-alike :cc-attribution-non-commercial-share-alike]
+   [:string.attribution.license-choice/public-domain :public-domain]])
 
 (def license-map
   (util/choices->map license-choices))
@@ -27,8 +26,8 @@
   (util/choices->map cc-license-version-choices))
 
 (def nature-choices
-  [[(string "Own work") :own-work]
-   [(string "Derivative") :derivative]])
+  [[:string.attribution.nature-choice/own-work :own-work]
+   [:string.attribution.nature-choice/derivative :derivative]])
 
 (def nature-map
   (util/choices->map nature-choices))
@@ -64,8 +63,8 @@
         :cc-attribution (str "CC BY " version)
         :cc-attribution-share-alike (str "CC BY-SA " version)
         :cc-attribution-non-commercial-share-alike (str "CC BY-NC-SA " version)
-        :public-domain (string "public domain")
-        (string "none")))))
+        :public-domain :string.attribution.license-display/public-domain
+        :string.attribution.license-display/none))))
 
 (defn license-compatible? [license source-license]
   (let [compatible-licenses
@@ -92,13 +91,13 @@
   (-> {:license {:type :choice
                  :choices license-choices
                  :default :none
-                 :ui {:label (string "License")}}
+                 :ui {:label :string.attribution/license}}
        :nature {:type :choice
                 :choices nature-choices
                 :default :own-work
                 :ui {:form-type :radio-select}}
 
-       :ui {:label (string "Attribution")
+       :ui {:label :string.attribution/title
             :form-type :attribution}}
 
       (cond->
@@ -108,7 +107,7 @@
             cc-license?) (assoc :license-version {:type :choice
                                                   :choices cc-license-version-choices
                                                   :default :v4
-                                                  :ui {:label (string "License version")}})
+                                                  :ui {:label :string.attribution/license-version}})
 
         (-> context
             (c/++ :nature)
@@ -116,23 +115,23 @@
             (= :derivative)) (merge {:source-license {:type :choice
                                                       :choices license-choices
                                                       :default :none
-                                                      :ui {:label (string "Source license")}}
+                                                      :ui {:label :string.attribution/source-license}}
 
                                      :source-name {:type :text
                                                    :default ""
-                                                   :ui {:label (string "Source name")}}
+                                                   :ui {:label :string.attribution/source-name}}
 
                                      :source-link {:type :text
                                                    :default ""
-                                                   :ui {:label (string "Source link")}}
+                                                   :ui {:label :string.attribution/source-link}}
 
                                      :source-creator-name {:type :text
                                                            :default ""
-                                                           :ui {:label (string "Creator name")}}
+                                                           :ui {:label :string.attribution/creator-name}}
 
                                      :source-creator-link {:type :text
                                                            :default ""
-                                                           :ui {:label (string "Creator link")}}})
+                                                           :ui {:label :string.attribution/creator-link}}})
 
         (-> context
             (c/++ :source-license)
@@ -140,7 +139,7 @@
             cc-license?) (assoc :source-license-version {:type :choice
                                                          :choices cc-license-version-choices
                                                          :default :v4
-                                                         :ui {:label (string "License version")}}))))
+                                                         :ui {:label :string.attribution/license-version}}))))
 
 (defn full-url [context base]
   (when-let [object-id (interface/get-raw-data (c/++ context :id))]

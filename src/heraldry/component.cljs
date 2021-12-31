@@ -1,5 +1,6 @@
 (ns heraldry.component
-  (:require [clojure.string :as s]))
+  (:require
+   [clojure.string :as s]))
 
 (defn type->component-type [t]
   (let [ts (str t)]

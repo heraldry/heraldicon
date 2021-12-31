@@ -3,7 +3,6 @@
    [heraldry.context :as c]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]))
 
 (defn form [context]
@@ -12,10 +11,10 @@
 (defmethod ui-interface/component-node-data :heraldry.component/collection [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
-    {:title (string "Arms")
+    {:title :string.entity/arms
      :buttons [{:icon "fas fa-plus"
-                :title (string "Add")
-                :menu [{:title (string "Arms")
+                :title :string.button/add
+                :menu [{:title :string.entity/arms
                         :handler #(state/dispatch-on-event % [:add-element elements-context {}])}]}]
      :nodes (->> (range num-elements)
                  (map (fn [idx]
@@ -23,15 +22,15 @@
                           {:context element-context
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
-                                      :tooltip (string "move down")
+                                      :tooltip :string.tooltip/move-down
                                       :handler #(state/dispatch-on-event % [:move-element element-context (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-elements))
-                                      :tooltip (string "move up")
+                                      :tooltip :string.tooltip/move-up
                                       :handler #(state/dispatch-on-event % [:move-element element-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
                                       :remove? true
-                                      :tooltip (string "remove")
+                                      :tooltip :string.tooltip/remove
                                       :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
                  vec)}))
 

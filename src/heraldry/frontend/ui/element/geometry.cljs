@@ -3,7 +3,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -13,17 +12,17 @@
   (let [changes (concat
                  (when (some #(options/changed? % geometry options)
                              [:size :width :height :thickness])
-                   [(string "resized")])
+                   [:string.submenu-summary/resized])
                  (when (some #(options/changed? % geometry options)
                              [:eccentricity])
-                   [(string "adjusted")])
+                   [:string.submenu-summary/adjusted])
                  (when (some #(options/changed? % geometry options)
                              [:stretch])
-                   [(string "stretched")])
+                   [:string.submenu-summary/stretched])
                  (when (:mirrored? geometry)
-                   [(string "mirrored")])
+                   [:string.submenu-summary/mirrored])
                  (when (:reversed? geometry)
-                   [(string "reversed")]))]
+                   [:string.submenu-summary/reversed]))]
     (if (seq changes)
       (-> (util/combine ", " changes)
           util/upper-case-first)

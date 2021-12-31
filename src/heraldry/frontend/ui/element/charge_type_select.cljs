@@ -9,7 +9,6 @@
    [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]))
 
@@ -44,7 +43,7 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context (string "Select Charge")
+        [submenu/submenu context :string.option/select-charge
          ;; TODO: this could have a proper preview of the charge
          [tr (charge-options/title charge-context)] {:style {:width "21.5em"}}
          (for [[display-name key] choices]
@@ -76,7 +75,7 @@
                                                     [:attitude :facing]))])}
                   (:name charge-data)])
                #(state/invalidate-cache [:all-charges] :all-charges)]
-              [:div [tr (string "Loading...")]])])]]])))
+              [:div [tr :string.miscellaneous/loading]])])]]])))
 
 (defmethod ui-interface/form-element :charge-type-select [context]
   [charge-type-select context])

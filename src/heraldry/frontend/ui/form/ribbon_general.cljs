@@ -8,7 +8,6 @@
    [heraldry.frontend.ui.element.text-field :as text-field]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.frontend.validation :as validation]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.math.curve :as curve]
    [heraldry.ribbon :as ribbon]
@@ -224,7 +223,7 @@
 (defn ribbon-segments-form [context & {:keys [tooltip]}]
   (let [num-segments (interface/get-list-size (c/++ context :segments))]
     [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
-     [:div {:style {:font-size "1.3em"}} [tr (string "Segments")]
+     [:div {:style {:font-size "1.3em"}} [tr :string.ribbon/segments]
       (when tooltip
         [:div.tooltip.info {:style {:display "inline-block"
                                     :margin-left "0.2em"
@@ -240,7 +239,7 @@
          [segment-form (c/++ context :segments idx)]))]
 
      [:p {:style {:color "#f86"}}
-      [tr (string "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it.")]]]))
+      [tr :string.ribbon.text/svg-font-rendering-warning]]]))
 
 (defn form [context]
   [:<>
@@ -256,17 +255,17 @@
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
-                  :margin-bottom "0.5em"}} [tr (string "Topology")]
+                  :margin-bottom "0.5em"}} [tr :string.ribbon/topology]
     [:div.tooltip.info {:style {:display "inline-block"
                                 :margin-left "0.2em"
                                 :vertical-align "top"}}
      [:i.fas.fa-question-circle]
      [:div.bottom {:style {:width "20em"}}
-      [:p [tr (string "The ribbon curve can be interpreted in many ways, depending on what is fore-/background and which segments overlap which.")]]
-      [:p [tr (string "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned.")]]]]]
+      [:p [tr :string.ribbon.text/topology-explanation-1]]
+      [:p [tr :string.ribbon.text/topology-explanation-2]]]]]
 
    [:p {:style {:color "#f86"}}
-    [tr (string "Apply a preset after you edited the ribbon curve and changed the number of segments.")]]
+    [tr :string.ribbon.text/apply-preset-after-change]]
 
    (let [layer-mode-value (or @(rf/subscribe [:get layers-path])
                               layer-mode-default)
@@ -278,26 +277,26 @@
       [select/raw-select
        {:path layers-path}
        layer-mode-value
-       (string "Layering presets")
-       [[(string "Middle outwards") :middle-outwards]
-        [(string "Left to right") :left-to-right]
-        [(string "Right to left") :right-to-left]]]
+       :string.ribbon/layering-presets
+       [[:string.ribbon.layering-presets-choice/middle-outwards :middle-outwards]
+        [:string.ribbon.layering-presets-choice/left-to-right :left-to-right]
+        [:string.ribbon.layering-presets-choice/right-to-left :right-to-left]]]
 
       [select/raw-select
        {:path flow-path}
        flow-mode-value
-       (string "Flow presets")
-       [[(string "Stacked") :stacked]
-        [(string "Spiral clockwise") :spiral-clockwise]
-        [(string "Spiral counter-clockwise") :spiral-counter-clockwise]
-        [(string "Waves") :waves]]]
+       :string.ribbon/flow-presets
+       [[:string.ribbon.flow-presets-choice/stacked :stacked]
+        [:string.ribbon.flow-presets-choice/spiral-clockwise :spiral-clockwise]
+        [:string.ribbon.flow-presets-choice/spiral-counter-clockwise :spiral-counter-clockwise]
+        [:string.ribbon.flow-presets-choice/waves :waves]]]
 
       [select/raw-select
        {:path start-path}
        start-mode-value
-       (string "Start presets")
-       [[(string "Foreground") :foreground]
-        [(string "Background") :background]]]
+       :string.ribbon/start-presets
+       [[:string.ribbon.start-presets-choice/foreground :foreground]
+        [:string.ribbon.start-presets-choice/background :background]]]
 
       [:div
        [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments
@@ -305,17 +304,17 @@
                                           layer-mode-value
                                           flow-mode-value
                                           start-mode-value])}
-        [tr (string "Apply presets")]]
+        [tr :string.ribbon/apply-presets]]
        [:button {:on-click #(rf/dispatch [:ribbon-edit-invert-segments
                                           (-> context :path (conj :ribbon))])}
-        [tr (string "Invert")]]]
+        [tr :string.ribbon.button/invert]]]
 
       [ribbon-segments-form
        (c/++ context :ribbon)
-       :tooltip (string "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number. Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this.")]])])
+       :tooltip :string.ribbon.text/segment-explanation]])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [context]
-  {:title (string "General")
+  {:title :string.miscellaneous/general
    :validation (validation/validate-ribbon-general context)})
 
 (defmethod ui-interface/component-form-data :heraldry.component/ribbon-general [_context]

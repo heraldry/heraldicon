@@ -1,10 +1,9 @@
 (ns heraldry.coat-of-arms.line.type.fir-tree-topped
   (:require
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def pattern
-  {:display-name (string "Fir-tree topped")
+  {:display-name :string.line.type/fir-tree-topped
    :function (fn [{:keys [eccentricity height width]}
                   _line-options]
                (let [dx (/ width 16)

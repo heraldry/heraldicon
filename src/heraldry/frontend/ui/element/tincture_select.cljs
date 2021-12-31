@@ -5,7 +5,6 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
@@ -36,12 +35,12 @@
           value (options/get-value current-value option)
           choice-map (util/choices->map choices)
           choice-name (get choice-map value)
-          label (or (:label ui) (string "Tincture"))]
+          label (or (:label ui) :string.option/tincture)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context (string "Select Tincture")
+        [submenu/submenu context :string.option/select-tincture
          [:div
           [:div
            [tr choice-name]

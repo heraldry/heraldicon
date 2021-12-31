@@ -8,7 +8,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [taoensso.timbre :as log]))
 
 (def list-db-path
@@ -58,4 +57,4 @@
        user-list
        link-to-user
        #(invalidate-user-cache :all)]
-      [:div [tr (string "Loading...")]])))
+      [:div [tr :string.miscellaneous/loading]])))

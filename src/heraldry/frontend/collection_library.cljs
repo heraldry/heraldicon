@@ -16,7 +16,6 @@
    [heraldry.frontend.ui.form.collection-element :as collection-element]
    [heraldry.frontend.ui.shared :as shared]
    [heraldry.frontend.user :as user]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.render :as render]
    [heraldry.util :as util :refer [id-for-url]]
@@ -62,7 +61,7 @@
         (rf/dispatch-sync [:set list-db-path nil])
         (state/invalidate-cache list-db-path (:user-id user-data))
         (rf/dispatch-sync [:set-form-message form-db-path
-                           (util/str-tr (string "Collection saved, new version:") " " (:version response))])
+                           (util/str-tr :string.user.message/collection-saved " " (:version response))])
         (reife/push-state :view-collection-by-id {:id (id-for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)
@@ -288,15 +287,15 @@
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
                                            save-collection-clicked
-                                           #(js/alert (tr (string "Need to be logged in and own the collection."))))
+                                           #(js/alert (tr :string.user.message/need-to-be-logged-in-and-own-the-collection.)))
                                :style {:flex "initial"
                                        :margin-left "10px"}}
-       [tr (string "Save")]]]]))
+       [tr :string.button/save]]]]))
 
 (defn collection-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
-                (string "Create Collection")])
+                :string.text.title/create-collection])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   [:div {:style {:display "grid"
                  :grid-gap "10px"
@@ -349,17 +348,17 @@
   (state/invalidate-cache list-db-path user-id))
 
 (defn view-list-collection []
-  (rf/dispatch [:set-title (string "Collections")])
+  (rf/dispatch [:set-title :string.entity/collections])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [tr (string "Here you can view and create collections of coats of arms. You explicitly have to save your collection as public and add a license, if you want to share the link and allow others to view it.")]]
+    [tr :string.text.collection-library/create-and-view-collections]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-collection))}
-    [tr (string "Create")]]
+    [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
     [list-collections]]])
 
@@ -378,7 +377,7 @@
     (when (= status :done)
       (if collection-data
         [collection-form]
-        [:div [tr (string "Not found")]]))))
+        [:div [tr :string.miscellaneous/not-found]]))))
 
 (defn view-collection-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)

@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.invected
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.invected)
 
 (def pattern
-  {:display-name (string "Invected")
+  {:display-name :string.line.type/invected
    :function (fn [{:keys [eccentricity
                           height
                           width]}

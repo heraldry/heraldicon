@@ -1,8 +1,7 @@
-(ns heraldry.coat-of-arms.line.type.embattled-grady
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.coat-of-arms.line.type.embattled-grady)
 
 (def pattern
-  {:display-name (string "Embattled grady")
+  {:display-name :string.line.type/embattled-grady
    :function (fn [{:keys [height
                           width]}
                   _line-options]

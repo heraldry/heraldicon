@@ -5,7 +5,6 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
    [heraldry.util :as util]))
@@ -44,7 +43,7 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context (string "Select Colour Theme")
+        [submenu/submenu context :string.option/select-colour-theme
          [:div
           [:div
            [tr choice-name]

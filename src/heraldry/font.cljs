@@ -1,6 +1,5 @@
 (ns heraldry.font
   (:require
-   [heraldry.gettext :refer [string]]
    [heraldry.util :as util]))
 
 (def default :prince-valiant)
@@ -42,4 +41,4 @@
   {:type :choice
    :choices choices
    :default default
-   :ui {:label (string "Font")}})
+   :ui {:label :string.option/font}})

@@ -4,7 +4,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -15,17 +14,17 @@
   (let [changes [(-> line :type line/line-map)
                  (when (some #(options/changed? % line options)
                              [:eccentricity :spacing :offset :base-line])
-                   (string "adjusted"))
+                   :string.submenu-summary/adjusted)
                  (when (some #(options/changed? % line options)
                              [:width :height])
-                   (string "resized"))
+                   :string.submenu-summary/resized)
                  (when (:mirrored? line)
-                   (string "mirrored"))
+                   :string.submenu-summary/mirrored)
                  (when (:flipped? line)
-                   (string "flipped"))
+                   :string.submenu-summary/flipped)
                  (when (and (-> line :fimbriation :mode)
                             (-> line :fimbriation :mode (not= :none)))
-                   (string "fimbriated"))]]
+                   :string.submenu-summary/fimbriated)]]
     (-> (util/combine ", " changes)
         util/upper-case-first)))
 

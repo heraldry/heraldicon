@@ -8,7 +8,6 @@
    [heraldry.frontend.ui.form.cottise :as cottise]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.frontend.validation :as validation]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
    [re-frame.core :as rf]))
@@ -145,41 +144,41 @@
                        (str "/svg/ordinary-type-" (name ordinary-type) "-selected.svg"))}
      :validation (validation/validate-ordinary context)
      :buttons [{:icon "fas fa-plus"
-                :title (string "Add")
+                :title :string.button/add
                 :disabled? (empty? menu)
                 :menu menu}]
      :nodes (cond-> [{:context (c/++ context :field)}]
               cottise-2? (conj {:context cottise-2-context
                                 :buttons [{:icon "far fa-trash-alt"
                                            :remove? true
-                                           :tooltip (string "remove")
+                                           :tooltip :string.tooltip/remove
                                            :handler #(state/dispatch-on-event % [:remove-cottise cottise-2-context])}]})
               cottise-1? (conj {:context cottise-1-context
                                 :buttons [{:icon "far fa-trash-alt"
                                            :remove? true
-                                           :tooltip (string "remove")
+                                           :tooltip :string.tooltip/remove
                                            :handler #(state/dispatch-on-event % [:remove-cottise cottise-1-context])}]})
               cottise-opposite-1? (conj {:context cottise-opposite-1-context
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :remove? true
-                                                    :tooltip (string "remove")
+                                                    :tooltip :string.tooltip/remove
                                                     :handler #(state/dispatch-on-event % [:remove-cottise cottise-opposite-1-context])}]})
 
               cottise-opposite-2? (conj {:context cottise-opposite-2-context
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :remove? true
-                                                    :tooltip (string "remove")
+                                                    :tooltip :string.tooltip/remove
                                                     :handler #(state/dispatch-on-event % [:remove-cottise cottise-opposite-2-context])}]})
               cottise-extra-1? (conj {:context cottise-extra-1-context
                                       :buttons [{:icon "far fa-trash-alt"
                                                  :remove? true
-                                                 :tooltip (string "remove")
+                                                 :tooltip :string.tooltip/remove
                                                  :handler #(state/dispatch-on-event % [:remove-cottise cottise-extra-1-context])}]})
 
               cottise-extra-2? (conj {:context cottise-extra-2-context
                                       :buttons [{:icon "far fa-trash-alt"
                                                  :remove? true
-                                                 :tooltip (string "remove")
+                                                 :tooltip :string.tooltip/remove
                                                  :handler #(state/dispatch-on-event % [:remove-cottise cottise-extra-2-context])}]}))}))
 
 (defmethod ui-interface/component-form-data :heraldry.component/ordinary [_context]

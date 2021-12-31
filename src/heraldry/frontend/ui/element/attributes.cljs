@@ -4,7 +4,6 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -45,14 +44,14 @@
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
                                :white-space "nowrap"}}
-      [:label [tr (string "Attributes")]]
+      [:label [tr :string.entity/attributes]]
       [:div.option
        [:select {:on-change #(let [selected (keyword (-> % .-target .-value))]
                                (rf/dispatch [:add-attribute path selected]))
                  :value :none}
         (doall
          (for [[group-name & group-choices] (concat
-                                             [[(util/str-tr "--- " (string "Add attribute") " ---") :none]]
+                                             [[(util/str-tr "--- " :string.charge.attribute.ui/add " ---") :none]]
                                              attributes/attribute-choices)]
            (if (and (-> group-choices count (= 1))
                     (-> group-choices first keyword?))

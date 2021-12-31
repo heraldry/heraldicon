@@ -1,5 +1,4 @@
-(ns heraldry.metadata
-  (:require [heraldry.gettext :refer [string]]))
+(ns heraldry.metadata)
 
 (def known-metadata-keys
   ["source"
@@ -16,5 +15,5 @@
    "year max"])
 
 (defn options [_context]
-  {:ui {:label (string "Metadata")
+  {:ui {:label :string.entity/metadata
         :form-type :metadata}})

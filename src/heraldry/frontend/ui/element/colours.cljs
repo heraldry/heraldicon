@@ -6,7 +6,6 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.checkbox :as checkbox]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.gettext :refer [string]]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -56,7 +55,7 @@
                                :white-space "nowrap"
                                :max-height "30em"
                                :overflow "scroll"}}
-      [:label [tr (string "Colours")]]
+      [:label [tr :string.render-options.mode-choice/colours]]
       [:div.option
        (if (seq colours)
          [:table {:cell-spacing 0}
@@ -72,18 +71,18 @@
              [:a {:href "#"
                   :on-click #(state/dispatch-on-event
                               % [:set [:ui :colours :sort path] :modifier])}
-              [tr (string "Function")]
+              [tr :string.option/function]
               (when (= sort-column :modifier)
                 [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
             [:td {:style header-td-style}
              [:a {:href "#"
                   :on-click #(state/dispatch-on-event
                               % [:set [:ui :colours :sort path] :qualifier])}
-              [tr (string "Shading")]
+              [tr :string.option/shading]
               (when (= sort-column :qualifier)
                 [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
             [:td {:style header-td-style}
-             [tr (string "Highlight")]]]
+             [tr :string.option/highlight]]]
            [:tr {:style {:height "0.5em"}}
             [:td]
             [:td]
@@ -156,7 +155,7 @@
                                :border-left "1px solid #888"}}
                   [checkbox/checkbox (c/<< context :path [:ui :colours :show colour])
                    :option {:type :boolean}]]])))]]
-         [tr (string "None")])]]]))
+         [tr :string.miscellaneous/none])]]]))
 
 (defmethod ui-interface/form-element :colours [context]
   [form context])
