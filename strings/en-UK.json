@@ -156,6 +156,9 @@
         "ornaments": "Ornaments",
         "tail": "Tail"
       },
+      "ui": {
+        "add": "Add attribute"
+      },
       "compartment": "Compartment",
       "coward": "Coward",
       "defamed": "Defamed",
@@ -167,6 +170,8 @@
       "queue-fourche-saltire": "Queue fourché saltire",
       "queue-fourche-saltire-reverse": "Queue fourché saltire reverse",
       "supporter": "Supporter",
+      "supporter-left": "Supporter-left",
+      "supporter-right": "Supporter-right",
       "tail-nowed": "Tail nowed",
       "voided": "Voided"
     },
@@ -536,11 +541,14 @@
     "inherited": "Inherited",
     "loading": "Loading...",
     "not-found": "Not found",
+    "manual": "Manual",
     "mine-only": "Mine only",
     "no-name": "<no name>",
     "opposite": "opposite",
+    "original": "Original",
     "private": "private",
     "public": "public",
+    "semy-of": "Semy of",
     "shield-layer": "Shield layer",
     "unnamed": "unnamed",
     "unsaved-data": "unsaved data"
@@ -551,15 +559,18 @@
     "copy-to-new": "Copy to new",
     "create": "Create",
     "edit": "Edit",
-    "save": "Save"
+    "save": "Save",
+    "upload-svg": "Upload SVG"
   },
   "user": {
     "message": {
       "arms-need-to-be-public-and-saved-for-exporting": "Arms need to be public and saved for exporting.",
+      "arms-need-to-be-public-and-saved-for-sharing": "Arms need to be public and saved for sharing.",
       "arms-saved": "Arms saved, new version:",
       "charge-saved": "Charge saved, new version:",
       "collection-saved": "Collection saved, new version:",
       "confirmation-code-sent": "A confirmation code was sent to your email address.",
+      "copied-url-for-sharing": "Copied URL for sharing.",
       "created-unsaved-copy": "Created an unsaved copy.",
       "need-to-be-logged-in": "You need to be logged in.",
       "need-to-be-logged-in-and-arms-must-be-saved": "Need to be logged in and arms must be saved.",
