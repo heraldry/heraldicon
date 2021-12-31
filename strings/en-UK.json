@@ -349,6 +349,7 @@
       "round": "Round",
       "sharp": "Sharp"
     },
+    "corner-radius": "Corner radius",
     "distance": "Distance",
     "eccentricity": "Eccentricity",
     "edge": "Edge",
@@ -363,6 +364,8 @@
     "mirrored?": "Mirrored",
     "name": "Name",
     "number": "Number",
+    "number-of-columns": "Number of columns",
+    "number-of-rows": "Number of rows",
     "offset": "Offset",
     "offset-x": "Offset x",
     "offset-y": "Offset y",
@@ -388,6 +391,7 @@
     },
     "position": "Position",
     "radius": "Radius",
+    "rectangular?": "Rectangular grid",
     "rotate-charges?": "Rotate charges",
     "rotation": "Rotation",
     "row": "Row",
@@ -424,8 +428,10 @@
   "miscellaneous": {
     "and": "and",
     "by": "by",
+    "extra": "extra",
     "loading": "Loading...",
     "not-found": "Not found",
+    "opposite": "opposite",
     "unnamed": "unnamed",
     "unsaved-data": "unsaved data"
   },
