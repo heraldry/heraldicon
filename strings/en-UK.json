@@ -370,6 +370,12 @@
     "offset-x": "Offset x",
     "offset-y": "Offset y",
     "origin": "Origin",
+    "outline-mode-choice": {
+      "keep": "Keep",
+      "transparent": "Transparent",
+      "primary": "Primary",
+      "remove": "Remove"
+    },
     "point": "Point",
     "point-choice": {
       "base": "Base [point]",
@@ -415,6 +421,7 @@
     "tincture": "Tincture",
     "type": "Type",
     "variant": "Variant",
+    "vertical-mask": "Vertical mask",
     "width": "Width"
   },
   "tooltip": {
