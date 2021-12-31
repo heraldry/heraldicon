@@ -425,19 +425,24 @@
     "width": "Width"
   },
   "tooltip": {
+    "alpha-feature-warning": "This feature is incomplete and likely going to change, so use with caution. :)",
     "humetty-warning": "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.",
     "move-up": "move up",
     "move-down": "move down",
     "redo": "redo",
     "remove": "remove",
+    "smoothing": "This might smooth out some remaining corners, best used together with corner radius.",
     "undo": "undo"
   },
   "miscellaneous": {
     "and": "and",
     "by": "by",
     "extra": "extra",
+    "fields": "fields",
     "loading": "Loading...",
     "not-found": "Not found",
+    "mine-only": "Mine only",
+    "no-name": "<no name>",
     "opposite": "opposite",
     "unnamed": "unnamed",
     "unsaved-data": "unsaved data"
@@ -571,9 +576,11 @@
   },
   "submenu-summary": {
     "adjusted": "adjusted",
+    "default": "Default",
     "fimbriated": "fimbriated",
     "flipped": "flipped",
     "mirrored": "mirrored",
+    "no": "No",
     "resized": "resized",
     "reversed": "reversed",
     "rotated": "rotated",
