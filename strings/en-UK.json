@@ -399,5 +399,33 @@
     "copy-to-new": "Copy to new",
     "create": "Create",
     "save": "Save"
+  },
+  "user": {
+    "message": {
+      "confirmation-code-sent": "A confirmation code was sent to your email address.",
+      "new-confirmation-code-sent": "A new code was sent to your email address.",
+      "password-reset-completed": "Password reset completed",
+      "password-reset-confirmation-code-sent": "A password reset confirmation code was sent to your email address.",
+      "passwords-do-not0match": "Passwords don't match.",
+      "registration-completed": "Registration completed",
+      "username-required-for-password-reset": "Username required for password reset."
+    },
+    "button": {
+      "change": "Change",
+      "confirm": "Confirm",
+      "resend-code": "Resend code",
+      "reset-password": "Reset password"
+    },
+    "change-temporary-password": "Change Temporary Password",
+    "confirmation-code": "Confirmation code",
+    "email": "Email",
+    "forgotten-password": "Forgotten password",
+    "new-password": "New password",
+    "new-password-again": "New password again",
+    "password": "Password",
+    "password-again": "Password again",
+    "register-confirmation": "Register Confirmation",
+    "reset-forgotten-password": "Reset Forgotten Password",
+    "username": "Username"
   }
 }
