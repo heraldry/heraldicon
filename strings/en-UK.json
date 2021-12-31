@@ -499,6 +499,10 @@
       "single": "Single"
     },
     "variant": "Variant",
+    "variant-label-choice": {
+      "full": "Full",
+      "truncated": "Truncated"
+    },
     "variant-quarter-choice": {
       "dexter-base": "Dexter-base",
       "dexter-chief": "Dexter-chief",
@@ -512,7 +516,9 @@
     "alpha-feature-warning": "This feature is incomplete and likely going to change, so use with caution. :)",
     "dampening-mode": "The way the line is adjusted near corners. Different styles work better with different modes.",
     "dampening-radius": "How far around corners the dampening mode is applied.",
+    "edge-angle": "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully.",
     "humetty-warning": "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.",
+    "ignore-layer-separator?": "If the charge contains a layer separator for the shield, then this can disable it.",
     "move-up": "move up",
     "move-down": "move down",
     "redo": "redo",
@@ -729,6 +735,11 @@
       "spiral-counter-clockwise": "Spiral counter-clockwise",
       "stacked": "Stacked",
       "waves": "Waves"
+    },
+    "segment-type-choice": {
+      "background": "Background",
+      "foreground": "Foreground",
+      "foreground-with-text": "Text"
     },
     "start-presets": "Start presets",
     "start-presets-choice": {
