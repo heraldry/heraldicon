@@ -324,5 +324,38 @@
     },
     "theme": "Theme",
     "title": "Render Options"
+  },
+  "position": {
+    "title": "Position",
+    "point": {
+      "angle": "Angle",
+      "base": "Base [point]",
+      "bottom": "Bottom",
+      "bottom-left": "Bottom-left",
+      "bottom-right": "Bottom-right",
+      "chief": "Chief [point]",
+      "dexter": "Dexter [point]",
+      "fess": "Fess [point]",
+      "honour": "Honour [point]",
+      "left": "Left",
+      "nombril": "Nombril [point]",
+      "right": "Left",
+      "right": "Right",
+      "sinister": "Sinister [point]",
+      "top": "Top",
+      "top-left": "Top-left",
+      "top-right": "Top-right"
+    },
+    "alignment": {
+      "left": "Left",
+      "middle": "Middle",
+      "right": "Right"
+    }
+  },
+  "option": {
+    "point": "Point",
+    "alignment": "Alignment",
+    "offset-x": "Offset x",
+    "offset-y": "Offset y"
   }
 }
