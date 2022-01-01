@@ -2,29 +2,18 @@
   (:require
    [clojure.string :as s]
    [heraldry.static :as static])
-  (:require-macros [heraldry.gettext :refer [inline-dict inline-dict-json]]))
-
-(def DICT
-  {:de (inline-dict "de-DE.po")
-   :ru (inline-dict "ru-RU.po")})
+  (:require-macros [heraldry.gettext :refer [inline-dict-json]]))
 
 (def JSON-DICT
   {:en (inline-dict-json "en-UK.json")})
 
 (defn string [s]
-  (if (keyword? s)
-    (-> (->> JSON-DICT
-             keys
-             (map (fn [k]
-                    [k (get-in JSON-DICT [k s])]))
-             (into {}))
-        (update :en #(s/replace % #" \[.*\]$" "")))
-    (-> DICT
-        keys
-        (->> (map (fn [k]
-                    [k (get-in DICT [k s])]))
-             (into {}))
-        (assoc :en (s/replace s #" \[.*\]$" "")))))
+  (-> (->> JSON-DICT
+           keys
+           (map (fn [k]
+                  [k (get-in JSON-DICT [k s])]))
+           (into {}))
+      (update :en #(s/replace % #" \[.*\]$" ""))))
 
 (def known-languages
   {:en [:string.language/english (static/static-url "/img/flag-united-kingdom.svg")]
