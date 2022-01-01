@@ -1,9 +1,10 @@
-(ns heraldry.gettext
+(ns heraldry.strings
   (:require
    [clojure.data.json :as json]
    [clojure.java.io :as io]
    [shadow.build.warnings :as warnings]
-   [shadow.resource :as res]))
+   [shadow.resource :as res]
+   [taoensso.timbre :as log]))
 
 (def required-key-pattern
   #"^[a-z0-9.?-]+$")
@@ -32,14 +33,14 @@
                      [[(keyword prefix k) v]]))))
        (into {})))
 
-(defmacro inline-dict-json [filename]
+(defmacro load-strings [filename]
   (let [data (json/read-str (res/slurp-resource &env filename))]
     (build-keyword-keys data
                         :prefix "string"
                         :source-file filename)))
 
 (defn check-translation-string-usage []
-  (let [json-data (inline-dict-json "en-UK.json")
+  (let [json-data (load-strings "en-UK.json")
         files (into []
                     (filter #(re-matches #".*\.cljs" (.getName %)))
                     (file-seq (io/file "src")))]
@@ -52,7 +53,7 @@
             (map (fn [[_ s]]
                    (let [k (keyword s)]
                      (when-not (contains? json-data k)
-                       (println (str "Warning: unknown key '" k "'"))))))
+                       (log/warn (str "Unknown key '" k "'"))))))
             doall)))
     nil))
 
