@@ -1,0 +1,172 @@
+{
+  "ordinary" : {
+    "type" : { }
+  },
+  "menu" : { },
+  "miscellaneous" : { },
+  "tooltip" : {
+    "ignore-layer-separator?" : "Se a peça contém um separador de camada para o escudo, então isto pode desativá-la. "
+  },
+  "user" : {
+    "message" : { },
+    "button" : { }
+  },
+  "validation" : {
+    "attribution" : { },
+    "partition" : { },
+    "rule-of-tincture" : { }
+  },
+  "tincture" : {
+    "group" : { },
+    "special" : { }
+  },
+  "option" : {
+    "anchor-point-choice" : { },
+    "alignment-choice" : { },
+    "point-choice" : { },
+    "anchor-type-choice" : { },
+    "dampening-mode-choice" : { },
+    "radius" : "Raio",
+    "variant-quarter-choice" : { },
+    "shadow" : "Sombra",
+    "tincture-background-choice" : { },
+    "tincture-background-group" : { },
+    "number" : "Número",
+    "vertical-mask" : "Máscara vertical",
+    "access-filter-choice" : { },
+    "outline-mode-choice" : {
+      "transparent" : "Transparente",
+      "primary" : "Primário",
+      "remove" : "Remover"
+    },
+    "flag-width" : "Largura da bandeira",
+    "rotate-charges?" : "Rodar peças",
+    "alignment-fimbriation-choice" : { },
+    "ignore-layer-separator?" : "Ignorar o separador de camada",
+    "corner-choice" : { },
+    "arc-angle" : "Ângulo do arco",
+    "flag-height" : "Altura da bandeira",
+    "variant-label-choice" : { },
+    "size-mode-choice" : { },
+    "type-fimbriation-choice" : { }
+  },
+  "charge" : {
+    "attribute" : {
+      "ui" : { },
+      "supporter" : "Suporte",
+      "group" : {
+        "tail" : "Cauda"
+      }
+    },
+    "attitude" : {
+      "displayed" : "Estendidas",
+      "group" : {
+        "beasts" : "Animais",
+        "sea-creatures" : "Criaturas marinhas",
+        "serpents" : "Serpentes",
+        "two-beasts" : "Duas bestas",
+        "winged-creatures" : "Criaturas aladas"
+      }
+    },
+    "facing" : {
+      "to-sinister" : "Para a sinistra",
+      "to-dexter" : "Para a dextra (por defeito)"
+    },
+    "tincture-modifier" : {
+      "leaved" : "Folhado",
+      "winged" : "Alado",
+      "beaked" : "Bicado",
+      "group" : {
+        "fauna" : "Fauna",
+        "flora" : "Flora",
+        "other" : "Outro"
+      },
+      "armed" : "Armado",
+      "special" : {
+        "highlight" : "Detalhe (alpha)",
+        "keep" : "Não substituir",
+        "layer-separator" : "Separador de camada",
+        "primary" : "Primário",
+        "secondary" : "Secundário",
+        "shadow" : "Sombra (alpha)",
+        "tertiary" : "Terciário"
+      },
+      "fructed" : "Frutado",
+      "legged" : "Membrado",
+      "langued" : "Lampassado"
+    },
+    "type" : { }
+  },
+  "field" : {
+    "type" : { }
+  },
+  "text" : {
+    "title" : { },
+    "about" : { },
+    "arms-library" : { },
+    "charge-library" : { },
+    "collection-library" : { },
+    "ribbon-library" : { },
+    "contact" : { },
+    "home" : { }
+  },
+  "render-options" : {
+    "scope-choice" : { },
+    "texture-choice" : { },
+    "coat-of-arms-angle-presets" : { },
+    "mode-choice" : { }
+  },
+  "ribbon" : {
+    "start-presets-choice" : { },
+    "text" : { },
+    "layering-presets-choice" : { },
+    "flow-presets-choice" : { },
+    "button" : { },
+    "segment-type-choice" : { }
+  },
+  "line" : {
+    "type" : { }
+  },
+  "escutcheon" : {
+    "type" : {
+      "square-czech" : "Quadrado Checo ",
+      "french-modern" : "Francês Moderno",
+      "square-iberian" : "Quadrado Ibérico",
+      "square-french" : "Quadrado Francês",
+      "flag" : "Bandeira"
+    }
+  },
+  "theme" : {
+    "group" : { }
+  },
+  "language" : { },
+  "entity" : {
+    "tinctures" : "Esmaltes"
+  },
+  "submenu-summary" : { },
+  "charge-group" : {
+    "type" : { },
+    "presets" : {
+      "group" : { }
+    }
+  },
+  "button" : { },
+  "attribution" : {
+    "license-display" : {
+      "public-domain" : "domínio público"
+    },
+    "license-choice" : {
+      "public-domain" : "Domínio Público"
+    },
+    "creator-name" : "Nome do creador",
+    "license" : "Licença",
+    "creator-link" : "Link do creador",
+    "source-link" : "Link da fonte",
+    "source-name" : "Nome da fonte",
+    "nature-choice" : {
+      "own-work" : "Trabalho próprio"
+    },
+    "license-version" : "Versão da licença",
+    "source-license" : "Licença da fonte"
+  }
+}
