@@ -1,6 +1,5 @@
 (ns heraldry.strings
   (:require
-   [clojure.string :as s]
    [heraldry.static :as static])
   (:require-macros [heraldry.strings :refer [load-strings]]))
 
@@ -11,12 +10,11 @@
    :ru (load-strings "ru-RU.json")})
 
 (defn string [s]
-  (-> (->> JSON-DICT
-           keys
-           (map (fn [k]
-                  [k (get-in JSON-DICT [k s])]))
-           (into {}))
-      (update :en #(s/replace % #" \[.*\]$" ""))))
+  (->> JSON-DICT
+       keys
+       (map (fn [k]
+              [k (get-in JSON-DICT [k s])]))
+       (into {})))
 
 (def known-languages
   {:en [:string.language/english (static/static-url "/img/flag-united-kingdom.svg")]
