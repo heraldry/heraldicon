@@ -35,6 +35,6 @@
    [:p
     [tr :string.text.contact/translation-not-yet-complete]
     " "
-    [:a {:href "https://www.transifex.com/heraldry-digital/armory/" :target "_blank"}
-     [tr :string.text.contact/transifex-project]]
+    [:a {:href "https://crowdin.com/project/heraldry-digital/" :target "_blank"}
+     [tr :string.text.contact/crowdin-project]]
     "."]])

@@ -565,7 +565,7 @@
       "my-username-is" : "mein Nutzername ist",
       "translation" : "Übersetzung",
       "translation-not-yet-complete" : "Nicht alle Texte sind übersetzt. Wenn du mithelfen, etwas korrigieren oder deine eigene Sprache hinzufügen möchtest, dann komm bei Discord vorbei oder direkt beim",
-      "transifex-project" : "transifex Projekt"
+      "crowdin-project" : "Crowdin Projekt"
     },
     "home" : {
       "release-news-info-1" : "In den meisten Fällen werden Features inkrementell freigegeben. Aber ab und an gruppiere ich die wichtigsten Features und neue Entwicklungen und fasse sie in einem Update hier zusammen, damit es einen Überblick gibt.",
