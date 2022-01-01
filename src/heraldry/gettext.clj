@@ -1,8 +1,10 @@
 (ns heraldry.gettext
   (:require
+   [cheshire.core :as cheshire]
    [clojure.data.json :as json]
    [clojure.java.io :as io]
    [clojure.string :as s]
+   [clojure.walk :as walk]
    [pottery.core :as pottery]
    [pottery.scan :as pottery-scan]
    [shadow.build.warnings :as warnings]
@@ -99,12 +101,39 @@
             doall)))
     nil))
 
+(defn migrate-other-languages []
+  (let [base-json (json/read-str (slurp "strings/en-UK.json"))]
+    (doall
+     (for [language ["de-DE" "pt-PT" "ru-RU"]]
+       (let [po-filename (str "gettext/" language ".po")
+             json-filename (str "strings/" language ".json")
+             po-data (pottery/read-po-str (slurp po-filename))
+             result-data (->> base-json
+                              (walk/postwalk (fn [data]
+                                               (if (map? data)
+                                                 (into {}
+                                                       (keep (fn [[k v]]
+                                                               (if (map? v)
+                                                                 [k v]
+                                                                 (let [translated (get po-data v)]
+                                                                   (if (some-> translated count pos?)
+                                                                     [k translated]
+                                                                     (println (str "warning: no translation for '" v "'")))))))
+                                                       data)
+                                                 data))))]
+         (spit json-filename
+               (cheshire/generate-string result-data {:pretty true})
+               :encoding "UTF-8")))))
+  nil)
+
 (comment
   (gettext-do-scan!)
 
   (replace-strings-by-keywords)
 
   (check-translation-string-usage)
+
+  (migrate-other-languages)
 
   ;;
   )
