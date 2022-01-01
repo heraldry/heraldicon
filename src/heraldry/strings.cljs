@@ -1,11 +1,14 @@
-(ns heraldry.gettext
+(ns heraldry.strings
   (:require
    [clojure.string :as s]
    [heraldry.static :as static])
-  (:require-macros [heraldry.gettext :refer [inline-dict-json]]))
+  (:require-macros [heraldry.strings :refer [load-strings]]))
 
 (def JSON-DICT
-  {:en (inline-dict-json "en-UK.json")})
+  {:en (load-strings "en-UK.json")
+   :de (load-strings "de-DE.json")
+   :pt (load-strings "pt-PT.json")
+   :ru (load-strings "ru-RU.json")})
 
 (defn string [s]
   (-> (->> JSON-DICT

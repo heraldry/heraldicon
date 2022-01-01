@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
-   [heraldry.gettext :refer [known-languages]]
+   [heraldry.strings :refer [known-languages]]
    [heraldry.util :as util]
    [hodgepodge.core :refer [get-item local-storage set-item]]
    [re-frame.core :as rf]))
