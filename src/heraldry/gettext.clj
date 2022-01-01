@@ -1,17 +1,9 @@
 (ns heraldry.gettext
   (:require
-   [cheshire.core :as cheshire]
    [clojure.data.json :as json]
    [clojure.java.io :as io]
-   [clojure.string :as s]
-   [clojure.walk :as walk]
-   [pottery.core :as pottery]
-   [pottery.scan :as pottery-scan]
    [shadow.build.warnings :as warnings]
    [shadow.resource :as res]))
-
-(defmacro inline-dict [filename]
-  (pottery/read-po-str (res/slurp-resource &env filename)))
 
 (def required-key-pattern
   #"^[a-z0-9.?-]+$")
@@ -46,43 +38,6 @@
                         :prefix "string"
                         :source-file filename)))
 
-(defn gettext-do-scan! []
-  (pottery/scan-codebase!
-   {:dir "src"
-    :template-file (io/file "gettext/template.po")
-    :extract-fn (pottery/make-extractor
-                 ['string (s :guard string?)] s
-                 [(:or 'string) & _] (pottery-scan/extraction-warning
-                                      "Could not extract strings for the form:"))}))
-
-(defn replace-string [keyword-lookup [all s]]
-  (let [k (get keyword-lookup s)]
-    (if k
-      (str k)
-      all)))
-
-(defn replace-strings-by-keywords []
-  (let [json-data (inline-dict-json "en-UK.json")
-        keyword-lookup (->> json-data
-                            (group-by second)
-                            (map (fn [[k v]]
-                                   (when (-> v count (> 1))
-                                     (println "warning: best ambiguous keyword: " (ffirst v)))
-                                   [k (ffirst v)]))
-                            (into {}))
-        replace-fn (fn [args]
-                     (replace-string keyword-lookup args))
-        files (into []
-                    (filter #(re-matches #".*\.cljs" (.getName %)))
-                    (file-seq (io/file "src")))]
-    (doall
-     (for [file files]
-       (let [file-path (.getAbsolutePath file)
-             data (slurp file-path)]
-         (->> (s/replace data #"\(string \"([^\"]*)\"\)" replace-fn)
-              (spit file-path)))))
-    nil))
-
 (defn check-translation-string-usage []
   (let [json-data (inline-dict-json "en-UK.json")
         files (into []
@@ -101,39 +56,8 @@
             doall)))
     nil))
 
-(defn migrate-other-languages []
-  (let [base-json (json/read-str (slurp "strings/en-UK.json"))]
-    (doall
-     (for [language ["de-DE" "pt-PT" "ru-RU"]]
-       (let [po-filename (str "gettext/" language ".po")
-             json-filename (str "strings/" language ".json")
-             po-data (pottery/read-po-str (slurp po-filename))
-             result-data (->> base-json
-                              (walk/postwalk (fn [data]
-                                               (if (map? data)
-                                                 (into {}
-                                                       (keep (fn [[k v]]
-                                                               (if (map? v)
-                                                                 [k v]
-                                                                 (let [translated (get po-data v)]
-                                                                   (if (some-> translated count pos?)
-                                                                     [k translated]
-                                                                     (println (str "warning: no translation for '" v "'")))))))
-                                                       data)
-                                                 data))))]
-         (spit json-filename
-               (cheshire/generate-string result-data {:pretty true})
-               :encoding "UTF-8")))))
-  nil)
-
 (comment
-  (gettext-do-scan!)
-
-  (replace-strings-by-keywords)
-
   (check-translation-string-usage)
-
-  (migrate-other-languages)
 
   ;;
   )
