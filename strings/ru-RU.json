@@ -1,0 +1,379 @@
+{
+  "ordinary" : {
+    "type" : {
+      "chevron" : "Стропило",
+      "label" : "Титло",
+      "cross" : "Крест",
+      "bordure" : "Кайма",
+      "pale" : "Столп",
+      "base" : "Основание",
+      "fess" : "Пояс",
+      "bend-sinister" : "Левая перевязь",
+      "bend" : "Перевязь",
+      "quarter" : "Четверть, вольная часть",
+      "chief" : "Глава"
+    }
+  },
+  "menu" : {
+    "news" : "Новости",
+    "users" : "Пользователи",
+    "ribbon-library" : "Ленты",
+    "register" : "Зарегистрироваться",
+    "arms-library" : "Гербы",
+    "charge-library" : "Гербовые фигуры",
+    "login" : "Ввойти",
+    "collection-library" : "Коллекции"
+  },
+  "miscellaneous" : {
+    "beta-blazon" : "(бета-версия, не завершено)",
+    "original" : "Оригинал",
+    "loading" : "Загрузка...",
+    "unsaved-data" : "несохраненные данные",
+    "not-found" : "Не найдено",
+    "unnamed" : "нет имени"
+  },
+  "tooltip" : {
+    "move-up" : "переместить выше",
+    "remove" : "удалить",
+    "alpha-feature-warning" : "Работу над этой функцией не завершено. Возможны изменения, поэтому используйте с осторожностью)",
+    "move-down" : "переместить ниже"
+  },
+  "user" : {
+    "message" : {
+      "password-reset-completed" : "Пароль сменён",
+      "save-changes-first" : "Сначала сохраните изменения.",
+      "arms-saved" : "Герб сохранен. Новая версия:",
+      "need-to-be-logged-in-and-arms-must-be-saved" : "Вы должны ввойти и сохранить герб.",
+      "arms-need-to-be-public-and-saved-for-exporting" : "Чтобы сохранить и экспортировать герб, откройте публичный доступ к нему.",
+      "need-to-be-logged-in-and-own-the-arms" : "Вы должны ввойти и быть владельцем герба.",
+      "confirmation-code-sent" : "Код подтверждения отправлен на ваш адресс электронной почты.",
+      "arms-need-to-be-public-and-saved-for-sharing" : "Нужно сохранить герб и открыть публичный доступ, прежде чем делиться.",
+      "need-to-be-logged-in" : "Вы должны ввойти.",
+      "copied-url-for-sharing" : "Ссылку скопировано. Теперь можно делиться.",
+      "registration-completed" : "Регистрацию завершено",
+      "charge-saved" : "Изменения сохранены. Новая версия:",
+      "new-confirmation-code-sent" : "Новый код отправлен на ваш адресс электронной почты.",
+      "passwords-do-not0match" : "Пароли не совпадают",
+      "username-required-for-password-reset" : "Для сброса пароля нужно имя пользователя"
+    },
+    "forgotten-password" : "Вы забыли пароль?",
+    "confirmation-code" : "Код подтверждения",
+    "username" : "Имя пользователя",
+    "email" : "Адресс электронной почты",
+    "reset-forgotten-password" : "Скинуть забытый пароль",
+    "password-again" : "Повторите пароль",
+    "register-confirmation" : "Подтверждение регистрации",
+    "change-temporary-password" : "Сменить временный пароль",
+    "password" : "Пароль",
+    "new-password" : "Новый пароль",
+    "new-password-again" : "Повторите новый пароль",
+    "button" : {
+      "change" : "Сменить",
+      "confirm" : "Подтвердить",
+      "resend-code" : "Отправить код еще раз",
+      "reset-password" : "Сменить пароль"
+    }
+  },
+  "validation" : {
+    "attribution" : { },
+    "partition" : { },
+    "rule-of-tincture" : { }
+  },
+  "tincture" : {
+    "gules" : "Червлень",
+    "argent" : "Серебро",
+    "helmet-medium" : "Средний",
+    "group" : {
+      "metal" : "Металл",
+      "colour" : "Цвет",
+      "fur" : "Мех"
+    },
+    "vert" : "Зелень",
+    "purpure" : "Пурпур",
+    "helmet-dark" : "Темный",
+    "azure" : "Лазурь",
+    "tenne" : "Коричневый",
+    "or" : "Золото",
+    "special" : { },
+    "sable" : "Чернь",
+    "helmet-light" : "Светлый",
+    "sanguine" : "Кровяной"
+  },
+  "option" : {
+    "anchor-point-choice" : { },
+    "alignment-choice" : { },
+    "width" : "Ширина",
+    "manual-blazon" : "Ввести блазон вручную",
+    "charge-type" : "Тип фигуры",
+    "select-arms" : "Выбрать герб",
+    "height" : "Высота",
+    "point-choice" : { },
+    "anchor-type-choice" : { },
+    "dampening-mode-choice" : { },
+    "radius" : "Радиус",
+    "partition" : "Деление",
+    "variant-quarter-choice" : { },
+    "is-public" : "Опубликовать",
+    "tincture-background-choice" : { },
+    "name" : "Имя",
+    "tincture-background-group" : {
+      "other-or-metal" : "Другие / металл"
+    },
+    "number" : "Число",
+    "distance" : "Расстояние",
+    "access-filter-choice" : { },
+    "outline-mode-choice" : { },
+    "rotate-charges?" : "Повернуть фигуры",
+    "alignment-fimbriation-choice" : { },
+    "corner-choice" : { },
+    "size" : "Размер",
+    "number-of-points" : "Количество концов",
+    "arms" : "Гербы",
+    "variant-label-choice" : { },
+    "size-mode-choice" : { },
+    "type-fimbriation-choice" : { }
+  },
+  "charge" : {
+    "attribute" : {
+      "mantling" : "Намет",
+      "ui" : {
+        "add" : "Добавить ссылку на источник"
+      },
+      "supporter" : "щитодержатель",
+      "group" : {
+        "tail" : "хвост"
+      },
+      "supporter-right" : "Щитодержатель справа",
+      "supporter-left" : "Щитодержатель слева"
+    },
+    "attitude" : {
+      "displayed" : "с распростёртыми крыльями",
+      "group" : {
+        "beasts" : "Звери",
+        "sea-creatures" : "морские твари",
+        "serpents" : "змеи",
+        "two-beasts" : "два зверя",
+        "winged-creatures" : "Крылатые твари"
+      },
+      "respectant" : "обращённые",
+      "addorsed" : "противостоящий",
+      "salient" : "прыгающий",
+      "dormant" : "спящий",
+      "combatant" : "сообращённые",
+      "passant" : "идущий",
+      "urinant" : "ныряющий",
+      "rampant" : "восстающий",
+      "couchant" : "лежащий",
+      "volant" : "летящий",
+      "statant" : "стоящий",
+      "cadent" : "падающий",
+      "close" : "Закрыть",
+      "segreant" : "восстающий",
+      "pascuant" : "пасущийся",
+      "sejant-erect" : "восстающе-сидящий",
+      "sejant" : "сидящий",
+      "courant" : "бегущий"
+    },
+    "facing" : {
+      "salient" : "прыгающий",
+      "affronte" : "впрям",
+      "guardant" : "настороже",
+      "en-arriere" : "спиной",
+      "to-sinister" : "обращённый (влево)",
+      "to-dexter" : "вправо (по умолчанию)",
+      "reguardant" : "настороже"
+    },
+    "tincture-modifier" : {
+      "group" : {
+        "fauna" : "фауна",
+        "flora" : "флора",
+        "other" : "другое"
+      },
+      "armed" : "вооружённый",
+      "special" : {
+        "keep" : "Не заменять",
+        "secondary" : "Вторичный"
+      }
+    },
+    "type" : { }
+  },
+  "field" : {
+    "type" : {
+      "quartered" : "четверочастный",
+      "per-pile" : "расделён остриём",
+      "per-bend-sinister" : "скошен слева",
+      "plain" : "не раздёлен",
+      "per-pale" : "рассечён",
+      "per-chevron" : "разделён стропиловидно",
+      "per-fess" : "пересечён",
+      "per-bend" : "скошен справа",
+      "per-saltire" : "скошен справа и слева"
+    }
+  },
+  "text" : {
+    "title" : {
+      "create-arms" : "Создать герб",
+      "create-ribbon" : "Создать ленту"
+    },
+    "about" : {
+      "what-is-this-about?" : "Что это?",
+      "welcome-to-heraldry-digital" : "Добро пожаловать на сайт «Цифровая геральдика»"
+    },
+    "arms-library" : {
+      "create-and-view-arms" : "Здесь можно создавать и просматривать гербы. Если Вы хотите поделиться ссылкой для просмотра герба другими людьми, сохраните свой герб и добавьте лицензию.",
+      "svg-png-access-info" : "Однако все могут просматривать ссылки на файлы форматов SVG и PNG."
+    },
+    "charge-library" : { },
+    "collection-library" : { },
+    "ribbon-library" : { },
+    "contact" : {
+      "developer-info" : "Меня можно найти здесь:",
+      "my-username-is" : "Мое имя пользователя:"
+    },
+    "home" : { }
+  },
+  "render-options" : {
+    "scope-choice" : {
+      "achievement" : "Все (шлемы и др.)",
+      "coat-of-arms-and-helm" : "Герб со шлемом",
+      "coat-of-arms" : "Герб"
+    },
+    "texture" : "Текстура",
+    "shiny?" : "Сияющий",
+    "texture-choice" : {
+      "satin" : "Атлас",
+      "stone-rough" : "Камень (жесткий)",
+      "cloth-smooth1" : "Ткань (гладкая)",
+      "stone" : "Камень",
+      "glass-frosted" : "Стекло (матовое)",
+      "mosaic" : "Мозаика",
+      "felt" : "Войлок",
+      "marble" : "Мрамор",
+      "cloth-rough" : "Ткань (жесткая)",
+      "wood" : "Дерево"
+    },
+    "escutcheon" : "Щит",
+    "title" : "Настройки отрисовки",
+    "theme" : "Тема",
+    "coat-of-arms-angle-presets" : { },
+    "mode-choice" : {
+      "colours" : "Эмали"
+    }
+  },
+  "ribbon" : {
+    "start-presets-choice" : { },
+    "topology" : "Топология",
+    "text" : { },
+    "segments" : "Сегменты",
+    "layering-presets-choice" : {
+      "left-to-right" : "Слева направо",
+      "right-to-left" : "Справа налево"
+    },
+    "flow-presets-choice" : { },
+    "button" : { },
+    "segment-type-choice" : { }
+  },
+  "line" : {
+    "type" : { }
+  },
+  "escutcheon" : {
+    "type" : {
+      "square-czech" : "Немецкий с округленным основанием",
+      "rounded-norman-late" : "Скруглённый варяжский щит",
+      "roundel" : "Круглый щит",
+      "french-modern" : "Французский щит",
+      "oval" : "Овальный щит",
+      "renaissance" : "Барочный щит",
+      "lozenge" : "Дамский щит",
+      "square-iberian" : "Испанский щит",
+      "polish-19th-century" : "Польский щит XIX-го века",
+      "polish" : "Польский щит",
+      "kite" : "Миндалевидный щит",
+      "square-french" : "Старофранцузский щит",
+      "heater" : "Варяжский щит",
+      "wedge" : "Щит с вызубрениями во главе",
+      "rectangle" : "Вертикальный прямоугольник",
+      "english" : "Четырехугольный английский щит",
+      "norman-late" : "Варяжский щит (поздний)",
+      "swiss" : "Швейцарский щит"
+    }
+  },
+  "theme" : {
+    "wikipedia-switzerland" : "Википедия — Швейцария",
+    "web" : "Вэб",
+    "group" : {
+      "community" : "От сообщества"
+    },
+    "wappenwiki" : "«Ваппен-Вики» (по умолчанию)",
+    "wikipedia-france" : "Википедия — Франция",
+    "wikipedia-default" : "Википедия — стандарт",
+    "wikipedia-sweden" : "Википедия — Швеция",
+    "wikipedia-hungary" : "Википедия — Венгрия",
+    "wikipedia-wurttemberg" : "Википедия — Вюрттемберг",
+    "wikipedia-brandenburg" : "Википедия — Бранденбург",
+    "wikipedia-web" : "Википедия — вэб",
+    "wikipedia-spain" : "Википедия — Испания"
+  },
+  "language" : { },
+  "entity" : {
+    "user" : "Пользователь",
+    "charge" : "Фигура",
+    "charges" : "Гербовые фигуры",
+    "collections" : "Коллекции",
+    "blazon" : "Блазон",
+    "slogan" : "Слоган",
+    "ribbon" : "Лента",
+    "attributes" : "Ссылки на источник",
+    "motto" : "Девиз",
+    "heraldry" : "Геральдика",
+    "arms" : "Гербы",
+    "charge-group" : "Группа фигур"
+  },
+  "submenu-summary" : { },
+  "charge-group" : {
+    "type" : { },
+    "presets" : {
+      "group" : {
+        "ordinaries" : "Почётные фигуры"
+      },
+      "select" : "Выбрать",
+      "presets" : "Шаблоны"
+    },
+    "select-charge-group-preset" : "Выбрать шаблон фигур"
+  },
+  "button" : {
+    "add" : "Добавить",
+    "cancel" : "Отменить",
+    "create" : "Создать",
+    "edit" : "редактировать",
+    "save" : "сохранить",
+    "upload-svg" : "Загрузить файл SVG"
+  },
+  "attribution" : {
+    "license-display" : {
+      "none" : "нет",
+      "public-domain" : "общественное достояние"
+    },
+    "license-choice" : {
+      "public-domain" : "Общественное достояние"
+    },
+    "autofill" : "Заполнить автоматически",
+    "creator-name" : "Имя автора",
+    "license" : "Лицензия",
+    "is-in-the-public-domain" : "является общественным достоянием",
+    "creator-link" : "Ссылка к автору",
+    "source-link" : "Ссылка на источник",
+    "source-name" : "Имя источника",
+    "is-licensed-under" : "имеет лицензию:",
+    "nature-choice" : {
+      "derivative" : "Производная работа",
+      "own-work" : "Собственное произведение"
+    },
+    "is-private" : "является личным",
+    "license-version" : "Версия лицензии",
+    "source-license" : "Источник лицензии",
+    "title" : "Ссылка на источник",
+    "source" : "источник",
+    "no-license" : "нет лицензии"
+  }
+}
