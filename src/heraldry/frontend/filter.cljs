@@ -87,7 +87,7 @@
      (when-not hide-ownership-filter?
        [checkbox/checkbox {:path filter-own-path}
         :option {:type :boolean
-                 :ui {:label [tr :string.miscellaneous/mine-only]}}])
+                 :ui {:label :string.miscellaneous/mine-only}}])
      (when-not hide-access-filter?
        [radio-select/radio-select {:path filter-access-path}
         :option {:type :choice
