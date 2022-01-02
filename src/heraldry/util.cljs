@@ -178,7 +178,7 @@
                   (if (some-> translated count pos?)
                     translated
                     (get data :en)))
-    :else data))
+    :else (str data)))
 
 (defn translate [keyword]
   (when keyword
@@ -228,11 +228,6 @@
                         (map (fn [language]
                                [language
                                 (->> strs
-                                     (map (fn [s]
-                                            (if (or (string? s)
-                                                    (map? s))
-                                              s
-                                              (str s))))
                                      (map (fn [s]
                                             (tr-raw s language)))
                                      (filter #(> (count %) 0))
