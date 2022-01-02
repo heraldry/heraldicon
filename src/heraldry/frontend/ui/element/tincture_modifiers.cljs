@@ -87,7 +87,8 @@
                                    s/lower-case
                                    util/upper-case-first)
                               :string.charge.tincture-modifier/none)
-            link-name (if (-> tinctures-title count (> 30))
+            link-name (if (and (string? tinctures-title)
+                               (-> tinctures-title count (> 30)))
                         (str (subs tinctures-title 0 27) "...")
                         tinctures-title)]
         (when options
