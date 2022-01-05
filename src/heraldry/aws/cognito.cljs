@@ -58,7 +58,7 @@
            (-> result :userConfirmed not) (on-confirmation-needed (:user result))
            :else (on-success (:user result))))))))
 
-(defn confirm [user code & {:keys [on-success on-failure]}]
+(defn confirm [^js/Object user code & {:keys [on-success on-failure]}]
   (.confirmRegistration
    user
    code
@@ -68,7 +68,7 @@
        (on-failure (js->clj err :keywordize-keys true))
        (on-success user)))))
 
-(defn resend-code [user & {:keys [on-success on-failure]}]
+(defn resend-code [^js/Object user & {:keys [on-success on-failure]}]
   (.resendConfirmationCode
    user
    (fn [err _result]
@@ -76,7 +76,7 @@
        (on-failure (js->clj err :keywordize-keys true))
        (on-success nil)))))
 
-(defn complete-new-password-challenge [user password user-attributes & {:keys [on-success on-failure]}]
+(defn complete-new-password-challenge [^js/Object user password user-attributes & {:keys [on-success on-failure]}]
   (.completeNewPasswordChallenge
    user
    password
@@ -97,7 +97,7 @@
                             (let [error (js->clj error :keywordize-keys true)]
                               (on-failure error)))}))))
 
-(defn confirm-password [user code new-password & {:keys [on-success on-failure]}]
+(defn confirm-password [^js/Object user code new-password & {:keys [on-success on-failure]}]
   (.confirmPassword
    user
    code

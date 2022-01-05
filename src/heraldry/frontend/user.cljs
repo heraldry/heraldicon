@@ -81,7 +81,7 @@
               (modal/start-loading)
               (cognito/login username
                              password
-                             :on-success (fn [user]
+                             :on-success (fn [^js/Object user]
                                            (complete-login db-path (-> user
                                                                        .getAccessToken
                                                                        .getJwtToken)))
@@ -346,7 +346,7 @@
                user
                new-password
                user-attributes
-               :on-success (fn [user]
+               :on-success (fn [^js/Object user]
                              (rf/dispatch [:clear-form db-path])
                              (complete-login db-path (-> user
                                                          .getAccessToken
