@@ -581,6 +581,7 @@
       "confirmation-code-sent": "A confirmation code was sent to your email address.",
       "copied-url-for-sharing": "Copied URL for sharing.",
       "created-unsaved-copy": "Created an unsaved copy.",
+      "email-required": "Email required.",
       "need-to-be-logged-in": "You need to be logged in.",
       "need-to-be-logged-in-and-arms-must-be-saved": "Need to be logged in and arms must be saved.",
       "need-to-be-logged-in-and-charge-must-be-saved": "Need to be logged in and charge must be saved.",
@@ -591,9 +592,11 @@
       "password-reset-completed": "Password reset completed",
       "password-reset-confirmation-code-sent": "A password reset confirmation code was sent to your email address.",
       "passwords-do-not-match": "Passwords don't match.",
+      "password-required": "Password required.",
       "registration-completed": "Registration completed",
       "ribbon-saved": "Ribbon saved, new version:",
       "save-changes-first": "Save your changes first.",
+      "username-required": "Username required.",
       "username-required-for-password-reset": "Username required for password reset."
     },
     "button": {
