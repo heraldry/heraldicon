@@ -217,7 +217,8 @@
 
 (defn component [charge-list link-fn refresh-fn & {:keys [remove-empty-groups?
                                                           hide-ownership-filter?
-                                                          render-variant]}]
+                                                          render-variant
+                                                          open-all?]}]
   (let [user-data (user/data)]
     [filter/component
      :charge-list
@@ -231,7 +232,7 @@
           items
           :remove-empty-groups? (or remove-empty-groups?
                                     filtered?)) [] nil nil
-         {:open-all? filtered?
+         {:open-all? (or open-all? filtered?)
           :render-variant (or render-variant
                               (fn [node]
                                 (let [charge (-> node :data)
