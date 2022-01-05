@@ -590,7 +590,7 @@
       "new-confirmation-code-sent": "A new code was sent to your email address.",
       "password-reset-completed": "Password reset completed",
       "password-reset-confirmation-code-sent": "A password reset confirmation code was sent to your email address.",
-      "passwords-do-not0match": "Passwords don't match.",
+      "passwords-do-not-match": "Passwords don't match.",
       "registration-completed": "Registration completed",
       "ribbon-saved": "Ribbon saved, new version:",
       "save-changes-first": "Save your changes first.",

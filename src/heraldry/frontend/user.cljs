@@ -172,7 +172,7 @@
   (let [{:keys [username email password password-again]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [:clear-form-errors])
     (if (not= password password-again)
-      (rf/dispatch [:set-form-error (conj db-path :password-again) :string.user.message/passwords-do-not0match])
+      (rf/dispatch [:set-form-error (conj db-path :password-again) :string.user.message/passwords-do-not-match])
       (do
         (modal/start-loading)
         (cognito/sign-up username password email
@@ -331,7 +331,7 @@
                 new-password-again]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [:clear-form-errors])
     (if (not= new-password new-password-again)
-      (rf/dispatch [:set-form-error (conj db-path :new-password-again) :string.user.message/passwords-do-not0match])
+      (rf/dispatch [:set-form-error (conj db-path :new-password-again) :string.user.message/passwords-do-not-match])
       (do
         (modal/start-loading)
         (cognito/complete-new-password-challenge
@@ -404,7 +404,7 @@
         user (:user user-data)]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (if (not= new-password new-password-again)
-      (rf/dispatch [:set-form-error (conj db-path :new-password-again) :string.user.message/passwords-do-not0match])
+      (rf/dispatch [:set-form-error (conj db-path :new-password-again) :string.user.message/passwords-do-not-match])
       (do
         (modal/start-loading)
         (cognito/confirm-password
