@@ -27,7 +27,8 @@
 
           :backend
           {:target :node-library
-           :exports {:handler heraldry.backend.api.core/handler
+           :exports {:init heraldry.backend.shim/init
+                     :handler heraldry.backend.api.core/handler
                      :site_handler heraldry.backend.site/handler
                      :options_handler heraldry.backend.api.core/options-handler
                      :migration_handler heraldry.backend.migration.core/migrate-handler
