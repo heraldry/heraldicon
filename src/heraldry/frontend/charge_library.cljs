@@ -442,7 +442,8 @@
       [tr :string.button/create]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
-        [charge-select/component charges link-to-charge invalidate-charges-cache]
+        [charge-select/component charges link-to-charge invalidate-charges-cache
+         :open-all? @(rf/subscribe [:get [:ui :charge-list :open-all?]])]
         [:div [tr :string.miscellaneous/loading]])]]))
 
 (defn view-charge-by-id [{:keys [parameters]}]
