@@ -53,7 +53,7 @@
       "registration-completed" : "Регистрацию завершено",
       "charge-saved" : "Изменения сохранены. Новая версия:",
       "new-confirmation-code-sent" : "Новый код отправлен на ваш адресс электронной почты.",
-      "passwords-do-not0match" : "Пароли не совпадают",
+      "passwords-do-not-match" : "Пароли не совпадают",
       "username-required-for-password-reset" : "Для сброса пароля нужно имя пользователя"
     },
     "forgotten-password" : "Вы забыли пароль?",

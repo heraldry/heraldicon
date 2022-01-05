@@ -589,7 +589,7 @@
       "new-confirmation-code-sent": "Ein neuer Bestätigungscode wurde an deine Emailadresse geschickt.",
       "password-reset-completed": "Password zurückgesetzt",
       "password-reset-confirmation-code-sent": "Ein Bestätigungscode für das Zurücksetzen des Passworts wurde an deine Emailadresse geschickt.",
-      "passwords-do-not0match": "Passwörter sind nicht gleich.",
+      "passwords-do-not-match": "Passwörter sind nicht gleich.",
       "registration-completed": "Registrierung abgeschlossen",
       "ribbon-saved": "Band gespeichert, neue Version:",
       "save-changes-first": "Speichere deine Änderungen erst.",
