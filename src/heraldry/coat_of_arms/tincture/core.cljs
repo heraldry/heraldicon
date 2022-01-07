@@ -11,7 +11,7 @@
 (def themes
   [[:string.theme.group/general
     [:string.theme/wappenwiki :wappenwiki theme/theme-wappenwiki]
-    [:string.theme/web :theme-web theme/theme-web]
+    [:string.theme/web :web theme/theme-web]
     [:string.theme/ral-traffic :ral-traffic theme/theme-ral-traffic]
     [:string.theme/all :all theme/theme-all]]
    ["Wikipedia"
