@@ -34,10 +34,10 @@ prod-frontend-release:
 	yarn shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
 
 prod-frontend-deploy: check-before-deploy-frontend prod-frontend-release
-	./sync-with-s3.py $(PROD_FRONTEND_RELEASE_DIR) cdn.heraldry.digital
-	aws --profile heraldry-serverless s3 cp --acl public-read $(PROD_FRONTEND_RELEASE_DIR)/index.html s3://cdn.heraldry.digital/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
+	./sync-with-s3.py $(PROD_FRONTEND_RELEASE_DIR) cdn.heraldicon.com
+	aws --profile heraldry-serverless s3 cp --acl public-read $(PROD_FRONTEND_RELEASE_DIR)/index.html s3://cdn.heraldicon.com/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
 	git tag $(shell date +"deploy-frontend-%Y-%m-%d_%H-%M-%S")
-	./invalidate-distribution.sh cdn.heraldry.digital
+	./invalidate-distribution.sh cdn.heraldicon.com
 
 # STAGING
 
@@ -63,9 +63,9 @@ staging-frontend-release:
 	yarn shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./build/staging/js/generated"}'
 
 staging-frontend-deploy: staging-frontend-release
-	./sync-with-s3.py $(STAGING_FRONTEND_RELEASE_DIR) cdn.staging.heraldry.digital
-	aws --profile heraldry-serverless s3 cp --acl public-read $(STAGING_FRONTEND_RELEASE_DIR)/index.html s3://cdn.staging.heraldry.digital/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
-	./invalidate-distribution.sh cdn.staging.heraldry.digital
+	./sync-with-s3.py $(STAGING_FRONTEND_RELEASE_DIR) cdn.staging.heraldicon.com
+	aws --profile heraldry-serverless s3 cp --acl public-read $(STAGING_FRONTEND_RELEASE_DIR)/index.html s3://cdn.staging.heraldicon.com/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
+	./invalidate-distribution.sh cdn.staging.heraldicon.com
 
 # DEV
 
