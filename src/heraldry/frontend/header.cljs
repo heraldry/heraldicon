@@ -39,7 +39,7 @@
                      :transform "translate(0,0.4em)"}}]
       [:span {:style {:text-transform "uppercase"}}
        [route/link {:to :home
-                    :style {:padding-right "5px"}} "Heraldry"]]
+                    :style {:padding-right "5px"}} "Heraldicon"]]
       [:sup {:style {:color "#d82"}} "beta"]]
      [:ul.nav-menu {:style {:flex 1}}
       [route/nav-link {:to :home} [tr :string.menu/news]]
