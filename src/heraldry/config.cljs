@@ -32,12 +32,11 @@
            :mantling-charge-id "charge:gTrIM7"}
 
     "staging" {:heraldry-api-endpoint "https://ru73nh6ozg.execute-api.eu-central-1.amazonaws.com/api"
-               :heraldry-url "https://staging.heraldry.digital"
+               :heraldry-url "https://staging.heraldicon.org"
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                      :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                      :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
-               :bucket-data "data.heraldry.digital"
-               :static-files-url "https://cdn.staging.heraldry.digital"
+               :static-files-url "https://cdn.staging.heraldicon.org"
                :base-font-dir "./assets/font"
                :fleur-de-lis-charge-id "charge:ZfqrIl"
                :torse-charge-id "charge:8vwlZ2"
