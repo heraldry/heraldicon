@@ -11,13 +11,13 @@
                  :min-width "30em"
                  :max-width "60em"
                  :margin "auto"}}
-   [:h2 [tr :string.text.about/welcome-to-heraldry-digital]]
+   [:h2 [tr :string.text.about/welcome-to-heraldicon]]
    [:h3 [tr :string.text.about/what-is-this-about?]]
    [:img {:style {:width "30%"
                   :float "right"
                   :margin-left "20px"
                   :margin-bottom "20px"}
-          :src (static/static-url "/img/heraldry-digital-logo.png")
+          :src (static/static-url "/img/heraldicon-logo.png")
           :alt "logo"}]
    [:p
     [:a {:href "https://en.wikipedia.org/wiki/Heraldry"
@@ -27,9 +27,9 @@
    [:p
     [tr :string.text.about/arms-creation-1-effort]]
    [:p
-    [tr :string.text.about/arms-creation-2-with-heraldry-digital]]
+    [tr :string.text.about/arms-creation-2-with-heraldicon]]
    [:p
-    [tr :string.text.about/arms-creation-3-heraldry-digital-no-replacement-for-art]]
+    [tr :string.text.about/arms-creation-3-heraldicon-no-replacement-for-art]]
    [:h3 [tr :string.text.about/goals]]
    [:ul
     [:li [tr :string.text.about/goal-1-open-charge-library]]

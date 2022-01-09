@@ -23,7 +23,7 @@
   (util/combine
    " - "
    [@(rf/subscribe [:get-title])
-    "Heraldry Digital"]))
+    "Heraldicon"]))
 
 (defonce stats-accumulator (tufte/add-accumulating-handler! {:ns-pattern "*"}))
 

@@ -46,12 +46,11 @@
                :mantling-charge-id "charge:gTrIM7"}
 
     "prod" {:heraldry-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
-            :heraldry-url "https://heraldry.digital"
+            :heraldry-url "https://heraldicon.org"
             :cognito-pool-config {:UserPoolId "eu-central-1_WXqnJUEOT"
                                   :ClientId "21pvp6cc4l3gptoj4bl3jc9s7r"
                                   :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}
-            :bucket-data "data.heraldry.digital"
-            :static-files-url "https://cdn.heraldry.digital"
+            :static-files-url "https://cdn.heraldicon.org"
             :base-font-dir "./assets/font"
             :fleur-de-lis-charge-id "charge:ZfqrIl"
             :torse-charge-id "charge:8vwlZ2"

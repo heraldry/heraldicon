@@ -836,12 +836,12 @@
       "create-ribbon": "Neues Band"
     },
     "about": {
-      "welcome-to-heraldry-digital": "Willkommen auf Heraldry Digital",
+      "welcome-to-heraldicon": "Willkommen auf Heraldicon",
       "what-is-this-about?": "Worum geht es hier?",
       "heraldry-intro": "ist interessant und macht Spaß, doch sie hat eine Unzahl von Konventionen und Regeln, die sich mittlerweile fast ein Jahrtausend weiterentwickelt haben.",
       "arms-creation-1-effort": "Ein Wappen zu erstellen, ist ein zeitaufwendiger Prozess, der fundiertes Wissen verschiedener Design-Werkzeuge benötigt. Aber selbst wenn du diese Zeit investierst, ist das Ergebnis meist statisch und kann ohne weiteren manuellen Aufwand nicht leicht angepaßt werden, zum Beispiel um den Schnitt (ein Linienstil), eine Tinktur oder die Schildform zu ändern.",
-      "arms-creation-2-with-heraldry-digital": "Das möchte Heraldry Digital verbessern. Du kannst hier Wappen beschreiben und das Interface kümmert sich um die grafische Darstellung. Danach kann es jederzeit ein neues Farbschema bekommen, ein anderes Schild kann benutzt werden, es kann für die Zusammensetzung andere Wappen benutzt werden, Wappenfiguren können durch andere Varianten verschiedener Stile ersetzt werden, etc..",
-      "arms-creation-3-heraldry-digital-no-replacement-for-art": "Selbstverständlich wird es menschliche Fähigkeiten und Kunstfertigkeit nicht ersetzen, aber es kann einen Anfang bieten, um bestimmte Konzepte auszuprobieren und eine Basis von Dingen zu erschaffen, die automatisiert werden können, e.g. Schildteilungen, Heroldsbilder und die verschiedenen Schnitte.",
+      "arms-creation-2-with-heraldicon": "Das möchte Heraldicon verbessern. Du kannst hier Wappen beschreiben und das Interface kümmert sich um die grafische Darstellung. Danach kann es jederzeit ein neues Farbschema bekommen, ein anderes Schild kann benutzt werden, es kann für die Zusammensetzung andere Wappen benutzt werden, Wappenfiguren können durch andere Varianten verschiedener Stile ersetzt werden, etc..",
+      "arms-creation-3-heraldicon-no-replacement-for-art": "Selbstverständlich wird es menschliche Fähigkeiten und Kunstfertigkeit nicht ersetzen, aber es kann einen Anfang bieten, um bestimmte Konzepte auszuprobieren und eine Basis von Dingen zu erschaffen, die automatisiert werden können, e.g. Schildteilungen, Heroldsbilder und die verschiedenen Schnitte.",
       "goals": "Ziele",
       "goal-1-open-charge-library": "Eine offene Wappenfigur-Bibliothek zur Verfügung stellen, die jede:r erweitern kann",
       "goal-2-open-arms-library": "Eine offene online Wappendatenbank zur Verfügung stellen, als Referenz oder für Forschung",

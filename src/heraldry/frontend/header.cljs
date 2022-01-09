@@ -32,7 +32,7 @@
      [:div {:style {:flex 1.5
                     :line-height "2em"
                     :padding-left "0.5em"}}
-      [:img {:src (static/static-url "/img/heraldry-digital-logo.png")
+      [:img {:src (static/static-url "/img/heraldicon-logo.png")
              :style {:height "1.8em"
                      :margin-right "0.25em"
                      :position "relative"
