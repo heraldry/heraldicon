@@ -26,6 +26,15 @@
     [:p [tr :string.text.home/release-news-info-1]]
     [:p [tr :string.text.home/release-news-info-2]]]
 
+   [:h3 "2022-01-09 - Happy new year!"]
+   [:div.release-row
+    [:div.info
+     [:p "The site has a new name: " [:b "Heraldicon"]]
+     [:p "Since there is at least one other group and a well-known heraldic artist who already use the name 'Digital Heraldry', the old name collided somewhat with them. "
+      "'Heraldry' also is rather generic on its own, making it hard to look for it among many heraldry-related websites."]
+     [:p "I hope the new name identifies the project more directly and is easier to find if anyone wants to refer to the website."]
+     [:p "Note: all export links remain unchanged and all links to the old website should redirect to the new website. Let me know if you see any problems after the move. :)"]]]
+
    [:h3 "2021-11-25 - Bordure/orle, in orle charge groups, chevronny"]
    [:div.release-row
     [:div.info
