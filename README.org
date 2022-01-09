@@ -1,6 +1,6 @@
 #+TITLE: Heraldry
 
-TL;DR: https://heraldry.digital
+TL;DR: https://heraldicon.org
 
 ** About
 I've started to learn about heraldry. There are many resources online, but I

@@ -166,7 +166,7 @@
 
       [:li "a validation system to warn about components that might break rule of tincture and potentially other issues"]
       [:li "improved blazonry, it now makes more of an attempt of reporting the used charges in charge groups, and it includes fimbriation"]
-      [:li "SVG/PNG exports now contain a short URL to reference the arms on heraldry.digital"]
+      [:li "SVG/PNG exports now contain a short URL to reference the arms on Heraldicon"]
       [:li "pall ordinaries now can be added, with different fimbriation for each line and arbitrary issuing from anywhere"]]]
 
     [:div

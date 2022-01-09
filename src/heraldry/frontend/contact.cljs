@@ -22,7 +22,7 @@
    [:ul
     [:li [:a {:href "https://www.reddit.com/r/heraldry/" :target "_blank"} "reddit/heraldry"]
      ", " [tr :string.text.contact/my-username-is] " " [:em "tierced"]]
-    [:li [:a {:href "https://discord.gg/EGbMW8dth2" :target "_blank"} "discord:heraldry.digital"]
+    [:li [:a {:href "https://discord.gg/EGbMW8dth2" :target "_blank"} "discord:Heraldicon"]
      ", " [tr :string.text.contact/my-username-is] " " [:em "or#5915"]]]
    [:iframe
     {:sandbox "allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts",
@@ -35,6 +35,6 @@
    [:p
     [tr :string.text.contact/translation-not-yet-complete]
     " "
-    [:a {:href "https://crowdin.com/project/heraldry-digital/" :target "_blank"}
+    [:a {:href "https://crowdin.com/project/heraldicon/" :target "_blank"}
      [tr :string.text.contact/crowdin-project]]
     "."]])
