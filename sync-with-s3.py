@@ -28,10 +28,15 @@ def sync(directory, bucket):
         ],
         stdout=subprocess.PIPE,
     ) as process:
-        data = json.load(process.stdout)
-        etag_map = {d["Key"]: d["ETag"].strip('"') for d in data["Contents"]}
+        data = process.stdout.read()
+        if not data:
+            etag_map = {}
+        else:
+            data = json.load(process.stdout)
+            etag_map = {d["Key"]: d["ETag"].strip('"') for d in data["Contents"]}
 
     os.chdir(directory)
+    files_to_sync = []
     for root, _, files in os.walk("."):
         relative_root = root
         if relative_root.startswith("./"):
@@ -45,21 +50,41 @@ def sync(directory, bucket):
             md5_hash = md5sum(actual_filename)
             etag = etag_map.get(key)
             if etag != md5_hash:
-                with subprocess.Popen(
-                    [
-                        "aws",
-                        "--profile",
-                        "heraldry-serverless",
-                        "s3",
-                        "cp",
-                        "--acl",
-                        "public-read",
-                        actual_filename,
-                        f"s3://{bucket}/{key}",
-                    ]
-                ) as process:
-                    process.wait()
-                    assert process.returncode == 0
+                files_to_sync.append([actual_filename, key])
+
+    if len(files_to_sync) > len(etag_map) // 2:
+        with subprocess.Popen(
+            [
+                "aws",
+                "--profile",
+                "heraldry-serverless",
+                "s3",
+                "sync",
+                "--acl",
+                "public-read",
+                ".",
+                f"s3://{bucket}/",
+            ]
+        ) as process:
+            process.wait()
+            assert process.returncode == 0
+    else:
+        for actual_filename, key in files_to_sync:
+            with subprocess.Popen(
+                [
+                    "aws",
+                    "--profile",
+                    "heraldry-serverless",
+                    "s3",
+                    "cp",
+                    "--acl",
+                    "public-read",
+                    actual_filename,
+                    f"s3://{bucket}/{key}",
+                ]
+            ) as process:
+                process.wait()
+                assert process.returncode == 0
 
 
 if __name__ == "__main__":
