@@ -1,13 +1,13 @@
 (ns heraldry.frontend.route
   (:require
    [clojure.string :as s]
-   [heraldry.frontend.about :as about]
    [heraldry.frontend.account :as account]
    [heraldry.frontend.arms-library :as arms-library]
    [heraldry.frontend.charge-library :as charge-library]
    [heraldry.frontend.collection-library :as collection-library]
    [heraldry.frontend.contact :as contact]
    [heraldry.frontend.home :as home]
+   [heraldry.frontend.news :as news]
    [heraldry.frontend.ribbon-library :as ribbon-library]
    [heraldry.frontend.user-library :as user-library]
    [reagent.core :as rc]
@@ -22,13 +22,13 @@
     {:name :home
      :view home/view}]
 
-   ["/about/"
-    {:name :about
-     :view about/view}]
+   ["/news/"
+    {:name :news
+     :view news/view}]
 
-   ["/about"
-    {:name :about-without-slash
-     :view about/view}]
+   ["/news"
+    {:name :news-without-slash
+     :view news/view}]
 
    ["/contact/"
     {:name :contact
