@@ -42,8 +42,8 @@
                     :style {:padding-right "5px"}} "Heraldicon"]]
       [:sup {:style {:color "#d82"}} "beta"]]
      [:ul.nav-menu {:style {:flex 1}}
-      [route/nav-link {:to :home} [tr :string.menu/news]]
-      [route/nav-link {:to :about} [tr :string.menu/about]]
+      [route/nav-link {:to :home} [tr :string.menu/about]]
+      [route/nav-link {:to :news} [tr :string.menu/news]]
       [route/nav-link {:to :collections} [tr :string.menu/collection-library]]
       [route/nav-link {:to :arms} [tr :string.menu/arms-library]]
       [route/nav-link {:to :charges} [tr :string.menu/charge-library]]
