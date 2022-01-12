@@ -59,6 +59,16 @@
             :supporter-charge-id "charge:fxOk19"
             :mantling-charge-id "charge:gTrIM7"}))
 
+(def bucket->external-domain
+  {"prod-heraldry-data" "data.heraldicon.org"
+   "data.heraldry.digital" "data.heraldry.digital"})
+
+(def external-domain->bucket
+  (->> bucket->external-domain
+       (map (fn [[k v]]
+              [v k]))
+       (into {})))
+
 #_{:clj-kondo/ignore [:redefined-var]}
 (defn get [setting]
   (case setting
