@@ -62,7 +62,7 @@
                       "far fa-check-square"
                       "far fa-square")
         menu (cond-> menu
-               (seq menu) (conj {:title [tr :string.miscellaneous/manual]
+               (seq menu) (conj {:title :string.miscellaneous/manual
                                  :icon manual-icon
                                  :handler (handler-for-value effective-value)}))]
 
