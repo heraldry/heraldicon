@@ -35,8 +35,12 @@
     ;; TODO: entity-type could be a line style, which here doesn't count as
     ;; component on its own; probably would be cleaner to deal with that special
     ;; case (and others?) in a less magical way than checking for a namespace
-    (when (or component-type
-              (some-> entity-type namespace))
+    (when (and (or component-type
+                   (some-> entity-type namespace))
+               ;; TODO: cottises are special, in that they don't have their own options
+               ;; right now, but still are components in the UI, so ignore the component
+               ;; type here
+               (not= component-type :heraldry.component/cottise))
       (let [context {:path path
                      :dispatch-value component-type
                      :entity-type entity-type}]
