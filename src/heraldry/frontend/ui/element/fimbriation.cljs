@@ -14,19 +14,16 @@
                     :none :string.option.type-fimbriation-choice/none
                     :single (util/str-tr (-> fimbriation
                                              :tincture-1
-                                             tincture/translate-tincture
-                                             util/upper-case-first))
+                                             tincture/translate-tincture))
                     :double (util/str-tr (-> fimbriation
                                              :tincture-1
-                                             tincture/translate-tincture
-                                             util/upper-case-first)
+                                             tincture/translate-tincture)
                                          " "
                                          :string.miscellaneous/and
                                          " "
                                          (-> fimbriation
                                              :tincture-2
-                                             tincture/translate-tincture
-                                             util/upper-case-first)))
+                                             tincture/translate-tincture)))
         changes [main-name
                  (when (some #(options/changed? % fimbriation options)
                              [:alignment :thickness-1 :thickness-2])
