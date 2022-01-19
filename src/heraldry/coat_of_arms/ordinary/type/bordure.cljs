@@ -63,7 +63,9 @@
         points (:points environment)
         width (:width environment)
         thickness ((util/percent-of width) thickness)
-        environment-shape (environment/effective-shape environment)
+        environment-shape (-> environment
+                              (update-in [:shape :paths] (partial take 1))
+                              environment/effective-shape)
         bordure-shape (environment/shrink-shape environment-shape thickness :round)
         bordure-shape (cond-> (path/round-corners bordure-shape corner-radius smoothing)
                         (not= line-type :straight) (line/modify-path (interface/get-sanitized-data

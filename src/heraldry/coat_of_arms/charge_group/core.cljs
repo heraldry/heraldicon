@@ -127,7 +127,9 @@
         slots (interface/get-raw-data (c/++ context :slots))
         num-charges (interface/get-list-size (c/++ context :charges))
         num-slots (interface/get-list-size (c/++ context :slots))
-        environment-shape (environment/effective-shape environment)
+        environment-shape (-> environment
+                              (update-in [:shape :paths] (partial take 1))
+                              environment/effective-shape)
         width (:width environment)
         distance ((util/percent-of width) distance)
         bordure-shape (environment/shrink-shape environment-shape distance :round)
