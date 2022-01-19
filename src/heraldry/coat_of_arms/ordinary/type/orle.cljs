@@ -81,7 +81,9 @@
         width (:width environment)
         distance ((util/percent-of width) distance)
         thickness ((util/percent-of width) thickness)
-        environment-shape (environment/effective-shape environment)
+        environment-shape (-> environment
+                              (update-in [:shape :paths] (partial take 1))
+                              environment/effective-shape)
         outer-shape (environment/shrink-shape environment-shape distance :round)
         outer-shape (cond-> (path/round-corners outer-shape corner-radius smoothing)
                       (not= opposite-line-type :straight) (line/modify-path (interface/get-sanitized-data
