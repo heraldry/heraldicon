@@ -119,6 +119,11 @@
           (* base-value)
           (/ 100)))))
 
+(defn base64-encode [data]
+  (if (string? data)
+    (b64/encodeString data)
+    (b64/encodeByteArray data)))
+
 (defn base64-decode-utf-8 [data]
   (-> data
       (b64/decodeStringToByteArray true)
