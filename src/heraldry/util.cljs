@@ -4,6 +4,7 @@
    [clojure.pprint :refer [pprint]]
    [clojure.string :as s]
    [clojure.walk :as walk]
+   [com.wsscode.common.async-cljs :refer [<? go-catch]]
    [goog.crypt :as crypt]
    [goog.crypt.base64 :as b64]
    [heraldry.config :as config]
@@ -308,3 +309,12 @@
       (s/replace #"^--*" "")
       (s/replace #"--*$" "")
       keyword))
+
+(defn wait-for-all [chans]
+  (go-catch
+   (loop [result []
+          [c & rest] chans]
+     (if c
+       (let [arms (<? c)]
+         (recur (conj result arms) rest))
+       result))))
