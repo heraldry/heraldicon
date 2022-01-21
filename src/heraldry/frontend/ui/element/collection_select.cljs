@@ -33,7 +33,7 @@
     (try
       (let [user-data (user/data)]
         (-> (api-request/call
-             :fetch-collections-all
+             :fetch-collections-list
              {}
              user-data)
             <?

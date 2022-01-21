@@ -33,7 +33,7 @@
     (try
       (let [user-data (user/data)]
         (-> (api-request/call
-             :fetch-arms-all
+             :fetch-arms-list
              {}
              user-data)
             <?
