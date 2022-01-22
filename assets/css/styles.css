@@ -836,13 +836,13 @@ li.ui-menu-header {
   border-bottom: 1px solid #ddd;
 }
 
-.tooltip {
+.my-tooltip {
   display: inline-block;
   position: relative;
   text-align: left;
 }
 
-.tooltip .bottom {
+.my-tooltip .bottom {
   min-width: 150px;
   top: 60px;
   left: 50%;
@@ -863,18 +863,18 @@ li.ui-menu-header {
   pointer-events: none;
 }
 
-.tooltip.info .bottom {
+.my-tooltip.info .bottom {
   top: 30px;
   font-weight: normal;
 }
 
-.tooltip:hover .bottom {
+.my-tooltip:hover .bottom {
   visibility: visible;
   opacity: 1;
   white-space: normal;
 }
 
-.tooltip .bottom > i {
+.my-tooltip .bottom > i {
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -884,7 +884,7 @@ li.ui-menu-header {
   overflow: hidden;
 }
 
-.tooltip .bottom > i::after {
+.my-tooltip .bottom > i::after {
   content: "";
   position: absolute;
   width: 12px;

@@ -54,7 +54,7 @@
                            :filter "drop-shadow(0 0 5px #888)";
                            :vertical-align "middle"}}]]
     (if on-click
-      [:div.tooltip
+      [:div.my-tooltip
        img
        [:div.bottom {:style {:top "50px"}}
         [:center [tr title]]

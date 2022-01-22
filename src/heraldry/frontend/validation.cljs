@@ -293,7 +293,7 @@
 (defn render [validation]
   (if (seq validation)
     (let [first-message (first validation)]
-      [:div.tooltip.info {:style {:display "inline-block"
+      [:div.my-tooltip.info {:style {:display "inline-block"
                                   :margin-left "0.2em"}}
        [render-icon (:level first-message)]
        [:div.bottom {:style {:width "25em"}}

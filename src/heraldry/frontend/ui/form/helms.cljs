@@ -13,7 +13,7 @@
   (let [elements-context (c/++ context :elements)
         num-helms (interface/get-list-size elements-context)]
     {:title :string.entity/helms-and-crests
-     :annotation [:div.tooltip.info {:style {:display "inline-block"
+     :annotation [:div.my-tooltip.info {:style {:display "inline-block"
                                              :margin-left "0.2em"}}
                   [:sup {:style {:color "#d40"}}
                    "alpha"]

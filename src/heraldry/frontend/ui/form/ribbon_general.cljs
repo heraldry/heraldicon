@@ -225,7 +225,7 @@
     [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
      [:div {:style {:font-size "1.3em"}} [tr :string.ribbon/segments]
       (when tooltip
-        [:div.tooltip.info {:style {:display "inline-block"
+        [:div.my-tooltip.info {:style {:display "inline-block"
                                     :margin-left "0.2em"
                                     :vertical-align "top"}}
          [:i.fas.fa-question-circle]
@@ -256,7 +256,7 @@
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr :string.ribbon/topology]
-    [:div.tooltip.info {:style {:display "inline-block"
+    [:div.my-tooltip.info {:style {:display "inline-block"
                                 :margin-left "0.2em"
                                 :vertical-align "top"}}
      [:i.fas.fa-question-circle]

@@ -31,8 +31,8 @@
        (when label
          [:label [tr label]
           (when tooltip
-            [:div.tooltip.info {:style {:display "inline-block"
-                                        :margin-left "0.2em"}}
+            [:div.my-tooltip.info {:style {:display "inline-block"
+                                           :margin-left "0.2em"}}
              [:i.fas.fa-question-circle]
              [:div.bottom
               [:h3 {:style {:text-align "center"}} [tr tooltip]]

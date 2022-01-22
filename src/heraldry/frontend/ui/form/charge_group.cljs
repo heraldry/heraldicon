@@ -207,7 +207,7 @@
                           :style {:stroke "#000"
                                   :stroke-width 0.5
                                   :fill "#fff"}}])])))]]]
-     [:div.tooltip.info {:style {:display "inline-block"
+     [:div.my-tooltip.info {:style {:display "inline-block"
                                  :margin-left "0.2em"
                                  :vertical-align "top"}}
       [:i.fas.fa-question-circle]
