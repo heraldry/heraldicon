@@ -56,7 +56,7 @@
     (if on-click
       [:div.tooltip
        img
-       [:div.bottom
+       [:div.bottom {:style {:top "50px"}}
         [:center [tr title]]
         [:i]]]
       img)))
