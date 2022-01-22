@@ -18,6 +18,7 @@
                     (util/str-tr (util/combine "x"
                                                [(:num-fields-x layout)
                                                 (:num-fields-y layout)])
+                                 " "
                                  :string.miscellaneous/fields))
         changes (filter identity
                         [main-name
