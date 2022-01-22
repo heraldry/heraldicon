@@ -1,6 +1,7 @@
 (ns heraldry.frontend.main
   (:require
    [heraldry.frontend.header :as header]
+   [heraldry.frontend.keys] ;; needed for side effects
    [heraldry.frontend.modal :as modal]
    [heraldry.frontend.route :as route]
    [heraldry.frontend.user :as user]
