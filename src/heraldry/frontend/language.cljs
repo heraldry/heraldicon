@@ -46,20 +46,29 @@
 (defn tr [data]
   (util/tr-raw data @(rf/subscribe [::selected-language])))
 
+(defn selected-language-flag []
+  (let [selected-language-code @(rf/subscribe [::selected-language])
+        [_title img-url] (get known-languages selected-language-code)]
+    [:img {:src img-url
+           :style {:width "2em"
+                   :filter "drop-shadow(0 0 5px #888)"
+                   :vertical-align "middle"}}]))
+
 (defn language-flag [language-code & {:keys [on-click]}]
-  (let [[title img-url] (get known-languages language-code)
-        img [:img {:src img-url
-                   :on-click on-click
-                   :style {:width "2em"
-                           :filter "drop-shadow(0 0 5px #888)";
-                           :vertical-align "middle"}}]]
-    (if on-click
-      [:div.tooltip
-       img
-       [:div.bottom {:style {:top "50px"}}
-        [:center [tr title]]
-        [:i]]]
-      img)))
+  (let [[title img-url] (get known-languages language-code)]
+    [:div.tooltip {:style {:height "2.5em"}}
+     [:img {:src img-url
+            :on-click on-click
+            :style {:width "2em"
+                    :filter "drop-shadow(0 0 5px #888)"
+                    :position "relative"
+                    :top "50%"
+                    :left "50%"
+                    :transform "translate(-50%,-50%)"}}]
+
+     [:div.bottom {:style {:top "50px"}}
+      [:center [tr title]]
+      [:i]]]))
 
 (defn selector []
   [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
@@ -71,7 +80,7 @@
                        :on-click #(state/dispatch-on-event-and-prevent-default
                                    % [:heraldry.frontend.header/toggle-menu-open?
                                       language-menu-open?-path])}
-     [language-flag @(rf/subscribe [::selected-language])]
+     [selected-language-flag]
      " "]
     [:ul.nav-menu.nav-menu-children
      {:style {:display (if @(rf/subscribe [:heraldry.frontend.header/menu-open?
