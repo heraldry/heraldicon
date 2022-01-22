@@ -55,7 +55,7 @@
   {:render-options default/render-options
    :render-options-path [:context :render-options]})
 
-(macros/reg-event-db :ribbon-edit-remove-point
+(macros/reg-event-db ::edit-remove-point
   (fn [db [_ path]]
     (let [points-path (-> path drop-last vec)
           idx (last path)]
@@ -65,11 +65,11 @@
                                (drop (inc idx) path))
                        vec))))))
 
-(macros/reg-event-db :ribbon-edit-toggle-show-points
+(macros/reg-event-db ::edit-toggle-show-points
   (fn [db _]
     (update-in db [:ui :ribbon-edit :show-points?] not)))
 
-(macros/reg-event-db :ribbon-edit-add-point
+(macros/reg-event-db ::edit-add-point
   (fn [db [_ path idx new-point]]
     (update-in db path
                (fn [points]
@@ -85,7 +85,7 @@
       (update :y max ribbon-min-y)
       (update :y min ribbon-max-y)))
 
-(rf/reg-sub :ribbon-edit-addable-points
+(rf/reg-sub ::edit-addable-points
   (fn [[_ path] _]
     (rf/subscribe [:get path]))
 
@@ -100,7 +100,7 @@
             [[(dec (count points)) (clamp-point (v/add (last points)
                                                        {:x 50 :y 10}))]])))
 
-(rf/reg-sub :ribbon-edit-point-deletable?
+(rf/reg-sub ::edit-point-deletable?
   (fn [[_ path] _]
     (let [points-path (-> path drop-last vec)]
       (rf/subscribe [:get-list-size points-path])))
@@ -108,39 +108,39 @@
   (fn [num-points [_ _path]]
     (> num-points 2)))
 
-(rf/reg-sub :ribbon-edit-key-modifiers
+(rf/reg-sub ::edit-key-modifiers
   (fn [db _]
     (get-in db [:ui :ribbon-edit :key-modifiers])))
 
-(macros/reg-event-db :ribbon-edit-set-key-modifiers
+(macros/reg-event-db ::edit-set-key-modifiers
   (fn [db [_ key-modifiers]]
     (assoc-in db [:ui :ribbon-edit :key-modifiers] key-modifiers)))
 
-(rf/reg-sub :ribbon-edit-selected-point
+(rf/reg-sub ::edit-selected-point
   (fn [_ _]
     (rf/subscribe [:get [:ui :ribbon-edit :selected-point :path]]))
 
   (fn [selected-point-path _]
     selected-point-path))
 
-(rf/reg-sub :ribbon-edit-point-selected?
+(rf/reg-sub ::edit-point-selected?
   (fn [[_ _path] _]
     (rf/subscribe [:get [:ui :ribbon-edit :selected-point :path]]))
 
   (fn [selected-point-path [_ path]]
     (= selected-point-path path)))
 
-(rf/reg-sub :ribbon-edit-show-points?
+(rf/reg-sub ::edit-show-points?
   (fn [_ _]
     (rf/subscribe [:get [:ui :ribbon-edit :show-points?]]))
 
   (fn [show-points? _]
     show-points?))
 
-(rf/reg-sub :ribbon-edit-mode
+(rf/reg-sub ::edit-mode
   (fn [_ _]
-    [(rf/subscribe [:ribbon-edit-show-points?])
-     (rf/subscribe [:ribbon-edit-key-modifiers])])
+    [(rf/subscribe [::edit-show-points?])
+     (rf/subscribe [::edit-key-modifiers])])
 
   (fn [[show-points? {:keys [shift? alt?]}] _]
     (if show-points?
@@ -150,7 +150,7 @@
         :else :edit)
       :none)))
 
-(macros/reg-event-db :ribbon-edit-select-point
+(macros/reg-event-db ::edit-select-point
   (fn [db [_ path pos]]
     (if path
       (let [current-pos (get-in db path)
@@ -161,7 +161,7 @@
                                                          :dy dy}))
       (assoc-in db [:ui :ribbon-edit :selected-point] nil))))
 
-(macros/reg-event-db :ribbon-edit-point-move-selected
+(macros/reg-event-db ::edit-point-move-selected
   (fn [db [_ pos]]
     (let [{:keys [dx dy
                   path]} (get-in db [:ui :ribbon-edit :selected-point])]
@@ -174,14 +174,14 @@
 (defn key-down-handler [event]
   (let [shift? (.-shiftKey event)
         alt? (.-altKey event)]
-    (rf/dispatch [:ribbon-edit-set-key-modifiers {:alt? alt?
-                                                  :shift? shift?}])))
+    (rf/dispatch [::edit-set-key-modifiers {:alt? alt?
+                                            :shift? shift?}])))
 
 (defn key-up-handler [event]
   (let [shift? (.-shiftKey event)
         alt? (.-altKey event)]
-    (rf/dispatch [:ribbon-edit-set-key-modifiers {:alt? alt?
-                                                  :shift? shift?}])))
+    (rf/dispatch [::edit-set-key-modifiers {:alt? alt?
+                                            :shift? shift?}])))
 
 (def event-listener
   (do
@@ -211,22 +211,22 @@
   5)
 
 (defn path-point [path]
-  (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])]
+  (let [edit-mode @(rf/subscribe [::edit-mode])]
     (if (= edit-mode :none)
       [:<>]
       (let [size path-point-size
             width (* size 1.1)
             height (* size 0.2)
             {:keys [x y]} (interface/get-raw-data {:path path})
-            deletable? @(rf/subscribe [:ribbon-edit-point-deletable? path])
+            deletable? @(rf/subscribe [::edit-point-deletable? path])
             route-path-point-click-fn (case edit-mode
                                         :remove (when deletable?
-                                                  #(rf/dispatch [:ribbon-edit-remove-point %]))
+                                                  #(rf/dispatch [::edit-remove-point %]))
                                         nil)
             route-path-point-mouse-down-fn (when (= edit-mode :edit)
                                              (fn [pos]
-                                               (rf/dispatch [:ribbon-edit-select-point path pos])))
-            selected? @(rf/subscribe [:ribbon-edit-point-selected? path])]
+                                               (rf/dispatch [::edit-select-point path pos])))
+            selected? @(rf/subscribe [::edit-point-selected? path])]
         [:g
          {:transform (str "translate(" x "," y ")")
           :on-mouse-down (when route-path-point-mouse-down-fn
@@ -259,7 +259,7 @@
         height (* size 0.2)]
     [:g
      {:transform (str "translate(" x "," y ")")
-      :on-click #(rf/dispatch [:ribbon-edit-add-point path idx point])
+      :on-click #(rf/dispatch [::edit-add-point path idx point])
       :style {:cursor "pointer"
               :opacity 0.5}}
      [:circle {:style {:fill "#fff"
@@ -278,7 +278,7 @@
               :style {:fill "#000"}}]]]))
 
 (defn render-edit-overlay [path]
-  (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])
+  (let [edit-mode @(rf/subscribe [::edit-mode])
         edge-angle (interface/get-sanitized-data {:path (conj path :edge-angle)})
         points-path (conj path :points)
         segments-path (conj path :segments)
@@ -321,13 +321,13 @@
         ribbon-path (conj form-db-path :ribbon)
         points-path (conj ribbon-path :points)
         num-points (interface/get-list-size {:path points-path})
-        edit-mode @(rf/subscribe [:ribbon-edit-mode])
+        edit-mode @(rf/subscribe [::edit-mode])
         route-path-point-mouse-up-fn (when (= edit-mode :edit)
-                                       #(rf/dispatch [:ribbon-edit-select-point nil]))
+                                       #(rf/dispatch [::edit-select-point nil]))
         route-path-point-move-fn (when (and (= edit-mode :edit)
-                                            @(rf/subscribe [:ribbon-edit-selected-point]))
+                                            @(rf/subscribe [::edit-selected-point]))
                                    (fn [pos]
-                                     (rf/dispatch [:ribbon-edit-point-move-selected pos])))]
+                                     (rf/dispatch [::edit-point-move-selected pos])))]
     [:svg {:id preview-svg-id
            :viewBox (str "0 0 " (-> width (+ 20)) " " (-> height (+ 20)))
            :preserveAspectRatio "xMidYMid meet"
@@ -360,7 +360,7 @@
           ^{:key idx} [path-point (conj points-path idx)]))
        (when (= edit-mode :add)
          (doall
-          (for [[idx point] @(rf/subscribe [:ribbon-edit-addable-points points-path])]
+          (for [[idx point] @(rf/subscribe [::edit-addable-points points-path])]
             ^{:key idx} [add-point points-path idx point])))]]]))
 
 (defn invalidate-ribbons-cache []
@@ -466,11 +466,11 @@
       attribution-data]]))
 
 (defn edit-controls []
-  (let [edit-mode @(rf/subscribe [:ribbon-edit-mode])]
+  (let [edit-mode @(rf/subscribe [::edit-mode])]
     [:div.no-select {:style {:position "absolute"
                              :left "20px"
                              :top "20px"}}
-     [:button {:on-click #(rf/dispatch [:ribbon-edit-toggle-show-points])
+     [:button {:on-click #(rf/dispatch [::edit-toggle-show-points])
                :style (when-not (= edit-mode :none)
                         {:color "#ffffff"
                          :background-color "#ff8020"})}
