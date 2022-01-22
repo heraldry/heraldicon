@@ -171,26 +171,6 @@
                             (v/sub pos (v/v dx dy)))))
         db))))
 
-(defn key-down-handler [event]
-  (let [shift? (.-shiftKey event)
-        alt? (.-altKey event)]
-    (rf/dispatch [::edit-set-key-modifiers {:alt? alt?
-                                            :shift? shift?}])))
-
-(defn key-up-handler [event]
-  (let [shift? (.-shiftKey event)
-        alt? (.-altKey event)]
-    (rf/dispatch [::edit-set-key-modifiers {:alt? alt?
-                                            :shift? shift?}])))
-
-(def event-listener
-  (do
-    (js/window.removeEventListener "keydown" key-down-handler)
-    (js/window.addEventListener "keydown" key-down-handler)
-    (js/window.removeEventListener "keyup" key-up-handler)
-    (js/window.addEventListener "keyup" key-up-handler)))
-
-
 ;; views
 
 
