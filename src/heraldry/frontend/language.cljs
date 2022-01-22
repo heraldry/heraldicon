@@ -56,7 +56,7 @@
     (if on-click
       [:div.tooltip
        img
-       [:div.bottom
+       [:div.bottom {:style {:top "50px"}}
         [:center [tr title]]
         [:i]]]
       img)))
@@ -81,7 +81,8 @@
      (doall
       (for [language-code (keys known-languages)]
         ^{:key language-code}
-        [:li.nav-menu-item
+        [:li.nav-menu-item {:style {:height "2.5em"
+                                    :vertical-align "middle"}}
          [:a.nav-menu-link
           [language-flag language-code
            :on-click #(state/dispatch-on-event-and-prevent-default
