@@ -103,7 +103,8 @@
       "colour": "Farbe",
       "fur": "Pelzwerk",
       "stain": "Sekundärfarben",
-      "helmet": "Helm"
+      "helmet": "Helm",
+      "nontraditional": "Nicht Standard"
     },
     "special": {
       "none": "Keine (kann verändert werden)",
@@ -126,7 +127,16 @@
     "sable": "Schwarz",
     "sanguine": "Blutrot",
     "tenne": "Orange",
-    "vert": "Grün"
+    "vert": "Grün",
+    "blue-celeste": "Himmelblau",
+    "brunatre": "Braun",
+    "buff": "Leder",
+    "carnation": "Inkarnat",
+    "cendree": "Eisenfarbe",
+    "copper": "Kupfer",
+    "orange": "Orange",
+    "rose": "Rosa",
+    "white": "Weiß"
   },
   "theme": {
     "group": {

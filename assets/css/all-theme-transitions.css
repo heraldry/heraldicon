@@ -58,6 +58,11 @@
   100% { fill: #f6f6f6;}
 }
 
+@keyframes all-theme-transition-copper {
+  0% { fill: #953d02;}
+  100% { fill: #953d02;}
+}
+
 @keyframes all-theme-transition-gules {
   0% { fill: #bb2f2e;}
   4% { fill: #ff0000;}
@@ -85,6 +90,11 @@
   92% { fill: #ca6548;}
   96% { fill: #fc0000;}
   100% { fill: #bb2f2e;}
+}
+
+@keyframes all-theme-transition-white {
+  0% { fill: #ffffff;}
+  100% { fill: #ffffff;}
 }
 
 @keyframes all-theme-transition-murrey {
@@ -287,7 +297,7 @@
   100% { fill: #cbcaca;}
 }
 
-@keyframes all-theme-transition-celeste {
+@keyframes all-theme-transition-blue-celeste {
   0% { fill: #359db7;}
   16.666666666666668% { fill: #0099ff;}
   33.333333333333336% { fill: #89c5e3;}
@@ -295,6 +305,11 @@
   66.66666666666667% { fill: #0081c9;}
   83.33333333333333% { fill: #3291d7;}
   100% { fill: #359db7;}
+}
+
+@keyframes all-theme-transition-buff {
+  0% { fill: #ddc595;}
+  100% { fill: #ddc595;}
 }
 
 @keyframes all-theme-transition-rose {
