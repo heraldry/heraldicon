@@ -448,6 +448,9 @@ label div {
   flex-direction: row;
   border-bottom: 1px solid #ddd;
   height: 2.5em;
+  /* make sure the drop down menu of nav-menu-items doesn't
+     grow outside the page area due to the +2px of the border */
+  padding-right: 2px;
 }
 
 .header ul {
