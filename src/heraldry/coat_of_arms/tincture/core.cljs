@@ -86,7 +86,17 @@
    [:string.tincture.group/helmet
     [:string.tincture/helmet-light :helmet-light]
     [:string.tincture/helmet-medium :helmet-medium]
-    [:string.tincture/helmet-dark :helmet-dark]]])
+    [:string.tincture/helmet-dark :helmet-dark]]
+   [:string.tincture.group/nontraditional
+    [:string.tincture/blue-celeste :blue-celeste]
+    [:string.tincture/brunatre :brunatre]
+    [:string.tincture/buff :buff]
+    [:string.tincture/carnation :carnation]
+    [:string.tincture/cendree :cendree]
+    [:string.tincture/copper :copper]
+    [:string.tincture/orange :orange]
+    [:string.tincture/rose :rose]
+    [:string.tincture/white :white]]])
 
 (def tincture-map
   (util/choices->map choices))

@@ -245,7 +245,7 @@
    :murrey murrey
    :sanguine sanguine
    :tenne tenne
-   ;; untraditional
+   ;; nontraditional
    :white argent})
 
 (def patterns

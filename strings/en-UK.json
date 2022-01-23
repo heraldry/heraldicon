@@ -103,7 +103,8 @@
       "colour": "Colour",
       "fur": "Fur",
       "stain": "Stain",
-      "helmet": "Helmet"
+      "helmet": "Helmet",
+      "nontraditional": "Nontraditional"
     },
     "special": {
       "none": "None (can be changed)",
@@ -126,7 +127,16 @@
     "sable": "Sable",
     "sanguine": "Sanguine",
     "tenne": "Tenné",
-    "vert": "Vert"
+    "vert": "Vert",
+    "blue-celeste": "Blue celeste",
+    "brunatre": "Brunâtre",
+    "buff": "Buff",
+    "carnation": "Carnation",
+    "cendree": "Cendrée",
+    "copper": "Copper",
+    "orange": "Orange",
+    "rose": "Rose",
+    "white": "White"
   },
   "theme": {
     "group": {

@@ -19,13 +19,16 @@
    :murrey "#a32c45"
    :sanguine "#a42f2d"
    :tenne "#bf7433"
-   ;; untraditional
+   ;; nontraditional
    :carnation "#e9bfa2"
    :brunatre "#725942"
    :cendree "#cbcaca"
    :rose "#d99292"
-   :celeste "#359db7"
-   :orange "#e58a39"})
+   :blue-celeste "#359db7"
+   :orange "#e58a39"
+   :copper "#953d02"
+   :buff "#ddc595"
+   :white "#ffffff"})
 
 (def theme-web
   {;; metals
@@ -59,8 +62,8 @@
    :murrey "#650f70" ;; 30% darkened purpure
    :sanguine "#980c12" ;; 30% darkened gules
    :tenne "#9d5333"
-   ;; untraditional
-   :celeste "#89c5e3"
+   ;; nontraditional
+   :blue-celeste "#89c5e3"
    :carnation "#f2a772"
    :cendree "#999999"
    :orange "#eb7711"})
@@ -80,8 +83,8 @@
    :murrey "#6b175f" ;; 30% darkened purpure
    :sanguine "#9a1717" ;; 30% darkened gules
    :tenne "#884411"
-   ;; untraditional
-   :celeste "#33aaee"
+   ;; nontraditional
+   :blue-celeste "#33aaee"
    :carnation "#eebb99"
    :cendree "#779988"
    :orange "#ff6600"})
@@ -101,8 +104,8 @@
    :murrey "#5f005f" ;; 30% darkened purpure
    :sanguine "#b20000" ;; 30% darkened gules
    :tenne "#884411"
-   ;; untraditional
-   :celeste "#0099ff"
+   ;; nontraditional
+   :blue-celeste "#0099ff"
    :carnation "#ffbb99"
    :cendree "#778899"
    :orange "#eb7711"})
@@ -119,8 +122,8 @@
    ;; stains
    :sanguine "#a72c13" ;; 30% darkened gules
    :tenne "#884411"
-   ;; untraditional
-   :celeste "#89c5e3"})
+   ;; nontraditional
+   :blue-celeste "#89c5e3"})
 
 (def theme-wikipedia-wuerttemberg
   {;; metals
@@ -134,8 +137,8 @@
    ;; stains
    :sanguine "#981914" ;; 30% darkened gules
    :tenne "#884411"
-   ;; untraditional
-   :celeste "#0081c9"
+   ;; nontraditional
+   :blue-celeste "#0081c9"
    :carnation "#f2b398"})
 
 (def theme-wikipedia-switzerland
@@ -165,7 +168,7 @@
    ;; stains
    :murrey "#45073c" ;; 30% darkened purpure
    :sanguine "#ab0d13" ;; 30% darkened gules
-   ;; untraditional
+   ;; nontraditional
    :carnation "#fcd3bc"
    :orange "#ff6600"})
 
@@ -199,8 +202,8 @@
    ;; stains
    :murrey "#76183f" ;; 30% darkened purpure
    :sanguine "#940000" ;; 30% darkened gules
-   ;; untraditional
-   :celeste "#3291d7"
+   ;; nontraditional
+   :blue-celeste "#3291d7"
    :carnation "#eebb99"})
 
 (def theme-ral-traffic
@@ -218,8 +221,8 @@
    :murrey "#5f005f" ;; 30% darkened purpure
    :sanguine "#b20000" ;; 30% darkened gules
    :tenne "#884411"
-   ;; untraditional
-   :celeste "#0099ff"
+   ;; nontraditional
+   :blue-celeste "#0099ff"
    :carnation "#ffbb99"
    :cendree "#4f5250" ;; RAL 7043
    :orange "#de5307" ;; RAL 2009
