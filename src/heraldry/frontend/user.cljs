@@ -1,13 +1,15 @@
 (ns heraldry.frontend.user
   (:require
    [cljs.core.async :refer [go]]
+   [clojure.string :as s]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.aws.cognito :as cognito]
+   [heraldry.config :as config]
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.modal :as modal]
    [heraldry.frontend.state :as state]
-   [hodgepodge.core :refer [local-storage get-item remove-item set-item]]
+   [hodgepodge.core :refer [get-item local-storage remove-item set-item]]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -39,10 +41,27 @@
 (defn data []
   @(rf/subscribe [:get user-db-path]))
 
+(defn extract-domain [url]
+  (-> url
+      (s/split #"//" 2)
+      last
+      (s/split #"/" 2)
+      first
+      (s/split #":" 2)
+      first))
+
 (defn read-session-data []
   (let [session-id (get-item local-storage local-storage-session-id-name)
         user-id (get-item local-storage local-storage-user-id-name)
         username (get-item local-storage local-storage-username-name)]
+    (when (some-> session-id count pos?)
+      (when-let [site-url (config/get :heraldry-site-url)]
+        (set! js/document.cookie (str "session-id=" session-id
+                                      ";domain=" (extract-domain site-url)
+                                      ";path=/")))
+      (set! js/document.cookie (str "session-id=" session-id
+                                    ";domain=" (extract-domain (config/get :heraldry-url))
+                                    ";path=/")))
     (rf/dispatch-sync [:set user-db-path
                        (if (and session-id username user-id)
                          {:username username
@@ -486,6 +505,15 @@
   (remove-item local-storage local-storage-session-id-name)
   (remove-item local-storage local-storage-user-id-name)
   (remove-item local-storage local-storage-username-name)
+  (when-let [site-url (config/get :heraldry-site-url)]
+    (set! js/document.cookie (str "session-id="
+                                  ";domain=" (extract-domain site-url)
+                                  ";path=/"
+                                  ";Max-Age=-99999999")))
+  (set! js/document.cookie (str "session-id="
+                                ";domain=" (extract-domain (config/get :heraldry-url))
+                                ";path=/"
+                                ";Max-Age=-99999999"))
   (state/invalidate-cache-all-but-new)
   (rf/dispatch [:remove user-db-path]))
 

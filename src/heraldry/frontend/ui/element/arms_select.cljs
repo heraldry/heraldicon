@@ -3,7 +3,7 @@
    [cljs.core.async :refer [go]]
    [clojure.string :as s]
    [com.wsscode.common.async-cljs :refer [<?]]
-   [heraldry.attribution :as attribution]
+   [heraldry.config :as config]
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.filter :as filter]
    [heraldry.frontend.language :refer [tr]]
@@ -57,7 +57,62 @@
 (defn invalidate-arms-cache [key]
   (state/invalidate-cache list-db-path key))
 
-(defn component [arms-list link-fn refresh-fn & {:keys [hide-ownership-filter?]}]
+(defn effective-version [data]
+  (let [version (:version data)]
+    (if (zero? version)
+      (:latest-version data)
+      version)))
+
+(defn arms-preview-url [{:keys [id] :as arms}]
+  (let [url (or (config/get :heraldry-site-url)
+                (config/get :heraldry-url))]
+    (str url "/preview/arms/" (-> id (s/split #":") last) "/" (effective-version arms) "/preview.png")))
+
+(defn preview-image [url]
+  (let [loaded-flag-path [:ui :preview-image-loaded? url]
+        loaded? @(rf/subscribe [:get loaded-flag-path])]
+    [:<>
+     [:img {:src url
+            :on-load #(rf/dispatch [:set loaded-flag-path true])
+            :style {:display (if loaded? "block" "none")
+                    :position "absolute"
+                    :margin "auto"
+                    :top 0
+                    :left 0
+                    :right 0
+                    :bottom 0
+                    :max-width "100%"
+                    :max-height "100%"}}]
+     (when-not loaded?
+       [:div.loader {:style {:font-size "0.5em"
+                             :position "absolute"
+                             :margin "auto"
+                             :top 0
+                             :left 0
+                             :right 0
+                             :bottom 0}}])]))
+
+(defn preview-arms [arms link-fn & {:keys [selected?]}]
+  (let [username (-> arms :username)
+        link-args (get (link-fn arms) 1)
+        own-username (:username (user/data))]
+    [:li.arms-card-wrapper
+     [:div.arms-card {:class (when selected? "selected")}
+      [:div.arms-card-header
+       [:div.arms-card-access
+        (when (= own-username username)
+          (if (-> arms :is-public)
+            [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+            [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))]
+       [:div.arms-card-title
+        (:name arms)]]
+      [:a.arms-card-preview link-args
+       [preview-image (arms-preview-url arms)]]
+      [:div.arms-card-tags
+       [tags/tags-view (-> arms :tags keys)]]]]))
+
+(defn component [arms-list link-fn refresh-fn & {:keys [hide-ownership-filter?
+                                                        selected-arms]}]
   (let [user-data (user/data)]
     [filter/component
      :arms-list
@@ -67,26 +122,20 @@
      (fn [& {:keys [items]}]
        [:ul.arms-list
         (doall
-         (for [arms (sort-by (comp s/lower-case :name) items)]
-           (let [username (-> arms :username)]
-             ^{:key (:id arms)}
-             [:li.arms
-              (if (-> arms :is-public)
-                [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
-                [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
-              " "
-              [link-fn arms]
-              " "
-              [tr :string.miscellaneous/by]
-              " "
-              [:a {:href (attribution/full-url-for-username username)
-                   :target "_blank"} username]
-              " "
-              [tags/tags-view (-> arms :tags keys)]])))])
+         (for [arms items]
+           ^{:key (:id arms)}
+           [preview-arms arms link-fn :selected? (filter/selected-item? selected-arms arms)]))])
      refresh-fn
-     :hide-ownership-filter? hide-ownership-filter?]))
+     :sort-fn (fn [arms]
+                [(not (and selected-arms
+                           (filter/selected-item? selected-arms arms)))
+                 (-> arms :name s/lower-case)])
+     :page-size 10
+     :hide-ownership-filter? hide-ownership-filter?
+     :component-styles {:height "calc(80vh - 3em)"}
+     :selected-item selected-arms]))
 
-(defn list-arms [link-to-arms]
+(defn list-arms [link-to-arms & {:keys [selected-arms]}]
   (let [[status arms-list] (state/async-fetch-data
                             list-db-path
                             :all
@@ -95,5 +144,6 @@
       [component
        arms-list
        link-to-arms
-       #(invalidate-arms-cache :all)]
+       #(invalidate-arms-cache :all)
+       :selected-arms selected-arms]
       [:div [tr :string.miscellaneous/loading]])))
