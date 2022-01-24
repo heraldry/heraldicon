@@ -32,8 +32,13 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context :string.option/select-arms [tr arms-title] nil
-         [arms-select/list-arms (link-to-arms context)]]]])))
+        [submenu/submenu context :string.option/select-arms [tr arms-title] {:style {:position "fixed"
+                                                                                     :transform "none"
+                                                                                     :left "10vw"
+                                                                                     :width "80vw"
+                                                                                     :top "10vh"
+                                                                                     :height "80vh"}}
+         [arms-select/list-arms (link-to-arms context) :selected-arms arms-data]]]])))
 
 (defmethod ui-interface/form-element :arms-reference-select [context]
   [arms-reference-select context])

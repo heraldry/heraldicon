@@ -19,6 +19,7 @@
   (case stage
     "dev" {:heraldry-api-endpoint "http://localhost:4000/api"
            :heraldry-url "http://localhost:8081"
+           :heraldry-site-url "http://localhost:4000/dev"
            :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                  :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
