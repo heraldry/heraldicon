@@ -105,7 +105,8 @@
         [:a {:href (attribution/full-url-for-username username)
              :target "_blank"
              :title username}
-         [:img {:src (util/avatar-url username)}]]]
+         [:img {:src (util/avatar-url username)
+                :style {:border-radius "50%"}}]]]
        [:div.arms-card-title
         (:name arms)]
        [:div.arms-card-access
