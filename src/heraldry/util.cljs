@@ -26,6 +26,12 @@
       (.update data)
       (.digest "hex")))
 
+(defn md5 [data]
+  (-> crypto
+      (.createHash "md5")
+      (.update data)
+      (.digest "hex")))
+
 ;; probably not safe to use with the path, as elements with the same path
 ;; could be rendered multiple times (e.g. charges in a charge-group)
 (defn stable-id
@@ -318,3 +324,10 @@
        (let [arms (<? c)]
          (recur (conj result arms) rest))
        result))))
+
+(defn gravatar-url [email]
+  (str "https://www.gravatar.com/avatar/"
+       (some-> email
+               s/trim
+               s/lower-case
+               md5)))

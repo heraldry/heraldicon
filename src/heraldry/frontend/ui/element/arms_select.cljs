@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [clojure.string :as s]
    [com.wsscode.common.async-cljs :refer [<?]]
+   [heraldry.attribution :as attribution]
    [heraldry.config :as config]
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.filter :as filter]
@@ -10,6 +11,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tags :as tags]
    [heraldry.frontend.user :as user]
+   [heraldry.util :as util]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -99,13 +101,20 @@
     [:li.arms-card-wrapper
      [:div.arms-card {:class (when selected? "selected")}
       [:div.arms-card-header
+       [:div.arms-card-owner
+        [:a {:href (attribution/full-url-for-username username)
+             :target "_blank"
+             :title username}
+         [:img {:src (str (or (config/get :heraldry-site-url)
+                              (config/get :heraldry-url))
+                          "/avatar/" username)}]]]
+       [:div.arms-card-title
+        (:name arms)]
        [:div.arms-card-access
         (when (= own-username username)
           (if (-> arms :is-public)
             [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
-            [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))]
-       [:div.arms-card-title
-        (:name arms)]]
+            [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))]]
       [:a.arms-card-preview link-args
        [preview-image (arms-preview-url arms)]]
       [:div.arms-card-tags
