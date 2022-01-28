@@ -330,7 +330,8 @@
        (some-> email
                s/trim
                s/lower-case
-               md5)))
+               md5)
+       "?d=mp"))
 
 (defn avatar-url [username]
   (str (or (config/get :heraldry-site-url)
