@@ -984,11 +984,25 @@ li.ui-menu-header {
 }
 
 .arms-card-title {
-  margin: auto 0 auto 10px;
+  margin: auto 10px auto 10px;
   flex-grow: 4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.arms-card-owner {
+  margin: auto 0 auto 10px;
+}
+
+.arms-card-owner a {
+  display: block;
+  width: 25px;
+  height: 25px;
+}
+.arms-card-owner img {
+  width: 25px;
+  height: 25px;
 }
 
 .arms-card-preview {
@@ -1000,7 +1014,7 @@ li.ui-menu-header {
 }
 
 .arms-card-access {
-  margin: auto 0 auto 10px;
+  margin: auto 10px auto 0;
 }
 
 .arms-card-tags {
