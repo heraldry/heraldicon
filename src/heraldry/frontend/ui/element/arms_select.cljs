@@ -105,9 +105,7 @@
         [:a {:href (attribution/full-url-for-username username)
              :target "_blank"
              :title username}
-         [:img {:src (str (or (config/get :heraldry-site-url)
-                              (config/get :heraldry-url))
-                          "/avatar/" username)}]]]
+         [:img {:src (util/avatar-url username)}]]]
        [:div.arms-card-title
         (:name arms)]
        [:div.arms-card-access

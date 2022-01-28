@@ -87,7 +87,7 @@
     [:div {:style {:display "grid"
                    :grid-gap "10px"
                    :grid-template-columns "[start] 33% [first] auto [second] 25% [end]"
-                   :grid-template-rows "[top] 3em [middle] auto [bottom]"
+                   :grid-template-rows "[top] 100px [middle] auto [bottom]"
                    :grid-template-areas "'user-info user-info user-info'
                                        'collections arms charges'"
                    :padding-left "20px"
@@ -95,8 +95,15 @@
                    :height "100%"}
            :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
      [:div.no-scrollbar {:style {:grid-area "user-info"
-                                 :overflow-y "scroll"}}
-      [:h3 [tr (util/str-tr :string.entity/user ": " (:username user-info-data))]]]
+                                 :overflow-y "scroll"
+                                 :padding-top "10px"}}
+      [:img {:src (util/avatar-url (:username user-info-data))
+             :style {:width "80px"
+                     :height "80px"}}]
+      [:h2 {:style {:display "inline-block"
+                    :vertical-align "top"
+                    :margin-left "1em"}}
+       (:username user-info-data)]]
      [:div.no-scrollbar {:style {:grid-area "collections"
                                  :overflow-y "scroll"}}
       [:h4 [tr :string.entity/collections]]

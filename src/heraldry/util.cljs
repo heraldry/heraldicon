@@ -331,3 +331,8 @@
                s/trim
                s/lower-case
                md5)))
+
+(defn avatar-url [username]
+  (str (or (config/get :heraldry-site-url)
+           (config/get :heraldry-url))
+       "/avatar/" username))
