@@ -951,18 +951,18 @@ li.ui-menu-header {
   cursor: default;
 }
 
-.arms-list {
+.filter-results {
   padding-inline-start: 0;
 }
 
-.arms-card-wrapper {
+.filter-result-card-wrapper {
   display: inline-block;
   width: 300px;
   height: 320px;
   margin-right: 20px;
 }
 
-.arms-card {
+.filter-result-card {
   display: flex;
   flex-direction: column;
   width: 300px;
@@ -972,18 +972,18 @@ li.ui-menu-header {
   filter: drop-shadow(rgb(200, 200, 200) 0px 0px 5px);
 }
 
-.arms-card.selected {
+.filter-result-card.selected {
   background-color: #fff8f0;
 }
 
-.arms-card-header {
+.filter-result-card-header {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   height: 40px;
 }
 
-.arms-card-title {
+.filter-result-card-title {
   margin: auto 10px auto 10px;
   flex-grow: 4;
   white-space: nowrap;
@@ -991,21 +991,21 @@ li.ui-menu-header {
   text-overflow: ellipsis;
 }
 
-.arms-card-owner {
+.filter-result-card-owner {
   margin: auto 0 auto 10px;
 }
 
-.arms-card-owner a {
+.filter-result-card-owner a {
   display: block;
   width: 25px;
   height: 25px;
 }
-.arms-card-owner img {
+.filter-result-card-owner img {
   width: 25px;
   height: 25px;
 }
 
-.arms-card-preview {
+.filter-result-card-preview {
   position: relative;
   display: block;
   width: 300px;
@@ -1013,11 +1013,11 @@ li.ui-menu-header {
   text-decoration: none;
 }
 
-.arms-card-access {
+.filter-result-card-access {
   margin: auto 10px auto 0;
 }
 
-.arms-card-tags {
+.filter-result-card-tags {
   margin: 10px 10px 10px 10px;
   white-space: nowrap;
   overflow: hidden;
