@@ -65,10 +65,12 @@
       (:latest-version data)
       version)))
 
-(defn arms-preview-url [{:keys [id] :as arms}]
+(defn arms-preview-url [{:keys [id] :as arms} & {:keys [width height]}]
   (let [url (or (config/get :heraldry-site-url)
                 (config/get :heraldry-url))]
-    (str url "/preview/arms/" (-> id (s/split #":") last) "/" (effective-version arms) "/preview.png")))
+    (str url "/preview/arms/" (-> id (s/split #":") last) "/" (effective-version arms) "/preview.png"
+         (when (and width height)
+           (str "?width=" width "&height=" height)))))
 
 (defn preview-image [url]
   (let [loaded-flag-path [:ui :preview-image-loaded? url]
@@ -115,7 +117,7 @@
             [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
             [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))]]
       [:a.arms-card-preview link-args
-       [preview-image (arms-preview-url arms)]]
+       [preview-image (arms-preview-url arms :width 300 :height 220)]]
       [:div.arms-card-tags
        [tags/tags-view (-> arms :tags keys)]]]]))
 
