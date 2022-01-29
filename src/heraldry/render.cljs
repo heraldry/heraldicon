@@ -485,7 +485,9 @@
          (into #{}))))
 
 (defn achievement [{:keys [short-url
-                           svg-export?] :as context}]
+                           svg-export?
+                           target-width
+                           target-height] :as context}]
   (let [short-url-font :deja-vu-sans
         coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
@@ -562,19 +564,39 @@
                                     ;;mottos-result-below-shield (conj mottos-bounding-box)
                                     ornaments-result-below-shield (conj ornaments-bounding-box)))
 
-        target-width 1000
+        achievement-width 1000
         {achievement-width :target-width
          achievement-height :target-height
          achievement-transform :transform} (transform-bounding-box
                                             achievement-bounding-box
-                                            target-width
+                                            achievement-width
                                             :max-aspect-ratio 1.5)
         margin 10
         font-size 20
-        document-width (-> achievement-width (+ (* 2 margin)))
-        document-height (-> achievement-height (+ (* 2 margin)) (+ 20)
-                            (cond-> short-url
-                              (+ font-size margin)))]
+        result-width (-> achievement-width (+ (* 2 margin)))
+        result-height (-> achievement-height (+ (* 2 margin)) (+ 20)
+                          (cond-> short-url
+                            (+ font-size margin)))
+
+        [document-width
+         document-height
+         document-scale] (if (and svg-export?
+                                  (or target-width
+                                      target-height))
+                           (let [scale-width (when target-width
+                                               (/ target-width result-width))
+                                 scale-height (when target-height
+                                                (/ target-height result-height))
+                                 scale (or (when (and scale-width scale-height)
+                                             (min scale-width scale-height))
+                                           scale-width
+                                           scale-height)]
+                             [(* result-width scale)
+                              (* result-height scale)
+                              scale])
+                           [result-width
+                            result-height
+                            1])]
     [:svg (merge
            {:viewBox (str "0 0 " document-width " " document-height)}
            (if svg-export?
@@ -586,36 +608,37 @@
               :preserveAspectRatio "xMidYMin meet"}))
      (when svg-export?
        [output/embed-fonts used-fonts])
-     [:g {:transform (str "translate(" margin "," margin ")")}
-      [:g {:transform achievement-transform
-           :style {:transition "transform 0.5s"}}
-
-       (when ornaments-result-below-shield
-         [:g
-          ornaments-result-below-shield])
-
-       (when helms-result-below-shield
-         [:g {:transform (str "translate(" (v/->str helm-position) ")")
-              :style {:transition "transform 0.5s"}}
-          helms-result-below-shield])
-
-       [:g {:transform (cond
-                         (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
-                         (pos? coat-of-arms-angle) (str "translate(" coat-of-arms-width "," 0 ")"
-                                                        "rotate(" (- coat-of-arms-angle) ")"
-                                                        "translate(" (- coat-of-arms-width) "," 0 ")")
-                         :else nil)
+     [:g {:transform (str "scale(" document-scale "," document-scale ")")}
+      [:g {:transform (str "translate(" margin "," margin ")")}
+       [:g {:transform achievement-transform
             :style {:transition "transform 0.5s"}}
-        coat-of-arms]
 
-       (when helms-result-above-shield
-         [:g {:transform (str "translate(" (v/->str helm-position) ")")
-              :style {:transition "transform 0.5s"}}
-          helms-result-above-shield])
+        (when ornaments-result-below-shield
+          [:g
+           ornaments-result-below-shield])
 
-       (when ornaments-result-above-shield
-         [:g
-          ornaments-result-above-shield])]]
+        (when helms-result-below-shield
+          [:g {:transform (str "translate(" (v/->str helm-position) ")")
+               :style {:transition "transform 0.5s"}}
+           helms-result-below-shield])
+
+        [:g {:transform (cond
+                          (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
+                          (pos? coat-of-arms-angle) (str "translate(" coat-of-arms-width "," 0 ")"
+                                                         "rotate(" (- coat-of-arms-angle) ")"
+                                                         "translate(" (- coat-of-arms-width) "," 0 ")")
+                          :else nil)
+             :style {:transition "transform 0.5s"}}
+         coat-of-arms]
+
+        (when helms-result-above-shield
+          [:g {:transform (str "translate(" (v/->str helm-position) ")")
+               :style {:transition "transform 0.5s"}}
+           helms-result-above-shield])
+
+        (when ornaments-result-above-shield
+          [:g
+           ornaments-result-above-shield])]]]
 
      (when short-url
        [:text {:x margin
