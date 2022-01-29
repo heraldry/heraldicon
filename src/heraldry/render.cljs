@@ -20,7 +20,8 @@
    [heraldry.math.vector :as v]
    [heraldry.ribbon :as ribbon]
    [heraldry.svg.metadata :as svg-metadata]
-   [heraldry.util :as util]))
+   [heraldry.util :as util]
+   [taoensso.timbre :as log]))
 
 (defn coat-of-arms [{:keys
                      [svg-export?
@@ -333,6 +334,48 @@
                             :letter-spacing spacing
                             :startOffset (str (+ 50 (* offset-x 100)) "%")}
                  text]]))])))]))
+
+(defn ribbon-standalone [{:keys [svg-export?
+                                 target-width
+                                 target-height] :as context}]
+  (let [[result-width result-height] [500 600]
+        [document-width
+         document-height
+         document-scale] (if (and svg-export?
+                                  (or target-width
+                                      target-height))
+                           (let [scale-width (when target-width
+                                               (/ target-width result-width))
+                                 scale-height (when target-height
+                                                (/ target-height result-height))
+                                 scale (or (when (and scale-width scale-height)
+                                             (min scale-width scale-height))
+                                           scale-width
+                                           scale-height)]
+                             [(* result-width scale)
+                              (* result-height scale)
+                              scale])
+                           [result-width
+                            result-height
+                            1])
+        used-fonts         (->> (for [j (range (interface/get-list-size (c/++ context :segments)))]
+                                  (interface/get-sanitized-data (c/++ context :segments j :font)))
+                                (filter identity)
+                                (into #{}))]
+    [:svg (merge
+           {:viewBox (str "0 0 " document-width " " document-height)}
+           (if svg-export?
+             {:xmlns "http://www.w3.org/2000/svg"
+              :version "1.1"
+              :width document-width
+              :height document-height}
+             {:style {:width "100%"}
+              :preserveAspectRatio "xMidYMin meet"}))
+     (when svg-export?
+       [output/embed-fonts used-fonts])
+     [:g {:transform (str "scale(" document-scale "," document-scale ")")}
+      [:g {:transform (str "translate(" (/ result-width 2) "," (/ result-height 2) ")")}
+       [ribbon context :argent :none :helmet-dark]]]]))
 
 (defn motto [{:keys [environment
                      self-below-shield?
