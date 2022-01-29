@@ -590,6 +590,7 @@
       "collection-saved": "Sammlung gespeichert, neue Version:",
       "confirmation-code-sent": "Ein Bestätigungscode wurde an deine Emailadresse geschickt.",
       "copied-url-for-sharing": "URL zum Teilen kopiert.",
+      "copy-to-clipboard-failed": "URL kopieren ist fehlgeschlagen.",
       "created-unsaved-copy": "Ungespeicherte Kopie erstellt.",
       "need-to-be-logged-in": "Du mußt eingeloggt sein.",
       "need-to-be-logged-in-and-arms-must-be-saved": "Du mußt eingeloggt sein und das Wappen gespeichert haben.",

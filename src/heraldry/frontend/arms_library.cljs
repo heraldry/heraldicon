@@ -180,8 +180,11 @@
 
 (defn share-button-clicked [_event]
   (let [short-url (util/short-url @(rf/subscribe [:get form-db-path]))]
-    (copy-to-clipboard short-url)
-    (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])))
+    (rf/dispatch-sync [:clear-form-message form-db-path])
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (if (copy-to-clipboard short-url)
+      (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])
+      (rf/dispatch [:set-form-error form-db-path :string.user.message/copy-to-clipboard-failed]))))
 
 (defn button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
@@ -212,7 +215,7 @@
      (when form-message
        [:div.success-message [tr form-message]])
      (when error-message
-       [:div.error-message error-message])
+       [:div.error-message [tr error-message]])
 
      [:div.buttons {:style {:display "flex"}}
       [:button.button {:type "button"
