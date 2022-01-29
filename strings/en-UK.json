@@ -591,6 +591,7 @@
       "collection-saved": "Collection saved, new version:",
       "confirmation-code-sent": "A confirmation code was sent to your email address.",
       "copied-url-for-sharing": "Copied URL for sharing.",
+      "copy-to-clipboard-failed": "Copying the URL failed.",
       "created-unsaved-copy": "Created an unsaved copy.",
       "email-required": "Email required.",
       "need-to-be-logged-in": "You need to be logged in.",
