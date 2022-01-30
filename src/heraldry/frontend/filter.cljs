@@ -85,8 +85,8 @@
         tags-to-display (->> filtered-items
                              (map (comp keys :tags))
                              (apply concat)
-                             set
-                             (set/union (-> filter-tags keys set)))
+                             frequencies
+                             (into {}))
         filtered? (or (-> filter-string count pos?)
                       (-> filter-tags count pos?))
         sorted-items (cond->> filtered-items

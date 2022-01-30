@@ -239,7 +239,10 @@ label div {
 }
 
 .tags {
-  display: inline;
+  display: flex;
+  flex-flow: row wrap;
+  overflow: hidden;
+  height: 1.5em;
 }
 
 .tag {
@@ -252,6 +255,7 @@ label div {
   white-space: nowrap;
   line-height: 1.2em;
   margin-bottom: 2px;
+  margin-right: 5px;
 }
 
 .tag i.fas {
