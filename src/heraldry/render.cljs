@@ -20,8 +20,7 @@
    [heraldry.math.vector :as v]
    [heraldry.ribbon :as ribbon]
    [heraldry.svg.metadata :as svg-metadata]
-   [heraldry.util :as util]
-   [taoensso.timbre :as log]))
+   [heraldry.util :as util]))
 
 (defn coat-of-arms [{:keys
                      [svg-export?
@@ -692,3 +691,47 @@
                :style {:font-family (font/css-string short-url-font)
                        :font-size font-size}}
         short-url])]))
+
+(defn charge-standalone [{:keys [svg-export?
+                                 target-width
+                                 target-height] :as context}]
+  (let [shield (escutcheon/field :rectangle nil nil nil nil nil)
+        environment (environment/transform-to-width shield 100)
+        [result-width result-height] [(:width environment)
+                                      (:height environment)]
+        [document-width
+         document-height
+         document-scale] (if (and svg-export?
+                                  (or target-width
+                                      target-height))
+                           (let [scale-width (when target-width
+                                               (/ target-width result-width))
+                                 scale-height (when target-height
+                                                (/ target-height result-height))
+                                 scale (or (when (and scale-width scale-height)
+                                             (min scale-width scale-height))
+                                           scale-width
+                                           scale-height)]
+                             [(* result-width scale)
+                              (* result-height scale)
+                              scale])
+                           [result-width
+                            result-height
+                            1])
+        used-fonts         (->> (for [j (range (interface/get-list-size (c/++ context :segments)))]
+                                  (interface/get-sanitized-data (c/++ context :segments j :font)))
+                                (filter identity)
+                                (into #{}))]
+    [:svg (merge
+           {:viewBox (str "0 0 " document-width " " document-height)}
+           (if svg-export?
+             {:xmlns "http://www.w3.org/2000/svg"
+              :version "1.1"
+              :width document-width
+              :height document-height}
+             {:style {:width "100%"}
+              :preserveAspectRatio "xMidYMin meet"}))
+     (when svg-export?
+       [output/embed-fonts used-fonts])
+     [:g {:transform (str "scale(" document-scale "," document-scale ")")}
+      [interface/render-component (assoc context :environment environment)]]]))
