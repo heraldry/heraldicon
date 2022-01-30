@@ -19,10 +19,8 @@
                               (assoc current-tags tag true))))))
 
 (defn selected-item? [selected-item item]
-  (and (= (:id selected-item)
-          (:id item))
-       (= (:version selected-item)
-          (:version item))))
+  (= (:id selected-item)
+     (:id item)))
 
 (defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-own selected-item]
   (let [words (-> filter-string
