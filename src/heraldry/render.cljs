@@ -699,6 +699,7 @@
         environment (environment/transform-to-width shield 100)
         [result-width result-height] [(:width environment)
                                       (:height environment)]
+        target-width (or target-width 1000)
         [document-width
          document-height
          document-scale] (if (and svg-export?
