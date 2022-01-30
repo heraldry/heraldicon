@@ -2,7 +2,6 @@
   (:require
    [heraldry.coat-of-arms.charge.options :as charge-options]
    [heraldry.context :as c]
-   [heraldry.frontend.charge :as frontend-charge]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.preview :as preview]
@@ -18,11 +17,13 @@
     (update-in db path merge changes)))
 
 (defn charge-type-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:update-charge path {:type key
-                                                                                    :attitude nil
-                                                                                    :facing nil
-                                                                                    :data nil
-                                                                                    :variant nil}])}
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event
+                                    %
+                                    [:update-charge path {:type key
+                                                          :attitude nil
+                                                          :facing nil
+                                                          :data nil
+                                                          :variant nil}])}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url
@@ -60,55 +61,56 @@
                               :border (when variant
                                         "1.5px solid #ddd")}}]]))
 
+(defn link-to-charge [context]
+  (fn [charge-data]
+    [:a.clickable
+     {:on-click #(state/dispatch-on-event
+                  %
+                  [:update-charge
+                   (:path context)
+                   (merge {:type (->> charge-data
+                                      :type
+                                      name
+                                      (keyword "heraldry.charge.type"))
+                           :variant {:id (:id charge-data)
+                                     :version (:latest-version charge-data)}}
+                          {:attitude nil
+                           :facing nil}
+                          (select-keys charge-data
+                                       [:attitude :facing]))])}
+     (:name charge-data)]))
+
 (defn charge-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
-    (let [current-value (interface/get-raw-data context)
+    (let [charge-context (c/-- context)
+          variant-context (c/++ charge-context :variant)
+          variant (interface/get-raw-data variant-context)
+          current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
           value (or current-value
                     inherited
                     default)
-          label (:label ui)
-          charge-context (c/-- context)]
+          label (:label ui)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
        [:div.option
         [submenu/submenu context :string.option/select-charge
-         ;; TODO: this could have a proper preview of the charge
          [:div
           [tr (charge-options/title charge-context)]
           [choice-preview charge-context]]
-         {:style {:width "21.5em"}}
-         (for [[display-name key] choices]
-           ^{:key key}
-           [charge-type-choice (:path charge-context) key display-name :selected? (= key value)])
-         (let [[status charges] (state/async-fetch-data
-                                 [:all-charges]
-                                 :all-charges
-                                 frontend-charge/fetch-charges)]
-           [:div {:style {:padding "15px"}}
-            (if (= status :done)
-              [charge-select/component
-               charges
-               (fn [charge-data]
-                 [:a.clickable
-                  {:on-click #(state/dispatch-on-event
-                               %
-                               [:update-charge
-                                (:path charge-context)
-                                (merge {:type (->> charge-data
-                                                   :type
-                                                   name
-                                                   (keyword "heraldry.charge.type"))
-                                        :variant {:id (:id charge-data)
-                                                  :version (:latest-version charge-data)}}
-                                       {:attitude nil
-                                        :facing nil}
-                                       (select-keys charge-data
-                                                    [:attitude :facing]))])}
-                  (:name charge-data)])
-               #(state/invalidate-cache [:all-charges] :all-charges)]
-              [:div [tr :string.miscellaneous/loading]])])]]])))
+         {:style {:position "fixed"
+                  :transform "none"
+                  :left "10vw"
+                  :width "80vw"
+                  :top "10vh"
+                  :height "80vh"}}
+         [:div
+          (for [[display-name key] choices]
+            ^{:key key}
+            [charge-type-choice (:path charge-context) key display-name :selected? (and (= key value)
+                                                                                        (not variant))])
+          [charge-select/list-charges (link-to-charge charge-context) :selected-charge variant]]]]])))
 
 (defmethod ui-interface/form-element :charge-type-select [context]
   [charge-type-select context])
