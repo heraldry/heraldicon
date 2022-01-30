@@ -2,10 +2,9 @@
   (:require
    [heraldry.coat-of-arms.charge.options :as charge-options]
    [heraldry.context :as c]
+   [heraldry.frontend.ui.element.charge-type-select :as charge-type-select]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.frontend.validation :as validation]
-   [heraldry.interface :as interface]
-   [heraldry.static :as static]))
+   [heraldry.frontend.validation :as validation]))
 
 (defn form [context]
   (ui-interface/form-elements
@@ -29,21 +28,14 @@
     :ignore-layer-separator?]))
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge [context]
-  (let [charge-type (interface/get-raw-data (c/++ context :type))]
-    ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
-    ;; depends on charge data
-    {:title (charge-options/title context)
-     :icon (if (-> charge-type charge-options/choice-map)
-             {:default (static/static-url
-                        (str "/svg/charge-type-" (name charge-type) "-unselected.svg"))
-              :selected (static/static-url
-                         (str "/svg/charge-type-" (name charge-type) "-selected.svg"))}
-             {:default (static/static-url
-                        (str "/svg/charge-type-roundel-unselected.svg"))
-              :selected (static/static-url
-                         (str "/svg/charge-type-roundel-selected.svg"))})
-     :validation (validation/validate-charge context)
-     :nodes [{:context (c/++ context :field)}]}))
+  ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
+  ;; depends on charge data
+  {:title (charge-options/title context)
+   :icon (let [url (charge-type-select/choice-preview-url context)]
+           {:default url
+            :selected url})
+   :validation (validation/validate-charge context)
+   :nodes [{:context (c/++ context :field)}]})
 
 (defmethod ui-interface/component-form-data :heraldry.component/charge [_context]
   {:form form})
