@@ -101,8 +101,8 @@
           [choice-preview charge-context]]
          {:style {:position "fixed"
                   :transform "none"
-                  :left "10vw"
-                  :width "80vw"
+                  :left "45vw"
+                  :width "53vw"
                   :top "10vh"
                   :height "80vh"}}
          [:div

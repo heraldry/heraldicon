@@ -62,12 +62,14 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context :string.option/select-ribbon [tr ribbon-title] {:style {:position "fixed"
-                                                                                         :transform "none"
-                                                                                         :left "10vw"
-                                                                                         :width "80vw"
-                                                                                         :top "10vh"
-                                                                                         :height "80vh"}}
+        [submenu/submenu context :string.option/select-ribbon
+         [tr ribbon-title]
+         {:style {:position "fixed"
+                  :transform "none"
+                  :left "45vw"
+                  :width "53vw"
+                  :top "10vh"
+                  :height "80vh"}}
          [ribbon-select/list-ribbons (link-to-ribbon path) :selected-ribbon ribbon-data]]]])))
 
 (defmethod ui-interface/form-element :ribbon-reference-select [context]
