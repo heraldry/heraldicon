@@ -11,7 +11,7 @@
 (defn effective-version [data]
   (let [version (:version data)]
     (if (zero? version)
-      (:latest-version data)
+      (or (:latest-version data) 0)
       version)))
 
 (defn preview-url [kind {:keys [id] :as arms} & {:keys [width height]}]
