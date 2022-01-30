@@ -26,7 +26,7 @@
         loaded? @(rf/subscribe [:get loaded-flag-path])]
     [:<>
      [:img {:src url
-            :on-load #(rf/dispatch [:set loaded-flag-path true])
+            :on-load (when-not loaded? #(rf/dispatch [:set loaded-flag-path true]))
             :style {:display (if loaded? "block" "none")
                     :position "absolute"
                     :margin "auto"
