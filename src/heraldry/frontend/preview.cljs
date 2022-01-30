@@ -94,3 +94,28 @@
        [preview-image (preview-url :ribbon ribbon :width 300 :height 220)]]
       [:div.filter-result-card-tags
        [tags/tags-view (-> ribbon :tags keys)]]]]))
+
+(defn charge [charge link-fn & {:keys [selected?]}]
+  (let [username (-> charge :username)
+        link-args (get (link-fn charge) 1)
+        own-username (:username (user/data))]
+    [:li.filter-result-card-wrapper
+     [:div.filter-result-card {:class (when selected? "selected")}
+      [:div.filter-result-card-header
+       [:div.filter-result-card-owner
+        [:a {:href (attribution/full-url-for-username username)
+             :target "_blank"
+             :title username}
+         [:img {:src (util/avatar-url username)
+                :style {:border-radius "50%"}}]]]
+       [:div.filter-result-card-title
+        (:name charge)]
+       [:div.filter-result-card-access
+        (when (= own-username username)
+          (if (-> charge :is-public)
+            [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+            [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))]]
+      [:a.filter-result-card-preview link-args
+       [preview-image (preview-url :charge charge :width 300 :height 220)]]
+      [:div.filter-result-card-tags
+       [tags/tags-view (-> charge :tags keys)]]]]))

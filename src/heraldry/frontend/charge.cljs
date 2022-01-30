@@ -24,8 +24,10 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call :fetch-charges-list {}
-                              user-data)
+        (-> (api-request/call
+             :fetch-charges-list
+             {}
+             user-data)
             <?
             :charges))
       (catch :default e

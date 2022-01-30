@@ -423,28 +423,24 @@
     (when (= status :done)
       [charge-form])))
 
+(defn list-all-charges []
+  [charge-select/list-charges link-to-charge])
+
 (defn view-list-charges []
   (rf/dispatch [:set-title :string.entity/charges])
-  (let [[status charges] (state/async-fetch-data
-                          [:all-charges]
-                          :all-charges
-                          charge/fetch-charges)]
-    [:div {:style {:padding "15px"}}
-     [:div {:style {:text-align "justify"
-                    :max-width "40em"}}
-      [:p
-       [tr :string.text.charge-library/create-and-view-charges]]]
-     [:button.button.primary
-      {:on-click #(do
-                    (rf/dispatch-sync [:clear-form-errors form-db-path])
-                    (rf/dispatch-sync [:clear-form-message form-db-path])
-                    (reife/push-state :create-charge))}
-      [tr :string.button/create]]
-     [:div {:style {:padding-top "0.5em"}}
-      (if (= status :done)
-        [charge-select/component charges link-to-charge invalidate-charges-cache
-         :open-all? @(rf/subscribe [:get [:ui :charge-list :open-all?]])]
-        [:div [tr :string.miscellaneous/loading]])]]))
+  [:div {:style {:padding "15px"}}
+   [:div {:style {:text-align "justify"
+                  :max-width "40em"}}
+    [:p
+     [tr :string.text.charge-library/create-and-view-charges]]]
+   [:button.button.primary
+    {:on-click #(do
+                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (reife/push-state :create-charge))}
+    [tr :string.button/create]]
+   [:div {:style {:padding-top "0.5em"}}
+    [list-all-charges]]])
 
 (defn view-charge-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
