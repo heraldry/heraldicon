@@ -83,7 +83,11 @@
                    :target "_blank"} username]
 
               " "
-              [tags/tags-view (-> collection :tags keys)]])))])
+              (when (-> collection :tags keys count pos?)
+                [:div {:style {:display "inline-block"
+                               :margin-left "0.5em"
+                               :transform "translate(0,0.4em)"}}
+                 [tags/tags-view (-> collection :tags keys)]])])))])
      refresh-fn
      :hide-ownership-filter? hide-ownership-filter?]))
 
