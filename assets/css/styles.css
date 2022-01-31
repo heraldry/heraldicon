@@ -245,6 +245,11 @@ label div {
   height: 1.5em;
 }
 
+.collection .tags {
+  display: inline-block;
+  overflow: visible;
+}
+
 .tag {
   position: relative;
   display: inline-block;
