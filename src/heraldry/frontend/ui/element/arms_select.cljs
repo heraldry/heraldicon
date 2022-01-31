@@ -56,20 +56,16 @@
 (defn invalidate-arms-cache [key]
   (state/invalidate-cache list-db-path key))
 
-(defn component [arms-list link-fn refresh-fn & {:keys [hide-ownership-filter?
-                                                        selected-arms]}]
+(defn component [arms-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
+                                                               selected-arms]}]
   (let [user-data (user/data)]
     [filter/component
      :arms-list
      user-data
-     arms-list
+     arms-list-path
      [:name :username :metadata :tags]
-     (fn [& {:keys [items]}]
-       [:ul.filter-results
-        (doall
-         (for [arms items]
-           ^{:key (:id arms)}
-           [preview/arms arms link-fn :selected? (filter/selected-item? selected-arms arms)]))])
+     :arms
+     on-select
      refresh-fn
      :sort-fn (fn [arms]
                 [(not (and selected-arms
@@ -80,15 +76,15 @@
      :component-styles {:height "calc(80vh - 3em)"}
      :selected-item selected-arms]))
 
-(defn list-arms [link-to-arms & {:keys [selected-arms]}]
-  (let [[status arms-list] (state/async-fetch-data
-                            list-db-path
-                            :all
-                            fetch-arms-list)]
+(defn list-arms [on-select & {:keys [selected-arms]}]
+  (let [[status _arms-list] (state/async-fetch-data
+                             list-db-path
+                             :all
+                             fetch-arms-list)]
     (if (= status :done)
       [component
-       arms-list
-       link-to-arms
+       list-db-path
+       on-select
        #(invalidate-arms-cache :all)
        :selected-arms selected-arms]
       [:div [tr :string.miscellaneous/loading]])))

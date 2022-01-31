@@ -499,18 +499,6 @@
         [ribbon-form]
         [:div [tr :string.miscellaneous/not-found]]))))
 
-(defn link-to-ribbon [ribbon & {:keys [type-prefix?]}]
-  (let [ribbon-id (-> ribbon
-                      :id
-                      id-for-url)]
-    [:a {:href (reife/href :view-ribbon-by-id {:id ribbon-id})
-         :on-click #(do
-                      (rf/dispatch-sync [:clear-form-errors form-db-path])
-                      (rf/dispatch-sync [:clear-form-message form-db-path]))}
-     (when type-prefix?
-       (str (-> ribbon :type name) ": "))
-     (:name ribbon)]))
-
 (defn create-ribbon [_match]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path nil])
     (rf/dispatch-sync [:heraldry.frontend.history.core/clear form-db-path nil]))
@@ -524,10 +512,10 @@
 
 (defn view-list-ribbons []
   (rf/dispatch [:set-title :string.menu/ribbon-library])
-  (let [[status ribbons] (state/async-fetch-data
-                          [:all-ribbons]
-                          :all-ribbons
-                          ribbon-frontend/fetch-ribbons)]
+  (let [[status _ribbons] (state/async-fetch-data
+                           [:all-ribbons]
+                           :all-ribbons
+                           ribbon-frontend/fetch-ribbons)]
     [:div {:style {:padding "15px"}}
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}
@@ -540,7 +528,11 @@
       [tr :string.button/create]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
-        [ribbon-select/component ribbons link-to-ribbon invalidate-ribbons-cache]
+        [ribbon-select/list-ribbons
+         (fn [{:keys [id]}]
+           (rf/dispatch-sync [:clear-form-errors form-db-path])
+           (rf/dispatch-sync [:clear-form-message form-db-path])
+           (reife/push-state :view-ribbon-by-id {:id (util/id-for-url id)}))]
         [:div [tr :string.miscellaneous/loading]])]]))
 
 (defn view-ribbon-by-id [{:keys [parameters]}]

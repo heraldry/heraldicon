@@ -1018,6 +1018,7 @@ li.ui-menu-header {
   width: 300px;
   height: 220px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .filter-result-card-access {

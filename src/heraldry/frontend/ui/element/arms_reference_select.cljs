@@ -8,12 +8,6 @@
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn link-to-arms [context]
-  (fn [arms]
-    [:a {:on-click #(rf/dispatch [:set context {:id (:id arms)
-                                                :version 0}])}
-     (:name arms)]))
-
 (defn arms-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{arms-id :id
@@ -40,7 +34,10 @@
                   :width "53vw"
                   :top "10vh"
                   :height "80vh"}}
-         [arms-select/list-arms (link-to-arms context) :selected-arms arms-data]]]])))
+         [arms-select/list-arms (fn [{:keys [id]}]
+                                  (rf/dispatch [:set context {:id id
+                                                              :version 0}]))
+          :selected-arms arms-data]]]])))
 
 (defmethod ui-interface/form-element :arms-reference-select [context]
   [arms-reference-select context])

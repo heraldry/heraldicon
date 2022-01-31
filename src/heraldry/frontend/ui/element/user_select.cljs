@@ -31,7 +31,7 @@
 
 (defn component [user-list link-fn refresh-fn]
   (let [user-data (user/data)]
-    [filter/component
+    [filter/legacy-component
      :user-list
      user-data
      user-list

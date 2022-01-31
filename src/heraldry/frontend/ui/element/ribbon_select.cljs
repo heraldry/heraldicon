@@ -53,24 +53,23 @@
       (catch :default e
         (log/error "fetch ribbon list by user error:" e)))))
 
-(defn invalidate-ribbon-cache [key]
-  (state/invalidate-cache list-db-path key))
+(defn invalidate-ribbons-cache []
+  (let [user-data (user/data)
+        user-id (:user-id user-data)]
+    (rf/dispatch-sync [:set list-db-path nil])
+    (state/invalidate-cache list-db-path user-id)
+    (state/invalidate-cache [:all-ribbons] :all-ribbons)))
 
-
-(defn component [ribbon-list link-fn refresh-fn & {:keys [hide-ownership-filter?
-                                                          selected-ribbon]}]
+(defn component [ribbon-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
+                                                                 selected-ribbon]}]
   (let [user-data (user/data)]
     [filter/component
      :ribbon-list
      user-data
-     ribbon-list
-     [:name :username :tags]
-     (fn [& {:keys [items]}]
-       [:ul.filter-results
-        (doall
-         (for [ribbon items]
-           ^{:key (:id ribbon)}
-           [preview/ribbon ribbon link-fn :selected? (filter/selected-item? selected-ribbon ribbon)]))])
+     ribbon-list-path
+     [:name :username :metadata :tags]
+     :ribbon
+     on-select
      refresh-fn
      :sort-fn (fn [ribbon]
                 [(not (and selected-ribbon
@@ -78,17 +77,18 @@
                  (-> ribbon :name s/lower-case)])
      :page-size 10
      :hide-ownership-filter? hide-ownership-filter?
+     :component-styles {:height "calc(80vh - 3em)"}
      :selected-item selected-ribbon]))
 
-(defn list-ribbons [link-to-ribbon & {:keys [selected-ribbon]}]
-  (let [[status ribbon-list] (state/async-fetch-data
-                              list-db-path
-                              :all
-                              fetch-ribbon-list)]
+(defn list-ribbons [on-select & {:keys [selected-ribbon]}]
+  (let [[status _ribbon-list] (state/async-fetch-data
+                               list-db-path
+                               :all
+                               fetch-ribbon-list)]
     (if (= status :done)
       [component
-       ribbon-list
-       link-to-ribbon
-       #(invalidate-ribbon-cache :all)
+       list-db-path
+       on-select
+       invalidate-ribbons-cache
        :selected-ribbon selected-ribbon]
       [:div [tr :string.miscellaneous/loading]])))

@@ -35,14 +35,14 @@
   (state/invalidate-cache [:user-charges] user-id))
 
 (defn view-charges-for-user [user-id]
-  (let [[status charges] (state/async-fetch-data
-                          [:user-charges]
-                          user-id
-                          #(charge/fetch-charges-for-user user-id))]
+  (let [[status _charges] (state/async-fetch-data
+                           [:user-charges]
+                           user-id
+                           #(charge/fetch-charges-for-user user-id))]
     (if (= status :done)
       [charge-select/component
-       charges
-       charge-library/link-to-charge
+       [:user-charges]
+       charge-library/on-select
        #(invalidate-charges-cache-for-user user-id)
        :remove-empty-groups? true
        :hide-ownership-filter? true]
@@ -52,14 +52,14 @@
   (state/invalidate-cache [:user-arms] user-id))
 
 (defn view-arms-for-user [user-id]
-  (let [[status arms-list] (state/async-fetch-data
-                            [:user-arms]
-                            user-id
-                            #(arms-select/fetch-arms-list-by-user user-id))]
+  (let [[status _arms-list] (state/async-fetch-data
+                             [:user-arms]
+                             user-id
+                             #(arms-select/fetch-arms-list-by-user user-id))]
     (if (= status :done)
       [arms-select/component
-       arms-list
-       arms-library/link-to-arms
+       [:user-arms]
+       arms-library/on-select
        #(invalidate-arms-cache-for-user user-id)
        :hide-ownership-filter? true]
       [:div [tr :string.miscellaneous/loading]])))
