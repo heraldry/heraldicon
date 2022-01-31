@@ -59,7 +59,7 @@
 
 (defn component [collection-list link-fn refresh-fn & {:keys [hide-ownership-filter?]}]
   (let [user-data (user/data)]
-    [filter/component
+    [filter/legacy-component
      :collection-list
      user-data
      collection-list

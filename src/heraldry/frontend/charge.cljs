@@ -13,12 +13,15 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call :fetch-charges-for-user {:user-id user-id}
-                              user-data)
+        (-> (api-request/call
+             :fetch-charges-for-user
+             {:user-id user-id}
+             user-data)
             <?
             :charges))
       (catch :default e
         (log/error "fetch charges for user error:" e)))))
+
 
 (defn fetch-charges []
   (go

@@ -39,12 +39,7 @@
           (assoc-in path {:id ribbon-id
                           :version ribbon-version})))))
 
-(defn link-to-ribbon [path]
-  (fn [ribbon]
-    [:a {:on-click #(rf/dispatch [:set-ribbon-reference path ribbon])}
-     (:name ribbon)]))
-
-(defn ribbon-reference-select [{:keys [path] :as context}]
+(defn ribbon-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{ribbon-id :id
            version :version} (interface/get-raw-data context)
@@ -70,7 +65,10 @@
                   :width "53vw"
                   :top "10vh"
                   :height "80vh"}}
-         [ribbon-select/list-ribbons (link-to-ribbon path) :selected-ribbon ribbon-data]]]])))
+         [ribbon-select/list-ribbons
+          (fn [ribbon]
+            (rf/dispatch [:set-ribbon-reference (:path context) ribbon]))
+          :selected-ribbon ribbon-data]]]])))
 
 (defmethod ui-interface/form-element :ribbon-reference-select [context]
   [ribbon-reference-select context])

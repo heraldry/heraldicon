@@ -423,8 +423,13 @@
     (when (= status :done)
       [charge-form])))
 
+(defn on-select [{:keys [id]}]
+  (rf/dispatch-sync [:clear-form-errors form-db-path])
+  (rf/dispatch-sync [:clear-form-message form-db-path])
+  (reife/push-state :view-charge-by-id {:id (util/id-for-url id)}))
+
 (defn list-all-charges []
-  [charge-select/list-charges link-to-charge])
+  [charge-select/list-charges on-select])
 
 (defn view-list-charges []
   (rf/dispatch [:set-title :string.entity/charges])

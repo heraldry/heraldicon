@@ -252,20 +252,16 @@
 (defn invalidate-charge-cache [key]
   (state/invalidate-cache list-db-path key))
 
-(defn component [charge-list link-fn refresh-fn & {:keys [hide-ownership-filter?
-                                                          selected-charge]}]
+(defn component [charge-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
+                                                                 selected-charge]}]
   (let [user-data (user/data)]
     [filter/component
      :charge-list
      user-data
-     charge-list
+     charge-list-path
      [:name :type :attitude :facing :attributes :colours :username :metadata :tags]
-     (fn [& {:keys [items]}]
-       [:ul.filter-results
-        (doall
-         (for [charge items]
-           ^{:key (:id charge)}
-           [preview/charge charge link-fn :selected? (filter/selected-item? selected-charge charge)]))])
+     :charge
+     on-select
      refresh-fn
      :sort-fn (fn [charge]
                 [(not (and selected-charge
@@ -276,15 +272,15 @@
      :component-styles {:height "calc(80vh - 3em)"}
      :selected-item selected-charge]))
 
-(defn list-charges [link-to-charge & {:keys [selected-charge]}]
-  (let [[status charges-list] (state/async-fetch-data
-                               list-db-path
-                               :all
-                               fetch-charge-list)]
+(defn list-charges [on-select & {:keys [selected-charge]}]
+  (let [[status _charges-list] (state/async-fetch-data
+                                list-db-path
+                                :all
+                                fetch-charge-list)]
     (if (= status :done)
       [component
-       charges-list
-       link-to-charge
+       list-db-path
+       on-select
        #(invalidate-charge-cache :all)
        :selected-charge selected-charge]
       [:div [tr :string.miscellaneous/loading]])))

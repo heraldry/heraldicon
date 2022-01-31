@@ -323,8 +323,13 @@
                       (rf/dispatch-sync [:clear-form-message form-db-path]))}
      (:name arms)]))
 
+(defn on-select [{:keys [id]}]
+  (rf/dispatch-sync [:clear-form-errors form-db-path])
+  (rf/dispatch-sync [:clear-form-message form-db-path])
+  (reife/push-state :view-arms-by-id {:id (util/id-for-url id)}))
+
 (defn list-all-arms []
-  [arms-select/list-arms link-to-arms])
+  [arms-select/list-arms on-select])
 
 (defn view-list-arms []
   (rf/dispatch [:set-title :string.entity/arms])
