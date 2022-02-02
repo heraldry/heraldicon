@@ -56,11 +56,11 @@
       [:span {:style {:width "1em"}}]
       (if (:logged-in? user-data)
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
-         {:style {:min-width "6em"}
-          :on-mouse-leave #(rf/dispatch [::clear-menu-open?
+         {:on-mouse-leave #(rf/dispatch [::clear-menu-open?
                                          user-menu-open?-path])}
          [:<>
-          [:a.nav-menu-link {:href "#"
+          [:a.nav-menu-link {:style {:min-width "6em"}
+                             :href "#"
                              :on-click #(state/dispatch-on-event-and-prevent-default
                                          % [::toggle-menu-open?
                                             user-menu-open?-path])}
