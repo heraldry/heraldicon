@@ -160,8 +160,13 @@
                              (apply concat)
                              frequencies
                              (into {}))
-        sorted-items (cond->> filtered-items
-                       sort-fn (sort-by sort-fn))
+        sorted-items (sort-by (fn [item]
+                                ;; put heraldicon items in front
+                                [(if (-> item :username (= "heraldicon"))
+                                   0
+                                   1)
+                                 (when sort-fn
+                                   (sort-fn item))]) filtered-items)
         number-of-items-path [:ui :filter id [filter-keys filter-string filter-tags filter-access filter-ownership]]
         number-of-items (or @(rf/subscribe [:get number-of-items-path])
                             page-size)
