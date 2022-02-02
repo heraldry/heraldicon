@@ -6,21 +6,10 @@
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
+   [heraldry.tag :as tag]
    [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])
-
-(defn normalize-tag [tag]
-  (let [normalized-tag (-> tag
-                           (cond->
-                             (keyword? tag) name)
-                           (or "")
-                           s/trim
-                           s/lower-case)]
-    (when (-> normalized-tag
-              count
-              pos?)
-      (keyword normalized-tag))))
 
 (macros/reg-event-db :add-tags
   (fn [db [_ db-path tags]]
@@ -29,8 +18,7 @@
                                 keys
                                 set
                                 (concat tags)
-                                (->> (map normalize-tag)
-                                     (filter identity)
+                                (->> (keep tag/clean)
                                      set
                                      (map (fn [tag]
                                             [tag true]))
@@ -41,8 +29,7 @@
     (update-in db db-path (fn [current-tags]
                             (loop [current-tags current-tags
                                    [tag & remaining] (->> tags
-                                                          (map normalize-tag)
-                                                          (filter identity)
+                                                          (keep tag/clean)
                                                           set)]
                               (if tag
                                 (recur (dissoc current-tags tag)
@@ -59,7 +46,7 @@
                  s/trim
                  s/lower-case
                  (s/split #"[^a-z0-9-]+")
-                 (->> (filter #(-> % count pos?))))]
+                 (->> (keep tag/clean)))]
     (rf/dispatch [:add-tags path tags])
     (rf/dispatch [:set value-path nil])))
 
