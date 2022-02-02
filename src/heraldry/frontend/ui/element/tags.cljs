@@ -75,11 +75,11 @@
                                 selected]}]
   (let [sorted-tags (if (seq? tags)
                       (sort tags)
-                      (sort-by
-                       (fn [tag]
-                         [(get selected tag)
-                          (get tags tag)])
-                       #(compare %2 %1)(keys tags)))]
+                      (sort-by (fn [tag]
+                                 [(get selected tag)
+                                  (get tags tag)])
+                               #(compare %2 %1)
+                               (keys tags)))]
     [:div.tags
      (for [tag sorted-tags]
        ^{:key tag}
