@@ -77,6 +77,16 @@
   (fn [selected-item [_ _path item-id]]
     (-> selected-item :id (= item-id))))
 
+(defn heraldicon-tag []
+  [:span.tag {:style {:background "#3e933f"
+                      :color "#f6f6f6"}}
+   "heraldicon"])
+
+(defn community-tag []
+  [:span.tag {:style {:background "#bf7433"
+                      :color "#f6f6f6"}}
+   "community"])
+
 (defn result-card [items-path item-id kind on-select selected-item-path]
   (let [item @(rf/subscribe [::filtered-item items-path item-id])
         selected? @(rf/subscribe [::filtered-item-selected? selected-item-path item-id])
@@ -101,6 +111,11 @@
       [:div.filter-result-card-preview {:on-click #(on-select item)}
        [preview/preview-image kind item]]
       [:div.filter-result-card-tags
+       (when (= kind :charge)
+         [:div.item-classification
+          (if (not= username "heraldicon")
+            [heraldicon-tag]
+            [community-tag])])
        [tags/tags-view (-> item :tags keys)]]]]))
 
 (defn component [id user-data all-items-path filter-keys kind on-select refresh-fn & {:keys [hide-ownership-filter?
