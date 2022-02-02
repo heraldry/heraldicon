@@ -22,10 +22,9 @@
      (clj->js {:onSuccess (fn [user]
                             (on-success user))
                :onFailure (fn [error]
-                            (let [error (js->clj error :keywordize-keys true)]
-                              (if (-> error :message (= "User is not confirmed."))
-                                (on-confirmation-needed user)
-                                (on-failure error))))
+                            (if (some-> error .-message (= "User is not confirmed."))
+                              (on-confirmation-needed user)
+                              (on-failure error)))
                :newPasswordRequired (fn [user-attributes _required-attributes]
                                       (let [user-attributes (-> user-attributes
                                                                 (js->clj :keywordize-keys true)
