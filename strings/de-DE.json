@@ -445,6 +445,12 @@
       "primary": "Primär",
       "remove": "Entfernen"
     },
+    "ownership-filter-choice": {
+      "all": "Alle",
+      "mine": "Meine",
+      "heraldicon": "Heraldicon",
+      "community": "Community",
+    },
     "partition": "Teilung",
     "pattern-scaling": "Musterskalierung",
     "pattern-rotation": "Muster-Rotation",
