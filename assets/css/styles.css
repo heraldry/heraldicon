@@ -1033,8 +1033,10 @@ li.ui-menu-header {
 .filter-result-card-tags {
   margin: 10px 10px 10px 10px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.filter-result-card-tags .item-classification {
+  float: right;
 }
 
 .filter-component {
@@ -1049,9 +1051,6 @@ li.ui-menu-header {
   display: flex;
   flex-direction: row;
   gap: 10px;
-}
-
-.filter-component-tags {
 }
 
 .filter-component-results {
