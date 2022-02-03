@@ -240,9 +240,9 @@ label div {
 
 .tags {
   display: flex;
-  flex-flow: row wrap;
-  overflow: hidden;
-  height: 1.5em;
+  flex-flow: row;
+  flex-wrap: wrap;
+  width: 70%;
 }
 
 .collection .tags {
