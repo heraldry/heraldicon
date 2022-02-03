@@ -72,7 +72,8 @@
 
 (defn tags-view [tags & {:keys [on-delete
                                 on-click
-                                selected]}]
+                                selected
+                                style]}]
   (let [sorted-tags (if (seq? tags)
                       (sort tags)
                       (sort-by (fn [tag]
@@ -80,18 +81,17 @@
                                   (get tags tag)])
                                #(compare %2 %1)
                                (keys tags)))]
-    [:div.tags
+    [:div.tags {:style style}
      (for [tag sorted-tags]
        ^{:key tag}
-       [:<>
-        [tag-view (if (seq? tags)
-                    tag
-                    (str (name tag) ": " (get tags tag)))
-         :on-delete (when on-delete
-                      #(on-delete tag))
-         :on-click (when on-click
-                     #(on-click tag))
-         :selected? (get selected tag)]])]))
+       [tag-view (if (seq? tags)
+                   tag
+                   (str (name tag) ": " (get tags tag)))
+        :on-delete (when on-delete
+                     #(on-delete tag))
+        :on-click (when on-click
+                    #(on-click tag))
+        :selected? (get selected tag)])]))
 
 (defn form [{:keys [path] :as context}]
   (let [value (interface/get-raw-data (c/<< context :path value-path))

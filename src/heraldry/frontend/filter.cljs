@@ -212,7 +212,11 @@
      [:div.filter-component-tags
       [tags/tags-view tags-to-display
        :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
-       :selected filter-tags]]
+       :selected filter-tags
+       :style {:display "flex"
+               :flex-flow "row"
+               :width "100%"
+               :overflow "hidden"}]]
 
      [:div.filter-component-results
       (if (empty? display-items)
