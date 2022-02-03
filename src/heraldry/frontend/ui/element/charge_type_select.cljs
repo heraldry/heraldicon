@@ -11,7 +11,9 @@
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as reife]
+   [heraldry.util :as util]))
 
 (macros/reg-event-db :update-charge
   (fn [db [_ path changes]]
@@ -93,19 +95,25 @@
             [charge-type-choice (:path charge-context) key display-name :selected? (and (= key value)
                                                                                         (not variant))])
           [charge-select/list-charges
-           (fn [charge-data]
-             (rf/dispatch [:update-charge
-                           (:path charge-context)
-                           (merge {:type (->> charge-data
-                                              :type
-                                              name
-                                              (keyword "heraldry.charge.type"))
-                                   :variant {:id (:id charge-data)
-                                             :version (:latest-version charge-data)}}
-                                  {:attitude nil
-                                   :facing nil}
-                                  (select-keys charge-data
-                                               [:attitude :facing]))])):selected-charge variant]]]]])))
+           (fn [{:keys [id latest-version] :as charge-data}]
+             {:href (reife/href :view-charge-by-id {:id (util/id-for-url id)})
+              :on-click (fn [event]
+                          (doto event
+                            .preventDefault
+                            .stopPropagation)
+                          (rf/dispatch [:update-charge
+                                        (:path charge-context)
+                                        (merge {:type (->> charge-data
+                                                           :type
+                                                           name
+                                                           (keyword "heraldry.charge.type"))
+                                                :variant {:id id
+                                                          :version latest-version}}
+                                               {:attitude nil
+                                                :facing nil}
+                                               (select-keys charge-data
+                                                            [:attitude :facing]))]))})
+           :selected-charge variant]]]]])))
 
 (defmethod ui-interface/form-element :charge-type-select [context]
   [charge-type-select context])

@@ -510,6 +510,12 @@
     (when (= status :done)
       [ribbon-form])))
 
+(defn on-select [{:keys [id]}]
+  {:href (reife/href :view-ribbon-by-id {:id (util/id-for-url id)})
+   :on-click (fn [_event]
+               (rf/dispatch-sync [:clear-form-errors form-db-path])
+               (rf/dispatch-sync [:clear-form-message form-db-path]))})
+
 (defn view-list-ribbons []
   (rf/dispatch [:set-title :string.menu/ribbon-library])
   (let [[status _ribbons] (state/async-fetch-data
@@ -528,11 +534,7 @@
       [tr :string.button/create]]
      [:div {:style {:padding-top "0.5em"}}
       (if (= status :done)
-        [ribbon-select/list-ribbons
-         (fn [{:keys [id]}]
-           (rf/dispatch-sync [:clear-form-errors form-db-path])
-           (rf/dispatch-sync [:clear-form-message form-db-path])
-           (reife/push-state :view-ribbon-by-id {:id (util/id-for-url id)}))]
+        [ribbon-select/list-ribbons on-select]
         [:div [tr :string.miscellaneous/loading]])]]))
 
 (defn view-ribbon-by-id [{:keys [parameters]}]

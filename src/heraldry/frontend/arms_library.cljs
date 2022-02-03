@@ -313,20 +313,11 @@
         [arms-form]
         [:div [tr :string.miscellaneous/not-found]]))))
 
-(defn link-to-arms [arms]
-  (let [arms-id (-> arms
-                    :id
-                    util/id-for-url)]
-    [:a {:href (reife/href :view-arms-by-id {:id arms-id})
-         :on-click #(do
-                      (rf/dispatch-sync [:clear-form-errors form-db-path])
-                      (rf/dispatch-sync [:clear-form-message form-db-path]))}
-     (:name arms)]))
-
 (defn on-select [{:keys [id]}]
-  (rf/dispatch-sync [:clear-form-errors form-db-path])
-  (rf/dispatch-sync [:clear-form-message form-db-path])
-  (reife/push-state :view-arms-by-id {:id (util/id-for-url id)}))
+  {:href (reife/href :view-arms-by-id {:id (util/id-for-url id)})
+   :on-click (fn [_event]
+               (rf/dispatch-sync [:clear-form-errors form-db-path])
+               (rf/dispatch-sync [:clear-form-message form-db-path]))})
 
 (defn list-all-arms []
   [arms-select/list-arms on-select])

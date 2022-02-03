@@ -112,7 +112,7 @@
           (if (:is-public item)
             [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
             [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))]]
-      [:div.filter-result-card-preview {:on-click #(on-select item)}
+      [:a.filter-result-card-preview (on-select item)
        [preview/preview-image kind item]]
       [:div.filter-result-card-tags
        (when (= kind :charge)
