@@ -399,18 +399,6 @@
         [charge-form]
         [:div [tr :string.miscellaneous/not-found]]))))
 
-(defn link-to-charge [charge & {:keys [type-prefix?]}]
-  (let [charge-id (-> charge
-                      :id
-                      id-for-url)]
-    [:a {:href (reife/href :view-charge-by-id {:id charge-id})
-         :on-click #(do
-                      (rf/dispatch-sync [:clear-form-errors form-db-path])
-                      (rf/dispatch-sync [:clear-form-message form-db-path]))}
-     (when type-prefix?
-       (str (-> charge :type name) ": "))
-     (:name charge)]))
-
 (defn create-charge [_match]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path nil])
     (rf/dispatch-sync [:heraldry.frontend.history.core/clear form-db-path nil]))
@@ -424,9 +412,10 @@
       [charge-form])))
 
 (defn on-select [{:keys [id]}]
-  (rf/dispatch-sync [:clear-form-errors form-db-path])
-  (rf/dispatch-sync [:clear-form-message form-db-path])
-  (reife/push-state :view-charge-by-id {:id (util/id-for-url id)}))
+  {:href (reife/href :view-charge-by-id {:id (util/id-for-url id)})
+   :on-click (fn [_event]
+               (rf/dispatch-sync [:clear-form-errors form-db-path])
+               (rf/dispatch-sync [:clear-form-message form-db-path]))})
 
 (defn list-all-charges []
   [charge-select/list-charges on-select])

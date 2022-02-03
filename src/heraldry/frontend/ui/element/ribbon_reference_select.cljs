@@ -9,7 +9,9 @@
    [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as reife]))
 
 (macros/reg-event-db :set-ribbon-data
   (fn [db [_ path ribbon-data]]
@@ -67,7 +69,12 @@
                   :height "80vh"}}
          [ribbon-select/list-ribbons
           (fn [ribbon]
-            (rf/dispatch [:set-ribbon-reference (:path context) ribbon]))
+            {:href (reife/href :view-ribbon-by-id {:id (util/id-for-url (:id ribbon))})
+             :on-click (fn [event]
+                         (doto event
+                           .preventDefault
+                           .stopPropagation)
+                         (rf/dispatch [:set-ribbon-reference (:path context) ribbon]))})
           :selected-ribbon ribbon-data]]]])))
 
 (defmethod ui-interface/form-element :ribbon-reference-select [context]

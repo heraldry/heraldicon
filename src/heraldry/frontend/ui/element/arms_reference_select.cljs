@@ -6,7 +6,9 @@
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.interface :as interface]
-   [re-frame.core :as rf]))
+   [heraldry.util :as util]
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as reife]))
 
 (defn arms-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
@@ -35,8 +37,13 @@
                   :top "10vh"
                   :height "80vh"}}
          [arms-select/list-arms (fn [{:keys [id]}]
-                                  (rf/dispatch [:set context {:id id
-                                                              :version 0}]))
+                                  {:href (reife/href :view-arms-by-id {:id (util/id-for-url id)})
+                                   :on-click (fn [event]
+                                               (doto event
+                                                 .preventDefault
+                                                 .stopPropagation)
+                                               (rf/dispatch [:set context {:id id
+                                                                           :version 0}]))})
           :selected-arms arms-data]]]])))
 
 (defmethod ui-interface/form-element :arms-reference-select [context]
