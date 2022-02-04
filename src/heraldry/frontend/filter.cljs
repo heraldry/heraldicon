@@ -1,5 +1,6 @@
 (ns heraldry.frontend.filter
   (:require
+   ["react-infinite-scroll-component" :as InfiniteScroll]
    [clojure.set :as set]
    [clojure.string :as s]
    [heraldry.attribution :as attribution]
@@ -13,7 +14,8 @@
    [heraldry.frontend.ui.element.tags :as tags]
    [heraldry.frontend.user :as user]
    [heraldry.util :as util]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reagent.core :as r]))
 
 (macros/reg-event-db ::filter-toggle-tag
   (fn [db [_ db-path tag]]
@@ -122,6 +124,8 @@
             [community-tag])])
        [tags/tags-view (-> item :tags keys)]]]]))
 
+(def infinite-scroll (r/adapt-react-class InfiniteScroll))
+
 (defn component [id user-data all-items-path filter-keys kind on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                                              hide-access-filter?
                                                                                              on-filter-string-change
@@ -218,22 +222,30 @@
                :width "100%"
                :overflow "hidden"}]]
 
-     [:div.filter-component-results
-      (if (empty? display-items)
-        [:div [tr :string.miscellaneous/none]]
-        [:ul.filter-results
-         (doall
-          (for [item display-items]
-            ^{:key (:id item)}
-            [result-card all-items-path (:id item) kind on-select selected-item-path]))])]
-
-     (when-not (= (count filtered-items)
-                  (count display-items))
-       [:div.filter-component-show-more
-        [:button.button {:on-click #(rf/dispatch [::show-more
-                                                  number-of-items-path
-                                                  page-size])}
-         [tr :string.miscellaneous/show-more]]])]))
+     (let [results-id (str "filter-results-" id)]
+       [:div.filter-component-results {:id results-id}
+        (if (empty? display-items)
+          [:div [tr :string.miscellaneous/none]]
+          [infinite-scroll {:dataLength (count display-items)
+                            :hasMore (not= (count filtered-items)
+                                           (count display-items))
+                            :next #(rf/dispatch [::show-more
+                                                 number-of-items-path
+                                                 page-size])
+                            :scrollableTarget results-id
+                            :style {:overflow "visible"}}
+           [:ul.filter-results
+            (doall
+             (for [item display-items]
+               ^{:key (:id item)}
+               [result-card all-items-path (:id item) kind on-select selected-item-path]))
+            (when-not (= (count filtered-items)
+                         (count display-items))
+              [:li.filter-result-card-wrapper.filter-component-show-more
+               [:button.button {:on-click #(rf/dispatch [::show-more
+                                                         number-of-items-path
+                                                         page-size])}
+                [tr :string.miscellaneous/show-more]]])]])])]))
 
 (defn legacy-component [id user-data all-items filter-keys display-fn refresh-fn & {:keys [hide-ownership-filter?
                                                                                            hide-access-filter?
