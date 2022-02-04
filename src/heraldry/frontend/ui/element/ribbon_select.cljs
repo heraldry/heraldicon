@@ -61,7 +61,8 @@
     (state/invalidate-cache [:all-ribbons] :all-ribbons)))
 
 (defn component [ribbon-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
-                                                                 selected-ribbon]}]
+                                                                 selected-ribbon
+                                                                 display-selected-item?]}]
   (let [user-data (user/data)]
     [filter/component
      :ribbon-list
@@ -71,16 +72,18 @@
      :ribbon
      on-select
      refresh-fn
-     :sort-fn (fn [ribbon]
-                [(not (and selected-ribbon
-                           (filter/selected-item? selected-ribbon ribbon)))
-                 (-> ribbon :name s/lower-case)])
+     :sort-fn (juxt (comp s/lower-case :name)
+                    :type
+                    :id
+                    :version)
      :page-size 10
      :hide-ownership-filter? hide-ownership-filter?
      :component-styles {:height "calc(80vh - 3em)"}
-     :selected-item selected-ribbon]))
+     :selected-item selected-ribbon
+     :display-selected-item? display-selected-item?]))
 
-(defn list-ribbons [on-select & {:keys [selected-ribbon]}]
+(defn list-ribbons [on-select & {:keys [selected-ribbon
+                                        display-selected-item?]}]
   (let [[status _ribbon-list] (state/async-fetch-data
                                list-db-path
                                :all
@@ -90,5 +93,6 @@
        list-db-path
        on-select
        invalidate-ribbons-cache
-       :selected-ribbon selected-ribbon]
+       :selected-ribbon selected-ribbon
+       :display-selected-item? display-selected-item?]
       [:div [tr :string.miscellaneous/loading]])))

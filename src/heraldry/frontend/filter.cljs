@@ -28,7 +28,7 @@
   (= (:id selected-item)
      (:id item)))
 
-(defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-ownership selected-item]
+(defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-ownership]
   (let [words (-> filter-string
                   (s/split #" +")
                   (->> (map s/lower-case)))
@@ -36,30 +36,28 @@
                             keys
                             set)]
     (filterv (fn [item]
-               (or (and selected-item
-                        (selected-item? selected-item item))
-                   (and (case filter-ownership
-                          :mine (= (:username item)
-                                   (:username user-data))
-                          :heraldicon (= (:username item) "heraldicon")
-                          :community (not= (:username item) "heraldicon")
-                          true)
-                        (case filter-access
-                          :public (:is-public item)
-                          :private (not (:is-public item))
-                          true)
-                        (every? (fn [word]
-                                  (some (fn [attribute]
-                                          (-> item
-                                              (get attribute)
-                                              (util/matches-word word)))
-                                        filter-keys))
-                                words)
-                        (set/subset? filter-tags-set
-                                     (-> item
-                                         :tags
-                                         keys
-                                         set)))))
+               (and (case filter-ownership
+                      :mine (= (:username item)
+                               (:username user-data))
+                      :heraldicon (= (:username item) "heraldicon")
+                      :community (not= (:username item) "heraldicon")
+                      true)
+                    (case filter-access
+                      :public (:is-public item)
+                      :private (not (:is-public item))
+                      true)
+                    (every? (fn [word]
+                              (some (fn [attribute]
+                                      (-> item
+                                          (get attribute)
+                                          (util/matches-word word)))
+                                    filter-keys))
+                            words)
+                    (set/subset? filter-tags-set
+                                 (-> item
+                                     :tags
+                                     keys
+                                     set))))
              item-list)))
 
 (macros/reg-event-db ::show-more
@@ -93,36 +91,54 @@
                       :color "#f6f6f6"}}
    "community"])
 
-(defn result-card [items-path item-id kind on-select selected-item-path]
+(defn result-card [items-path item-id kind on-select selected-item-path & {:keys [selection-placeholder?]}]
   (let [item @(rf/subscribe [::filtered-item items-path item-id])
         selected? @(rf/subscribe [::filtered-item-selected? selected-item-path item-id])
         username (:username item)
         own-username (:username (user/data))]
     [:li.filter-result-card-wrapper
-     [:div.filter-result-card {:class (when selected? "selected")}
+     [:div.filter-result-card {:class (when (and item selected?) "selected")
+                               :style (when selection-placeholder?
+                                        {:border "1px solid #888"
+                                         :border-radius 0})}
       [:div.filter-result-card-header
        [:div.filter-result-card-owner
-        [:a {:href (attribution/full-url-for-username username)
-             :target "_blank"
-             :title username}
-         [:img {:src (util/avatar-url username)
-                :style {:border-radius "50%"}}]]]
+        (when item
+          [:a {:href (attribution/full-url-for-username username)
+               :target "_blank"
+               :title username}
+           [:img {:src (util/avatar-url username)
+                  :style {:border-radius "50%"}}]])]
        [:div.filter-result-card-title
         (:name item)]
-       [:div.filter-result-card-access
-        (when (= own-username username)
-          (if (:is-public item)
-            [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
-            [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))]]
-      [:a.filter-result-card-preview (on-select item)
-       [preview/preview-image kind item]]
+       (when item
+         [:div.filter-result-card-access
+          (when (= own-username username)
+            (if (:is-public item)
+              [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+              [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))])]
+      [(if item
+         :a.filter-result-card-preview
+         :div.filter-result-card-preview) (when on-select
+                                            (on-select item))
+       (if item
+         [preview/preview-image kind item]
+         [:div.filter-no-item-selected
+          [tr :string.miscellaneous/no-item-selected]])]
       [:div.filter-result-card-tags
-       (when (= kind :charge)
-         [:div.item-classification
-          (if (= username "heraldicon")
-            [heraldicon-tag]
-            [community-tag])])
-       [tags/tags-view (-> item :tags keys)]]]]))
+       (when item
+         [:<>
+          (when (= kind :charge)
+            [:div.item-classification {:style {:padding-left "10px"}}
+             (if (= username "heraldicon")
+               [heraldicon-tag]
+               [community-tag])])
+          [tags/tags-view (-> item :tags keys)
+           :style {:display "flex"
+                   :flex-flow "row"
+                   :flex-wrap "wrap"
+                   :width "auto"
+                   :overflow "hidden"}]])]]]))
 
 (def infinite-scroll (r/adapt-react-class InfiniteScroll))
 
@@ -132,7 +148,8 @@
                                                                                              component-styles
                                                                                              page-size
                                                                                              sort-fn
-                                                                                             selected-item]}]
+                                                                                             selected-item
+                                                                                             display-selected-item?]}]
   (let [filter-path [:ui :filter id]
         selected-item-path (conj filter-path :selected-item)
         filter-string-path (conj filter-path :filter-string)
@@ -157,8 +174,7 @@
                                      filter-string
                                      filter-tags
                                      filter-access
-                                     filter-ownership
-                                     selected-item)
+                                     filter-ownership)
         tags-to-display (->> filtered-items
                              (map (comp keys :tags))
                              (apply concat)
@@ -219,7 +235,8 @@
        :selected filter-tags
        :style {:display "flex"
                :flex-flow "row"
-               :width "100%"
+               :flex-wrap "wrap"
+               :width "auto"
                :overflow "hidden"}]]
 
      (let [results-id (str "filter-results-" id)]
@@ -235,6 +252,9 @@
                             :scrollableTarget results-id
                             :style {:overflow "visible"}}
            [:ul.filter-results
+            (when display-selected-item?
+              [result-card all-items-path (:id selected-item) kind nil selected-item-path
+               :selection-placeholder? true])
             (doall
              (for [item display-items]
                ^{:key (:id item)}
@@ -269,8 +289,7 @@
                                      filter-string
                                      filter-tags
                                      filter-access
-                                     filter-ownership
-                                     selected-item)
+                                     filter-ownership)
         tags-to-display (->> filtered-items
                              (map (comp keys :tags))
                              (apply concat)
