@@ -1061,10 +1061,14 @@ li.ui-menu-header {
 }
 
 .filter-component-show-more {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .filter-component-show-more button {
   display: block;
-  margin: auto;
   white-space: nowrap;
 }
