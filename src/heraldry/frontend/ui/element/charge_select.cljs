@@ -266,7 +266,7 @@
                     :type
                     :id
                     :version)
-     :page-size 10
+     :page-size 20
      :hide-ownership-filter? hide-ownership-filter?
      :component-styles {:height "calc(80vh - 3em)"}
      :selected-item selected-charge
