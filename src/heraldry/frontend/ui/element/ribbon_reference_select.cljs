@@ -75,7 +75,8 @@
                            .preventDefault
                            .stopPropagation)
                          (rf/dispatch [:set-ribbon-reference (:path context) ribbon]))})
-          :selected-ribbon ribbon-data]]]])))
+          :selected-ribbon ribbon-data
+          :display-selected-item? true]]]])))
 
 (defmethod ui-interface/form-element :ribbon-reference-select [context]
   [ribbon-reference-select context])

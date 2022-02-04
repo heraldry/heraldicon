@@ -1075,3 +1075,10 @@ li.ui-menu-header {
   display: block;
   white-space: nowrap;
 }
+
+.filter-no-item-selected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
