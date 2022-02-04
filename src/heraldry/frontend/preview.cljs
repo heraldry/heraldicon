@@ -18,7 +18,7 @@
            (str "?width=" width "&height=" height)))))
 
 (defn preview-image [kind item]
-  (let [url (preview-url kind item :width 300 :height 220)
+  (let [url (preview-url kind item :width 300 :height 215)
         loaded-flag-path [:ui :preview-image-loaded? url]
         loaded? @(rf/subscribe [:get loaded-flag-path])]
     [:<>
