@@ -113,7 +113,8 @@
                                                 :facing nil}
                                                (select-keys charge-data
                                                             [:attitude :facing]))]))})
-           :selected-charge variant]]]]])))
+           :selected-charge variant
+           :display-selected-item? true]]]]])))
 
 (defmethod ui-interface/form-element :charge-type-select [context]
   [charge-type-select context])

@@ -44,7 +44,8 @@
                                                  .stopPropagation)
                                                (rf/dispatch [:set context {:id id
                                                                            :version 0}]))})
-          :selected-arms arms-data]]]])))
+          :selected-arms arms-data
+          :display-selected-item? true]]]])))
 
 (defmethod ui-interface/form-element :arms-reference-select [context]
   [arms-reference-select context])

@@ -6,7 +6,6 @@
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.filter :as filter]
    [heraldry.frontend.language :refer [tr]]
-   [heraldry.frontend.preview :as preview]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.user :as user]
    [re-frame.core :as rf]
@@ -57,7 +56,8 @@
   (state/invalidate-cache list-db-path key))
 
 (defn component [arms-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
-                                                               selected-arms]}]
+                                                               selected-arms
+                                                               display-selected-item?]}]
   (let [user-data (user/data)]
     [filter/component
      :arms-list
@@ -67,16 +67,18 @@
      :arms
      on-select
      refresh-fn
-     :sort-fn (fn [arms]
-                [(not (and selected-arms
-                           (filter/selected-item? selected-arms arms)))
-                 (-> arms :name s/lower-case)])
+     :sort-fn (juxt (comp s/lower-case :name)
+                    :type
+                    :id
+                    :version)
      :page-size 10
      :hide-ownership-filter? hide-ownership-filter?
      :component-styles {:height "calc(80vh - 3em)"}
-     :selected-item selected-arms]))
+     :selected-item selected-arms
+     :display-selected-item? display-selected-item?]))
 
-(defn list-arms [on-select & {:keys [selected-arms]}]
+(defn list-arms [on-select & {:keys [selected-arms
+                                     display-selected-item?]}]
   (let [[status _arms-list] (state/async-fetch-data
                              list-db-path
                              :all
@@ -86,5 +88,6 @@
        list-db-path
        on-select
        #(invalidate-arms-cache :all)
-       :selected-arms selected-arms]
+       :selected-arms selected-arms
+       :display-selected-item? display-selected-item?]
       [:div [tr :string.miscellaneous/loading]])))

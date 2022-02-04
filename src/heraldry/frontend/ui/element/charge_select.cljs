@@ -4,14 +4,12 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [com.wsscode.common.async-cljs :refer [<?]]
-   [heraldry.attribution :as attribution]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.charge-map :as charge-map]
    [heraldry.frontend.filter :as filter]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
-   [heraldry.frontend.preview :as preview]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tags :as tags]
    [heraldry.frontend.user :as user]
@@ -253,7 +251,8 @@
   (state/invalidate-cache list-db-path key))
 
 (defn component [charge-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
-                                                                 selected-charge]}]
+                                                                 selected-charge
+                                                                 display-selected-item?]}]
   (let [user-data (user/data)]
     [filter/component
      :charge-list
@@ -263,16 +262,18 @@
      :charge
      on-select
      refresh-fn
-     :sort-fn (fn [charge]
-                [(not (and selected-charge
-                           (filter/selected-item? selected-charge charge)))
-                 (-> charge :name s/lower-case)])
+     :sort-fn (juxt (comp s/lower-case :name)
+                    :type
+                    :id
+                    :version)
      :page-size 10
      :hide-ownership-filter? hide-ownership-filter?
      :component-styles {:height "calc(80vh - 3em)"}
-     :selected-item selected-charge]))
+     :selected-item selected-charge
+     :display-selected-item? display-selected-item?]))
 
-(defn list-charges [on-select & {:keys [selected-charge]}]
+(defn list-charges [on-select & {:keys [selected-charge
+                                        display-selected-item?]}]
   (let [[status _charges-list] (state/async-fetch-data
                                 list-db-path
                                 :all
@@ -282,5 +283,6 @@
        list-db-path
        on-select
        #(invalidate-charge-cache :all)
-       :selected-charge selected-charge]
+       :selected-charge selected-charge
+       :display-selected-item? display-selected-item?]
       [:div [tr :string.miscellaneous/loading]])))
