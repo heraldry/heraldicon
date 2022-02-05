@@ -4,28 +4,32 @@
    [heraldry.context :as c]
    [heraldry.frontend.ui.element.charge-type-select :as charge-type-select]
    [heraldry.frontend.ui.interface :as ui-interface]
-   [heraldry.frontend.validation :as validation]))
+   [heraldry.frontend.validation :as validation]
+   [heraldry.interface :as interface]))
 
 (defn form [context]
-  (ui-interface/form-elements
-   context
-   [:type
-    :escutcheon
-    :flag-aspect-ratio-preset
-    :flag-height
-    :flag-width
-    :flag-swallow-tail
-    :flag-tail-point-height
-    :flag-tail-tongue
-    :origin
-    :anchor
-    :geometry
-    :fimbriation
-    :tincture
-    :outline-mode
-    :vertical-mask
-    :manual-blazon
-    :ignore-layer-separator?]))
+  [:<>
+   (when-not (interface/get-raw-data (c/++ context :preview?))
+     [ui-interface/form-element (c/++ context :type)])
+
+   (ui-interface/form-elements
+    context
+    [:escutcheon
+     :flag-aspect-ratio-preset
+     :flag-height
+     :flag-width
+     :flag-swallow-tail
+     :flag-tail-point-height
+     :flag-tail-tongue
+     :origin
+     :anchor
+     :geometry
+     :fimbriation
+     :tincture
+     :outline-mode
+     :vertical-mask
+     :manual-blazon
+     :ignore-layer-separator?])])
 
 (defmethod ui-interface/component-node-data :heraldry.component/charge [context]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
