@@ -73,7 +73,9 @@
                     :version)
      :page-size 20
      :hide-ownership-filter? hide-ownership-filter?
-     :component-styles {:height "calc(80vh - 3em)"}
+     :component-styles (if display-selected-item?
+                         {:height "80vh"}
+                         {:height "90vh"})
      :selected-item selected-arms
      :display-selected-item? display-selected-item?]))
 
