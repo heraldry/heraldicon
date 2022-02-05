@@ -36,21 +36,24 @@
     [:i]]])
 
 (defn choice-preview-url [context]
-  (let [type-context (c/++ context :type)
-        variant-context (c/++ context :variant)
-        {:keys [inherited default]} (interface/get-relevant-options type-context)
-        current-value (interface/get-raw-data type-context)
-        value (or current-value
-                  inherited
-                  default)
-        variant (interface/get-raw-data variant-context)]
-    (if variant
-      (preview/preview-url
-       :charge variant
-       :width 64
-       :height 72)
-      (static/static-url
-       (str "/svg/charge-type-" (name value) "-unselected.svg")))))
+  (if (interface/get-raw-data (c/++ context :preview?))
+    (static/static-url
+     (str "/svg/charge-type-roundel-unselected.svg"))
+    (let [type-context (c/++ context :type)
+          variant-context (c/++ context :variant)
+          {:keys [inherited default]} (interface/get-relevant-options type-context)
+          current-value (interface/get-raw-data type-context)
+          value (or current-value
+                    inherited
+                    default)
+          variant (interface/get-raw-data variant-context)]
+      (if variant
+        (preview/preview-url
+         :charge variant
+         :width 64
+         :height 72)
+        (static/static-url
+         (str "/svg/charge-type-" (name value) "-unselected.svg"))))))
 
 (defn choice-preview [context]
   (let [variant-context (c/++ context :variant)
