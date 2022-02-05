@@ -61,7 +61,7 @@
            (case (or source-license :none)
              :none [tr :string.attribution/is-private]
              :public-domain [tr :string.attribution/is-in-the-public-domain]
-             [:<> [tr :string.attribution/is-licensed-under " "]
+             [:<> [tr :string.attribution/is-licensed-under] " "
               [:a {:href source-license-url :target "_blank"} source-license-display-name]])])])
      [tr :string.miscellaneous/unsaved-data])])
 
