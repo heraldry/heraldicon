@@ -3,6 +3,7 @@
    [heraldry.frontend.header :as header]
    [heraldry.frontend.keys] ;; needed for side effects
    [heraldry.frontend.modal :as modal]
+   [heraldry.frontend.not-found :as not-found]
    [heraldry.frontend.route :as route]
    [heraldry.frontend.user :as user]
    [heraldry.util :as util]
@@ -17,7 +18,7 @@
    [:div.main-content.no-scrollbar
     (if-let [view (route/view)]
       view
-      [:div "Not found"])
+      [not-found/not-found])
     [modal/render]]])
 
 (defn title []

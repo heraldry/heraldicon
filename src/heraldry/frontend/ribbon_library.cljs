@@ -9,6 +9,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.modal :as modal]
+   [heraldry.frontend.not-found :as not-found]
    [heraldry.frontend.ribbon :as ribbon-frontend]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.core :as ui]
@@ -497,7 +498,7 @@
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]
-        [:div [tr :string.miscellaneous/not-found]]))))
+        [not-found/not-found]))))
 
 (defn create-ribbon [_match]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path nil])
@@ -541,4 +542,7 @@
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         ribbon-id (str "ribbon:" id)]
-    [ribbon-display ribbon-id version]))
+    (if (or (nil? version)
+            (util/integer-string? version))
+      [ribbon-display ribbon-id version]
+      [not-found/not-found])))

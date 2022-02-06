@@ -11,6 +11,7 @@
    [heraldry.frontend.history.core :as history]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.modal :as modal]
+   [heraldry.frontend.not-found :as not-found]
    [heraldry.frontend.ribbon :as ribbon]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.core :as ui]
@@ -311,7 +312,7 @@
     (when (= status :done)
       (if arms-data
         [arms-form]
-        [:div [tr :string.miscellaneous/not-found]]))))
+        [not-found/not-found]))))
 
 (defn on-select [{:keys [id]}]
   {:href (reife/href :view-arms-by-id {:id (util/id-for-url id)})
@@ -354,4 +355,7 @@
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         arms-id (str "arms:" id)]
-    [arms-display arms-id version]))
+    (if (or (nil? version)
+            (util/integer-string? version))
+      [arms-display arms-id version]
+      [not-found/not-found])))

@@ -15,6 +15,7 @@
    [heraldry.frontend.history.core :as history]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.modal :as modal]
+   [heraldry.frontend.not-found :as not-found]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.core :as ui]
    [heraldry.frontend.ui.element.charge-select :as charge-select]
@@ -397,7 +398,7 @@
     (when (= status :done)
       (if charge-data
         [charge-form]
-        [:div [tr :string.miscellaneous/not-found]]))))
+        [not-found/not-found]))))
 
 (defn create-charge [_match]
   (when @(rf/subscribe [:heraldry.frontend.history.core/identifier-changed? form-db-path nil])
@@ -440,4 +441,7 @@
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         charge-id (str "charge:" id)]
-    [charge-display charge-id version]))
+    (if (or (nil? version)
+            (util/integer-string? version))
+      [charge-display charge-id version]
+      [not-found/not-found])))
