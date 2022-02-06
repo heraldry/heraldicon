@@ -9,6 +9,7 @@
    [heraldry.frontend.attribution :as attribution]
    [heraldry.frontend.history.core :as history]
    [heraldry.frontend.language :refer [tr]]
+   [heraldry.frontend.not-found :as not-found]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.core :as ui]
    [heraldry.frontend.ui.element.arms-select :as arms-select]
@@ -377,10 +378,13 @@
     (when (= status :done)
       (if collection-data
         [collection-form]
-        [:div [tr :string.miscellaneous/not-found]]))))
+        [not-found/not-found]))))
 
 (defn view-collection-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         collection-id (str "collection:" id)]
-    [collection-display collection-id version]))
+    (if (or (nil? version)
+            (util/integer-string? version))
+      [collection-display collection-id version]
+      [not-found/not-found])))

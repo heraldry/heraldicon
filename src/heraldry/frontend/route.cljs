@@ -11,7 +11,6 @@
    [heraldry.frontend.ribbon-library :as ribbon-library]
    [heraldry.frontend.user-library :as user-library]
    [reagent.core :as rc]
-   [reitit.coercion.spec :as rss]
    [reitit.frontend :as reif]
    [reitit.frontend.easy :as reife]))
 
@@ -58,27 +57,21 @@
 
    ["/collections/:id"
     {:name :view-collection-by-id
-     :parameters {:path {:id string?}}
      :view collection-library/view-collection-by-id
      :conflicting true}]
 
    ["/collections/:id/"
     {:name :view-collection-by-id-with-slash
-     :parameters {:path {:id string?}}
      :view collection-library/view-collection-by-id
      :conflicting true}]
 
    ["/collections/:id/:version"
     {:name :view-collection-by-id-and-version
-     :parameters {:path {:id string?
-                         :version number?}}
      :view collection-library/view-collection-by-id
      :conflicting true}]
 
    ["/collections/:id/:version/"
     {:name :view-collection-by-id-and-version-with-slash
-     :parameters {:path {:id string?
-                         :version number?}}
      :view collection-library/view-collection-by-id
      :conflicting true}]
 
@@ -102,27 +95,21 @@
 
    ["/arms/:id"
     {:name :view-arms-by-id
-     :parameters {:path {:id string?}}
      :view arms-library/view-arms-by-id
      :conflicting true}]
 
    ["/arms/:id/"
     {:name :view-arms-by-id-with-slash
-     :parameters {:path {:id string?}}
      :view arms-library/view-arms-by-id
      :conflicting true}]
 
    ["/arms/:id/:version"
     {:name :view-arms-by-id-and-version
-     :parameters {:path {:id string?
-                         :version number?}}
      :view arms-library/view-arms-by-id
      :conflicting true}]
 
    ["/arms/:id/:version/"
     {:name :view-arms-by-id-and-version-with-slash
-     :parameters {:path {:id string?
-                         :version number?}}
      :view arms-library/view-arms-by-id
      :conflicting true}]
 
@@ -146,27 +133,21 @@
 
    ["/charges/:id"
     {:name :view-charge-by-id
-     :parameters {:path {:id string?}}
      :view charge-library/view-charge-by-id
      :conflicting true}]
 
    ["/charges/:id/"
     {:name :view-charge-by-id-with-slash
-     :parameters {:path {:id string?}}
      :view charge-library/view-charge-by-id
      :conflicting true}]
 
    ["/charges/:id/:version"
     {:name :view-charge-by-id-and-version
-     :parameters {:path {:id string?
-                         :version number?}}
      :view charge-library/view-charge-by-id
      :conflicting true}]
 
    ["/charges/:id/:version/"
     {:name :view-charge-by-id-and-version-with-slash
-     :parameters {:path {:id string?
-                         :version number?}}
      :view charge-library/view-charge-by-id
      :conflicting true}]
 
@@ -190,27 +171,21 @@
 
    ["/ribbons/:id"
     {:name :view-ribbon-by-id
-     :parameters {:path {:id string?}}
      :view ribbon-library/view-ribbon-by-id
      :conflicting true}]
 
    ["/ribbons/:id/"
     {:name :view-ribbon-by-id-with-slash
-     :parameters {:path {:id string?}}
      :view ribbon-library/view-ribbon-by-id
      :conflicting true}]
 
    ["/ribbons/:id/:version"
     {:name :view-ribbon-by-id-and-version
-     :parameters {:path {:id string?
-                         :version number?}}
      :view ribbon-library/view-ribbon-by-id
      :conflicting true}]
 
    ["/ribbons/:id/:version/"
     {:name :view-ribbon-by-id-and-version-with-slash
-     :parameters {:path {:id string?
-                         :version number?}}
      :view ribbon-library/view-ribbon-by-id
      :conflicting true}]
 
@@ -226,13 +201,11 @@
 
    ["/users/:username"
     {:name :view-user
-     :parameters {:path {:username string?}}
      :view user-library/view-user-by-username
      :conflicting true}]
 
    ["/users/:username/"
     {:name :view-user-with-slash
-     :parameters {:path {:username string?}}
      :view user-library/view-user-by-username
      :conflicting true}]
 
@@ -245,7 +218,7 @@
      :view account/view}]])
 
 (def router
-  (reif/router routes {:data {:coercion rss/coercion}}))
+  (reif/router routes))
 
 (defn- resolve-href
   [to path-params query-params]
@@ -295,6 +268,7 @@
 (defn start-router []
   (reife/start!
    router
-   (fn [m] (reset! current-match m))
+   (fn [m] (when m
+             (reset! current-match m)))
    ;; set to false to enable HistoryAPI
    {:use-fragment false}))

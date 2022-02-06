@@ -337,3 +337,6 @@
   (str (or (config/get :heraldry-site-url)
            (config/get :heraldry-url))
        "/avatar/" username))
+
+(defn integer-string? [s]
+  (re-matches #"^[0-9]+$" s))
