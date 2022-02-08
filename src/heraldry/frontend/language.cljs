@@ -17,6 +17,16 @@
 (def local-storage-language-name
   "hd-language")
 
+(defn browser-preferred-language []
+  (when-let [language (or (first js/navigator.languages)
+                          js/navigator.language
+                          js/navigator.userLanguage)]
+    (let [known-language-keys (-> known-languages
+                                  keys
+                                  set)]
+      (or (get known-language-keys (keyword language))
+          (get known-language-keys (-> language (s/split #"-") first keyword))))))
+
 (defn store-language-setting [language]
   (set-item local-storage local-storage-language-name language))
 
@@ -38,10 +48,13 @@
 
 (macros/reg-event-db ::load-language-setting
   (fn [db _]
+    (browser-preferred-language)
     (let [loaded-language (get-item local-storage local-storage-language-name ":en")
           loaded-language (cond-> loaded-language
                             (s/starts-with? loaded-language ":") (-> (subs 1) keyword))]
-      (set-language db loaded-language))))
+      (if loaded-language
+        (set-language db loaded-language)
+        (set-language db (browser-preferred-language))))))
 
 (defn tr [data]
   (util/tr-raw data @(rf/subscribe [::selected-language])))
