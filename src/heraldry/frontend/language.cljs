@@ -59,41 +59,32 @@
 (defn tr [data]
   (util/tr-raw data @(rf/subscribe [::selected-language])))
 
-(defn selected-language-flag []
+(defn selected-language-option []
   (let [selected-language-code @(rf/subscribe [::selected-language])
-        [_title img-url] (get known-languages selected-language-code)]
-    [:img {:src img-url
-           :style {:width "2em"
-                   :filter "drop-shadow(0 0 5px #888)"
-                   :vertical-align "middle"}}]))
+        title (get known-languages selected-language-code)]
+    [tr title]))
 
-(defn language-flag [language-code & {:keys [on-click]}]
-  (let [[title img-url] (get known-languages language-code)]
-    [:div.tooltip {:style {:height "2.5em"}}
-     [:img {:src img-url
-            :on-click on-click
-            :style {:width "2em"
-                    :filter "drop-shadow(0 0 5px #888)"
-                    :position "relative"
-                    :top "50%"
-                    :left "50%"
-                    :transform "translate(-50%,-50%)"}}]
-
-     [:div.bottom {:style {:top "50px"}}
-      [:center [tr title]]
-      [:i]]]))
+(defn language-option [language-code & {:keys [on-click]}]
+  (let [title (get known-languages language-code)]
+    [:a {:href "#"
+         :on-click (fn [event]
+                     (doto event
+                       .preventDefault
+                       .stopPropagation)
+                     (when on-click
+                       (on-click)))}
+     [tr title]]))
 
 (defn selector []
   [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
-   {:style {:min-width "3em"}
-    :on-mouse-leave #(rf/dispatch [:heraldry.frontend.header/clear-menu-open?
+   {:on-mouse-leave #(rf/dispatch [:heraldry.frontend.header/clear-menu-open?
                                    language-menu-open?-path])}
    [:<>
     [:a.nav-menu-link {:href "#"
                        :on-click #(state/dispatch-on-event-and-prevent-default
                                    % [:heraldry.frontend.header/toggle-menu-open?
                                       language-menu-open?-path])}
-     [selected-language-flag]
+     [selected-language-option]
      " "]
     [:ul.nav-menu.nav-menu-children
      {:style {:display (if @(rf/subscribe [:heraldry.frontend.header/menu-open?
@@ -105,6 +96,6 @@
         ^{:key language-code}
         [:li.nav-menu-item
          [:a.nav-menu-link
-          [language-flag language-code
+          [language-option language-code
            :on-click #(state/dispatch-on-event-and-prevent-default
                        % [::set-language language-code])]]]))]]])
