@@ -185,7 +185,10 @@
                                  (when sort-fn
                                    (sort-fn item))]) filtered-items)
         number-of-items-path [:ui :filter id [filter-keys filter-string filter-tags filter-access filter-ownership]]
-        number-of-items (or @(rf/subscribe [:get number-of-items-path])
+        list-all? @(rf/subscribe [:get [:ui :list-all?]])
+        number-of-items (or (when list-all?
+                              (count filtered-items))
+                            @(rf/subscribe [:get number-of-items-path])
                             page-size)
         display-items (cond->> sorted-items
                         page-size (take number-of-items))
