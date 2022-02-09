@@ -66,7 +66,7 @@
 
 
 (macros/reg-event-db :initialize-db
-  (fn [db [_]]
+  (fn [db [_ crawler?]]
     (merge {:example-coa {:render-options (assoc default/render-options
                                                  :escutcheon :rectangle)
                           :coat-of-arms {:field {:type :heraldry.field.type/plain
@@ -98,7 +98,8 @@
             :coat-of-arms {:escutcheon :rectangle}
             :ui {:charge-tree {:show-public? true
                                :show-own? true}
-                 :component-tree {}}}
+                 :component-tree {}
+                 :list-all? crawler?}}
            db)))
 
 (macros/reg-event-db :set
