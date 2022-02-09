@@ -17,6 +17,6 @@
        (into {})))
 
 (def known-languages
-  {:en [:string.language/english (static/static-url "/img/flag-united-kingdom.svg")]
-   :de [:string.language/german (static/static-url "/img/flag-germany.svg")]
-   :ru [:string.language/russian (static/static-url "/img/flag-russia.svg")]})
+  {:en :string.language/english
+   :de :string.language/german
+   :ru :string.language/russian})
