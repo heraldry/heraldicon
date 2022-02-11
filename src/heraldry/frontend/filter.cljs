@@ -217,7 +217,7 @@
                    :default :all
                    :choices (concat [[:string.option.ownership-filter-choice/all :all]
                                      [:string.option.ownership-filter-choice/mine :mine]]
-                                    (when (= kind :charge)
+                                    (when (#{:charge :ribbon} kind)
                                       [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
                                        [:string.option.ownership-filter-choice/community :community]]))}]])
 
@@ -273,8 +273,7 @@
                                                                                            on-filter-string-change
                                                                                            component-styles
                                                                                            page-size
-                                                                                           sort-fn
-                                                                                           selected-item]}]
+                                                                                           sort-fn]}]
   (let [filter-path [:ui :filter id]
         filter-string-path (conj filter-path :filter-string)
         filter-tags-path (conj filter-path :filter-tags)
