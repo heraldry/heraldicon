@@ -1,7 +1,6 @@
 (ns heraldry.frontend.ui.element.charge-select
   (:require
    [cljs.core.async :refer [go]]
-   [clojure.string :as s]
    [clojure.walk :as walk]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.attributes :as attributes]
@@ -262,7 +261,7 @@
      :charge
      on-select
      refresh-fn
-     :sort-fn (juxt (comp s/lower-case :name)
+     :sort-fn (juxt (comp util/normalize-string-for-sort :name)
                     :type
                     :id
                     :version)
