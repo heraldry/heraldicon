@@ -273,10 +273,26 @@
                     %)
                  data))
 
+(defn normalize-string [s]
+  (some-> s
+          (.normalize "NFD")))
+
+(defn normalize-string-for-sort [s]
+  (some-> s
+          normalize-string
+          s/lower-case))
+
+(defn normalize-string-for-match [s]
+  (some-> s
+          normalize-string
+          (s/replace #"[\u0300-\u036f]" "")
+          s/lower-case))
+
 (defn matches-word [data word]
   (cond
-    (keyword? data) (-> data name s/lower-case (s/includes? word))
-    (string? data) (-> data s/lower-case (s/includes? word))
+    (keyword? data) (-> data name (matches-word word))
+    (string? data) (-> data normalize-string-for-match
+                       (s/includes? word))
     (vector? data) (some (fn [e]
                            (matches-word e word)) data)
     (map? data) (some (fn [[k v]]

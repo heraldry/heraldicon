@@ -1,13 +1,13 @@
 (ns heraldry.frontend.ui.element.arms-select
   (:require
    [cljs.core.async :refer [go]]
-   [clojure.string :as s]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.frontend.api.request :as api-request]
    [heraldry.frontend.filter :as filter]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.user :as user]
+   [heraldry.util :as util]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -67,7 +67,7 @@
      :arms
      on-select
      refresh-fn
-     :sort-fn (juxt (comp s/lower-case :name)
+     :sort-fn (juxt (comp util/normalize-string-for-sort :name)
                     :type
                     :id
                     :version)

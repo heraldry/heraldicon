@@ -24,10 +24,11 @@
                               (dissoc current-tags tag)
                               (assoc current-tags tag true))))))
 
+
 (defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-ownership]
   (let [words (-> filter-string
-                  (s/split #" +")
-                  (->> (map s/lower-case)))
+                  util/normalize-string-for-match
+                  (s/split #" +"))
         filter-tags-set (-> filter-tags
                             keys
                             set)]
