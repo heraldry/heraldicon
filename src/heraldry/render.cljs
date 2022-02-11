@@ -337,7 +337,20 @@
 (defn ribbon-standalone [{:keys [svg-export?
                                  target-width
                                  target-height] :as context}]
-  (let [[result-width result-height] [500 600]
+  (let [points (interface/get-raw-data (c/++ context :points))
+        thickness (interface/get-sanitized-data (c/++ context :thickness))
+        ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
+        ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
+        ;; height; could perhaps be a subscription or the ribbon function can provide it?
+        ;; but then can't use the ribbon function as reagent component
+        [min-x max-x
+         min-y max-y] (bounding-box/min-max-x-y (concat points
+                                                        (map (partial v/add (v/v 0 thickness)) points)))
+        margin 10
+        [result-width result-height] [(+ (- max-x min-x)
+                                         (* 2 margin))
+                                      (+ (- max-y min-y)
+                                         (* 2 margin))]
         [document-width
          document-height
          document-scale] (if (and svg-export?
@@ -373,7 +386,7 @@
      (when svg-export?
        [output/embed-fonts used-fonts])
      [:g {:transform (str "scale(" document-scale "," document-scale ")")}
-      [:g {:transform (str "translate(" (/ result-width 2) "," (/ result-height 2) ")")}
+      [:g {:transform (str "translate(" (- (- min-x margin) ) "," (- (- min-y margin)) ")")}
        [ribbon context :argent :none :helmet-dark]]]]))
 
 (defn motto [{:keys [environment
