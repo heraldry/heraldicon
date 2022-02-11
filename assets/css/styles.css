@@ -103,6 +103,21 @@
   src: url("../font/liturgisch/liturgisch.regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Fondamento";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/fondamento/Fondamento-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Uncial Antiqua";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/uncial-antiqua/UncialAntiqua-Regular.ttf")
+    format("truetype");
+}
+
 body {
   font-family: "SiteDefault", sans-serif;
 }
