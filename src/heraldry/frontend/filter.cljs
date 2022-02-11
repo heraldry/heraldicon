@@ -124,11 +124,10 @@
       [:div.filter-result-card-tags
        (when item
          [:<>
-          (when (= kind :charge)
-            [:div.item-classification {:style {:padding-left "10px"}}
-             (if (= username "heraldicon")
-               [heraldicon-tag]
-               [community-tag])])
+          [:div.item-classification {:style {:padding-left "10px"}}
+           (if (= username "heraldicon")
+             [heraldicon-tag]
+             [community-tag])]
           [tags/tags-view (-> item :tags keys)
            :style {:display "flex"
                    :flex-flow "row"
