@@ -19,7 +19,8 @@
    ["Liturgisch" :liturgisch "/liturgisch/liturgisch.regular.ttf"]
    ["Lohengrin" :lohengrin "/lohengrin/Lohengrin.ttf"]
    ["Magic School" :magic-school "/magic-school/MagicSchoolOne.ttf"]
-   ["Prince Valiant" :prince-valiant "/prince-valiant/PrinceValiant.ttf"]])
+   ["Prince Valiant" :prince-valiant "/prince-valiant/PrinceValiant.ttf"]
+   ["Trajan Pro" :trajan-pro "/trajan-pro/Trajan Pro Regular.ttf"]])
 
 (def choices
   (->> font-data
