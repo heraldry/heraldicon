@@ -37,7 +37,8 @@
                      :margin-right "0.25em"
                      :position "relative"
                      :transform "translate(0,0.4em)"}}]
-      [:span {:style {:text-transform "uppercase"}}
+      [:span {:style {:font-family "\"Trajan Pro\", sans-serif"
+                      :font-size "1.2em"}}
        [route/link {:to :home
                     :style {:padding-right "5px"}} "Heraldicon"]]
       [:sup {:style {:color "#d82"}} "beta"]]
