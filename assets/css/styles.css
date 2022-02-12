@@ -118,6 +118,13 @@
     format("truetype");
 }
 
+@font-face {
+  font-family: "Trajan Pro";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/trajan-pro/Trajan Pro Regular.ttf") format("truetype");
+}
+
 body {
   font-family: "SiteDefault", sans-serif;
 }
