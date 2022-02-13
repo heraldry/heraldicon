@@ -55,16 +55,6 @@
        (map s/lower-case)
        set))
 
-(defn optimize-svg [data]
-  (go-catch
-   (-> {:removeUnknownsAndDefaults false}
-       clj->js
-       getSvgoInstance
-       (.optimize data)
-       <p!
-       (js->clj :keywordize-keys true)
-       :data)))
-
 ;; views
 
 (defn parse-number-with-unit [s]
@@ -106,7 +96,12 @@
   (go-catch
    (try
      (-> data
-         optimize-svg
+         (util/optimize-svg (fn [options data]
+                              (go-catch
+                               (-> options
+                                   getSvgoInstance
+                                   (.optimize data)
+                                   <p!))))
          <?
          hickory/parse-fragment
          first
@@ -331,7 +326,7 @@
              :style {:flex "initial"
                      :padding-top "0.5em"
                      :white-space "nowrap"}}
-         [tr :string.miscellaneous/original]])
+         [tr :string.miscellaneous/svg-file]])
       [:div {:style {:flex "auto"}}]
       [:button.button
        {:type "button"
