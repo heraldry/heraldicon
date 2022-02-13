@@ -66,13 +66,13 @@
 
 (defn language-option [language-code & {:keys [on-click]}]
   (let [title (get known-languages language-code)]
-    [:a {:href "#"
-         :on-click (fn [event]
-                     (doto event
-                       .preventDefault
-                       .stopPropagation)
-                     (when on-click
-                       (on-click)))}
+    [:a.nav-menu-link {:href "#"
+                       :on-click (fn [event]
+                                   (doto event
+                                     .preventDefault
+                                     .stopPropagation)
+                                   (when on-click
+                                     (on-click)))}
      [tr title]]))
 
 (defn selector []
@@ -95,7 +95,5 @@
       (for [language-code (keys known-languages)]
         ^{:key language-code}
         [:li.nav-menu-item
-         [:a.nav-menu-link
-          [language-option language-code
-           :on-click #(state/dispatch-on-event-and-prevent-default
-                       % [::set-language language-code])]]]))]]])
+         [language-option language-code
+          :on-click #(rf/dispatch [::set-language language-code])]]))]]])
