@@ -34,7 +34,7 @@
                     :padding-left "0.5em"}}
       [:img {:src (static/static-url "/img/heraldicon-logo.png")
              :style {:height "1.8em"
-                     :margin-right "0.25em"
+                     :margin-right "0.6em"
                      :position "relative"
                      :transform "translate(0,0.4em)"}}]
       [:span {:style {:font-family "\"Trajan Pro\", sans-serif"
