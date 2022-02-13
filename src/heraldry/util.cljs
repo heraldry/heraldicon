@@ -356,3 +356,13 @@
 
 (defn integer-string? [s]
   (re-matches #"^[0-9]+$" s))
+
+
+(defn optimize-svg [data svgo-optimize-fn]
+  (go-catch
+   (-> {:removeUnknownsAndDefaults false}
+       clj->js
+       (svgo-optimize-fn data)
+       <?
+       (js->clj :keywordize-keys true)
+       :data)))
