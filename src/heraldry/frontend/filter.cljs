@@ -104,8 +104,7 @@
           [:a {:href (attribution/full-url-for-username username)
                :target "_blank"
                :title username}
-           [:img {:src (util/avatar-url username)
-                  :style {:border-radius "50%"}}]])]
+           [:img {:src (util/avatar-url username)}]])]
        [:div.filter-result-card-title
         (:name item)]
        (when item
