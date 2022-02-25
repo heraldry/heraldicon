@@ -7,7 +7,10 @@
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]))
 
-(defn create [shape {:keys [bounding-box context] :as meta}]
+(defn create [shape {:keys [bounding-box context
+                            width height
+                            offset] :as meta
+                     :or {offset {:x 0 :y 0}}}]
   (let [shape (if (map? shape)
                 shape
                 {:paths [shape]})
@@ -18,8 +21,10 @@
         top-right (v/v max-x min-y)
         bottom-left (v/v min-x max-y)
         bottom-right (v/v max-x max-y)
-        width (- max-x min-x)
-        height (- max-y min-y)
+        width (or width
+                  (- max-x min-x))
+        height (or height
+                   (- max-y min-y))
         top (v/avg top-left top-right)
         bottom (v/avg bottom-left bottom-right)
         ;; not actually center, but chosen such that bend lines at 45° run together in it
@@ -29,7 +34,7 @@
         ;; just get the middle, even if that'll break saltire-like divisions
         fess (or (-> meta :points :fess)
                  (if (= context :root)
-                   (v/v (:x top) (+ min-y (/ width 2)))
+                   (v/v (:x top) (+ min-y (/ (- max-x min-x) 2)))
                    (v/avg top-left bottom-right)))
         left (v/v min-x (:y fess))
         right (v/v max-x (:y fess))
@@ -61,7 +66,9 @@
 
 (defn transform-to-width [environment target-width]
   (let [width (:width environment)
-        top-left (get-in environment [:points :top-left])
+        top-left (v/add (get-in environment [:points :top-left])
+                        (or (get-in environment [:meta :offset])
+                            {:x 0 :y 0}))
         offset (v/sub top-left)
         scale-factor (/ target-width width)]
     (-> environment
