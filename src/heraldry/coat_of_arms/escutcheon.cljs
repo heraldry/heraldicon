@@ -70,7 +70,10 @@
                       "h 7"
                       "z")
                  {:context :root
-                  :bounding-box [-7 7 0 (* 2 8)]})})
+                  :bounding-box [-7 7 0 16]
+                  :width 14
+                  :height 17
+                  :points {:fess {:x 0 :y 8}}})})
 
 (def lozenge
   {:display-name :string.escutcheon.type/lozenge
@@ -141,7 +144,11 @@
                       "h 8"
                       "z")
                  {:context :root
-                  :bounding-box [-8 8 0 (+ (* 2 8) 1)]})})
+                  :bounding-box [-7 7 0 16]
+                  :width 16
+                  :height 17
+                  :offset {:x -1 :y 0}
+                  :points {:fess {:x 0 :y 8}}})})
 
 (def polish
   {:display-name :string.escutcheon.type/polish
