@@ -70,7 +70,7 @@ staging-frontend-deploy: staging-frontend-release
 # DEV
 
 dev-local:
-	yarn shadow-cljs watch frontend backend test manage short-url
+	yarn shadow-cljs watch frontend backend test manage
 
 dev-test:
 	yarn shadow-cljs watch test
@@ -92,18 +92,6 @@ check-dirty-backend:
 check-before-deploy-frontend: check-debug-print-frontend check-dirty-frontend
 
 check-before-deploy-backend: check-debug-print-frontend check-dirty-frontend check-debug-print-backend check-dirty-backend
-
-# short-url
-
-PROD_SHORT_URL_RELEASE_DIR = build/prod
-PROD_SHORT_URL_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/commit "$(COMMIT)"}}}
-
-prod-short-url-release:
-	rm -rf $(PROD_SHORT_URL_RELEASE_DIR) 2> /dev/null || true
-	yarn shadow-cljs release short-url --config-merge '$(PROD_SHORT_URL_CONFIG)'
-
-prod-short-url-deploy: prod-short-url-release
-	cd backend && yarn sls deploy --config serverless-short-url.yml --stage prod
 
 check-outdated:
 	clojure -Sdeps '{:deps {olical/depot {:mvn/version "RELEASE"}}}' -M -m depot.outdated.main

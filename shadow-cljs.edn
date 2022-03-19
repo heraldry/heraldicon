@@ -44,17 +44,6 @@
 
            :release {:output-to "./backend/build/prod/backend.js"}}
 
-          :short-url
-          {:target :node-library
-           :exports {:handler heraldry.backend.short-url/handler}
-           :js-options {:js-package-dirs ["./backend/node_modules"]}
-           :compiler-options {:output-feature-set :es6
-                              :warnings {:redef false}}
-
-           :dev {:output-to "./backend/build/dev/short_url.js"}
-
-           :release {:output-to "./backend/build/prod/short_url.js"}}
-
           :manage
           {:target :node-script
            :main heraldry.manage/main
