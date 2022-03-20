@@ -300,7 +300,8 @@
       "lozenge": "Raute",
       "mascle": "Fensterraute",
       "roundel": "Kugel",
-      "rustre": "Durchbohrte Raute"
+      "rustre": "Durchbohrte Raute",
+      "star": "Stern"
     }
   },
   "render-options": {
@@ -404,6 +405,7 @@
     "eccentricity": "Exzentrizität",
     "edge-angle": "Kantenwinkel",
     "end-split": "Spaltung am Ende",
+    "wavy-rays?": "Gewellt",
     "facing": "Blickrichtung",
     "gap": "Lücke",
     "fimbriation": "Säumung",

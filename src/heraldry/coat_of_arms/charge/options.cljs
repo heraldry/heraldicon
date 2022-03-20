@@ -10,6 +10,7 @@
    [heraldry.coat-of-arms.charge.type.mascle :as mascle]
    [heraldry.coat-of-arms.charge.type.roundel :as roundel]
    [heraldry.coat-of-arms.charge.type.rustre :as rustre]
+   [heraldry.coat-of-arms.charge.type.star :as star]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
@@ -24,6 +25,7 @@
    fusil/charge-type
    mascle/charge-type
    rustre/charge-type
+   star/charge-type
    crescent/charge-type])
 
 (def choices
@@ -61,6 +63,7 @@
   #{[:type]
     [:escutcheon]
     [:anchor :point]
+    [:num-points]
     [:variant]
     [:data]
     [:fimbriation :mode]})

@@ -24,6 +24,9 @@
      :origin
      :anchor
      :geometry
+     :num-points
+     :eccentricity
+     :wavy-rays?
      :fimbriation
      :tincture
      :outline-mode
