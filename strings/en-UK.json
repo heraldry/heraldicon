@@ -300,7 +300,8 @@
       "lozenge": "Lozenge",
       "mascle": "Mascle",
       "roundel": "Roundel",
-      "rustre": "Rustre"
+      "rustre": "Rustre",
+      "star": "Star"
     }
   },
   "render-options": {
@@ -404,6 +405,7 @@
     "eccentricity": "Eccentricity",
     "edge-angle": "Edge angle",
     "end-split": "End split",
+    "wavy-rays?": "Wavy",
     "facing": "Facing",
     "gap": "Gap",
     "fimbriation": "Fimbriation",
