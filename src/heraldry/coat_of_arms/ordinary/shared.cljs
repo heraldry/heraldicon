@@ -20,10 +20,9 @@
                     (update :extra-line dissoc :fimbriation)
                     (dissoc :fimbriation))))))
 
-(defn adjust-shape [shape base-width base-thickness context ]
+(defn adjust-shape [shape base-width base-thickness context]
   (let [voided? (interface/get-sanitized-data (c/++ context :voided :voided?))
-        humetty? (interface/get-sanitized-data (c/++ context :humetty :humetty?))
-        ]
+        humetty? (interface/get-sanitized-data (c/++ context :humetty :humetty?))]
     (-> shape
         path/make-path
         (cond->

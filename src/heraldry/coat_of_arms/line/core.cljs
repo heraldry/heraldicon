@@ -430,7 +430,7 @@
                           path/parse-path
                           path/reverse)
         line-reversed-start (path/get-start-pos reversed-path)
-        line-reversed  (path/to-svg reversed-path :from-zero? true)
+        line-reversed (path/to-svg reversed-path :from-zero? true)
         line-start (:line-start line-data)
         line-end (-> line-start
                      (v/add line-reversed-start)

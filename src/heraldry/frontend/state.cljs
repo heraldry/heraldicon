@@ -64,7 +64,6 @@
 
 ;; events
 
-
 (macros/reg-event-db :initialize-db
   (fn [db [_ crawler?]]
     (merge {:example-coa {:render-options (assoc default/render-options

@@ -182,7 +182,6 @@
                 [key colour])))
        (into {})))
 
-
 (def tincture-modifier-qualifier-choices
   (vec (concat (->> qualifier-percentages
                     reverse

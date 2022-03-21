@@ -157,7 +157,7 @@
                                            {:point (-> shape-path
                                                        (.getPointAt slot-t)
                                                        (as-> p
-                                                         (v/v (.-x p) (.-y p))))
+                                                             (v/v (.-x p) (.-y p))))
                                             :slot-path (-> context :path (conj :slots slot-index))
                                             :charge-index (if (and (int? charge-index)
                                                                    (< -1 charge-index num-charges))

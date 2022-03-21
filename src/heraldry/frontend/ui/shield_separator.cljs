@@ -2,7 +2,6 @@
   (:require
    [heraldry.frontend.ui.interface :as ui-interface]))
 
-
 (defmethod ui-interface/component-node-data :heraldry.component/shield-separator [_context]
   {:title :string.miscellaneous/shield-layer
    :selectable? false})

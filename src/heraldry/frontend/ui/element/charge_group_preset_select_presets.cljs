@@ -321,8 +321,7 @@
                           :angle 90}}]
       :slots [0 0 0 0 0 0 0]}
      {[:charges 0 :anchor :point] :angle
-      [:charges 0 :anchor :angle] 90}]
-    ]
+      [:charges 0 :anchor :angle] 90}]]
    [:string.charge-group.presets.group/others
     [:string.charge-group.presets/in-orle :in-orle
      {:type :heraldry.charge-group.type/in-orle

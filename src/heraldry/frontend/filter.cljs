@@ -24,7 +24,6 @@
                               (dissoc current-tags tag)
                               (assoc current-tags tag true))))))
 
-
 (defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-ownership]
   (let [words (-> filter-string
                   util/normalize-string-for-match

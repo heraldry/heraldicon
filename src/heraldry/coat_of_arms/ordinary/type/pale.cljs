@@ -187,7 +187,7 @@
                          -))
       :alignment :right]
      [cottising/render-pale-cottise
-      (c/++ cottise-context :cottising :cottise-opposite-1 )
+      (c/++ cottise-context :cottising :cottise-opposite-1)
       :cottise-opposite-2 :cottise-opposite-1
       :offset-x-fn (fn [base distance]
                      (-> base

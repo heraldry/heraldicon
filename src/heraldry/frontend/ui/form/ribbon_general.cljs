@@ -151,8 +151,7 @@
                      (fn [segments]
                        (let [new-segments (->> segments
                                                (map (fn [segment]
-                                                      (if
-                                                          (-> segment :type
+                                                      (if (-> segment :type
                                                               (= :heraldry.ribbon.segment/foreground-with-text))
                                                         (assoc segment :text "LOREM IPSUM")
                                                         (dissoc segment :text))))

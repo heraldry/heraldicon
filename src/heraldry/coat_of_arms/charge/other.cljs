@@ -111,8 +111,7 @@
                                                  colour/normalize
                                                  layer-separator-colours) (-> (assoc opacity-attribute opacity)
                                                                               (cond->
-                                                                                (:opacity v) (assoc :opacity opacity)))
-                                         )]
+                                                                                (:opacity v) (assoc :opacity opacity))))]
                              (if (seq rest)
                                (recur new-v rest)
                                new-v)))
@@ -236,7 +235,7 @@
                     slot-angle]} charge-group
             context (dissoc context :charge-group)
             charge-data (:data full-charge-data)
-            fixed-tincture  (-> full-charge-data :fixed-tincture (or :none))
+            fixed-tincture (-> full-charge-data :fixed-tincture (or :none))
             render-field? (= fixed-tincture :none)
             landscape? (:landscape? full-charge-data)
             ;; since size now is filled with a default, check whether it was set at all,
