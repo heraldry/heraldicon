@@ -1,7 +1,6 @@
 (ns heraldry.render
   (:require
    [clojure.string :as s]
-   [heraldry.backend.output :as output]
    [heraldry.coat-of-arms.escutcheon :as escutcheon]
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.field.shared :as field-shared]
@@ -336,7 +335,8 @@
 
 (defn ribbon-standalone [{:keys [svg-export?
                                  target-width
-                                 target-height] :as context}]
+                                 target-height
+                                 embed-fonts] :as context}]
   (let [points (interface/get-raw-data (c/++ context :points))
         thickness (interface/get-sanitized-data (c/++ context :thickness))
         ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
@@ -383,8 +383,9 @@
               :height document-height}
              {:style {:width "100%"}
               :preserveAspectRatio "xMidYMin meet"}))
-     (when svg-export?
-       [output/embed-fonts used-fonts])
+     (when (and svg-export?
+                embed-fonts)
+       [embed-fonts used-fonts])
      [:g {:transform (str "scale(" document-scale "," document-scale ")")}
       [:g {:transform (str "translate(" (- (- min-x margin) ) "," (- (- min-y margin)) ")")}
        [ribbon context :argent :none :helmet-dark]]]]))
@@ -542,7 +543,8 @@
 (defn achievement [{:keys [short-url
                            svg-export?
                            target-width
-                           target-height] :as context}]
+                           target-height
+                           embed-fonts] :as context}]
   (let [short-url-font :deja-vu-sans
         coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
@@ -661,8 +663,9 @@
               :height document-height}
              {:style {:width "100%"}
               :preserveAspectRatio "xMidYMin meet"}))
-     (when svg-export?
-       [output/embed-fonts used-fonts])
+     (when (and svg-export?
+                embed-fonts)
+       [embed-fonts used-fonts])
      [:g {:transform (str "scale(" document-scale "," document-scale ")")}
       [:g {:transform (str "translate(" margin "," margin ")")}
        [:g {:transform achievement-transform
@@ -707,7 +710,8 @@
 
 (defn charge-standalone [{:keys [svg-export?
                                  target-width
-                                 target-height] :as context}]
+                                 target-height
+                                 embed-fonts] :as context}]
   (let [shield (escutcheon/field :rectangle nil nil nil nil nil)
         environment (environment/transform-to-width shield 100)
         [result-width result-height] [(:width environment)
@@ -745,7 +749,8 @@
               :height document-height}
              {:style {:width "100%"}
               :preserveAspectRatio "xMidYMin meet"}))
-     (when svg-export?
-       [output/embed-fonts used-fonts])
+     (when (and svg-export?
+                embed-fonts)
+       [embed-fonts used-fonts])
      [:g {:transform (str "scale(" document-scale "," document-scale ")")}
       [interface/render-component (assoc context :environment environment)]]]))
