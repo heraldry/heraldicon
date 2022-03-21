@@ -7,9 +7,7 @@
  :builds {:frontend
           {:target :browser
            :asset-path "/js/generated"
-           :js-options {:js-package-dirs ["./node_modules"]
-                        :keep-native-requires true
-                        :keep-as-require #{"crypto"}}
+           :js-options {:js-package-dirs ["./node_modules"]}
            :devtools {:after-load heraldry.frontend.main/init
                       :http-root "./assets"
                       :http-port 8081
