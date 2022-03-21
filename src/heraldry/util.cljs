@@ -32,16 +32,6 @@
       (.update data)
       (.digest "hex")))
 
-;; probably not safe to use with the path, as elements with the same path
-;; could be rendered multiple times (e.g. charges in a charge-group)
-(defn stable-id
-  ([seed]
-   (stable-id seed nil))
-
-  ([seed suffix]
-   (cond-> (-> seed pr-str sha1)
-     suffix (str "-" suffix))))
-
 (defn id-for-url [id]
   (when id
     (-> id
