@@ -10,7 +10,7 @@
 
 ;; TODO: likely can be further improved by reading out the various description strings
 ;; in separate subscriptions
-(defn submenu-link-name[options line]
+(defn submenu-link-name [options line]
   (let [changes [(-> line :type line/line-map)
                  (when (some #(options/changed? % line options)
                              [:eccentricity :spacing :offset :base-line])

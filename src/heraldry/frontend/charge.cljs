@@ -22,7 +22,6 @@
       (catch :default e
         (log/error "fetch charges for user error:" e)))))
 
-
 (defn fetch-charges []
   (go
     (try

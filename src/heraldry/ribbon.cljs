@@ -142,8 +142,7 @@
       (cond->
         (= (interface/get-raw-data (c/++ context :type))
            :heraldry.ribbon.segment/foreground-with-text)
-        (merge {
-                :offset-x {:type :range
+        (merge {:offset-x {:type :range
                            :default 0
                            :min -0.5
                            :max 0.5

@@ -20,7 +20,6 @@
     (-> path first (= :context)) (get-in context (drop 1 path))
     :else @(rf/subscribe [:get path])))
 
-
 (defn effective-component-type [context]
   (component/effective-type (:path context)
                             (get-raw-data (c/++ context :type))))
@@ -93,7 +92,6 @@
 
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (c/<< context :path (conj render-options-path key))))
-
 
 (defmulti render-component effective-component-type)
 

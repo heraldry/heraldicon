@@ -370,10 +370,10 @@
                            [result-width
                             result-height
                             1])
-        used-fonts         (->> (for [j (range (interface/get-list-size (c/++ context :segments)))]
-                                  (interface/get-sanitized-data (c/++ context :segments j :font)))
-                                (filter identity)
-                                (into #{}))]
+        used-fonts (->> (for [j (range (interface/get-list-size (c/++ context :segments)))]
+                          (interface/get-sanitized-data (c/++ context :segments j :font)))
+                        (filter identity)
+                        (into #{}))]
     [:svg (merge
            {:viewBox (str "0 0 " document-width " " document-height)}
            (if svg-export?
@@ -387,7 +387,7 @@
                 embed-fonts)
        [embed-fonts used-fonts])
      [:g {:transform (str "scale(" document-scale "," document-scale ")")}
-      [:g {:transform (str "translate(" (- (- min-x margin) ) "," (- (- min-y margin)) ")")}
+      [:g {:transform (str "translate(" (- (- min-x margin)) "," (- (- min-y margin)) ")")}
        [ribbon context :argent :none :helmet-dark]]]]))
 
 (defn motto [{:keys [environment
@@ -736,10 +736,10 @@
                            [result-width
                             result-height
                             1])
-        used-fonts         (->> (for [j (range (interface/get-list-size (c/++ context :segments)))]
-                                  (interface/get-sanitized-data (c/++ context :segments j :font)))
-                                (filter identity)
-                                (into #{}))]
+        used-fonts (->> (for [j (range (interface/get-list-size (c/++ context :segments)))]
+                          (interface/get-sanitized-data (c/++ context :segments j :font)))
+                        (filter identity)
+                        (into #{}))]
     [:svg (merge
            {:viewBox (str "0 0 " document-width " " document-height)}
            (if svg-export?

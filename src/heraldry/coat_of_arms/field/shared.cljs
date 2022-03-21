@@ -46,9 +46,9 @@
                             [k (get tincture-replacer v v)]))
                      (into {}))
                     (as-> new-mapping
-                      (cond-> new-mapping
-                        (not (contains? new-mapping t1)) (assoc t1 t2)
-                        (not (contains? new-mapping t2)) (assoc t2 t1)))))))
+                          (cond-> new-mapping
+                            (not (contains? new-mapping t1)) (assoc t1 t2)
+                            (not (contains? new-mapping t2)) (assoc t2 t1)))))))
     context))
 
 (defn render-components [context]

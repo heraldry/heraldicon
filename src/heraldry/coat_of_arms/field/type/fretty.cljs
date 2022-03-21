@@ -150,7 +150,6 @@
 
                ;; |-|
 
-
                [:path {:d (str "M 0," (+ half-thickness gap)
                                "h " half-thickness
                                "v " (- height thickness gap gap)
@@ -166,7 +165,6 @@
                                "h " half-thickness)}]
 
                ;; -|-
-
 
                [:path {:d (str "M " (- middle-x half-thickness gap) "," height
                                "v " (- half-thickness)

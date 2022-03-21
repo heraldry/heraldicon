@@ -113,8 +113,7 @@
                  [:button
                   {:on-click #(rf/dispatch [::remove-metadata context n])
                    :type "button"}
-                  [tr :string.option.outline-mode-choice/remove]]]])
-             )])]]])))
+                  [tr :string.option.outline-mode-choice/remove]]]]))])]]])))
 
 (defmethod ui-interface/form-element :metadata [context]
   [metadata-submenu context])

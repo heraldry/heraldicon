@@ -174,7 +174,6 @@
 
 ;; views
 
-
 (def preview-svg-id
   "ribbon-preview")
 

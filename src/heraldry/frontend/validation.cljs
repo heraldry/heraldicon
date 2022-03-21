@@ -222,7 +222,7 @@
          (filter identity)
          sort-validations)))
 
-(defn  validate-field [context]
+(defn validate-field [context]
   (let [field-type (-> (interface/get-raw-data (c/++ context :type)) name keyword)
         num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))]
