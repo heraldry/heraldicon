@@ -1,6 +1,5 @@
 (ns heraldry.util
   (:require
-   ["crypto" :as crypto]
    [clojure.pprint :refer [pprint]]
    [clojure.string :as s]
    [clojure.walk :as walk]
@@ -19,18 +18,6 @@
 
 (defn id [prefix]
   (str prefix "_" (swap! -current-id inc)))
-
-(defn sha1 [data]
-  (-> crypto
-      (.createHash "sha1")
-      (.update data)
-      (.digest "hex")))
-
-(defn md5 [data]
-  (-> crypto
-      (.createHash "md5")
-      (.update data)
-      (.digest "hex")))
 
 (defn id-for-url [id]
   (when id
@@ -330,14 +317,6 @@
        (let [arms (<? c)]
          (recur (conj result arms) rest))
        result))))
-
-(defn gravatar-url [email]
-  (str "https://www.gravatar.com/avatar/"
-       (some-> email
-               s/trim
-               s/lower-case
-               md5)
-       "?d=mp"))
 
 (defn avatar-url [username]
   (str (or (config/get :heraldry-site-url)
