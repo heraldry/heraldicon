@@ -1,0 +1,561 @@
+blazon
+    = root-field
+
+(* TODO: inverted, issuant, semy, charge group arrangement, special charges (e.g. fountain),
+   cottising*)
+
+(* terminals *)
+
+COUNTERCHANGED = "counterchanged"
+FIMBRIATED
+    = "fimbriated"
+    | "fimbriation"
+
+A = "a"
+  | "an"
+AND = "and"
+    | "&"
+    | ","
+OF = "of"
+WITH = "with"
+
+NUMBER = #"[0-9]+"
+DIGIT-WORD
+    = "one"
+    | "two"
+    | "three"
+    | "four"
+    | "five"
+    | "six"
+    | "seven"
+    | "eight"
+    | "nine"
+MULTI-WORD
+    = "double"
+    | "triple"
+MULTIPLE-OF-TEN-WORD
+    = "twenty"
+    | "thirty"
+    | "fourty"
+    | "fifty"
+    | "sixty"
+    | "seventy"
+    | "eighty"
+    | "ninety"
+
+OR = "or"
+   | "d'or"
+ARGENT
+    = "argent"
+    | "d'argent"
+SABLE = "sable"
+AZURE
+    = "azure"
+    | "d'azure"
+GULES = "gules"
+PURPURE = "purpure"
+VERT = "vert"
+TENNE = "tenne"
+ORANGE
+    = "orange"
+    | "d'orange"
+SANGUINE = "sanguine"
+MURREY = "murrey"
+BLEU-CELESTE
+    = #"bleu-+celeste"
+    | #"bleu +celeste"
+ROSE = "rose"
+COPPER = "copper"
+PROPER = "proper"
+WHITE = "white"
+BRUNATRE = #"brun[âa]tre"
+BUFF = "buff"
+
+ERMINE = "ermine"
+ERMINES = "ermines"
+ERMINOIS = "erminois"
+PEAN = "pean"
+
+BARRY = "barry"
+BENDY = "bendy"
+BENDY-SINISTER
+    = #"bendy-+sinister"
+    | #"bendy +sinister"
+CHEQUY = "chequy"
+CHEVRONNY = "chevronny"
+FRETTY = "fretty"
+GYRONNY = #"g[yi]ronny"
+LOZENGY = "lozengy"
+MASONY
+    = "masony"
+    | "masoned"
+PALY = "paly"
+PAPELLONY = "papellony"
+PER-BEND
+    = #"per +bend"
+    | #"party +per +bend"
+PER-BEND-SINISTER
+    = #"bend +sinister"
+    | #"party +per +bend +sinister"
+PER-CHEVRON
+    = #"per +chevron"
+    | #"party +per +chevron"
+PER-FESS
+    = #"per +fess"
+    | #"party +per +fess"
+PER-PALE
+    = #"per +pale"
+    | #"party +per +pale"
+PER-PILE
+    = #"per +pile"
+    | #"party +per +pile"
+PER-SALTIRE
+    = #"per +saltire"
+    | #"party +per +saltire"
+POTENTY = "potenty"
+QUARTERED
+    = "quartered"
+    | "quarterly"
+TIERCED-PER-FESS = #"tierced +per +fess"
+TIERCED-PER-PALE = #"tierced +per +pale"
+TIERCED-PER-PALL = #"tierced +per +pall"
+VAIRY = "vairy"
+
+PALE
+    = #"pales?"
+    | #"pallets?"
+FESS
+    = #"fess(es?)?"
+    | #"bars?"
+    | #"barrulets?"
+CHIEF = "chief"
+BASE = "base"
+BEND
+    = #"bends?"
+    | #"bendlets?"
+BEND-SINISTER
+    = #"bends? +sinister"
+    | #"bendlets? +sinister"
+CROSS = #"cross(es)?"
+SALTIRE = #"saltires?"
+CHEVRON
+    = #"chevrons?"
+    | #"chevronnels?"
+PALL = #"palls?"
+PILE = #"piles?"
+GORE = #"gores?"
+QUARTER = #"quarters?"
+POINT
+    = #"points?"
+    | #"points? +sinister"
+BORDURE = #"bordures?"
+ORLE
+    = #"orles?"
+    | #"tressures?"
+LABEL = #"labels?"
+
+STRAIGHT = "straight"
+INVECTED = "invected"
+ENGRAILED = "engrailed"
+EMBATTLED = "embattled"
+POTENTY = "potenty"
+INDENTED = "indented"
+DANCETTY = "dancetty"
+WAVY
+    = "wavy"
+    | "undy"
+NEBULY = "nebuly"
+DOVETAILED
+    = #"dovetailed"
+    | #"dove +tailed"
+    | #"dove-+tailed"
+RAGULY = "raguly"
+THORNY = "thorny"
+URDY = "urdy"
+FIR-TREE-TOPPED
+    = #"fir +tree +topped"
+    | #"fir-+tree-+topped"
+FIR-TWIGGED
+    = #"fir +twigged"
+    | #"fir-+twigged"
+WOLF-TOOTHED
+    = #"wolf +toothed"
+    | #"wolf-+toothed"
+RAYONNY = "rayonny"
+ANGLED = "angled"
+BEVILLED = "bevilled"
+ENARCHED = "enarched"
+
+HUMETTY = "humetty"
+COUPED = "couped"
+VOIDED = "voided"
+
+CADENT = "cadent"
+COUCHANT = "couchant"
+COURANT = "courant"
+DORMANT = "dormant"
+PASCUANT = "pascuant"
+PASSANT = "passant"
+RAMPANT = "rampant"
+SALIENT = "salient"
+SEGREANT = "segreant"
+SEJANT = "sejant"
+SEJANT-ERECT = #"sejant[ -]erect"
+STATANT = "statant"
+ADDORSED = "addorsed"
+COMBATANT = "combatant"
+RESPECTANT = "respectant"
+CLOSE = "close"
+DISPLAYED = "displayed"
+IN-HER-PIETY = "in[ -]her[ -]piety"
+ISSUANT = "issuant"
+OVERT = "overt"
+RECURSANT = "recursant"
+RISING = "rising"
+VIGILANT = "vigilant"
+VOLANT = "volant"
+VULNING = "vulning"
+HAURIANT = "hauriant"
+NAIANT = "naiant"
+URINANT = "urinant"
+GLISSANT = "glissant"
+NOWED = "nowed"
+
+TO-DEXTER = #"to[ -]dexter"
+TO-SINISTER = #"to[ -]sinister"
+AFFRONTE = "affronte"
+EN-ARRIERE = #"en[ -]arriere"
+GUARDANT = "guardant"
+IN-TRIAN-ASPECT = "in[ -]trian[ -]aspect"
+REGUARDANT = "reguardant"
+SALIENT = "salient"
+
+MIRRORED = "mirrored"
+REVERSED = "reversed"
+VOIDED = "voided"
+ERASED = "erased"
+
+ROUNDEL = #"roundels?"
+ANNULET = #"annulets?"
+BILLET = #"billets?"
+ESCUTCHEON
+    = #"inescutcheons?"
+    | #"escutcheons?"
+LOZENGE = #"lozenges?"
+FUSIL = #"fusils?"
+MASCLE = #"mascles?"
+RUSTRE = #"rustres?"
+STAR
+    = #"stars?"
+    | #"mullets?"
+CRESCENT = #"crescents?"
+
+LION = #"lions?"
+
+(* rules *)
+
+root-field
+    = root-variation AND* components*
+
+field
+    = variation AND* components*
+
+root-variation
+    = root-plain
+    | partition
+
+variation
+    = plain
+    | partition
+
+root-plain
+    = tincture
+
+plain
+    = tincture
+    | COUNTERCHANGED
+
+tincture
+    = OR
+    | ARGENT
+    | SABLE
+    | AZURE
+    | GULES
+    | PURPURE
+    | VERT
+    | TENNE
+    | ORANGE
+    | SANGUINE
+    | MURREY
+    | BLEU-CELESTE
+    | ROSE
+    | COPPER
+    | PROPER
+    | WHITE
+    | BRUNATRE
+    | BUFF
+    | ERMINE
+    | ERMINES
+    | ERMINOIS
+    | PEAN
+
+partition
+    = partition-with-two-fields
+    | partition-with-three-fields-two-lines
+    | partition-with-three-fields-three-lines
+    | partition-with-four-fields
+    | partition-with-eight-fields
+    | partition-with-many-fields
+    | partition-with-repeating-fields-without-line
+    | partition-with-repeating-fields-with-one-line
+
+partition-type-with-two-fields
+    = PER-PALE
+    | PER-FESS
+    | PER-BEND
+    | PER-BEND-SINISTER
+    | PER-CHEVRON
+partition-with-two-fields
+    = partition-type-with-two-fields line? field AND field
+
+partition-type-with-three-fields-two-lines
+    = PER-PILE
+    | TIERCED-PER-PALE
+    | TIERCED-PER-FESS
+partition-with-three-fields-two-lines
+    = partition-type-with-three-fields-two-lines (line (AND line)?)? field AND field AND field
+
+partition-type-with-three-fields-three-lines
+    = TIERCED-PER-PALL
+partition-with-three-fields-three-lines
+    = partition-type-with-three-fields-three-lines (line (AND line)? (AND line)?)? field AND field AND field
+
+partition-type-with-four-fields
+    = PER-SALTIRE
+    | QUARTERED
+partition-with-four-fields
+    = partition-type-with-four-fields line? field AND field (AND field)? (AND field)?
+
+partition-type-with-eight-fields
+    = GYRONNY
+partition-with-eight-fields
+    = partition-type-with-eight-fields line? field AND field (AND field)? (AND field)? (AND field)? (AND field)? (AND field)? (AND field)?
+
+partition-type-with-many-fields
+    = QUARTERED
+partition-with-many-fields
+    = partition-type-with-many-fields field AND field (AND field)*
+
+partition-type-with-repeating-fields-without-line
+    = CHEQUY
+    | LOZENGY
+    | VAIRY
+    | POTENTY
+    | PAPELLONY
+    | MASONY
+    | FRETTY
+partition-with-repeating-fields-without-line
+    = partition-type-with-repeating-fields-without-line field AND field
+
+partition-type-with-repeating-fields-with-one-line
+    = PALY
+    | BARRY
+    | BENDY
+    | BENDY-SINISTER
+    | CHEVRONNY
+partition-with-repeating-fields-with-one-line
+    = partition-type-with-repeating-fields-with-one-line field AND field
+
+components
+    = component (AND component)*
+
+component
+    = ordinary-group
+    | charge-group
+
+number-word
+    = DIGIT-WORD
+    | MULTI-WORD
+    | "ten"
+    | "eleven"
+    | "twelve"
+    | "thirteen"
+    | "fourteen"
+    | "fifteen"
+    | "sixteen"
+    | "seventeen"
+    | "eighteen"
+    | "nineteen"
+    | MULTIPLE-OF-TEN-WORD
+    | MULTIPLE-OF-TEN-WORD #"[ -]*" DIGIT-WORD
+
+amount
+    = A
+    | NUMBER
+    | number-word
+
+ordinary-group
+    = amount? ordinary
+
+ordinary
+    = ordinary-without-line
+    | ordinary-with-one-line
+    | ordinary-with-two-lines
+    | ordinary-with-three-lines
+
+ordinary-options
+    = ordinary-option+
+
+ordinary-option
+    = HUMETTY
+    | COUPED
+    | VOIDED
+
+ordinary-type-without-line
+    = LABEL
+ordinary-without-line
+    = ordinary-type-without-line ordinary-options? field
+
+ordinary-type-with-one-line
+    = CHIEF
+    | BASE
+    | BORDURE
+    | GORE
+    | POINT
+ordinary-with-one-line
+    = ordinary-type-with-one-line ordinary-options? line? field
+
+ordinary-type-with-two-lines
+    = PALE
+    | FESS
+    | BEND
+    | BEND-SINISTER
+    | CROSS
+    | SALTIRE
+    | CHEVRON
+    | PILE
+    | QUARTER
+    | ORLE
+ordinary-with-two-lines
+    = ordinary-type-with-two-lines ordinary-options? (line (AND line)?)? field
+
+ordinary-type-with-three-lines
+    = PALL
+ordinary-with-three-lines
+    = ordinary-type-with-three-lines ordinary-options? (line (AND line (AND line)?)?)? field
+
+line
+    = line-type fimbriation
+    | line-type
+    | fimbriation
+
+line-type
+    = STRAIGHT
+    | INVECTED
+    | ENGRAILED
+    | EMBATTLED
+    | POTENTY
+    | INDENTED
+    | DANCETTY
+    | WAVY
+    | NEBULY
+    | DOVETAILED
+    | RAGULY
+    | THORNY
+    | URDY
+    | FIR-TREE-TOPPED
+    | FIR-TWIGGED
+    | WOLF-TOOTHED
+    | RAYONNY
+    | ANGLED
+    | BEVILLED
+    | ENARCHED
+
+fimbriation
+    = single-fimbriation
+    | double-fimbriation
+
+single-fimbriation
+    = FIMBRIATED (WITH | OF)? tincture
+
+double-fimbriation
+    = FIMBRIATED (WITH | OF)? tincture AND? tincture
+
+charge-group
+    = amount? charge
+
+charge
+    = standard-charge-with-field
+    | other-charge-with-field
+
+standard-charge-with-field
+    = standard-charge-type fimbriation? charge-options? field
+
+standard-charge-type
+    = ROUNDEL
+    | ANNULET
+    | BILLET
+    | ESCUTCHEON
+    | LOZENGE
+    | FUSIL
+    | MASCLE
+    | RUSTRE
+    | STAR
+    | CRESCENT
+
+other-charge-with-field
+    = other-charge-type attitude? facing? charge-options? fimbriation? field
+
+other-charge-type
+    = LION
+
+attitude
+    = CADENT
+    | COUCHANT
+    | COURANT
+    | DORMANT
+    | PASCUANT
+    | PASSANT
+    | RAMPANT
+    | SALIENT
+    | SEGREANT
+    | SEJANT
+    | SEJANT-ERECT
+    | STATANT
+    | ADDORSED
+    | COMBATANT
+    | RESPECTANT
+    | CLOSE
+    | DISPLAYED
+    | IN-HER-PIETY
+    | ISSUANT
+    | OVERT
+    | RECURSANT
+    | RISING
+    | VIGILANT
+    | VOLANT
+    | VULNING
+    | HAURIANT
+    | NAIANT
+    | URINANT
+    | GLISSANT
+    | NOWED
+
+facing
+    = TO-DEXTER
+    | TO-SINISTER
+    | AFFRONTE
+    | EN-ARRIERE
+    | GUARDANT
+    | IN-TRIAN-ASPECT
+    | REGUARDANT
+    | SALIENT
+
+charge-options
+    = charge-option+
+
+charge-option
+    = MIRRORED
+    | REVERSED
+    | VOIDED
+    | ERASED
