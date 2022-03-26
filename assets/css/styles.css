@@ -1109,7 +1109,8 @@ li.ui-menu-header {
   position: fixed;
   border: 1px #777 solid;
   height: 10em;
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -1118,7 +1119,7 @@ li.ui-menu-header {
 
 .auto-complete-box li {
   background-color: #fff;
-  padding: 0 0.5em;
+  padding: 0 5px;
 }
 
 .auto-complete-box li:hover {

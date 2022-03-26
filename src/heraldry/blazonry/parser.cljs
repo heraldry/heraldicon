@@ -2,6 +2,8 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
+   [heraldry.coat-of-arms.field.core :as field]
+   [heraldry.util :as util]
    [instaparse.core :as insta]
    [taoensso.timbre :as log])
   (:require-macros [heraldry.blazonry.parser :refer [load-grammar]]))
@@ -144,10 +146,20 @@
 
 (defmethod ast->hdn :partition [[_ [_partition-group & nodes]]]
   (let [partition-type-node (get-child #{:partition-type} nodes)
-        fields (->> nodes
-                    (filter (type? #{:field}))
-                    (mapv ast->hdn))]
-    (-> {:type (ast->hdn partition-type-node)
+        partition-type (ast->hdn partition-type-node)
+        ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
+        default-fields (field/raw-default-fields partition-type 6 6 2)
+        given-fields (->> nodes
+                          (filter (type? #{:field}))
+                          (mapv ast->hdn))
+        fields (loop [fields default-fields
+                      [[index field] & rest] (map-indexed vector given-fields)]
+                 (if index
+                   (recur (util/vec-replace (vec fields) index field)
+                          rest)
+                   (vec fields)))]
+
+    (-> {:type partition-type
          :fields fields}
         (add-lines nodes))))
 
