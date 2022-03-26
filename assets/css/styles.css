@@ -1127,3 +1127,14 @@ li.ui-menu-header {
   color: #fff;
   cursor: pointer;
 }
+
+.DraftEditor-root,
+.DraftEditor-editorContainer,
+.public-DraftEditor-content {
+  width: 100%;
+  height: 100%;
+}
+
+.public-DraftEditor-content {
+  overflow-y: auto;
+}

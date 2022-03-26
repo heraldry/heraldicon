@@ -1,8 +1,8 @@
 (ns heraldry.frontend.ui.element.blazonry-editor
   (:require
+   ["draft-js" :as draft-js]
    ["genex" :as genex]
    ["html-entities" :as html-entities]
-   ["react-contenteditable" :as ContentEditable]
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldry.blazonry.parser :as blazonry-parser]
@@ -15,8 +15,6 @@
    [re-frame.core :as rf]
    [reagent.core :as r])
   (:require-macros [hiccups.core :as hiccups :refer [html]]))
-
-(def content-editable (r/adapt-react-class ContentEditable/default))
 
 (defn serialize-style [style]
   (->> style
@@ -117,15 +115,27 @@
                           (s/replace "&nbsp;" " ")
                           html-entities/decode))))
 
-(defn blazonry-editor [html-data content-path]
-  [content-editable
-   {:style {:display "inline-block"
-            :outline "1px solid black"
-            :width "calc(60% - 10px)"
-            :height "20em"}
-    :html html-data
-    :on-change #(let [value (-> % .-target .-value)]
-                  (rf/dispatch-sync [:set-blazon-data content-path value]))}])
+(defn on-change [new-editor-state state]
+  (reset! state new-editor-state))
+
+(defn core [state]
+  (let []
+    (r/create-class
+     {:display-name "core"
+      :reagent-render (fn []
+                        [:> draft-js/Editor
+                         {:editorState @state
+                          :onChange (fn [new-editor-state]
+                                      (on-change new-editor-state state))}])})))
+
+(defn blazonry-editor [_html-data _content-path]
+  (let [state (r/atom (.createEmpty draft-js/EditorState))]
+    (fn [html-data content-path]
+      [:div {:style {:display "inline-block"
+                     :outline "1px solid black"
+                     :width "calc(60% - 10px)"
+                     :height "20em"}}
+       [core state]])))
 
 (macros/reg-event-db :from-blazon
   (fn [_ [_ context]]
