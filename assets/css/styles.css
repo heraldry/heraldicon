@@ -1104,3 +1104,25 @@ li.ui-menu-header {
   align-items: center;
   height: 100%;
 }
+
+.auto-complete-box {
+  position: fixed;
+  border: 1px #777 solid;
+  height: 10em;
+  overflow: scroll;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  z-index: 10000;
+}
+
+.auto-complete-box li {
+  background-color: #fff;
+  padding: 0 0.5em;
+}
+
+.auto-complete-box li:hover {
+  background-color: #88c;
+  color: #fff;
+  cursor: pointer;
+}

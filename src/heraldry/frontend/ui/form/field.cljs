@@ -1,17 +1,28 @@
 (ns heraldry.frontend.ui.form.field
   (:require
+   ["genex" :as genex]
+   ["html-entities" :as html-entities]
+   ["react-contenteditable" :as ContentEditable]
+   [clojure.string :as s]
+   [clojure.walk :as walk]
+   [heraldry.blazonry.parser :as blazonry-parser]
    [heraldry.coat-of-arms.default :as default]
    [heraldry.coat-of-arms.field.core :as field]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
+   [heraldry.frontend.modal :as modal]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.frontend.validation :as validation]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
-   [heraldry.util :as util]))
+   [heraldry.util :as util]
+   [hiccups.runtime]
+   [re-frame.core :as rf]
+   [reagent.core :as r])
+  (:require-macros [hiccups.core :as hiccups :refer [html]]))
 
 (macros/reg-event-db :override-field-part-reference
   (fn [db [_ path]]
@@ -30,6 +41,144 @@
           parent-context (c/-- context 2)]
       (assoc-in db path (-> (field/default-fields parent-context)
                             (get index))))))
+
+(defn serialize-style [style]
+  (->> style
+       (map (fn [[k v]]
+              (str (name k) ":" v ";")))
+       (apply str)))
+
+(defn serialize-styles [data]
+  (walk/postwalk (fn [v]
+                   (if (and (map? v)
+                            (:style v))
+                     (assoc v :style (serialize-style (:style v)))
+                     v))
+                 data))
+
+(defn caret-position [index & {:keys [parent-offset]}]
+  (let [parent-offset-top (-> parent-offset :top (or 0))
+        parent-offset-left (-> parent-offset :left (or 0))
+        selection (js/document.getSelection)
+        range (.getRangeAt selection 0)
+        node (.-startContainer range)
+        offset (or (min index (.-length node))
+                   (.-startOffset range))]
+    (cond
+      (pos? offset) (let [rect (-> (doto (js/document.createRange)
+                                     (.setStart node (dec offset))
+                                     (.setEnd node offset))
+                                   .getBoundingClientRect)]
+                      {:top (-> rect
+                                .-top
+                                (- parent-offset-top))
+                       :left (-> rect
+                                 .-left
+                                 (- parent-offset-left))})
+      (< offset (.-length node)) (let [rect (-> (doto (js/document.createRange)
+                                                  (.setStart node offset)
+                                                  (.setEnd node (inc offset)))
+                                                .getBoundingClientRect)]
+                                   {:top (-> rect
+                                             .-top
+                                             (- parent-offset-top))
+                                    :left (-> rect
+                                              .-left
+                                              (- parent-offset-left))})
+      :else (let [rect (.getBoundingClientRect node)
+                  styles (js/getComputedStyle node)
+                  line-height (js/parseInt (.-lineHeight styles))
+                  font-size (js/parseInt (.-lineSize styles))
+                  delta (/ (- line-height font-size) 2)]
+              {:top (-> rect
+                        .-top
+                        (+ delta)
+                        (- parent-offset-top))
+               :left (-> rect
+                         .-left
+                         (- parent-offset-left))}))))
+
+(defn modal-position [class]
+  (if-let [element (first (js/document.getElementsByClassName class))]
+    (let [styles (js/getComputedStyle element)]
+      {:top (-> styles
+                .-top
+                js/parseInt
+                (- (/ (-> styles .-width js/parseInt) 2)))
+       :left (-> styles
+                 .-left
+                 js/parseInt
+                 (- (/ (-> styles .-height js/parseInt) 2)))})
+    {:top 0
+     :left 0}))
+
+(rf/reg-sub :get-blazon-data
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [value [_ _path]]
+    (try
+      (let [hdn (blazonry-parser/blazon->hdn value)]
+        {:value value
+         :html value
+         :hdn hdn})
+      (catch :default e
+        (let [{:keys [reason index]} (ex-data e)
+              parsed (subs value 0 index)
+              problem (subs value index)
+              auto-complete-choices (->> reason
+                                         (mapcat (fn [{:keys [tag expecting]}]
+                                                   (case tag
+                                                     :string [expecting]
+                                                     :regexp (-> expecting
+                                                                 genex
+                                                                 .generate
+                                                                 js->clj))))
+                                         vec)
+              modal-pos (modal-position "modal")]
+          {:value value
+           :html [:span (html-entities/encode parsed)
+                  [:span {:style {:color "red"}} (html-entities/encode problem)]]
+           :auto-complete-choices auto-complete-choices
+           :auto-complete-position (caret-position index :parent-offset modal-pos)
+           :index index})))))
+
+(defn strip-html-tags [value]
+  (-> value
+      (s/replace #"<ul.*?</ul>" "")
+      (s/replace #"<.*?>" "")))
+
+(macros/reg-event-db :set-blazon-data
+  (fn [db [_ path value]]
+    (assoc-in db path (-> value
+                          strip-html-tags
+                          (s/replace "&nbsp;" " ")
+                          html-entities/decode))))
+
+(def content-editable (r/adapt-react-class ContentEditable/default))
+
+(macros/reg-event-db :from-blazon
+  (fn [_ [_ context]]
+    (modal/create
+     :string.button/from-blazon
+     [(fn []
+        (let [content-path [:ui :blazon-editor]
+              {:keys [auto-complete-choices
+                      auto-complete-position]
+               :as data} @(rf/subscribe [:get-blazon-data content-path])]
+          [:div {:style {}}
+           [content-editable
+            {:style {:outline "1px solid black"
+                     :width "15em"
+                     :height "10em"}
+             :html (-> data :html serialize-styles html)
+             :on-change #(let [value (-> % .-target .-value)]
+                           (rf/dispatch-sync [:set-blazon-data content-path value]))}]
+           (into [:ul.auto-complete-box {:style {:top (-> auto-complete-position :top)
+                                                 :left (-> auto-complete-position :left)}}]
+                 (map (fn [choice]
+                        [:li choice]))
+                 auto-complete-choices)]))])))
 
 (defn show-tinctures-only? [field-type]
   (-> field-type name keyword
@@ -171,7 +320,10 @@
                                  {:title :string.entity/charge-group
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/charge-group])}
                                  {:title :string.entity/semy
-                                  :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}]
+                                  :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}
+                         {:icon "fas fa-pen-nib"
+                          :title :string.button/from-blazon
+                          :handler #(state/dispatch-on-event % [:from-blazon context])}]
                   (non-mandatory-part-of-parent? context)
                   (conj {:icon "fas fa-undo"
                          :title "Reset"
