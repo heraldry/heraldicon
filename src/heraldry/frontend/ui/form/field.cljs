@@ -10,6 +10,8 @@
    [heraldry.coat-of-arms.field.core :as field]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
+   [heraldry.frontend.auto-complete :as auto-complete]
+   [heraldry.frontend.context :as context]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.modal :as modal]
    [heraldry.frontend.state :as state]
@@ -17,6 +19,7 @@
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.frontend.validation :as validation]
    [heraldry.interface :as interface]
+   [heraldry.render :as render]
    [heraldry.static :as static]
    [heraldry.util :as util]
    [hiccups.runtime]
@@ -129,18 +132,18 @@
               auto-complete-choices (->> reason
                                          (mapcat (fn [{:keys [tag expecting]}]
                                                    (case tag
+                                                     :optional []
                                                      :string [expecting]
                                                      :regexp (-> expecting
                                                                  genex
                                                                  .generate
                                                                  js->clj))))
-                                         vec)
-              modal-pos (modal-position "modal")]
+                                         vec)]
           {:value value
            :html [:span (html-entities/encode parsed)
                   [:span {:style {:color "red"}} (html-entities/encode problem)]]
-           :auto-complete-choices auto-complete-choices
-           :auto-complete-position (caret-position index :parent-offset modal-pos)
+           :auto-complete {:choices auto-complete-choices
+                           :position (caret-position index)}
            :index index})))))
 
 (defn strip-html-tags [value]
@@ -157,28 +160,45 @@
 
 (def content-editable (r/adapt-react-class ContentEditable/default))
 
+(defn blazonry-editor [html-data content-path]
+  [content-editable
+   {:style {:display "inline-block"
+            :outline "1px solid black"
+            :width "calc(60% - 10px)"
+            :height "20em"}
+    :html html-data
+    :on-change #(let [value (-> % .-target .-value)]
+                  (rf/dispatch-sync [:set-blazon-data content-path value]))}])
+
 (macros/reg-event-db :from-blazon
   (fn [_ [_ context]]
     (modal/create
      :string.button/from-blazon
      [(fn []
-        (let [content-path [:ui :blazon-editor]
-              {:keys [auto-complete-choices
-                      auto-complete-position]
+        (let [blazon-editor-path [:ui :blazon-editor]
+              content-path (conj blazon-editor-path :content)
+              hdn-path (conj blazon-editor-path :arms-form)
+              {:keys [auto-complete
+                      hdn]
                :as data} @(rf/subscribe [:get-blazon-data content-path])]
-          [:div {:style {}}
-           [content-editable
-            {:style {:outline "1px solid black"
-                     :width "15em"
-                     :height "10em"}
-             :html (-> data :html serialize-styles html)
-             :on-change #(let [value (-> % .-target .-value)]
-                           (rf/dispatch-sync [:set-blazon-data content-path value]))}]
-           (into [:ul.auto-complete-box {:style {:top (-> auto-complete-position :top)
-                                                 :left (-> auto-complete-position :left)}}]
-                 (map (fn [choice]
-                        [:li choice]))
-                 auto-complete-choices)]))])))
+          (when hdn
+            (rf/dispatch [:set hdn-path {:coat-of-arms {:field hdn}
+                                         :render-options {:outline? true}}]))
+          (auto-complete/set-data auto-complete)
+          [:div {:style {:width "40em"
+                         :height "20em"}}
+           [blazonry-editor
+            (-> data :html serialize-styles html)
+            content-path]
+           [:div {:style {:display "inline-block"
+                          :width "40%"
+                          :height "100%"
+                          :float "right"}}
+            [render/achievement
+             (assoc
+              context/default
+              :path hdn-path
+              :render-options-path (conj hdn-path :render-options))]]]))])))
 
 (defn show-tinctures-only? [field-type]
   (-> field-type name keyword

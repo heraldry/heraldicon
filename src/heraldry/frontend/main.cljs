@@ -2,6 +2,7 @@
   (:require
    [heraldry.frontend.header :as header]
    [heraldry.frontend.keys] ;; needed for side effects
+   [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.modal :as modal]
    [heraldry.frontend.not-found :as not-found]
    [heraldry.frontend.route :as route]
@@ -19,7 +20,8 @@
     (if-let [view (route/view)]
       view
       [not-found/not-found])
-    [modal/render]]])
+    [modal/render]
+    [auto-complete/render]]])
 
 (defn title []
   (util/combine

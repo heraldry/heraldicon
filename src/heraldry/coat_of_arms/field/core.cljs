@@ -22,12 +22,8 @@
         :tierced-per-pile 3
         2))))
 
-(defn default-fields [context]
-  (let [type (-> (interface/get-raw-data (c/++ context :type))
-                 name keyword)
-        num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
-        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
-        num-base-fields (interface/get-sanitized-data (c/++ context :layout :num-base-fields))
+(defn raw-default-fields [type num-fields-x num-fields-y num-base-fields]
+  (let [type (-> type name keyword)
         defaults [default/field
                   (-> default/field
                       (assoc :tincture :azure))
@@ -131,6 +127,13 @@
          :per-pile} type) (into (subvec defaults 0 2)
                                 [(nth defaults 2)])
       :else (subvec defaults 0 2))))
+
+(defn default-fields [context]
+  (let [type (interface/get-raw-data (c/++ context :type))
+        num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
+        num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
+        num-base-fields (interface/get-sanitized-data (c/++ context :layout :num-base-fields))]
+    (raw-default-fields type num-fields-x num-fields-y num-base-fields)))
 
 (defn part-name [field-type index]
   (-> field-type field-interface/part-names (get index) (or (util/to-roman (inc index)))))
