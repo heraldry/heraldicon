@@ -90,6 +90,7 @@
                                                    (s/starts-with? choice typed-string)
                                                    true)))
                                        sort
+                                       dedupe
                                        vec)]
         {:value value
          :html [:span (html-entities/encode parsed)
