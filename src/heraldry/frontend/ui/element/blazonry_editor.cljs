@@ -3,6 +3,7 @@
    ["draft-js" :as draft-js]
    ["genex" :as genex]
    ["html-entities" :as html-entities]
+   [clojure.string :as s]
    [heraldry.blazonry.parser :as blazonry-parser]
    [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.context :as context]
@@ -64,7 +65,7 @@
                              .-left
                              (- parent-offset-left))}))))))
 
-(defn parse-blazonry [value]
+(defn parse-blazonry [value cursor-index]
   (try
     (let [hdn (blazonry-parser/blazon->hdn value)]
       {:value value
@@ -74,6 +75,7 @@
       (let [{:keys [reason index]} (ex-data e)
             parsed (subs value 0 index)
             problem (subs value index)
+            typed-string (subs value index cursor-index)
             auto-complete-choices (->> reason
                                        (mapcat (fn [{:keys [tag expecting]}]
                                                  (case tag
@@ -83,6 +85,11 @@
                                                                genex
                                                                .generate
                                                                js->clj))))
+                                       (filter (fn [choice]
+                                                 (if choice
+                                                   (s/starts-with? choice typed-string)
+                                                   true)))
+                                       sort
                                        vec)]
         {:value value
          :html [:span (html-entities/encode parsed)
@@ -115,6 +122,16 @@
       :component (fn [props]
                    (r/as-element [:span {:style {:color "red"}} (.-children props)]))}])))
 
+(defn cursor-index [editor-state]
+  (let [selection (.getSelection editor-state)
+        content (.getCurrentContent editor-state)
+        block (->> selection
+                   .getFocusKey
+                   (.getBlockForKey content))
+        block-start (block-start-index content block)
+        offset (.getFocusOffset selection)]
+    (+ block-start offset)))
+
 (defn blazonry-editor [attributes]
   [:div attributes
    [(r/create-class
@@ -126,9 +143,10 @@
                             :onChange (fn [^draft-js/EditorState new-editor-state]
                                         (let [content ^draft-js/ContentState (.getCurrentContent new-editor-state)
                                               text (.getPlainText content)
+                                              cursor-index (cursor-index new-editor-state)
                                               {:keys [hdn
                                                       auto-complete
-                                                      index]} (parse-blazonry text)
+                                                      index]} (parse-blazonry text cursor-index)
                                               new-editor-state (draft-js/EditorState.set new-editor-state (clj->js {:decorator (unknown-string-decorator index)}))]
                                           (auto-complete/set-data auto-complete)
                                           (when hdn

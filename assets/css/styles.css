@@ -1108,7 +1108,7 @@ li.ui-menu-header {
 .auto-complete-box {
   position: fixed;
   border: 1px #777 solid;
-  height: 10em;
+  max-height: 10em;
   overflow-x: hidden;
   overflow-y: scroll;
   list-style-type: none;
