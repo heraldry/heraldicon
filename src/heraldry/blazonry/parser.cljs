@@ -151,7 +151,7 @@
         ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
         default-fields (field/raw-default-fields partition-type 6 6 2)
         given-fields (->> nodes
-                          (filter (type? #{:field}))
+                          (filter (type? #{:field :plain}))
                           (mapv ast->hdn))
         fields (loop [fields default-fields
                       [[index field] & rest] (map-indexed vector given-fields)]
