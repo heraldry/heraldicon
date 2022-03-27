@@ -18,7 +18,8 @@
 
 (defn render []
   (let [{:keys [choices position]} @(rf/subscribe [:get db-path])]
-    (when (and position choices)
+    (when (and position
+               (seq choices))
       (into [:ul.auto-complete-box {:style {:left (-> position
                                                       :left
                                                       (str "px"))
