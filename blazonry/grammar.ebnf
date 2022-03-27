@@ -33,6 +33,17 @@ DIGIT-WORD
 MULTI-WORD
     = #"\bdouble\b"
     | #"\btriple\b"
+TEEN-WORD
+    = #"\bten\b"
+    | #"\beleven\b"
+    | #"\btwelve\b"
+    | #"\bthirteen\b"
+    | #"\bfourteen\b"
+    | #"\bfifteen\b"
+    | #"\bsixteen\b"
+    | #"\bseventeen\b"
+    | #"\beighteen\b"
+    | #"\bnineteen\b"
 MULTIPLE-OF-TEN-WORD
     = #"\btwenty\b"
     | #"\bthirty\b"
@@ -386,16 +397,7 @@ component
 number-word
     = DIGIT-WORD
     | MULTI-WORD
-    | #"\bten\b"
-    | #"\beleven\b"
-    | #"\btwelve\b"
-    | #"\bthirteen\b"
-    | #"\bfourteen\b"
-    | #"\bfifteen\b"
-    | #"\bsixteen\b"
-    | #"\bseventeen\b"
-    | #"\beighteen\b"
-    | #"\bnineteen\b"
+    | TEEN-WORD
     | MULTIPLE-OF-TEN-WORD
     | MULTIPLE-OF-TEN-WORD #"-?" DIGIT-WORD
 
