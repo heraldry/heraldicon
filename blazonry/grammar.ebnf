@@ -66,7 +66,9 @@ AZURE
 GULES = #"\bgules\b"
 PURPURE = #"\bpurpure\b"
 VERT = #"\bvert\b"
-TENNE = #"\btenne\b"
+TENNE
+    = #"\btenne\b"
+    | #"\btenné\b"
 ORANGE
     = #"\borange\b"
     | #"\bd'orange\b"
@@ -79,7 +81,9 @@ ROSE = #"\brose\b"
 COPPER = #"\bcopper\b"
 PROPER = #"\bproper\b"
 WHITE = #"\bwhite\b"
-BRUNATRE = #"\bbrun[âa]tre\b"
+BRUNATRE
+    = #"\bbrunatre\b"
+    | #"\bbrunâtre\b"
 BUFF = #"\bbuff\b"
 
 ERMINE = #"\bermine\b"
