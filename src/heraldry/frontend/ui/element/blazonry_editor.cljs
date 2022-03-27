@@ -3,32 +3,22 @@
    ["draft-js" :as draft-js]
    ["genex" :as genex]
    ["html-entities" :as html-entities]
-   [clojure.string :as s]
-   [clojure.walk :as walk]
    [heraldry.blazonry.parser :as blazonry-parser]
    [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.context :as context]
-   [heraldry.frontend.macros :as macros]
    [heraldry.frontend.modal :as modal]
    [heraldry.render :as render]
-   [hiccups.runtime]
    [re-frame.core :as rf]
-   [reagent.core :as r])
-  (:require-macros [hiccups.core :as hiccups :refer [html]]))
+   [reagent.core :as r]))
 
-(defn serialize-style [style]
-  (->> style
-       (map (fn [[k v]]
-              (str (name k) ":" v ";")))
-       (apply str)))
+(def blazon-editor-path
+  [:ui :blazon-editor])
 
-(defn serialize-styles [data]
-  (walk/postwalk (fn [v]
-                   (if (and (map? v)
-                            (:style v))
-                     (assoc v :style (serialize-style (:style v)))
-                     v))
-                 data))
+(def hdn-path
+  (conj blazon-editor-path :arms-form))
+
+(def editor-state-path
+  (conj blazon-editor-path :editor-state))
 
 (defn caret-position [index & {:keys [parent-offset]}]
   (let [parent-offset-top (-> parent-offset :top (or 0))
@@ -74,96 +64,100 @@
                              .-left
                              (- parent-offset-left))}))))))
 
-(rf/reg-sub :get-blazon-data
-  (fn [[_ path] _]
-    (rf/subscribe [:get path]))
-
-  (fn [value [_ _path]]
-    (try
-      (let [hdn (blazonry-parser/blazon->hdn value)]
+(defn parse-blazonry [value]
+  (try
+    (let [hdn (blazonry-parser/blazon->hdn value)]
+      {:value value
+       :html value
+       :hdn hdn})
+    (catch :default e
+      (let [{:keys [reason index]} (ex-data e)
+            parsed (subs value 0 index)
+            problem (subs value index)
+            auto-complete-choices (->> reason
+                                       (mapcat (fn [{:keys [tag expecting]}]
+                                                 (case tag
+                                                   :optional []
+                                                   :string [expecting]
+                                                   :regexp (-> expecting
+                                                               genex
+                                                               .generate
+                                                               js->clj))))
+                                       vec)]
         {:value value
-         :html value
-         :hdn hdn})
-      (catch :default e
-        (let [{:keys [reason index]} (ex-data e)
-              parsed (subs value 0 index)
-              problem (subs value index)
-              auto-complete-choices (->> reason
-                                         (mapcat (fn [{:keys [tag expecting]}]
-                                                   (case tag
-                                                     :optional []
-                                                     :string [expecting]
-                                                     :regexp (-> expecting
-                                                                 genex
-                                                                 .generate
-                                                                 js->clj))))
-                                         vec)]
-          {:value value
-           :html [:span (html-entities/encode parsed)
-                  [:span {:style {:color "red"}} (html-entities/encode problem)]]
-           :auto-complete {:choices auto-complete-choices
-                           :position (caret-position index)}
-           :index index})))))
+         :html [:span (html-entities/encode parsed)
+                [:span {:style {:color "red"}} (html-entities/encode problem)]]
+         :auto-complete {:choices auto-complete-choices
+                         :position (caret-position index)}
+         :index index}))))
 
-(defn strip-html-tags [value]
-  (-> value
-      (s/replace #"<ul.*?</ul>" "")
-      (s/replace #"<.*?>" "")))
+(defn block-start-index [content block]
+  (->> content
+       .getBlocksAsArray
+       (take-while #(not= (.-key %) (.-key block)))
+       (map (fn [^draft-js/ContentBlock block]
+              (.getLength block)))
+       (reduce +)))
 
-(macros/reg-event-db :set-blazon-data
-  (fn [db [_ path value]]
-    (assoc-in db path (-> value
-                          strip-html-tags
-                          (s/replace "&nbsp;" " ")
-                          html-entities/decode))))
+(defn unknown-string-decorator [index]
+  (draft-js/CompositeDecorator.
+   (clj->js
+    [{:strategy (fn [block callback content]
+                  (when index
+                    (let [block-start (block-start-index content block)
+                          block-end (+ block-start (.getLength block))]
+                      (when (<= index block-end)
+                        (callback (-> index
+                                      (max block-start)
+                                      (- block-start))
+                                  (- block-end
+                                     block-start))))))
+      :component (fn [props]
+                   (r/as-element [:span {:style {:color "red"}} (.-children props)]))}])))
 
-(defn on-change [new-editor-state state]
-  (reset! state new-editor-state))
-
-(defn core [state]
-  (let []
-    (r/create-class
+(defn blazonry-editor [attributes]
+  [:div attributes
+   [(r/create-class
      {:display-name "core"
       :reagent-render (fn []
-                        [:> draft-js/Editor
-                         {:editorState @state
-                          :onChange (fn [new-editor-state]
-                                      (on-change new-editor-state state))}])})))
+                        (let [state @(rf/subscribe [:get editor-state-path])]
+                          [:> draft-js/Editor
+                           {:editorState state
+                            :onChange (fn [^draft-js/EditorState new-editor-state]
+                                        (let [content ^draft-js/ContentState (.getCurrentContent new-editor-state)
+                                              text (.getPlainText content)
+                                              {:keys [hdn
+                                                      auto-complete
+                                                      index]} (parse-blazonry text)
+                                              new-editor-state (draft-js/EditorState.set new-editor-state (clj->js {:decorator (unknown-string-decorator index)}))]
+                                          (auto-complete/set-data auto-complete)
+                                          (when hdn
+                                            (rf/dispatch [:set hdn-path {:coat-of-arms {:field hdn}
+                                                                         :render-options {:outline? true}}]))
 
-(defn blazonry-editor [_html-data _content-path]
-  (let [state (r/atom (.createEmpty draft-js/EditorState))]
-    (fn [html-data content-path]
-      [:div {:style {:display "inline-block"
-                     :outline "1px solid black"
-                     :width "calc(60% - 10px)"
+                                          (rf/dispatch [:set editor-state-path new-editor-state])))}]))})]])
+
+(defn open [context]
+  (rf/dispatch-sync [:set editor-state-path (.createEmpty draft-js/EditorState)])
+  (rf/dispatch-sync [:set hdn-path {:coat-of-arms {:field {:type :heraldry.field.type/plain
+                                                           :tincture :none}}
+                                    :render-options {:outline? true}}])
+  (modal/create
+   :string.button/from-blazon
+   [(fn []
+      [:div {:style {:width "40em"
                      :height "20em"}}
-       [core state]])))
-
-(macros/reg-event-db :from-blazon
-  (fn [_ [_ context]]
-    (modal/create
-     :string.button/from-blazon
-     [(fn []
-        (let [blazon-editor-path [:ui :blazon-editor]
-              content-path (conj blazon-editor-path :content)
-              hdn-path (conj blazon-editor-path :arms-form)
-              {:keys [auto-complete hdn]
-               :as data} @(rf/subscribe [:get-blazon-data content-path])]
-          (when hdn
-            (rf/dispatch [:set hdn-path {:coat-of-arms {:field hdn}
-                                         :render-options {:outline? true}}]))
-          (auto-complete/set-data auto-complete)
-          [:div {:style {:width "40em"
-                         :height "20em"}}
-           [blazonry-editor
-            (-> data :html serialize-styles html)
-            content-path]
-           [:div {:style {:display "inline-block"
-                          :width "40%"
-                          :height "100%"
-                          :float "right"}}
-            [render/achievement
-             (assoc
-              context/default
-              :path hdn-path
-              :render-options-path (conj hdn-path :render-options))]]]))])))
+       [blazonry-editor
+        {:style {:display "inline-block"
+                 :outline "1px solid black"
+                 :width "calc(60% - 10px)"
+                 :height "20em"}}]
+       [:div {:style {:display "inline-block"
+                      :width "40%"
+                      :height "100%"
+                      :float "right"}}
+        [render/achievement
+         (assoc
+          context/default
+          :path hdn-path
+          :render-options-path (conj hdn-path :render-options))]]])]))
