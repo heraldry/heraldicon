@@ -34,43 +34,45 @@
   (let [parent-offset-top (-> parent-offset :top (or 0))
         parent-offset-left (-> parent-offset :left (or 0))
         selection (js/document.getSelection)
-        range (.getRangeAt selection 0)
-        node (.-startContainer range)
-        offset (or (min index (.-length node))
-                   (.-startOffset range))]
-    (cond
-      (pos? offset) (let [rect (-> (doto (js/document.createRange)
-                                     (.setStart node (dec offset))
-                                     (.setEnd node offset))
-                                   .getBoundingClientRect)]
-                      {:top (-> rect
-                                .-top
-                                (- parent-offset-top))
-                       :left (-> rect
-                                 .-left
-                                 (- parent-offset-left))})
-      (< offset (.-length node)) (let [rect (-> (doto (js/document.createRange)
-                                                  (.setStart node offset)
-                                                  (.setEnd node (inc offset)))
-                                                .getBoundingClientRect)]
-                                   {:top (-> rect
-                                             .-top
-                                             (- parent-offset-top))
-                                    :left (-> rect
-                                              .-left
-                                              (- parent-offset-left))})
-      :else (let [rect (.getBoundingClientRect node)
-                  styles (js/getComputedStyle node)
-                  line-height (js/parseInt (.-lineHeight styles))
-                  font-size (js/parseInt (.-lineSize styles))
-                  delta (/ (- line-height font-size) 2)]
-              {:top (-> rect
-                        .-top
-                        (+ delta)
-                        (- parent-offset-top))
-               :left (-> rect
-                         .-left
-                         (- parent-offset-left))}))))
+        range-count (.-rangeCount selection)]
+    (when (pos? range-count)
+      (let [range (.getRangeAt selection 0)
+            node (.-startContainer range)
+            offset (or (min index (.-length node))
+                       (.-startOffset range))]
+        (cond
+          (pos? offset) (let [rect (-> (doto (js/document.createRange)
+                                         (.setStart node (dec offset))
+                                         (.setEnd node offset))
+                                       .getBoundingClientRect)]
+                          {:top (-> rect
+                                    .-top
+                                    (- parent-offset-top))
+                           :left (-> rect
+                                     .-left
+                                     (- parent-offset-left))})
+          (< offset (.-length node)) (let [rect (-> (doto (js/document.createRange)
+                                                      (.setStart node offset)
+                                                      (.setEnd node (inc offset)))
+                                                    .getBoundingClientRect)]
+                                       {:top (-> rect
+                                                 .-top
+                                                 (- parent-offset-top))
+                                        :left (-> rect
+                                                  .-left
+                                                  (- parent-offset-left))})
+          :else (let [rect (.getBoundingClientRect node)
+                      styles (js/getComputedStyle node)
+                      line-height (js/parseInt (.-lineHeight styles))
+                      font-size (js/parseInt (.-lineSize styles))
+                      delta (/ (- line-height font-size) 2)]
+                  {:top (-> rect
+                            .-top
+                            (+ delta)
+                            (- parent-offset-top))
+                   :left (-> rect
+                             .-left
+                             (- parent-offset-left))}))))))
 
 (rf/reg-sub :get-blazon-data
   (fn [[_ path] _]
