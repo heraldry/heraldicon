@@ -380,7 +380,7 @@ partition-type-with-repeating-fields-without-line
     | MASONY
     | FRETTY
 partition-with-repeating-fields-without-line
-    = partition-type-with-repeating-fields-without-line field AND field
+    = partition-type-with-repeating-fields-without-line plain AND plain
 
 partition-type-with-repeating-fields-with-one-line
     = PALY
