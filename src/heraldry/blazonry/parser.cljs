@@ -48,6 +48,7 @@
 
 (defn parse [s]
   (let [result (-> s
+                   s/lower-case
                    parser
                    clean-ast)]
     (if (vector? result)
