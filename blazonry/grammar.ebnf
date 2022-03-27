@@ -14,12 +14,12 @@ FIMBRIATED
 A = #"\ba\b"
   | #"\ban\b"
 AND = #"\band\b"
-    | #"\b&\b"
-    | #"\b,\b"
+    | #"&"
+    | #","
 OF = #"\bof\b"
 WITH = #"\bwith\b"
 
-NUMBER = #"\b[0-9]+\b"
+NUMBER = #"[0-9]+"
 DIGIT-WORD
     = #"\bone\b"
     | #"\btwo\b"
