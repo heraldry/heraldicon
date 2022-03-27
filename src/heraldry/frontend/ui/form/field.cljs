@@ -6,6 +6,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.blazonry-editor :as blazonry-editor]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
    [heraldry.frontend.ui.interface :as ui-interface]
    [heraldry.frontend.validation :as validation]
@@ -174,7 +175,7 @@
                                   :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}
                          {:icon "fas fa-pen-nib"
                           :title :string.button/from-blazon
-                          :handler #(state/dispatch-on-event % [:from-blazon context])}]
+                          :handler #(blazonry-editor/open context)}]
                   (non-mandatory-part-of-parent? context)
                   (conj {:icon "fas fa-undo"
                          :title "Reset"
