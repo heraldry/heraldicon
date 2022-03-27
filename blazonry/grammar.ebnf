@@ -19,7 +19,7 @@ AND = #"\band\b"
 OF = #"\bof\b"
 WITH = #"\bwith\b"
 
-NUMBER = #"[0-9]+"
+NUMBER = #"[1-9][0-9]*"
 DIGIT-WORD
     = #"\bone\b"
     | #"\btwo\b"
