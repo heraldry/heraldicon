@@ -177,6 +177,14 @@ STRAIGHT = #"\bstraight\b"
 INVECTED = #"\binvected\b"
 ENGRAILED = #"\bengrailed\b"
 EMBATTLED = #"\bembattled\b"
+EMBATTLED-GRADY
+    = #"\bembattled grady\b"
+    | #"\bembattled-+grady\b"
+    | #"\bembattled\b" #"\bgrady\b"
+EMBATTLED-IN-CROSSES
+    = #"\bembattled +in +crosses\b"
+    | #"\bembattled-+in-+crosses\b"
+    | #"\bembattled\b" #"\bin crosses\b"
 POTENTY = #"\bpotenty\b"
 INDENTED = #"\bindented\b"
 DANCETTY = #"\bdancetty\b"
@@ -470,6 +478,8 @@ line-type
     | INVECTED
     | ENGRAILED
     | EMBATTLED
+    | EMBATTLED-GRADY
+    | EMBATTLED-IN-CROSSES
     | POTENTY
     | INDENTED
     | DANCETTY
