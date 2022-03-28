@@ -220,5 +220,50 @@
                                          :field {:type :heraldry.field.type/plain
                                                  :tincture :vert}}]}}]}
 
+    "paly or and azure"
+    {:type :heraldry.field.type/paly
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}
+              {:type :heraldry.field.type/ref
+               :index 0}
+              {:type :heraldry.field.type/ref
+               :index 1}
+              {:type :heraldry.field.type/ref
+               :index 0}
+              {:type :heraldry.field.type/ref
+               :index 1}]}
+
+    "paly of three or and azure"
+    {:type :heraldry.field.type/paly
+     :layout {:num-fields-x 3}
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}
+              {:type :heraldry.field.type/ref
+               :index 0}]}
+
+    "paly of 8 or and azure"
+    {:type :heraldry.field.type/paly
+     :layout {:num-fields-x 8}
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}
+              {:type :heraldry.field.type/ref
+               :index 0}
+              {:type :heraldry.field.type/ref
+               :index 1}
+              {:type :heraldry.field.type/ref
+               :index 0}
+              {:type :heraldry.field.type/ref
+               :index 1}
+              {:type :heraldry.field.type/ref
+               :index 0}
+              {:type :heraldry.field.type/ref
+               :index 1}]}
+
 ;;
     ))

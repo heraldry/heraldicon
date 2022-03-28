@@ -170,11 +170,32 @@
       opposite-line (assoc :opposite-line opposite-line)
       extra-line (assoc :extra-line extra-line))))
 
+(defn layout-for-partition [partition-type nodes]
+  (let [partition-type (-> partition-type name keyword)
+        [first-amount
+         second-amount] (->> nodes
+                             (filter (type? #{:amount}))
+                             (mapv ast->hdn))]
+    (cond
+      (and first-amount
+           (#{:paly} partition-type)) {:num-fields-x first-amount}
+      (and first-amount
+           (#{:barry
+              :bendy
+              :bendy-sinister
+              :chevronny} partition-type)) {:num-fields-y first-amount}
+      :else nil)))
+
 (defmethod ast->hdn :partition [[_ [_partition-group & nodes]]]
   (let [partition-type-node (get-child #{:partition-type} nodes)
         partition-type (ast->hdn partition-type-node)
+        layout (layout-for-partition partition-type nodes)
         ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
-        default-fields (field/raw-default-fields partition-type 6 6 2)
+        default-fields (field/raw-default-fields
+                        partition-type
+                        (-> layout :num-fields-x (or 6))
+                        (-> layout :num-fields-y (or 6))
+                        2)
         given-fields (->> nodes
                           (filter (type? #{:field :plain}))
                           (mapv ast->hdn))
@@ -187,7 +208,9 @@
 
     (-> {:type partition-type
          :fields fields}
-        (add-lines nodes))))
+        (add-lines nodes)
+        (cond->
+          layout (assoc :layout layout)))))
 
 (defmethod ast->hdn :amount [[_ node]]
   (ast->hdn node))

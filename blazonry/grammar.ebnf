@@ -346,8 +346,8 @@ partition
     | partition-with-four-fields
     | partition-with-eight-fields
     | partition-with-many-fields
-    | partition-with-repeating-fields-without-line
-    | partition-with-repeating-fields-with-one-line
+    | partition-with-repeating-fields-in-two-dimensions
+    | partition-with-repeating-fields-in-one-dimension
 
 (* used for suggestion labeling *)
 partition-type
@@ -357,8 +357,8 @@ partition-type
     | partition-type-with-four-fields
     | partition-type-with-eight-fields
     | partition-type-with-many-fields
-    | partition-type-with-repeating-fields-without-line
-    | partition-type-with-repeating-fields-with-one-line
+    | partition-type-with-repeating-fields-in-two-dimensions
+    | partition-type-with-repeating-fields-in-one-dimension
 
 partition-type-with-two-fields
     = PER-PALE
@@ -397,7 +397,7 @@ partition-type-with-many-fields
 partition-with-many-fields
     = partition-type-with-many-fields field AND field (AND field)*
 
-partition-type-with-repeating-fields-without-line
+partition-type-with-repeating-fields-in-two-dimensions
     = CHEQUY
     | LOZENGY
     | VAIRY
@@ -405,17 +405,17 @@ partition-type-with-repeating-fields-without-line
     | PAPELLONY
     | MASONY
     | FRETTY
-partition-with-repeating-fields-without-line
-    = partition-type-with-repeating-fields-without-line plain AND plain
+partition-with-repeating-fields-in-two-dimensions
+    = partition-type-with-repeating-fields-in-two-dimensions plain AND plain
 
-partition-type-with-repeating-fields-with-one-line
+partition-type-with-repeating-fields-in-one-dimension
     = PALY
     | BARRY
     | BENDY
     | BENDY-SINISTER
     | CHEVRONNY
-partition-with-repeating-fields-with-one-line
-    = partition-type-with-repeating-fields-with-one-line field AND field
+partition-with-repeating-fields-in-one-dimension
+    = partition-type-with-repeating-fields-in-one-dimension (OF amount)? field AND field
 
 components
     = component (AND component)*
