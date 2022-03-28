@@ -289,9 +289,13 @@
 
 (defmethod ast->hdn :field [[_ & nodes]]
   (let [field (ast->hdn (get-child #{:variation} nodes))
+        component (some-> (get-child #{:component} nodes)
+                          ast->hdn)
         components (some->> nodes
                             (get-child #{:components})
-                            ast->hdn)]
+                            ast->hdn)
+        components (vec (concat component
+                                components))]
     (cond-> field
       (seq components) (assoc :components components))))
 

@@ -18,6 +18,7 @@ AND = #"\band\b"
     | #","
 OF = #"\bof\b"
 WITH = #"\bwith\b"
+CHARGED = #"\bcharged\b"
 
 NUMBER = #"[1-9][0-9]*"
 DIGIT-WORD
@@ -289,10 +290,15 @@ LION = #"\blions?\b"
 
 root-field
     = root-variation AND* components*
+    | root-variation CHARGED WITH component AND* components*
+    | "(" root-variation AND* components* ")"
+    | "(" root-variation CHARGED WITH component AND components* ")"
 
 field
     = variation AND* components*
+    | variation CHARGED WITH component AND* components*
     | "(" variation AND* components* ")"
+    | "(" variation CHARGED WITH component AND components* ")"
 
 root-variation
     = root-plain
