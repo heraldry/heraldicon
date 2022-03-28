@@ -167,5 +167,19 @@
               {:type :heraldry.field.type/plain
                :tincture :azure}]}
 
+    "or a fess humetty indented or, pale wavy voided sable"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :indented}
+                   :humetty {:humetty? true}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :or}}
+                  {:type :heraldry.ordinary.type/pale
+                   :line {:type :wavy}
+                   :voided {:voided? true}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}]}
+
 ;;
     ))

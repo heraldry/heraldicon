@@ -263,10 +263,28 @@
        s/lower-case
        (keyword "heraldry.ordinary.type")))
 
+(defmethod ast->hdn :ordinary-option [[_ node]]
+  (first node))
+
+(defmethod ast->hdn :ordinary-options [[_ & nodes]]
+  (->> nodes
+       (filter (type? #{:ordinary-option}))
+       (map ast->hdn)
+       set))
+
+(defn add-ordinary-options [hdn nodes]
+  (let [ordinary-options (some-> (get-child #{:ordinary-options} nodes)
+                                 ast->hdn)]
+    (cond-> hdn
+      (or (get ordinary-options :COUPED)
+          (get ordinary-options :HUMETTY)) (assoc :humetty {:humetty? true})
+      (get ordinary-options :VOIDED) (assoc :voided {:voided? true}))))
+
 (defmethod ast->hdn :ordinary [[_ [_ordinary-group & nodes]]]
   (let [ordinary-type-node (get-child #{:ordinary-type} nodes)]
     (-> {:type (ast->hdn ordinary-type-node)
          :field (ast->hdn (get-child #{:field} nodes))}
+        (add-ordinary-options nodes)
         (add-lines nodes))))
 
 (defmethod ast->hdn :field [[_ & nodes]]

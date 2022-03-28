@@ -466,6 +466,7 @@ ordinary-type-with-one-line
     | POINT
 ordinary-with-one-line
     = ordinary-type-with-one-line ordinary-options? line? field
+    | ordinary-type-with-one-line line? ordinary-options? field
 
 ordinary-type-with-two-lines
     = PALE
@@ -480,11 +481,13 @@ ordinary-type-with-two-lines
     | ORLE
 ordinary-with-two-lines
     = ordinary-type-with-two-lines ordinary-options? (line (AND line)?)? field
+    | ordinary-type-with-two-lines (line (AND line)?)? ordinary-options? field
 
 ordinary-type-with-three-lines
     = PALL
 ordinary-with-three-lines
     = ordinary-type-with-three-lines ordinary-options? (line (AND line (AND line)?)?)? field
+    | ordinary-type-with-three-lines (line (AND line (AND line)?)?)? ordinary-options field
 
 line
     = line-type fimbriation
