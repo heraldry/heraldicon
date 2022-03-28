@@ -30,6 +30,10 @@
     {:type :heraldry.field.type/plain
      :tincture :or}
 
+    "tenné"
+    {:type :heraldry.field.type/plain
+     :tincture :tenne}
+
     "erminois"
     {:type :heraldry.field.type/plain
      :tincture :erminois}

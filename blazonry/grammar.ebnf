@@ -68,7 +68,7 @@ PURPURE = #"\bpurpure\b"
 VERT = #"\bvert\b"
 TENNE
     = #"\btenne\b"
-    | #"\btenné\b"
+    | #"\btenné(?=( |$))"
 ORANGE
     = #"\borange\b"
     | #"\bd'orange\b"

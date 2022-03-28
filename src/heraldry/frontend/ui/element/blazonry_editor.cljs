@@ -94,6 +94,7 @@
                                                                genex
                                                                .generate
                                                                js->clj))))
+                                       (map s/trim)
                                        (filter (fn [choice]
                                                  (if choice
                                                    (s/starts-with? choice typed-string)
