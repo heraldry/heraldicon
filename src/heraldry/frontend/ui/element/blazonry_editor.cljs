@@ -56,7 +56,8 @@
                    :left (.-left rect)}))))))
 
 (def suggestion-hint-order
-  (->> ["line"
+  (->> ["layout"
+        "line"
         "fimbriation"
         "tincture"
         "ordinary"

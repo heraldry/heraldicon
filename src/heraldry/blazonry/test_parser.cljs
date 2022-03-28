@@ -265,5 +265,38 @@
               {:type :heraldry.field.type/ref
                :index 1}]}
 
+    "chequy of 2 or and azure"
+    {:type :heraldry.field.type/chequy
+     :layout {:num-fields-x 2}
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}]}
+
+    "lozengy 2 tracts or and azure"
+    {:type :heraldry.field.type/lozengy
+     :layout {:num-fields-y 2}
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}]}
+
+    "vairy 2 x4 or and azure"
+    {:type :heraldry.field.type/vairy
+     :layout {:num-fields-x 2
+              :num-fields-y 4}
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}]}
+
+    "papellony of three times twenty-eight tracts or and azure"
+    {:type :heraldry.field.type/papellony
+     :layout {:num-fields-x 3
+              :num-fields-y 28}
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}]}
 ;;
     ))

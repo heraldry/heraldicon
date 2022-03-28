@@ -19,6 +19,9 @@ AND = #"\band\b"
 OF = #"\bof\b"
 WITH = #"\bwith\b"
 CHARGED = #"\bcharged\b"
+TRACTS = #"\btracts\b"
+X = #"x"
+TIMES = #"\btimes\b"
 
 NUMBER = #"[1-9][0-9]*"
 DIGIT-WORD
@@ -346,8 +349,9 @@ partition
     | partition-with-four-fields
     | partition-with-eight-fields
     | partition-with-many-fields
+    | partition-with-horizontally-repeating-fields
+    | partition-with-vertically-repeating-fields
     | partition-with-repeating-fields-in-two-dimensions
-    | partition-with-repeating-fields-in-one-dimension
 
 (* used for suggestion labeling *)
 partition-type
@@ -357,8 +361,9 @@ partition-type
     | partition-type-with-four-fields
     | partition-type-with-eight-fields
     | partition-type-with-many-fields
+    | partition-type-with-horizontally-repeating-fields
+    | partition-type-with-vertically-repeating-fields
     | partition-type-with-repeating-fields-in-two-dimensions
-    | partition-type-with-repeating-fields-in-one-dimension
 
 partition-type-with-two-fields
     = PER-PALE
@@ -397,6 +402,32 @@ partition-type-with-many-fields
 partition-with-many-fields
     = partition-type-with-many-fields field AND field (AND field)*
 
+(* used for suggestion labeling *)
+layout-words
+    = OF
+    | X
+    | TIMES
+    | TRACTS
+
+horizontal-layout
+    = amount
+
+vertical-layout
+    = vertical-layout-implicit
+    | vertical-layout-explicit
+
+vertical-layout-implicit
+    = amount
+
+vertical-layout-explicit
+    = amount TRACTS
+
+layout
+    = horizontal-layout
+    | vertical-layout-explicit
+    | horizontal-layout (X | TIMES | AND)? vertical-layout
+    | vertical-layout-explicit (X | TIMES | AND)? horizontal-layout
+
 partition-type-with-repeating-fields-in-two-dimensions
     = CHEQUY
     | LOZENGY
@@ -406,16 +437,20 @@ partition-type-with-repeating-fields-in-two-dimensions
     | MASONY
     | FRETTY
 partition-with-repeating-fields-in-two-dimensions
-    = partition-type-with-repeating-fields-in-two-dimensions plain AND plain
+    = partition-type-with-repeating-fields-in-two-dimensions (OF? layout)? plain AND plain
 
-partition-type-with-repeating-fields-in-one-dimension
+partition-type-with-horizontally-repeating-fields
     = PALY
-    | BARRY
+partition-with-horizontally-repeating-fields
+    = partition-type-with-horizontally-repeating-fields (OF? horizontal-layout)? field AND field
+
+partition-type-with-vertically-repeating-fields
+    = BARRY
     | BENDY
     | BENDY-SINISTER
     | CHEVRONNY
-partition-with-repeating-fields-in-one-dimension
-    = partition-type-with-repeating-fields-in-one-dimension (OF amount)? field AND field
+partition-with-vertically-repeating-fields
+    = partition-type-with-vertically-repeating-fields (OF? vertical-layout)? field AND field
 
 components
     = component (AND component)*

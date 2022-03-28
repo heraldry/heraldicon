@@ -48,7 +48,8 @@
 
 (defn -parse-as-part [s]
   (let [s (s/lower-case s)]
-    (loop [[[rule part-name] & rest] [[:tincture "tincture"]
+    (loop [[[rule part-name] & rest] [[:layout-words "layout"]
+                                      [:tincture "tincture"]
                                       [:COUNTERCHANGED "tincture"]
                                       [:line-type "line"]
                                       [:FIMBRIATED "fimbriation"]
@@ -170,26 +171,40 @@
       opposite-line (assoc :opposite-line opposite-line)
       extra-line (assoc :extra-line extra-line))))
 
-(defn layout-for-partition [partition-type nodes]
-  (let [partition-type (-> partition-type name keyword)
-        [first-amount
-         second-amount] (->> nodes
-                             (filter (type? #{:amount}))
-                             (mapv ast->hdn))]
-    (cond
-      (and first-amount
-           (#{:paly} partition-type)) {:num-fields-x first-amount}
-      (and first-amount
-           (#{:barry
-              :bendy
-              :bendy-sinister
-              :chevronny} partition-type)) {:num-fields-y first-amount}
-      :else nil)))
+(defmethod ast->hdn :horizontal-layout [[_ & nodes]]
+  (let [amount (-> (get-child #{:amount} nodes)
+                   ast->hdn)]
+    {:num-fields-x amount}))
+
+(defmethod ast->hdn :vertical-layout-implicit [[_ & nodes]]
+  (let [amount (-> (get-child #{:amount} nodes)
+                   ast->hdn)]
+    {:num-fields-y amount}))
+
+(defmethod ast->hdn :vertical-layout-explicit [[_ & nodes]]
+  (let [amount (-> (get-child #{:amount} nodes)
+                   ast->hdn)]
+    {:num-fields-y amount}))
+
+(defmethod ast->hdn :vertical-layout [[_ node]]
+  (ast->hdn node))
+
+(defmethod ast->hdn :layout [[_ & nodes]]
+  (let [layouts (->> nodes
+                     (filter (type? #{:horizontal-layout
+                                      :vertical-layout
+                                      :vertical-layout-explicit
+                                      :vertical-layout-implicit}))
+                     (map ast->hdn))]
+    (apply merge layouts)))
 
 (defmethod ast->hdn :partition [[_ [_partition-group & nodes]]]
   (let [partition-type-node (get-child #{:partition-type} nodes)
         partition-type (ast->hdn partition-type-node)
-        layout (layout-for-partition partition-type nodes)
+        layout (some-> (get-child #{:layout
+                                    :horizontal-layout
+                                    :vertical-layout} nodes)
+                       ast->hdn)
         ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
         default-fields (field/raw-default-fields
                         partition-type
@@ -205,7 +220,6 @@
                    (recur (util/vec-replace (vec fields) index field)
                           rest)
                    (vec fields)))]
-
     (-> {:type partition-type
          :fields fields}
         (add-lines nodes)
