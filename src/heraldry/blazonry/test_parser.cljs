@@ -207,5 +207,18 @@
                                          :field {:type :heraldry.field.type/plain
                                                  :tincture :vert}}]}}]}
 
+    "or a fess or, a pale sable charged with a chief vert"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :or}}
+                  {:type :heraldry.ordinary.type/pale
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable
+                           :components [{:type :heraldry.ordinary.type/chief
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture :vert}}]}}]}
+
 ;;
     ))
