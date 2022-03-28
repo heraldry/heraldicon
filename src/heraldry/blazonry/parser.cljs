@@ -46,6 +46,31 @@
               unify-ordinary-type-nodes
               rename-root-nodes))))
 
+(defn -parse-as-part [s]
+  (let [s (s/lower-case s)]
+    (loop [[[rule part-name] & rest] [[:tincture "tincture"]
+                                      [:COUNTERCHANGED "tincture"]
+                                      [:line-type "line"]
+                                      [:FIMBRIATED "fimbriation"]
+                                      [:partition-type "partition"]
+                                      [:amount "number"]
+                                      [:attitude "attitude"]
+                                      [:facing "facing"]
+                                      [:ordinary-type "ordinary"]
+                                      [:ordinary-option "ordinary option"]
+                                      [:charge-type "charge"]
+                                      [:charge-option "charge option"]]]
+      (when rule
+        (or (try
+              (let [parsed (parser s :start rule)]
+                (when (vector? parsed)
+                  part-name))
+              (catch :default _))
+            (recur rest))))))
+
+(def parse-as-part
+  (memoize -parse-as-part))
+
 (defn parse [s]
   (let [result (-> s
                    s/lower-case

@@ -342,6 +342,17 @@ partition
     | partition-with-repeating-fields-without-line
     | partition-with-repeating-fields-with-one-line
 
+(* used for suggestion labeling *)
+partition-type
+    = partition-type-with-two-fields
+    | partition-type-with-three-fields-two-lines
+    | partition-type-with-three-fields-three-lines
+    | partition-type-with-four-fields
+    | partition-type-with-eight-fields
+    | partition-type-with-many-fields
+    | partition-type-with-repeating-fields-without-line
+    | partition-type-with-repeating-fields-with-one-line
+
 partition-type-with-two-fields
     = PER-PALE
     | PER-FESS
@@ -427,6 +438,13 @@ ordinary
     | ordinary-with-two-lines
     | ordinary-with-three-lines
 
+(* used for suggestion labeling *)
+ordinary-type
+    = ordinary-type-without-line
+    | ordinary-type-with-one-line
+    | ordinary-type-with-two-lines
+    | ordinary-type-with-three-lines
+
 ordinary-options
     = ordinary-option+
 
@@ -509,6 +527,11 @@ double-fimbriation
 
 charge-group
     = amount? charge
+
+(* used for suggestion labeling *)
+charge-type
+    = standard-charge-type
+    | other-charge-type
 
 charge
     = standard-charge-with-field

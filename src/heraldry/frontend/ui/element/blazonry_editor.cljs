@@ -55,6 +55,22 @@
                             (+ delta))
                    :left (.-left rect)}))))))
 
+(def suggestion-hint-order
+  (->> ["line"
+        "fimbriation"
+        "tincture"
+        "ordinary"
+        "ordinary option"
+        "charge"
+        "charge option"
+        "partition"
+        "attitude"
+        "facing"
+        "number"]
+       (map-indexed (fn [index hint]
+                      [hint index]))
+       (into {})))
+
 (defn parse-blazonry [value cursor-index]
   (try
     (let [hdn (blazonry-parser/blazon->hdn value)]
@@ -84,6 +100,11 @@
                                                    true)))
                                        sort
                                        dedupe
+                                       (map (fn [choice]
+                                              [choice (blazonry-parser/parse-as-part choice)]))
+                                       (sort-by (fn [[choice hint]]
+                                                  [(get suggestion-hint-order hint 1000)
+                                                   choice]))
                                        vec)
             position (caret-position index)]
         {:value value

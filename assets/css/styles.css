@@ -1117,16 +1117,27 @@ li.ui-menu-header {
   z-index: 10000;
 }
 
-.auto-complete-box li {
+.auto-complete-box .auto-complete-suggestion {
   background-color: #fff;
   padding: 0 5px;
 }
 
-.auto-complete-box li:hover {
+.auto-complete-box .auto-complete-suggestion .hint {
+  color: #888;
+  float: right;
+  padding-left: 10px;
+}
+
+.auto-complete-box .auto-complete-suggestion:hover {
   background-color: #88c;
   color: #fff;
   cursor: pointer;
 }
+
+.auto-complete-box .auto-complete-suggestion:hover .hint {
+  color: #ff0;
+}
+
 
 .DraftEditor-root,
 .DraftEditor-editorContainer,
