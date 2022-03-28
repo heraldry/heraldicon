@@ -292,6 +292,7 @@ root-field
 
 field
     = variation AND* components*
+    | "(" variation AND* components* ")"
 
 root-variation
     = root-plain
