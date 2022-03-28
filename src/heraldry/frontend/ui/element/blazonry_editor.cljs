@@ -176,7 +176,9 @@
                           new-editor-state
                           (clj->js
                            {:decorator (unknown-string-decorator index)}))]
-    (auto-complete/set-data auto-complete)
+    (if auto-complete
+      (auto-complete/set-data auto-complete)
+      (auto-complete/clear-data))
     (when hdn
       (rf/dispatch [:set hdn-path {:coat-of-arms {:field hdn}
                                    :render-options {:outline? true}}]))
