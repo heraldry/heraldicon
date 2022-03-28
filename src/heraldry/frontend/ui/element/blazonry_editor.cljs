@@ -7,6 +7,7 @@
    [heraldry.blazonry.parser :as blazonry-parser]
    [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.context :as context]
+   [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.modal :as modal]
    [heraldry.render :as render]
@@ -244,6 +245,12 @@
                            {:editorState state
                             :onChange on-editor-change}]))})]])
 
+(macros/reg-event-db :apply-blazon-result
+  (fn [db [_ {:keys [path]}]]
+    (let [field-data (get-in db (conj hdn-path :coat-of-arms :field))]
+      (modal/clear)
+      (assoc-in db path field-data))))
+
 (defn open [context]
   (rf/dispatch-sync [:set editor-state-path (.createEmpty draft-js/EditorState)])
   (rf/dispatch-sync [:set hdn-path {:coat-of-arms {:field {:type :heraldry.field.type/plain
@@ -252,19 +259,35 @@
   (modal/create
    :string.button/from-blazon
    [(fn []
-      [:div {:style {:width "40em"
-                     :height "20em"}}
-       [blazonry-editor
-        {:style {:display "inline-block"
-                 :outline "1px solid black"
-                 :width "calc(60% - 10px)"
-                 :height "20em"}}]
-       [:div {:style {:display "inline-block"
-                      :width "40%"
-                      :height "100%"
-                      :float "right"}}
-        [render/achievement
-         (assoc
-          context/default
-          :path hdn-path
-          :render-options-path (conj hdn-path :render-options))]]])]))
+      [:div
+       [:div {:style {:width "40em"
+                      :height "20em"}}
+        [blazonry-editor
+         {:style {:display "inline-block"
+                  :outline "1px solid black"
+                  :width "calc(60% - 10px)"
+                  :height "20em"}}]
+        [:div {:style {:display "inline-block"
+                       :width "40%"
+                       :height "100%"
+                       :float "right"}}
+         [render/achievement
+          (assoc
+           context/default
+           :path hdn-path
+           :render-options-path (conj hdn-path :render-options))]]]
+
+       [:div.buttons {:style {:display "flex"}}
+        [:div {:style {:flex "auto"}}]
+        [:button.button
+         {:type "button"
+          :style {:flex "initial"
+                  :margin-left "10px"}
+          :on-click #(modal/clear)}
+         [tr :string.button/cancel]]
+
+        [:button.button.primary {:type "submit"
+                                 :on-click #(rf/dispatch [:apply-blazon-result context])
+                                 :style {:flex "initial"
+                                         :margin-left "10px"}}
+         [tr :string.button/apply]]]])]))

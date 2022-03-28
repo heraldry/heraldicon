@@ -583,6 +583,7 @@
   },
   "button": {
     "add": "Hinzufügen",
+    "apply": "Übernehmen",
     "cancel": "Abbruch",
     "copy-to-new": "Kopie erstellen",
     "create": "Erstellen",
