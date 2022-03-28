@@ -220,6 +220,16 @@
                                          :field {:type :heraldry.field.type/plain
                                                  :tincture :vert}}]}}]}
 
+    "per pale azure and argent, a fess sable"
+    {:type :heraldry.field.type/per-pale
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :azure}
+              {:type :heraldry.field.type/plain
+               :tincture :argent}]
+     :components [{:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}]}
+
     "paly or and azure"
     {:type :heraldry.field.type/paly
      :fields [{:type :heraldry.field.type/plain

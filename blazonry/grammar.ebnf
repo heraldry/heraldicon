@@ -292,13 +292,15 @@ LION = #"\blions?\b"
 (* rules *)
 
 root-field
-    = root-variation AND* components*
+    = root-variation
+    | root-variation AND* components*
     | root-variation CHARGED WITH component AND* components*
     | "(" root-variation AND* components* ")"
     | "(" root-variation CHARGED WITH component AND components* ")"
 
 field
-    = variation AND* components*
+    = variation
+    | variation AND* components*
     | variation CHARGED WITH component AND* components*
     | "(" variation AND* components* ")"
     | "(" variation CHARGED WITH component AND components* ")"
