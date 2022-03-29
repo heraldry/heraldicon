@@ -422,11 +422,16 @@ vertical-layout-implicit
 vertical-layout-explicit
     = amount TRACTS
 
+layout-times
+    = X
+    | TIMES
+    | AND
+
 layout
     = horizontal-layout
     | vertical-layout-explicit
-    | horizontal-layout (X | TIMES | AND)? vertical-layout
-    | vertical-layout-explicit (X | TIMES | AND)? horizontal-layout
+    | horizontal-layout layout-times? vertical-layout
+    | vertical-layout-explicit layout-times? horizontal-layout
 
 partition-type-with-repeating-fields-in-two-dimensions
     = CHEQUY
