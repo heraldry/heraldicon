@@ -127,27 +127,18 @@
        s/lower-case
        keyword))
 
-(defmethod ast->hdn :single-fimbriation [[_ & nodes]]
-  (let [tincture-1 (->> nodes
-                        (filter (type? #{:tincture}))
-                        (take 1)
-                        (mapv ast->hdn)
-                        first)]
-    {:mode :single
-     :tincture-1 tincture-1}))
-
-(defmethod ast->hdn :double-fimbriation [[_ & nodes]]
+(defmethod ast->hdn :fimbriation [[_ & nodes]]
   (let [[tincture-1
          tincture-2] (->> nodes
                           (filter (type? #{:tincture}))
                           (take 2)
                           (mapv ast->hdn))]
-    {:mode :double
-     :tincture-1 tincture-1
-     :tincture-2 tincture-2}))
-
-(defmethod ast->hdn :fimbriation [[_ node]]
-  (ast->hdn node))
+    (if-not tincture-2
+      {:mode :single
+       :tincture-1 tincture-1}
+      {:mode :double
+       :tincture-1 tincture-1
+       :tincture-2 tincture-2})))
 
 (defmethod ast->hdn :line [[_ & nodes]]
   (let [line-type (get-child #{:line-type} nodes)
