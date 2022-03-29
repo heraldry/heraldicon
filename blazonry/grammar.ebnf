@@ -364,65 +364,33 @@ tincture
     | ERMINOIS
     | PEAN
 
-partition
-    = partition-with-two-fields
-    | partition-with-three-fields-two-lines
-    | partition-with-three-fields-three-lines
-    | partition-with-four-fields
-    | partition-with-eight-fields
-    | partition-with-many-fields
-    | partition-with-horizontally-repeating-fields
-    | partition-with-vertically-repeating-fields
-    | partition-with-repeating-fields-in-two-dimensions
-
 (* used for suggestion labeling *)
 partition-type
-    = partition-type-with-two-fields
-    | partition-type-with-three-fields-two-lines
-    | partition-type-with-three-fields-three-lines
-    | partition-type-with-four-fields
-    | partition-type-with-eight-fields
-    | partition-type-with-many-fields
-    | partition-type-with-horizontally-repeating-fields
-    | partition-type-with-vertically-repeating-fields
-    | partition-type-with-repeating-fields-in-two-dimensions
-
-partition-type-with-two-fields
-    = PER-PALE
-    | PER-FESS
+    = BARRY
+    | BENDY
+    | BENDY-SINISTER
+    | CHEQUY
+    | CHEVRONNY
+    | FRETTY
+    | GYRONNY
+    | LOZENGY
+    | MASONY
+    | PALY
+    | PAPELLONY
     | PER-BEND
     | PER-BEND-SINISTER
     | PER-CHEVRON
-partition-with-two-fields
-    = partition-type-with-two-fields line? root-field AND root-field
-
-partition-type-with-three-fields-two-lines
-    = PER-PILE
-    | TIERCED-PER-PALE
-    | TIERCED-PER-FESS
-partition-with-three-fields-two-lines
-    = partition-type-with-three-fields-two-lines (line (AND line)?)? root-field AND root-field AND root-field
-
-partition-type-with-three-fields-three-lines
-    = TIERCED-PER-PALL
-partition-with-three-fields-three-lines
-    = partition-type-with-three-fields-three-lines (line (AND line)? (AND line)?)? root-field AND root-field AND root-field
-
-partition-type-with-four-fields
-    = PER-SALTIRE
+    | PER-FESS
+    | PER-PALE
+    | PER-PILE
+    | PER-SALTIRE
+    | POTENTY
     | QUARTERED
-partition-with-four-fields
-    = partition-type-with-four-fields line? root-field AND root-field (AND root-field)? (AND root-field)?
-
-partition-type-with-eight-fields
-    = GYRONNY
-partition-with-eight-fields
-    = partition-type-with-eight-fields line? root-field AND root-field (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)?
-
-partition-type-with-many-fields
-    = QUARTERED
-partition-with-many-fields
-    = partition-type-with-many-fields root-field AND root-field (AND root-field)*
+    | QUARTERED
+    | TIERCED-PER-FESS
+    | TIERCED-PER-PALE
+    | TIERCED-PER-PALL
+    | VAIRY
 
 (* used for suggestion labeling *)
 layout-words
@@ -455,29 +423,32 @@ layout
     | horizontal-layout layout-times? vertical-layout
     | vertical-layout-explicit layout-times? horizontal-layout
 
-partition-type-with-repeating-fields-in-two-dimensions
-    = CHEQUY
-    | LOZENGY
-    | VAIRY
-    | POTENTY
-    | PAPELLONY
-    | MASONY
-    | FRETTY
-partition-with-repeating-fields-in-two-dimensions
-    = partition-type-with-repeating-fields-in-two-dimensions (OF? layout)? root-plain AND root-plain
-
-partition-type-with-horizontally-repeating-fields
-    = PALY
-partition-with-horizontally-repeating-fields
-    = partition-type-with-horizontally-repeating-fields (OF? horizontal-layout)? root-field AND root-field
-
-partition-type-with-vertically-repeating-fields
-    = BARRY
-    | BENDY
-    | BENDY-SINISTER
-    | CHEVRONNY
-partition-with-vertically-repeating-fields
-    = partition-type-with-vertically-repeating-fields (OF? vertical-layout)? root-field AND root-field
+partition
+    = (PER-PALE
+       | PER-FESS
+       | PER-BEND
+       | PER-BEND-SINISTER
+       | PER-CHEVRON) line? root-field AND root-field
+    | (PER-PILE
+       | TIERCED-PER-PALE
+       | TIERCED-PER-FESS) (line (AND line)?)? root-field AND root-field AND root-field
+    | TIERCED-PER-PALL (line (AND line)? (AND line)?)? root-field AND root-field AND root-field
+    | (PER-SALTIRE
+       | QUARTERED) line? root-field AND root-field (AND root-field)? (AND root-field)?
+    | GYRONNY line? root-field AND root-field (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)?
+    | QUARTERED root-field AND root-field (AND root-field)*
+    | (CHEQUY
+       | LOZENGY
+       | VAIRY
+       | POTENTY
+       | PAPELLONY
+       | MASONY
+       | FRETTY) (OF? layout)? root-plain AND root-plain
+    | PALY (OF? horizontal-layout)? root-field AND root-field
+    | (BARRY
+       | BENDY
+       | BENDY-SINISTER
+       | CHEVRONNY) (OF? vertical-layout)? root-field AND root-field
 
 components
     = component (AND component)*

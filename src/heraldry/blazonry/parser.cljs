@@ -4,6 +4,7 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldry.coat-of-arms.field.core :as field]
+   [heraldry.coat-of-arms.field.options :as field-options]
    [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
    [heraldry.util :as util]
    [instaparse.core :as insta]
@@ -17,12 +18,6 @@
   (insta/parser
    grammar
    :auto-whitespace :standard))
-
-(defn unify-partition-type-nodes [data]
-  (if (and (keyword? data)
-           (-> data name (s/starts-with? "partition-type")))
-    :partition-type
-    data))
 
 (defn rename-root-nodes [data]
   (if (and (keyword? data)
@@ -38,8 +33,7 @@
 (defn clean-ast [data]
   (->> data
        (walk/postwalk
-        (comp unify-partition-type-nodes
-              rename-root-nodes))))
+        rename-root-nodes)))
 
 (defn -parse-as-part [s]
   (let [s (s/lower-case s)]
@@ -113,13 +107,6 @@
       {:type :heraldry.field.type/plain
        :tincture (ast->hdn node)})))
 
-(defmethod ast->hdn :partition-type [[_ node]]
-  (->> node
-       first
-       name
-       s/lower-case
-       (keyword "heraldry.field.type")))
-
 (defmethod ast->hdn :line-type [[_ node]]
   (->> node
        first
@@ -185,16 +172,31 @@
                      (map ast->hdn))]
     (apply merge layouts)))
 
-(defmethod ast->hdn :partition [[_ [_partition-group & nodes]]]
-  (let [partition-type-node (get-child #{:partition-type} nodes)
-        partition-type (ast->hdn partition-type-node)
+(def field-type-map
+  (->> field-options/fields
+       (map (fn [key]
+              [(-> key
+                   name
+                   s/upper-case
+                   keyword)
+               key]))
+       (into {})))
+
+(defn get-field-type [nodes]
+  (some->> nodes
+           (get-child field-type-map)
+           first
+           (get field-type-map)))
+
+(defmethod ast->hdn :partition [[_ & nodes]]
+  (let [field-type (get-field-type nodes)
         layout (some-> (get-child #{:layout
                                     :horizontal-layout
                                     :vertical-layout} nodes)
                        ast->hdn)
         ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
         default-fields (field/raw-default-fields
-                        partition-type
+                        field-type
                         (-> layout :num-fields-x (or 6))
                         (-> layout :num-fields-y (or 6))
                         2)
@@ -207,7 +209,7 @@
                    (recur (util/vec-replace (vec fields) index field)
                           rest)
                    (vec fields)))]
-    (-> {:type partition-type
+    (-> {:type field-type
          :fields fields}
         (add-lines nodes)
         (cond->
