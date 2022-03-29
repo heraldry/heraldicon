@@ -325,16 +325,18 @@
         (add-lines nodes))))
 
 (defmethod ast->hdn :field [[_ & nodes]]
-  (let [field (ast->hdn (get-child #{:variation} nodes))
-        component (some-> (get-child #{:component} nodes)
-                          ast->hdn)
-        components (some->> nodes
-                            (get-child #{:components})
+  (if-let [nested-field (get-child #{:field} nodes)]
+    (ast->hdn nested-field)
+    (let [field (ast->hdn (get-child #{:variation} nodes))
+          component (some-> (get-child #{:component} nodes)
                             ast->hdn)
-        components (vec (concat component
-                                components))]
-    (cond-> field
-      (seq components) (assoc :components components))))
+          components (some->> nodes
+                              (get-child #{:components})
+                              ast->hdn)
+          components (vec (concat component
+                                  components))]
+      (cond-> field
+        (seq components) (assoc :components components)))))
 
 (defmethod ast->hdn :variation [[_ node]]
   (ast->hdn node))
@@ -361,3 +363,20 @@
 
   ;;
   )
+
+{:type :heraldry.field.type/per-pale
+ :fields [{:type :heraldry.field.type/plain
+           :tincture :azure}
+          {:type :heraldry.field.type/plain
+           :tincture :argent
+           :components [{:type :heraldry.ordinary.type/fess
+                         :field {:type :heraldry.field.type/plain
+                                 :tincture :sable}}]}]}
+{:type :heraldry.field.type/per-pale
+ :fields [{:type :heraldry.field.type/plain
+           :tincture :azure}
+          {:type :heraldry.field.type/plain
+           :tincture :argent}]
+ :components [{:type :heraldry.ordinary.type/fess
+               :field {:type :heraldry.field.type/plain
+                       :tincture :sable}}]}
