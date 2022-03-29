@@ -38,25 +38,55 @@
     {:type :heraldry.field.type/plain
      :tincture :erminois}
 
-    #_#_"or a roundel or, fusil sable"
-      {:type :heraldry.field.type/plain
-       :tincture :or
-       :components [{:type :heraldry.ordinary.type/roundel
-                     :field {:type :heraldry.field.type/plain
-                             :tincture :or}}
-                    {:type :heraldry.ordinary.type/fusil
-                     :field {:type :heraldry.field.type/plain
-                             :tincture :sable}}]}
-
-    "or a fess or, pale sable"
+    "or a fess gules, pale sable"
     {:type :heraldry.field.type/plain
      :tincture :or
      :components [{:type :heraldry.ordinary.type/fess
                    :field {:type :heraldry.field.type/plain
-                           :tincture :or}}
+                           :tincture :gules}}
                   {:type :heraldry.ordinary.type/pale
                    :field {:type :heraldry.field.type/plain
                            :tincture :sable}}]}
+
+    "or a pale sable cottised wavy azure and gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/pale
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :cottising {:cottise-1 {:field {:type :heraldry.field.type/plain
+                                                   :tincture :azure}
+                                           :line {:type :wavy}}
+                               :cottise-2 {:field {:type :heraldry.field.type/plain
+                                                   :tincture :gules}}
+                               :cottise-opposite-1 {:field {:type :heraldry.field.type/plain
+                                                            :tincture :azure}
+                                                    :line {:type :wavy}}
+                               :cottise-opposite-2 {:field {:type :heraldry.field.type/plain
+                                                            :tincture :gules}}}}]}
+
+    "or a pall sable cottised wavy azure and gules, cottices straight and indented argent, with doubly cottising urdy vert"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/pall
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :cottising {:cottise-1 {:field {:type :heraldry.field.type/plain
+                                                   :tincture :azure}
+                                           :line {:type :wavy}}
+                               :cottise-2 {:field {:type :heraldry.field.type/plain
+                                                   :tincture :gules}}
+                               :cottise-opposite-1 {:field {:type :heraldry.field.type/plain
+                                                            :tincture :argent}
+                                                    :line {:type :straight}
+                                                    :opposite-line {:type :indented}}
+
+                               :cottise-extra-1 {:field {:type :heraldry.field.type/plain
+                                                         :tincture :vert}
+                                                 :line {:type :urdy}}
+                               :cottise-extra-2 {:field {:type :heraldry.field.type/plain
+                                                         :tincture :vert}
+                                                 :line {:type :urdy}}}}]}
 
     "or five tressures sable"
     {:type :heraldry.field.type/plain

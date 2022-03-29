@@ -58,6 +58,7 @@
 
 (def suggestion-hint-order
   (->> ["layout"
+        "cottising"
         "line"
         "fimbriation"
         "tincture"
