@@ -317,13 +317,13 @@ root-field
     = root-variation
     | root-variation (AND* components)?
     | root-variation CHARGED WITH component (AND* components)?
-    | "(" root-field ")"
+    | <"("> root-field <")">
 
 field
     = variation
     | variation (AND* components)?
     | variation CHARGED WITH component (AND* components)?
-    | "(" field ")"
+    | <"("> field <")">
 
 root-variation
     = root-plain
