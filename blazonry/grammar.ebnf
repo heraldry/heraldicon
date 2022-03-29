@@ -374,35 +374,35 @@ partition-type-with-two-fields
     | PER-BEND-SINISTER
     | PER-CHEVRON
 partition-with-two-fields
-    = partition-type-with-two-fields line? field AND field
+    = partition-type-with-two-fields line? root-field AND root-field
 
 partition-type-with-three-fields-two-lines
     = PER-PILE
     | TIERCED-PER-PALE
     | TIERCED-PER-FESS
 partition-with-three-fields-two-lines
-    = partition-type-with-three-fields-two-lines (line (AND line)?)? field AND field AND field
+    = partition-type-with-three-fields-two-lines (line (AND line)?)? root-field AND root-field AND root-field
 
 partition-type-with-three-fields-three-lines
     = TIERCED-PER-PALL
 partition-with-three-fields-three-lines
-    = partition-type-with-three-fields-three-lines (line (AND line)? (AND line)?)? field AND field AND field
+    = partition-type-with-three-fields-three-lines (line (AND line)? (AND line)?)? root-field AND root-field AND root-field
 
 partition-type-with-four-fields
     = PER-SALTIRE
     | QUARTERED
 partition-with-four-fields
-    = partition-type-with-four-fields line? field AND field (AND field)? (AND field)?
+    = partition-type-with-four-fields line? root-field AND root-field (AND root-field)? (AND root-field)?
 
 partition-type-with-eight-fields
     = GYRONNY
 partition-with-eight-fields
-    = partition-type-with-eight-fields line? field AND field (AND field)? (AND field)? (AND field)? (AND field)? (AND field)? (AND field)?
+    = partition-type-with-eight-fields line? root-field AND root-field (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)?
 
 partition-type-with-many-fields
     = QUARTERED
 partition-with-many-fields
-    = partition-type-with-many-fields field AND field (AND field)*
+    = partition-type-with-many-fields root-field AND root-field (AND root-field)*
 
 (* used for suggestion labeling *)
 layout-words
@@ -439,12 +439,12 @@ partition-type-with-repeating-fields-in-two-dimensions
     | MASONY
     | FRETTY
 partition-with-repeating-fields-in-two-dimensions
-    = partition-type-with-repeating-fields-in-two-dimensions (OF? layout)? plain AND plain
+    = partition-type-with-repeating-fields-in-two-dimensions (OF? layout)? root-plain AND root-plain
 
 partition-type-with-horizontally-repeating-fields
     = PALY
 partition-with-horizontally-repeating-fields
-    = partition-type-with-horizontally-repeating-fields (OF? horizontal-layout)? field AND field
+    = partition-type-with-horizontally-repeating-fields (OF? horizontal-layout)? root-field AND root-field
 
 partition-type-with-vertically-repeating-fields
     = BARRY
@@ -452,7 +452,7 @@ partition-type-with-vertically-repeating-fields
     | BENDY-SINISTER
     | CHEVRONNY
 partition-with-vertically-repeating-fields
-    = partition-type-with-vertically-repeating-fields (OF? vertical-layout)? field AND field
+    = partition-type-with-vertically-repeating-fields (OF? vertical-layout)? root-field AND root-field
 
 components
     = component (AND component)*
