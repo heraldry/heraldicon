@@ -313,11 +313,61 @@
 
 (defn add-ordinary-options [hdn nodes]
   (let [ordinary-options (some-> (get-child #{:ordinary-options} nodes)
-                                 ast->hdn)]
+                                 ast->hdn)
+        ordinary-type (-> hdn :type name keyword)]
     (cond-> hdn
-      (or (get ordinary-options :COUPED)
-          (get ordinary-options :HUMETTY)) (assoc :humetty {:humetty? true})
-      (get ordinary-options :VOIDED) (assoc :voided {:voided? true}))))
+      (get ordinary-options :HUMETTY) (assoc :humetty {:humetty? true})
+      (get ordinary-options :VOIDED) (assoc :voided {:voided? true})
+      (get ordinary-options :ENHANCED) (cond->
+                                         (#{:fess
+                                            :cross
+                                            :saltire
+                                            :pall
+                                            :gore
+                                            :quarter
+                                            :label}
+                                          ordinary-type) (assoc-in [:origin :offset-y] 12.5)
+                                         (#{:bend
+                                            :bend-sinister}
+                                          ordinary-type) (->
+                                                          (assoc-in [:origin :offset-y] 30)
+                                                          (assoc-in [:anchor :offset-y] 30))
+                                         (= :chief
+                                            ordinary-type) (assoc-in [:geometry :size] (- 25 10))
+                                         (= :base
+                                            ordinary-type) (assoc-in [:geometry :size] (+ 25 10))
+                                         (= :chevron
+                                            ordinary-type) (->
+                                                            (assoc-in [:origin :offset-y] 15)
+                                                            (assoc-in [:anchor :point] :angle)
+                                                            (assoc-in [:anchor :angle] 45))
+                                         (= :point
+                                            ordinary-type) (assoc-in [:geometry :height] (- 50 25)))
+      (get ordinary-options :DEHANCED) (cond->
+                                         (#{:fess
+                                            :cross
+                                            :saltire
+                                            :pall
+                                            :gore
+                                            :quarter
+                                            :label}
+                                          ordinary-type) (assoc-in [:origin :offset-y] -12.5)
+                                         (#{:bend
+                                            :bend-sinister}
+                                          ordinary-type) (->
+                                                          (assoc-in [:origin :offset-y] -30)
+                                                          (assoc-in [:anchor :offset-y] -30))
+                                         (= :chief
+                                            ordinary-type) (assoc-in [:geometry :size] (+ 25 10))
+                                         (= :base
+                                            ordinary-type) (assoc-in [:geometry :size] (- 25 10))
+                                         (= :chevron
+                                            ordinary-type) (->
+                                                            (assoc-in [:origin :offset-y] -15)
+                                                            (assoc-in [:anchor :point] :angle)
+                                                            (assoc-in [:anchor :angle] 45))
+                                         (= :point
+                                            ordinary-type) (assoc-in [:geometry :height] (+ 50 25))))))
 
 (defmethod ast->hdn :cottise [[_ & nodes]]
   (let [field (-> (get-child #{:field} nodes)

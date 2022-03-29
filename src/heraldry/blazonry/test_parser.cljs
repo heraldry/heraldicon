@@ -107,6 +107,22 @@
                    :field {:type :heraldry.field.type/plain
                            :tincture :sable}}]}
 
+    "or a fess enhanced gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :origin {:offset-y 12.5}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a fess dehanced gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :origin {:offset-y -12.5}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
     "or a fess indented or, pale straight and urdy fimbriated or and argent sable"
     {:type :heraldry.field.type/plain
      :tincture :or

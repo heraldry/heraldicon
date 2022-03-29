@@ -233,9 +233,16 @@ ANGLED = #"\bangled\b"
 BEVILLED = #"\bbevilled\b"
 ENARCHED = #"\benarched\b"
 
-HUMETTY = #"\bhumetty\b"
-COUPED = #"\bcouped\b"
+HUMETTY
+    = #"\bhumetty\b"
+    | #"\bcouped\b"
 VOIDED = #"\bvoided\b"
+ENHANCED = #"\benhanced\b"
+DEHANCED
+    = #"\bdehanced\b"
+    | #"\bdebased\b"
+    | #"\babased\b"
+    | #"\babaisse\b"
 
 CADENT = #"\bcadent\b"
 COUCHANT = #"\bcouchant\b"
@@ -537,8 +544,9 @@ ordinary-options
 
 ordinary-option
     = HUMETTY
-    | COUPED
     | VOIDED
+    | ENHANCED
+    | DEHANCED
 
 ordinary-type-without-line
     = LABEL
