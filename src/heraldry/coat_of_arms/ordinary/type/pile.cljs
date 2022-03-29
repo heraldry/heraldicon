@@ -152,7 +152,7 @@
                     :stretch {:type :range
                               :min 0.33
                               :max 2
-                              :default 1
+                              :default 0.85
                               :ui {:label :string.option/stretch
                                    :step 0.01}}
                     :ui {:label :string.option/geometry
