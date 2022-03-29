@@ -623,14 +623,8 @@ line-type
     | ENARCHED
 
 fimbriation
-    = single-fimbriation
-    | double-fimbriation
-
-single-fimbriation
     = FIMBRIATED (WITH | OF)? tincture
-
-double-fimbriation
-    = FIMBRIATED (WITH | OF)? tincture AND? tincture
+    | FIMBRIATED (WITH | OF)? tincture AND? tincture
 
 charge-group
     = amount? charge
