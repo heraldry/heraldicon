@@ -519,90 +519,83 @@ cottising-word
 ordinary-group
     = amount? ordinary
 
-ordinary
-    = ordinary-without-line
-    | ordinary-with-one-line-without-cottising
-    | ordinary-with-one-line-with-cottising
-    | ordinary-with-two-lines-without-cottising
-    | ordinary-with-two-lines-with-cottising-one-line
-    | ordinary-with-two-lines-with-cottising-two-lines
-    | ordinary-with-three-lines
-
 (* used for suggestion labeling *)
 ordinary-type
-    = ordinary-type-without-line
-    | ordinary-type-with-one-line-without-cottising
-    | ordinary-type-with-one-line-with-cottising
-    | ordinary-type-with-two-lines-without-cottising
-    | ordinary-type-with-two-lines-with-cottising-one-line
-    | ordinary-type-with-two-lines-with-cottising-two-lines
-    | ordinary-type-with-three-lines
-
-ordinary-options
-    = ordinary-option+
-
-ordinary-option
-    = HUMETTY
-    | VOIDED
-    | ENHANCED
-    | DEHANCED
-    | REVERSED
-    | THROUGHOUT
-
-ordinary-type-without-line
-    = LABEL
-ordinary-without-line
-    = ordinary-type-without-line ordinary-options? field
-
-ordinary-type-with-one-line-without-cottising
-    = BORDURE
-    | GORE
-ordinary-with-one-line-without-cottising
-    = ordinary-type-with-one-line-without-cottising ordinary-options? line? field
-    | ordinary-type-with-one-line-without-cottising line? ordinary-options? field
-
-ordinary-type-with-one-line-with-cottising
-    = CHIEF
-    | BASE
-    | POINT
-ordinary-with-one-line-with-cottising
-    = ordinary-type-with-one-line-with-cottising ordinary-options? line? field cottising?
-    | ordinary-type-with-one-line-with-cottising line? ordinary-options? field cottising?
-
-ordinary-type-with-two-lines-without-cottising
-    = ORLE
-ordinary-with-two-lines-without-cottising
-    = ordinary-type-with-two-lines-without-cottising ordinary-options? (line (AND line)?)? field
-    | ordinary-type-with-two-lines-without-cottising (line (AND line)?)? ordinary-options? field
-
-ordinary-type-with-two-lines-with-cottising-one-line
-    = CROSS
-    | SALTIRE
-    | PILE
-    | QUARTER
-ordinary-with-two-lines-with-cottising-one-line
-    = ordinary-type-with-two-lines-with-cottising-one-line ordinary-options? (line (AND line)?)? field cottising?
-    | ordinary-type-with-two-lines-with-cottising-one-line (line (AND line)?)? ordinary-options? field cottising?
-
-ordinary-type-with-two-lines-with-cottising-two-lines
-    = PALE
-    | FESS
+    = BASE
     | BEND
     | BEND-SINISTER
+    | BORDURE
     | CHEVRON
-ordinary-with-two-lines-with-cottising-two-lines
-    = ordinary-type-with-two-lines-with-cottising-two-lines ordinary-options? (line (AND line)?)? field (cottising (AND? cottising)?)?
-    | ordinary-type-with-two-lines-with-cottising-two-lines (line (AND line)?)? ordinary-options? field (cottising (AND? cottising)?)?
+    | CHIEF
+    | CROSS
+    | FESS
+    | GORE
+    | LABEL
+    | ORLE
+    | PALE
+    | PALL
+    | PILE
+    | POINT
+    | QUARTER
+    | SALTIRE
 
-ordinary-type-with-three-lines
-    = PALL
-ordinary-with-three-lines
-    = ordinary-type-with-three-lines ordinary-options? (line (AND line (AND line)?)?)? field (cottising (AND? cottising (AND? cottising)?)?)?
-    | ordinary-type-with-three-lines (line (AND line (AND line)?)?)? ordinary-options field (cottising (AND? cottising (AND? cottising)?)?)?
+(* used for suggestion labeling *)
+ordinary-option
+    = humetty-voided
+    | enhanced-dehanced
+    | reversed-throughout
+
+<humetty-voided>
+    = HUMETTY
+    | VOIDED
+
+<enhanced-dehanced>
+    = ENHANCED
+    | DEHANCED
+
+<reversed-throughout>
+    = REVERSED
+    | THROUGHOUT
+
+<humetty-voided-enhanced-dehanced>
+    = humetty-voided
+    | enhanced-dehanced
+
+<humetty-voided-enhanced-dehanced-reversed>
+    = humetty-voided
+    | REVERSED
+
+<humetty-voided-reversed-throughout>
+    = humetty-voided
+    | reversed-throughout
+
+ordinary
+    = LABEL field
+    | BORDURE line? field
+    | GORE line? field
+    | (CHIEF
+       | BASE
+       | POINT) (humetty-voided-enhanced-dehanced* line?
+                 | line? humetty-voided-enhanced-dehanced*) field cottising?
+    | ORLE (line (AND line)?)? field
+    | (CROSS
+       | SALTIRE
+       | QUARTER) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
+                   | (line (AND line)?)? humetty-voided-enhanced-dehanced*)
+    | PILE (humetty-voided-reversed-throughout* (line (AND line)?)?
+            | (line (AND line)?)? humetty-voided-reversed-throughout*) field cottising?
+    | PALE (humetty-voided* (line (AND line)?)?
+            | (line (AND line)?)? humetty-voided*) field (cottising (AND? cottising)?)?
+    | (FESS
+       | BEND
+       | BEND-SINISTER) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
+                   | (line (AND line)?)? humetty-voided-enhanced-dehanced*) field (cottising (AND? cottising)?)?
+    | (PALL
+       | CHEVRON) (humetty-voided-enhanced-dehanced-reversed* (line (AND line (AND line)?)?)?
+                   | (line (AND line (AND line)?)?)? humetty-voided-enhanced-dehanced-reversed*) field (cottising (AND? cottising (AND? cottising)?)?)?
 
 line
-    = line-type fimbriation
-    | line-type
+    = line-type fimbriation?
     | fimbriation
 
 line-type

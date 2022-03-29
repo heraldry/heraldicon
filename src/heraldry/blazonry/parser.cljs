@@ -4,6 +4,7 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldry.coat-of-arms.field.core :as field]
+   [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
    [heraldry.util :as util]
    [instaparse.core :as insta]
    [taoensso.timbre :as log])
@@ -23,12 +24,6 @@
     :partition-type
     data))
 
-(defn unify-ordinary-type-nodes [data]
-  (if (and (keyword? data)
-           (-> data name (s/starts-with? "ordinary-type")))
-    :ordinary-type
-    data))
-
 (defn rename-root-nodes [data]
   (if (and (keyword? data)
            (#{:root-field
@@ -44,7 +39,6 @@
   (->> data
        (walk/postwalk
         (comp unify-partition-type-nodes
-              unify-ordinary-type-nodes
               rename-root-nodes))))
 
 (defn -parse-as-part [s]
@@ -295,25 +289,16 @@
         ordinary (ast->hdn (get-child #{:ordinary} nodes))]
     (vec (repeat (max 1 amount) ordinary))))
 
-(defmethod ast->hdn :ordinary-type [[_ node]]
-  (->> node
-       first
-       name
-       s/lower-case
-       (keyword "heraldry.ordinary.type")))
-
-(defmethod ast->hdn :ordinary-option [[_ node]]
-  (first node))
-
-(defmethod ast->hdn :ordinary-options [[_ & nodes]]
-  (->> nodes
-       (filter (type? #{:ordinary-option}))
-       (map ast->hdn)
-       set))
-
 (defn add-ordinary-options [hdn nodes]
-  (let [ordinary-options (some-> (get-child #{:ordinary-options} nodes)
-                                 ast->hdn)
+  (let [ordinary-options (some->> nodes
+                                  (filter (type? #{:HUMETTY
+                                                   :VOIDED
+                                                   :ENHANCED
+                                                   :DEHANCED
+                                                   :REVERSED
+                                                   :THROUGHOUT}))
+                                  (map first)
+                                  set)
         ordinary-type (-> hdn :type name keyword)]
     (cond-> hdn
       (get ordinary-options :HUMETTY) (assoc :humetty {:humetty? true})
@@ -426,9 +411,25 @@
                                                       {:cottise-1 :cottise-extra-1
                                                        :cottise-2 :cottise-extra-2})))))
 
-(defmethod ast->hdn :ordinary [[_ [_ordinary-group & nodes]]]
-  (let [ordinary-type-node (get-child #{:ordinary-type} nodes)]
-    (-> {:type (ast->hdn ordinary-type-node)
+(def ordinary-type-map
+  (->> ordinary-options/ordinaries
+       (map (fn [key]
+              [(-> key
+                   name
+                   s/upper-case
+                   keyword)
+               key]))
+       (into {})))
+
+(defn get-ordinary-type [nodes]
+  (some->> nodes
+           (get-child ordinary-type-map)
+           first
+           (get ordinary-type-map)))
+
+(defmethod ast->hdn :ordinary [[_ & nodes]]
+  (let [ordinary-type (get-ordinary-type nodes)]
+    (-> {:type ordinary-type
          :field (ast->hdn (get-child #{:field} nodes))}
         (add-ordinary-options nodes)
         (add-lines nodes)
@@ -467,7 +468,7 @@
   (parse "per pale inden")
 
   (try
-    (parse "per pale")
+    (parse "or a fess humetty indented or, pale wavy voided sable")
     (catch :default e
       (ex-data e)))
 
