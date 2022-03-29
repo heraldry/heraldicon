@@ -243,6 +243,9 @@ DEHANCED
     | #"\bdebased\b"
     | #"\babased\b"
     | #"\babaisse\b"
+REVERSED
+    = #"\breversed\b"
+    | #"\binverted\b"
 
 CADENT = #"\bcadent\b"
 COUCHANT = #"\bcouchant\b"
@@ -291,8 +294,6 @@ REGUARDANT = #"\breguardant\b"
 SALIENT = #"\bsalient\b"
 
 MIRRORED = #"\bmirrored\b"
-REVERSED = #"\breversed\b"
-VOIDED = #"\bvoided\b"
 ERASED = #"\berased\b"
 
 ROUNDEL = #"\broundels?\b"
@@ -547,6 +548,7 @@ ordinary-option
     | VOIDED
     | ENHANCED
     | DEHANCED
+    | REVERSED
 
 ordinary-type-without-line
     = LABEL

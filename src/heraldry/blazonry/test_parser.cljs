@@ -123,6 +123,22 @@
                    :field {:type :heraldry.field.type/plain
                            :tincture :gules}}]}
 
+    "or a chevron reversed gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/chevron
+                   :direction-anchor {:point :chief}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a pile reversed gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/pile
+                   :origin {:point :bottom}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
     "or a fess indented or, pale straight and urdy fimbriated or and argent sable"
     {:type :heraldry.field.type/plain
      :tincture :or
