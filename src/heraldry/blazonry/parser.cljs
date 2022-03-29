@@ -318,6 +318,13 @@
     (cond-> hdn
       (get ordinary-options :HUMETTY) (assoc :humetty {:humetty? true})
       (get ordinary-options :VOIDED) (assoc :voided {:voided? true})
+      (get ordinary-options :REVERSED) (cond->
+                                         (= :chevron
+                                            ordinary-type) (assoc-in [:direction-anchor :point] :chief)
+                                         (= :pall
+                                            ordinary-type) (assoc-in [:direction-anchor :point] :bottom)
+                                         (= :pile
+                                            ordinary-type) (assoc-in [:origin :point] :bottom))
       (get ordinary-options :ENHANCED) (cond->
                                          (#{:fess
                                             :cross
