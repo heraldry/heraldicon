@@ -139,6 +139,14 @@
                    :field {:type :heraldry.field.type/plain
                            :tincture :gules}}]}
 
+    "or a pile throughout gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/pile
+                   :geometry {:stretch 1}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
     "or a fess indented or, pale straight and urdy fimbriated or and argent sable"
     {:type :heraldry.field.type/plain
      :tincture :or

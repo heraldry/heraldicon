@@ -246,6 +246,7 @@ DEHANCED
 REVERSED
     = #"\breversed\b"
     | #"\binverted\b"
+THROUGHOUT = #"\bthroughout\b"
 
 CADENT = #"\bcadent\b"
 COUCHANT = #"\bcouchant\b"
@@ -549,6 +550,7 @@ ordinary-option
     | ENHANCED
     | DEHANCED
     | REVERSED
+    | THROUGHOUT
 
 ordinary-type-without-line
     = LABEL

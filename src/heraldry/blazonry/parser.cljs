@@ -325,6 +325,9 @@
                                             ordinary-type) (assoc-in [:direction-anchor :point] :bottom)
                                          (= :pile
                                             ordinary-type) (assoc-in [:origin :point] :bottom))
+      (get ordinary-options :THROUGHOUT) (cond->
+                                           (= :pile
+                                              ordinary-type) (assoc-in [:geometry :stretch] 1))
       (get ordinary-options :ENHANCED) (cond->
                                          (#{:fess
                                             :cross
