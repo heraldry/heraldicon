@@ -1,5 +1,6 @@
 (ns heraldry.blazonry.parser
   (:require
+   [clojure.set :as set]
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldry.coat-of-arms.field.core :as field]
@@ -49,6 +50,7 @@
 (defn -parse-as-part [s]
   (let [s (s/lower-case s)]
     (loop [[[rule part-name] & rest] [[:layout-words "layout"]
+                                      [:cottising-word "cottising"]
                                       [:tincture "tincture"]
                                       [:COUNTERCHANGED "tincture"]
                                       [:line-type "line"]
@@ -317,12 +319,60 @@
           (get ordinary-options :HUMETTY)) (assoc :humetty {:humetty? true})
       (get ordinary-options :VOIDED) (assoc :voided {:voided? true}))))
 
+(defmethod ast->hdn :cottise [[_ & nodes]]
+  (let [field (-> (get-child #{:field} nodes)
+                  ast->hdn)]
+    (-> {:field field}
+        (add-lines nodes))))
+
+(defmethod ast->hdn :cottising [[_ & nodes]]
+  (let [[cottise-1
+         cottise-2] (->> nodes
+                         (filter (type? #{:cottise}))
+                         (map ast->hdn))
+        double-node (get-child #{:DOUBLY} nodes)
+        cottise-2 (or cottise-2
+                      (when double-node
+                        cottise-1))]
+    (-> {:cottise-1 cottise-1}
+        (cond->
+          cottise-2 (assoc :cottise-2 cottise-2))
+        (add-lines nodes))))
+
+(defn add-cottising [hdn nodes]
+  (let [[main
+         opposite
+         extra] (->> nodes
+                     (filter (type? #{:cottising}))
+                     (map ast->hdn))
+        ordinary-type (-> hdn :type name keyword)
+        opposite (or opposite
+                     (when (#{:fess
+                              :pale
+                              :bend
+                              :bend-sinister
+                              :chevron
+                              :pall} ordinary-type)
+                       main))
+        extra (or extra
+                  (when (#{:pall} ordinary-type)
+                    main))]
+    (cond-> hdn
+      main (update :cottising merge main)
+      opposite (update :cottising merge (set/rename-keys opposite
+                                                         {:cottise-1 :cottise-opposite-1
+                                                          :cottise-2 :cottise-opposite-2}))
+      extra (update :cottising merge (set/rename-keys extra
+                                                      {:cottise-1 :cottise-extra-1
+                                                       :cottise-2 :cottise-extra-2})))))
+
 (defmethod ast->hdn :ordinary [[_ [_ordinary-group & nodes]]]
   (let [ordinary-type-node (get-child #{:ordinary-type} nodes)]
     (-> {:type (ast->hdn ordinary-type-node)
          :field (ast->hdn (get-child #{:field} nodes))}
         (add-ordinary-options nodes)
-        (add-lines nodes))))
+        (add-lines nodes)
+        (add-cottising nodes))))
 
 (defmethod ast->hdn :field [[_ & nodes]]
   (if-let [nested-field (get-child #{:field} nodes)]
@@ -363,20 +413,3 @@
 
   ;;
   )
-
-{:type :heraldry.field.type/per-pale
- :fields [{:type :heraldry.field.type/plain
-           :tincture :azure}
-          {:type :heraldry.field.type/plain
-           :tincture :argent
-           :components [{:type :heraldry.ordinary.type/fess
-                         :field {:type :heraldry.field.type/plain
-                                 :tincture :sable}}]}]}
-{:type :heraldry.field.type/per-pale
- :fields [{:type :heraldry.field.type/plain
-           :tincture :azure}
-          {:type :heraldry.field.type/plain
-           :tincture :argent}]
- :components [{:type :heraldry.ordinary.type/fess
-               :field {:type :heraldry.field.type/plain
-                       :tincture :sable}}]}
