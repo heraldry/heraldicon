@@ -1,9 +1,6 @@
 blazon
     = root-field
 
-(* TODO: inverted, issuant, semy, charge group arrangement, special charges (e.g. fountain),
-   cottising*)
-
 (* terminals *)
 
 COUNTERCHANGED = #"\bcounterchanged\b"
