@@ -184,6 +184,7 @@ QUARTER = #"\bquarters?\b"
 POINT
     = #"\bpoints?\b"
     | #"\bpoints? +sinister\b"
+LABEL-POINT = #"\bpoints?\b"
 BORDURE = #"\bbordures?\b"
 ORLE
     = #"\borles?\b"
@@ -233,6 +234,8 @@ ENARCHED = #"\benarched\b"
 HUMETTY
     = #"\bhumetty\b"
     | #"\bcouped\b"
+TRUNCATED
+    = #"\btruncated\b"
 VOIDED = #"\bvoided\b"
 ENHANCED = #"\benhanced\b"
 DEHANCED
@@ -520,6 +523,12 @@ ordinary-option
     = HUMETTY
     | VOIDED
 
+<humetty-voided-truncated-dovetailed>
+    = HUMETTY
+    | VOIDED
+    | TRUNCATED
+    | DOVETAILED
+
 <enhanced-dehanced>
     = ENHANCED
     | DEHANCED
@@ -540,8 +549,16 @@ ordinary-option
     = humetty-voided
     | reversed-throughout
 
+<of-or-with>
+    = OF
+    | WITH
+
+label-points
+    = (of-or-with? amount LABEL-POINT)
+
 ordinary
-    = LABEL field
+    = LABEL (humetty-voided-truncated-dovetailed* label-points?
+             | label-points? humetty-voided-truncated-dovetailed*) field
     | BORDURE line? field
     | GORE line? field
     | (CHIEF

@@ -289,9 +289,13 @@
                                                    :ENHANCED
                                                    :DEHANCED
                                                    :REVERSED
-                                                   :THROUGHOUT}))
-                                  (map first)
-                                  set)
+                                                   :THROUGHOUT
+                                                   :TRUNCATED
+                                                   :DOVETAILED
+                                                   :label-points}))
+                                  (map (fn [[key & nodes]]
+                                         [key nodes]))
+                                  (into {}))
         ordinary-type (-> hdn :type name keyword)]
     (cond-> hdn
       (get ordinary-options :HUMETTY) (assoc :humetty {:humetty? true})
@@ -355,7 +359,19 @@
                                                             (assoc-in [:anchor :point] :angle)
                                                             (assoc-in [:anchor :angle] 45))
                                          (= :point
-                                            ordinary-type) (assoc-in [:geometry :height] (+ 50 25))))))
+                                            ordinary-type) (assoc-in [:geometry :height] (+ 50 25)))
+      (get ordinary-options :TRUNCATED) (cond->
+                                          (= :label
+                                             ordinary-type) (assoc :variant :truncated))
+      (get ordinary-options :DOVETAILED) (cond->
+                                           (= :label
+                                              ordinary-type) (assoc-in [:geometry :eccentricity] 0.4))
+      (get ordinary-options :label-points) (cond->
+                                             (= :label
+                                                ordinary-type) (assoc :num-points
+                                                                      (->> (get ordinary-options :label-points)
+                                                                           (get-child #{:amount})
+                                                                           ast->hdn))))))
 
 (defmethod ast->hdn :cottise [[_ & nodes]]
   (let [field (-> (get-child #{:field} nodes)
