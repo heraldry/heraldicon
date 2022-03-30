@@ -396,8 +396,16 @@
                    :num-points 10
                    :variant :truncated
                    :geometry {:eccentricity 0.4}}]}
+
+    "or a label fimbriated or and vert gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/label
                    :field {:type :heraldry.field.type/plain
-                           :tincture :gules}}]}
+                           :tincture :gules}
+                   :fimbriation {:mode :double
+                                 :tincture-1 :or
+                                 :tincture-2 :vert}}]}
 
 ;;
     ))

@@ -127,12 +127,18 @@
        :tincture-1 tincture-1
        :tincture-2 tincture-2})))
 
+(defn add-fimbriation [hdn nodes]
+  (let [fimbriation (some-> (get-child #{:fimbriation} nodes)
+                            ast->hdn)]
+    (cond-> hdn
+      fimbriation (assoc :fimbriation fimbriation))))
+
 (defmethod ast->hdn :line [[_ & nodes]]
-  (let [line-type (get-child #{:line-type} nodes)
-        fimbriation (get-child #{:fimbriation} nodes)]
-    (cond-> nil
-      line-type (assoc :type (ast->hdn line-type))
-      fimbriation (assoc :fimbriation (ast->hdn fimbriation)))))
+  (let [line-type (get-child #{:line-type} nodes)]
+    (-> nil
+        (cond->
+          line-type (assoc :type (ast->hdn line-type)))
+        (add-fimbriation nodes))))
 
 (defn add-lines [hdn nodes]
   (let [[line
@@ -442,7 +448,8 @@
          :field (ast->hdn (get-child #{:field} nodes))}
         (add-ordinary-options nodes)
         (add-lines nodes)
-        (add-cottising nodes))))
+        (add-cottising nodes)
+        (add-fimbriation nodes))))
 
 (defmethod ast->hdn :field [[_ & nodes]]
   (if-let [nested-field (get-child #{:field} nodes)]

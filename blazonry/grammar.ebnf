@@ -558,7 +558,7 @@ label-points
 
 ordinary
     = LABEL (humetty-voided-truncated-dovetailed* label-points?
-             | label-points? humetty-voided-truncated-dovetailed*) field
+             | label-points? humetty-voided-truncated-dovetailed*) fimbriation? field
     | BORDURE line? field
     | GORE line? field
     | (CHIEF
