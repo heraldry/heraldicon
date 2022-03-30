@@ -290,6 +290,24 @@
                                          :field {:type :heraldry.field.type/plain
                                                  :tincture :vert}}]}}]}
 
+    "per chevron enhanced sable and ermine"
+    {:type :heraldry.field.type/per-chevron
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :sable}
+              {:type :heraldry.field.type/plain
+               :tincture :ermine}]
+     :origin {:offset-y 15}
+     :anchor {:point :angle
+              :angle 45}}
+
+    "per fess dehanced sable and ermine"
+    {:type :heraldry.field.type/per-fess
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :sable}
+              {:type :heraldry.field.type/plain
+               :tincture :ermine}]
+     :origin {:offset-y -12.5}}
+
     "per pale azure and argent, a fess sable"
     {:type :heraldry.field.type/per-pale
      :fields [{:type :heraldry.field.type/plain
