@@ -197,7 +197,8 @@
 (defn add-partition-options [hdn nodes]
   (let [partition-options (some->> nodes
                                    (filter (type? #{:ENHANCED
-                                                    :DEHANCED}))
+                                                    :DEHANCED
+                                                    :REVERSED}))
                                    (map (fn [[key & nodes]]
                                           [key nodes]))
                                    (into {}))
@@ -238,7 +239,14 @@
                                              partition-type) (->
                                                               (assoc-in [:origin :offset-y] -15)
                                                               (assoc-in [:anchor :point] :angle)
-                                                              (assoc-in [:anchor :angle] 45))))))
+                                                              (assoc-in [:anchor :angle] 45)))
+      (get partition-options :REVERSED) (cond->
+                                          (= :per-chevron
+                                             partition-type) (assoc-in [:direction-anchor :point] :chief)
+                                          (= :tierced-per-pall
+                                             partition-type) (assoc-in [:direction-anchor :point] :bottom)
+                                          (= :per-pile
+                                             partition-type) (assoc-in [:origin :point] :top)))))
 
 (defmethod ast->hdn :partition [[_ & nodes]]
   (let [field-type (get-field-type nodes)

@@ -308,6 +308,26 @@
                :tincture :ermine}]
      :origin {:offset-y -12.5}}
 
+    "tierced per pall reversed sable and ermine and vert"
+    {:type :heraldry.field.type/tierced-per-pall
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :sable}
+              {:type :heraldry.field.type/plain
+               :tincture :ermine}
+              {:type :heraldry.field.type/plain
+               :tincture :vert}]
+     :direction-anchor {:point :bottom}}
+
+    "per pile reversed sable and ermine and vert"
+    {:type :heraldry.field.type/per-pile
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :sable}
+              {:type :heraldry.field.type/plain
+               :tincture :ermine}
+              {:type :heraldry.field.type/plain
+               :tincture :vert}]
+     :origin {:point :top}}
+
     "per pale azure and argent, a fess sable"
     {:type :heraldry.field.type/per-pale
      :fields [{:type :heraldry.field.type/plain

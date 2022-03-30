@@ -430,21 +430,23 @@ partition
     = PER-PALE line? root-field AND root-field
     | (PER-FESS
        | PER-BEND
-       | PER-BEND-SINISTER
-       | PER-CHEVRON) (enhanced-dehanced? line?
-                       | line? enhanced-dehanced?) root-field AND root-field
-    | PER-PILE (line (AND line)?)? root-field AND root-field AND root-field
+       | PER-BEND-SINISTER) (enhanced-dehanced* line?
+                       | line? enhanced-dehanced*) root-field AND root-field
+    | PER-CHEVRON (enhanced-dehanced-reversed* line?
+                       | line? enhanced-dehanced-reversed*) root-field AND root-field
+    | PER-PILE (REVERSED? (line (AND line)?)?
+                | (line (AND line)?)? REVERSED?) root-field AND root-field AND root-field
     | TIERCED-PER-PALE (line (AND line)?)? root-field AND root-field AND root-field
-    | TIERCED-PER-FESS (enhanced-dehanced? (line (AND line)?)?
-                        | (line (AND line)?)? enhanced-dehanced?) root-field AND root-field AND root-field
-    | TIERCED-PER-PALL (enhanced-dehanced? (line (AND line)? (AND line)?)?
-                        | (line (AND line)? (AND line)?)? enhanced-dehanced?) root-field AND root-field AND root-field
+    | TIERCED-PER-FESS (enhanced-dehanced* (line (AND line)?)?
+                        | (line (AND line)?)? enhanced-dehanced*) root-field AND root-field AND root-field
+    | TIERCED-PER-PALL (enhanced-dehanced-reversed* (line (AND line)? (AND line)?)?
+                        | (line (AND line)? (AND line)?)? enhanced-dehanced-reversed*) root-field AND root-field AND root-field
     | (PER-SALTIRE
-       | QUARTERED) (enhanced-dehanced? line?
-                     | line? enhanced-dehanced?) root-field AND root-field (AND root-field)? (AND root-field)?
-    | GYRONNY (enhanced-dehanced? line?
-               | line? enhanced-dehanced?) root-field AND root-field (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)?
-    | QUARTERED enhanced-dehanced? root-field AND root-field (AND root-field)*
+       | QUARTERED) (enhanced-dehanced* line?
+                     | line? enhanced-dehanced*) root-field AND root-field (AND root-field)? (AND root-field)?
+    | GYRONNY (enhanced-dehanced* line?
+               | line? enhanced-dehanced*) root-field AND root-field (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)?
+    | QUARTERED enhanced-dehanced* root-field AND root-field (AND root-field)*
     | (CHEQUY
        | LOZENGY
        | VAIRY
@@ -537,6 +539,11 @@ ordinary-option
 <enhanced-dehanced>
     = ENHANCED
     | DEHANCED
+
+<enhanced-dehanced-reversed>
+    = ENHANCED
+    | DEHANCED
+    | REVERSED
 
 <reversed-throughout>
     = REVERSED
