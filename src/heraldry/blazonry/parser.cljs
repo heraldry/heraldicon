@@ -194,6 +194,52 @@
            first
            (get field-type-map)))
 
+(defn add-partition-options [hdn nodes]
+  (let [partition-options (some->> nodes
+                                   (filter (type? #{:ENHANCED
+                                                    :DEHANCED}))
+                                   (map (fn [[key & nodes]]
+                                          [key nodes]))
+                                   (into {}))
+        partition-type (-> hdn :type name keyword)]
+    (cond-> hdn
+      (get partition-options :ENHANCED) (cond->
+                                          (#{:per-fess
+                                             :per-saltire
+                                             :tierced-per-pall
+                                             :tierced-per-fess
+                                             :quartered
+                                             :gyronny}
+                                           partition-type) (assoc-in [:origin :offset-y] 12.5)
+                                          (#{:per-bend
+                                             :per-bend-sinister}
+                                           partition-type) (->
+                                                            (assoc-in [:origin :offset-y] 30)
+                                                            (assoc-in [:anchor :offset-y] 30))
+                                          (= :per-chevron
+                                             partition-type) (->
+                                                              (assoc-in [:origin :offset-y] 15)
+                                                              (assoc-in [:anchor :point] :angle)
+                                                              (assoc-in [:anchor :angle] 45)))
+      (get partition-options :DEHANCED) (cond->
+                                          (#{:per-fess
+                                             :per-saltire
+                                             :tierced-per-pall
+                                             :tierced-per-fess
+                                             :quartered
+                                             :gyronny}
+                                           partition-type) (assoc-in [:origin :offset-y] -12.5)
+                                          (#{:per-bend
+                                             :per-bend-sinister}
+                                           partition-type) (->
+                                                            (assoc-in [:origin :offset-y] -30)
+                                                            (assoc-in [:anchor :offset-y] -30))
+                                          (= :per-chevron
+                                             partition-type) (->
+                                                              (assoc-in [:origin :offset-y] -15)
+                                                              (assoc-in [:anchor :point] :angle)
+                                                              (assoc-in [:anchor :angle] 45))))))
+
 (defmethod ast->hdn :partition [[_ & nodes]]
   (let [field-type (get-field-type nodes)
         layout (some-> (get-child #{:layout
@@ -219,7 +265,8 @@
          :fields fields}
         (add-lines nodes)
         (cond->
-          layout (assoc :layout layout)))))
+          layout (assoc :layout layout))
+        (add-partition-options nodes))))
 
 (defmethod ast->hdn :amount [[_ node]]
   (ast->hdn node))
