@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.field.type.gyronny
   (:require
    [heraldry.coat-of-arms.angle :as angle]
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.field.shared :as shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
@@ -15,9 +15,9 @@
 
 (def field-type :heraldry.field.type/gyronny)
 
-(defmethod field-interface/display-name field-type [_] :string.field.type/gyronny)
+(defmethod field.interface/display-name field-type [_] :string.field.type/gyronny)
 
-(defmethod field-interface/part-names field-type [_] ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"])
+(defmethod field.interface/part-names field-type [_] ["I" "II" "III" "IV" "V" "VI" "VII" "VIII"])
 
 (defmethod interface/options field-type [context]
   (let [line-style (-> (line/options (c/++ context :line)
@@ -91,7 +91,7 @@
      :line line-style
      :opposite-line opposite-line-style}))
 
-(defmethod field-interface/render-field field-type
+(defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))

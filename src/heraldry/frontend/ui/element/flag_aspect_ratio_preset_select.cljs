@@ -4,7 +4,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
@@ -16,7 +16,7 @@
           (assoc-in width-path width)
           (assoc-in height-path height)))))
 
-(defmethod ui-interface/form-element :flag-aspect-ratio-preset-select [context]
+(defmethod ui.interface/form-element :flag-aspect-ratio-preset-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [choices (:choices option)
           label (-> option :ui :label)]

@@ -3,7 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.config :as config]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.arms-library :as arms-library]
    [heraldry.frontend.charge :as charge]
    [heraldry.frontend.charge-library :as charge-library]
@@ -27,7 +27,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (<? (api-request/call :fetch-user {:username username} user-data)))
+        (<? (api.request/call :fetch-user {:username username} user-data)))
       (catch :default e
         (log/error "fetch user error:" e)))))
 

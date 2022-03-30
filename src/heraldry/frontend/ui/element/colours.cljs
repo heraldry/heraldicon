@@ -5,7 +5,7 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.checkbox :as checkbox]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -157,5 +157,5 @@
                    :option {:type :boolean}]]])))]]
          [tr :string.miscellaneous/none])]]]))
 
-(defmethod ui-interface/form-element :colours [context]
+(defmethod ui.interface/form-element :colours [context]
   [form context])

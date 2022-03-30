@@ -3,7 +3,7 @@
    [heraldry.coat-of-arms.position :as position]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -32,7 +32,7 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-position"}
-         (ui-interface/form-elements
+         (ui.interface/form-elements
           context
           [:point
            :alignment
@@ -41,5 +41,5 @@
            :offset-y
            :type])]]])))
 
-(defmethod ui-interface/form-element :position [context]
+(defmethod ui.interface/form-element :position [context]
   [position-submenu context])

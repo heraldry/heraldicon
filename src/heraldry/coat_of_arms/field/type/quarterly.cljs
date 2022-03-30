@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.quarterly
   (:require
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.field.shared :as shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.outline :as outline]
@@ -11,9 +11,9 @@
 
 (def field-type :heraldry.field.type/quarterly)
 
-(defmethod field-interface/display-name field-type [_] :string.field.type/quarterly)
+(defmethod field.interface/display-name field-type [_] :string.field.type/quarterly)
 
-(defmethod field-interface/part-names field-type [_] nil)
+(defmethod field.interface/part-names field-type [_] nil)
 
 (defmethod interface/options field-type [_context]
   {:layout {:num-fields-x {:type :range
@@ -70,7 +70,7 @@
             :ui {:label :string.option/layout
                  :form-type :field-layout}}})
 
-(defmethod field-interface/render-field field-type
+(defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))

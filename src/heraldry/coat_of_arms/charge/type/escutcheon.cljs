@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.charge.type.escutcheon
   (:require
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
-   [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
+   [heraldry.coat-of-arms.charge.shared :as charge.shared]
    [heraldry.coat-of-arms.escutcheon :as escutcheon]
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.context :as c]
@@ -11,7 +11,7 @@
 
 (def charge-type :heraldry.charge.type/escutcheon)
 
-(defmethod charge-interface/display-name charge-type [_] :string.render-options/escutcheon)
+(defmethod charge.interface/display-name charge-type [_] :string.render-options/escutcheon)
 
 (defmethod interface/options charge-type [context]
   (let [escutcheon-option {:type :choice
@@ -23,16 +23,16 @@
                                 :form-type :escutcheon-select}}
         escutcheon (-> context (c/++ :escutcheon) interface/get-raw-data
                        (or (-> escutcheon-option :choices first second)))]
-    (-> (charge-shared/options context)
+    (-> (charge.shared/options context)
         (assoc-in [:geometry :size :default] 30)
         (assoc :escutcheon escutcheon-option)
         (cond->
           (= escutcheon :flag) (merge escutcheon/flag-options)))))
 
-(defmethod charge-interface/render-charge charge-type
+(defmethod charge.interface/render-charge charge-type
   [context]
   (let [escutcheon (interface/get-sanitized-data (c/++ context :escutcheon))]
-    (charge-shared/make-charge
+    (charge.shared/make-charge
      context
      :width
      (fn [width]

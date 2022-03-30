@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.form.charge-group
   (:require
    [heraldry.coat-of-arms.charge-group.core :as charge-group]
-   [heraldry.coat-of-arms.charge.options :as charge-options]
+   [heraldry.coat-of-arms.charge.options :as charge.options]
    [heraldry.coat-of-arms.default :as default]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
@@ -11,7 +11,7 @@
    [heraldry.frontend.ui.element.charge-group-preset-select
     :as charge-group-preset-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
    [heraldry.static :as static]
@@ -232,7 +232,7 @@
     [:div {:style {:position "relative"}}
      [submenu/submenu context type-str [tr title] {:style {:width "20em"}
                                                    :class "submenu-strip-form"}
-      (ui-interface/form-elements
+      (ui.interface/form-elements
        context
        [:slots
         :stretch
@@ -255,11 +255,11 @@
                    :vertical-align "top"}}
      [charge-group-preset-select/charge-group-preset-select context]
 
-     [ui-interface/form-element (c/++ context :origin)]
+     [ui.interface/form-element (c/++ context :origin)]
 
      [preview-form path]
 
-     (ui-interface/form-elements
+     (ui.interface/form-elements
       context
       [:type
        :spacing
@@ -310,13 +310,13 @@
                          {:on-click #(state/dispatch-on-event % [:remove-element strip-context])})
                     [:i.far.fa-trash-alt]]]])))]]]))
 
-     [ui-interface/form-element (c/++ context :manual-blazon)]]))
+     [ui.interface/form-element (c/++ context :manual-blazon)]]))
 
-(defmethod ui-interface/component-node-data :heraldry.component/charge-group [context]
+(defmethod ui.interface/component-node-data :heraldry.component/charge-group [context]
   (let [charges-context (c/++ context :charges)
         num-charges (interface/get-list-size charges-context)]
     {:title (util/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)
-                                                                    (charge-options/title (c/++ context :charges 0))
+                                                                    (charge.options/title (c/++ context :charges 0))
                                                                     :string.charge-group/various))
      :icon {:default (static/static-url
                       (str "/svg/charge-group-preset-three.svg"))
@@ -345,5 +345,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-context])}]})))
                          vec))}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/charge-group [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/charge-group [_context]
   {:form form})

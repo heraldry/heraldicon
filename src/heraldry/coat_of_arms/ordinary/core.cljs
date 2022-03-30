@@ -1,14 +1,14 @@
 (ns heraldry.coat-of-arms.ordinary.core
   (:require
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-   [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary.interface]
+   [heraldry.coat-of-arms.ordinary.options :as ordinary.options]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/ordinary [context]
-  (ordinary-interface/render-ordinary context))
+  (ordinary.interface/render-ordinary context))
 
 (defmethod interface/blazon-component :heraldry.component/ordinary [context]
   (let [ordinary-type (interface/get-sanitized-data (c/++ context :type))
@@ -39,4 +39,4 @@
 
 (defn title [context]
   (let [ordinary-type (interface/get-raw-data (c/++ context :type))]
-    (ordinary-options/ordinary-map ordinary-type)))
+    (ordinary.options/ordinary-map ordinary-type)))

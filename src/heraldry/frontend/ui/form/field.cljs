@@ -8,7 +8,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.blazonry-editor :as blazonry-editor]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.frontend.validation :as validation]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
@@ -44,7 +44,7 @@
 
 (defn form [context]
   [:<>
-   (ui-interface/form-elements
+   (ui.interface/form-elements
     context
     [:inherit-environment?
      :type
@@ -74,10 +74,10 @@
         ^{:key idx}
         [:<>
          [tincture-select/tincture-select (c/++ context :fields idx :tincture)]
-         [ui-interface/form-element (c/++ context :fields idx :pattern-scaling)]
-         [ui-interface/form-element (c/++ context :fields idx :pattern-rotation)]
-         [ui-interface/form-element (c/++ context :fields idx :pattern-offset-x)]
-         [ui-interface/form-element (c/++ context :fields idx :pattern-offset-y)]])])])
+         [ui.interface/form-element (c/++ context :fields idx :pattern-scaling)]
+         [ui.interface/form-element (c/++ context :fields idx :pattern-rotation)]
+         [ui.interface/form-element (c/++ context :fields idx :pattern-offset-x)]
+         [ui.interface/form-element (c/++ context :fields idx :pattern-offset-y)]])])])
 
 (defn parent-context [{:keys [path] :as context}]
   (let [index (last path)
@@ -99,7 +99,7 @@
       (when-let [parent-context (parent-context context)]
         (>= index (field/mandatory-part-count parent-context))))))
 
-(defmethod ui-interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
+(defmethod ui.interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
   (let [field-type (interface/get-raw-data (c/++ context :type))
         ref? (= field-type :heraldry.field.type/ref)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
@@ -207,5 +207,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-element component-context])}]})))
                          vec))}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/field [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/field [_context]
   {:form form})

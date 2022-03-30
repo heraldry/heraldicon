@@ -1,12 +1,12 @@
 (ns heraldry.frontend.ui.element.ordinary-type-select
   (:require
-   [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+   [heraldry.coat-of-arms.ordinary.options :as ordinary.options]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
@@ -73,7 +73,7 @@
           [:div
            [tr choice-name]
            [value-mode-select/value-mode-select context
-            :display-fn ordinary-options/ordinary-map]]
+            :display-fn ordinary.options/ordinary-map]]
           [:div {:style {:transform "translate(-0.42em,0)"}}
            [ordinary-type-choice path value choice-name :on-click? false]]]
          {:style {:width "21.5em"}}
@@ -81,5 +81,5 @@
            ^{:key key}
            [ordinary-type-choice path key display-name :selected? (= key value)])]]])))
 
-(defmethod ui-interface/form-element :ordinary-type-select [context]
+(defmethod ui.interface/form-element :ordinary-type-select [context]
   [ordinary-type-select context])

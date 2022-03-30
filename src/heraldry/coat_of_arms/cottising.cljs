@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.cottising
   (:require
    [heraldry.coat-of-arms.line.core :as line]
-   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary.interface]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
@@ -59,7 +59,7 @@
           thickness (interface/get-sanitized-data (c/++ context :thickness))
           distance (interface/get-sanitized-data (c/++ context :distance))
           outline? (interface/get-sanitized-data (c/++ context :outline?))]
-      [ordinary-interface/render-ordinary
+      [ordinary.interface/render-ordinary
        (-> context
            (c/<< :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/fess
@@ -92,7 +92,7 @@
           thickness (interface/get-sanitized-data (c/++ context :thickness))
           distance (interface/get-sanitized-data (c/++ context :distance))
           outline? (interface/get-sanitized-data (c/++ context :outline?))]
-      [ordinary-interface/render-ordinary
+      [ordinary.interface/render-ordinary
        (-> context
            (c/<< :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/pale
@@ -137,7 +137,7 @@
           new-center-point (v/add center-point point-offset)
           fess-offset (v/sub new-center-point (-> environment :points :fess))
           outline? (interface/get-sanitized-data (c/++ context :outline?))]
-      [ordinary-interface/render-ordinary
+      [ordinary.interface/render-ordinary
        (-> context
            (c/<< :path [:context :cottise])
            (assoc :cottise {:type (if sinister?
@@ -197,7 +197,7 @@
                            (v/add corner-point))
           fess-offset (v/sub point-offset (-> environment :points :fess))
           outline? (interface/get-sanitized-data (c/++ context :outline?))]
-      [ordinary-interface/render-ordinary
+      [ordinary.interface/render-ordinary
        (-> context
            (c/<< :path [:context :cottise])
            (assoc :cottise {:type :heraldry.ordinary.type/chevron

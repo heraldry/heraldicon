@@ -3,7 +3,7 @@
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -43,7 +43,7 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-fimbriation"}
-         (ui-interface/form-elements
+         (ui.interface/form-elements
           context
           [:mode
            :alignment
@@ -53,5 +53,5 @@
            :thickness-2
            :tincture-2])]]])))
 
-(defmethod ui-interface/form-element :fimbriation [context]
+(defmethod ui.interface/form-element :fimbriation [context]
   [fimbriation-submenu context])

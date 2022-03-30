@@ -3,7 +3,7 @@
    [heraldry.coat-of-arms.default :as default]
    [heraldry.context :as c]
    [heraldry.frontend.state :as state]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.shield-separator :as shield-separator]
    [heraldry.util :as util]
@@ -30,7 +30,7 @@
 (defn form [_context]
   [:<>])
 
-(defmethod ui-interface/component-node-data :heraldry.component/helm [{:keys [path] :as context}]
+(defmethod ui.interface/component-node-data :heraldry.component/helm [{:keys [path] :as context}]
   (let [{:keys [helmet?
                 torse?]} @(rf/subscribe [:get-helm-status path])
         components-context (c/++ context :components)
@@ -80,5 +80,5 @@
                                                                shield-separator/remove-element-options])}))})))
                  vec)}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/helm [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/helm [_context]
   {:form form})

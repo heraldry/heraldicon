@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldry.coat-of-arms.field.environment :as environment]
-   [heraldry.coat-of-arms.field.interface :as ui-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.bounding-box :as bounding-box]
@@ -108,7 +108,7 @@
                        {:pointer-events "visiblePainted"
                         :cursor "pointer"})
               :transform transform}
-          [ui-interface/render-field field-context]
+          [field.interface/render-field field-context]
           [render-components
            (-> field-context
                (assoc :parent-field-path path)

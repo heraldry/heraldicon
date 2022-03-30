@@ -4,7 +4,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.tag :as tag]
    [re-frame.core :as rf]))
@@ -121,5 +121,5 @@
         [tags-view (keys tags)
          :on-delete #(delete-tag-clicked path %)]]]]]))
 
-(defmethod ui-interface/form-element :tags [context]
+(defmethod ui.interface/form-element :tags [context]
   [form context])

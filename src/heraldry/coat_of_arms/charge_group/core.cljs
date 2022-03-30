@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.charge-group.core
   (:require
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
    [heraldry.coat-of-arms.field.environment :as environment]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
@@ -181,7 +181,7 @@
            :when (and charge-index
                       (< charge-index num-charges))]
        ^{:key idx}
-       [charge-interface/render-charge
+       [charge.interface/render-charge
         (-> context
             (c/++ :charges charge-index)
             (assoc :origin-override (v/add origin-point point))

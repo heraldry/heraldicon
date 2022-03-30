@@ -5,7 +5,7 @@
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.aws.cognito :as cognito]
    [heraldry.config :as config]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.modal :as modal]
    [heraldry.frontend.state :as state]
@@ -73,7 +73,7 @@
 (defn complete-login [db-path jwt-token]
   (go
     (try
-      (let [response (<? (api-request/call :login {:jwt-token jwt-token} nil))
+      (let [response (<? (api.request/call :login {:jwt-token jwt-token} nil))
             {:keys [session-id
                     username
                     user-id]} response]

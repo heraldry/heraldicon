@@ -1,8 +1,8 @@
 (ns heraldry.coat-of-arms.field.core
   (:require
    [heraldry.coat-of-arms.default :as default]
-   [heraldry.coat-of-arms.field.interface :as field-interface]
-   [heraldry.coat-of-arms.field.options :as field-options]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
+   [heraldry.coat-of-arms.field.options :as field.options]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -136,14 +136,14 @@
     (raw-default-fields type num-fields-x num-fields-y num-base-fields)))
 
 (defn part-name [field-type index]
-  (-> field-type field-interface/part-names (get index) (or (util/to-roman (inc index)))))
+  (-> field-type field.interface/part-names (get index) (or (util/to-roman (inc index)))))
 
 (defn title [context]
   (let [field-type (interface/get-sanitized-data (c/++ context :type))]
     (if (= field-type :heraldry.field.type/plain)
       (-> (interface/get-sanitized-data (c/++ context :tincture))
           tincture/translate-tincture)
-      (get field-options/field-map field-type))))
+      (get field.options/field-map field-type))))
 
 (defmethod interface/blazon-component :heraldry.component/field [context]
   (let [root? (get-in context [:blazonry :root?])

@@ -9,7 +9,7 @@
    [com.wsscode.common.async-cljs :refer [<? go-catch]]
    [heraldry.colour :as colour]
    [heraldry.context :as c]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.attribution :as attribution]
    [heraldry.frontend.charge :as charge]
    [heraldry.frontend.history.core :as history]
@@ -246,7 +246,7 @@
     (go
       (try
         (modal/start-loading)
-        (let [response (<? (api-request/call :save-charge payload user-data))
+        (let [response (<? (api.request/call :save-charge payload user-data))
               charge-id (-> response :charge-id)]
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
           (state/invalidate-cache-without-current form-db-path [charge-id nil])

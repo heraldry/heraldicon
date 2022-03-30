@@ -1,21 +1,21 @@
 (ns heraldry.coat-of-arms.charge.type.crescent
   (:require
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
-   [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
+   [heraldry.coat-of-arms.charge.shared :as charge.shared]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/crescent)
 
-(defmethod charge-interface/display-name charge-type [_] :string.charge.type/crescent)
+(defmethod charge.interface/display-name charge-type [_] :string.charge.type/crescent)
 
 (defmethod interface/options charge-type [context]
-  (-> (charge-shared/options context)
+  (-> (charge.shared/options context)
       (update :geometry dissoc :mirrored?)))
 
-(defmethod charge-interface/render-charge charge-type
+(defmethod charge.interface/render-charge charge-type
   [context]
-  (charge-shared/make-charge
+  (charge.shared/make-charge
    context
    :width
    (fn [width]

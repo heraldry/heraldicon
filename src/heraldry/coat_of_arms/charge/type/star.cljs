@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.charge.type.star
   (:require
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
-   [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
+   [heraldry.coat-of-arms.charge.shared :as charge.shared]
    [heraldry.coat-of-arms.line.type.rayonny-flaming :as rayonny-flaming]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -10,13 +10,13 @@
 
 (def charge-type :heraldry.charge.type/star)
 
-(defmethod charge-interface/display-name charge-type [_] :string.charge.type/star)
+(defmethod charge.interface/display-name charge-type [_] :string.charge.type/star)
 
 (defmethod interface/options charge-type [context]
   (let [default-num-points 5
         num-points (or (interface/get-raw-data (c/++ context :num-points))
                        default-num-points)]
-    (-> (charge-shared/options context)
+    (-> (charge.shared/options context)
         (assoc :num-points {:type :range
                             :default default-num-points
                             :min 3
@@ -41,14 +41,14 @@
                             :default false
                             :ui {:label :string.option/wavy-rays?}}))))
 
-(defmethod charge-interface/render-charge charge-type
+(defmethod charge.interface/render-charge charge-type
   [context]
   (let [eccentricity (interface/get-sanitized-data (c/++ context :eccentricity))
         num-points (interface/get-sanitized-data (c/++ context :num-points))
         wavy-rays? (interface/get-sanitized-data (c/++ context :wavy-rays?))
         angle-step (/ 360 num-points)
         rayonny-eccentricity 0.3]
-    (charge-shared/make-charge
+    (charge.shared/make-charge
      context
      :width
      (fn [width]

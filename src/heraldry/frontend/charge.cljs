@@ -2,7 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.http :as http]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.user :as user]
@@ -13,7 +13,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call
+        (-> (api.request/call
              :fetch-charges-for-user
              {:user-id user-id}
              user-data)
@@ -26,7 +26,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call
+        (-> (api.request/call
              :fetch-charges-list
              {}
              user-data)
@@ -39,7 +39,7 @@
   (go
     (try
       (let [user-data (user/data)
-            charge-data (<? (api-request/call :fetch-charge {:id charge-id
+            charge-data (<? (api.request/call :fetch-charge {:id charge-id
                                                              :version version} user-data))
             edn-data (<? (http/fetch (:edn-data-url charge-data)))]
         (-> charge-data
@@ -51,7 +51,7 @@
   (go
     (try
       (let [user-data (user/data)
-            charge-data (<? (api-request/call :fetch-charge {:id charge-id
+            charge-data (<? (api.request/call :fetch-charge {:id charge-id
                                                              :version version} user-data))
             edn-data (<? (http/fetch (:edn-data-url charge-data)))
             svg-data (<? (http/fetch (:svg-data-url charge-data)))]

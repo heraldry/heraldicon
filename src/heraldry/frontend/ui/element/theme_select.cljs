@@ -4,7 +4,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
    [heraldry.util :as util]))
@@ -59,5 +59,5 @@
               ^{:key display-name}
               [theme-choice context key display-name :selected? (= key value)])])]]])))
 
-(defmethod ui-interface/form-element :theme-select [context]
+(defmethod ui.interface/form-element :theme-select [context]
   [theme-select context])

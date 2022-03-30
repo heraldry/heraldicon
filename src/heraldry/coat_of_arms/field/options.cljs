@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.options
   (:require
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.field.type.barry :as barry]
    [heraldry.coat-of-arms.field.type.bendy :as bendy]
    [heraldry.coat-of-arms.field.type.bendy-sinister :as bendy-sinister]
@@ -66,7 +66,7 @@
 (def choices
   (->> fields
        (map (fn [key]
-              [(field-interface/display-name key) key]))))
+              [(field.interface/display-name key) key]))))
 
 (def field-map
   (util/choices->map choices))

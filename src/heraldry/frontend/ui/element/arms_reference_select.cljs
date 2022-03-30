@@ -4,7 +4,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.arms-select :as arms-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]
@@ -47,5 +47,5 @@
           :selected-arms arms-data
           :display-selected-item? true]]]])))
 
-(defmethod ui-interface/form-element :arms-reference-select [context]
+(defmethod ui.interface/form-element :arms-reference-select [context]
   [arms-reference-select context])

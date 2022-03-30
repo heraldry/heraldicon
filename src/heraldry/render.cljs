@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldry.coat-of-arms.escutcheon :as escutcheon]
    [heraldry.coat-of-arms.field.environment :as environment]
-   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.field.shared :as field.shared]
    [heraldry.coat-of-arms.hatching :as hatching]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.texture :as texture]
@@ -18,7 +18,7 @@
    [heraldry.math.svg.squiggly :as squiggly]
    [heraldry.math.vector :as v]
    [heraldry.ribbon :as ribbon]
-   [heraldry.svg.metadata :as svg-metadata]
+   [heraldry.svg.metadata :as svg.metadata]
    [heraldry.util :as util]))
 
 (defn coat-of-arms [{:keys
@@ -57,7 +57,7 @@
      :result [:g {:filter (when escutcheon-shadow?
                             "url(#shadow)")}
               (when metadata-path
-                [svg-metadata/attribution (assoc context :path metadata-path) :arms])
+                [svg.metadata/attribution (assoc context :path metadata-path) :arms])
               [:defs
                (when shiny?
                  [:filter {:id shiny-id}
@@ -123,7 +123,7 @@
                  [:path {:d (s/join "" (-> environment :shape :paths))
                          :fill-rule "evenodd"
                          :fill "#f0f0f0"}]
-                 [field-shared/render (-> context
+                 [field.shared/render (-> context
                                           (c/++ :field)
                                           (assoc :environment environment)
                                           (dissoc :metadata-path))]]]]

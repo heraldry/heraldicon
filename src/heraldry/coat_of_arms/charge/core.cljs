@@ -2,14 +2,14 @@
   (:require
    [clojure.string :as s]
    [heraldry.coat-of-arms.attributes :as attributes]
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/charge [context]
-  [charge-interface/render-charge context])
+  [charge.interface/render-charge context])
 
 (defmethod interface/blazon-component :heraldry.component/charge [{:keys [load-charge-data] :as context}]
   (let [charge-type (interface/get-raw-data (c/++ context :type))

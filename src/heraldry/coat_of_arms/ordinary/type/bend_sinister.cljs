@@ -2,10 +2,10 @@
   (:require
    [heraldry.coat-of-arms.angle :as angle]
    [heraldry.coat-of-arms.cottising :as cottising]
-   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.field.shared :as field.shared]
    [heraldry.coat-of-arms.line.core :as line]
-   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary.interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary.shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -16,7 +16,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/bend-sinister)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/bend-sinister)
+(defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/bend-sinister)
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -124,9 +124,9 @@
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 2)}
-        (ordinary-shared/add-humetty-and-voided context))))
+        (ordinary.shared/add-humetty-and-voided context))))
 
-(defmethod ordinary-interface/render-ordinary ordinary-type
+(defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment
            override-middle-real-start
            override-middle-real-end
@@ -243,7 +243,7 @@
         inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
-        shape (ordinary-shared/adjust-shape
+        shape (ordinary.shared/adjust-shape
                ["M" (v/add first-start
                            line-one-start)
                 (path/stitch line-one)
@@ -267,7 +267,7 @@
                          {:override-real-start real-start
                           :override-real-end real-end})]
     [:<>
-     [field-shared/make-subfield
+     [field.shared/make-subfield
       (-> context
           (c/++ :field)
           (c/<< :transform (when (not use-parent-environment?)
@@ -275,7 +275,7 @@
                                   "rotate(" angle ")"))))
       part
       :all]
-     (ordinary-shared/adjusted-shape-outline
+     (ordinary.shared/adjusted-shape-outline
       shape outline? context
       [:<>
        [line/render line [line-one-data] first-start outline? context]

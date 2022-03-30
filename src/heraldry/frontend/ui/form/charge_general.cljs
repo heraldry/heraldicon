@@ -2,12 +2,12 @@
   (:require
    [heraldry.context :as c]
    [heraldry.frontend.ui.element.checkbox :as checkbox]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.frontend.validation :as validation]))
 
 (defn form [context]
   [:<>
-   (ui-interface/form-elements
+   (ui.interface/form-elements
     context
     [:name
      :attribution
@@ -25,9 +25,9 @@
    ;; TODO: not ideal, probably should move this at some point
    [checkbox/checkbox (c/<< context :path [:example-coa :render-options :preview-original?])]])
 
-(defmethod ui-interface/component-node-data :heraldry.component/charge-general [context]
+(defmethod ui.interface/component-node-data :heraldry.component/charge-general [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-charge-general context)})
 
-(defmethod ui-interface/component-form-data :heraldry.component/charge-general [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/charge-general [_context]
   {:form form})

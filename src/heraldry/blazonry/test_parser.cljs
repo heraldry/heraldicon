@@ -1,10 +1,10 @@
 (ns heraldry.blazonry.test-parser
   (:require
    [cljs.test :refer-macros [are deftest]]
-   [heraldry.blazonry.parser :as blazonry-parser]))
+   [heraldry.blazonry.parser :as parser]))
 
 (deftest transforming
-  (are [ast form] (= (blazonry-parser/ast->hdn ast) form)
+  (are [ast form] (= (parser/ast->hdn ast) form)
 
     [:A "a"] 1
     [:A "an"] 1
@@ -24,7 +24,7 @@
     [:number-word [:MULTI-WORD "triple"]] 3))
 
 (deftest parsing
-  (are [blazon form] (= (blazonry-parser/blazon->hdn blazon) form)
+  (are [blazon form] (= (parser/blazon->hdn blazon) form)
 
     "or"
     {:type :heraldry.field.type/plain

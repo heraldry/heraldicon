@@ -1,7 +1,7 @@
 (ns heraldry.coat-of-arms.field.type.per-bend
   (:require
    [heraldry.coat-of-arms.angle :as angle]
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.field.shared :as shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
@@ -13,9 +13,9 @@
 
 (def field-type :heraldry.field.type/per-bend)
 
-(defmethod field-interface/display-name field-type [_] :string.field.type/per-bend)
+(defmethod field.interface/display-name field-type [_] :string.field.type/per-bend)
 
-(defmethod field-interface/part-names field-type [_] ["chief" "base"])
+(defmethod field.interface/part-names field-type [_] ["chief" "base"])
 
 (defmethod interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line))
@@ -100,7 +100,7 @@
                                                     :step 0.1}}))
      :line line-style}))
 
-(defmethod field-interface/render-field field-type
+(defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         origin (interface/get-sanitized-data (c/++ context :origin))

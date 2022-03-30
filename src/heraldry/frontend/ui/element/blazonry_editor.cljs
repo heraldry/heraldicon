@@ -4,7 +4,7 @@
    ["genex" :as genex]
    ["html-entities" :as html-entities]
    [clojure.string :as s]
-   [heraldry.blazonry.parser :as blazonry-parser]
+   [heraldry.blazonry.parser :as parser]
    [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.context :as context]
    [heraldry.frontend.language :refer [tr]]
@@ -76,7 +76,7 @@
 
 (defn parse-blazonry [value cursor-index]
   (try
-    (let [hdn (blazonry-parser/blazon->hdn value)]
+    (let [hdn (parser/blazon->hdn value)]
       {:value value
        :hdn hdn})
     (catch :default e
@@ -105,7 +105,7 @@
                                        sort
                                        dedupe
                                        (map (fn [choice]
-                                              [choice (blazonry-parser/parse-as-part choice)]))
+                                              [choice (parser/parse-as-part choice)]))
                                        (sort-by (fn [[choice hint]]
                                                   [(get suggestion-hint-order hint 1000)
                                                    choice]))

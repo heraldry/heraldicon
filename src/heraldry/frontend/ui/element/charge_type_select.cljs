@@ -1,6 +1,6 @@
 (ns heraldry.frontend.ui.element.charge-type-select
   (:require
-   [heraldry.coat-of-arms.charge.options :as charge-options]
+   [heraldry.coat-of-arms.charge.options :as charge.options]
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
@@ -8,7 +8,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
    [re-frame.core :as rf]
@@ -84,7 +84,7 @@
        [:div.option
         [submenu/submenu context :string.option/select-charge
          [:div
-          [tr (charge-options/title charge-context)]
+          [tr (charge.options/title charge-context)]
           [choice-preview charge-context]]
          {:style {:position "fixed"
                   :transform "none"
@@ -119,5 +119,5 @@
            :selected-charge variant
            :display-selected-item? true]]]]])))
 
-(defmethod ui-interface/form-element :charge-type-select [context]
+(defmethod ui.interface/form-element :charge-type-select [context]
   [charge-type-select context])

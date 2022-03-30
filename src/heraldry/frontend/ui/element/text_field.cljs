@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.element.text-field
   (:require
    [heraldry.frontend.language :refer [tr]]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
@@ -25,5 +25,5 @@
                                  (on-change value)
                                  (rf/dispatch-sync [:set context value])))}]]])))
 
-(defmethod ui-interface/form-element :text-field [context]
+(defmethod ui.interface/form-element :text-field [context]
   [text-field context])

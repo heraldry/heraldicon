@@ -8,7 +8,7 @@
    [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]
@@ -93,5 +93,5 @@
           :selected-ribbon ribbon-data
           :display-selected-item? true]]]])))
 
-(defmethod ui-interface/form-element :ribbon-reference-select [context]
+(defmethod ui.interface/form-element :ribbon-reference-select [context]
   [ribbon-reference-select context])
