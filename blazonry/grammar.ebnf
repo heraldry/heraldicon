@@ -10,7 +10,7 @@ FIMBRIATED
 
 A = #"\ba\b"
   | #"\ban\b"
-AND = #"\band\b"
+<AND> = #"\band\b"
     | #"&"
     | #","
 OF = #"\bof\b"
@@ -469,7 +469,7 @@ amount
     | NUMBER
     | number-word
 
-between-or-with
+<between-or-with>
     = BETWEEN
     | WITH
 cottise
