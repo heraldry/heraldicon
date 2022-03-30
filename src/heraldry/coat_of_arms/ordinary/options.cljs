@@ -130,7 +130,9 @@
     [:distance]
     [:thickness]
     [:voided :voided?]
-    [:humetty :humetty?]})
+    [:humetty :humetty?]
+
+    [:num-points]})
 
 (defmethod interface/options :heraldry.component/ordinary [context]
   (-> context

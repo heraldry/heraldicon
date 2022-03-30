@@ -18,78 +18,104 @@
 (defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/label)
 
 (defmethod interface/options ordinary-type [context]
-  (-> {:origin {:point {:type :choice
-                        :choices [[:string.option.point-choice/fess :fess]
-                                  [:string.option.point-choice/chief :chief]
-                                  [:string.option.point-choice/base :base]
-                                  [:string.option.point-choice/honour :honour]
-                                  [:string.option.point-choice/nombril :nombril]
-                                  [:string.option.point-choice/top :top]
-                                  [:string.option.point-choice/bottom :bottom]]
-                        :default :chief
-                        :ui {:label :string.option/point}}
-                :alignment {:type :choice
-                            :choices position/alignment-choices
-                            :default :middle
-                            :ui {:label :string.option/alignment
-                                 :form-type :radio-select}}
-                :offset-y {:type :range
-                           :min -45
-                           :max 45
-                           :default 0
-                           :ui {:label :string.option/offset-y
+  (let [num-points (or (interface/get-raw-data (c/++ context :num-points))
+                       3)]
+    (-> {:origin {:point {:type :choice
+                          :choices [[:string.option.point-choice/fess :fess]
+                                    [:string.option.point-choice/chief :chief]
+                                    [:string.option.point-choice/base :base]
+                                    [:string.option.point-choice/honour :honour]
+                                    [:string.option.point-choice/nombril :nombril]
+                                    [:string.option.point-choice/top :top]
+                                    [:string.option.point-choice/bottom :bottom]]
+                          :default :chief
+                          :ui {:label :string.option/point}}
+                  :alignment {:type :choice
+                              :choices position/alignment-choices
+                              :default :middle
+                              :ui {:label :string.option/alignment
+                                   :form-type :radio-select}}
+                  :offset-y {:type :range
+                             :min -45
+                             :max 45
+                             :default 0
+                             :ui {:label :string.option/offset-y
+                                  :step 0.1}}
+                  :ui {:label :string.option/origin
+                       :form-type :position}}
+         :variant {:type :choice
+                   :choices [[:string.option.variant-label-choice/full :full]
+                             [:string.option.variant-label-choice/truncated :truncated]]
+                   :default :full
+                   :ui {:label :string.option/variant
+                        :form-type :radio-select}}
+         :num-points {:type :range
+                      :min 1
+                      :max 16
+                      :default 3
+                      :integer? true
+                      :ui {:label :string.option/number-of-points}}
+         :geometry {:size {:type :range
+                           :min 2
+                           :max 90
+                           :default (case num-points
+                                      1 10
+                                      2 10
+                                      3 10
+                                      4 9
+                                      5 8
+                                      6 7
+                                      7 6
+                                      5)
+                           :ui {:label :string.option/size
                                 :step 0.1}}
-                :ui {:label :string.option/origin
-                     :form-type :position}}
-       :variant {:type :choice
-                 :choices [[:string.option.variant-label-choice/full :full]
-                           [:string.option.variant-label-choice/truncated :truncated]]
-                 :default :full
-                 :ui {:label :string.option/variant
-                      :form-type :radio-select}}
-       :num-points {:type :range
-                    :min 2
-                    :max 16
-                    :default 3
-                    :integer? true
-                    :ui {:label :string.option/number-of-points}}
-       :geometry {:size {:type :range
-                         :min 2
-                         :max 90
-                         :default 10
-                         :ui {:label :string.option/size
-                              :step 0.1}}
-                  :width {:type :range
-                          :min 10
-                          :max 150
-                          :default 66
-                          :ui {:label :string.option/width
-                               :step 0.1}}
-                  :thickness {:type :range
-                              :min 0
-                              :max 20
-                              :default 5
-                              :ui {:label :string.option/bar-thickness
-                                   :step 0.1}}
-                  :eccentricity {:type :range
-                                 :min 0
-                                 :max 1
-                                 :default 0
-                                 :ui {:label :string.option/eccentricity
-                                      :step 0.01}}
-                  :stretch {:type :range
-                            :min 0.33
-                            :max 10
-                            :default 2
-                            :ui {:label :string.option/stretch
-                                 :step 0.01}}
-                  :ui {:label :string.option/geometry
-                       :form-type :geometry}}
-       :outline? options/plain-outline?-option
-       :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
-                        (options/override-if-exists [:alignment :default] :outside))}
-      (ordinary-shared/add-humetty-and-voided context)
-      (options/override-if-exists [:voided :thickness :default] 25)))
+                    :width {:type :range
+                            :min 10
+                            :max 150
+                            :default (case num-points
+                                       1 66
+                                       2 66
+                                       3 66
+                                       4 76
+                                       5 80
+                                       6 84
+                                       7 87
+                                       90)
+                            :ui {:label :string.option/width
+                                 :step 0.1}}
+                    :thickness {:type :range
+                                :min 0
+                                :max 20
+                                :default 5
+                                :ui {:label :string.option/bar-thickness
+                                     :step 0.1}}
+                    :eccentricity {:type :range
+                                   :min 0
+                                   :max 1
+                                   :default 0
+                                   :ui {:label :string.option/eccentricity
+                                        :step 0.01}}
+                    :stretch {:type :range
+                              :min 0.33
+                              :max 10
+                              :default (case num-points
+                                         1 2
+                                         2 2
+                                         3 2
+                                         4 2.25
+                                         5 2.5
+                                         6 2.75
+                                         7 3
+                                         3.25)
+                              :ui {:label :string.option/stretch
+                                   :step 0.01}}
+                    :ui {:label :string.option/geometry
+                         :form-type :geometry}}
+         :outline? options/plain-outline?-option
+         :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
+                          (options/override-if-exists [:alignment :default] :outside))}
+        (ordinary-shared/add-humetty-and-voided context)
+        (options/override-if-exists [:voided :thickness :default] 25))))
 
 (defn relative-points [points]
   (reduce (fn [result point]

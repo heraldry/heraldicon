@@ -378,5 +378,26 @@
                :tincture :or}
               {:type :heraldry.field.type/plain
                :tincture :azure}]}
+
+    "or a label of five points gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/label
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :num-points 5}]}
+
+    "or a label of 10 points truncated dovetailed gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/label
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :num-points 10
+                   :variant :truncated
+                   :geometry {:eccentricity 0.4}}]}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
 ;;
     ))
