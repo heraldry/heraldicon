@@ -1,22 +1,22 @@
 (ns heraldry.coat-of-arms.charge.type.roundel
   (:require
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
-   [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
+   [heraldry.coat-of-arms.charge.shared :as charge.shared]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/roundel)
 
-(defmethod charge-interface/display-name charge-type [_] :string.charge.type/roundel)
+(defmethod charge.interface/display-name charge-type [_] :string.charge.type/roundel)
 
 (defmethod interface/options charge-type [context]
-  (-> (charge-shared/options context)
+  (-> (charge.shared/options context)
       (update :geometry dissoc :mirrored?)
       (update :geometry dissoc :reversed?)))
 
-(defmethod charge-interface/render-charge charge-type
+(defmethod charge.interface/render-charge charge-type
   [context]
-  (charge-shared/make-charge
+  (charge.shared/make-charge
    context
    :width
    (fn [width]

@@ -2,13 +2,13 @@
   (:require
    [heraldry.context :as c]
    [heraldry.frontend.state :as state]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]))
 
 (defn form [context]
-  [ui-interface/form-element (c/++ context :num-columns)])
+  [ui.interface/form-element (c/++ context :num-columns)])
 
-(defmethod ui-interface/component-node-data :heraldry.component/collection [context]
+(defmethod ui.interface/component-node-data :heraldry.component/collection [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.entity/arms
@@ -34,5 +34,5 @@
                                       :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
                  vec)}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/collection [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/collection [_context]
   {:form form})

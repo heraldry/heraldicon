@@ -1,11 +1,11 @@
 (ns heraldry.coat-of-arms.ordinary.type.point
   (:require
    [heraldry.coat-of-arms.cottising :as cottising]
-   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.field.shared :as field.shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
-   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary.interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary.shared]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.svg.path :as path]
@@ -15,7 +15,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/point)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/point)
+(defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/point)
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -43,9 +43,9 @@
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}
-        (ordinary-shared/add-humetty-and-voided context))))
+        (ordinary.shared/add-humetty-and-voided context))))
 
-(defmethod ordinary-interface/render-ordinary ordinary-type
+(defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         variant (interface/get-sanitized-data (c/++ context :variant))
@@ -128,14 +128,14 @@
                                                               line-one-start)])
                                        "z"]
                                       [top-left ideal-point-side ideal-point-top]])
-        shape (ordinary-shared/adjust-shape shape width real-point-height context)
+        shape (ordinary.shared/adjust-shape shape width real-point-height context)
         part [shape environment-points]]
     [:<>
-     [field-shared/make-subfield
+     [field.shared/make-subfield
       (c/++ context :field)
       part
       :all]
-     (ordinary-shared/adjusted-shape-outline
+     (ordinary.shared/adjusted-shape-outline
       shape outline? context
       [line/render line [line-one-data] (case variant
                                           :dexter real-point-top

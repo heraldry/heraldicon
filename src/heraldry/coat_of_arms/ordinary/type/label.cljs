@@ -1,10 +1,10 @@
 (ns heraldry.coat-of-arms.ordinary.type.label
   (:require
-   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.field.shared :as field.shared]
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
-   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary.interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary.shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
@@ -15,7 +15,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/label)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/label)
+(defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/label)
 
 (defmethod interface/options ordinary-type [context]
   (let [num-points (or (interface/get-raw-data (c/++ context :num-points))
@@ -114,7 +114,7 @@
          :outline? options/plain-outline?-option
          :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
                           (options/override-if-exists [:alignment :default] :outside))}
-        (ordinary-shared/add-humetty-and-voided context)
+        (ordinary.shared/add-humetty-and-voided context)
         (options/override-if-exists [:voided :thickness :default] 25))))
 
 (defn relative-points [points]
@@ -194,7 +194,7 @@
                 (into (map (comp path/stitch :line) lines))
                 (conj "z"))}))
 
-(defmethod ordinary-interface/render-ordinary ordinary-type
+(defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
   (let [origin (interface/get-sanitized-data (c/++ context :origin))
         variant (interface/get-sanitized-data (c/++ context :variant))
@@ -230,13 +230,13 @@
                                                  line
                                                  environment
                                                  context)
-        shape (ordinary-shared/adjust-shape shape width band-height context)
+        shape (ordinary.shared/adjust-shape shape width band-height context)
         part [shape environment-points]]
     [:<>
-     [field-shared/make-subfield
+     [field.shared/make-subfield
       (c/++ context :field)
       part
       :all]
-     (ordinary-shared/adjusted-shape-outline
+     (ordinary.shared/adjusted-shape-outline
       shape outline? context
       [line/render line lines (first points) outline? context])]))

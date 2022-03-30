@@ -10,7 +10,7 @@
    [heraldry.frontend.ui.element.range :as range]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.tincture-select :as tincture-select]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -117,5 +117,5 @@
                                     :default :none
                                     :ui {:label (util/translate-cap-first t)}}])]])]])))))
 
-(defmethod ui-interface/form-element :tincture-modifiers [context]
+(defmethod ui.interface/form-element :tincture-modifiers [context]
   [tincture-modifiers-submenu context])

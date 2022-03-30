@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.semy.core
   (:require
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
    [heraldry.context :as c]
    [heraldry.interface :as interface]
    [heraldry.math.vector :as v]
@@ -92,7 +92,7 @@
                               {:x part-width :y part-height}]
                              (not rectangular?) (conj {:x part-width-half :y part-height-half})))]
           ^{:key idx}
-          [charge-interface/render-charge
+          [charge.interface/render-charge
            (-> charge-context
                (assoc :origin-override shift)
                (update :environment shift-environment shift))]))]]

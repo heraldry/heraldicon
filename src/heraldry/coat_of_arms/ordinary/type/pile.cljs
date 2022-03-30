@@ -1,10 +1,10 @@
 (ns heraldry.coat-of-arms.ordinary.type.pile
   (:require
    [heraldry.coat-of-arms.cottising :as cottising]
-   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.field.shared :as field.shared]
    [heraldry.coat-of-arms.line.core :as line]
-   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
-   [heraldry.coat-of-arms.ordinary.shared :as ordinary-shared]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary.interface]
+   [heraldry.coat-of-arms.ordinary.shared :as ordinary.shared]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.shared.pile :as pile]
    [heraldry.context :as c]
@@ -16,7 +16,7 @@
 
 (def ordinary-type :heraldry.ordinary.type/pile)
 
-(defmethod ordinary-interface/display-name ordinary-type [_] :string.ordinary.type/pile)
+(defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/pile)
 
 (defmethod interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -159,9 +159,9 @@
                          :form-type :geometry}}
          :outline? options/plain-outline?-option
          :cottising (cottising/add-cottising context 1)}
-        (ordinary-shared/add-humetty-and-voided context))))
+        (ordinary.shared/add-humetty-and-voided context))))
 
-(defmethod ordinary-interface/render-ordinary ordinary-type
+(defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
@@ -238,7 +238,7 @@
                                            :real-end end
                                            :context context
                                            :environment environment)
-        shape (ordinary-shared/adjust-shape
+        shape (ordinary.shared/adjust-shape
                ["M" (v/add left-point
                            line-left-start)
                 (path/stitch line-left)
@@ -251,11 +251,11 @@
               [top-left top-right
                bottom-left bottom-right]]]
     [:<>
-     [field-shared/make-subfield
+     [field.shared/make-subfield
       (c/++ context :field)
       part
       :all]
-     (ordinary-shared/adjusted-shape-outline
+     (ordinary.shared/adjusted-shape-outline
       shape outline? context
       [line/render line [line-left-data
                          line-right-data] left-point outline? context])

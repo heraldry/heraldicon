@@ -4,7 +4,7 @@
    [clojure.walk :as walk]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.attributes :as attributes]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.charge-map :as charge-map]
    [heraldry.frontend.filter :as filter]
    [heraldry.frontend.language :refer [tr]]
@@ -36,7 +36,7 @@
   (go
     (try
       (let [user-data (user/data)
-            charge-data (<? (api-request/call :fetch-charge {:id charge-id
+            charge-data (<? (api.request/call :fetch-charge {:id charge-id
                                                              :version version} user-data))]
         (when target-path
           (rf/dispatch [:set target-path charge-data]))
@@ -48,7 +48,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call
+        (-> (api.request/call
              :fetch-charges-list
              {}
              user-data)

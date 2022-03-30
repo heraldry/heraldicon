@@ -2,10 +2,10 @@
   (:require
    [cljs.spec.alpha :as s]
    [heraldry.coat-of-arms.attributes :as attributes]
-   [heraldry.coat-of-arms.charge-group.options :as charge-group]
+   [heraldry.coat-of-arms.charge-group.options :as charge-group.options]
    [heraldry.coat-of-arms.escutcheon :as escutcheon]
    [heraldry.coat-of-arms.line.core :as line]
-   [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+   [heraldry.coat-of-arms.ordinary.options :as ordinary.options]
    [heraldry.coat-of-arms.position :as position]
    [heraldry.coat-of-arms.texture :as texture]
    [heraldry.coat-of-arms.tincture.core :as tincture]))
@@ -101,7 +101,7 @@
                                                :heraldry.field/anchor
                                                :heraldry.field/outline?])))
 
-(s/def :heraldry.ordinary/type ordinary-options/ordinary-map)
+(s/def :heraldry.ordinary/type ordinary.options/ordinary-map)
 (s/def :heraldry/ordinary (s/keys :req-un [:heraldry.ordinary/type
                                            :heraldry/field]
                                   :opt-un [:heraldry/line
@@ -142,7 +142,7 @@
                                          :heraldry.charge/variant]))
 
 ;; TODO: add proper spec
-(s/def :heraldry.charge-group/type charge-group/type-map)
+(s/def :heraldry.charge-group/type charge-group.options/type-map)
 (s/def :heraldry.charge-group/charges (s/coll-of :heraldry/charge :into []))
 (s/def :heraldry/charge-group (s/keys :req-un [:heraldry.charge-group/type
                                                :heraldry.charge-group/charges]

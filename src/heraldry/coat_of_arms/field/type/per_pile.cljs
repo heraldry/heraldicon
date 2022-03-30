@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.per-pile
   (:require
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.field.shared :as shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
@@ -15,9 +15,9 @@
 
 (def field-type :heraldry.field.type/per-pile)
 
-(defmethod field-interface/display-name field-type [_] :string.field.type/per-pile)
+(defmethod field.interface/display-name field-type [_] :string.field.type/per-pile)
 
-(defmethod field-interface/part-names field-type [_] nil)
+(defmethod field.interface/part-names field-type [_] nil)
 
 (defmethod interface/options field-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
@@ -157,7 +157,7 @@
                 :ui {:label :string.option/geometry
                      :form-type :geometry}}}))
 
-(defmethod field-interface/render-field field-type
+(defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))

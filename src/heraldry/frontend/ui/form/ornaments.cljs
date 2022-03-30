@@ -3,7 +3,7 @@
    [heraldry.coat-of-arms.default :as default]
    [heraldry.context :as c]
    [heraldry.frontend.state :as state]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.shield-separator :as shield-separator]
    [re-frame.core :as rf]))
@@ -11,7 +11,7 @@
 (defn form [_context]
   [:<>])
 
-(defmethod ui-interface/component-node-data :heraldry.component/ornaments [context]
+(defmethod ui.interface/component-node-data :heraldry.component/ornaments [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.charge.attribute.group/ornaments
@@ -73,5 +73,5 @@
                                                                    [:remove-element ornament-context
                                                                     shield-separator/remove-element-options])}))}))))}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/ornaments [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/ornaments [_context]
   {:form form})

@@ -1,13 +1,13 @@
 (ns heraldry.frontend.ui.form.cottise
   (:require
    [heraldry.context :as c]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.frontend.validation :as validation]
    [heraldry.interface :as interface]
    [heraldry.util :as util]))
 
 (defn form [context]
-  (ui-interface/form-elements
+  (ui.interface/form-elements
    context
    [:line
     :opposite-line
@@ -46,10 +46,10 @@
                   :cottise-extra-2 (util/str-tr "2 " :string.miscellaneous/extra)})
          (get cottise-key)))))
 
-(defmethod ui-interface/component-node-data :heraldry.component/cottise [context]
+(defmethod ui.interface/component-node-data :heraldry.component/cottise [context]
   {:title (cottise-name context)
    :validation (validation/validate-cottise context)
    :nodes [{:context (c/++ context :field)}]})
 
-(defmethod ui-interface/component-form-data :heraldry.component/cottise [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/cottise [_context]
   {:form form})

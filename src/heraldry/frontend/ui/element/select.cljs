@@ -2,7 +2,7 @@
   (:require
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -60,5 +60,5 @@
                     :none)]
       [raw-select context value label choices :on-change on-change])))
 
-(defmethod ui-interface/form-element :select [context]
+(defmethod ui.interface/form-element :select [context]
   [select context])

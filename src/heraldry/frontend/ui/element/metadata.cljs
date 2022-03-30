@@ -6,7 +6,7 @@
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.metadata :as metadata]
    [heraldry.util :as util]
@@ -115,5 +115,5 @@
                    :type "button"}
                   [tr :string.option.outline-mode-choice/remove]]]]))])]]])))
 
-(defmethod ui-interface/form-element :metadata [context]
+(defmethod ui.interface/form-element :metadata [context]
   [metadata-submenu context])

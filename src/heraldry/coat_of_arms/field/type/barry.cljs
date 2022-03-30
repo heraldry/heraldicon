@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.barry
   (:require
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.field.shared :as shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
@@ -12,9 +12,9 @@
 
 (def field-type :heraldry.field.type/barry)
 
-(defmethod field-interface/display-name field-type [_] :string.field.type/barry)
+(defmethod field.interface/display-name field-type [_] :string.field.type/barry)
 
-(defmethod field-interface/part-names field-type [_] nil)
+(defmethod field.interface/part-names field-type [_] nil)
 
 (defmethod interface/options field-type [context]
   {:layout {:num-fields-y {:type :range
@@ -195,7 +195,7 @@
                       [:path {:d (nth edges i)}])])]
     [parts overlap outlines]))
 
-(defmethod field-interface/render-field field-type
+(defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         outline? (or (interface/render-option :outline? context)

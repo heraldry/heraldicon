@@ -5,7 +5,7 @@
    [heraldry.frontend.ui.element.field-type-select :as field-type-select]
    [heraldry.frontend.ui.element.range :as range]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]
@@ -85,7 +85,7 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-field-layout"}
-         (ui-interface/form-elements
+         (ui.interface/form-elements
           context
           [:num-base-fields
            :num-fields-x
@@ -96,20 +96,20 @@
            :stretch-y
            :rotation])]]])))
 
-(defmethod ui-interface/form-element :field-layout [context]
+(defmethod ui.interface/form-element :field-layout [context]
   [layout-submenu context])
 
-(defmethod ui-interface/form-element :field-layout-num-fields-x [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :field-layout-num-fields-x [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-fields-x path value]))])
 
-(defmethod ui-interface/form-element :field-layout-num-fields-y [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :field-layout-num-fields-y [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-fields-y path value]))])
 
-(defmethod ui-interface/form-element :field-layout-num-base-fields [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :field-layout-num-base-fields [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-base-fields path value]))])

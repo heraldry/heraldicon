@@ -3,7 +3,7 @@
    [heraldry.context :as c]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.form.ribbon-general :as ribbon-general]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -33,7 +33,7 @@
 
 (defn form [context]
   [:<>
-   (ui-interface/form-elements
+   (ui.interface/form-elements
     context
     [:type
      :origin
@@ -43,7 +43,7 @@
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr :string.entity/tincture]]
 
-   (ui-interface/form-elements
+   (ui.interface/form-elements
     context
     [:tincture-foreground
      :tincture-background
@@ -53,7 +53,7 @@
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr :string.entity/ribbon]]
 
-   [ui-interface/form-element (c/++ context :ribbon-variant)]
+   [ui.interface/form-element (c/++ context :ribbon-variant)]
 
    (when (interface/get-raw-data (c/++ context :ribbon-variant))
      (let [ribbon-context (c/++ context :ribbon)]
@@ -61,8 +61,8 @@
         [ribbon-general/ribbon-form ribbon-context]
         [ribbon-general/ribbon-segments-form ribbon-context]]))])
 
-(defmethod ui-interface/component-node-data :heraldry.component/motto [{:keys [path]}]
+(defmethod ui.interface/component-node-data :heraldry.component/motto [{:keys [path]}]
   {:title @(rf/subscribe [:motto-name path])})
 
-(defmethod ui-interface/component-form-data :heraldry.component/motto [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/motto [_context]
   {:form form})

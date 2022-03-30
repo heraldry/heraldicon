@@ -3,14 +3,14 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.default :as default]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.attribution :as attribution]
    [heraldry.frontend.history.core :as history]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.modal :as modal]
    [heraldry.frontend.not-found :as not-found]
-   [heraldry.frontend.ribbon :as ribbon-frontend]
+   [heraldry.frontend.ribbon :as frontend.ribbon]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.core :as ui]
    [heraldry.frontend.ui.element.ribbon-select :as ribbon-select]
@@ -360,7 +360,7 @@
     (go
       (try
         (modal/start-loading)
-        (let [response (<? (api-request/call :save-ribbon payload user-data))
+        (let [response (<? (api.request/call :save-ribbon payload user-data))
               ribbon-id (-> response :ribbon-id)]
           (rf/dispatch-sync [:set (conj form-db-path :id) ribbon-id])
           (state/invalidate-cache-without-current form-db-path [ribbon-id nil])
@@ -493,7 +493,7 @@
   (let [[status ribbon-data] (state/async-fetch-data
                               form-db-path
                               [ribbon-id version]
-                              #(ribbon-frontend/fetch-ribbon-for-editing ribbon-id version))]
+                              #(frontend.ribbon/fetch-ribbon-for-editing ribbon-id version))]
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]
@@ -521,7 +521,7 @@
   (let [[status _ribbons] (state/async-fetch-data
                            [:all-ribbons]
                            :all-ribbons
-                           ribbon-frontend/fetch-ribbons)]
+                           frontend.ribbon/fetch-ribbons)]
     [:div {:style {:padding "15px"}}
      [:div {:style {:text-align "justify"
                     :max-width "40em"}}

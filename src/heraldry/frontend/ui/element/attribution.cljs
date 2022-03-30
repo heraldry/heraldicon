@@ -5,7 +5,7 @@
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.util :as util]
    [re-frame.core :as rf]))
@@ -84,7 +84,7 @@
                                                                    :source-creator-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"}])
                             nil))])
 
-          (ui-interface/form-elements
+          (ui.interface/form-elements
            context
            [:nature
             :license
@@ -92,7 +92,7 @@
 
           [:div {:style {:height "1.5em"}}]
 
-          (ui-interface/form-elements
+          (ui.interface/form-elements
            context
            [:source-license
             :source-license-version
@@ -101,7 +101,7 @@
             :source-creator-name
             :source-creator-link])]]]])))
 
-(defmethod ui-interface/form-element :attribution [context]
+(defmethod ui.interface/form-element :attribution [context]
   [attribution-submenu context
    :charge-presets? (-> context :path drop-last last #{:charge-form
                                                        :charge-data})])

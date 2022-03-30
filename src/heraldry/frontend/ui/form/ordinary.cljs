@@ -6,7 +6,7 @@
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.form.cottise :as cottise]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.frontend.validation :as validation]
    [heraldry.interface :as interface]
    [heraldry.static :as static]
@@ -38,7 +38,7 @@
           (state/change-selected-component-if-removed (-> path drop-last vec))))))
 
 (defn form [context]
-  (ui-interface/form-elements
+  (ui.interface/form-elements
    context
    [:type
     :origin
@@ -62,7 +62,7 @@
     :outline?
     :manual-blazon]))
 
-(defmethod ui-interface/component-node-data :heraldry.component/ordinary [context]
+(defmethod ui.interface/component-node-data :heraldry.component/ordinary [context]
   (let [ordinary-type (interface/get-raw-data (c/++ context :type))
         cottising-options (interface/get-relevant-options (c/++ context :cottising))
         cottise-1 (interface/get-raw-data (c/++ context :cottising :cottise-1))
@@ -181,5 +181,5 @@
                                                  :tooltip :string.tooltip/remove
                                                  :handler #(state/dispatch-on-event % [:remove-cottise cottise-extra-2-context])}]}))}))
 
-(defmethod ui-interface/component-form-data :heraldry.component/ordinary [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/ordinary [_context]
   {:form form})

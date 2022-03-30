@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.ordinary.options
   (:require
-   [heraldry.coat-of-arms.ordinary.interface :as ordinary-interface]
+   [heraldry.coat-of-arms.ordinary.interface :as ordinary.interface]
    [heraldry.coat-of-arms.ordinary.type.base :as base]
    [heraldry.coat-of-arms.ordinary.type.bend :as bend]
    [heraldry.coat-of-arms.ordinary.type.bend-sinister :as bend-sinister]
@@ -45,7 +45,7 @@
 (def choices
   (->> ordinaries
        (map (fn [key]
-              [(ordinary-interface/display-name key) key]))))
+              [(ordinary.interface/display-name key) key]))))
 
 (def ordinary-map
   (util/choices->map choices))

@@ -59,7 +59,7 @@
    [heraldry.frontend.ui.form.render-options] ;; needed for side effects
    [heraldry.frontend.ui.form.ribbon-general] ;; needed for side effects
    [heraldry.frontend.ui.form.semy] ;; needed for side effects
-   [heraldry.frontend.ui.interface :as ui-interface] ;; needed for side effects
+   [heraldry.frontend.ui.interface :as ui.interface] ;; needed for side effects
    [heraldry.frontend.ui.shield-separator] ;; needed for side effects
    [heraldry.frontend.validation :as validation] ;; needed for side effects
    [heraldry.shared] ;; needed for side effects
@@ -132,7 +132,7 @@
   (merge {:open? @(rf/subscribe [:ui-component-node-open? path])
           :selected? (= path @(rf/subscribe [:ui-component-node-selected-path]))
           :selectable? true}
-         (ui-interface/component-node-data context)))
+         (ui.interface/component-node-data context)))
 
 (defn component-node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
   (let [node-data (raw-component-node context)
@@ -257,7 +257,7 @@
     (merge
      {:title (:title node-data)
       :context context}
-     (ui-interface/component-form-data context))))
+     (ui.interface/component-form-data context))))
 
 (defn component-form [context]
   (let [{:keys [title context form]} (when context

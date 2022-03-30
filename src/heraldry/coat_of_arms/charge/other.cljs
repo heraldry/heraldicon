@@ -4,10 +4,10 @@
    [clojure.walk :as walk]
    [heraldry.coat-of-arms.angle :as angle]
    [heraldry.coat-of-arms.attributes :as attributes]
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
-   [heraldry.coat-of-arms.charge.shared :as charge-shared]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
+   [heraldry.coat-of-arms.charge.shared :as charge.shared]
    [heraldry.coat-of-arms.field.environment :as environment]
-   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.field.shared :as field.shared]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
@@ -18,11 +18,11 @@
    [heraldry.math.svg.core :as svg]
    [heraldry.math.svg.path :as path]
    [heraldry.math.vector :as v]
-   [heraldry.svg.metadata :as svg-metadata]
+   [heraldry.svg.metadata :as svg.metadata]
    [heraldry.util :as util]))
 
 (defmethod interface/options :heraldry.charge.type/other [context]
-  (-> (charge-shared/options context)
+  (-> (charge.shared/options context)
       (assoc :tincture {:eyed {:type :choice
                                :choices tincture/choices
                                :default :argent
@@ -179,7 +179,7 @@
                  (colour/normalize colour))))
        set))
 
-(defmethod charge-interface/render-charge :heraldry.charge.type/other
+(defmethod charge.interface/render-charge :heraldry.charge.type/other
   [{:keys [path environment
            load-charge-data charge-group
            origin-override size-default
@@ -594,14 +594,14 @@
                    landscape?) unadjusted-charge
                highlight-colours? adjusted-charge
                :else [:g
-                      [svg-metadata/attribution
+                      [svg.metadata/attribution
                        {:path [:context :charge-data]
                         :charge-data full-charge-data}
                        :charge]
                       (when render-field?
                         [:g {:mask (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}
-                          [field-shared/render (-> context
+                          [field.shared/render (-> context
                                                    (c/++ :field)
                                                    (assoc :environment charge-environment))]]])
                       [:g {:mask (str "url(#" mask-id ")")}

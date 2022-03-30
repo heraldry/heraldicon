@@ -2,7 +2,7 @@
   (:require
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.ui.element.range :as range]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [re-frame.core :as rf]))
 
@@ -18,7 +18,7 @@
                                  (take num-slots)
                                  vec)))))))
 
-(defmethod ui-interface/form-element :charge-group-slot-number [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :charge-group-slot-number [{:keys [path] :as context}]
   (let [value (interface/get-list-size context)
         default (:default (interface/get-relevant-options context))]
     [range/range-input context

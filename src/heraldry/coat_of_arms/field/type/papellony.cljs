@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.papellony
   (:require
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
@@ -9,9 +9,9 @@
 
 (def field-type :heraldry.field.type/papellony)
 
-(defmethod field-interface/display-name field-type [_] :string.field.type/papellony)
+(defmethod field.interface/display-name field-type [_] :string.field.type/papellony)
 
-(defmethod field-interface/part-names field-type [_] nil)
+(defmethod field.interface/part-names field-type [_] nil)
 
 (defmethod interface/options field-type [_context]
   {:thickness {:type :range
@@ -156,7 +156,7 @@
                [:path {:d (str "M" (- width thickness) "," height
                                "v" (- extra))}]]}))
 
-(defmethod field-interface/render-field field-type
+(defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
         num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))

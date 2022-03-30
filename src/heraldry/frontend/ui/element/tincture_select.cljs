@@ -4,7 +4,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.value-mode-select :as value-mode-select]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.static :as static]
@@ -58,5 +58,5 @@
                 ^{:key display-name}
                 [tincture-choice context key display-name :selected? (= key value)]))]))]]])))
 
-(defmethod ui-interface/form-element :tincture-select [context]
+(defmethod ui.interface/form-element :tincture-select [context]
   [tincture-select context])

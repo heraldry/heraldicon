@@ -3,7 +3,7 @@
    [heraldry.coat-of-arms.line.core :as line]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -41,7 +41,7 @@
          [tr link-name]
          {:style {:width "26em"}
           :class "submenu-line"}
-         (ui-interface/form-elements
+         (ui.interface/form-elements
           context
           [:type
            :eccentricity
@@ -56,5 +56,5 @@
            :flipped?
            :fimbriation])]]])))
 
-(defmethod ui-interface/form-element :line [context]
+(defmethod ui.interface/form-element :line [context]
   [line-submenu context])

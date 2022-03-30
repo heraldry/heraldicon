@@ -6,7 +6,7 @@
    [heraldry.frontend.ui.element.select :as select]
    [heraldry.frontend.ui.element.submenu :as submenu]
    [heraldry.frontend.ui.element.text-field :as text-field]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.frontend.validation :as validation]
    [heraldry.interface :as interface]
    [heraldry.math.curve :as curve]
@@ -196,7 +196,7 @@
     [:div {:style {:position "relative"}}
      [submenu/submenu context nil [tr title] {:style {:width "28em"}
                                               :class "submenu-segment-form"}
-      (ui-interface/form-elements
+      (ui.interface/form-elements
        context
        [:type
         :z-index
@@ -212,7 +212,7 @@
               :left "13em"}]]))
 
 (defn ribbon-form [context]
-  (ui-interface/form-elements
+  (ui.interface/form-elements
    context
    [:thickness
     :edge-angle
@@ -242,7 +242,7 @@
 
 (defn form [context]
   [:<>
-   (ui-interface/form-elements
+   (ui.interface/form-elements
     context
     [:name
      :attribution
@@ -312,9 +312,9 @@
        (c/++ context :ribbon)
        :tooltip :string.ribbon.text/segment-explanation]])])
 
-(defmethod ui-interface/component-node-data :heraldry.component/ribbon-general [context]
+(defmethod ui.interface/component-node-data :heraldry.component/ribbon-general [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-ribbon-general context)})
 
-(defmethod ui-interface/component-form-data :heraldry.component/ribbon-general [_context]
+(defmethod ui.interface/component-form-data :heraldry.component/ribbon-general [_context]
   {:form form})

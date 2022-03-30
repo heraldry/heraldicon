@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldry.coat-of-arms.angle :as angle]
-   [heraldry.coat-of-arms.field.shared :as field-shared]
+   [heraldry.coat-of-arms.field.shared :as field.shared]
    [heraldry.coat-of-arms.geometry :as geometry]
    [heraldry.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldry.coat-of-arms.outline :as outline]
@@ -330,7 +330,7 @@
                   (tincture/pick context)) context
               :corner (-> fimbriation :corner)]]))
         [:g {:id charge-id}
-         [field-shared/make-subfield
+         [field.shared/make-subfield
           (c/++ context :field)
           part
           :all]

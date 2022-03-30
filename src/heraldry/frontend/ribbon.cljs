@@ -2,7 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.user :as user]
    [taoensso.timbre :as log]))
@@ -11,7 +11,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call :fetch-ribbons-for-user {:user-id user-id}
+        (-> (api.request/call :fetch-ribbons-for-user {:user-id user-id}
                               user-data)
             <?
             :ribbons))
@@ -22,7 +22,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call :fetch-ribbons {}
+        (-> (api.request/call :fetch-ribbons {}
                               user-data)
             <?
             :ribbons))
@@ -33,7 +33,7 @@
   (go
     (try
       (let [user-data (user/data)
-            ribbon-data (<? (api-request/call :fetch-ribbon {:id ribbon-id
+            ribbon-data (<? (api.request/call :fetch-ribbon {:id ribbon-id
                                                              :version version} user-data))]
         ribbon-data)
       (catch :default e
@@ -43,7 +43,7 @@
   (go
     (try
       (let [user-data (user/data)
-            ribbon-data (<? (api-request/call :fetch-ribbon {:id ribbon-id
+            ribbon-data (<? (api.request/call :fetch-ribbon {:id ribbon-id
                                                              :version version} user-data))]
         ribbon-data)
       (catch :default e

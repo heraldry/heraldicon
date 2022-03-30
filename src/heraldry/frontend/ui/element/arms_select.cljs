@@ -2,7 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.filter :as filter]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
@@ -18,7 +18,7 @@
   (go
     (try
       (let [user-data (user/data)
-            arms-data (<? (api-request/call :fetch-arms {:id arms-id
+            arms-data (<? (api.request/call :fetch-arms {:id arms-id
                                                          :version version} user-data))]
         (when target-path
           (rf/dispatch [:set target-path arms-data]))
@@ -30,7 +30,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call
+        (-> (api.request/call
              :fetch-arms-list
              {}
              user-data)
@@ -43,7 +43,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api-request/call
+        (-> (api.request/call
              :fetch-arms-for-user
              {:user-id user-id}
              user-data)

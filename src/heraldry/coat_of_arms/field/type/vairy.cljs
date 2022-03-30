@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.vairy
   (:require
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.outline :as outline]
    [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.context :as c]
@@ -9,9 +9,9 @@
 
 (def field-type :heraldry.field.type/vairy)
 
-(defmethod field-interface/display-name field-type [_] :string.field.type/vairy)
+(defmethod field.interface/display-name field-type [_] :string.field.type/vairy)
 
-(defmethod field-interface/part-names field-type [_] nil)
+(defmethod field.interface/part-names field-type [_] nil)
 
 (defmethod interface/options field-type [_context]
   {:variant {:type :choice
@@ -258,7 +258,7 @@
                [:path {:d (str "M 0," height
                                "h" width)}]]}))
 
-(defmethod field-interface/render-field field-type
+(defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [variant (interface/get-sanitized-data (c/++ context :variant))
         num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))

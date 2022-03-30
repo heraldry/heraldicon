@@ -2,7 +2,7 @@
   (:require
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.ui.element.submenu :as submenu]
-   [heraldry.frontend.ui.interface :as ui-interface]
+   [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
    [heraldry.options :as options]
    [heraldry.util :as util]))
@@ -40,11 +40,11 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-humetty"}
-         (ui-interface/form-elements
+         (ui.interface/form-elements
           context
           [:humetty?
            :corner
            :distance])]]])))
 
-(defmethod ui-interface/form-element :humetty [context]
+(defmethod ui.interface/form-element :humetty [context]
   [humetty-submenu context])

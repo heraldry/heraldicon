@@ -5,7 +5,7 @@
    [heraldry.coat-of-arms.default :as default]
    [heraldry.context :as c]
    [heraldry.font :as font]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.attribution :as attribution]
    [heraldry.frontend.history.core :as history]
    [heraldry.frontend.language :refer [tr]]
@@ -37,7 +37,7 @@
   (go
     (try
       (let [user-data (user/data)
-            full-data (<? (api-request/call :fetch-collection {:id collection-id
+            full-data (<? (api.request/call :fetch-collection {:id collection-id
                                                                :version version} user-data))]
         (rf/dispatch [:set saved-data-db-path full-data])
         full-data)
@@ -53,7 +53,7 @@
     (try
       (let [payload @(rf/subscribe [:get form-db-path])
             user-data (user/data)
-            response (<? (api-request/call :save-collection payload user-data))
+            response (<? (api.request/call :save-collection payload user-data))
             collection-id (-> response :collection-id)]
         (rf/dispatch-sync [:set (conj form-db-path :id) collection-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])

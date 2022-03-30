@@ -4,7 +4,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.default :as default]
-   [heraldry.frontend.api.request :as api-request]
+   [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.attribution :as attribution]
    [heraldry.frontend.charge :as charge]
    [heraldry.frontend.context :as context]
@@ -101,7 +101,7 @@
                                                                       :version
                                                                       :render-options])
             user-data (user/data)
-            response (<? (api-request/call :generate-svg-arms payload user-data))]
+            response (<? (api.request/call :generate-svg-arms payload user-data))]
         (js/window.open (:svg-url response))
         (modal/stop-loading))
       (catch :default e
@@ -118,7 +118,7 @@
                                                                       :version
                                                                       :render-options])
             user-data (user/data)
-            response (<? (api-request/call :generate-png-arms payload user-data))]
+            response (<? (api.request/call :generate-png-arms payload user-data))]
         (js/window.open (:png-url response))
         (modal/stop-loading))
       (catch :default e
@@ -139,7 +139,7 @@
       (let [payload @(rf/subscribe [:get form-db-path])
             user-data (user/data)
             user-id (:user-id user-data)
-            response (<? (api-request/call :save-arms payload user-data))
+            response (<? (api.request/call :save-arms payload user-data))
             arms-id (-> response :arms-id)]
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])

@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.charge.options
   (:require
-   [heraldry.coat-of-arms.charge.interface :as charge-interface]
+   [heraldry.coat-of-arms.charge.interface :as charge.interface]
    [heraldry.coat-of-arms.charge.type.annulet :as annulet]
    [heraldry.coat-of-arms.charge.type.billet :as billet]
    [heraldry.coat-of-arms.charge.type.crescent :as crescent]
@@ -31,7 +31,7 @@
 (def choices
   (->> charges
        (map (fn [key]
-              [(charge-interface/display-name key) key]))))
+              [(charge.interface/display-name key) key]))))
 
 (def choice-map
   (util/choices->map choices))
@@ -70,7 +70,7 @@
 
 (defmethod interface/options :heraldry.component/charge [context]
   (-> context
-      (assoc :dispatch-value (charge-interface/effective-type context))
+      (assoc :dispatch-value (charge.interface/effective-type context))
       interface/options
       (assoc :type type-option)
       (assoc :manual-blazon options/manual-blazon)

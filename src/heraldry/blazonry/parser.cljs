@@ -4,8 +4,8 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldry.coat-of-arms.field.core :as field]
-   [heraldry.coat-of-arms.field.options :as field-options]
-   [heraldry.coat-of-arms.ordinary.options :as ordinary-options]
+   [heraldry.coat-of-arms.field.options :as field.options]
+   [heraldry.coat-of-arms.ordinary.options :as ordinary.options]
    [heraldry.util :as util]
    [instaparse.core :as insta]
    [taoensso.timbre :as log])
@@ -173,7 +173,7 @@
     (apply merge layouts)))
 
 (def field-type-map
-  (->> field-options/fields
+  (->> field.options/fields
        (map (fn [key]
               [(-> key
                    name
@@ -421,7 +421,7 @@
                                                        :cottise-2 :cottise-extra-2})))))
 
 (def ordinary-type-map
-  (->> ordinary-options/ordinaries
+  (->> ordinary.options/ordinaries
        (map (fn [key]
               [(-> key
                    name

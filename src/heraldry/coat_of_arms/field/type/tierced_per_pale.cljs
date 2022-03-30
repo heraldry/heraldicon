@@ -1,6 +1,6 @@
 (ns heraldry.coat-of-arms.field.type.tierced-per-pale
   (:require
-   [heraldry.coat-of-arms.field.interface :as field-interface]
+   [heraldry.coat-of-arms.field.interface :as field.interface]
    [heraldry.coat-of-arms.field.shared :as shared]
    [heraldry.coat-of-arms.infinity :as infinity]
    [heraldry.coat-of-arms.line.core :as line]
@@ -13,9 +13,9 @@
 
 (def field-type :heraldry.field.type/tierced-per-pale)
 
-(defmethod field-interface/display-name field-type [_] :string.field.type/tierced-per-pale)
+(defmethod field.interface/display-name field-type [_] :string.field.type/tierced-per-pale)
 
-(defmethod field-interface/part-names field-type [_] ["dexter" "fess" "sinister"])
+(defmethod field.interface/part-names field-type [_] ["dexter" "fess" "sinister"])
 
 (defmethod interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line)
@@ -46,7 +46,7 @@
                    :form-type :field-layout}}
      :line line-style}))
 
-(defmethod field-interface/render-field field-type
+(defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         stretch-x (interface/get-sanitized-data (c/++ context :layout :stretch-x))
