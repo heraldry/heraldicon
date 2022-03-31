@@ -333,16 +333,19 @@ ARRANGED
 
 (* rules *)
 
+charged-with
+    = CHARGED? WITH
+
 root-field
-    = root-variation
+    = root-variation <charged-with> component (AND* components)?
+    | root-variation
     | root-variation (AND* components)?
-    | root-variation CHARGED WITH component (AND* components)?
     | <"("> root-field <")">
 
 field
-    = variation
+    = variation <charged-with> component (AND* components)?
+    | variation
     | variation (AND* components)?
-    | variation CHARGED WITH component (AND* components)?
     | <"("> field <")">
 
 root-variation
