@@ -33,8 +33,8 @@ COTTISED
     | #"\bcottices\b"
     | #"\bcottising\b"
     | #"\bcotticing\b"
-    | #"\bendorsed\b"
-    | #"\bendorsing\b"
+    | #"\bbendorsed\b"
+    | #"\bbendorsing\b"
 
 NUMBER = #"[1-9][0-9]*"
 DIGIT-WORD
@@ -111,7 +111,7 @@ PEAN = #"\bpean\b"
 BARRY = #"\bbarry\b"
 BENDY = #"\bbendy\b"
 BENDY-SINISTER
-    = #"\bbendy sinister\b"
+    = #"\bbendy +sinister\b"
     | #"\bbendy\b" #"\bsinister\b"
 CHEQUY = #"\bchequy\b"
 CHEVRONNY = #"\bchevronny\b"
@@ -185,6 +185,7 @@ POINT
     = #"\bpoints?\b"
     | #"\bpoints? +sinister\b"
 LABEL-POINT = #"\bpoints?\b"
+STAR-POINT = #"\bpoints?\b"
 BORDURE = #"\bbordures?\b"
 ORLE
     = #"\borles?\b"
@@ -313,6 +314,16 @@ STAR
 CRESCENT = #"\bcrescents?\b"
 
 LION = #"\blions?\b"
+
+PALEWISE = #"\bpale[ -]?wise\b"
+FESSWISE = #"\bfess[ -]?wise\b"
+BENDWISE = #"\bbend[ -]?wise\b"
+BENDWISE-SINISTER
+    = #"\bbend[ -]?wise +sinister\b"
+    | #"\bbend[ -]?wise\b" "\bsinister\b"
+CHEVRONWISE = #"\bchevron[ -]?wise\b"
+IN-ANNULLO = #"\bin +annullo\b"
+IN-ORLE = #"\bin +orle\b"
 
 (* rules *)
 
@@ -627,21 +638,11 @@ fimbriation
     | FIMBRIATED (WITH | OF)? tincture AND? tincture
 
 charge-group
-    = amount? charge
+    = amount? charge charge-arrangement? field
+    | amount? charge field charge-arrangement?
 
 (* used for suggestion labeling *)
-charge-type
-    = standard-charge-type
-    | other-charge-type
-
-charge
-    = standard-charge-with-field
-    | other-charge-with-field
-
-standard-charge-with-field
-    = standard-charge-type fimbriation? charge-options? field
-
-standard-charge-type
+charge-standard-type
     = ROUNDEL
     | ANNULET
     | BILLET
@@ -653,8 +654,49 @@ standard-charge-type
     | STAR
     | CRESCENT
 
+charge
+    = charge-standard fimbriation?
+    (* | other-charge-with-field *)
+
+charge-arrangement
+    = PALEWISE
+    | FESSWISE
+    | BENDWISE
+    | BENDWISE-SINISTER
+    | CHEVRONWISE
+    | IN-ANNULLO
+    | IN-ORLE
+    | charge-grid
+
+charge-grid
+    = amount (AND? amount)*
+
+(* used for suggestion labeling *)
+charge-option
+    = mirrored-reversed
+
+<mirrored-reversed>
+    = MIRRORED
+    | REVERSED
+
+star-points
+    = (of-or-with? amount STAR-POINT)
+
+charge-standard
+    = ROUNDEL
+    | ANNULET
+    | BILLET
+    | ESCUTCHEON mirrored-reversed*
+    | LOZENGE
+    | FUSIL
+    | MASCLE
+    | RUSTRE
+    | STAR (star-points? REVERSED?
+            | REVERSED? star-points?)
+    | CRESCENT REVERSED?
+
 other-charge-with-field
-    = other-charge-type attitude? facing? charge-options? fimbriation? field
+    = other-charge-type attitude? facing? fimbriation? field
 
 other-charge-type
     = LION
@@ -700,12 +742,3 @@ facing
     | IN-TRIAN-ASPECT
     | REGUARDANT
     | SALIENT
-
-charge-options
-    = charge-option+
-
-charge-option
-    = MIRRORED
-    | REVERSED
-    | VOIDED
-    | ERASED

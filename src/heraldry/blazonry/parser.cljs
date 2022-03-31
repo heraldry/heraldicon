@@ -3,6 +3,7 @@
    [clojure.set :as set]
    [clojure.string :as s]
    [clojure.walk :as walk]
+   [heraldry.coat-of-arms.charge.options :as charge.options]
    [heraldry.coat-of-arms.field.core :as field]
    [heraldry.coat-of-arms.field.options :as field.options]
    [heraldry.coat-of-arms.ordinary.options :as ordinary.options]
@@ -49,7 +50,7 @@
                                       [:facing "facing"]
                                       [:ordinary-type "ordinary"]
                                       [:ordinary-option "ordinary option"]
-                                      [:charge-type "charge"]
+                                      [:charge-standard-type "charge"]
                                       [:charge-option "charge option"]]]
       (when rule
         (or (try
@@ -505,6 +506,173 @@
         (add-lines nodes)
         (add-cottising nodes)
         (add-fimbriation nodes))))
+
+(defmethod ast->hdn :ordinary-group [[_ & nodes]]
+  (let [amount-node (get-child #{:amount} nodes)
+        amount (if amount-node
+                 (ast->hdn amount-node)
+                 1)
+        ordinary (ast->hdn (get-child #{:ordinary} nodes))]
+    (vec (repeat (max 1 amount) ordinary))))
+
+(defn add-charge-options [hdn nodes]
+  (let [charge-options (some->> nodes
+                                (filter (type? #{:MIRRORED
+                                                 :REVERSED
+                                                 :star-points}))
+                                (map (fn [[key & nodes]]
+                                       [key nodes]))
+                                (into {}))
+        charge-type (-> hdn :type name keyword)]
+    (cond-> hdn
+      (get charge-options :MIRRORED) (assoc-in [:geometry :mirrored?] true)
+      (get charge-options :REVERSED) (assoc-in [:geometry :reversed?] true)
+      (get charge-options :star-points) (cond->
+                                          (= :star
+                                             charge-type) (assoc :num-points
+                                                                 (->> (get charge-options :star-points)
+                                                                      (get-child #{:amount})
+                                                                      ast->hdn))))))
+
+(def charge-type-map
+  (->> charge.options/charges
+       (map (fn [key]
+              [(-> key
+                   name
+                   s/upper-case
+                   keyword)
+               key]))
+       (into {})))
+
+(defn get-charge-type [nodes]
+  (some->> nodes
+           (get-child charge-type-map)
+           first
+           (get charge-type-map)))
+
+(defmethod ast->hdn :charge-standard [[_ & nodes]]
+  (-> {:type (get-charge-type nodes)}
+      (add-charge-options nodes)))
+
+(defmethod ast->hdn :charge [[_ & nodes]]
+  (-> (get-child #{:charge-standard} nodes)
+      ast->hdn
+      (add-fimbriation nodes)))
+
+(defn charge-group [charge amount nodes]
+  (let [arrangement (-> (get-child #{:charge-arrangement} nodes)
+                        second)
+        arrangement-type (first arrangement)]
+    (-> {:charges [charge]}
+        (cond->
+          (= :FESSWISE
+             arrangement-type) (merge
+                                {:type :heraldry.charge-group.type/rows
+                                 :spacing (/ 95 amount)
+                                 :strips [{:type :heraldry.component/charge-group-strip
+                                           :slots (vec (repeat amount 0))}]})
+          (= :PALEWISE
+             arrangement-type) (merge
+                                {:type :heraldry.charge-group.type/columns
+                                 :spacing (/ 95 amount)
+                                 :strips [{:type :heraldry.component/charge-group-strip
+                                           :slots (vec (repeat amount 0))}]})
+          (= :BENDWISE
+             arrangement-type) (merge
+                                {:type :heraldry.charge-group.type/rows
+                                 :strip-angle 45
+                                 :spacing (/ 120 amount)
+                                 :strips [{:type :heraldry.component/charge-group-strip
+                                           :slots (vec (repeat amount 0))}]})
+          (= :BENDWISE-SINISTER
+             arrangement-type) (merge
+                                {:type :heraldry.charge-group.type/rows
+                                 :strip-angle -45
+                                 :spacing (/ 120 amount)
+                                 :strips [{:type :heraldry.component/charge-group-strip
+                                           :slots (vec (repeat amount 0))}]})
+          (= :CHEVRONWISE
+             arrangement-type) (merge
+                                {:type :heraldry.charge-group.type/rows
+                                 :spacing (/ 90 amount)
+                                 :strips (->> (range (-> amount
+                                                         inc
+                                                         (/ 2)))
+                                              (map (fn [index]
+                                                     {:type :heraldry.component/charge-group-strip
+                                                      :stretch (if (and (zero? index)
+                                                                        (even? amount))
+                                                                 1
+                                                                 (if (and (pos? index)
+                                                                          (even? amount))
+                                                                   (+ 1 (/ (inc index)
+                                                                           index))
+                                                                   2))
+                                                      :slots (if (zero? index)
+                                                               (if (odd? amount)
+                                                                 [0]
+                                                                 [0 0])
+                                                               (-> (concat [0]
+                                                                           (repeat (dec index) nil)
+                                                                           [0])
+                                                                   vec))}))
+                                              vec)})
+
+          (= :IN-CROSS
+             arrangement-type) (merge
+                                (let [middle? (odd? amount)
+                                      ;; the number of rings:
+                                      ;; amount | rings
+                                      ;; 1      | 0
+                                      ;; 2      | 1
+                                      ;; 3      | 1
+                                      ;; 4      | 1
+                                      ;; 5      | 1
+                                      ;; 6      | 2
+                                      num-rings (-> amount
+                                                    (+ 2)
+                                                    (quot 4))
+                                      grid (vec
+                                            (for [y (range (- num-rings) (inc num-rings))]
+                                              (vec
+                                               (for [x (range (- num-rings) (inc num-rings))]
+                                                 ;; TODO: proper condition
+                                                 (if true
+                                                   0
+                                                   nil)))))]
+
+                                  {:type :heraldry.charge-group.type/rows
+                                   :spacing (/ 90 amount)
+                                   :strips (mapv
+                                            (fn [row]
+                                              {:type :heraldry.component/charge-group-strip
+                                               :slots row})
+                                            grid)}))
+          (= :IN-ORLE
+             arrangement-type) (->
+                                (merge
+                                 {:type :heraldry.charge-group.type/in-orle
+                                  :distance 10
+                                  :slots (vec (repeat amount 0))})
+                                (assoc-in [:charges 0 :geometry :size] 10))
+          (= :IN-ANNULLO
+             arrangement-type) (merge {:type :heraldry.charge-group.type/arc
+                                       :slots (vec (repeat amount 0))})))))
+
+(defmethod ast->hdn :charge-group [[_ & nodes]]
+  (let [amount-node (get-child #{:amount} nodes)
+        amount (if amount-node
+                 (ast->hdn amount-node)
+                 1)
+        amount (max 1 amount)
+        field (ast->hdn (get-child #{:field} nodes))
+        charge (-> #{:charge}
+                   (get-child nodes)
+                   ast->hdn
+                   (assoc :field field))]
+    (if (= amount 1)
+      [charge]
+      [(charge-group charge amount nodes)])))
 
 (defmethod ast->hdn :field [[_ & nodes]]
   (if-let [nested-field (get-child #{:field} nodes)]
