@@ -109,11 +109,13 @@
        :tincture (ast->hdn node)})))
 
 (defmethod ast->hdn :line-type [[_ node]]
-  (->> node
-       first
-       name
-       s/lower-case
-       keyword))
+  (let [raw-type (-> node
+                     first
+                     name
+                     s/lower-case
+                     keyword)]
+    (get {:rayonny :rayonny-flaming}
+         raw-type raw-type)))
 
 (defmethod ast->hdn :fimbriation [[_ & nodes]]
   (let [[tincture-1
