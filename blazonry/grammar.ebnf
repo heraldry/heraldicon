@@ -248,6 +248,10 @@ REVERSED
     = #"\breversed\b"
     | #"\binverted\b"
 THROUGHOUT = #"\bthroughout\b"
+DEXTER
+    = #"\bdexter\b"
+SINISTER
+    = #"\bsinister\b"
 
 CADENT = #"\bcadent\b"
 COUCHANT = #"\bcouchant\b"
@@ -577,6 +581,10 @@ ordinary-option
     = humetty-voided
     | reversed-throughout
 
+<dexter-sinister>
+    = DEXTER
+    | SINISTER
+
 <of-or-with>
     = OF
     | WITH
@@ -588,7 +596,7 @@ ordinary
     = LABEL (humetty-voided-truncated-dovetailed* label-points?
              | label-points? humetty-voided-truncated-dovetailed*) fimbriation? field
     | BORDURE line? field
-    | GORE line? field
+    | GORE dexter-sinister? line? field
     | (CHIEF
        | BASE
        | POINT) (humetty-voided-enhanced-dehanced* line?
