@@ -617,37 +617,6 @@
                                                                            [0])
                                                                    vec))}))
                                               vec)})
-
-          (= :IN-CROSS
-             arrangement-type) (merge
-                                (let [middle? (odd? amount)
-                                      ;; the number of rings:
-                                      ;; amount | rings
-                                      ;; 1      | 0
-                                      ;; 2      | 1
-                                      ;; 3      | 1
-                                      ;; 4      | 1
-                                      ;; 5      | 1
-                                      ;; 6      | 2
-                                      num-rings (-> amount
-                                                    (+ 2)
-                                                    (quot 4))
-                                      grid (vec
-                                            (for [y (range (- num-rings) (inc num-rings))]
-                                              (vec
-                                               (for [x (range (- num-rings) (inc num-rings))]
-                                                 ;; TODO: proper condition
-                                                 (if true
-                                                   0
-                                                   nil)))))]
-
-                                  {:type :heraldry.charge-group.type/rows
-                                   :spacing (/ 90 amount)
-                                   :strips (mapv
-                                            (fn [row]
-                                              {:type :heraldry.component/charge-group-strip
-                                               :slots row})
-                                            grid)}))
           (= :IN-ORLE
              arrangement-type) (->
                                 (merge
