@@ -560,11 +560,13 @@
       (add-fimbriation nodes)))
 
 (defn charge-group [charge amount nodes]
-  (let [arrangement (-> (get-child #{:charge-arrangement} nodes)
-                        second)
-        arrangement-type (first arrangement)]
+  (let [[arrangement-type
+         & arrangement-nodes] (second (get-child #{:charge-arrangement} nodes))]
     (-> {:charges [charge]}
         (cond->
+          (nil? arrangement-type) (merge
+                                   {:type :heraldry.charge-group.type/arc
+                                    :slots (vec (repeat amount 0))})
           (= :FESSWISE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
@@ -625,8 +627,22 @@
                                   :slots (vec (repeat amount 0))})
                                 (assoc-in [:charges 0 :geometry :size] 10))
           (= :IN-ANNULLO
-             arrangement-type) (merge {:type :heraldry.charge-group.type/arc
-                                       :slots (vec (repeat amount 0))})))))
+             arrangement-type) (merge
+                                {:type :heraldry.charge-group.type/arc
+                                 :slots (vec (repeat amount 0))})
+          (= :charge-grid
+             arrangement-type) (merge
+                                (let [amounts (->> arrangement-nodes
+                                                   (filter (type? #{:amount}))
+                                                   (map ast->hdn))
+                                      width (apply max amounts)
+                                      height (count amounts)]
+                                  {:type :heraldry.charge-group.type/rows
+                                   :spacing (/ 95 (max width height))
+                                   :strips (mapv (fn [amount]
+                                                   {:type :heraldry.component/charge-group-strip
+                                                    :slots (vec (repeat amount 0))})
+                                                 amounts)}))))))
 
 (defmethod ast->hdn :charge-group [[_ & nodes]]
   (let [amount-node (get-child #{:amount} nodes)
