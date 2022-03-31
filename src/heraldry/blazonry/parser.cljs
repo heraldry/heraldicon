@@ -433,7 +433,9 @@
                                               ordinary-type) (assoc-in [:geometry :eccentricity] 0.4))
       (get ordinary-options :SINISTER) (cond->
                                          (= :gore
-                                            ordinary-type) (assoc-in [:anchor :point] :top-right))
+                                            ordinary-type) (assoc-in [:anchor :point] :top-right)
+                                         (= :point
+                                            ordinary-type) (assoc :variant :sinister))
       (get ordinary-options :label-points) (cond->
                                              (= :label
                                                 ordinary-type) (assoc :num-points
