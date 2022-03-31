@@ -354,6 +354,9 @@
                                                    :THROUGHOUT
                                                    :TRUNCATED
                                                    :DOVETAILED
+                                                   ;; nothing to do there, just here for reference
+                                                   #_:DEXTER
+                                                   :SINISTER
                                                    :label-points}))
                                   (map (fn [[key & nodes]]
                                          [key nodes]))
@@ -428,6 +431,9 @@
       (get ordinary-options :DOVETAILED) (cond->
                                            (= :label
                                               ordinary-type) (assoc-in [:geometry :eccentricity] 0.4))
+      (get ordinary-options :SINISTER) (cond->
+                                         (= :gore
+                                            ordinary-type) (assoc-in [:anchor :point] :top-right))
       (get ordinary-options :label-points) (cond->
                                              (= :label
                                                 ordinary-type) (assoc :num-points
