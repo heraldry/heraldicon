@@ -183,7 +183,6 @@ GORE = #"\bgores?\b"
 QUARTER = #"\bquarters?\b"
 POINT
     = #"\bpoints?\b"
-    | #"\bpoints? +sinister\b"
 LABEL-POINT = #"\bpoints?\b"
 STAR-POINT = #"\bpoints?\b"
 BORDURE = #"\bbordures?\b"
@@ -585,6 +584,11 @@ ordinary-option
     = DEXTER
     | SINISTER
 
+<humetty-voided-enhanced-dehanced-dexter-sinister>
+    = humetty-voided
+    | enhanced-dehanced
+    | dexter-sinister
+
 <of-or-with>
     = OF
     | WITH
@@ -598,9 +602,10 @@ ordinary
     | BORDURE line? field
     | GORE dexter-sinister? line? field
     | (CHIEF
-       | BASE
-       | POINT) (humetty-voided-enhanced-dehanced* line?
+       | BASE) (humetty-voided-enhanced-dehanced* line?
                  | line? humetty-voided-enhanced-dehanced*) field cottising?
+    | POINT (humetty-voided-enhanced-dehanced-dexter-sinister* line?
+                 | line? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
     | ORLE (line (AND line)?)? field
     | (CROSS
        | SALTIRE
