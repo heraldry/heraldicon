@@ -502,6 +502,10 @@
   (let [ordinary-type (get-ordinary-type nodes)]
     (-> {:type ordinary-type
          :field (ast->hdn (get-child #{:field} nodes))}
+        (cond->
+          (= :heraldry.ordinary.type/gore
+             ordinary-type) (assoc :line {:type :enarched
+                                          :flipped? true}))
         (add-ordinary-options nodes)
         (add-lines nodes)
         (add-cottising nodes)
