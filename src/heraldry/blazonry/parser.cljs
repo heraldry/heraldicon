@@ -500,19 +500,29 @@
                    s/upper-case
                    keyword)
                key]))
-       (into {})))
+       (into {:PALLET :heraldry.ordinary.type/pale
+              :BARRULET :heraldry.ordinary.type/fess
+              :CHEVRONNEL :heraldry.ordinary.type/chevron
+              :BENDLET :heraldry.ordinary.type/bend
+              :BENDLET-SINISTER :heraldry.ordinary.type/bend-sinister})))
 
 (defn get-ordinary-type [nodes]
-  (some->> nodes
-           (get-child ordinary-type-map)
-           first
-           (get ordinary-type-map)))
+  (let [node-type (->> nodes
+                       (get-child ordinary-type-map)
+                       first)]
+    [node-type (get ordinary-type-map node-type)]))
 
 (defmethod ast->hdn :ordinary [[_ & nodes]]
-  (let [ordinary-type (get-ordinary-type nodes)]
+  (let [[node-type ordinary-type] (get-ordinary-type nodes)]
     (-> {:type ordinary-type
          :field (ast->hdn (get-child #{:field} nodes))}
         (cond->
+          (#{:PALLET
+             :BARRULET
+             :CHEVRONNEL
+             :BENDLET
+             :BENDLET-SINISTER}
+           node-type) (assoc-in [:geometry :size] 15)
           (= :heraldry.ordinary.type/gore
              ordinary-type) (assoc :line {:type :enarched
                                           :flipped? true}))
