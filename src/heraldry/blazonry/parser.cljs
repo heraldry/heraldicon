@@ -773,18 +773,3 @@
                     ast->hdn)]
     (->> hdn
          (walk/prewalk add-charge-group-defaults))))
-
-(comment
-  grammar
-
-  (parse "per pale or and argent, a pale couped indented fimbriated with or, engrailed fimbriated argent and azure sable")
-
-  (parse "per pale inden")
-
-  (try
-    (parse "or a fess humetty indented or, pale wavy voided sable")
-    (catch :default e
-      (ex-data e)))
-
-  ;;
-  )
