@@ -565,8 +565,10 @@
     (-> {:charges [charge]}
         (cond->
           (nil? arrangement-type) (merge
-                                   {:type :heraldry.charge-group.type/arc
-                                    :slots (vec (repeat amount 0))})
+                                   {:type :heraldry.charge-group.type/rows
+                                    :spacing (/ 95 amount)
+                                    :strips [{:type :heraldry.component/charge-group-strip
+                                              :slots (vec (repeat amount 0))}]})
           (= :FESSWISE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
