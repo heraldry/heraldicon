@@ -38,7 +38,7 @@
      :distance {:type :range
                 :min 0.1
                 :max 30
-                :default 5
+                :default 4
                 :ui {:label :string.option/distance
                      :step 0.1}}
      :corner-radius {:type :range

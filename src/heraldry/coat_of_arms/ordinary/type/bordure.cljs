@@ -21,7 +21,7 @@
     {:thickness {:type :range
                  :min 0.1
                  :max 35
-                 :default 10
+                 :default 12
                  :ui {:label :string.option/thickness
                       :step 0.1}}
      :corner-radius {:type :range

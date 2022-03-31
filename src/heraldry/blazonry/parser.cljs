@@ -646,12 +646,9 @@
                                                                    vec))}))
                                               vec)})
           (= :IN-ORLE
-             arrangement-type) (->
-                                (merge
-                                 {:type :heraldry.charge-group.type/in-orle
-                                  :distance 10
-                                  :slots (vec (repeat amount 0))})
-                                (assoc-in [:charges 0 :geometry :size] 10))
+             arrangement-type) (merge
+                                {:type :heraldry.charge-group.type/in-orle
+                                 :slots (vec (repeat amount 0))})
           (= :IN-ANNULLO
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/arc
