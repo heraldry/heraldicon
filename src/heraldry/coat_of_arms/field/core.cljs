@@ -188,4 +188,4 @@
             (and (= field-type :heraldry.field.type/plain)
                  (zero? num-components)))
       blazon
-      (util/str-tr "[" blazon "]"))))
+      (util/str-tr "(" blazon ")"))))
