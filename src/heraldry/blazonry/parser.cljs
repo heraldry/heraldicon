@@ -435,7 +435,9 @@
                                          (= :gore
                                             ordinary-type) (assoc-in [:anchor :point] :top-right)
                                          (= :point
-                                            ordinary-type) (assoc :variant :sinister))
+                                            ordinary-type) (assoc :variant :sinister)
+                                         (= :quarter
+                                            ordinary-type) (assoc :variant :sinister-chief))
       (get ordinary-options :label-points) (cond->
                                              (= :label
                                                 ordinary-type) (assoc :num-points

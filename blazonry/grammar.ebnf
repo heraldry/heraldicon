@@ -408,7 +408,6 @@ partition-type
     | PER-SALTIRE
     | POTENTY
     | QUARTERED
-    | QUARTERED
     | TIERCED-PER-FESS
     | TIERCED-PER-PALE
     | TIERCED-PER-PALL
@@ -608,9 +607,10 @@ ordinary
                  | line? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
     | ORLE (line (AND line)?)? field
     | (CROSS
-       | SALTIRE
-       | QUARTER) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
-                   | (line (AND line)?)? humetty-voided-enhanced-dehanced*)
+       | SALTIRE) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
+                   | (line (AND line)?)? humetty-voided-enhanced-dehanced*) field cottising?
+    | QUARTER (humetty-voided-enhanced-dehanced-dexter-sinister* (line (AND line)?)?
+                   | (line (AND line)?)? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
     | PILE (humetty-voided-reversed-throughout* (line (AND line)?)?
             | (line (AND line)?)? humetty-voided-reversed-throughout*) field cottising?
     | PALE (humetty-voided* (line (AND line)?)?
