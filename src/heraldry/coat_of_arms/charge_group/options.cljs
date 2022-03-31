@@ -113,7 +113,7 @@
       (merge {:distance {:type :range
                          :min 0
                          :max 30
-                         :default 10
+                         :default 6
                          :ui {:label :string.option/distance
                               :step 0.1}}
               :offset {:type :range
