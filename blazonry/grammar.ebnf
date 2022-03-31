@@ -155,28 +155,26 @@ TIERCED-PER-PALE = #"\btierced +per +pale\b"
 TIERCED-PER-PALL = #"\btierced +per +pall\b"
 VAIRY = #"\bvairy\b"
 
-PALE
-    = #"\bpales?\b"
-    | #"\bpallets?\b"
+PALE = #"\bpales?\b"
+PALLET = #"\bpallets?\b"
 FESS
     = #"\bfess(es?)?\b"
     | #"\bbars?\b"
-    | #"\bbarrulets?\b"
+BARRULET = #"\bbarrulets?\b"
 CHIEF = #"\bchief\b"
 BASE = #"\bbase\b"
-BEND
-    = #"\bbends?\b"
-    | #"\bbendlets?\b"
+BEND = #"\bbends?\b"
+BENDLET = #"\bbendlets?\b"
 BEND-SINISTER
     = #"\bbends? +sinister\b"
     | #"\bbends?\b" #"\bsinister\b"
-    | #"\bbendlets? +sinister\b"
+BENDLET-SINISTER
+    = #"\bbendlets? +sinister\b"
     | #"\bbendlets?\b" #"\bsinister\b"
 CROSS = #"\bcross(es)?\b"
 SALTIRE = #"\bsaltires?\b"
-CHEVRON
-    = #"\bchevrons?\b"
-    | #"\bchevronnels?\b"
+CHEVRON = #"\bchevrons?\b"
+CHEVRONNEL = #"\bchevronnels?\b"
 PALL = #"\bpalls?\b"
 PILE = #"\bpiles?\b"
 GORE = #"\bgores?\b"
@@ -520,11 +518,15 @@ ordinary-group
 
 (* used for suggestion labeling *)
 ordinary-type
-    = BASE
+    = BARRULET
+    | BASE
     | BEND
+    | BENDLET
     | BEND-SINISTER
+    | BENDLET-SINISTER
     | BORDURE
     | CHEVRON
+    | CHEVRONNEL
     | CHIEF
     | CROSS
     | FESS
@@ -613,14 +615,19 @@ ordinary
                    | (line (AND line)?)? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
     | PILE (humetty-voided-reversed-throughout* (line (AND line)?)?
             | (line (AND line)?)? humetty-voided-reversed-throughout*) field cottising?
-    | PALE (humetty-voided* (line (AND line)?)?
-            | (line (AND line)?)? humetty-voided*) field (cottising (AND? cottising)?)?
+    | (PALE
+       | PALLET) (humetty-voided* (line (AND line)?)?
+                  | (line (AND line)?)? humetty-voided*) field (cottising (AND? cottising)?)?
     | (FESS
+       | BARRULET
        | BEND
-       | BEND-SINISTER) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
+       | BENDLET
+       | BEND-SINISTER
+       | BENDLET-SINISTER) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
                    | (line (AND line)?)? humetty-voided-enhanced-dehanced*) field (cottising (AND? cottising)?)?
     | (PALL
-       | CHEVRON) (humetty-voided-enhanced-dehanced-reversed* (line (AND line (AND line)?)?)?
+       | CHEVRON
+       | CHEVRONNEL) (humetty-voided-enhanced-dehanced-reversed* (line (AND line (AND line)?)?)?
                    | (line (AND line (AND line)?)?)? humetty-voided-enhanced-dehanced-reversed*) field (cottising (AND? cottising (AND? cottising)?)?)?
 
 line
