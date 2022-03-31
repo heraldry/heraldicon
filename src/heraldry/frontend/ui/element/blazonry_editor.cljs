@@ -5,11 +5,13 @@
    ["html-entities" :as html-entities]
    [clojure.string :as s]
    [heraldry.blazonry.parser :as parser]
+   [heraldry.context :as c]
    [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.context :as context]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.modal :as modal]
+   [heraldry.interface :as interface]
    [heraldry.render :as render]
    [re-frame.core :as rf]
    [reagent.core :as r]))
@@ -183,8 +185,7 @@
       (auto-complete/set-data auto-complete)
       (auto-complete/clear-data))
     (when hdn
-      (rf/dispatch [:set hdn-path {:coat-of-arms {:field hdn}
-                                   :render-options {:outline? true}}]))
+      (rf/dispatch [:set (conj hdn-path :coat-of-arms) {:field hdn}]))
     (rf/dispatch [:set editor-state-path new-editor-state])))
 
 (defn put-cursor-at [^draft-js/EditorState state index]
@@ -254,9 +255,18 @@
 
 (defn open [context]
   (rf/dispatch-sync [:set editor-state-path (.createEmpty draft-js/EditorState)])
-  (rf/dispatch-sync [:set hdn-path {:coat-of-arms {:field {:type :heraldry.field.type/plain
-                                                           :tincture :none}}
-                                    :render-options {:outline? true}}])
+  (let [escutcheon (if (->> context
+                            :path
+                            (take-last 2)
+                            (= [:coat-of-arms :field]))
+                     (interface/get-sanitized-data (-> context
+                                                       (c/-- 2)
+                                                       (c/++ :render-options :escutcheon)))
+                     :rectangle)]
+    (rf/dispatch-sync [:set hdn-path {:coat-of-arms {:field {:type :heraldry.field.type/plain
+                                                             :tincture :none}}
+                                      :render-options {:escutcheon escutcheon
+                                                       :outline? true}}]))
   (modal/create
    :string.button/from-blazon
    [(fn []
