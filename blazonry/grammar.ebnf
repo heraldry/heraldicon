@@ -322,8 +322,13 @@ BENDWISE-SINISTER
     = #"\bbend[ -]?wise +sinister\b"
     | #"\bbend[ -]?wise\b" "\bsinister\b"
 CHEVRONWISE = #"\bchevron[ -]?wise\b"
-IN-ANNULLO = #"\bin +annullo\b"
+IN-ANNULLO
+    = #"\bin +annullo\b"
 IN-ORLE = #"\bin +orle\b"
+ARRANGED
+    = #"\barranged\b"
+    | #"\barranged +as\b"
+
 
 (* rules *)
 
@@ -669,7 +674,7 @@ charge-arrangement
     | charge-grid
 
 charge-grid
-    = amount (AND? amount)*
+    = ARRANGED? amount (AND? amount)*
 
 (* used for suggestion labeling *)
 charge-option

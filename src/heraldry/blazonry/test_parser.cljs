@@ -445,5 +445,29 @@
                                  :tincture-1 :or
                                  :tincture-2 :vert}}]}
 
+    "or a star sable"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/star
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}]}
+
+    "or ten roundels purpure four 3 2 1"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:charges [{:type :heraldry.charge.type/roundel
+                              :field {:type :heraldry.field.type/plain
+                                      :tincture :purpure}}]
+                   :type :heraldry.charge-group.type/rows
+                   :spacing 23.75
+                   :strips [{:type :heraldry.component/charge-group-strip
+                             :slots [0 0 0 0]}
+                            {:type :heraldry.component/charge-group-strip
+                             :slots [0 0 0]}
+                            {:type :heraldry.component/charge-group-strip
+                             :slots [0 0]}
+                            {:type :heraldry.component/charge-group-strip
+                             :slots [0]}]}]}
+
 ;;
     ))
