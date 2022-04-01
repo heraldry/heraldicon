@@ -278,7 +278,9 @@
   (let [[status _charges-list] (state/async-fetch-data
                                 list-db-path
                                 :all
-                                fetch-charge-list)]
+                                fetch-charge-list
+                                :on-success #(rf/dispatch
+                                              [:heraldry.frontend.ui.element.blazonry-editor/update-parser %]))]
     (if (= status :done)
       [component
        list-db-path

@@ -24,7 +24,7 @@
     [:number-word [:MULTI-WORD "triple"]] 3))
 
 (deftest parsing
-  (are [blazon form] (= (parser/blazon->hdn blazon) form)
+  (are [blazon form] (= (parser/blazon->hdn blazon parser/default-parser) form)
 
     "or"
     {:type :heraldry.field.type/plain
@@ -486,6 +486,17 @@
                              :slots [0 0]}
                             {:type :heraldry.component/charge-group-strip
                              :slots [0]}]}]}
+
+    "or a lion sable, langued argent armed gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/lion
+                   :variant {:id nil
+                             :version nil}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :tincture {:langued :argent
+                              :armed :gules}}]}
 
     ;;
     ))

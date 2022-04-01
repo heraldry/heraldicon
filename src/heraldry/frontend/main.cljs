@@ -44,8 +44,10 @@
                            {:format-pstats-opts {:columns [:n-calls :min :p50 :p90 :max :mean :clock :total]}})))
 
   (start-stats-timer print-stats))
+
 (defn ^:export init []
   (rf/dispatch-sync [:initialize-db])
+  (rf/dispatch-sync [:heraldry.frontend.ui.element.blazonry-editor/clear-parser])
   (rf/dispatch-sync [:heraldry.frontend.language/load-language-setting])
   #_(print-stats)
   (route/start-router)

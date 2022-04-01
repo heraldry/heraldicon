@@ -3,6 +3,7 @@
    [clojure.set :as set]
    [clojure.string :as s]
    [clojure.walk :as walk]
+   [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.charge.options :as charge.options]
    [heraldry.coat-of-arms.field.core :as field]
    [heraldry.coat-of-arms.field.options :as field.options]
@@ -10,15 +11,65 @@
    [heraldry.util :as util]
    [instaparse.core :as insta]
    [taoensso.timbre :as log])
-  (:require-macros [heraldry.blazonry.parser :refer [load-grammar]]))
+  (:require-macros
+   [heraldry.blazonry.parser :refer [load-grammar-template]]))
 
-(def grammar
-  (load-grammar))
+(def grammar-template
+  (load-grammar-template))
 
-(def parser
-  (insta/parser
-   grammar
-   :auto-whitespace :standard))
+(defn pluralize [charge-type]
+  (if (s/ends-with? charge-type "s")
+    (str charge-type "es")
+    (str charge-type "s")))
+
+(defn charge-type-rules [charge-type]
+  [(str "#'\\b" charge-type "\\b'")
+   (str "#'\\b" (s/replace charge-type " " "-") "\\b'")
+   (str "#'\\b" (s/replace charge-type " " "' +'") "\\b'")])
+
+(defn generate-parser [charges]
+  (let [charge-type-rules (->> charges
+                               (map #(-> % :type name))
+                               (mapcat (fn [charge-type]
+                                         (let [clean-name (s/replace charge-type "-" " ")]
+                                           (concat (charge-type-rules clean-name)
+                                                   (charge-type-rules (pluralize clean-name))))))
+                               set
+                               sort)
+        charge-type-rules-injection (if (seq charge-type-rules)
+                                      (str "| " (s/join "| " charge-type-rules))
+                                      "")
+        grammar (s/replace
+                 grammar-template
+                 #"\{% charge-types %\}"
+                 charge-type-rules-injection)
+        charge-map (->> charges
+                        (group-by #(some-> % :type name keyword))
+                        (map (fn [[key value]]
+                               [key (sort-by (fn [charge]
+                                               [(if (-> charge :username (= "heraldicon"))
+                                                  0
+                                                  1)
+                                                (if (-> charge :is-public)
+                                                  0
+                                                  1)
+                                                (case (:attitude charge)
+                                                  :rampant [0 :_]
+                                                  nil [1 :_]
+                                                  [2 (:attitude charge)])
+                                                (if (-> charge :facing (or :to-dexter))
+                                                  [0 :_]
+                                                  [1 (:facing charge)])
+                                                (:id charge)]) value)]))
+                        (into {}))]
+    {:parser (insta/parser
+              grammar
+              :start :blazon
+              :auto-whitespace :standard)
+     :charge-map charge-map}))
+
+(def default-parser
+  (generate-parser []))
 
 (defn rename-root-nodes [data]
   (if (and (keyword? data)
@@ -36,7 +87,7 @@
        (walk/postwalk
         rename-root-nodes)))
 
-(defn -parse-as-part [s]
+(defn -parse-as-part [s {:keys [parser]}]
   (let [s (s/lower-case s)]
     (loop [[[rule part-name] & rest] [[:layout-words "layout"]
                                       [:cottising-word "cottising"]
@@ -51,6 +102,7 @@
                                       [:ordinary-type "ordinary"]
                                       [:ordinary-option "ordinary option"]
                                       [:charge-standard-type "charge"]
+                                      [:charge-other-type "charge"]
                                       [:charge-option "charge option"]]]
       (when rule
         (or (try
@@ -63,7 +115,7 @@
 (def parse-as-part
   (memoize -parse-as-part))
 
-(defn parse [s]
+(defn parse [s {:keys [parser]}]
   (let [result (-> s
                    s/lower-case
                    parser
@@ -542,11 +594,43 @@
         ordinary (ast->hdn (get-child #{:ordinary} nodes))]
     (vec (repeat (max 1 amount) ordinary))))
 
+(def attitude-map
+  (map (fn [[key _]]
+         [(-> key
+              name
+              s/upper-case
+              keyword)
+          key])
+       attributes/attitude-map))
+
+(defmethod ast->hdn :attitude [[_ & nodes]]
+  (some->> nodes
+           (get-child attitude-map)
+           first
+           (get attitude-map)))
+
+(def facing-map
+  (map (fn [[key _]]
+         [(-> key
+              name
+              s/upper-case
+              keyword)
+          key])
+       attributes/facing-map))
+
+(defmethod ast->hdn :facing [[_ & nodes]]
+  (some->> nodes
+           (get-child facing-map)
+           first
+           (get facing-map)))
+
 (defn add-charge-options [hdn nodes]
   (let [charge-options (some->> nodes
                                 (filter (type? #{:MIRRORED
                                                  :REVERSED
-                                                 :star-points}))
+                                                 :star-points
+                                                 :attitude
+                                                 :facing}))
                                 (map (fn [[key & nodes]]
                                        [key nodes]))
                                 (into {}))
@@ -559,7 +643,9 @@
                                              charge-type) (assoc :num-points
                                                                  (->> (get charge-options :star-points)
                                                                       (get-child #{:amount})
-                                                                      ast->hdn))))))
+                                                                      ast->hdn)))
+      (get charge-options :attitude) (assoc :attitude (ast->hdn (get charge-options :attitude)))
+      (get charge-options :facing) (assoc :facing (ast->hdn (get charge-options :facing))))))
 
 (def charge-type-map
   (->> charge.options/charges
@@ -571,18 +657,31 @@
                key]))
        (into {})))
 
-(defn get-charge-type [nodes]
+(defn get-standard-charge-type [nodes]
   (some->> nodes
            (get-child charge-type-map)
            first
            (get charge-type-map)))
 
 (defmethod ast->hdn :charge-standard [[_ & nodes]]
-  (-> {:type (get-charge-type nodes)}
+  (-> {:type (get-standard-charge-type nodes)}
       (add-charge-options nodes)))
 
+(defmethod ast->hdn :charge-other-type [[_ s]]
+  (let [normalized-name (s/replace s #"[ -]+" "-")]
+    (keyword "heraldry.charge.type" normalized-name)))
+
+(defmethod ast->hdn :charge-other [[_ & nodes]]
+  (let [charge-type (-> (get-child #{:charge-other-type} nodes)
+                        ast->hdn)]
+    (-> {:type charge-type
+         :variant {:id "charge:N87wec"
+                   :version 0}}
+        (add-charge-options nodes))))
+
 (defmethod ast->hdn :charge [[_ & nodes]]
-  (-> (get-child #{:charge-standard} nodes)
+  (-> (get-child #{:charge-standard
+                   :charge-other} nodes)
       ast->hdn
       (add-fimbriation nodes)))
 
@@ -921,7 +1020,8 @@
       hdn)))
 
 (defn process-ordinary-groups [hdn]
-  (if (some-> hdn :type namespace (= "heraldry.field.type"))
+  (if (and (map? hdn)
+           (some-> hdn :type namespace (= "heraldry.field.type")))
     (let [components-by-type (->> hdn
                                   :components
                                   (map-indexed vector)
@@ -936,13 +1036,55 @@
                     hdn)
                   rest)
            hdn))))
-
     hdn))
 
-(defn blazon->hdn [data]
+(defn find-best-variant [{:keys [type attitude facing]} charge-map]
+  (let [short-charge-type (-> type name keyword)
+        candidates (get charge-map short-charge-type)
+        candidates-with-attitude (cond->> candidates
+                                   attitude (filter (fn [charge]
+                                                      (-> charge
+                                                          :attitude
+                                                          (or :rampant)
+                                                          (= attitude)))))
+        candidates (if (seq candidates-with-attitude)
+                     candidates-with-attitude
+                     candidates)
+        candidates-with-facing (cond->> candidates
+                                 facing (filter (fn [charge]
+                                                  (-> charge
+                                                      :facing
+                                                      (or :to-dexter)
+                                                      (= facing)))))
+        candidates (if (seq candidates-with-facing)
+                     candidates-with-facing
+                     candidates)]
+    (-> candidates
+        first
+        ;; TODO: this is not ideal
+        (or {:id nil
+             :version nil})
+        (select-keys [:id :version]))))
+
+(defn is-charge-type? [charge-type]
+  (some-> charge-type namespace (= "heraldry.charge.type")))
+
+(defn populate-charge-variants [{:keys [charge-map]} hdn]
+  (if (map? hdn)
+    (let [charge-type (:type hdn)]
+      (if (and (is-charge-type? charge-type)
+               (not (get charge.options/choice-map (:type hdn))))
+        (let [variant (find-best-variant hdn charge-map)]
+          (cond-> hdn
+            variant (assoc :variant variant)))
+        hdn))
+    hdn))
+
+(defn blazon->hdn [data parser]
   (let [hdn (some-> data
-                    parse
+                    (parse parser)
                     ast->hdn)]
     (->> hdn
          (walk/prewalk add-charge-group-defaults)
-         (walk/postwalk process-ordinary-groups))))
+         (walk/postwalk process-ordinary-groups)
+         (walk/postwalk (partial populate-charge-variants parser)))))
