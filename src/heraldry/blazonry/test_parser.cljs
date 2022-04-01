@@ -435,6 +435,14 @@
                            :tincture :gules}
                    :num-points 5}]}
 
+    "or a label of five gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/label
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :num-points 5}]}
+
     "or a label of 10 points truncated dovetailed gules"
     {:type :heraldry.field.type/plain
      :tincture :or

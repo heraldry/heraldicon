@@ -601,7 +601,7 @@ ordinary-option
     | WITH
 
 label-points
-    = (of-or-with? amount LABEL-POINT)
+    = (of-or-with? amount LABEL-POINT?)
 
 ordinary
     = LABEL (humetty-voided-truncated-dovetailed* label-points?
@@ -711,7 +711,7 @@ charge-option
     | REVERSED
 
 star-points
-    = (of-or-with? amount STAR-POINT)
+    = (of-or-with? amount STAR-POINT?)
 
 charge-standard
     = ROUNDEL
