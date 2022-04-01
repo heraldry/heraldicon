@@ -767,9 +767,97 @@
                                                                    :parent-ordinary-type type))
                                                                 components)))))))))
 
+(defn replace-adjusted-components [hdn indexed-components]
+  (update
+   hdn
+   :components
+   (fn [components]
+     (vec
+      (loop [components components
+             [[index component] & rest] indexed-components]
+        (if index
+          (recur
+           (util/vec-replace components index component)
+           rest)
+          components))))))
+
+(defn arrange-ordinaries [hdn indexed-components]
+  (let [ordinary-type (-> indexed-components
+                          first
+                          second
+                          :type
+                          name
+                          keyword)]
+    (case ordinary-type
+      :pale (let [num-elements (count indexed-components)
+                  spacing 10
+                  size-without-spacing (->> indexed-components
+                                            (map second)
+                                            (map (fn [component]
+                                                   (-> component
+                                                       :geometry
+                                                       :size
+                                                       (or 25))))
+                                            (reduce +))
+                  total-size-with-margin (-> num-elements
+                                             inc
+                                             (* spacing)
+                                             (+ size-without-spacing))
+                  stretch-factor (min 1
+                                      (/ 100 total-size-with-margin))
+                  total-size (-> num-elements
+                                 dec
+                                 (* spacing)
+                                 (+ size-without-spacing)
+                                 (* stretch-factor))
+                  adjusted-indexed-components (for [[index component] indexed-components]
+                                                (let [size (-> component :geometry :size (or 25))
+                                                      size-so-far (->> indexed-components
+                                                                       (take index)
+                                                                       (map second)
+                                                                       (map (fn [component]
+                                                                              (-> component
+                                                                                  :geometry
+                                                                                  :size
+                                                                                  (or 25))))
+                                                                       (reduce +))
+                                                      offset-x (-> size-so-far
+                                                                   (+ (* index spacing))
+                                                                   (+ (/ size 2))
+                                                                   (* stretch-factor)
+                                                                   (- (/ total-size 2)))]
+                                                  [index
+                                                   (-> component
+                                                       (assoc-in [:geometry :size] (* size stretch-factor))
+                                                       (assoc-in [:origin :offset-x] offset-x))]))]
+              (replace-adjusted-components hdn adjusted-indexed-components))
+      hdn)))
+
+(defn process-ordinary-groups [hdn]
+  (if (some-> hdn :type namespace (= "heraldry.field.type"))
+    (let [components-by-type (->> hdn
+                                  :components
+                                  (map-indexed vector)
+                                  (group-by (comp :type second)))]
+      (doall
+       (loop [hdn hdn
+              [[component-type indexed-components] & rest] components-by-type]
+         (if (and component-type
+                  (-> indexed-components
+                      count
+                      (> 1)))
+           (recur (if (-> component-type namespace (= "heraldry.ordinary.type"))
+                    (arrange-ordinaries hdn indexed-components)
+                    hdn)
+                  rest)
+           hdn))))
+
+    hdn))
+
 (defn blazon->hdn [data]
   (let [hdn (some-> data
                     parse
                     ast->hdn)]
     (->> hdn
-         (walk/prewalk add-charge-group-defaults))))
+         (walk/prewalk add-charge-group-defaults)
+         (walk/postwalk process-ordinary-groups))))
