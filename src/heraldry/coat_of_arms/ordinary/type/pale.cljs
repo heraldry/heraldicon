@@ -37,8 +37,8 @@
                               :ui {:label :string.option/alignment
                                    :form-type :radio-select}}
                   :offset-x {:type :range
-                             :min -45
-                             :max 45
+                             :min -50
+                             :max 50
                              :default 0
                              :ui {:label :string.option/offset-x
                                   :step 0.1}}
