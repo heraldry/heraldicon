@@ -843,6 +843,28 @@
                                                  :offset-keyword :offset-y
                                                  :spacing 5
                                                  :default-size 15)
+      :bend (arrange-ordinaries-in-one-dimension
+             hdn
+             (->> indexed-components
+                  (map (fn [[index component]]
+                         [index (-> component
+                                    (assoc-in [:anchor :point] :angle)
+                                    (assoc-in [:anchor :angle] 45))])))
+
+             :offset-keyword :offset-y
+             :spacing 15
+             :default-size 15)
+      :bend-sinister (arrange-ordinaries-in-one-dimension
+                      hdn
+                      (->> indexed-components
+                           (map (fn [[index component]]
+                                  [index (-> component
+                                             (assoc-in [:anchor :point] :angle)
+                                             (assoc-in [:anchor :angle] 45))])))
+
+                      :offset-keyword :offset-y
+                      :spacing 15
+                      :default-size 15)
       :chevron (arrange-ordinaries-in-one-dimension
                 hdn
                 (->> indexed-components
