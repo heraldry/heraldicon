@@ -248,7 +248,20 @@
                         (let [state @(rf/subscribe [:get editor-state-path])]
                           [:> draft-js/Editor
                            {:editorState state
-                            :onChange on-editor-change}]))})]])
+                            :onChange on-editor-change
+                            :keyBindingFn (fn [event]
+                                            (if (= (.-code event) "Tab")
+                                              (do
+                                                (.preventDefault event)
+                                                (.stopPropagation event)
+                                                "auto-complete")
+                                              (draft-js/getDefaultKeyBinding event)))
+                            :handleKeyCommand (fn [command]
+                                                (if (= command "auto-complete")
+                                                  (do
+                                                    (auto-complete/auto-complete-first)
+                                                    "handled")
+                                                  "not-handled"))}]))})]])
 
 (macros/reg-event-db :apply-blazon-result
   (fn [db [_ {:keys [path]}]]

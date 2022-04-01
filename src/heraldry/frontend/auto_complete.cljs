@@ -39,3 +39,11 @@
                     (when hint
                       [:span.hint hint])]))
             choices))))
+
+(defn auto-complete-first []
+  (let [{:keys [choices
+                position
+                on-click]} @(rf/subscribe [:get db-path])]
+    (when (and position
+               (seq choices))
+      (on-click (ffirst choices)))))
