@@ -93,19 +93,29 @@
      :tincture :or
      :components [{:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}}
+                           :tincture :sable}
+                   :thickness 3
+                   :distance 3}
                   {:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}}
+                           :tincture :sable}
+                   :thickness 3
+                   :distance 8}
                   {:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}}
+                           :tincture :sable}
+                   :thickness 3
+                   :distance 13}
                   {:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}}
+                           :tincture :sable}
+                   :thickness 3
+                   :distance 18}
                   {:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}}]}
+                           :tincture :sable}
+                   :thickness 3
+                   :distance 23}]}
 
     "or a fess enhanced gules"
     {:type :heraldry.field.type/plain
@@ -469,5 +479,5 @@
                             {:type :heraldry.component/charge-group-strip
                              :slots [0]}]}]}
 
-;;
+    ;;
     ))
