@@ -31,9 +31,10 @@
     (when (pos? range-count)
       (let [range (.getRangeAt selection 0)
             node (.-startContainer range)
+            node-length (-> node .-length (or 0))
             offset (if index
-                     (min index (.-length node))
-                     (.startOffset range))]
+                     (min index node-length)
+                     (.-startOffset range))]
         (cond
           (pos? offset) (let [rect (-> (doto (js/document.createRange)
                                          (.setStart node (dec offset))
@@ -42,16 +43,18 @@
                           {:top (.-top
                                  rect)
                            :left (.-left rect)})
-          (< offset (.-length node)) (let [rect (-> (doto (js/document.createRange)
-                                                      (.setStart node offset)
-                                                      (.setEnd node (inc offset)))
-                                                    .getBoundingClientRect)]
-                                       {:top (.-top rect)
-                                        :left (.-left rect)})
-          :else (let [rect (.getBoundingClientRect node)
+          (< offset
+             node-length) (let [rect (-> (doto (js/document.createRange)
+                                           (.setStart node offset)
+                                           (.setEnd node (inc offset)))
+                                         .getBoundingClientRect)]
+                            {:top (.-top rect)
+                             :left (.-left rect)})
+          :else (let [node (first (js/document.getElementsByClassName "DraftEditor-root"))
+                      rect (.getBoundingClientRect node)
                       styles (js/getComputedStyle node)
                       line-height (js/parseInt (.-lineHeight styles))
-                      font-size (js/parseInt (.-lineSize styles))
+                      font-size (js/parseInt (.-fontSize styles))
                       delta (/ (- line-height font-size) 2)]
                   {:top (-> rect
                             .-top
