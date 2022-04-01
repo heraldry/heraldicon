@@ -11,6 +11,8 @@
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.modal :as modal]
+   [heraldry.frontend.state :as state]
+   [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.interface :as interface]
    [heraldry.render :as render]
    [re-frame.core :as rf]
@@ -24,6 +26,35 @@
 
 (def editor-state-path
   (conj blazon-editor-path :editor-state))
+
+(def parser-path
+  (conj blazon-editor-path :parser))
+
+(rf/reg-event-db ::clear-parser
+  (fn [db _]
+    (assoc-in db parser-path nil)))
+
+(rf/reg-event-db ::update-parser
+  (fn [db [_ charges]]
+    (assoc-in db parser-path (parser/generate-parser charges))))
+
+(rf/reg-sub :blazonry-parser
+  (fn [_ _]
+    (rf/subscribe [:get parser-path]))
+
+  (fn [value _]
+    (if value
+      value
+      (do
+        (let [update-parser #(rf/dispatch [::update-parser %])
+              [status charges] (state/async-fetch-data
+                                charge-select/list-db-path
+                                :all
+                                charge-select/fetch-charge-list
+                                :on-success update-parser)]
+          (when (= status :done)
+            (update-parser charges)))
+        parser/default-parser))))
 
 (defn caret-position [index]
   (let [selection (js/document.getSelection)
@@ -79,9 +110,9 @@
                       [hint index]))
        (into {})))
 
-(defn parse-blazonry [value cursor-index]
+(defn parse-blazonry [value cursor-index parser]
   (try
-    (let [hdn (parser/blazon->hdn value)]
+    (let [hdn (parser/blazon->hdn value parser)]
       {:value value
        :hdn hdn})
     (catch :default e
@@ -110,7 +141,7 @@
                                        sort
                                        dedupe
                                        (map (fn [choice]
-                                              [choice (parser/parse-as-part choice)]))
+                                              [choice (parser/parse-as-part choice parser)]))
                                        (sort-by (fn [[choice hint]]
                                                   [(get suggestion-hint-order hint 1000)
                                                    choice]))
@@ -177,9 +208,10 @@
   (let [content ^draft-js/ContentState (.getCurrentContent new-editor-state)
         text (.getPlainText content)
         cursor-index (cursor-index new-editor-state)
+        parser @(rf/subscribe [:blazonry-parser])
         {:keys [hdn
                 auto-complete
-                index]} (parse-blazonry text cursor-index)
+                index]} (parse-blazonry text cursor-index parser)
         new-editor-state (draft-js/EditorState.set
                           new-editor-state
                           (clj->js

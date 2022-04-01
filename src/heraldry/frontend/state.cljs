@@ -172,7 +172,7 @@
   (rf/dispatch-sync [:set db-path data]))
 
 ;; TODO: this should be redone and also live elsewhere probably
-(defn async-fetch-data [db-path query-id async-function]
+(defn async-fetch-data [db-path query-id async-function & {:keys [on-success]}]
   (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])
         query @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]])
         current-data @(rf/subscribe [:get db-path])]
@@ -184,6 +184,8 @@
       current-data [:done current-data]
       (-> query :state (= :done)) (do
                                     (rf/dispatch-sync [:set db-path (:data query)])
+                                    (when on-success
+                                      (on-success (:data query)))
                                     [:done (:data query)])
       (-> query :state) [:loading nil]
       :else (do

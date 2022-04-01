@@ -2,5 +2,5 @@
   (:require
    [shadow.resource :as res]))
 
-(defmacro load-grammar []
+(defmacro load-grammar-template []
   (res/slurp-resource &env "grammar.ebnf"))
