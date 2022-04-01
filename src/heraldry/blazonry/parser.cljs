@@ -827,6 +827,36 @@
                                              (assoc-in [:origin offset-keyword] offset))]))]
     (replace-adjusted-components hdn adjusted-indexed-components)))
 
+(defn arrange-orles [hdn indexed-components]
+  (let [indexed-components indexed-components
+        default-size 3
+        spacing 2
+        initial-spacing 3
+        adjusted-indexed-components (for [[real-index component] indexed-components]
+                                      (let [index (min real-index 5)
+                                            size (-> component :geometry :size (or default-size))
+                                            size-so-far (->> indexed-components
+                                                             (take index)
+                                                             (map second)
+                                                             (map (fn [component]
+                                                                    (-> component
+                                                                        :thickness
+                                                                        (or default-size))))
+                                                             (reduce +))
+                                            offset (+ size-so-far
+                                                      initial-spacing
+                                                      (* index spacing))]
+                                        [real-index
+                                         (-> component
+                                             (assoc :thickness (if (-> component
+                                                                       :line
+                                                                       (or :straight)
+                                                                       (not= :straight))
+                                                                 (/ size 2)
+                                                                 size))
+                                             (assoc :distance offset))]))]
+    (replace-adjusted-components hdn adjusted-indexed-components)))
+
 (defn arrange-ordinaries [hdn indexed-components]
   (let [ordinary-type (-> indexed-components
                           first
@@ -887,6 +917,7 @@
                 :offset-keyword :offset-y
                 :spacing 15
                 :default-size 15)
+      :orle (arrange-orles hdn indexed-components)
       hdn)))
 
 (defn process-ordinary-groups [hdn]
