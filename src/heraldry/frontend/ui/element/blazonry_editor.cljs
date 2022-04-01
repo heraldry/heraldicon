@@ -294,11 +294,14 @@
          {:type "button"
           :style {:flex "initial"
                   :margin-left "10px"}
-          :on-click #(modal/clear)}
+          :on-click (fn [_]
+                      (auto-complete/clear-data)
+                      (modal/clear))}
          [tr :string.button/cancel]]
 
         [:button.button.primary {:type "submit"
                                  :on-click #(rf/dispatch [:apply-blazon-result context])
                                  :style {:flex "initial"
                                          :margin-left "10px"}}
-         [tr :string.button/apply]]]])]))
+         [tr :string.button/apply]]]])]
+   :on-cancel #(auto-complete/clear-data)))
