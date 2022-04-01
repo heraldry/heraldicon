@@ -929,11 +929,9 @@
       (doall
        (loop [hdn hdn
               [[component-type indexed-components] & rest] components-by-type]
-         (if (and component-type
-                  (-> indexed-components
-                      count
-                      (> 1)))
-           (recur (if (-> component-type namespace (= "heraldry.ordinary.type"))
+         (if component-type
+           (recur (if (and (-> indexed-components count (> 1))
+                           (-> component-type namespace (= "heraldry.ordinary.type")))
                     (arrange-ordinaries hdn indexed-components)
                     hdn)
                   rest)
