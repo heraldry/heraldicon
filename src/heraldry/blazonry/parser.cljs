@@ -519,12 +519,13 @@
     (-> {:type ordinary-type
          :field (ast->hdn (get-child #{:field} nodes))}
         (cond->
-          (#{:PALLET
-             :BARRULET
+          (#{:PALLET}
+           node-type) (assoc-in [:geometry :size] 15)
+          (#{:BARRULET
              :CHEVRONNEL
              :BENDLET
              :BENDLET-SINISTER}
-           node-type) (assoc-in [:geometry :size] 15)
+           node-type) (assoc-in [:geometry :size] 10)
           (= :heraldry.ordinary.type/gore
              ordinary-type) (assoc :line {:type :enarched
                                           :flipped? true}))
@@ -781,6 +782,51 @@
            rest)
           components))))))
 
+(defn arrange-ordinaries-in-one-dimension [hdn indexed-components & {:keys [offset-keyword
+                                                                            spacing
+                                                                            default-size]}]
+  (let [num-elements (count indexed-components)
+        size-without-spacing (->> indexed-components
+                                  (map second)
+                                  (map (fn [component]
+                                         (-> component
+                                             :geometry
+                                             :size
+                                             (or default-size))))
+                                  (reduce +))
+        total-size-with-margin (-> num-elements
+                                   inc
+                                   (* spacing)
+                                   (+ size-without-spacing))
+        stretch-factor (min 1
+                            (/ 100 total-size-with-margin))
+        total-size (-> num-elements
+                       dec
+                       (* spacing)
+                       (+ size-without-spacing)
+                       (* stretch-factor))
+        adjusted-indexed-components (for [[index component] indexed-components]
+                                      (let [size (-> component :geometry :size (or default-size))
+                                            size-so-far (->> indexed-components
+                                                             (take index)
+                                                             (map second)
+                                                             (map (fn [component]
+                                                                    (-> component
+                                                                        :geometry
+                                                                        :size
+                                                                        (or default-size))))
+                                                             (reduce +))
+                                            offset (-> size-so-far
+                                                       (+ (* index spacing))
+                                                       (+ (/ size 2))
+                                                       (* stretch-factor)
+                                                       (- (/ total-size 2)))]
+                                        [index
+                                         (-> component
+                                             (assoc-in [:geometry :size] (* size stretch-factor))
+                                             (assoc-in [:origin offset-keyword] offset))]))]
+    (replace-adjusted-components hdn adjusted-indexed-components)))
+
 (defn arrange-ordinaries [hdn indexed-components]
   (let [ordinary-type (-> indexed-components
                           first
@@ -789,48 +835,26 @@
                           name
                           keyword)]
     (case ordinary-type
-      :pale (let [num-elements (count indexed-components)
-                  spacing 10
-                  size-without-spacing (->> indexed-components
-                                            (map second)
-                                            (map (fn [component]
-                                                   (-> component
-                                                       :geometry
-                                                       :size
-                                                       (or 25))))
-                                            (reduce +))
-                  total-size-with-margin (-> num-elements
-                                             inc
-                                             (* spacing)
-                                             (+ size-without-spacing))
-                  stretch-factor (min 1
-                                      (/ 100 total-size-with-margin))
-                  total-size (-> num-elements
-                                 dec
-                                 (* spacing)
-                                 (+ size-without-spacing)
-                                 (* stretch-factor))
-                  adjusted-indexed-components (for [[index component] indexed-components]
-                                                (let [size (-> component :geometry :size (or 25))
-                                                      size-so-far (->> indexed-components
-                                                                       (take index)
-                                                                       (map second)
-                                                                       (map (fn [component]
-                                                                              (-> component
-                                                                                  :geometry
-                                                                                  :size
-                                                                                  (or 25))))
-                                                                       (reduce +))
-                                                      offset-x (-> size-so-far
-                                                                   (+ (* index spacing))
-                                                                   (+ (/ size 2))
-                                                                   (* stretch-factor)
-                                                                   (- (/ total-size 2)))]
-                                                  [index
-                                                   (-> component
-                                                       (assoc-in [:geometry :size] (* size stretch-factor))
-                                                       (assoc-in [:origin :offset-x] offset-x))]))]
-              (replace-adjusted-components hdn adjusted-indexed-components))
+      :pale (arrange-ordinaries-in-one-dimension hdn indexed-components
+                                                 :offset-keyword :offset-x
+                                                 :spacing 10
+                                                 :default-size 20)
+      :fess (arrange-ordinaries-in-one-dimension hdn indexed-components
+                                                 :offset-keyword :offset-y
+                                                 :spacing 5
+                                                 :default-size 15)
+      :chevron (arrange-ordinaries-in-one-dimension
+                hdn
+                (->> indexed-components
+                     (map (fn [[index component]]
+                            [index (-> component
+                                       (assoc-in [:anchor :point] :angle)
+                                       (assoc-in [:anchor :angle] 45)
+                                       (assoc-in [:direction-anchor :point] :angle)
+                                       (assoc-in [:direction-anchor :angle] 0))])))
+                :offset-keyword :offset-y
+                :spacing 15
+                :default-size 15)
       hdn)))
 
 (defn process-ordinary-groups [hdn]
