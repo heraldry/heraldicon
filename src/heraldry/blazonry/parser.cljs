@@ -839,6 +839,16 @@
                                                  :offset-keyword :offset-x
                                                  :spacing 10
                                                  :default-size 20)
+      :pile (arrange-ordinaries-in-one-dimension
+             hdn
+             (->> indexed-components
+                  (map (fn [[index component]]
+                         [index (-> component
+                                    (assoc-in [:anchor :point] :angle)
+                                    (assoc-in [:anchor :angle] 0))])))
+             :offset-keyword :offset-x
+             :spacing 0
+             :default-size 33.333333)
       :fess (arrange-ordinaries-in-one-dimension hdn indexed-components
                                                  :offset-keyword :offset-y
                                                  :spacing 5
