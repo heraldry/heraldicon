@@ -108,7 +108,10 @@ ERMINES = #"\bermines\b"
 ERMINOIS = #"\berminois\b"
 PEAN = #"\bpean\b"
 
-BARRY = #"\bbarry\b"
+BARRY
+    = #"\bbarry\b"
+    | #"\bbarruly\b"
+    | #"\burely\b"
 BENDY = #"\bbendy\b"
 BENDY-SINISTER
     = #"\bbendy +sinister\b"
