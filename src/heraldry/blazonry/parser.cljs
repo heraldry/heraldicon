@@ -805,7 +805,7 @@
                        (* spacing)
                        (+ size-without-spacing)
                        (* stretch-factor))
-        adjusted-indexed-components (for [[index component] indexed-components]
+        adjusted-indexed-components (for [[index [parent-index component]] (map-indexed vector indexed-components)]
                                       (let [size (-> component :geometry :size (or default-size))
                                             size-so-far (->> indexed-components
                                                              (take index)
@@ -821,7 +821,7 @@
                                                        (+ (/ size 2))
                                                        (* stretch-factor)
                                                        (- (/ total-size 2)))]
-                                        [index
+                                        [parent-index
                                          (-> component
                                              (assoc-in [:geometry :size] (* size stretch-factor))
                                              (assoc-in [:origin offset-keyword] offset))]))]
@@ -832,7 +832,7 @@
         default-size 3
         spacing 2
         initial-spacing 3
-        adjusted-indexed-components (for [[real-index component] indexed-components]
+        adjusted-indexed-components (for [[real-index [parent-index component]] (map-indexed vector indexed-components)]
                                       (let [index (min real-index 5)
                                             size (-> component :geometry :size (or default-size))
                                             size-so-far (->> indexed-components
@@ -846,7 +846,7 @@
                                             offset (+ size-so-far
                                                       initial-spacing
                                                       (* index spacing))]
-                                        [real-index
+                                        [parent-index
                                          (-> component
                                              (assoc :thickness (if (-> component
                                                                        :line
