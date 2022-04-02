@@ -2,6 +2,7 @@
   (:require
    [heraldry.coat-of-arms.default :as default]
    [heraldry.context :as c]
+   [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.interface :as ui.interface]
    [heraldry.interface :as interface]
@@ -20,7 +21,7 @@
                   [:sup {:style {:color "#d40"}}
                    "alpha"]
                   [:div.bottom
-                   [:p :string.tooltip/alpha-feature-warning]]]
+                   [:p [tr :string.tooltip/alpha-feature-warning]]]]
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :menu [{:title :string.charge.attribute/mantling
