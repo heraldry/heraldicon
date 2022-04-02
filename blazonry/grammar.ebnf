@@ -592,26 +592,25 @@ ordinary-option
     | reversed-throughout
 
 <humetty-voided>
-    = HUMETTY
-    | VOIDED
+    = AND* HUMETTY
+    | AND* VOIDED
 
 <humetty-voided-truncated-dovetailed>
-    = HUMETTY
-    | VOIDED
-    | TRUNCATED
-    | DOVETAILED
+    = humetty-voided
+    | AND* TRUNCATED
+    | AND* DOVETAILED
 
 <enhanced-dehanced>
-    = ENHANCED
-    | DEHANCED
+    = AND* ENHANCED
+    | AND* DEHANCED
 
 <enhanced-dehanced-reversed>
     = enhanced-dehanced
-    | REVERSED
+    | AND* REVERSED
 
 <reversed-throughout>
-    = REVERSED
-    | THROUGHOUT
+    = AND* REVERSED
+    | AND* THROUGHOUT
 
 <humetty-voided-enhanced-dehanced>
     = humetty-voided
@@ -620,15 +619,15 @@ ordinary-option
 <humetty-voided-enhanced-dehanced-reversed>
     = humetty-voided
     | enhanced-dehanced
-    | REVERSED
+    | AND* REVERSED
 
 <humetty-voided-reversed-throughout>
     = humetty-voided
     | reversed-throughout
 
 <dexter-sinister>
-    = DEXTER
-    | SINISTER
+    = AND* DEXTER
+    | AND* SINISTER
 
 <humetty-voided-enhanced-dehanced-dexter-sinister>
     = humetty-voided
@@ -750,8 +749,8 @@ charge-option
     = mirrored-reversed
 
 <mirrored-reversed>
-    = MIRRORED
-    | REVERSED
+    = AND* MIRRORED
+    | AND* REVERSED
 
 star-points
     = (of-or-with? amount STAR-POINT?)
@@ -774,7 +773,7 @@ charge-other-type
     {% charge-types %}
 
 charge-other
-    = charge-other-type attitude? facing? mirrored-reversed*
+    = charge-other-type AND* attitude? AND* facing? mirrored-reversed*
 
 attitude
     = CADENT
