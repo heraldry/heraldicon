@@ -606,8 +606,7 @@ ordinary-option
     | DEHANCED
 
 <enhanced-dehanced-reversed>
-    = ENHANCED
-    | DEHANCED
+    = enhanced-dehanced
     | REVERSED
 
 <reversed-throughout>
@@ -620,6 +619,7 @@ ordinary-option
 
 <humetty-voided-enhanced-dehanced-reversed>
     = humetty-voided
+    | enhanced-dehanced
     | REVERSED
 
 <humetty-voided-reversed-throughout>
@@ -669,11 +669,11 @@ ordinary
        | BENDLET
        | BEND-SINISTER
        | BENDLET-SINISTER) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
-                   | (line (AND line)?)? humetty-voided-enhanced-dehanced*) field (cottising (AND? cottising)?)?
+                            | (line (AND line)?)? humetty-voided-enhanced-dehanced*) field (cottising (AND? cottising)?)?
     | (PALL
        | CHEVRON
        | CHEVRONNEL) (humetty-voided-enhanced-dehanced-reversed* (line (AND line (AND line)?)?)?
-                   | (line (AND line (AND line)?)?)? humetty-voided-enhanced-dehanced-reversed*) field (cottising (AND? cottising (AND? cottising)?)?)?
+                      | (line (AND line (AND line)?)?)? humetty-voided-enhanced-dehanced-reversed*) field (cottising (AND? cottising (AND? cottising)?)?)?
 
 line
     = line-type fimbriation?
