@@ -317,20 +317,82 @@
                                       :render-options {:escutcheon escutcheon
                                                        :outline? true}}]))
   (modal/create
-   :string.button/from-blazon
+   [:div
+    [tr :string.button/from-blazon]
+    [:div.tooltip.info {:style {:display "inline-block"
+                                :margin-left "0.2em"}}
+     [:sup {:style {:color "#d40"}}
+      "alpha"]
+     [:div.bottom
+      [:p [tr :string.tooltip/alpha-feature-warning]]]]]
    [(fn []
       [:div
-       [:div {:style {:width "40em"
-                      :height "20em"}}
-        [blazonry-editor
-         {:style {:display "inline-block"
-                  :outline "1px solid black"
-                  :width "calc(60% - 10px)"
-                  :height "20em"}}]
-        [:div {:style {:display "inline-block"
-                       :width "40%"
+       [:div {:style {:display "flex"
+                      :flex-flow "row"
+                      :height "30em"}}
+        [:div.blazonry-editor-help
+         {:style {:width "20em"
+                  :overflow-y "scroll"}}
+         [:p "This blazonry parser is a work in progress. While it already can parse a lot of blazons, there is still a lot of work to do. Once you apply the result you can edit it further in the main interface."]
+         [:p "Some things it supports already:"]
+         [:ul
+          [:li "English blazonry"]
+          [:li "TAB auto completes first suggestion"]
+          [:li "partitions with sub fields and line styles"
+           [:ul
+            [:li [:em "per pale indented or and azure"]]
+            [:li [:em "tierced per pall gules, argent and or"]]
+            [:li [:em "quartered (or, an orle gules), (azure, a fess argent)"]]
+            [:li [:em "vairy argent and azure"]]
+            [:li [:em "potenty of 6x10 or and gules"]]]]
+          [:li "ordinaries with line styles, fimbriation, and cottising"
+           [:ul
+            [:li [:em "azure, a fess wavy or"]]
+            [:li [:em "or, a bend chequy of 12x3 tracts azure and argent"]]
+            [:li [:em "azure, a chevronnel enhanced inverted or"]]
+            [:li [:em "azure, a pall fimbriated or gules"]]
+            [:li [:em "azure, a label of 5 points dovetailed truncated gules"]]
+            [:li [:em "azure, a fess or cottised argent and or"]]]]
+          [:li "humetty/voided ordinaries"
+           [:li [:em "azure, a fess humetty or"]]
+           [:li [:em "azure, a pale voided or"]]
+           [:li [:em "azure, a pall couped and voided or"]]]
+          [:li "ordinary groups"
+           [:ul
+            [:li [:em "azure, three barrulets or"]]
+            [:li [:em "azure, double tressures engrailed or"]]
+            [:li [:em "azure, a bordure engrailed or"]]
+            [:li [:em "azure, 3 piles throughout or"]]]]
+          [:li "charges with fimbriation"
+           [:ul
+            [:li [:em "azure, a star of 6 points fimbriated or sable"]]
+            [:li [:em "azure, a lion or, langued gules, armed argent"]]
+            [:li [:em "azure, a lion sejant reversed or"]]]]
+          [:li "charge groups"
+           [:ul
+            [:li [:em "azure, a chief argent charged with 3 stars sable"]]
+            [:li [:em "per pale gules, or, twelve stars counterchanged in annullo"]]
+            [:li [:em "azure, 10 roundels or 4 3 2 1"]]
+            [:li [:em "azure, 8 stars sable in orle"]]]]]
+         [:p "Some things that still need work or have known issues:"
+          [:ul
+           [:li "blazonry in other languages"]
+           [:li "explicit charge positioning, e.g. 'in chief', 'in base'"]
+           [:li "charge/ordinary arrangement in relation to each other, e.g. 'between'"]
+           [:li "semy"]
+           [:li "partition field referencing by number or location, e.g. 'i. and iv. ...' or 'in sinister ...'"]
+           [:li "previous tincture referencing, e.g. 'of the first', 'of the field'"]]]]
+        [:div {:style {:width "20em"
                        :height "100%"
-                       :float "right"}}
+                       :margin-left "10px"
+                       :margin-right "10px"}}
+         [blazonry-editor
+          {:style {:display "inline-block"
+                   :outline "1px solid black"
+                   :width "100%"
+                   :height "100%"}}]]
+        [:div {:style {:width "15em"
+                       :height "100%"}}
          [render/achievement
           (assoc
            context/default
