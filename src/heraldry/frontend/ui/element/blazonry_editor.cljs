@@ -97,6 +97,7 @@
         "cottising"
         "line"
         "fimbriation"
+        "extra tincture"
         "tincture"
         "ordinary"
         "ordinary option"
