@@ -389,6 +389,23 @@
                                        (v/dot shift (v/v -1 -1))
                                        angle
                                        :scale (v/v scale-x scale-y))
+            extra-margin (-> (case (-> fimbriation :mode)
+                               :double (+ (-> fimbriation
+                                              :thickness-1
+                                              ((util/percent-of positional-charge-width)))
+                                          (-> fimbriation
+                                              :thickness-2
+                                              ((util/percent-of positional-charge-width))))
+                               :single (-> fimbriation
+                                           :thickness-1
+                                           ((util/percent-of positional-charge-width)))
+                               0)
+                             (+ outline/stroke-width)
+                             (* scale-x))
+            [min-x max-x min-y max-y] [(- min-x extra-margin)
+                                       (+ max-x extra-margin)
+                                       (- min-y extra-margin)
+                                       (+ max-y extra-margin)]
             clip-size (v/v (- max-x min-x) (- max-y min-y))
             position (-> clip-size
                          (v/sub)
