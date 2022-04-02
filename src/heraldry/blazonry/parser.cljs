@@ -99,6 +99,7 @@
                                       [:amount "number"]
                                       [:attitude "attitude"]
                                       [:facing "facing"]
+                                      [:tincture-modifier-type "extra tincture"]
                                       [:ordinary-type "ordinary"]
                                       [:ordinary-option "ordinary option"]
                                       [:charge-standard-type "charge"]
@@ -589,13 +590,14 @@
     (vec (repeat (max 1 amount) ordinary))))
 
 (def attitude-map
-  (map (fn [[key _]]
-         [(-> key
-              name
-              s/upper-case
-              keyword)
-          key])
-       attributes/attitude-map))
+  (->> attributes/attitude-map
+       (map (fn [[key _]]
+              [(-> key
+                   name
+                   s/upper-case
+                   keyword)
+               key]))
+       (into {})))
 
 (defmethod ast->hdn :attitude [[_ & nodes]]
   (some->> nodes
@@ -604,13 +606,14 @@
            (get attitude-map)))
 
 (def facing-map
-  (map (fn [[key _]]
-         [(-> key
-              name
-              s/upper-case
-              keyword)
-          key])
-       attributes/facing-map))
+  (->> attributes/facing-map
+       (map (fn [[key _]]
+              [(-> key
+                   name
+                   s/upper-case
+                   keyword)
+               key]))
+       (into {})))
 
 (defmethod ast->hdn :facing [[_ & nodes]]
   (some->> nodes
@@ -760,6 +763,40 @@
                                                     :slots (vec (repeat amount 0))})
                                                  amounts)}))))))
 
+(def tincture-modifier-type-map
+  (->> attributes/tincture-modifier-map
+       (map (fn [[key _]]
+              [(-> key
+                   name
+                   s/upper-case
+                   keyword)
+               key]))
+       (into {})))
+
+(defn get-tincture-modifier-type [nodes]
+  (let [node-type (->> nodes
+                       (get-child tincture-modifier-type-map)
+                       first)]
+    (get tincture-modifier-type-map node-type)))
+
+(defmethod ast->hdn :tincture-modifier-type [[_ & nodes]]
+  (get-tincture-modifier-type nodes))
+
+(defmethod ast->hdn :tincture-modifier [[_ & nodes]]
+  (let [modifier-type (-> (get-child #{:tincture-modifier-type} nodes)
+                          ast->hdn)
+        tincture (-> (get-child #{:tincture} nodes)
+                     ast->hdn)]
+    [modifier-type tincture]))
+
+(defn add-tincture-modifiers [hdn nodes]
+  (let [modifiers (->> nodes
+                       (filter (type? #{:tincture-modifier}))
+                       (map ast->hdn)
+                       (into {}))]
+    (cond-> hdn
+      (seq modifiers) (assoc :tincture modifiers))))
+
 (defmethod ast->hdn :charge-group [[_ & nodes]]
   (let [amount-node (get-child #{:amount} nodes)
         amount (if amount-node
@@ -770,7 +807,8 @@
         charge (-> #{:charge}
                    (get-child nodes)
                    ast->hdn
-                   (assoc :field field))]
+                   (assoc :field field)
+                   (add-tincture-modifiers nodes))]
     (if (= amount 1)
       [charge]
       [(charge-group charge amount nodes)])))

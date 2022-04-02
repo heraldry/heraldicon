@@ -296,6 +296,47 @@ IN-TRIAN-ASPECT
 REGUARDANT = #"\breguardant\b"
 SALIENT = #"\bsalient\b"
 
+ARMED = #"\barmed\b"
+ATTIRED = #"\battired\b"
+BEAKED = #"\bbeaked\b"
+COMBED = #"\bcombed\b"
+EYED = #"\beyed\b"
+EYED-PEACOCK
+    = #"\beyed +peacock\b"
+    | #"\beyed-peacock\b"
+    | #"\bpeacock +eyed\b"
+    | #"\bpeacock-eyed\b"
+FINNED = #"\bfinned\b"
+INCENSED = #"\bincensed\b"
+LANGUED = #"\blangued\b"
+LEGGED = #"\blegged\b"
+MANED = #"\bmaned\b"
+ORBED = #"\borbed\b"
+TAILED = #"\btailed\b"
+TOOTHED = #"\btoothed\b"
+UNGULED = #"\bunguled\b"
+WATTLED = #"\bwattled\b"
+WINGED = #"\bwinged\b"
+BARBED = #"\bbarbed\b"
+BLADED = #"\bbladed\b"
+FRUCTED = #"\bfructed\b"
+LEAVED = #"\bleaved\b"
+SEEDED = #"\bseeded\b"
+SLIPPED = #"\bslipped\b"
+BARRED = #"\bbarred\b"
+TRIMMED = #"\btrimmed\b"
+CAPARISONED = #"\bcaparisoned\b"
+COLLARED = #"\bcollared\b"
+ERASED = #"\berased\b"
+GARNISHED = #"\bgarnished\b"
+HANDLED = #"\bhandled\b"
+HILTED = #"\bhilted\b"
+ILLUMINATED = #"\billuminated\b"
+HOODED = #"\bhooded\b"
+MASONED = #"\bmasoned\b"
+POMMELED = #"\bpommeled\b"
+STRINGED = #"\bstringed\b"
+
 MIRRORED = #"\bmirrored\b"
 ERASED = #"\berased\b"
 
@@ -667,8 +708,12 @@ fimbriation
     | FIMBRIATED (WITH | OF)? tincture AND? tincture
 
 charge-group
-    = amount? charge charge-arrangement? field
-    | amount? charge field charge-arrangement?
+    = amount? charge charge-arrangement? field tincture-modifier*
+    | amount? charge charge-arrangement? tincture-modifier* field
+    | amount? charge field tincture-modifier* charge-arrangement?
+    | amount? charge field charge-arrangement? tincture-modifier*
+    | amount? charge tincture-modifier* field charge-arrangement?
+    | amount? charge tincture-modifier* charge-arrangement? field
 
 (* used for suggestion labeling *)
 charge-standard-type
@@ -772,3 +817,44 @@ facing
     | IN-TRIAN-ASPECT
     | REGUARDANT
     | SALIENT
+
+tincture-modifier-type
+    = ARMED
+    | ATTIRED
+    | BEAKED
+    | COMBED
+    | EYED
+    | EYED-PEACOCK
+    | FINNED
+    | INCENSED
+    | LANGUED
+    | LEGGED
+    | MANED
+    | ORBED
+    | TAILED
+    | TOOTHED
+    | UNGULED
+    | WATTLED
+    | WINGED
+    | BARBED
+    | BLADED
+    | FRUCTED
+    | LEAVED
+    | SEEDED
+    | SLIPPED
+    | BARRED
+    | TRIMMED
+    | CAPARISONED
+    | COLLARED
+    | ERASED
+    | GARNISHED
+    | HANDLED
+    | HILTED
+    | ILLUMINATED
+    | HOODED
+    | MASONED
+    | POMMELED
+    | STRINGED
+
+tincture-modifier
+    = AND* tincture-modifier-type tincture
