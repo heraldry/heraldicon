@@ -2,7 +2,6 @@
   (:require
    ["draft-js" :as draft-js]
    ["genex" :as genex]
-   ["html-entities" :as html-entities]
    [clojure.string :as s]
    [heraldry.blazonry.parser :as parser]
    [heraldry.context :as c]
@@ -149,8 +148,6 @@
                                        vec)
             position (caret-position index)]
         {:value value
-         :html [:span (html-entities/encode parsed)
-                [:span {:style {:color "red"}} (html-entities/encode problem)]]
          :auto-complete (cond-> {:choices auto-complete-choices
                                  :on-click (fn [choice]
                                              (rf/dispatch [:auto-completion-clicked index cursor-index choice]))}
