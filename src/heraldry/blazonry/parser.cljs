@@ -122,14 +122,8 @@
                    clean-ast)]
     (if (vector? result)
       result
-      (let [r (:reason result)]
-        (js/console.log :parse-error-at (subs s (:index result)))
-        (js/console.log :error r)
-        (log/debug :parse-error-at (subs s (:index result)))
-        (log/debug :error r)
-        (throw (ex-info "Parse error" {:reason (:reason result)
-                                       :index (:index result)}))
-        nil))))
+      (throw (ex-info "Parse error" {:reason (:reason result)
+                                     :index (:index result)})))))
 
 (defmulti ast->hdn first)
 
