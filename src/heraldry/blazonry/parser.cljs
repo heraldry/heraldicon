@@ -31,9 +31,13 @@
   (let [charge-type-rules (->> charges
                                (map #(-> % :type name))
                                (mapcat (fn [charge-type]
-                                         (let [clean-name (s/replace charge-type "-" " ")]
-                                           (concat (charge-type-rules clean-name)
-                                                   (charge-type-rules (pluralize clean-name))))))
+                                         (let [clean-name (some-> charge-type
+                                                                  s/lower-case
+                                                                  (s/replace #"[^a-z0-9]+" " ")
+                                                                  s/trim)]
+                                           (when (-> clean-name count pos?)
+                                             (concat (charge-type-rules clean-name)
+                                                     (charge-type-rules (pluralize clean-name)))))))
                                set
                                sort)
         charge-type-rules-injection (if (seq charge-type-rules)
