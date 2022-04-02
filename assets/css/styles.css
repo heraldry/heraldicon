@@ -1149,3 +1149,7 @@ li.ui-menu-header {
 .public-DraftEditor-content {
   overflow-y: auto;
 }
+
+.blazonry-editor-help ul {
+  padding-left: 1em;
+}

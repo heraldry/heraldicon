@@ -33,7 +33,9 @@
        [:<>
         [:div.modal-background {:on-click #(clear)}]
         [:div.modal.dialog
-         [:div.modal-header [tr title]]
+         [:div.modal-header (if (keyword? title)
+                              [tr title]
+                              title)]
          [:div.modal-content content]]])
      (when loader
        [:<>
