@@ -119,8 +119,6 @@
     (catch :default e
       (let [{:keys [reason
                     index]} (ex-data e)
-            parsed (subs value 0 index)
-            problem (subs value index)
             cursor-index (-> cursor-index
                              (max index)
                              (min (count value)))
