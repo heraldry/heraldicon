@@ -627,7 +627,7 @@ component
 
 number-word
     = DIGIT-WORD
-    | MULTI-WORD
+    | <A>? MULTI-WORD
     | TEEN-WORD
     | MULTIPLE-OF-TEN-WORD
     | MULTIPLE-OF-TEN-WORD #"-?" DIGIT-WORD
