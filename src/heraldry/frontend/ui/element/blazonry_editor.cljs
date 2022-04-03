@@ -350,9 +350,10 @@
             [:li [:em "azure, a label of 5 points dovetailed truncated gules"]]
             [:li [:em "azure, a fess or cottised argent and or"]]]]
           [:li "humetty/voided ordinaries"
-           [:li [:em "azure, a fess humetty or"]]
-           [:li [:em "azure, a pale voided or"]]
-           [:li [:em "azure, a pall couped and voided or"]]]
+           [:ul
+            [:li [:em "azure, a fess humetty or"]]
+            [:li [:em "azure, a pale voided or"]]
+            [:li [:em "azure, a pall couped and voided or"]]]]
           [:li "ordinary groups"
            [:ul
             [:li [:em "azure, three barrulets or"]]
@@ -370,14 +371,14 @@
             [:li [:em "per pale gules, or, twelve stars counterchanged in annullo"]]
             [:li [:em "azure, 10 roundels or 4 3 2 1"]]
             [:li [:em "azure, 8 stars sable in orle"]]]]]
-         [:p "Some things that still need work or have known issues:"
-          [:ul
-           [:li "blazonry in other languages"]
-           [:li "explicit charge positioning, e.g. 'in chief', 'in base'"]
-           [:li "charge/ordinary arrangement in relation to each other, e.g. 'between'"]
-           [:li "semy"]
-           [:li "partition field referencing by number or location, e.g. 'i. and iv. ...' or 'in sinister ...'"]
-           [:li "previous tincture referencing, e.g. 'of the first', 'of the field'"]]]]
+         [:p "Some things that still need work or have known issues:"]
+         [:ul
+          [:li "blazonry in other languages"]
+          [:li "explicit charge positioning, e.g. 'in chief', 'in base'"]
+          [:li "charge/ordinary arrangement in relation to each other, e.g. 'between'"]
+          [:li "semy"]
+          [:li "partition field referencing by number or location, e.g. 'i. and iv. ...' or 'in sinister ...'"]
+          [:li "previous tincture referencing, e.g. 'of the first', 'of the field'"]]]
         [:div {:style {:width "20em"
                        :height "100%"
                        :margin-left "10px"
