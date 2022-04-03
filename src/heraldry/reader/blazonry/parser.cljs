@@ -1,4 +1,4 @@
-(ns heraldry.blazonry.parser
+(ns heraldry.reader.blazonry.parser
   (:require
    [clojure.set :as set]
    [clojure.string :as s]
@@ -12,7 +12,7 @@
    [instaparse.core :as insta]
    [taoensso.timbre :as log])
   (:require-macros
-   [heraldry.blazonry.parser :refer [load-grammar-template]]))
+   [heraldry.reader.blazonry.parser :refer [load-grammar-template]]))
 
 (def grammar-template
   (load-grammar-template))

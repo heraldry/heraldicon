@@ -1,7 +1,7 @@
-(ns heraldry.blazonry.test-parser
+(ns heraldry.reader.blazonry.test-parser
   (:require
    [cljs.test :refer-macros [are deftest]]
-   [heraldry.blazonry.parser :as parser]))
+   [heraldry.reader.blazonry.parser :as parser]))
 
 (deftest transforming
   (are [ast form] (= (parser/ast->hdn ast) form)
