@@ -3,7 +3,6 @@
    ["draft-js" :as draft-js]
    ["genex" :as genex]
    [clojure.string :as s]
-   [heraldry.reader.blazonry.parser :as parser]
    [heraldry.context :as c]
    [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.context :as context]
@@ -13,6 +12,8 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.element.charge-select :as charge-select]
    [heraldry.interface :as interface]
+   [heraldry.reader.blazonry.parser :as parser]
+   [heraldry.reader.blazonry.reader :as reader]
    [heraldry.render :as render]
    [re-frame.core :as rf]
    [reagent.core :as r]))
@@ -35,7 +36,7 @@
 
 (rf/reg-event-db ::update-parser
   (fn [db [_ charges]]
-    (assoc-in db parser-path (parser/generate-parser charges))))
+    (assoc-in db parser-path (parser/generate charges))))
 
 (rf/reg-sub :blazonry-parser
   (fn [_ _]
@@ -53,7 +54,7 @@
                                 :on-success update-parser)]
           (when (= status :done)
             (update-parser charges)))
-        parser/default-parser))))
+        parser/default))))
 
 (defn caret-position [index]
   (let [selection (js/document.getSelection)
@@ -112,7 +113,7 @@
 
 (defn parse-blazonry [value cursor-index parser]
   (try
-    (let [hdn (parser/blazon->hdn value parser)]
+    (let [hdn (reader/read value parser)]
       {:value value
        :hdn hdn})
     (catch :default e
