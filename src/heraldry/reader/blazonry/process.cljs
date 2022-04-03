@@ -1,5 +1,6 @@
 (ns heraldry.reader.blazonry.process
   (:require
+   [clojure.walk :as walk]
    [heraldry.coat-of-arms.charge.options :as charge.options]
    [heraldry.util :as util]))
 
@@ -68,6 +69,9 @@
                                                                    component
                                                                    :parent-ordinary-type type))
                                                                 components)))))))))
+
+(defn process-charge-groups [hdn]
+  (walk/prewalk add-charge-group-defaults hdn))
 
 (defn replace-adjusted-components [hdn indexed-components]
   (update
@@ -221,7 +225,7 @@
       :orle (arrange-orles hdn indexed-components)
       hdn)))
 
-(defn process-ordinary-groups [hdn]
+(defn add-ordinary-defaults [hdn]
   (if (and (map? hdn)
            (some-> hdn :type namespace (= "heraldry.field.type")))
     (let [components-by-type (->> hdn
@@ -239,6 +243,9 @@
                   rest)
            hdn))))
     hdn))
+
+(defn process-ordinary-groups [hdn]
+  (walk/postwalk add-ordinary-defaults hdn))
 
 (defn find-best-variant [{:keys [type attitude facing]} charge-map]
   (let [short-charge-type (-> type name keyword)
@@ -281,3 +288,6 @@
             variant (assoc :variant variant)))
         hdn))
     hdn))
+
+(defn process-charge-references [hdn parser]
+  (walk/postwalk (partial populate-charge-variants parser) hdn))
