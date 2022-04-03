@@ -92,20 +92,22 @@
       opposite-line (assoc :opposite-line opposite-line)
       extra-line (assoc :extra-line extra-line))))
 
+(def max-layout-amount 50)
+
 (defmethod ast->hdn :horizontal-layout [[_ & nodes]]
   (let [amount (-> (get-child #{:amount} nodes)
                    ast->hdn)]
-    {:num-fields-x amount}))
+    {:num-fields-x (min max-layout-amount amount)}))
 
 (defmethod ast->hdn :vertical-layout-implicit [[_ & nodes]]
   (let [amount (-> (get-child #{:amount} nodes)
                    ast->hdn)]
-    {:num-fields-y amount}))
+    {:num-fields-y (min max-layout-amount amount)}))
 
 (defmethod ast->hdn :vertical-layout-explicit [[_ & nodes]]
   (let [amount (-> (get-child #{:amount} nodes)
                    ast->hdn)]
-    {:num-fields-y amount}))
+    {:num-fields-y (min max-layout-amount amount)}))
 
 (defmethod ast->hdn :vertical-layout [[_ node]]
   (ast->hdn node))
@@ -276,13 +278,7 @@
 (defmethod ast->hdn :component [[_ node]]
   (ast->hdn node))
 
-(defmethod ast->hdn :ordinary-group [[_ & nodes]]
-  (let [amount-node (get-child #{:amount} nodes)
-        amount (if amount-node
-                 (ast->hdn amount-node)
-                 1)
-        ordinary (ast->hdn (get-child #{:ordinary} nodes))]
-    (vec (repeat (max 1 amount) ordinary))))
+(def max-label-points 20)
 
 (defn add-ordinary-options [hdn nodes]
   (let [ordinary-options (some->> nodes
@@ -383,7 +379,8 @@
                                                 ordinary-type) (assoc :num-points
                                                                       (->> (get ordinary-options :label-points)
                                                                            (get-child #{:amount})
-                                                                           ast->hdn))))))
+                                                                           ast->hdn
+                                                                           (min max-label-points)))))))
 
 (defmethod ast->hdn :cottise [[_ & nodes]]
   (let [field (-> (get-child #{:field} nodes)
@@ -472,13 +469,17 @@
         (add-cottising nodes)
         (add-fimbriation nodes))))
 
+(def max-ordinary-group-amount 20)
+
 (defmethod ast->hdn :ordinary-group [[_ & nodes]]
   (let [amount-node (get-child #{:amount} nodes)
         amount (if amount-node
                  (ast->hdn amount-node)
                  1)
         ordinary (ast->hdn (get-child #{:ordinary} nodes))]
-    (vec (repeat (max 1 amount) ordinary))))
+    (vec (repeat (-> amount
+                     (max 1)
+                     (min max-ordinary-group-amount)) ordinary))))
 
 (def attitude-map
   (->> attributes/attitude-map
@@ -512,6 +513,8 @@
            first
            (get facing-map)))
 
+(def max-star-points 100)
+
 (defn add-charge-options [hdn nodes]
   (let [charge-options (some->> nodes
                                 (filter (type? #{:MIRRORED
@@ -531,7 +534,8 @@
                                              charge-type) (assoc :num-points
                                                                  (->> (get charge-options :star-points)
                                                                       (get-child #{:amount})
-                                                                      ast->hdn)))
+                                                                      ast->hdn
+                                                                      (min max-star-points))))
       (get charge-options :attitude) (assoc :attitude (ast->hdn (get charge-options :attitude)))
       (get charge-options :facing) (assoc :facing (ast->hdn (get charge-options :facing))))))
 
@@ -572,6 +576,10 @@
                    :charge-other} nodes)
       ast->hdn
       (add-fimbriation nodes)))
+
+(def max-charge-group-columns 20)
+
+(def max-charge-group-rows 20)
 
 (defn charge-group [charge amount nodes]
   (let [[arrangement-type
@@ -644,7 +652,10 @@
              arrangement-type) (merge
                                 (let [amounts (->> arrangement-nodes
                                                    (filter (type? #{:amount}))
-                                                   (map ast->hdn))
+                                                   (map #(-> %
+                                                             ast->hdn
+                                                             (min max-charge-group-columns)))
+                                                   (take max-charge-group-rows))
                                       width (apply max amounts)
                                       height (count amounts)]
                                   {:type :heraldry.charge-group.type/rows
@@ -688,12 +699,16 @@
     (cond-> hdn
       (seq modifiers) (assoc :tincture modifiers))))
 
+(def max-charge-group-amount 64)
+
 (defmethod ast->hdn :charge-group [[_ & nodes]]
   (let [amount-node (get-child #{:amount} nodes)
         amount (if amount-node
                  (ast->hdn amount-node)
                  1)
-        amount (max 1 amount)
+        amount (-> amount
+                   (max 1)
+                   (min max-charge-group-amount))
         field (ast->hdn (get-child #{:field} nodes))
         charge (-> #{:charge}
                    (get-child nodes)
