@@ -1,30 +1,11 @@
-(ns heraldry.reader.blazonry.test-parser
+(ns heraldry.reader.blazonry.test-reader
   (:require
    [cljs.test :refer-macros [are deftest]]
-   [heraldry.reader.blazonry.parser :as parser]))
-
-(deftest transforming
-  (are [ast form] (= (parser/ast->hdn ast) form)
-
-    [:A "a"] 1
-    [:A "an"] 1
-
-    [:NUMBER "123"] 123
-    [:NUMBER "0134"] 134
-
-    [:number-word [:DIGIT-WORD "one"]] 1
-    [:number-word "twelve"] 12
-    [:number-word [:MULTILPE-OF-TEN-WORD "eighty"]] 80
-    [:number-word [:MULTILPE-OF-TEN-WORD "eighty"] " " [:DIGIT-WORD "one"]] 81
-    [:number-word [:MULTILPE-OF-TEN-WORD "eighty"] "-" [:DIGIT-WORD "one"]] 81
-    [:number-word [:MULTILPE-OF-TEN-WORD "eighty"] "" [:DIGIT-WORD "one"]] 81
-    [:number-word [:MULTILPE-OF-TEN-WORD "twenty"] "" [:DIGIT-WORD "seven"]] 27
-
-    [:number-word [:MULTI-WORD "double"]] 2
-    [:number-word [:MULTI-WORD "triple"]] 3))
+   [heraldry.reader.blazonry.parser :as parser]
+   [heraldry.reader.blazonry.reader :as reader]))
 
 (deftest parsing
-  (are [blazon form] (= (parser/blazon->hdn blazon parser/default-parser) form)
+  (are [blazon form] (= (reader/read blazon parser/default) form)
 
     "or"
     {:type :heraldry.field.type/plain
