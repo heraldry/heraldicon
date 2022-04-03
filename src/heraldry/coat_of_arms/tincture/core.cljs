@@ -88,7 +88,7 @@
     [:string.tincture/helmet-medium :helmet-medium]
     [:string.tincture/helmet-dark :helmet-dark]]
    [:string.tincture.group/nontraditional
-    [:string.tincture/blue-celeste :blue-celeste]
+    [:string.tincture/bleu-celeste :bleu-celeste]
     [:string.tincture/brunatre :brunatre]
     [:string.tincture/buff :buff]
     [:string.tincture/carnation :carnation]
