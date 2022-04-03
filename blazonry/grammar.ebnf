@@ -585,41 +585,41 @@ layout
     | vertical-layout-explicit layout-times? horizontal-layout
 
 partition
-    = PER-PALE line? root-field AND root-field
+    = PER-PALE line? root-field AND+ root-field
     | (PER-FESS
        | PER-BEND
        | PER-BEND-SINISTER) (enhanced-dehanced* line?
-                       | line? enhanced-dehanced*) root-field AND root-field
+                       | line? enhanced-dehanced*) root-field AND+ root-field
     | PER-CHEVRON (enhanced-dehanced-reversed* line?
-                       | line? enhanced-dehanced-reversed*) root-field AND root-field
-    | PER-PILE (REVERSED? (line (AND line)?)?
-                | (line (AND line)?)? REVERSED?) root-field AND root-field AND root-field
-    | TIERCED-PER-PALE (line (AND line)?)? root-field AND root-field AND root-field
-    | TIERCED-PER-FESS (enhanced-dehanced* (line (AND line)?)?
-                        | (line (AND line)?)? enhanced-dehanced*) root-field AND root-field AND root-field
-    | TIERCED-PER-PALL (enhanced-dehanced-reversed* (line (AND line)? (AND line)?)?
-                        | (line (AND line)? (AND line)?)? enhanced-dehanced-reversed*) root-field AND root-field AND root-field
+                       | line? enhanced-dehanced-reversed*) root-field AND+ root-field
+    | PER-PILE (REVERSED? (line (AND+ line)?)?
+                | (line (AND+ line)?)? REVERSED?) root-field AND+ root-field AND+ root-field
+    | TIERCED-PER-PALE (line (AND+ line)?)? root-field AND+ root-field AND+ root-field
+    | TIERCED-PER-FESS (enhanced-dehanced* (line (AND+ line)?)?
+                        | (line (AND+ line)?)? enhanced-dehanced*) root-field AND+ root-field AND+ root-field
+    | TIERCED-PER-PALL (enhanced-dehanced-reversed* (line (AND+ line)? (AND+ line)?)?
+                        | (line (AND+ line)? (AND+ line)?)? enhanced-dehanced-reversed*) root-field AND+ root-field AND+ root-field
     | (PER-SALTIRE
        | QUARTERED) (enhanced-dehanced* line?
-                     | line? enhanced-dehanced*) root-field AND root-field (AND root-field)? (AND root-field)?
+                     | line? enhanced-dehanced*) root-field AND+ root-field (AND+ root-field)? (AND+ root-field)?
     | GYRONNY (enhanced-dehanced* line?
-               | line? enhanced-dehanced*) root-field AND root-field (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)? (AND root-field)?
-    | QUARTERED enhanced-dehanced* root-field AND root-field (AND root-field)*
+               | line? enhanced-dehanced*) root-field AND+ root-field (AND+ root-field)? (AND+ root-field)? (AND+ root-field)? (AND+ root-field)? (AND+ root-field)? (AND+ root-field)?
+    | QUARTERED enhanced-dehanced* root-field AND+ root-field (AND+ root-field)*
     | (CHEQUY
        | LOZENGY
        | VAIRY
        | POTENTY
        | PAPELLONY
        | MASONY
-       | FRETTY) (OF? layout)? root-plain AND root-plain
-    | PALY (OF? horizontal-layout)? root-field AND root-field
+       | FRETTY) (OF? layout)? root-plain AND+ root-plain
+    | PALY (OF? horizontal-layout)? root-field AND+ root-field
     | (BARRY
        | BENDY
        | BENDY-SINISTER
-       | CHEVRONNY) (OF? vertical-layout)? root-field AND root-field
+       | CHEVRONNY) (OF? vertical-layout)? root-field AND+ root-field
 
 components
-    = component (AND component)*
+    = component (AND+ component)*
 
 component
     = ordinary-group
@@ -651,12 +651,12 @@ amount
     = BETWEEN
     | WITH
 cottise
-    = (line (AND line)?)? field
+    = (line (AND+ line)?)? field
 cottising
     = between-or-with? COTTISED WITH? cottise
-    | between-or-with? COTTISED WITH? cottise AND cottise
+    | between-or-with? COTTISED WITH? cottise AND+ cottise
     | between-or-with? DOUBLY COTTISED WITH? cottise
-    | between-or-with? DOUBLY COTTISED WITH? cottise AND cottise
+    | between-or-with? DOUBLY COTTISED WITH? cottise AND+ cottise
 
 (* used for suggestion labeling *)
 cottising-word
@@ -758,28 +758,28 @@ ordinary
                  | line? humetty-voided-enhanced-dehanced*) field cottising?
     | POINT (humetty-voided-enhanced-dehanced-dexter-sinister* line?
                  | line? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
-    | ORLE (line (AND line)?)? field
+    | ORLE (line (AND+ line)?)? field
     | (CROSS
-       | SALTIRE) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
-                   | (line (AND line)?)? humetty-voided-enhanced-dehanced*) field cottising?
-    | QUARTER (humetty-voided-enhanced-dehanced-dexter-sinister* (line (AND line)?)?
-                   | (line (AND line)?)? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
-    | PILE (humetty-voided-reversed-throughout* (line (AND line)?)?
-            | (line (AND line)?)? humetty-voided-reversed-throughout*) field cottising?
+       | SALTIRE) (humetty-voided-enhanced-dehanced* (line (AND+ line)?)?
+                   | (line (AND+ line)?)? humetty-voided-enhanced-dehanced*) field cottising?
+    | QUARTER (humetty-voided-enhanced-dehanced-dexter-sinister* (line (AND+ line)?)?
+                   | (line (AND+ line)?)? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
+    | PILE (humetty-voided-reversed-throughout* (line (AND+ line)?)?
+            | (line (AND+ line)?)? humetty-voided-reversed-throughout*) field cottising?
     | (PALE
-       | PALLET) (humetty-voided* (line (AND line)?)?
-                  | (line (AND line)?)? humetty-voided*) field (cottising (AND? cottising)?)?
+       | PALLET) (humetty-voided* (line (AND+ line)?)?
+                  | (line (AND+ line)?)? humetty-voided*) field (cottising (AND? cottising)?)?
     | (FESS
        | BARRULET
        | BEND
        | BENDLET
        | BEND-SINISTER
-       | BENDLET-SINISTER) (humetty-voided-enhanced-dehanced* (line (AND line)?)?
-                            | (line (AND line)?)? humetty-voided-enhanced-dehanced*) field (cottising (AND? cottising)?)?
+       | BENDLET-SINISTER) (humetty-voided-enhanced-dehanced* (line (AND+ line)?)?
+                            | (line (AND+ line)?)? humetty-voided-enhanced-dehanced*) field (cottising (AND? cottising)?)?
     | (PALL
        | CHEVRON
-       | CHEVRONNEL) (humetty-voided-enhanced-dehanced-reversed* (line (AND line (AND line)?)?)?
-                      | (line (AND line (AND line)?)?)? humetty-voided-enhanced-dehanced-reversed*) field (cottising (AND? cottising (AND? cottising)?)?)?
+       | CHEVRONNEL) (humetty-voided-enhanced-dehanced-reversed* (line (AND+ line (AND+ line)?)?)?
+                      | (line (AND+ line (AND+ line)?)?)? humetty-voided-enhanced-dehanced-reversed*) field (cottising (AND? cottising (AND? cottising)?)?)?
 
 line
     = line-type fimbriation?
