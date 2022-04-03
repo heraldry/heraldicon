@@ -24,7 +24,7 @@
    :brunatre "#725942"
    :cendree "#cbcaca"
    :rose "#d99292"
-   :blue-celeste "#359db7"
+   :bleu-celeste "#359db7"
    :orange "#e58a39"
    :copper "#953d02"
    :buff "#ddc595"
@@ -63,7 +63,7 @@
    :sanguine "#980c12" ;; 30% darkened gules
    :tenne "#9d5333"
    ;; nontraditional
-   :blue-celeste "#89c5e3"
+   :bleu-celeste "#89c5e3"
    :carnation "#f2a772"
    :cendree "#999999"
    :orange "#eb7711"})
@@ -84,7 +84,7 @@
    :sanguine "#9a1717" ;; 30% darkened gules
    :tenne "#884411"
    ;; nontraditional
-   :blue-celeste "#33aaee"
+   :bleu-celeste "#33aaee"
    :carnation "#eebb99"
    :cendree "#779988"
    :orange "#ff6600"})
@@ -105,7 +105,7 @@
    :sanguine "#b20000" ;; 30% darkened gules
    :tenne "#884411"
    ;; nontraditional
-   :blue-celeste "#0099ff"
+   :bleu-celeste "#0099ff"
    :carnation "#ffbb99"
    :cendree "#778899"
    :orange "#eb7711"})
@@ -123,7 +123,7 @@
    :sanguine "#a72c13" ;; 30% darkened gules
    :tenne "#884411"
    ;; nontraditional
-   :blue-celeste "#89c5e3"})
+   :bleu-celeste "#89c5e3"})
 
 (def theme-wikipedia-wuerttemberg
   {;; metals
@@ -138,7 +138,7 @@
    :sanguine "#981914" ;; 30% darkened gules
    :tenne "#884411"
    ;; nontraditional
-   :blue-celeste "#0081c9"
+   :bleu-celeste "#0081c9"
    :carnation "#f2b398"})
 
 (def theme-wikipedia-switzerland
@@ -203,7 +203,7 @@
    :murrey "#76183f" ;; 30% darkened purpure
    :sanguine "#940000" ;; 30% darkened gules
    ;; nontraditional
-   :blue-celeste "#3291d7"
+   :bleu-celeste "#3291d7"
    :carnation "#eebb99"})
 
 (def theme-ral-traffic
@@ -222,7 +222,7 @@
    :sanguine "#b20000" ;; 30% darkened gules
    :tenne "#884411"
    ;; nontraditional
-   :blue-celeste "#0099ff"
+   :bleu-celeste "#0099ff"
    :carnation "#ffbb99"
    :cendree "#4f5250" ;; RAL 7043
    :orange "#de5307" ;; RAL 2009
