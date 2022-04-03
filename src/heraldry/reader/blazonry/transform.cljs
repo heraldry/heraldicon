@@ -7,6 +7,7 @@
    [heraldry.coat-of-arms.field.core :as field]
    [heraldry.coat-of-arms.field.options :as field.options]
    [heraldry.coat-of-arms.ordinary.options :as ordinary.options]
+   [heraldry.coat-of-arms.tincture.core :as tincture]
    [heraldry.util :as util]
    [taoensso.timbre :as log]))
 
@@ -24,12 +25,18 @@
        (filter (type? type-fn))
        first))
 
+(def tincture-map
+  (->> tincture/tincture-map
+       (map (fn [[key _]]
+              [(-> key
+                   name
+                   s/upper-case
+                   keyword)
+               key]))
+       (into {:PROPER :void})))
+
 (defmethod ast->hdn :tincture [[_ tincture]]
-  (->> tincture
-       first
-       name
-       s/lower-case
-       keyword))
+  (get tincture-map (first tincture) :void))
 
 (defmethod ast->hdn :plain [[_ & nodes]]
   (let [node (get-child #{:tincture
