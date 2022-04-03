@@ -1,4 +1,4 @@
-(ns heraldry.blazonry.parser
+(ns heraldry.reader.blazonry.parser
   (:require
    [shadow.resource :as res]))
 

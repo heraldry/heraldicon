@@ -3,7 +3,7 @@
    ["draft-js" :as draft-js]
    ["genex" :as genex]
    [clojure.string :as s]
-   [heraldry.blazonry.parser :as parser]
+   [heraldry.reader.blazonry.parser :as parser]
    [heraldry.context :as c]
    [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.context :as context]
