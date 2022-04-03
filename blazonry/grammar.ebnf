@@ -10,12 +10,17 @@ A = #"\ba\b"
 <AND> = #"\band\b"
     | #"&"
     | #","
+IN = #"\bin\b"
 OF = #"\bof\b"
+THE = #"\bthe\b"
+LIKE = #"\blike\b"
 WITH = #"\bwith\b"
 CHARGED = #"\bcharged\b"
 TRACTS = #"\btracts\b"
 X = #"x"
 TIMES = #"\btimes\b"
+TINCTURE = #"\btincture\b"
+FIELD = #"\bfield\b"
 
 DOUBLY
     = #"\bdoubly\b"
@@ -67,6 +72,92 @@ MULTIPLE-OF-TEN-WORD
     | #"\bseventy\b"
     | #"\beighty\b"
     | #"\bninety\b"
+
+ORDINAL-NUMBER
+    = #"\b1st\b"
+    | #"\b2nd\b"
+    | #"\b3rd\b"
+    | #"\b4th\b"
+    | #"\b5th\b"
+    | #"\b6th\b"
+    | #"\b7th\b"
+    | #"\b8th\b"
+    | #"\b9th\b"
+    | #"\b10th\b"
+    | #"\b11th\b"
+    | #"\b12th\b"
+    | #"\b13th\b"
+    | #"\b14th\b"
+    | #"\b15th\b"
+    | #"\b16th\b"
+    | #"\b17th\b"
+    | #"\b18th\b"
+    | #"\b19th\b"
+    | #"\b20th\b"
+ORDINAL-NUMBER-DOT
+    = #"\b1.\b"
+    | #"\b2.\b"
+    | #"\b3.\b"
+    | #"\b4.\b"
+    | #"\b5.\b"
+    | #"\b6.\b"
+    | #"\b7.\b"
+    | #"\b8.\b"
+    | #"\b9.\b"
+    | #"\b10.\b"
+    | #"\b11.\b"
+    | #"\b12.\b"
+    | #"\b13.\b"
+    | #"\b14.\b"
+    | #"\b15.\b"
+    | #"\b16.\b"
+    | #"\b17.\b"
+    | #"\b18.\b"
+    | #"\b19.\b"
+    | #"\b20.\b"
+ORDINAL-ROMAN-DOT
+    = #"\bi.\b"
+    | #"\bii.\b"
+    | #"\biii.\b"
+    | #"\biv.\b"
+    | #"\biiii.\b"
+    | #"\bv.\b"
+    | #"\bvi.\b"
+    | #"\bvii.\b"
+    | #"\bviii.\b"
+    | #"\bix.\b"
+    | #"\bx.\b"
+    | #"\bxi.\b"
+    | #"\bxii.\b"
+    | #"\bxiii.\b"
+    | #"\bxiv.\b"
+    | #"\bxv.\b"
+    | #"\bxvi.\b"
+    | #"\bxvii.\b"
+    | #"\bxviii.\b"
+    | #"\bxix.\b"
+    | #"\bxx.\b"
+ORDINAL-WORD
+    = #"\bfirst\b"
+    | #"\bsecond\b"
+    | #"\bthird\b"
+    | #"\bfourth\b"
+    | #"\bfifth\b"
+    | #"\bsixth\b"
+    | #"\bseventh\b"
+    | #"\beighth\b"
+    | #"\bninth\b"
+    | #"\btenth\b"
+    | #"\beleventh\b"
+    | #"\btwelveth\b"
+    | #"\bthirteenth\b"
+    | #"\bfourteenth\b"
+    | #"\bfifteenth\b"
+    | #"\bsixteenth\b"
+    | #"\bseventeenth\b"
+    | #"\beighteenth\b"
+    | #"\bnineteenth\b"
+    | #"\btwentieth\b"
 
 OR = #"\bor\b"
    | #"\bd'or\b"
@@ -369,7 +460,6 @@ ARRANGED
     = #"\barranged\b"
     | #"\barranged +as\b"
 
-
 (* rules *)
 
 blazon
@@ -405,6 +495,11 @@ plain
     = tincture
     | COUNTERCHANGED
 
+of-the
+    = OF? THE
+    | IN? THE
+    | LIKE? THE
+
 tincture
     = OR
     | ARGENT
@@ -428,6 +523,8 @@ tincture
     | ERMINES
     | ERMINOIS
     | PEAN
+    | <of-the>? ordinal <TINCTURE>?
+    | <of-the>? FIELD
 
 (* used for suggestion labeling *)
 partition-type
@@ -534,6 +631,16 @@ number-word
     | TEEN-WORD
     | MULTIPLE-OF-TEN-WORD
     | MULTIPLE-OF-TEN-WORD #"-?" DIGIT-WORD
+
+ordinal
+    = ORDINAL-NUMBER
+    | ORDINAL-WORD
+
+ordinal-including-dot
+    = ORDINAL-NUMBER
+    | ORDINAL-WORD
+    | ORDINAL-NUMBER-DOT
+    | ORDINAL-ROMAN-DOT
 
 amount
     = A

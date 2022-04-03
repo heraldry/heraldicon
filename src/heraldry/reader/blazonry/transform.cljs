@@ -35,8 +35,107 @@
                key]))
        (into {:PROPER :void})))
 
-(defmethod ast->hdn :tincture [[_ tincture]]
-  (get tincture-map (first tincture) :void))
+(def ordinal-strings
+  {"1st" 1
+   "2nd" 2
+   "3rd" 3
+   "4th" 4
+   "5th" 4
+   "6th" 6
+   "7th" 7
+   "8th" 8
+   "9th" 9
+   "10th" 10
+   "11th" 11
+   "12th" 12
+   "13th" 13
+   "14th" 14
+   "15th" 15
+   "16th" 16
+   "17th" 17
+   "18th" 18
+   "19th" 19
+   "20th" 20
+
+   "1." 1
+   "2." 2
+   "3." 3
+   "4." 4
+   "5." 5
+   "6." 6
+   "7." 7
+   "8." 8
+   "9." 9
+   "10." 10
+   "11." 11
+   "12." 12
+   "13." 13
+   "14." 14
+   "15." 15
+   "16." 16
+   "17." 17
+   "18." 18
+   "19." 19
+   "20." 20
+
+   "i." 1
+   "ii." 2
+   "iii." 3
+   "iv." 4
+   "iiii." 4
+   "v." 5
+   "vi." 6
+   "vii." 7
+   "viii." 8
+   "ix." 9
+   "x." 10
+   "xi." 11
+   "xii." 12
+   "xiii." 13
+   "xiv." 14
+   "xv." 15
+   "xvi." 16
+   "xvii." 17
+   "xviii." 18
+   "xix." 19
+   "xx." 20
+
+   "first" 1
+   "second" 2
+   "third" 3
+   "fourth" 4
+   "fifth" 5
+   "sixth" 6
+   "seventh" 7
+   "eighth" 8
+   "ninth" 9
+   "tenth" 10
+   "eleventh" 11
+   "twelveth" 12
+   "thirteenth" 13
+   "fourteenth" 14
+   "fifteenth" 15
+   "sixteenth" 16
+   "seventeenth" 17
+   "eighteenth" 18
+   "nineteenth" 19
+   "twentieth" 20})
+
+(defmethod ast->hdn :ordinal [[_ & nodes]]
+  (->> nodes
+       (tree-seq (some-fn map? vector? seq?) seq)
+       (filter string?)
+       first
+       (get ordinal-strings)))
+
+(defmethod ast->hdn :tincture [[_ & nodes]]
+  (let [ordinal (some-> (get-child #{:ordinal} nodes)
+                        ast->hdn)
+        field (get-child #{:FIELD} nodes)]
+    (cond
+      field {::tincture-field-reference true}
+      ordinal {::tincture-ordinal-reference ordinal}
+      :else (get tincture-map (ffirst nodes) :void))))
 
 (defmethod ast->hdn :plain [[_ & nodes]]
   (let [node (get-child #{:tincture
@@ -738,3 +837,13 @@
 
 (defmethod ast->hdn :blazon [[_ node]]
   (ast->hdn node))
+
+(defn find-tinctures [ast]
+  (->> ast
+       (tree-seq
+        (fn [node]
+          (and (vector? node)
+               (-> node first keyword?)))
+        rest)
+       (keep #(get tincture-map (first %)))
+       vec))

@@ -291,3 +291,23 @@
 
 (defn process-charge-references [hdn parser]
   (walk/postwalk (partial populate-charge-variants parser) hdn))
+
+(defn process-tincture-references [hdn tinctures]
+  (walk/postwalk
+   (fn [data]
+     (if (map? data)
+       (if-let [tincture-reference (:heraldry.reader.blazonry.transform/tincture-ordinal-reference data)]
+         (let [index (dec tincture-reference)]
+           (if (and (<= 0 index)
+                    (< index (count tinctures)))
+             (get tinctures index)
+             :void))
+         ;; TODO: this might require looking at the closest field around the reference,
+         ;; but for now let's pick the first tincture mentioned, that should already
+         ;; yield good results
+         (if (:heraldry.reader.blazonry.transform/tincture-field-reference data)
+           (or (first tinctures)
+               :void)
+           data))
+       data))
+   hdn))
