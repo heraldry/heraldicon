@@ -6,9 +6,11 @@
 
 (defn read [data parser]
   (let [ast (some-> data
-                    (parser/parse parser))]
+                    (parser/parse parser))
+        tinctures (transform/find-tinctures ast)]
     (some-> ast
             transform/ast->hdn
             process/process-charge-groups
             process/process-ordinary-groups
-            (process/process-charge-references parser))))
+            (process/process-charge-references parser)
+            (process/process-tincture-references tinctures))))
