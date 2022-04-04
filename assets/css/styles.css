@@ -149,7 +149,6 @@ a:active,
 a:visited {
   text-decoration: none;
   color: #1b6690 !important;
-  color: inherit;
   cursor: pointer;
 }
 
@@ -1152,4 +1151,15 @@ li.ui-menu-header {
 
 .blazonry-editor-help ul {
   padding-left: 1em;
+}
+
+.blazon-example {
+  color: #1b6690 !important;
+  text-decoration: none;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.blazon-example:hover {
+  text-decoration: underline;
 }

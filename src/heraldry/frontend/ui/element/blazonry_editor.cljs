@@ -233,6 +233,16 @@
      state
      selection)))
 
+(defn set-blazon [blazon]
+  (let [state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
+        new-content (draft-js/ContentState.createFromText blazon)]
+    (-> state
+        (draft-js/EditorState.push
+         new-content
+         "insert-characters")
+        (put-cursor-at (count blazon))
+        on-editor-change)))
+
 (macros/reg-event-db :auto-completion-clicked
   (fn [db [_ index cursor-index choice]]
     (let [state (get-in db editor-state-path)
@@ -298,6 +308,47 @@
       (modal/clear)
       (assoc-in db path field-data))))
 
+(def blazonry-examples
+  [["partitions with sub fields and line styles"
+    ["per pale indented or and azure"
+     "tierced per pall gules, argent and or"
+     "quartered (or, an orle gules), (azure, a fess argent)"
+     "vairy argent and azure"
+     "potenty of 6x10 or and gules"]]
+   ["ordinaries with line styles, fimbriation, and cottising"
+    ["azure, a fess wavy or"
+     "or, a bend chequy of 12x3 tracts azure and argent"
+     "azure, a chevronnel enhanced inverted or"
+     "azure, a pall fimbriated or gules"
+     "azure, a label of 5 points dovetailed truncated gules"
+     "azure, a fess or cottised argent and or"]]
+   ["humetty/voided ordinaries"
+    ["azure, a fess humetty or"
+     "azure, a pale voided or"
+     "azure, a pall couped and voided or"]]
+   ["ordinary groups"
+    ["azure, three barrulets or"
+     "azure, double tressures engrailed or"
+     "azure, a bordure engrailed or"
+     "azure, 3 piles throughout or"]]
+   ["charges with fimbriation"
+    ["azure, a star of 6 points fimbriated or sable"
+     "azure, a lion or, langued gules, armed argent"
+     "azure, a lion sejant reversed or"]]
+   ["charge groups"
+    ["azure, a chief argent charged with 3 stars sable"
+     "per pale gules, or, twelve stars counterchanged in annullo"
+     "azure, 10 roundels or 4 3 2 1"
+     "azure, 8 stars argent in orle"]]
+   ["semy"
+    ["azure semy fleur-de-lis or"
+     "or semé of 6x8 stars gules"]]
+   ["tincture referencing"
+    ["tierced per fess azure, or, and argent, a pallet of the third, a pallet of the second, a pallet of the first"
+     "or, chief sable charged with three stars of the field"
+     "chequy or and gules, chief sable charged with three stars of the field"
+     "or, chief enhanced sable, a mascle per pale of the same and gules"]]])
+
 (defn open [context]
   (rf/dispatch-sync [:set editor-state-path (.createEmpty draft-js/EditorState)])
   (let [escutcheon (if (->> context
@@ -327,60 +378,23 @@
                       :flex-flow "row"
                       :height "30em"}}
         [:div.blazonry-editor-help
-         {:style {:width "20em"
+         {:style {:width "25em"
                   :overflow-y "scroll"}}
          [:p "This blazonry parser is a work in progress. While it already can parse a lot of blazons, there is still a lot of work to do. Once you apply the result you can edit it further in the main interface."]
          [:p "Some things it supports already:"]
          [:ul
           [:li "English blazonry"]
           [:li "TAB auto completes first suggestion"]
-          [:li "partitions with sub fields and line styles"
-           [:ul
-            [:li [:em "per pale indented or and azure"]]
-            [:li [:em "tierced per pall gules, argent and or"]]
-            [:li [:em "quartered (or, an orle gules), (azure, a fess argent)"]]
-            [:li [:em "vairy argent and azure"]]
-            [:li [:em "potenty of 6x10 or and gules"]]]]
-          [:li "ordinaries with line styles, fimbriation, and cottising"
-           [:ul
-            [:li [:em "azure, a fess wavy or"]]
-            [:li [:em "or, a bend chequy of 12x3 tracts azure and argent"]]
-            [:li [:em "azure, a chevronnel enhanced inverted or"]]
-            [:li [:em "azure, a pall fimbriated or gules"]]
-            [:li [:em "azure, a label of 5 points dovetailed truncated gules"]]
-            [:li [:em "azure, a fess or cottised argent and or"]]]]
-          [:li "humetty/voided ordinaries"
-           [:ul
-            [:li [:em "azure, a fess humetty or"]]
-            [:li [:em "azure, a pale voided or"]]
-            [:li [:em "azure, a pall couped and voided or"]]]]
-          [:li "ordinary groups"
-           [:ul
-            [:li [:em "azure, three barrulets or"]]
-            [:li [:em "azure, double tressures engrailed or"]]
-            [:li [:em "azure, a bordure engrailed or"]]
-            [:li [:em "azure, 3 piles throughout or"]]]]
-          [:li "charges with fimbriation"
-           [:ul
-            [:li [:em "azure, a star of 6 points fimbriated or sable"]]
-            [:li [:em "azure, a lion or, langued gules, armed argent"]]
-            [:li [:em "azure, a lion sejant reversed or"]]]]
-          [:li "charge groups"
-           [:ul
-            [:li [:em "azure, a chief argent charged with 3 stars sable"]]
-            [:li [:em "per pale gules, or, twelve stars counterchanged in annullo"]]
-            [:li [:em "azure, 10 roundels or 4 3 2 1"]]
-            [:li [:em "azure, 8 stars sable in orle"]]]]
-          [:li "semy"
-           [:ul
-            [:li [:em "azure semy fleur-de-lis or"]]
-            [:li [:em "or semé of 6x8 stars gules"]]]]
-          [:li "tincture referencing"
-           [:ul
-            [:li [:em "tierced per fess azure, or, and argent, a pallet of the third, a pallet of the second, a pallet of the first"]]
-            [:li [:em "or, chief sable charged with three stars of the field"]]
-            [:li [:em "chequy or and gules, chief sable charged with three stars of the field"]]
-            [:li [:em "or, chief enhanced sable, a mascle per pale of the same and gules"]]]]]
+          (into
+           [:<>]
+           (for [[group-name blazons] blazonry-examples]
+             [:li group-name
+              (into
+               [:ul]
+               (for [blazon blazons]
+                 [:li [:span.blazon-example
+                       {:on-click #(set-blazon blazon)}
+                       blazon]]))]))]
          [:p "Some things that still need work or have known issues:"]
          [:ul
           [:li "blazonry in other languages"]
