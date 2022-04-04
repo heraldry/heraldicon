@@ -533,5 +533,23 @@
                   {:type :heraldry.ordinary.type/pale
                    :field {:type :heraldry.field.type/plain
                            :tincture :azure}}]}
+
+    "or semé star gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.component/semy
+                   :charge {:type :heraldry.charge.type/star
+                            :field {:type :heraldry.field.type/plain
+                                    :tincture :gules}}}]}
+
+    "or semy of 10xfive stars sable"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.component/semy
+                   :charge {:type :heraldry.charge.type/star
+                            :field {:type :heraldry.field.type/plain
+                                    :tincture :sable}}
+                   :layout {:num-fields-x 10
+                            :num-fields-y 5}}]}
     ;;
     ))

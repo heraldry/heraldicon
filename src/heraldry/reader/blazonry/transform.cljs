@@ -823,6 +823,24 @@
       [charge]
       [(charge-group charge amount nodes)])))
 
+(defn semy [charge nodes]
+  (let [layout (some-> (get-child #{:layout
+                                    :horizontal-layout
+                                    :vertical-layout} nodes)
+                       ast->hdn)]
+    (cond-> {:type :heraldry.component/semy
+             :charge charge}
+      layout (assoc :layout layout))))
+
+(defmethod ast->hdn :semy [[_ & nodes]]
+  (let [field (ast->hdn (get-child #{:field} nodes))
+        charge (-> #{:charge}
+                   (get-child nodes)
+                   ast->hdn
+                   (assoc :field field)
+                   (add-tincture-modifiers nodes))]
+    [(semy charge nodes)]))
+
 (defmethod ast->hdn :field [[_ & nodes]]
   (if-let [nested-field (get-child #{:field} nodes)]
     (ast->hdn nested-field)
