@@ -67,21 +67,20 @@
 (def default
   (generate []))
 
-(defn rename-root-nodes [data]
-  (if (and (keyword? data)
+(defn rename-root-nodes [ast]
+  (if (and (keyword? ast)
            (#{:root-field
               :root-variation
-              :root-plain} data))
-    (-> data
+              :root-plain} ast))
+    (-> ast
         name
         (subs (count "root-"))
         keyword)
-    data))
+    ast))
 
-(defn clean-ast [data]
-  (->> data
-       (walk/postwalk
-        rename-root-nodes)))
+(defn clean-ast [ast]
+  (->> ast
+       (walk/postwalk rename-root-nodes)))
 
 (defn -parse-as-part [s {:keys [parser]}]
   (let [s (s/lower-case s)]
