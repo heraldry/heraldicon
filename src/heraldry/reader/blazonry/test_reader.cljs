@@ -479,5 +479,43 @@
                    :tincture {:langued :argent
                               :armed :gules}}]}
 
+    "per pale or and azure, a fess of the first, a pale of the second"
+    {:type :heraldry.field.type/per-pale
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}]
+     :components [{:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :or}}
+                  {:type :heraldry.ordinary.type/pale
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}]}
+
+    "or, a fess azure, a pale of the field"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}
+                  {:type :heraldry.ordinary.type/pale
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :or}}]}
+
+    "or, a star sable, a fess of the same, a star azure, a pale of the same"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/star
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}
+                  {:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}
+                  {:type :heraldry.charge.type/star
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}
+                  {:type :heraldry.ordinary.type/pale
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}]}
     ;;
     ))

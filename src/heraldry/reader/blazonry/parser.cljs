@@ -78,9 +78,22 @@
         keyword)
     ast))
 
+(defn enumerate-same-tincture-references [ast]
+  (let [counter (atom 0)]
+    (walk/prewalk
+     (fn [ast]
+       (if (and (vector? ast)
+                (-> ast first (= :SAME)))
+         (let [new-value [:SAME {::tincture-same-id @counter}]]
+           (swap! counter inc)
+           new-value)
+         ast))
+     ast)))
+
 (defn clean-ast [ast]
   (->> ast
-       (walk/postwalk rename-root-nodes)))
+       (walk/postwalk rename-root-nodes)
+       enumerate-same-tincture-references))
 
 (defn -parse-as-part [s {:keys [parser]}]
   (let [s (s/lower-case s)]

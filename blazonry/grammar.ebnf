@@ -21,6 +21,7 @@ X = #"x"
 TIMES = #"\btimes\b"
 TINCTURE = #"\btincture\b"
 FIELD = #"\bfield\b"
+SAME = #"\bsame\b"
 
 DOUBLY
     = #"\bdoubly\b"
@@ -525,6 +526,7 @@ tincture
     | PEAN
     | <of-the>? ordinal <TINCTURE>?
     | <of-the>? FIELD
+    | <of-the>? SAME
 
 (* used for suggestion labeling *)
 partition-type

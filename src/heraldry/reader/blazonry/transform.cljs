@@ -131,10 +131,15 @@
 (defmethod ast->hdn :tincture [[_ & nodes]]
   (let [ordinal (some-> (get-child #{:ordinal} nodes)
                         ast->hdn)
-        field (get-child #{:FIELD} nodes)]
+        field (get-child #{:FIELD} nodes)
+        same (get-child #{:SAME} nodes)]
     (cond
       field {::tincture-field-reference true}
       ordinal {::tincture-ordinal-reference ordinal}
+      same (->> same
+                rest
+                (filter map?)
+                first)
       :else (get tincture-map (ffirst nodes) :void))))
 
 (defmethod ast->hdn :plain [[_ & nodes]]
@@ -845,5 +850,9 @@
           (and (vector? node)
                (-> node first keyword?)))
         rest)
-       (keep #(get tincture-map (first %)))
+       (keep (fn [ast]
+               (let [kind (first ast)]
+                 (if (= kind :SAME)
+                   (second ast)
+                   (get tincture-map kind)))))
        vec))
