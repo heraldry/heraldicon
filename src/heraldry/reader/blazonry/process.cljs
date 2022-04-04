@@ -299,29 +299,47 @@
        last))
 
 (defn process-tincture-references [hdn tinctures]
-  (walk/prewalk
-   (fn [data]
-     (if (map? data)
-       (condp apply [data]
-         :heraldry.reader.blazonry.transform/tincture-ordinal-reference
-         :>> (fn [tincture-reference]
-               (let [index (dec tincture-reference)]
-                 (if (and (<= 0 index)
-                          (< index (count tinctures)))
-                   (get tinctures index)
-                   :void)))
+  (let [first-phase (walk/prewalk
+                     (fn [data]
+                       (if (map? data)
+                         (condp apply [data]
+                           :heraldry.reader.blazonry.transform/tincture-ordinal-reference
+                           :>> (fn [tincture-reference]
+                                 (let [index (dec tincture-reference)]
+                                   (if (and (<= 0 index)
+                                            (< index (count tinctures)))
+                                     (get tinctures index)
+                                     :void)))
 
-         :heraldry.reader.blazonry.transform/tincture-field-reference
-         ;; TODO: this might require looking at the closest field around the reference,
-         ;; but for now let's pick the first tincture mentioned, that should already
-         ;; yield good results
-         (or (first tinctures)
-             :void)
+                           :heraldry.reader.blazonry.parser/tincture-same-id
+                           (or (last-tincture tinctures data)
+                               :void)
 
-         :heraldry.reader.blazonry.parser/tincture-same-id
-         (or (last-tincture tinctures data)
-             :void)
-
-         data)
-       data))
-   hdn))
+                           data)
+                         data))
+                     hdn)
+        root-field-without-components (-> (walk/prewalk
+                                           (fn [data]
+                                             (if (map? data)
+                                               (if (:heraldry.reader.blazonry.transform/tincture-field-reference data)
+                                                  ;; if any of the subfields of the root field reference the field,
+                                                  ;; then that must be considered :void for this step, so we don't
+                                                  ;; get an infinite loop
+                                                 :void
+                                                 (dissoc data :components))
+                                               data))
+                                           first-phase)
+                                          (select-keys [:type :fields :tincture]))]
+    (walk/prewalk
+     (fn [data]
+       (if (map? data)
+         (if (and (-> data :type (= :heraldry.field.type/plain))
+                  (-> data :tincture :heraldry.reader.blazonry.transform/tincture-field-reference))
+           (-> data
+               (dissoc :tincture)
+               (merge root-field-without-components))
+           (if (:heraldry.reader.blazonry.transform/tincture-field-reference data)
+             :void
+             data))
+         data))
+     first-phase)))

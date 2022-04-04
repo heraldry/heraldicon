@@ -502,6 +502,22 @@
                    :field {:type :heraldry.field.type/plain
                            :tincture :or}}]}
 
+    "per pale azure and or, a fess azure charged with a star of the field"
+    {:type :heraldry.field.type/per-pale
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :azure}
+              {:type :heraldry.field.type/plain
+               :tincture :or}]
+     :components [{:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure
+                           :components [{:type :heraldry.charge.type/star
+                                         :field {:type :heraldry.field.type/per-pale
+                                                 :fields [{:type :heraldry.field.type/plain
+                                                           :tincture :azure}
+                                                          {:type :heraldry.field.type/plain
+                                                           :tincture :or}]}}]}}]}
+
     "or, a star sable, a fess of the same, a star azure, a pale of the same"
     {:type :heraldry.field.type/plain
      :tincture :or
