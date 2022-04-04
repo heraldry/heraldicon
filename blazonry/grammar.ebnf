@@ -22,6 +22,10 @@ TIMES = #"\btimes\b"
 TINCTURE = #"\btincture\b"
 FIELD = #"\bfield\b"
 SAME = #"\bsame\b"
+SEMY
+    = #"\bsemy\b"
+    | #"\bsemé(?=( |$))"
+    | #"\bsemée\b"
 
 DOUBLY
     = #"\bdoubly\b"
@@ -626,6 +630,7 @@ components
 component
     = ordinary-group
     | charge-group
+    | semy
 
 number-word
     = DIGIT-WORD
@@ -823,6 +828,10 @@ charge-group
     | amount? charge tincture-modifier* field charge-arrangement?
     | amount? charge tincture-modifier* charge-arrangement? field
 
+semy
+    = <SEMY> <of-or-with>? layout? charge field tincture-modifier*
+    | <SEMY> <of-or-with>? layout? charge tincture-modifier* field
+
 (* used for suggestion labeling *)
 charge-standard-type
     = ROUNDEL
@@ -1016,3 +1025,4 @@ bad-charge-type
     | DOUBLY
     | BETWEEN
     | COTTISED
+    | SEMY

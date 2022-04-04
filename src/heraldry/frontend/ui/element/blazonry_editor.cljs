@@ -371,6 +371,10 @@
             [:li [:em "per pale gules, or, twelve stars counterchanged in annullo"]]
             [:li [:em "azure, 10 roundels or 4 3 2 1"]]
             [:li [:em "azure, 8 stars sable in orle"]]]]
+          [:li "semy"
+           [:ul
+            [:li [:em "azure semy fleur-de-lis or"]]
+            [:li [:em "or semé of 6x8 stars gules"]]]]
           [:li "tincture referencing"
            [:ul
             [:li [:em "tierced per fess azure, or, and argent, a pallet of the third, a pallet of the second, a pallet of the first"]]
@@ -382,7 +386,6 @@
           [:li "blazonry in other languages"]
           [:li "explicit charge positioning, e.g. 'in chief', 'in base'"]
           [:li "charge/ordinary arrangement in relation to each other, e.g. 'between'"]
-          [:li "semy"]
           [:li "partition field referencing by number or location, e.g. 'i. and iv. ...' or 'in sinister ...'"]]]
         [:div {:style {:width "20em"
                        :height "100%"
