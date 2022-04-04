@@ -375,6 +375,7 @@
            [:ul
             [:li [:em "tierced per fess azure, or, and argent, a pallet of the third, a pallet of the second, a pallet of the first"]]
             [:li [:em "or, chief sable charged with three stars of the field"]]
+            [:li [:em "chequy or and gules, chief sable charged with three stars of the field"]]
             [:li [:em "or, chief enhanced sable, a mascle per pale of the same and gules"]]]]]
          [:p "Some things that still need work or have known issues:"]
          [:ul
