@@ -812,8 +812,8 @@ line-type
     | ENARCHED
 
 fimbriation
-    = FIMBRIATED (WITH | OF)? tincture
-    | FIMBRIATED (WITH | OF)? tincture AND? tincture
+    = FIMBRIATED of-or-with? tincture
+    | FIMBRIATED of-or-with? tincture AND? tincture
 
 charge-group
     = amount? charge charge-arrangement? field tincture-modifier*
@@ -863,6 +863,19 @@ charge-option
 
 star-points
     = (of-or-with? amount STAR-POINT?)
+
+(* used for bad charge type only *)
+charge-standard-type
+    = ROUNDEL
+    | ANNULET
+    | BILLET
+    | ESCUTCHEON
+    | LOZENGE
+    | FUSIL
+    | MASCLE
+    | RUSTRE
+    | STAR
+    | CRESCENT
 
 charge-standard
     = ROUNDEL
@@ -966,3 +979,40 @@ tincture-modifier-type
 
 tincture-modifier
     = AND* tincture-modifier-type tincture
+
+(* used to filter out badly named charges *)
+bad-charge-type
+    = ordinary-type
+    | partition-type
+    | line-type
+    | charge-standard-type
+    | amount
+    | ordinal-including-dot
+    | humetty-voided-truncated-dovetailed
+    | enhanced-dehanced
+    | reversed-throughout
+    | mirrored-reversed
+    | dexter-sinister
+    | FIMBRIATED
+    | tincture
+    | charge-arrangement
+    | attitude
+    | facing
+    | tincture-modifier-type
+    | A
+    | AND
+    | IN
+    | OF
+    | THE
+    | LIKE
+    | WITH
+    | CHARGED
+    | TRACTS
+    | X
+    | TIMES
+    | TINCTURE
+    | FIELD
+    | SAME
+    | DOUBLY
+    | BETWEEN
+    | COTTISED

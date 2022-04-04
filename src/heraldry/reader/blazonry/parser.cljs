@@ -19,6 +19,18 @@
    (str "#'\\b" (s/replace charge-type " " "-") "\\b'")
    (str "#'\\b" (s/replace charge-type " " "' +'") "\\b'")])
 
+(declare default)
+
+(defn -bad-charge-type? [charge-type]
+  (try
+    (let [parsed (insta/parse (:parser default) charge-type :start :bad-charge-type)]
+      (vector? parsed))
+    (catch :default _
+      false)))
+
+(def bad-charge-type?
+  (memoize -bad-charge-type?))
+
 (defn generate [charges]
   (let [charge-type-rules (->> charges
                                (map #(-> % :type name))
@@ -27,7 +39,8 @@
                                                                   s/lower-case
                                                                   (s/replace #"[^a-z0-9]+" " ")
                                                                   s/trim)]
-                                           (when (-> clean-name count pos?)
+                                           (when (and (-> clean-name count pos?)
+                                                      (not (bad-charge-type? clean-name)))
                                              (concat (charge-type-rules clean-name)
                                                      (charge-type-rules (pluralize clean-name)))))))
                                set
