@@ -34,6 +34,9 @@
 (def status-path
   (conj blazon-editor-path :status))
 
+(def last-parsed-path
+  (conj blazon-editor-path :last-parsed))
+
 (rf/reg-event-db ::clear-parser
   (fn [db _]
     (assoc-in db parser-path nil)))
@@ -41,6 +44,13 @@
 (rf/reg-event-db ::update-parser
   (fn [db [_ charges]]
     (assoc-in db parser-path (parser/generate charges))))
+
+(rf/reg-event-db ::clear-state
+  (fn [db _]
+    (-> db
+        (assoc-in editor-state-path (.createEmpty draft-js/EditorState))
+        (assoc-in status-path nil)
+        (assoc-in last-parsed-path nil))))
 
 (rf/reg-sub :blazonry-parser
   (fn [_ _]
@@ -237,23 +247,27 @@
 
 (defn on-editor-change [^draft-js/EditorState new-editor-state]
   (let [content ^draft-js/ContentState (.getCurrentContent new-editor-state)
-        text (.getPlainText content)
-        cursor-index (cursor-index new-editor-state)
-        parser @(rf/subscribe [:blazonry-parser])
-        {:keys [hdn
-                auto-complete
-                index]} (parse-blazonry text cursor-index parser)
-        new-editor-state (draft-js/EditorState.set
-                          new-editor-state
-                          (clj->js
-                           {:decorator (unknown-string-decorator index)}))]
-    (rf/dispatch [:set status-path (build-parse-status hdn)])
-    (if auto-complete
-      (auto-complete/set-data auto-complete)
-      (auto-complete/clear-data))
-    (when hdn
-      (rf/dispatch [:set (conj hdn-path :coat-of-arms) {:field hdn}]))
-    (rf/dispatch [:set editor-state-path new-editor-state])))
+        last-parsed @(rf/subscribe [:get last-parsed-path])
+        text (.getPlainText content)]
+    (if (not= text last-parsed)
+      (let [cursor-index (cursor-index new-editor-state)
+            parser @(rf/subscribe [:blazonry-parser])
+            {:keys [hdn
+                    auto-complete
+                    index]} (parse-blazonry text cursor-index parser)
+            new-editor-state (draft-js/EditorState.set
+                              new-editor-state
+                              (clj->js
+                               {:decorator (unknown-string-decorator index)}))]
+        (rf/dispatch [:set last-parsed-path text])
+        (rf/dispatch [:set status-path (build-parse-status hdn)])
+        (if auto-complete
+          (auto-complete/set-data auto-complete)
+          (auto-complete/clear-data))
+        (when hdn
+          (rf/dispatch [:set (conj hdn-path :coat-of-arms) {:field hdn}]))
+        (rf/dispatch [:set editor-state-path new-editor-state]))
+      (rf/dispatch [:set editor-state-path new-editor-state]))))
 
 (defn put-cursor-at [^draft-js/EditorState state index]
   (let [content (.getCurrentContent state)
@@ -393,7 +407,7 @@
      "or, chief enhanced sable, a mascle per pale of the same and gules"]]])
 
 (defn open [context]
-  (rf/dispatch-sync [:set editor-state-path (.createEmpty draft-js/EditorState)])
+  (rf/dispatch-sync [::clear-state])
   (let [escutcheon (if (->> context
                             :path
                             (take-last 2)
