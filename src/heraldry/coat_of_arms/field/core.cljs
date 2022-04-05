@@ -19,7 +19,7 @@
         :tierced-per-pale 3
         :tierced-per-fess 3
         :tierced-per-pall 3
-        :tierced-per-pile 3
+        :per-pile 3
         2))))
 
 (defn raw-default-fields [type num-fields-x num-fields-y num-base-fields]
