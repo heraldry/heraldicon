@@ -37,6 +37,9 @@
 (def last-parsed-path
   (conj blazon-editor-path :last-parsed))
 
+(def timer-path
+  (conj blazon-editor-path :timer))
+
 (rf/reg-event-db ::clear-parser
   (fn [db _]
     (assoc-in db parser-path nil)))
@@ -245,18 +248,29 @@
                             (:heraldry.reader.blazonry.transform/warnings data))))
                   (apply concat))})
 
-(defn on-editor-change [^draft-js/EditorState new-editor-state]
-  (let [content ^draft-js/ContentState (.getCurrentContent new-editor-state)
+(def change-dedupe-time
+  250)
+
+(rf/reg-event-db ::set-change-timer
+  (fn [db [_ f]]
+    (let [timer (get-in db timer-path)]
+      (when timer
+        (js/clearTimeout timer))
+      (assoc-in db timer-path (js/setTimeout f change-dedupe-time)))))
+
+(defn attempt-parsing []
+  (let [editor-state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
+        content ^draft-js/ContentState (.getCurrentContent editor-state)
         last-parsed @(rf/subscribe [:get last-parsed-path])
         text (.getPlainText content)]
-    (if (not= text last-parsed)
-      (let [cursor-index (cursor-index new-editor-state)
+    (when (not= text last-parsed)
+      (let [cursor-index (cursor-index editor-state)
             parser @(rf/subscribe [:blazonry-parser])
             {:keys [hdn
                     auto-complete
                     index]} (parse-blazonry text cursor-index parser)
             new-editor-state (draft-js/EditorState.set
-                              new-editor-state
+                              editor-state
                               (clj->js
                                {:decorator (unknown-string-decorator index)}))]
         (rf/dispatch [:set last-parsed-path text])
@@ -266,8 +280,11 @@
           (auto-complete/clear-data))
         (when hdn
           (rf/dispatch [:set (conj hdn-path :coat-of-arms) {:field hdn}]))
-        (rf/dispatch [:set editor-state-path new-editor-state]))
-      (rf/dispatch [:set editor-state-path new-editor-state]))))
+        (rf/dispatch [:set editor-state-path new-editor-state])))))
+
+(defn on-editor-change [new-editor-state]
+  (rf/dispatch [:set editor-state-path new-editor-state])
+  (rf/dispatch [::set-change-timer attempt-parsing]))
 
 (defn put-cursor-at [^draft-js/EditorState state index]
   (let [content (.getCurrentContent state)
