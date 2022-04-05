@@ -907,5 +907,8 @@
       "release-news-info-1": "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed.",
       "release-news-info-2": "These updates are not translated, because that'd be a lot of work. Maybe someday... :)"
     }
+  },
+  "blazonry-editor": {
+    "success": "Understood"
   }
 }

@@ -567,26 +567,54 @@
     {:type :heraldry.field.type/quartered
      :fields [{:type :heraldry.field.type/plain
                :tincture :or}
-              {:type :heraldry.field.type/ref
-               :index 0}
+              {:type :heraldry.field.type/plain
+               :tincture :or}
               {:type :heraldry.field.type/plain
                :tincture :azure}
               {:type :heraldry.field.type/ref
-               :index 0}]}
+               :index 0}]
+     :heraldry.reader.blazonry.transform/warnings
+     ["Field for partition mentioned more than once: ii."]}
 
     "paly i. ii. or, 3rd and 5th azure"
     {:type :heraldry.field.type/paly
      :fields [{:type :heraldry.field.type/plain
                :tincture :or}
-              {:type :heraldry.field.type/ref
-               :index 0}
+              {:type :heraldry.field.type/plain
+               :tincture :or}
               {:type :heraldry.field.type/plain
                :tincture :azure}
               {:type :heraldry.field.type/ref
-               :index 0}
+               :index 1}
               {:type :heraldry.field.type/ref
                :index 2}
               {:type :heraldry.field.type/ref
-               :index 0}]}
-    ;;
+               :index 1}]}
+
+    "quartered chief and i. or, i. and 19th azure"
+    {:type :heraldry.field.type/quartered
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :void}
+              {:type :heraldry.field.type/ref
+               :index 1}
+              {:type :heraldry.field.type/ref
+               :index 0}]
+     :heraldry.reader.blazonry.transform/warnings
+     ["Field for partition missing: ii."
+      "Fields not found in partition: xix., chief"
+      "Field for partition mentioned more than once: i."]}
+
+    "per pale chief or, base azure"
+    {:type :heraldry.field.type/per-pale
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :void}
+              {:type :heraldry.field.type/plain
+               :tincture :void}]
+     :heraldry.reader.blazonry.transform/warnings
+     ["Fields for partition missing: i., ii."
+      "Fields not found in partition: base, chief"]}
+
+;;
     ))

@@ -3,6 +3,7 @@
    ["draft-js" :as draft-js]
    ["genex" :as genex]
    [clojure.string :as s]
+   [clojure.walk :as walk]
    [heraldry.context :as c]
    [heraldry.frontend.auto-complete :as auto-complete]
    [heraldry.frontend.context :as context]
@@ -30,6 +31,9 @@
 (def parser-path
   (conj blazon-editor-path :parser))
 
+(def status-path
+  (conj blazon-editor-path :status))
+
 (rf/reg-event-db ::clear-parser
   (fn [db _]
     (assoc-in db parser-path nil)))
@@ -55,6 +59,23 @@
           (when (= status :done)
             (update-parser charges)))
         parser/default))))
+
+(rf/reg-sub ::parser-status
+  (fn [_ _]
+    (rf/subscribe [:get status-path]))
+
+  (fn [{:keys [status warnings]} _]
+    [:<>
+     (case status
+       :success [:span.parser-success [tr :string.blazonry-editor/success]]
+       nil)
+     (when (seq warnings)
+       (into [:ul.parser-warnings]
+             (map (fn [warning]
+                    [:li "Warning: " warning]) warnings)))]))
+
+(defn parser-status []
+  @(rf/subscribe [::parser-status]))
 
 (defn caret-position [index]
   (let [selection (js/document.getSelection)
@@ -201,6 +222,19 @@
         offset (.getFocusOffset selection)]
     (+ block-start offset)))
 
+(defn build-parse-status [hdn]
+  {:status (if hdn
+             :success
+             :error)
+   :warnings (->> hdn
+                  (tree-seq
+                   (some-fn vector? map? seq?)
+                   seq)
+                  (keep (fn [data]
+                          (when (map? data)
+                            (:heraldry.reader.blazonry.transform/warnings data))))
+                  (apply concat))})
+
 (defn on-editor-change [^draft-js/EditorState new-editor-state]
   (let [content ^draft-js/ContentState (.getCurrentContent new-editor-state)
         text (.getPlainText content)
@@ -213,6 +247,7 @@
                           new-editor-state
                           (clj->js
                            {:decorator (unknown-string-decorator index)}))]
+    (rf/dispatch [:set status-path (build-parse-status hdn)])
     (if auto-complete
       (auto-complete/set-data auto-complete)
       (auto-complete/clear-data))
@@ -302,9 +337,17 @@
                                                     "handled")
                                                   "not-handled"))}]))})]])
 
+(defn clean-field-data [data]
+  (walk/postwalk
+   (fn [data]
+     (if (map? data)
+       (dissoc data :heraldry.reader.blazonry.transform/warnings)
+       data))
+   data))
+
 (macros/reg-event-db :apply-blazon-result
   (fn [db [_ {:keys [path]}]]
-    (let [field-data (get-in db (conj hdn-path :coat-of-arms :field))]
+    (let [field-data (clean-field-data (get-in db (conj hdn-path :coat-of-arms :field)))]
       (modal/clear)
       (assoc-in db path field-data))))
 
@@ -401,22 +444,33 @@
           [:li "explicit charge positioning, e.g. 'in chief', 'in base'"]
           [:li "charge/ordinary arrangement in relation to each other, e.g. 'between'"]
           [:li "partition field referencing by number or location, e.g. 'i. and iv. ...' or 'in sinister ...'"]]]
-        [:div {:style {:width "20em"
+        [:div {:style {:display "flex"
+                       :flex-flow "column"
+                       :flex "auto"
                        :height "100%"
-                       :margin-left "10px"
-                       :margin-right "10px"}}
-         [blazonry-editor
-          {:style {:display "inline-block"
-                   :outline "1px solid black"
-                   :width "100%"
-                   :height "100%"}}]]
-        [:div {:style {:width "15em"
-                       :height "100%"}}
-         [render/achievement
-          (assoc
-           context/default
-           :path hdn-path
-           :render-options-path (conj hdn-path :render-options))]]]
+                       :margin-left "10px"}}
+         [:div {:style {:width "35em"
+                        :display "flex"
+                        :flex-flow "row"}}
+          [:div {:style {:width "20em"
+                         :height "100%"
+                         :margin-right "10px"}}
+           [blazonry-editor
+            {:style {:display "inline-block"
+                     :outline "1px solid black"
+                     :width "100%"
+                     :height "100%"}}]]
+          [:div {:style {:width "15em"
+                         :height "100%"}}
+           [render/achievement
+            (assoc
+             context/default
+             :path hdn-path
+             :render-options-path (conj hdn-path :render-options))]]]
+         [:div {:style {:height "100%"
+                        :margin-top "10px"
+                        :overflow-y "scroll"}}
+          [parser-status]]]]
 
        [:div.buttons {:style {:display "flex"}}
         [:div {:style {:flex "auto"}}]
