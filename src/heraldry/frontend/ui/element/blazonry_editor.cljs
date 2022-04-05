@@ -473,8 +473,7 @@
          [:ul
           [:li "blazonry in other languages"]
           [:li "explicit charge positioning, e.g. 'in chief', 'in base'"]
-          [:li "charge/ordinary arrangement in relation to each other, e.g. 'between'"]
-          [:li "partition field referencing by number or location, e.g. 'i. and iv. ...' or 'in sinister ...'"]]]
+          [:li "charge/ordinary arrangement in relation to each other, e.g. 'between'"]]]
         [:div {:style {:display "flex"
                        :flex-flow "column"
                        :flex "auto"
