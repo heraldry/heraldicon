@@ -632,7 +632,7 @@ field-location
 
 field-reference
     = ordinal-including-dot
-    | IN? field-location
+    | (<IN> | <WITH>)? field-location
 
 partition-field
     = (field-reference (AND* field-reference)*)? root-field

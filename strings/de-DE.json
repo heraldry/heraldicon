@@ -903,5 +903,8 @@
       "release-news-info-1": "In den meisten Fällen werden Features inkrementell freigegeben. Aber ab und an gruppiere ich die wichtigsten Features und neue Entwicklungen und fasse sie in einem Update hier zusammen, damit es einen Überblick gibt.",
       "release-news-info-2": "Diese Updates sind derzeit nicht übersetzt, weil es sehr viel Arbeit wäre. Vielleicht eines Tages... :)"
     }
+  },
+  "blazonry-editor": {
+    "success": "Verstanden"
   }
 }

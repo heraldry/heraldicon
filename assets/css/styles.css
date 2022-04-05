@@ -1153,11 +1153,29 @@ li.ui-menu-header {
   padding-left: 1em;
 }
 
+.parser-success {
+  color: #080;
+}
+
+.parser-error {
+  color: #d00;
+}
+
 .blazon-example {
   color: #1b6690 !important;
   text-decoration: none;
   font-style: italic;
   cursor: pointer;
+}
+
+ul.parser-warnings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.parser-warnings li {
+  color: #d60;
 }
 
 .blazon-example:hover {

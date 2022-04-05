@@ -36,50 +36,8 @@
                key]))
        (into {:PROPER :void})))
 
-(def ordinal-strings
-  {"1st" 1
-   "2nd" 2
-   "3rd" 3
-   "4th" 4
-   "5th" 5
-   "6th" 6
-   "7th" 7
-   "8th" 8
-   "9th" 9
-   "10th" 10
-   "11th" 11
-   "12th" 12
-   "13th" 13
-   "14th" 14
-   "15th" 15
-   "16th" 16
-   "17th" 17
-   "18th" 18
-   "19th" 19
-   "20th" 20
-
-   "1." 1
-   "2." 2
-   "3." 3
-   "4." 4
-   "5." 5
-   "6." 6
-   "7." 7
-   "8." 8
-   "9." 9
-   "10." 10
-   "11." 11
-   "12." 12
-   "13." 13
-   "14." 14
-   "15." 15
-   "16." 16
-   "17." 17
-   "18." 18
-   "19." 19
-   "20." 20
-
-   "i." 1
+(def roman-ordinal-strings
+  {"i." 1
    "ii." 2
    "iii." 3
    "iv." 4
@@ -99,28 +57,75 @@
    "xvii." 17
    "xviii." 18
    "xix." 19
-   "xx." 20
+   "xx." 20})
 
-   "first" 1
-   "second" 2
-   "third" 3
-   "fourth" 4
-   "fifth" 5
-   "sixth" 6
-   "seventh" 7
-   "eighth" 8
-   "ninth" 9
-   "tenth" 10
-   "eleventh" 11
-   "twelveth" 12
-   "thirteenth" 13
-   "fourteenth" 14
-   "fifteenth" 15
-   "sixteenth" 16
-   "seventeenth" 17
-   "eighteenth" 18
-   "nineteenth" 19
-   "twentieth" 20})
+(def roman-ordinal-strings-by-number
+  (set/map-invert roman-ordinal-strings))
+
+(def ordinal-strings
+  (merge {"1st" 1
+          "2nd" 2
+          "3rd" 3
+          "4th" 4
+          "5th" 5
+          "6th" 6
+          "7th" 7
+          "8th" 8
+          "9th" 9
+          "10th" 10
+          "11th" 11
+          "12th" 12
+          "13th" 13
+          "14th" 14
+          "15th" 15
+          "16th" 16
+          "17th" 17
+          "18th" 18
+          "19th" 19
+          "20th" 20
+
+          "1." 1
+          "2." 2
+          "3." 3
+          "4." 4
+          "5." 5
+          "6." 6
+          "7." 7
+          "8." 8
+          "9." 9
+          "10." 10
+          "11." 11
+          "12." 12
+          "13." 13
+          "14." 14
+          "15." 15
+          "16." 16
+          "17." 17
+          "18." 18
+          "19." 19
+          "20." 20
+
+          "first" 1
+          "second" 2
+          "third" 3
+          "fourth" 4
+          "fifth" 5
+          "sixth" 6
+          "seventh" 7
+          "eighth" 8
+          "ninth" 9
+          "tenth" 10
+          "eleventh" 11
+          "twelveth" 12
+          "thirteenth" 13
+          "fourteenth" 14
+          "fifteenth" 15
+          "sixteenth" 16
+          "seventeenth" 17
+          "eighteenth" 18
+          "nineteenth" 19
+          "twentieth" 20}
+         roman-ordinal-strings))
 
 (defmethod ast->hdn :ordinal [[_ & nodes]]
   (->> nodes
@@ -387,6 +392,12 @@
     {:references references
      :field field}))
 
+(defn field-reference-sort-key [reference]
+  (if (int? reference)
+    [0 reference]
+    ;; keyword references
+    [1 reference]))
+
 (defn sanitize-referenced-fields [fields num-mandatory-fields]
   (let [fields (map-indexed
                 (fn [index {:keys [references field] :as field-data}]
@@ -394,7 +405,7 @@
                         {:references [index]
                          :field field}
                         field-data)
-                      (update :references #(-> % set sort)))) fields)]
+                      (update :references #(->> % set (sort-by field-reference-sort-key))))) fields)]
     (persistent!
      (reduce
       (fn [result {:keys [references field]}]
@@ -417,8 +428,15 @@
                       (conj (get result reference [])
                             (if (< reference num-mandatory-fields)
                               field
-                              first-new-reference)))))
-          result))
+                              first-new-reference))))))
+
+        (let [keyword-references (filter keyword? references)]
+          (doseq [reference keyword-references]
+            (assoc! result reference
+                    (conj (get result reference [])
+                          field))))
+
+        result)
       (transient {})
       fields))))
 
@@ -456,6 +474,56 @@
           fields))
       (resolve-reference-chains reference-map)))
 
+(defn reference-to-string [reference]
+  (if (keyword? reference)
+    (name reference)
+    (let [field-number (inc reference)]
+      (get roman-ordinal-strings-by-number field-number (str field-number)))))
+
+(defn add-field-reference-warnings [hdn reference-map num-expected-field num-mandatory-fields]
+  (let [unknown-references (->> reference-map
+                                keys
+                                (filter (fn [reference]
+                                          (or (keyword? reference)
+                                              (<= num-expected-field reference)))))
+        multi-references (->> reference-map
+                              (keep (fn [[k v]]
+                                      (when (-> v count (> 1))
+                                        k))))
+        missing-mandatory-references (set/difference
+                                      (set (range num-mandatory-fields))
+                                      (set (keys reference-map)))
+        warnings (cond-> []
+                   (seq missing-mandatory-references) (conj (str "Field"
+                                                                 (when (-> missing-mandatory-references
+                                                                           count
+                                                                           (> 1))
+                                                                   "s")
+                                                                 " for partition missing: "
+                                                                 (s/join ", " (map reference-to-string
+                                                                                   (sort-by field-reference-sort-key
+                                                                                            missing-mandatory-references)))))
+                   (seq unknown-references) (conj (str "Field"
+                                                       (when (-> unknown-references
+                                                                 count
+                                                                 (> 1))
+                                                         "s")
+                                                       " not found in partition: "
+                                                       (s/join ", " (map reference-to-string
+                                                                         (sort-by field-reference-sort-key
+                                                                                  unknown-references)))))
+                   (seq multi-references) (conj (str "Field"
+                                                     (when (-> multi-references
+                                                               count
+                                                               (> 1))
+                                                       "s")
+                                                     " for partition mentioned more than once: "
+                                                     (s/join ", " (map reference-to-string
+                                                                       (sort-by field-reference-sort-key
+                                                                                multi-references))))))]
+    (cond-> hdn
+      (seq warnings) (assoc ::warnings warnings))))
+
 (defmethod ast->hdn :partition [[_ & nodes]]
   (let [field-type (get-field-type nodes)
         layout (some-> (get-child #{:layout
@@ -482,19 +550,21 @@
                                          (fn [references]
                                            (map #(translate-field-reference % field-type)
                                                 references))))))
+        num-mandatory-fields (case field-type
+                               nil 0
+                               :tierced-per-pale 3
+                               :tierced-per-fess 3
+                               :tierced-per-pall 3
+                               :per-pile 3
+                               2)
         reference-map (sanitize-referenced-fields
                        given-fields
                        ;; TODO: this could be DRYer
-                       (case field-type
-                         nil 0
-                         :tierced-per-pale 3
-                         :tierced-per-fess 3
-                         :tierced-per-pall 3
-                         :per-pile 3
-                         2))
+                       num-mandatory-fields)
         fields (populate-field-references default-fields reference-map)]
     (-> {:type field-type
          :fields fields}
+        (add-field-reference-warnings reference-map (count fields) num-mandatory-fields)
         (add-lines nodes)
         (cond->
           layout (assoc :layout layout))
