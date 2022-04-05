@@ -1,6 +1,4 @@
 (ns heraldry.strings
-  (:require
-   [heraldry.static :as static])
   (:require-macros [heraldry.strings :refer [load-strings]]))
 
 (def JSON-DICT
