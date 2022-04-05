@@ -551,5 +551,42 @@
                                     :tincture :sable}}
                    :layout {:num-fields-x 10
                             :num-fields-y 5}}]}
+
+    "quartered i. and 4th or, 2nd and base-dexter azure"
+    {:type :heraldry.field.type/quartered
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}
+              {:type :heraldry.field.type/ref
+               :index 1}
+              {:type :heraldry.field.type/ref
+               :index 0}]}
+
+    "quartered i. ii. or, 2nd and base-dexter azure"
+    {:type :heraldry.field.type/quartered
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/ref
+               :index 0}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}
+              {:type :heraldry.field.type/ref
+               :index 0}]}
+
+    "paly i. ii. or, 3rd and 5th azure"
+    {:type :heraldry.field.type/paly
+     :fields [{:type :heraldry.field.type/plain
+               :tincture :or}
+              {:type :heraldry.field.type/ref
+               :index 0}
+              {:type :heraldry.field.type/plain
+               :tincture :azure}
+              {:type :heraldry.field.type/ref
+               :index 0}
+              {:type :heraldry.field.type/ref
+               :index 2}
+              {:type :heraldry.field.type/ref
+               :index 0}]}
     ;;
     ))
