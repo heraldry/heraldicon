@@ -100,48 +100,48 @@ ORDINAL-NUMBER
     | #"\b19th\b"
     | #"\b20th\b"
 ORDINAL-NUMBER-DOT
-    = #"\b1[.]\b"
-    | #"\b2[.]\b"
-    | #"\b3[.]\b"
-    | #"\b4[.]\b"
-    | #"\b5[.]\b"
-    | #"\b6[.]\b"
-    | #"\b7[.]\b"
-    | #"\b8[.]\b"
-    | #"\b9[.]\b"
-    | #"\b10[.]\b"
-    | #"\b11[.]\b"
-    | #"\b12[.]\b"
-    | #"\b13[.]\b"
-    | #"\b14[.]\b"
-    | #"\b15[.]\b"
-    | #"\b16[.]\b"
-    | #"\b17[.]\b"
-    | #"\b18[.]\b"
-    | #"\b19[.]\b"
-    | #"\b20[.]\b"
+    = #"\b1[.](?=( |$))"
+    | #"\b2[.](?=( |$))"
+    | #"\b3[.](?=( |$))"
+    | #"\b4[.](?=( |$))"
+    | #"\b5[.](?=( |$))"
+    | #"\b6[.](?=( |$))"
+    | #"\b7[.](?=( |$))"
+    | #"\b8[.](?=( |$))"
+    | #"\b9[.](?=( |$))"
+    | #"\b10[.](?=( |$))"
+    | #"\b11[.](?=( |$))"
+    | #"\b12[.](?=( |$))"
+    | #"\b13[.](?=( |$))"
+    | #"\b14[.](?=( |$))"
+    | #"\b15[.](?=( |$))"
+    | #"\b16[.](?=( |$))"
+    | #"\b17[.](?=( |$))"
+    | #"\b18[.](?=( |$))"
+    | #"\b19[.](?=( |$))"
+    | #"\b20[.](?=( |$))"
 ORDINAL-ROMAN-DOT
-    = #"\bi[.]\b"
-    | #"\bii[.]\b"
-    | #"\biii[.]\b"
-    | #"\biv[.]\b"
-    | #"\biiii[.]\b"
-    | #"\bv[.]\b"
-    | #"\bvi[.]\b"
-    | #"\bvii[.]\b"
-    | #"\bviii[.]\b"
-    | #"\bix[.]\b"
-    | #"\bx[.]\b"
-    | #"\bxi[.]\b"
-    | #"\bxii[.]\b"
-    | #"\bxiii[.]\b"
-    | #"\bxiv[.]\b"
-    | #"\bxv[.]\b"
-    | #"\bxvi[.]\b"
-    | #"\bxvii[.]\b"
-    | #"\bxviii[.]\b"
-    | #"\bxix[.]\b"
-    | #"\bxx[.]\b"
+    = #"\bi[.](?=( |$))"
+    | #"\bii[.](?=( |$))"
+    | #"\biii[.](?=( |$))"
+    | #"\biv[.](?=( |$))"
+    | #"\biiii[.](?=( |$))"
+    | #"\bv[.](?=( |$))"
+    | #"\bvi[.](?=( |$))"
+    | #"\bvii[.](?=( |$))"
+    | #"\bviii[.](?=( |$))"
+    | #"\bix[.](?=( |$))"
+    | #"\bx[.](?=( |$))"
+    | #"\bxi[.](?=( |$))"
+    | #"\bxii[.](?=( |$))"
+    | #"\bxiii[.](?=( |$))"
+    | #"\bxiv[.](?=( |$))"
+    | #"\bxv[.](?=( |$))"
+    | #"\bxvi[.](?=( |$))"
+    | #"\bxvii[.](?=( |$))"
+    | #"\bxviii[.](?=( |$))"
+    | #"\bxix[.](?=( |$))"
+    | #"\bxx[.](?=( |$))"
 ORDINAL-WORD
     = #"\bfirst\b"
     | #"\bsecond\b"
@@ -341,10 +341,35 @@ REVERSED
     = #"\breversed\b"
     | #"\binverted\b"
 THROUGHOUT = #"\bthroughout\b"
-DEXTER
-    = #"\bdexter\b"
-SINISTER
-    = #"\bsinister\b"
+
+DEXTER = #"\bdexter\b"
+SINISTER = #"\bsinister\b"
+CHIEF = #"\bchief\b"
+BASE = #"\bbase\b"
+DEXTER-CHIEF
+    = #"\bdexter[ -]chief\b"
+    | #"\bdexter" #"chief\b"
+CHIEF-DEXTER
+    = #"\bchief[ -]dexter\b"
+    | #"\bchief" #"dexter\b"
+SINISTER-CHIEF
+    = #"\bsinister[ -]chief\b"
+    | #"\bsinister" #"chief\b"
+CHIEF-SINISTER
+    = #"\bchief[ -]sinister\b"
+    | #"\bchief" #"sinister\b"
+DEXTER-BASE
+    = #"\bdexter[ -]base\b"
+    | #"\bdexter" #"base\b"
+BASE-DEXTER
+    = #"\bbase[ -]dexter\b"
+    | #"\bbase" #"dexter\b"
+SINISTER-BASE
+    = #"\bsinister[ -]base\b"
+    | #"\bsinister" #"base\b"
+BASE-SINISTER
+    = #"\bbase[ -]sinister\b"
+    | #"\bbase" #"sinister\b"
 
 CADENT = #"\bcadent\b"
 COUCHANT = #"\bcouchant\b"
@@ -528,9 +553,9 @@ tincture
     | ERMINES
     | ERMINOIS
     | PEAN
-    | <of-the>? ordinal <TINCTURE>?
-    | <of-the>? FIELD
-    | <of-the>? SAME
+    | <of-the> ordinal <TINCTURE>?
+    | <of-the> FIELD
+    | <of-the> SAME
 
 (* used for suggestion labeling *)
 partition-type
@@ -590,39 +615,64 @@ layout
     | horizontal-layout layout-times? vertical-layout
     | vertical-layout-explicit layout-times? horizontal-layout
 
+field-location
+    = DEXTER
+    | SINISTER
+    | CHIEF
+    | BASE
+    | FESS
+    | DEXTER-CHIEF
+    | CHIEF-DEXTER
+    | SINISTER-CHIEF
+    | CHIEF-SINISTER
+    | DEXTER-BASE
+    | BASE-DEXTER
+    | SINISTER-BASE
+    | BASE-SINISTER
+
+field-reference
+    = ordinal-including-dot
+    | IN? field-location
+
+partition-field
+    = (field-reference (AND* field-reference)*)? root-field
+
+partition-field-plain
+    = (field-reference (AND* field-reference)*)? root-plain
+
 partition
-    = PER-PALE line? root-field AND+ root-field
+    = PER-PALE line? partition-field AND+ partition-field
     | (PER-FESS
        | PER-BEND
        | PER-BEND-SINISTER) (enhanced-dehanced* line?
-                       | line? enhanced-dehanced*) root-field AND+ root-field
+                       | line? enhanced-dehanced*) partition-field AND+ partition-field
     | PER-CHEVRON (enhanced-dehanced-reversed* line?
-                       | line? enhanced-dehanced-reversed*) root-field AND+ root-field
+                       | line? enhanced-dehanced-reversed*) partition-field AND+ partition-field
     | PER-PILE (REVERSED? (line (AND+ line)?)?
-                | (line (AND+ line)?)? REVERSED?) root-field AND+ root-field AND+ root-field
-    | TIERCED-PER-PALE (line (AND+ line)?)? root-field AND+ root-field AND+ root-field
+                | (line (AND+ line)?)? REVERSED?) partition-field AND+ partition-field (AND+ partition-field)?
+    | TIERCED-PER-PALE (line (AND+ line)?)? partition-field AND+ partition-field (AND+ partition-field)?
     | TIERCED-PER-FESS (enhanced-dehanced* (line (AND+ line)?)?
-                        | (line (AND+ line)?)? enhanced-dehanced*) root-field AND+ root-field AND+ root-field
+                        | (line (AND+ line)?)? enhanced-dehanced*) partition-field AND+ partition-field (AND+ partition-field)?
     | TIERCED-PER-PALL (enhanced-dehanced-reversed* (line (AND+ line)? (AND+ line)?)?
-                        | (line (AND+ line)? (AND+ line)?)? enhanced-dehanced-reversed*) root-field AND+ root-field AND+ root-field
+                        | (line (AND+ line)? (AND+ line)?)? enhanced-dehanced-reversed*) partition-field AND+ partition-field (AND+ partition-field)?
     | (PER-SALTIRE
        | QUARTERED) (enhanced-dehanced* line?
-                     | line? enhanced-dehanced*) root-field AND+ root-field (AND+ root-field)? (AND+ root-field)?
+                     | line? enhanced-dehanced*) partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)?
     | GYRONNY (enhanced-dehanced* line?
-               | line? enhanced-dehanced*) root-field AND+ root-field (AND+ root-field)? (AND+ root-field)? (AND+ root-field)? (AND+ root-field)? (AND+ root-field)? (AND+ root-field)?
-    | QUARTERED enhanced-dehanced* root-field AND+ root-field (AND+ root-field)*
+               | line? enhanced-dehanced*) partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)?
+    | QUARTERED enhanced-dehanced* partition-field AND+ partition-field (AND+ partition-field)*
     | (CHEQUY
        | LOZENGY
        | VAIRY
        | POTENTY
        | PAPELLONY
        | MASONY
-       | FRETTY) (OF? layout)? root-plain AND+ root-plain
-    | PALY (OF? horizontal-layout)? root-field AND+ root-field
+       | FRETTY) (OF? layout)? partition-field-plain AND+ partition-field-plain
+    | PALY (OF? horizontal-layout)? partition-field AND+ partition-field
     | (BARRY
        | BENDY
        | BENDY-SINISTER
-       | CHEVRONNY) (OF? vertical-layout)? root-field AND+ root-field
+       | CHEVRONNY) (OF? vertical-layout)? partition-field AND+ partition-field
 
 components
     = component (AND+ component)*
@@ -1007,6 +1057,7 @@ bad-charge-type
     | charge-arrangement
     | attitude
     | facing
+    | field-location
     | tincture-modifier-type
     | A
     | AND

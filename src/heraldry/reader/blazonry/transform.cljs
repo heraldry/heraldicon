@@ -2,6 +2,7 @@
   (:require
    [clojure.set :as set]
    [clojure.string :as s]
+   [clojure.walk :as walk]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.charge.options :as charge.options]
    [heraldry.coat-of-arms.field.core :as field]
@@ -295,6 +296,166 @@
                                           (= :per-pile
                                              partition-type) (assoc-in [:origin :point] :top)))))
 
+(def field-locations
+  {:DEXTER :dexter
+   :SINISTER :sinister
+   :CHIEF :chief
+   :BASE :base
+   :FESS :fess
+   :DEXTER-CHIEF :chief-dexter
+   :CHIEF-DEXTER :chief-dexter
+   :SINISTER-CHIEF :chief-sinister
+   :CHIEF-SINISTER :chief-sinister
+   :DEXTER-BASE :base-dexter
+   :BASE-DEXTER :base-dexter
+   :SINISTER-BASE :base-sinister
+   :BASE-SINISTER :base-sinister})
+
+(defmethod ast->hdn :field-location [[_ & nodes]]
+  (some-> (get-child field-locations nodes)
+          first
+          field-locations))
+
+(defmethod ast->hdn :field-reference [[_ & nodes]]
+  (let [number (some-> (get-child #{:ordinal} nodes)
+                       ast->hdn)
+        location (some-> (get-child #{:field-location} nodes)
+                         ast->hdn)]
+    (or number
+        location)))
+
+(def field-reference-map
+  {:barry {}
+   :bendy {}
+   :bendy-sinister {}
+   :chequy {}
+   :chevronny {}
+   :fretty {}
+    ;; TODO: gyronny names
+   :gyronny {}
+   :lozengy {}
+   :masony {}
+   :paly {}
+   :papellony {}
+   :per-bend {:chief 0
+              :base 1}
+   :per-bend-sinister {:chief 0
+                       :base 1}
+    ;; TODO: inverted needs to swap these
+   :per-chevron {:chief 0
+                 :base 1}
+   :per-fess {:chief 0
+              :base 1}
+   :per-pale {:dexter 0
+              :sinister 1}
+    ;; TODO: inverted needs to swap these
+   :per-pile {:chief 0
+              :dexter 1
+              :sinister 2}
+   :per-saltire {:chief 0
+                 :dexter 1
+                 :sinister 2
+                 :base 3}
+   :potenty {}
+   :quartered {:chief-dexter 0
+               :chief-sinister 1
+               :base-dexter 2
+               :base-sinister 3}
+   :tierced-per-fess {:chief 0
+                      :fess 1
+                      :base 2}
+   :tierced-per-pale {:dexter 0
+                      :fess 1
+                      :sinister 2}
+   ;; TODO: inverted needs to swap these
+   :tierced-per-pall {:chief 0
+                      :dexter 1
+                      :sinister 2}
+   :vairy {}})
+
+(defn translate-field-reference [reference field-type]
+  (if (keyword? reference)
+    (get-in field-reference-map [(some-> field-type name keyword) reference] reference)
+    (dec reference)))
+
+(defmethod ast->hdn :partition-field [[_ & nodes]]
+  (let [field (-> (get-child #{:field :plain} nodes)
+                  ast->hdn)
+        references (->> nodes
+                        (filter (type? #{:field-reference}))
+                        (map ast->hdn))]
+    {:references references
+     :field field}))
+
+(defn sanitize-referenced-fields [fields num-mandatory-fields]
+  (let [fields (map-indexed
+                (fn [index {:keys [references field] :as field-data}]
+                  (-> (if (empty? references)
+                        {:references [index]
+                         :field field}
+                        field-data)
+                      (update :references #(-> % set sort)))) fields)]
+    (persistent!
+     (reduce
+      (fn [result {:keys [references field]}]
+        (let [integer-references (filter int? references)
+              [seen-references
+               new-references] (split-with
+                                #(get result %)
+                                integer-references)
+              first-new-reference (first new-references)]
+          (doseq [reference seen-references]
+            (assoc! result reference
+                    (conj (get result reference [])
+                          field)))
+          (when first-new-reference
+            (assoc! result first-new-reference
+                    (conj (get result first-new-reference [])
+                          field))
+            (doseq [reference (rest new-references)]
+              (assoc! result reference
+                      (conj (get result reference [])
+                            (if (< reference num-mandatory-fields)
+                              field
+                              first-new-reference)))))
+          result))
+      (transient {})
+      fields))))
+
+(defn resolve-reference-chains [fields reference-map]
+  (loop [fields (vec fields)
+         [index & rest] (range (count fields))]
+    (if index
+      (if-let [reference (-> fields (get index) :index)]
+        (let [real-reference (first (get reference-map reference))]
+          (if (int? real-reference)
+            (recur (util/vec-replace fields index {:type :heraldry.field.type/ref
+                                                   :index real-reference})
+                   rest)
+            (recur fields rest)))
+        (recur fields rest))
+      fields)))
+
+(defn populate-field-references [default-fields reference-map]
+  (-> (loop [fields (vec default-fields)
+             [index & rest] (range (count default-fields))]
+        (if index
+          (let [new-field (-> reference-map
+                              (get index)
+                              first)
+                new-field (if (int? new-field)
+                            {:type :heraldry.field.type/ref
+                             :index new-field}
+                            new-field)]
+            (if new-field
+              (recur
+               (util/vec-replace fields index new-field)
+               rest)
+              ;; if the default field already is a reference, then we might have to
+              (recur fields rest)))
+          fields))
+      (resolve-reference-chains reference-map)))
+
 (defmethod ast->hdn :partition [[_ & nodes]]
   (let [field-type (get-field-type nodes)
         layout (some-> (get-child #{:layout
@@ -302,20 +463,36 @@
                                     :vertical-layout} nodes)
                        ast->hdn)
         ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
-        default-fields (field/raw-default-fields
-                        field-type
-                        (-> layout :num-fields-x (or 6))
-                        (-> layout :num-fields-y (or 6))
-                        2)
+        default-fields (walk/postwalk
+                        (fn [data]
+                          (cond-> data
+                            (and (map? data)
+                                 (:tincture data)) (assoc :tincture :void)))
+                        (field/raw-default-fields
+                         field-type
+                         (-> layout :num-fields-x (or 6))
+                         (-> layout :num-fields-y (or 6))
+                         2))
         given-fields (->> nodes
-                          (filter (type? #{:field :plain}))
-                          (mapv ast->hdn))
-        fields (loop [fields default-fields
-                      [[index field] & rest] (map-indexed vector given-fields)]
-                 (if index
-                   (recur (util/vec-replace (vec fields) index field)
-                          rest)
-                   (vec fields)))]
+                          (filter (type? #{:partition-field}))
+                          (map ast->hdn)
+                          (map (fn [field-data]
+                                 (update field-data
+                                         :references
+                                         (fn [references]
+                                           (map #(translate-field-reference % field-type)
+                                                references))))))
+        reference-map (sanitize-referenced-fields
+                       given-fields
+                       ;; TODO: this could be DRYer
+                       (case field-type
+                         nil 0
+                         :tierced-per-pale 3
+                         :tierced-per-fess 3
+                         :tierced-per-pall 3
+                         :per-pile 3
+                         2))
+        fields (populate-field-references default-fields reference-map)]
     (-> {:type field-type
          :fields fields}
         (add-lines nodes)

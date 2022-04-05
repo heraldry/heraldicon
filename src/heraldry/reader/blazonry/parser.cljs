@@ -80,16 +80,20 @@
 (def default
   (generate []))
 
-(defn rename-root-nodes [ast]
-  (if (and (keyword? ast)
-           (#{:root-field
-              :root-variation
-              :root-plain} ast))
-    (-> ast
-        name
-        (subs (count "root-"))
-        keyword)
+(def ast-node-normalization
+  {:root-field :field
+   :root-variation :variation
+   :root-plain :plain
+   :partition-field-plain :partition-field
+   :ordinal-including-dot :ordinal})
+
+(defn rename-root-node [ast]
+  (if (keyword? ast)
+    (get ast-node-normalization ast ast)
     ast))
+
+(defn normalize-nodes [ast]
+  (walk/postwalk rename-root-node ast))
 
 (defn enumerate-same-tincture-references [ast]
   (let [counter (atom 0)]
@@ -105,7 +109,7 @@
 
 (defn clean-ast [ast]
   (->> ast
-       (walk/postwalk rename-root-nodes)
+       normalize-nodes
        enumerate-same-tincture-references))
 
 (defn -parse-as-part [s {:keys [parser]}]
