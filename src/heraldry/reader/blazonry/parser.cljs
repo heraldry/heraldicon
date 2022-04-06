@@ -81,8 +81,14 @@
                                                                 name
                                                                 s/lower-case
                                                                 (s/replace #"[^a-z0-9]+" " ")
-                                                                s/trim)]
-                                         (when (and (-> clean-name count pos?)
+                                                                s/trim)
+                                             valid-charge-type? (-> charge-type
+                                                                    name
+                                                                    (s/replace #"[^a-zA-Z0-9-]+" "")
+                                                                    keyword
+                                                                    (= charge-type))]
+                                         (when (and valid-charge-type?
+                                                    (-> clean-name count pos?)
                                                     (not (bad-charge-type? clean-name)))
                                            [rule-name
                                             (set (concat (charge-type-rules clean-name)
