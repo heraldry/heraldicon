@@ -333,15 +333,15 @@
                                   {:context charge-context
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip :string.tooltip/move-down
+                                              :title :string.tooltip/move-down
                                               :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-context])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-charges))
-                                              :tooltip :string.tooltip/move-up
+                                              :title :string.tooltip/move-up
                                               :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-context])}
                                              {:icon "far fa-trash-alt"
                                               :disabled? (= num-charges 1)
-                                              :tooltip :string.tooltip/remove
+                                              :title :string.tooltip/remove
                                               :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-context])}]})))
                          vec))}))
 

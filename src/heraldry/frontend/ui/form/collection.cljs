@@ -22,15 +22,15 @@
                           {:context element-context
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
-                                      :tooltip :string.tooltip/move-down
+                                      :title :string.tooltip/move-down
                                       :handler #(state/dispatch-on-event % [:move-element element-context (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-elements))
-                                      :tooltip :string.tooltip/move-up
+                                      :title :string.tooltip/move-up
                                       :handler #(state/dispatch-on-event % [:move-element element-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
                                       :remove? true
-                                      :tooltip :string.tooltip/remove
+                                      :title :string.tooltip/remove
                                       :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
                  vec)}))
 

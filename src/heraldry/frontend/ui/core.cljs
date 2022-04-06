@@ -200,6 +200,7 @@
                                   title
                                   menu
                                   [:i.ui-icon {:class icon
+                                               :title (tr title)
                                                :style {:margin-left "0.5em"
                                                        :font-size "0.8em"
                                                        :color (if disabled?
@@ -212,10 +213,10 @@
 
       (into [:span {:style {:margin-left "0.5em"}}]
             (comp (remove :menu)
-                  (map-indexed (fn [idx {:keys [icon handler disabled? tooltip remove?]}]
+                  (map-indexed (fn [idx {:keys [icon handler disabled? title remove?]}]
                                  [:span.node-icon
                                   {:class (when disabled? "disabled")
-                                   :title (tr tooltip)
+                                   :title (tr title)
                                    :style {:margin-left (when (and (pos? idx)
                                                                    remove?) "0.5em")}}
                                   [:i.ui-icon {:class icon
