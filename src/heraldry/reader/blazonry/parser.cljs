@@ -4,7 +4,7 @@
    [clojure.walk :as walk]
    [instaparse.core :as insta])
   (:require-macros
-   [heraldry.reader.blazonry.grammar :refer [load-grammar-template]]))
+   [heraldry.reader.blazonry.parser :refer [load-grammar-template]]))
 
 (def grammar-template
   (load-grammar-template))
