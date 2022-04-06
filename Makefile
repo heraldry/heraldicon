@@ -18,7 +18,10 @@ prod-backend-release:
 	rm -rf $(PROD_BACKEND_RELEASE_DIR) 2> /dev/null || true
 	yarn shadow-cljs release backend --config-merge '$(PROD_CONFIG)'
 
-prod-backend-deploy: check-before-deploy-backend prod-backend-release
+dirty-prod-backend-deploy: actual-prod-backend-deploy
+prod-backend-deploy: check-before-deploy-backend actual-prod-backend-deploy
+
+actual-prod-backend-deploy:
 	make copy-fonts-to-backend
 	cd backend && yarn sls deploy --stage prod
 	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
@@ -33,7 +36,10 @@ prod-frontend-release:
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(PROD_FRONTEND_RELEASE_DIR)/index.html
 	yarn shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
 
-prod-frontend-deploy: check-before-deploy-frontend prod-frontend-release
+dirty-prod-frontend-deploy: actual-prod-frontend-deploy
+prod-frontend-deploy: check-before-deploy-frontend actual-prod-frontend-deploy
+
+actual-prod-frontend-deploy: prod-frontend-release
 	./sync-with-s3.py $(PROD_FRONTEND_RELEASE_DIR) cdn.heraldicon.org
 	aws --profile heraldry-serverless s3 cp --acl public-read $(PROD_FRONTEND_RELEASE_DIR)/index.html s3://cdn.heraldicon.org/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
 	git tag $(shell date +"deploy-frontend-%Y-%m-%d_%H-%M-%S")
