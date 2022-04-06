@@ -15,11 +15,6 @@
     (str charge-type "es")
     (str charge-type "s")))
 
-(defn charge-type-rules [charge-type]
-  [(str "#'\\b" charge-type "\\b'")
-   (str "#'\\b" (s/replace charge-type " " "-") "\\b'")
-   (str "#'\\b" (s/replace charge-type " " "' '") "\\b'")])
-
 (def default
   {:parser (default-parser)
    :charge-map {}})
@@ -34,25 +29,45 @@
 (def bad-charge-type?
   (memoize -bad-charge-type?))
 
-(defn charge-type-rules-injection [charge-type-rules]
-  (if (seq charge-type-rules)
-    (let [charge-type-alternatives (str "| " (s/join "\n    | " (-> charge-type-rules
-                                                                    keys
-                                                                    sort)))
-          charge-type-rule-definitions (s/join
-                                        "\n"
-                                        (map
-                                         (fn [[rule terminals]]
-                                           (str rule "\n"
-                                                "    = "
-                                                (s/join "\n    | " (sort terminals))))
+(defn make-rule [[rule terminals]]
+  [rule
+   {:tag :alt
+    :parsers (mapcat
+              (fn [terminal]
+                (->> [[terminal]
+                      [(s/replace terminal #" " "-")]
+                      (s/split terminal #" ")]
+                     set
+                     (keep
+                      (fn [terminal-words]
+                        {:tag :cat
+                         :parsers (into [{:tag :opt
+                                          :parser {:tag :nt
+                                                   :keyword :whitespace}
+                                          :hide true}]
+                                        (map (fn [word]
+                                               {:tag :regexp
+                                                :regexp (re-pattern (str "^\\b" word "\\b"))}))
+                                        terminal-words)}))))
+              terminals)
+    :red {:reduction-type :hiccup
+          :key rule}}])
 
-                                         charge-type-rules))]
-      (str charge-type-alternatives
-           "\n"
-           "\n"
-           charge-type-rule-definitions))
-    ""))
+(defn inject-charge-type-rules [parser charge-type-rules]
+  (let [charge-type-rule-definitions (into {} (map make-rule charge-type-rules))
+        charge-other-type-rule {:tag :alt
+                                :parsers (map (fn [[rule _]]
+                                                {:tag :nt
+                                                 :keyword rule})
+                                              charge-type-rules)
+                                :red {:reduction-type :hiccup
+                                      :key :charge-other-type}}]
+    (update parser :grammar
+            (fn [rules]
+              (-> rules
+                  (dissoc :custom-charge-type-lion)
+                  (assoc :charge-other-type charge-other-type-rule)
+                  (merge charge-type-rule-definitions))))))
 
 (defn generate [charges]
   (let [charge-map (->> charges
@@ -87,7 +102,8 @@
                                (keep (fn [charge-type]
                                        (let [rule-name (->> charge-type
                                                             name
-                                                            (str "custom-charge-type-"))
+                                                            (str "custom-charge-type-")
+                                                            keyword)
                                              clean-name (some-> charge-type
                                                                 name
                                                                 s/lower-case
@@ -102,18 +118,77 @@
                                                     (-> clean-name count pos?)
                                                     (not (bad-charge-type? clean-name)))
                                            [rule-name
-                                            (set (concat (charge-type-rules clean-name)
-                                                         (charge-type-rules (pluralize clean-name))))]))))
+                                            (set [clean-name
+                                                  (pluralize clean-name)])]))))
                                (into {}))
-        grammar (s/replace
-                 grammar-template
-                 #"\{% charge-types %\}"
-                 (charge-type-rules-injection charge-type-rules))]
-    {:parser (insta/parser
-              grammar
-              :start :blazon
-              :auto-whitespace :standard)
+        default-parser (:parser default)
+        new-parser (inject-charge-type-rules
+                    default-parser
+                    charge-type-rules)]
+    {:parser new-parser
      :charge-map charge-map}))
+
+(comment
+  {:tag :alt
+   :parsers ({:tag :cat
+              :parsers ({:tag :opt
+                         :parser {:tag :nt
+                                  :keyword :whitespace}
+                         :hide true}
+                        {:tag :regexp
+                         :regexp #"^\\bsejant[ -]erect\\b"})}
+             {:tag :cat
+              :parsers ({:tag :cat
+                         :parsers ({:tag :opt
+                                    :parser {:tag :nt
+                                             :keyword :whitespace}
+                                    :hide true}
+                                   {:tag :regexp
+                                    :regexp #"^\\bsejant\\b"})}
+                        {:tag :cat
+                         :parsers ({:tag :opt
+                                    :parser {:tag :nt
+                                             :keyword :whitespace}
+                                    :hide true}
+                                   {:tag :string
+                                    :string "\\berect\\b"})})})
+   :red {:reduction-type :hiccup
+         :key :SEJANT-ERECT}}
+  [:charge-other-type
+   {:tag :nt
+    :keyword :custom-charge-type-lion
+    :red {:reduction-type :hiccup
+          :key :charge-other-type}}]
+
+  [:charge-other-type {:tag :alt
+                       :parsers ({:tag :nt
+                                  :keyword :custom-charge-type-lion}
+                                 {:tag :nt
+                                  :keyword :custom-charge-type-lion2})
+                       :red {:reduction-type :hiccup
+                             :key :charge-other-type}}]
+
+  [:custom-charge-type-lion
+   {:tag :alt
+    :parsers [{:tag :cat
+               :parsers [{:tag :opt
+                          :parser {:tag :nt
+                                   :keyword :whitespace}
+                          :hide true}
+                         {:tag :regexp
+                          :regexp #"^\\blion\\b"}]}
+              {:tag :cat
+               :parsers [{:tag :opt
+                          :parser {:tag :nt
+                                   :keyword :whitespace}
+                          :hide true}
+                         {:tag :regexp
+                          :regexp #"^\\blions\\b"}]}]
+    :red {:reduction-type :hiccup
+          :key :custom-charge-type-lion}}]
+
+;;
+  )
 
 (def ast-node-normalization
   {:root-field :field

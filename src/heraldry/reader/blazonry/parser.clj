@@ -1,6 +1,5 @@
 (ns heraldry.reader.blazonry.parser
   (:require
-   [clojure.string :as s]
    [clojure.walk :as walk]
    [instaparse.combinators-source :as c]
    [instaparse.core :refer [parser]]
@@ -9,14 +8,10 @@
 (defmacro load-grammar-template []
   (res/slurp-resource &env "grammar.ebnf"))
 
-(defmacro load-default-grammar []
-  (-> (res/slurp-resource &env "grammar.ebnf")
-      (s/replace #"\{% charge-types %\}" "")))
-
 (defmacro default-parser
   "Based on instaparse's defparser"
   []
-  (let [macro-time-parser (parser (load-default-grammar))
+  (let [macro-time-parser (parser (res/slurp-resource &env "grammar.ebnf"))
         pre-processed-grammar (:grammar macro-time-parser)
         grammar-producing-code
         (->> pre-processed-grammar
