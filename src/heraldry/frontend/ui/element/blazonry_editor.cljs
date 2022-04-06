@@ -150,7 +150,7 @@
             cursor-index (-> cursor-index
                              (max index)
                              (min (count value)))
-            typed-string (subs value index cursor-index)
+            typed-string (s/trim (subs value index cursor-index))
             auto-complete-choices (->> reason
                                        (mapcat (fn [{:keys [tag expecting]}]
                                                  (case tag
