@@ -62,6 +62,10 @@
                                                 (if (-> charge :is-public)
                                                   0
                                                   1)
+                                                (cond
+                                                  (-> charge :name s/lower-case (s/includes? "ww")) 0
+                                                  (-> charge :name s/lower-case (s/includes? "sodacan")) 1
+                                                  :else 2)
                                                 (case (:attitude charge)
                                                   :rampant [0 :_]
                                                   nil [1 :_]
