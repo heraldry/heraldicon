@@ -870,12 +870,14 @@
   (let [charge-options (some->> nodes
                                 (filter (type? #{:MIRRORED
                                                  :REVERSED
-                                                 :star-points
-                                                 :attitude
-                                                 :facing}))
+                                                 :star-points}))
                                 (map (fn [[key & nodes]]
                                        [key nodes]))
                                 (into {}))
+        attitude (some-> (get-child #{:attitude} nodes)
+                         ast->hdn)
+        facing (some-> (get-child #{:facing} nodes)
+                       ast->hdn)
         charge-type (-> hdn :type name keyword)]
     (cond-> hdn
       (get charge-options :MIRRORED) (assoc-in [:geometry :mirrored?] true)
@@ -887,8 +889,8 @@
                                                                       (get-child #{:amount})
                                                                       ast->hdn
                                                                       (min max-star-points))))
-      (get charge-options :attitude) (assoc :attitude (ast->hdn (get charge-options :attitude)))
-      (get charge-options :facing) (assoc :facing (ast->hdn (get charge-options :facing))))))
+      attitude (assoc :attitude attitude)
+      facing (assoc :facing facing))))
 
 (def charge-type-map
   (->> charge.options/charges
