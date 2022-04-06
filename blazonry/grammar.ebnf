@@ -950,14 +950,14 @@ charge-standard
     | CRESCENT REVERSED?
 
 (* need one of them to have a valid charge-other-type rule,
-   it will be overwritten by the placeholder, if it contains lion as well *)
+   it will be overwritten when charges have been loaded, if
+   it contains lion as well *)
 custom-charge-type-lion
     = #'\blion\b'
     | #'\blions\b'
 
 charge-other-type
     = custom-charge-type-lion
-    {% charge-types %}
 
 charge-other
     = charge-other-type AND* attitude? AND* facing? mirrored-reversed*
