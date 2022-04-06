@@ -4,6 +4,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.common.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.default :as default]
+   [heraldry.context :as c]
    [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.attribution :as attribution]
    [heraldry.frontend.charge :as charge]
@@ -16,6 +17,7 @@
    [heraldry.frontend.state :as state]
    [heraldry.frontend.ui.core :as ui]
    [heraldry.frontend.ui.element.arms-select :as arms-select]
+   [heraldry.frontend.ui.element.blazonry-editor :as blazonry-editor]
    [heraldry.frontend.user :as user]
    [heraldry.interface :as interface]
    [heraldry.render :as render]
@@ -73,14 +75,16 @@
      [charge-attribution]
      [ribbon-attribution]]))
 
+(defn base-context []
+  (assoc
+   context/default
+   :path form-db-path
+   :render-options-path (conj form-db-path :render-options)
+   :select-component-fn (fn [event context]
+                          (state/dispatch-on-event event [:ui-component-node-select (:path context)]))))
+
 (defn render-coat-of-arms []
-  [render/achievement
-   (assoc
-    context/default
-    :path form-db-path
-    :render-options-path (conj form-db-path :render-options)
-    :select-component-fn (fn [event context]
-                           (state/dispatch-on-event event [:ui-component-node-select (:path context)])))])
+  [render/achievement (base-context)])
 
 (defn blazonry []
   [:div.blazonry
@@ -336,6 +340,14 @@
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-arms))}
     [tr :string.button/create]]
+   " "
+   [:button.button.primary
+    {:on-click #(do
+                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (reife/push-state :create-arms)
+                  (blazonry-editor/open (c/++ (base-context) :coat-of-arms :field)))}
+    [tr :string.button/create-from-blazon]]
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
 
