@@ -292,7 +292,7 @@
         (complete-parsing text parse-result)))))
 
 (defn on-editor-change [new-editor-state]
-  (rf/dispatch [:set editor-state-path new-editor-state])
+  (rf/dispatch-sync [:set editor-state-path new-editor-state])
   (rf/dispatch [::set-change-timer attempt-parsing]))
 
 (defn put-cursor-at [^draft-js/EditorState state index]
