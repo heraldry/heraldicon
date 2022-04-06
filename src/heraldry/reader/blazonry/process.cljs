@@ -1,5 +1,6 @@
 (ns heraldry.reader.blazonry.process
   (:require
+   [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldry.coat-of-arms.charge.options :as charge.options]
    [heraldry.util :as util]))
@@ -256,24 +257,54 @@
                                                           :attitude
                                                           (or :rampant)
                                                           (= attitude)))))
-        candidates (if (seq candidates-with-attitude)
-                     candidates-with-attitude
-                     candidates)
+        charge-name (-> short-charge-type
+                        name
+                        (s/replace "-" " "))
+        [attitude-warning
+         candidates] (if (and attitude
+                              (seq candidates)
+                              (empty? candidates-with-attitude))
+                       [(str "No charge '"
+                             charge-name
+                             "' found with attitude '"
+                             (-> attitude
+                                 name
+                                 (s/replace "-" " "))
+                             "', using best match.")
+                        candidates]
+                       [nil
+                        candidates-with-attitude])
         candidates-with-facing (cond->> candidates
                                  facing (filter (fn [charge]
                                                   (-> charge
                                                       :facing
                                                       (or :to-dexter)
                                                       (= facing)))))
-        candidates (if (seq candidates-with-facing)
-                     candidates-with-facing
-                     candidates)]
+        [facing-warning
+         candidates] (if (and facing
+                              (seq candidates)
+                              (empty? candidates-with-facing))
+                       [(str "No charge '"
+                             charge-name
+                             "' found facing '"
+                             (-> facing
+                                 name
+                                 (s/replace "-" " "))
+                             "', using best match.")
+                        candidates]
+                       [nil
+                        candidates-with-facing])
+        warnings (cond-> []
+                   attitude-warning (conj attitude-warning)
+                   facing-warning (conj facing-warning))]
     (-> candidates
         first
         ;; TODO: this is not ideal
         (or {:id nil
              :version nil})
-        (select-keys [:id :version]))))
+        (select-keys [:id :version])
+        (cond->
+          (seq warnings) (assoc ::warnings warnings)))))
 
 (defn is-charge-type? [charge-type]
   (some-> charge-type namespace (= "heraldry.charge.type")))

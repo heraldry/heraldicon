@@ -243,7 +243,11 @@
                    seq)
                   (keep (fn [data]
                           (when (map? data)
-                            (:heraldry.reader.blazonry.transform/warnings data))))
+                            (let [warnings (concat
+                                            (:heraldry.reader.blazonry.transform/warnings data)
+                                            (:heraldry.reader.blazonry.process/warnings data))]
+                              (when (seq warnings)
+                                warnings)))))
                   (apply concat))})
 
 (def change-dedupe-time
@@ -371,7 +375,9 @@
   (walk/postwalk
    (fn [data]
      (if (map? data)
-       (dissoc data :heraldry.reader.blazonry.transform/warnings)
+       (dissoc data
+               :heraldry.reader.blazonry.transform/warnings
+               :heraldry.reader.blazonry.process/warnings)
        data))
    data))
 
