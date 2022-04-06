@@ -900,17 +900,15 @@
                    s/upper-case
                    keyword)
                key]))
-       (into {})))
-
-(defn get-standard-charge-type [nodes]
-  (some->> nodes
-           (get-child charge-type-map)
-           first
-           (get charge-type-map)))
+       (into {:ESTOILE :heraldry.charge.type/star})))
 
 (defmethod ast->hdn :charge-standard [[_ & nodes]]
-  (-> {:type (get-standard-charge-type nodes)}
-      (add-charge-options nodes)))
+  (let [charge-type-node-kind (first (get-child charge-type-map nodes))
+        charge-type (get charge-type-map charge-type-node-kind)]
+    (-> {:type charge-type}
+        (add-charge-options nodes)
+        (cond->
+          (= charge-type-node-kind :ESTOILE) (assoc :wavy-rays? true)))))
 
 (defmethod ast->hdn :charge-other-type [[_ custom-charge-type-node]]
   (let [normalized-keyword (-> custom-charge-type-node

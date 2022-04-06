@@ -474,6 +474,8 @@ RUSTRE = #"\brustres?\b"
 STAR
     = #"\bstars?\b"
     | #"\bmullets?\b"
+ESTOILE
+    = #"\bestoiles?\b"
 CRESCENT = #"\bcrescents?\b"
 
 PALEWISE = #"\bpale[ -]?wise\b"
@@ -882,19 +884,6 @@ semy
     = <A>? <SEMY> <of-or-with>? layout? charge field tincture-modifier*
     | <A>? <SEMY> <of-or-with>? layout? charge tincture-modifier* field
 
-(* used for suggestion labeling *)
-charge-standard-type
-    = ROUNDEL
-    | ANNULET
-    | BILLET
-    | ESCUTCHEON
-    | LOZENGE
-    | FUSIL
-    | MASCLE
-    | RUSTRE
-    | STAR
-    | CRESCENT
-
 charge
     = charge-standard fimbriation?
     | charge-other fimbriation?
@@ -934,6 +923,7 @@ charge-standard-type
     | MASCLE
     | RUSTRE
     | STAR
+    | ESTOILE
     | CRESCENT
 
 charge-standard
@@ -945,8 +935,9 @@ charge-standard
     | FUSIL
     | MASCLE
     | RUSTRE
-    | STAR (star-points? REVERSED?
-            | REVERSED? star-points?)
+    | (STAR
+       | ESTOILE) (star-points? REVERSED?
+                   | REVERSED? star-points?)
     | CRESCENT REVERSED?
 
 (* need one of them to have a valid charge-other-type rule,
