@@ -268,10 +268,10 @@
         content ^draft-js/ContentState (.getCurrentContent editor-state)
         current-text (.getPlainText content)]
     (when (= text current-text)
-      (rf/dispatch [:set editor-state-path (draft-js/EditorState.set
-                                            editor-state
-                                            (clj->js
-                                             {:decorator (unknown-string-decorator index)}))])
+      (rf/dispatch-sync [:set editor-state-path (draft-js/EditorState.set
+                                                 editor-state
+                                                 (clj->js
+                                                  {:decorator (unknown-string-decorator index)}))])
       (rf/dispatch [:set last-parsed-path text])
       (rf/dispatch [:set status-path (build-parse-status hdn error)])
       (if auto-complete
@@ -293,6 +293,10 @@
 
 (defn on-editor-change [new-editor-state]
   (rf/dispatch [:set editor-state-path new-editor-state])
+  (rf/dispatch [::set-change-timer attempt-parsing]))
+
+(defn on-editor-change-sync [new-editor-state]
+  (rf/dispatch-sync [:set editor-state-path new-editor-state])
   (rf/dispatch [::set-change-timer attempt-parsing]))
 
 (defn put-cursor-at [^draft-js/EditorState state index]
@@ -362,7 +366,7 @@
                         (let [state @(rf/subscribe [:get editor-state-path])]
                           [:> draft-js/Editor
                            {:editorState state
-                            :onChange on-editor-change
+                            :onChange on-editor-change-sync
                             :keyBindingFn (fn [event]
                                             (if (= (.-code event) "Tab")
                                               (do
