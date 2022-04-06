@@ -879,8 +879,8 @@ charge-group
     | amount? charge tincture-modifier* charge-arrangement? field
 
 semy
-    = <SEMY> <of-or-with>? layout? charge field tincture-modifier*
-    | <SEMY> <of-or-with>? layout? charge tincture-modifier* field
+    = <A>? <SEMY> <of-or-with>? layout? charge field tincture-modifier*
+    | <A>? <SEMY> <of-or-with>? layout? charge tincture-modifier* field
 
 (* used for suggestion labeling *)
 charge-standard-type
