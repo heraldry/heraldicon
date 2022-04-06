@@ -17,7 +17,7 @@
 (defn charge-type-rules [charge-type]
   [(str "#'\\b" charge-type "\\b'")
    (str "#'\\b" (s/replace charge-type " " "-") "\\b'")
-   (str "#'\\b" (s/replace charge-type " " "' +'") "\\b'")])
+   (str "#'\\b" (s/replace charge-type " " "' '") "\\b'")])
 
 (declare default)
 
@@ -31,28 +31,28 @@
 (def bad-charge-type?
   (memoize -bad-charge-type?))
 
+(defn charge-type-rules-injection [charge-type-rules]
+  (if (seq charge-type-rules)
+    (let [charge-type-alternatives (str "| " (s/join "\n    | " (-> charge-type-rules
+                                                                    keys
+                                                                    sort)))
+          charge-type-rule-definitions (s/join
+                                        "\n"
+                                        (map
+                                         (fn [[rule terminals]]
+                                           (str rule "\n"
+                                                "    = "
+                                                (s/join "\n    | " (sort terminals))))
+
+                                         charge-type-rules))]
+      (str charge-type-alternatives
+           "\n"
+           "\n"
+           charge-type-rule-definitions))
+    ""))
+
 (defn generate [charges]
-  (let [charge-type-rules (->> charges
-                               (map #(-> % :type name))
-                               (mapcat (fn [charge-type]
-                                         (let [clean-name (some-> charge-type
-                                                                  s/lower-case
-                                                                  (s/replace #"[^a-z0-9]+" " ")
-                                                                  s/trim)]
-                                           (when (and (-> clean-name count pos?)
-                                                      (not (bad-charge-type? clean-name)))
-                                             (concat (charge-type-rules clean-name)
-                                                     (charge-type-rules (pluralize clean-name)))))))
-                               set
-                               sort)
-        charge-type-rules-injection (if (seq charge-type-rules)
-                                      (str "| " (s/join "| " charge-type-rules))
-                                      "")
-        grammar (s/replace
-                 grammar-template
-                 #"\{% charge-types %\}"
-                 charge-type-rules-injection)
-        charge-map (->> charges
+  (let [charge-map (->> charges
                         (group-by #(some-> % :type name keyword))
                         (map (fn [[key value]]
                                [key (sort-by (fn [charge]
@@ -70,7 +70,28 @@
                                                   [0 :_]
                                                   [1 (:facing charge)])
                                                 (:id charge)]) value)]))
-                        (into {}))]
+                        (into {}))
+        charge-type-rules (->> charge-map
+                               keys
+                               (keep (fn [charge-type]
+                                       (let [rule-name (->> charge-type
+                                                            name
+                                                            (str "custom-charge-type-"))
+                                             clean-name (some-> charge-type
+                                                                name
+                                                                s/lower-case
+                                                                (s/replace #"[^a-z0-9]+" " ")
+                                                                s/trim)]
+                                         (when (and (-> clean-name count pos?)
+                                                    (not (bad-charge-type? clean-name)))
+                                           [rule-name
+                                            (set (concat (charge-type-rules clean-name)
+                                                         (charge-type-rules (pluralize clean-name))))]))))
+                               (into {}))
+        grammar (s/replace
+                 grammar-template
+                 #"\{% charge-types %\}"
+                 (charge-type-rules-injection charge-type-rules))]
     {:parser (insta/parser
               grammar
               :start :blazon

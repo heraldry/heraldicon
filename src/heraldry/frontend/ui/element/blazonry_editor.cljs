@@ -46,7 +46,11 @@
 
 (rf/reg-event-db ::update-parser
   (fn [db [_ charges]]
-    (assoc-in db parser-path (parser/generate charges))))
+    (cond-> db
+      (-> db
+          (get-in (conj parser-path :charges))
+          (not= charges)) (assoc-in parser-path {:charges charges
+                                                 :parser (parser/generate charges)}))))
 
 (rf/reg-event-db ::clear-state
   (fn [db _]
@@ -57,21 +61,10 @@
 
 (rf/reg-sub :blazonry-parser
   (fn [_ _]
-    (rf/subscribe [:get parser-path]))
+    (rf/subscribe [:get (conj parser-path :parser)]))
 
   (fn [value _]
-    (if value
-      value
-      (do
-        (let [update-parser #(rf/dispatch [::update-parser %])
-              [status charges] (state/async-fetch-data
-                                charge-select/list-db-path
-                                :all
-                                charge-select/fetch-charge-list
-                                :on-success update-parser)]
-          (when (= status :done)
-            (update-parser charges)))
-        parser/default))))
+    (or value parser/default)))
 
 (rf/reg-sub ::parser-status
   (fn [_ _]
@@ -447,6 +440,15 @@
      [:div.bottom
       [:p [tr :string.tooltip/alpha-feature-warning]]]]]
    [(fn []
+      ;; TODO: not the best way to load this
+      (let [update-parser #(rf/dispatch [::update-parser %])
+            [status charges] (state/async-fetch-data
+                              charge-select/list-db-path
+                              :all
+                              charge-select/fetch-charge-list
+                              :on-success update-parser)]
+        (when (= status :done)
+          (update-parser charges)))
       [:div
        [:div {:style {:display "flex"
                       :flex-flow "row"

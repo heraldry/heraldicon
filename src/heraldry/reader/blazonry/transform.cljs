@@ -910,9 +910,13 @@
   (-> {:type (get-standard-charge-type nodes)}
       (add-charge-options nodes)))
 
-(defmethod ast->hdn :charge-other-type [[_ s]]
-  (let [normalized-name (s/replace s #"[ -]+" "-")]
-    (keyword "heraldry.charge.type" normalized-name)))
+(defmethod ast->hdn :charge-other-type [[_ custom-charge-type-node]]
+  (let [normalized-keyword (-> custom-charge-type-node
+                               first
+                               name
+                               (s/replace "custom-charge-type-" "")
+                               keyword)]
+    (keyword "heraldry.charge.type" normalized-keyword)))
 
 (defmethod ast->hdn :charge-other [[_ & nodes]]
   (let [charge-type (-> (get-child #{:charge-other-type} nodes)
