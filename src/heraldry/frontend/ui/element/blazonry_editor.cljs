@@ -260,6 +260,26 @@
         (js/clearTimeout timer))
       (assoc-in db timer-path (js/setTimeout f change-dedupe-time)))))
 
+(defn complete-parsing [text {:keys [hdn
+                                     error
+                                     auto-complete
+                                     index]}]
+  (let [editor-state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
+        content ^draft-js/ContentState (.getCurrentContent editor-state)
+        current-text (.getPlainText content)]
+    (when (= text current-text)
+      (rf/dispatch [:set editor-state-path (draft-js/EditorState.set
+                                            editor-state
+                                            (clj->js
+                                             {:decorator (unknown-string-decorator index)}))])
+      (rf/dispatch [:set last-parsed-path text])
+      (rf/dispatch [:set status-path (build-parse-status hdn error)])
+      (if auto-complete
+        (auto-complete/set-data auto-complete)
+        (auto-complete/clear-data))
+      (when hdn
+        (rf/dispatch [:set (conj hdn-path :coat-of-arms) {:field hdn}])))))
+
 (defn attempt-parsing []
   (let [editor-state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
         content ^draft-js/ContentState (.getCurrentContent editor-state)
@@ -268,22 +288,8 @@
     (when (not= text last-parsed)
       (let [cursor-index (cursor-index editor-state)
             parser @(rf/subscribe [:blazonry-parser])
-            {:keys [hdn
-                    error
-                    auto-complete
-                    index]} (parse-blazonry text cursor-index parser)
-            new-editor-state (draft-js/EditorState.set
-                              editor-state
-                              (clj->js
-                               {:decorator (unknown-string-decorator index)}))]
-        (rf/dispatch [:set last-parsed-path text])
-        (rf/dispatch [:set status-path (build-parse-status hdn error)])
-        (if auto-complete
-          (auto-complete/set-data auto-complete)
-          (auto-complete/clear-data))
-        (when hdn
-          (rf/dispatch [:set (conj hdn-path :coat-of-arms) {:field hdn}]))
-        (rf/dispatch [:set editor-state-path new-editor-state])))))
+            parse-result (parse-blazonry text cursor-index parser)]
+        (complete-parsing text parse-result)))))
 
 (defn on-editor-change [new-editor-state]
   (rf/dispatch [:set editor-state-path new-editor-state])
