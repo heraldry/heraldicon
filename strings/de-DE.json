@@ -906,6 +906,8 @@
     }
   },
   "blazonry-editor": {
-    "success": "Verstanden"
+    "success": "Verstanden",
+    "warning": "Warnung",
+    "error": "Fehler"
   }
 }
