@@ -910,6 +910,8 @@
     }
   },
   "blazonry-editor": {
-    "success": "Understood"
+    "success": "Understood",
+    "warning": "Warning",
+    "error": "Error"
   }
 }

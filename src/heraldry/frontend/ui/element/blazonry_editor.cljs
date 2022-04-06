@@ -70,15 +70,16 @@
   (fn [_ _]
     (rf/subscribe [:get status-path]))
 
-  (fn [{:keys [status warnings]} _]
+  (fn [{:keys [status error warnings]} _]
     [:<>
      (case status
        :success [:span.parser-success [tr :string.blazonry-editor/success]]
+       :error [:span.parser-error [tr :string.blazonry-editor/error] ": " error]
        nil)
      (when (seq warnings)
        (into [:ul.parser-warnings]
              (map (fn [warning]
-                    [:li "Warning: " warning]) warnings)))]))
+                    [:li [tr :string.blazonry-editor/warning] ": " warning]) warnings)))]))
 
 (defn parser-status []
   @(rf/subscribe [::parser-status]))
@@ -174,6 +175,8 @@
                                        vec)
             position (caret-position index)]
         {:value value
+         :error (when (and (not reason) (not reason))
+                  (ex-message e))
          :auto-complete (cond-> {:choices auto-complete-choices
                                  :on-click (fn [choice]
                                              (rf/dispatch [:auto-completion-clicked index cursor-index choice]))}
@@ -228,10 +231,12 @@
         offset (.getFocusOffset selection)]
     (+ block-start offset)))
 
-(defn build-parse-status [hdn]
+(defn build-parse-status [hdn error]
   {:status (if hdn
              :success
-             :error)
+             (when error
+               :error))
+   :error error
    :warnings (->> hdn
                   (tree-seq
                    (some-fn vector? map? seq?)
@@ -260,6 +265,7 @@
       (let [cursor-index (cursor-index editor-state)
             parser @(rf/subscribe [:blazonry-parser])
             {:keys [hdn
+                    error
                     auto-complete
                     index]} (parse-blazonry text cursor-index parser)
             new-editor-state (draft-js/EditorState.set
@@ -267,7 +273,7 @@
                               (clj->js
                                {:decorator (unknown-string-decorator index)}))]
         (rf/dispatch [:set last-parsed-path text])
-        (rf/dispatch [:set status-path (build-parse-status hdn)])
+        (rf/dispatch [:set status-path (build-parse-status hdn error)])
         (if auto-complete
           (auto-complete/set-data auto-complete)
           (auto-complete/clear-data))
