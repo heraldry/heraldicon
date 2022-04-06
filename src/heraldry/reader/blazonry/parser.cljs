@@ -67,12 +67,15 @@
                                                   (-> charge :name s/lower-case (s/includes? "sodacan")) 1
                                                   :else 2)
                                                 (case (:attitude charge)
-                                                  :rampant [0 :_]
-                                                  nil [1 :_]
-                                                  [2 (:attitude charge)])
-                                                (if (-> charge :facing (or :to-dexter))
-                                                  [0 :_]
-                                                  [1 (:facing charge)])
+                                                  :none [0 :_]
+                                                  :rampant [1 :_]
+                                                  nil [2 :_]
+                                                  [3 (:attitude charge)])
+                                                (case (:facing charge)
+                                                  :none [0 :_]
+                                                  :to-dexter [1 :_]
+                                                  nil [2 :_]
+                                                  [3 (:facing charge)])
                                                 (:id charge)]) value)]))
                         (into {}))
         charge-type-rules (->> charge-map
