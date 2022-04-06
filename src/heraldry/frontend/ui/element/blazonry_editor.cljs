@@ -268,10 +268,10 @@
         content ^draft-js/ContentState (.getCurrentContent editor-state)
         current-text (.getPlainText content)]
     (when (= text current-text)
-      (rf/dispatch [:set editor-state-path (draft-js/EditorState.set
-                                            editor-state
-                                            (clj->js
-                                             {:decorator (unknown-string-decorator index)}))])
+      (rf/dispatch-sync [:set editor-state-path (draft-js/EditorState.set
+                                                 editor-state
+                                                 (clj->js
+                                                  {:decorator (unknown-string-decorator index)}))])
       (rf/dispatch [:set last-parsed-path text])
       (rf/dispatch [:set status-path (build-parse-status hdn error)])
       (if auto-complete
@@ -292,7 +292,7 @@
         (complete-parsing text parse-result)))))
 
 (defn on-editor-change [new-editor-state]
-  (rf/dispatch [:set editor-state-path new-editor-state])
+  (rf/dispatch-sync [:set editor-state-path new-editor-state])
   (rf/dispatch [::set-change-timer attempt-parsing]))
 
 (defn put-cursor-at [^draft-js/EditorState state index]
