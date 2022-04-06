@@ -76,6 +76,7 @@
                                                   :to-dexter [1 :_]
                                                   nil [2 :_]
                                                   [3 (:facing charge)])
+                                                (-> charge :attributes count)
                                                 (:id charge)]) value)]))
                         (into {}))
         charge-type-rules (->> charge-map
