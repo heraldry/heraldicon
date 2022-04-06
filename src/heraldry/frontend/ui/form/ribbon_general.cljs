@@ -310,7 +310,7 @@
 
       [ribbon-segments-form
        (c/++ context :ribbon)
-       :tooltip :string.ribbon.text/segment-explanation]])])
+       :title :string.ribbon.text/segment-explanation]])])
 
 (defmethod ui.interface/component-node-data :heraldry.component/ribbon-general [context]
   {:title :string.miscellaneous/general

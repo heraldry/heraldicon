@@ -64,16 +64,16 @@
                           {:context component-context
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
-                                              :tooltip :string.tooltip/move-down
+                                              :title :string.tooltip/move-down
                                               :handler #(state/dispatch-on-event % [:move-element component-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
-                                              :tooltip :string.tooltip/move-up
+                                              :title :string.tooltip/move-up
                                               :handler #(state/dispatch-on-event % [:move-element component-context (inc idx)])}]
                                       removable? (conj
                                                   {:icon "far fa-trash-alt"
                                                    :remove? true
-                                                   :tooltip :string.tooltip/remove
+                                                   :title :string.tooltip/remove
                                                    :handler #(state/dispatch-on-event
                                                               %
                                                               [:remove-element component-context

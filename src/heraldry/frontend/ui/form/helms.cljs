@@ -28,15 +28,15 @@
                           {:context helm-context
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
-                                      :tooltip :string.tooltip/move-down
+                                      :title :string.tooltip/move-down
                                       :handler #(state/dispatch-on-event % [:move-element helm-context (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-helms))
-                                      :tooltip :string.tooltip/move-up
+                                      :title :string.tooltip/move-up
                                       :handler #(state/dispatch-on-event % [:move-element helm-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
                                       :remove? true
-                                      :tooltip :string.tooltip/remove
+                                      :title :string.tooltip/remove
                                       :handler #(state/dispatch-on-event % [:remove-element helm-context])}]}))))}))
 
 (defmethod ui.interface/component-form-data :heraldry.component/helms [_context]
