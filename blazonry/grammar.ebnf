@@ -949,8 +949,14 @@ charge-standard
             | REVERSED? star-points?)
     | CRESCENT REVERSED?
 
+(* need one of them to have a valid charge-other-type rule,
+   it will be overwritten by the placeholder, if it contains lion as well *)
+custom-charge-type-lion
+    = #'\blion\b'
+    | #'\blions\b'
+
 charge-other-type
-    = #"\blions?\b"
+    = custom-charge-type-lion
     {% charge-types %}
 
 charge-other
