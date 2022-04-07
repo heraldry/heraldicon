@@ -302,19 +302,19 @@
                                              partition-type) (assoc-in [:origin :point] :top)))))
 
 (def field-locations
-  {:DEXTER :dexter
-   :SINISTER :sinister
-   :CHIEF :chief
-   :BASE :base
-   :FESS :fess
-   :DEXTER-CHIEF :chief-dexter
-   :CHIEF-DEXTER :chief-dexter
-   :SINISTER-CHIEF :chief-sinister
-   :CHIEF-SINISTER :chief-sinister
-   :DEXTER-BASE :base-dexter
-   :BASE-DEXTER :base-dexter
-   :SINISTER-BASE :base-sinister
-   :BASE-SINISTER :base-sinister})
+  {:POINT-DEXTER :dexter
+   :POINT-SINISTER :sinister
+   :POINT-CHIEF :chief
+   :POINT-BASE :base
+   :POINT-FESS :fess
+   :POINT-DEXTER-CHIEF :chief-dexter
+   :POINT-CHIEF-DEXTER :chief-dexter
+   :POINT-SINISTER-CHIEF :chief-sinister
+   :POINT-CHIEF-SINISTER :chief-sinister
+   :POINT-DEXTER-BASE :base-dexter
+   :POINT-BASE-DEXTER :base-dexter
+   :POINT-SINISTER-BASE :base-sinister
+   :POINT-BASE-SINISTER :base-sinister})
 
 (defmethod ast->hdn :field-location [[_ & nodes]]
   (some-> (get-child field-locations nodes)

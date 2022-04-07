@@ -342,32 +342,33 @@ REVERSED
     | #"\binverted\b"
 THROUGHOUT = #"\bthroughout\b"
 
-DEXTER = #"\bdexter\b"
-SINISTER = #"\bsinister\b"
-CHIEF = #"\bchief\b"
-BASE = #"\bbase\b"
-DEXTER-CHIEF
+POINT-DEXTER = #"\bdexter\b"
+POINT-SINISTER = #"\bsinister\b"
+POINT-CHIEF = #"\bchief\b"
+POINT-BASE = #"\bbase\b"
+POINT-FESS = #"\bfess\b"
+POINT-DEXTER-CHIEF
     = #"\bdexter[ -]chief\b"
     | #"\bdexter" #"chief\b"
-CHIEF-DEXTER
+POINT-CHIEF-DEXTER
     = #"\bchief[ -]dexter\b"
     | #"\bchief" #"dexter\b"
-SINISTER-CHIEF
+POINT-SINISTER-CHIEF
     = #"\bsinister[ -]chief\b"
     | #"\bsinister" #"chief\b"
-CHIEF-SINISTER
+POINT-CHIEF-SINISTER
     = #"\bchief[ -]sinister\b"
     | #"\bchief" #"sinister\b"
-DEXTER-BASE
+POINT-DEXTER-BASE
     = #"\bdexter[ -]base\b"
     | #"\bdexter" #"base\b"
-BASE-DEXTER
+POINT-BASE-DEXTER
     = #"\bbase[ -]dexter\b"
     | #"\bbase" #"dexter\b"
-SINISTER-BASE
+POINT-SINISTER-BASE
     = #"\bsinister[ -]base\b"
     | #"\bsinister" #"base\b"
-BASE-SINISTER
+POINT-BASE-SINISTER
     = #"\bbase[ -]sinister\b"
     | #"\bbase" #"sinister\b"
 
@@ -618,19 +619,19 @@ layout
     | vertical-layout-explicit layout-times? horizontal-layout
 
 field-location
-    = DEXTER
-    | SINISTER
-    | CHIEF
-    | BASE
-    | FESS
-    | DEXTER-CHIEF
-    | CHIEF-DEXTER
-    | SINISTER-CHIEF
-    | CHIEF-SINISTER
-    | DEXTER-BASE
-    | BASE-DEXTER
-    | SINISTER-BASE
-    | BASE-SINISTER
+    = POINT-DEXTER
+    | POINT-SINISTER
+    | POINT-CHIEF
+    | POINT-BASE
+    | POINT-FESS
+    | POINT-DEXTER-CHIEF
+    | POINT-CHIEF-DEXTER
+    | POINT-SINISTER-CHIEF
+    | POINT-CHIEF-SINISTER
+    | POINT-DEXTER-BASE
+    | POINT-BASE-DEXTER
+    | POINT-SINISTER-BASE
+    | POINT-BASE-SINISTER
 
 field-reference
     = ordinal-including-dot
@@ -792,8 +793,8 @@ ordinary-option
     | reversed-throughout
 
 <dexter-sinister>
-    = AND* DEXTER
-    | AND* SINISTER
+    = AND* POINT-DEXTER
+    | AND* POINT-SINISTER
 
 <humetty-voided-enhanced-dehanced-dexter-sinister>
     = humetty-voided
