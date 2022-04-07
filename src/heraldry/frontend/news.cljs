@@ -26,6 +26,43 @@
     [:p [tr :string.text.home/release-news-info-1]]
     [:p [tr :string.text.home/release-news-info-2]]]
 
+   [:h3 "2022-04-07 - Blazonry reader, translations, bordures with line styles, metadata"]
+   [:div.release-row
+    [:div.info
+     [:p "The main new feature is a blazonry reader, you can click on the pen nib next to any field to invoke it or click the dedicated button to create new arms from a blazon. Features include:"]
+     [:ul
+      [:li "immediate rendering of the blazon, feedback if a word is not understood"]
+      [:li "auto completion suggestions for any incomplete or malformed blazon"]
+      [:li "support for all charges added by the community, your blazonry reader will understand all publically available charges and your private ones"]]
+     [:p "supported concepts:"]
+     [:ul
+      [:li "partitions with sub fields and line styles, e.g. 'quartered i. and iv. azure, ii. and iii. or'"]
+      [:li "ordinaries with line styles, fimbriation, and cottising, e.g. 'or, a fess wavy fimbriared gules argent'"]
+      [:li "humetty/voided ordinaries, e.g. 'or, a pale humetty voided azure'"]
+      [:li "ordinary groups, e.g. 'or, three barrulets gules'"]
+      [:li "charges and charge groups with fimbriation, e.g. 'or, in chief three estoiles of 8 points sable', 'or, 12 roundels sable in orle' (or 'in annullo', 'palewise', etc.)"]
+      [:li "semy, e.g. 'azure semy fleur-de-lis or'"]
+      [:li "tincture/field referencing, e.g. 'per pale or and azure, a fess azure charged with a roundel of the field' (or 'of the first')"]
+      [:li "various modifiers for ordinaries and charges that support it, e.g. 'reversed', 'mirrored', 'truncated', 'throughout', 'enhanced', etc."]]
+     [:p "Additional changes and new features:"]
+     [:ul
+      [:li "the site now has a language selection, so far only English and German are really populated, but any help is welcome at "
+       [:a {:href "https://crowdin.com/project/heraldicon"
+            :target "_blank"} "Crowdin"]]
+      [:li "pages and dialogs that list objects now have preview images and better filtering options"]
+      [:li "bordures and orles can have line styles now"]
+      [:li "furs now have an option to offset and scale them"]
+      [:li "there's a dedicated star/mullet ordinary now, which allows an arbitrary number of points and wavy rays (to make an estoile)"]
+      [:li "users can have an avatar now, for the moment it uses the Gravatar ("
+       [:a {:href "https://gravatar.com"
+            :target "_blank"} "Gravatar"] ") for the user's email address"]
+      [:li "more escutcheon options, in particular the flag shape now can be used with all the usual and arbitrary aspect ratios, and it can have a configurable swallow tail"]
+      [:li "allow arbitrary metadata for charges, arms, collections, which is considered for searching"]
+      [:li "various element options allow a wider range of values and/or got better defaults"]
+      [:li "performance improvements and bugfixes"]]]
+    [:div
+     (release-image "/img/2022-04-07-release-update.png")]]
+
    [:h3 "2022-01-09 - Happy new year!"]
    [:div.release-row
     [:div.info
