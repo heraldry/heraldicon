@@ -5,9 +5,6 @@
    [instaparse.core :refer [parser]]
    [shadow.resource :as res]))
 
-(defmacro load-grammar-template []
-  (res/slurp-resource &env "grammar.ebnf"))
-
 (defmacro default-parser
   "Based on instaparse's defparser"
   []
