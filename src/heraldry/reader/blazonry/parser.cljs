@@ -4,11 +4,7 @@
    [clojure.walk :as walk]
    [instaparse.core :as insta])
   (:require-macros
-   [heraldry.reader.blazonry.parser :refer [load-grammar-template
-                                            default-parser]]))
-
-(def grammar-template
-  (load-grammar-template))
+   [heraldry.reader.blazonry.parser :refer [default-parser]]))
 
 (defn pluralize [charge-type]
   (if (s/ends-with? charge-type "s")
