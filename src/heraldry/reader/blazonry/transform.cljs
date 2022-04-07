@@ -1054,6 +1054,20 @@
     (cond-> hdn
       (seq modifiers) (assoc :tincture modifiers))))
 
+(def charge-locations
+  {:POINT-DEXTER :dexter
+   :POINT-SINISTER :sinister
+   :POINT-CHIEF :chief
+   :POINT-BASE :base
+   :POINT-FESS :fess
+   :POINT-HONOUR :fess
+   :POINT-NOMBRIL :fess})
+
+(defmethod ast->hdn :charge-location [[_ & nodes]]
+  (some-> (get-child charge-locations nodes)
+          first
+          charge-locations))
+
 (def max-charge-group-amount 64)
 
 (defmethod ast->hdn :charge-group [[_ & nodes]]
@@ -1064,12 +1078,16 @@
         amount (-> amount
                    (max 1)
                    (min max-charge-group-amount))
+        origin-point (some-> (get-child #{:charge-location} nodes)
+                             ast->hdn)
         field (ast->hdn (get-child #{:field} nodes))
         charge (-> #{:charge}
                    (get-child nodes)
                    ast->hdn
                    (assoc :field field)
-                   (add-tincture-modifiers nodes))]
+                   (add-tincture-modifiers nodes)
+                   (cond->
+                     origin-point (assoc-in [:origin :point] origin-point)))]
     (if (= amount 1)
       [charge]
       [(charge-group charge amount nodes)])))
