@@ -61,7 +61,7 @@
     (update parser :grammar
             (fn [rules]
               (-> rules
-                  (dissoc :custom-charge-type-lion)
+                  (dissoc :charge-other-type/lion)
                   (assoc :charge-other-type charge-other-type-rule)
                   (merge charge-type-rule-definitions))))))
 
@@ -96,20 +96,13 @@
         charge-type-rules (->> charge-map
                                keys
                                (keep (fn [charge-type]
-                                       (let [rule-name (->> charge-type
-                                                            name
-                                                            (str "custom-charge-type-")
-                                                            keyword)
-                                             clean-name (some-> charge-type
-                                                                name
+                                       (let [charge-type-name (name charge-type)
+                                             rule-name (keyword "charge-other-type" charge-type-name)
+                                             clean-name (some-> charge-type-name
                                                                 s/lower-case
                                                                 (s/replace #"[^a-z0-9]+" " ")
                                                                 s/trim)
-                                             valid-charge-type? (-> charge-type
-                                                                    name
-                                                                    (s/replace #"[^a-zA-Z0-9-]+" "")
-                                                                    keyword
-                                                                    (= charge-type))]
+                                             valid-charge-type? (re-matches #"^[a-zA-Z0-9-]+$" charge-type-name)]
                                          (when (and valid-charge-type?
                                                     (-> clean-name count pos?)
                                                     (not (bad-charge-type? clean-name)))
@@ -123,68 +116,6 @@
                     charge-type-rules)]
     {:parser new-parser
      :charge-map charge-map}))
-
-(comment
-  {:tag :alt
-   :parsers ({:tag :cat
-              :parsers ({:tag :opt
-                         :parser {:tag :nt
-                                  :keyword :whitespace}
-                         :hide true}
-                        {:tag :regexp
-                         :regexp #"^\\bsejant[ -]erect\\b"})}
-             {:tag :cat
-              :parsers ({:tag :cat
-                         :parsers ({:tag :opt
-                                    :parser {:tag :nt
-                                             :keyword :whitespace}
-                                    :hide true}
-                                   {:tag :regexp
-                                    :regexp #"^\\bsejant\\b"})}
-                        {:tag :cat
-                         :parsers ({:tag :opt
-                                    :parser {:tag :nt
-                                             :keyword :whitespace}
-                                    :hide true}
-                                   {:tag :string
-                                    :string "\\berect\\b"})})})
-   :red {:reduction-type :hiccup
-         :key :SEJANT-ERECT}}
-  [:charge-other-type
-   {:tag :nt
-    :keyword :custom-charge-type-lion
-    :red {:reduction-type :hiccup
-          :key :charge-other-type}}]
-
-  [:charge-other-type {:tag :alt
-                       :parsers ({:tag :nt
-                                  :keyword :custom-charge-type-lion}
-                                 {:tag :nt
-                                  :keyword :custom-charge-type-lion2})
-                       :red {:reduction-type :hiccup
-                             :key :charge-other-type}}]
-
-  [:custom-charge-type-lion
-   {:tag :alt
-    :parsers [{:tag :cat
-               :parsers [{:tag :opt
-                          :parser {:tag :nt
-                                   :keyword :whitespace}
-                          :hide true}
-                         {:tag :regexp
-                          :regexp #"^\\blion\\b"}]}
-              {:tag :cat
-               :parsers [{:tag :opt
-                          :parser {:tag :nt
-                                   :keyword :whitespace}
-                          :hide true}
-                         {:tag :regexp
-                          :regexp #"^\\blions\\b"}]}]
-    :red {:reduction-type :hiccup
-          :key :custom-charge-type-lion}}]
-
-;;
-  )
 
 (def ast-node-normalization
   {:root-field :field

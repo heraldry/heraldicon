@@ -29,12 +29,12 @@
 (def tincture-map
   (->> tincture/tincture-map
        (map (fn [[key _]]
-              [(-> key
-                   name
-                   s/upper-case
-                   keyword)
+              [(->> key
+                    name
+                    s/upper-case
+                    (keyword "tincture"))
                key]))
-       (into {:PROPER :void})))
+       (into {:tincture/PROPER :void})))
 
 (def roman-ordinal-strings
   {"i." 1
@@ -234,10 +234,10 @@
 (def field-type-map
   (->> field.options/fields
        (map (fn [key]
-              [(-> key
-                   name
-                   s/upper-case
-                   keyword)
+              [(->> key
+                    name
+                    s/upper-case
+                    (keyword "partition"))
                key]))
        (into {})))
 
@@ -302,19 +302,19 @@
                                              partition-type) (assoc-in [:origin :point] :top)))))
 
 (def field-locations
-  {:POINT-DEXTER :dexter
-   :POINT-SINISTER :sinister
-   :POINT-CHIEF :chief
-   :POINT-BASE :base
-   :POINT-FESS :fess
-   :POINT-DEXTER-CHIEF :chief-dexter
-   :POINT-CHIEF-DEXTER :chief-dexter
-   :POINT-SINISTER-CHIEF :chief-sinister
-   :POINT-CHIEF-SINISTER :chief-sinister
-   :POINT-DEXTER-BASE :base-dexter
-   :POINT-BASE-DEXTER :base-dexter
-   :POINT-SINISTER-BASE :base-sinister
-   :POINT-BASE-SINISTER :base-sinister})
+  {:point/DEXTER :dexter
+   :point/SINISTER :sinister
+   :point/CHIEF :chief
+   :point/BASE :base
+   :point/FESS :fess
+   :point/DEXTER-CHIEF :chief-dexter
+   :point/CHIEF-DEXTER :chief-dexter
+   :point/SINISTER-CHIEF :chief-sinister
+   :point/CHIEF-SINISTER :chief-sinister
+   :point/DEXTER-BASE :base-dexter
+   :point/BASE-DEXTER :base-dexter
+   :point/SINISTER-BASE :base-sinister
+   :point/BASE-SINISTER :base-sinister})
 
 (defmethod ast->hdn :field-location [[_ & nodes]]
   (some-> (get-child field-locations nodes)
@@ -576,7 +576,7 @@
 (defmethod ast->hdn :A [_]
   1)
 
-(defmethod ast->hdn :NUMBER [[_ number-string]]
+(defmethod ast->hdn :number/NUMBER [[_ number-string]]
   (js/parseInt number-string))
 
 (def number-strings
@@ -783,16 +783,16 @@
 (def ordinary-type-map
   (->> ordinary.options/ordinaries
        (map (fn [key]
-              [(-> key
-                   name
-                   s/upper-case
-                   keyword)
+              [(->> key
+                    name
+                    s/upper-case
+                    (keyword "ordinary"))
                key]))
-       (into {:PALLET :heraldry.ordinary.type/pale
-              :BARRULET :heraldry.ordinary.type/fess
-              :CHEVRONNEL :heraldry.ordinary.type/chevron
-              :BENDLET :heraldry.ordinary.type/bend
-              :BENDLET-SINISTER :heraldry.ordinary.type/bend-sinister})))
+       (into {:ordinary/PALLET :heraldry.ordinary.type/pale
+              :ordinary/BARRULET :heraldry.ordinary.type/fess
+              :ordinary/CHEVRONNEL :heraldry.ordinary.type/chevron
+              :ordinary/BENDLET :heraldry.ordinary.type/bend
+              :ordinary/BENDLET-SINISTER :heraldry.ordinary.type/bend-sinister})))
 
 (defn get-ordinary-type [nodes]
   (let [node-type (->> nodes
@@ -895,12 +895,12 @@
 (def charge-type-map
   (->> charge.options/charges
        (map (fn [key]
-              [(-> key
-                   name
-                   s/upper-case
-                   keyword)
+              [(->> key
+                    name
+                    s/upper-case
+                    (keyword "charge"))
                key]))
-       (into {:ESTOILE :heraldry.charge.type/star})))
+       (into {:charge/ESTOILE :heraldry.charge.type/star})))
 
 (defmethod ast->hdn :charge-standard [[_ & nodes]]
   (let [charge-type-node-kind (first (get-child charge-type-map nodes))
@@ -908,15 +908,13 @@
     (-> {:type charge-type}
         (add-charge-options nodes)
         (cond->
-          (= charge-type-node-kind :ESTOILE) (assoc :wavy-rays? true)))))
+          (= charge-type-node-kind :charge/ESTOILE) (assoc :wavy-rays? true)))))
 
-(defmethod ast->hdn :charge-other-type [[_ custom-charge-type-node]]
-  (let [normalized-keyword (-> custom-charge-type-node
-                               first
-                               name
-                               (s/replace "custom-charge-type-" "")
-                               keyword)]
-    (keyword "heraldry.charge.type" normalized-keyword)))
+(defmethod ast->hdn :charge-other-type [[_ charge-other-type-node]]
+  (some->> charge-other-type-node
+           first
+           name
+           (keyword "heraldry.charge.type")))
 
 (defmethod ast->hdn :charge-other [[_ & nodes]]
   (let [charge-type (-> (get-child #{:charge-other-type} nodes)
@@ -1023,10 +1021,10 @@
 (def tincture-modifier-type-map
   (->> attributes/tincture-modifier-map
        (map (fn [[key _]]
-              [(-> key
-                   name
-                   s/upper-case
-                   keyword)
+              [(->> key
+                    name
+                    s/upper-case
+                    (keyword "tincture-modifier"))
                key]))
        (into {})))
 
@@ -1055,13 +1053,13 @@
       (seq modifiers) (assoc :tincture modifiers))))
 
 (def charge-locations
-  {:POINT-DEXTER :dexter
-   :POINT-SINISTER :sinister
-   :POINT-CHIEF :chief
-   :POINT-BASE :base
-   :POINT-FESS :fess
-   :POINT-HONOUR :fess
-   :POINT-NOMBRIL :fess})
+  {:point/DEXTER :dexter
+   :point/SINISTER :sinister
+   :point/CHIEF :chief
+   :point/BASE :base
+   :point/FESS :fess
+   :point/HONOUR :fess
+   :point/NOMBRIL :fess})
 
 (defmethod ast->hdn :charge-location [[_ & nodes]]
   (some-> (get-child charge-locations nodes)

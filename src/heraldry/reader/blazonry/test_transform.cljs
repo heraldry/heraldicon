@@ -9,16 +9,16 @@
     [:A "a"] 1
     [:A "an"] 1
 
-    [:NUMBER "123"] 123
-    [:NUMBER "0134"] 134
+    [:number/NUMBER "123"] 123
+    [:number/NUMBER "0134"] 134
 
-    [:number-word [:DIGIT-WORD "one"]] 1
+    [:number-word [:number/DIGIT-WORD "one"]] 1
     [:number-word "twelve"] 12
-    [:number-word [:MULTILPE-OF-TEN-WORD "eighty"]] 80
-    [:number-word [:MULTILPE-OF-TEN-WORD "eighty"] " " [:DIGIT-WORD "one"]] 81
-    [:number-word [:MULTILPE-OF-TEN-WORD "eighty"] "-" [:DIGIT-WORD "one"]] 81
-    [:number-word [:MULTILPE-OF-TEN-WORD "eighty"] "" [:DIGIT-WORD "one"]] 81
-    [:number-word [:MULTILPE-OF-TEN-WORD "twenty"] "" [:DIGIT-WORD "seven"]] 27
+    [:number-word [:number/MULTILPE-OF-TEN-WORD "eighty"]] 80
+    [:number-word [:number/MULTILPE-OF-TEN-WORD "eighty"] " " [:number/DIGIT-WORD "one"]] 81
+    [:number-word [:number/MULTILPE-OF-TEN-WORD "eighty"] "-" [:number/DIGIT-WORD "one"]] 81
+    [:number-word [:number/MULTILPE-OF-TEN-WORD "eighty"] "" [:number/DIGIT-WORD "one"]] 81
+    [:number-word [:number/MULTILPE-OF-TEN-WORD "twenty"] "" [:number/DIGIT-WORD "seven"]] 27
 
-    [:number-word [:MULTI-WORD "double"]] 2
-    [:number-word [:MULTI-WORD "triple"]] 3))
+    [:number-word [:number/MULTI-WORD "double"]] 2
+    [:number-word [:number/MULTI-WORD "triple"]] 3))
