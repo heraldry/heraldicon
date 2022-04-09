@@ -8,7 +8,7 @@
 (defmacro default-parser
   "Based on instaparse's defparser"
   []
-  (let [macro-time-parser (parser (res/slurp-resource &env "grammar.ebnf"))
+  (let [macro-time-parser (parser (res/slurp-resource &env "grammar.ebnf") :allow-namespaced-nts? true)
         pre-processed-grammar (:grammar macro-time-parser)
         grammar-producing-code
         (->> pre-processed-grammar

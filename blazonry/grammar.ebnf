@@ -1,3 +1,4 @@
+
 (* terminals *)
 
 COUNTERCHANGED = #"\bcounterchanged\b"
@@ -23,6 +24,7 @@ TIMES = #"\btimes\b"
 TINCTURE = #"\btincture\b"
 FIELD = #"\bfield\b"
 SAME = #"\bsame\b"
+POINT = #"\bpoint\b"
 SEMY
     = #"\bsemy\b"
     | #"\bsemé(?=([ ,&]|$))"
@@ -44,8 +46,8 @@ COTTISED
     | #"\bbendorsed\b"
     | #"\bbendorsing\b"
 
-NUMBER = #"[1-9][0-9]*"
-DIGIT-WORD
+number/NUMBER = #"[1-9][0-9]*"
+number/DIGIT-WORD
     = #"\bone\b"
     | #"\btwo\b"
     | #"\bthree\b"
@@ -55,10 +57,10 @@ DIGIT-WORD
     | #"\bseven\b"
     | #"\beight\b"
     | #"\bnine\b"
-MULTI-WORD
+number/MULTI-WORD
     = #"\bdouble\b"
     | #"\btriple\b"
-TEEN-WORD
+number/TEEN-WORD
     = #"\bten\b"
     | #"\beleven\b"
     | #"\btwelve\b"
@@ -69,7 +71,7 @@ TEEN-WORD
     | #"\bseventeen\b"
     | #"\beighteen\b"
     | #"\bnineteen\b"
-MULTIPLE-OF-TEN-WORD
+number/MULTIPLE-OF-TEN-WORD
     = #"\btwenty\b"
     | #"\bthirty\b"
     | #"\bfourty\b"
@@ -79,7 +81,7 @@ MULTIPLE-OF-TEN-WORD
     | #"\beighty\b"
     | #"\bninety\b"
 
-ORDINAL-NUMBER
+ordinal/NUMBER
     = #"\b1st\b"
     | #"\b2nd\b"
     | #"\b3rd\b"
@@ -100,7 +102,7 @@ ORDINAL-NUMBER
     | #"\b18th\b"
     | #"\b19th\b"
     | #"\b20th\b"
-ORDINAL-NUMBER-DOT
+ordinal/NUMBER-DOT
     = #"\b1[.](?=([ ,&]|$))"
     | #"\b2[.](?=([ ,&]|$))"
     | #"\b3[.](?=([ ,&]|$))"
@@ -121,7 +123,7 @@ ORDINAL-NUMBER-DOT
     | #"\b18[.](?=([ ,&]|$))"
     | #"\b19[.](?=([ ,&]|$))"
     | #"\b20[.](?=([ ,&]|$))"
-ORDINAL-ROMAN-DOT
+ordinal/ROMAN-DOT
     = #"\bi[.](?=([ ,&]|$))"
     | #"\bii[.](?=([ ,&]|$))"
     | #"\biii[.](?=([ ,&]|$))"
@@ -143,7 +145,7 @@ ORDINAL-ROMAN-DOT
     | #"\bxviii[.](?=([ ,&]|$))"
     | #"\bxix[.](?=([ ,&]|$))"
     | #"\bxx[.](?=([ ,&]|$))"
-ORDINAL-WORD
+ordinal/WORD
     = #"\bfirst\b"
     | #"\bsecond\b"
     | #"\bthird\b"
@@ -165,166 +167,169 @@ ORDINAL-WORD
     | #"\bnineteenth\b"
     | #"\btwentieth\b"
 
-OR = #"\bor\b"
+tincture/OR = #"\bor\b"
    | #"\bd'or\b"
-ARGENT
+tincture/ARGENT
     = #"\bargent\b"
     | #"\bd'argent\b"
-SABLE = #"\bsable\b"
-AZURE
+tincture/SABLE = #"\bsable\b"
+tincture/AZURE
     = #"\bazure\b"
     | #"\bd'azure\b"
-GULES = #"\bgules\b"
-PURPURE = #"\bpurpure\b"
-VERT = #"\bvert\b"
-TENNE
+tincture/GULES = #"\bgules\b"
+tincture/PURPURE = #"\bpurpure\b"
+tincture/VERT = #"\bvert\b"
+tincture/TENNE
     = #"\btenne\b"
     | #"\btenné(?=([ ,&]|$))"
-ORANGE
+tincture/ORANGE
     = #"\borange\b"
     | #"\bd'orange\b"
-SANGUINE = #"\bsanguine\b"
-MURREY = #"\bmurrey\b"
-BLEU-CELESTE
+tincture/SANGUINE = #"\bsanguine\b"
+tincture/MURREY = #"\bmurrey\b"
+tincture/BLEU-CELESTE
     = #"\bbleu-+celeste\b"
     | #"\bbleu +celeste\b"
-ROSE = #"\brose\b"
-COPPER = #"\bcopper\b"
-PROPER = #"\bproper\b"
-WHITE = #"\bwhite\b"
-BRUNATRE
+tincture/ROSE = #"\brose\b"
+tincture/COPPER = #"\bcopper\b"
+tincture/PROPER = #"\bproper\b"
+tincture/WHITE = #"\bwhite\b"
+tincture/BRUNATRE
     = #"\bbrunatre\b"
     | #"\bbrunâtre\b"
-BUFF = #"\bbuff\b"
+tincture/BUFF = #"\bbuff\b"
 
-ERMINE = #"\bermine\b"
-ERMINES = #"\bermines\b"
-ERMINOIS = #"\berminois\b"
-PEAN = #"\bpean\b"
+tincture/ERMINE = #"\bermine\b"
+tincture/ERMINES = #"\bermines\b"
+tincture/ERMINOIS = #"\berminois\b"
+tincture/PEAN = #"\bpean\b"
 
-BARRY
+partition/BARRY
     = #"\bbarry\b"
     | #"\bbarruly\b"
     | #"\burely\b"
-BENDY = #"\bbendy\b"
-BENDY-SINISTER
+partition/BENDY = #"\bbendy\b"
+partition/BENDY-SINISTER
     = #"\bbendy +sinister\b"
     | #"\bbendy\b" #"\bsinister\b"
-CHEQUY = #"\bchequy\b"
-CHEVRONNY = #"\bchevronny\b"
-FRETTY = #"\bfretty\b"
-GYRONNY = #"\bg[yi]ronny\b"
-LOZENGY = #"\blozengy\b"
-MASONY
+partition/CHEQUY = #"\bchequy\b"
+partition/CHEVRONNY = #"\bchevronny\b"
+partition/FRETTY = #"\bfretty\b"
+partition/GYRONNY = #"\bg[yi]ronny\b"
+partition/LOZENGY = #"\blozengy\b"
+partition/MASONY
     = #"\bmasony\b"
     | #"\bmasoned\b"
-PALY = #"\bpaly\b"
-PAPELLONY = #"\bpapellony\b"
-PER-BEND
+partition/PALY = #"\bpaly\b"
+partition/PAPELLONY = #"\bpapellony\b"
+partition/PER-BEND
     = #"\bper +bend\b"
     | #"\bparty +per +bend\b"
-PER-BEND-SINISTER
+partition/PER-BEND-SINISTER
     = #"\bper +bend +sinister\b"
     | #"\bper +bend\b" #"\bsinister\b"
     | #"\bparty +per +bend +sinister\b"
     | #"\bparty +per +bend\b" #"\bsinister\b"
-PER-CHEVRON
+partition/PER-CHEVRON
     = #"\bper +chevron\b"
     | #"\bparty +per +chevron\b"
-PER-FESS
+partition/PER-FESS
     = #"\bper +fess\b"
     | #"\bparty +per +fess\b"
-PER-PALE
+partition/PER-PALE
     = #"\bper +pale\b"
     | #"\bparty +per +pale\b"
-PER-PILE
+partition/PER-PILE
     = #"\bper +pile\b"
     | #"\bparty +per +pile\b"
-PER-SALTIRE
+partition/PER-SALTIRE
     = #"\bper +saltire\b"
     | #"\bparty +per +saltire\b"
-POTENTY = #"\bpotenty\b"
-QUARTERED
+partition/POTENTY = #"\bpotenty\b"
+partition/QUARTERED
     = #"\bquartered\b"
     | #"\bquarterly\b"
-TIERCED-PER-FESS = #"\btierced +per +fess\b"
-TIERCED-PER-PALE = #"\btierced +per +pale\b"
-TIERCED-PER-PALL = #"\btierced +per +pall\b"
-VAIRY = #"\bvairy\b"
+partition/TIERCED-PER-FESS = #"\btierced +per +fess\b"
+partition/TIERCED-PER-PALE = #"\btierced +per +pale\b"
+partition/TIERCED-PER-PALL = #"\btierced +per +pall\b"
+partition/VAIRY = #"\bvairy\b"
 
-PALE = #"\bpales?\b"
-PALLET = #"\bpallets?\b"
-FESS
+ordinary/PALE = #"\bpales?\b"
+ordinary/PALLET = #"\bpallets?\b"
+ordinary/FESS
     = #"\bfess(es?)?\b"
     | #"\bbars?\b"
-BARRULET = #"\bbarrulets?\b"
-CHIEF = #"\bchief\b"
-BASE = #"\bbase\b"
-BEND = #"\bbends?\b"
-BENDLET = #"\bbendlets?\b"
-BEND-SINISTER
+ordinary/FESS
+    = #"\bfess(es?)?\b"
+    | #"\bbars?\b"
+ordinary/BARRULET = #"\bbarrulets?\b"
+ordinary/CHIEF = #"\bchief\b"
+ordinary/BASE = #"\bbase\b"
+ordinary/BEND = #"\bbends?\b"
+ordinary/BENDLET = #"\bbendlets?\b"
+ordinary/BEND-SINISTER
     = #"\bbends? +sinister\b"
     | #"\bbends?\b" #"\bsinister\b"
-BENDLET-SINISTER
+ordinary/BENDLET-SINISTER
     = #"\bbendlets? +sinister\b"
     | #"\bbendlets?\b" #"\bsinister\b"
-CROSS = #"\bcross(es)?\b"
-SALTIRE = #"\bsaltires?\b"
-CHEVRON = #"\bchevrons?\b"
-CHEVRONNEL = #"\bchevronnels?\b"
-PALL = #"\bpalls?\b"
-PILE = #"\bpiles?\b"
-GORE = #"\bgores?\b"
-QUARTER = #"\bquarters?\b"
-POINT
+ordinary/CROSS = #"\bcross(es)?\b"
+ordinary/SALTIRE = #"\bsaltires?\b"
+ordinary/CHEVRON = #"\bchevrons?\b"
+ordinary/CHEVRONNEL = #"\bchevronnels?\b"
+ordinary/PALL = #"\bpalls?\b"
+ordinary/PILE = #"\bpiles?\b"
+ordinary/GORE = #"\bgores?\b"
+ordinary/QUARTER = #"\bquarters?\b"
+ordinary/POINT
     = #"\bpoints?\b"
 LABEL-POINT = #"\bpoints?\b"
 STAR-POINT = #"\bpoints?\b"
-BORDURE = #"\bbordures?\b"
-ORLE
+ordinary/BORDURE = #"\bbordures?\b"
+ordinary/ORLE
     = #"\borles?\b"
     | #"\btressures?\b"
-LABEL = #"\blabels?\b"
+ordinary/LABEL = #"\blabels?\b"
 
-STRAIGHT = #"\bstraight\b"
-INVECTED = #"\binvected\b"
-ENGRAILED = #"\bengrailed\b"
-EMBATTLED = #"\bembattled\b"
-EMBATTLED-GRADY
+line/STRAIGHT = #"\bstraight\b"
+line/INVECTED = #"\binvected\b"
+line/ENGRAILED = #"\bengrailed\b"
+line/EMBATTLED = #"\bembattled\b"
+line/EMBATTLED-GRADY
     = #"\bembattled grady\b"
     | #"\bembattled-+grady\b"
     | #"\bembattled\b" #"\bgrady\b"
-EMBATTLED-IN-CROSSES
+line/EMBATTLED-IN-CROSSES
     = #"\bembattled +in +crosses\b"
     | #"\bembattled-+in-+crosses\b"
     | #"\bembattled\b" #"\bin crosses\b"
-POTENTY = #"\bpotenty\b"
-INDENTED = #"\bindented\b"
-DANCETTY = #"\bdancetty\b"
-WAVY
+line/POTENTY = #"\bpotenty\b"
+line/INDENTED = #"\bindented\b"
+line/DANCETTY = #"\bdancetty\b"
+line/WAVY
     = #"\bwavy\b"
     | #"\bundy\b"
-NEBULY = #"\bnebuly\b"
-DOVETAILED
+line/NEBULY = #"\bnebuly\b"
+line/DOVETAILED
     = #"\bdovetailed\b"
     | #"\bdove +tailed\b"
     | #"\bdove-+tailed\b"
-RAGULY = #"\braguly\b"
-THORNY = #"\bthorny\b"
-URDY = #"\burdy\b"
-FIR-TREE-TOPPED
+line/RAGULY = #"\braguly\b"
+line/THORNY = #"\bthorny\b"
+line/URDY = #"\burdy\b"
+line/FIR-TREE-TOPPED
     = #"\bfir +tree +topped\b"
     | #"\bfir-+tree-+topped\b"
-FIR-TWIGGED
+line/FIR-TWIGGED
     = #"\bfir +twigged\b"
     | #"\bfir-+twigged\b"
-WOLF-TOOTHED
+line/WOLF-TOOTHED
     = #"\bwolf +toothed\b"
     | #"\bwolf-+toothed\b"
-RAYONNY = #"\brayonny\b"
-ANGLED = #"\bangled\b"
-BEVILLED = #"\bbevilled\b"
-ENARCHED = #"\benarched\b"
+line/RAYONNY = #"\brayonny\b"
+line/ANGLED = #"\bangled\b"
+line/BEVILLED = #"\bbevilled\b"
+line/ENARCHED = #"\benarched\b"
 
 HUMETTY
     = #"\bhumetty\b"
@@ -342,159 +347,160 @@ REVERSED
     = #"\breversed\b"
     | #"\binverted\b"
 THROUGHOUT = #"\bthroughout\b"
+DOVETAILED = #"\bdovetailed\b"
 
-POINT-DEXTER = #"\bdexter\b"
-POINT-SINISTER = #"\bsinister\b"
-POINT-CHIEF = #"\bchief\b"
-POINT-BASE = #"\bbase\b"
-POINT-FESS = #"\bfess\b"
-POINT-DEXTER-CHIEF
+point/DEXTER = #"\bdexter\b"
+point/SINISTER = #"\bsinister\b"
+point/CHIEF = #"\bchief\b"
+point/BASE = #"\bbase\b"
+point/FESS = #"\bfess\b"
+point/DEXTER-CHIEF
     = #"\bdexter[ -]chief\b"
     | #"\bdexter" #"chief\b"
-POINT-CHIEF-DEXTER
+point/CHIEF-DEXTER
     = #"\bchief[ -]dexter\b"
     | #"\bchief" #"dexter\b"
-POINT-SINISTER-CHIEF
+point/SINISTER-CHIEF
     = #"\bsinister[ -]chief\b"
     | #"\bsinister" #"chief\b"
-POINT-CHIEF-SINISTER
+point/CHIEF-SINISTER
     = #"\bchief[ -]sinister\b"
     | #"\bchief" #"sinister\b"
-POINT-DEXTER-BASE
+point/DEXTER-BASE
     = #"\bdexter[ -]base\b"
     | #"\bdexter" #"base\b"
-POINT-BASE-DEXTER
+point/BASE-DEXTER
     = #"\bbase[ -]dexter\b"
     | #"\bbase" #"dexter\b"
-POINT-SINISTER-BASE
+point/SINISTER-BASE
     = #"\bsinister[ -]base\b"
     | #"\bsinister" #"base\b"
-POINT-BASE-SINISTER
+point/BASE-SINISTER
     = #"\bbase[ -]sinister\b"
     | #"\bbase" #"sinister\b"
-POINT-NOMBRIL
+point/NOMBRIL
     = #"\bnombril\b"
-POINT-HONOUR
+point/HONOUR
     = #"\bhonour\b"
 
-CADENT = #"\bcadent\b"
-COUCHANT = #"\bcouchant\b"
-COURANT = #"\bcourant\b"
-DORMANT = #"\bdormant\b"
-PASCUANT = #"\bpascuant\b"
-PASSANT = #"\bpassant\b"
-RAMPANT = #"\brampant\b"
-SALIENT = #"\bsalient\b"
-SEGREANT = #"\bsegreant\b"
-SEJANT = #"\bsejant\b"
-SEJANT-ERECT
+attitude/CADENT = #"\bcadent\b"
+attitude/COUCHANT = #"\bcouchant\b"
+attitude/COURANT = #"\bcourant\b"
+attitude/DORMANT = #"\bdormant\b"
+attitude/PASCUANT = #"\bpascuant\b"
+attitude/PASSANT = #"\bpassant\b"
+attitude/RAMPANT = #"\brampant\b"
+attitude/SALIENT = #"\bsalient\b"
+attitude/SEGREANT = #"\bsegreant\b"
+attitude/SEJANT = #"\bsejant\b"
+attitude/SEJANT-ERECT
     = #"\bsejant[ -]erect\b"
     | #"\bsejant\b" "\berect\b"
-STATANT = #"\bstatant\b"
-ADDORSED = #"\baddorsed\b"
-COMBATANT = #"\bcombatant\b"
-RESPECTANT = #"\brespectant\b"
-CLOSE = #"\bclose\b"
-DISPLAYED = #"\bdisplayed\b"
-IN-HER-PIETY
+attitude/STATANT = #"\bstatant\b"
+attitude/ADDORSED = #"\baddorsed\b"
+attitude/COMBATANT = #"\bcombatant\b"
+attitude/RESPECTANT = #"\brespectant\b"
+attitude/CLOSE = #"\bclose\b"
+attitude/DISPLAYED = #"\bdisplayed\b"
+attitude/IN-HER-PIETY
     = #"\bin her piety\b"
     | #"\bin-her-piety\b"
-ISSUANT = #"\bissuant\b"
-OVERT = #"\bovert\b"
-RECURSANT = #"\brecursant\b"
-RISING = #"\brising\b"
-VIGILANT = #"\bvigilant\b"
-VOLANT = #"\bvolant\b"
-VULNING = #"\bvulning\b"
-HAURIANT = #"\bhauriant\b"
-NAIANT = #"\bnaiant\b"
-URINANT = #"\burinant\b"
-GLISSANT = #"\bglissant\b"
-NOWED = #"\bnowed\b"
+attitude/ISSUANT = #"\bissuant\b"
+attitude/OVERT = #"\bovert\b"
+attitude/RECURSANT = #"\brecursant\b"
+attitude/RISING = #"\brising\b"
+attitude/VIGILANT = #"\bvigilant\b"
+attitude/VOLANT = #"\bvolant\b"
+attitude/VULNING = #"\bvulning\b"
+attitude/HAURIANT = #"\bhauriant\b"
+attitude/NAIANT = #"\bnaiant\b"
+attitude/URINANT = #"\burinant\b"
+attitude/GLISSANT = #"\bglissant\b"
+attitude/NOWED = #"\bnowed\b"
 
-TO-DEXTER = #"\bto[ -]dexter\b"
-TO-SINISTER = #"\bto[ -]sinister\b"
-AFFRONTE = #"\baffronte\b"
-EN-ARRIERE = #"\ben[ -]arriere\b"
-GUARDANT = #"\bguardant\b"
-IN-TRIAN-ASPECT
+facing/TO-DEXTER = #"\bto[ -]dexter\b"
+facing/TO-SINISTER = #"\bto[ -]sinister\b"
+facing/AFFRONTE = #"\baffronte\b"
+facing/EN-ARRIERE = #"\ben[ -]arriere\b"
+facing/GUARDANT = #"\bguardant\b"
+facing/IN-TRIAN-ASPECT
     = #"\bin trian aspect\b"
     | #"\bin-trian-aspect\b"
-REGUARDANT = #"\breguardant\b"
-SALIENT = #"\bsalient\b"
+facing/REGUARDANT = #"\breguardant\b"
+facing/SALIENT = #"\bsalient\b"
 
-ARMED = #"\barmed\b"
-ATTIRED = #"\battired\b"
-BEAKED = #"\bbeaked\b"
-COMBED = #"\bcombed\b"
-EYED = #"\beyed\b"
-EYED-PEACOCK
+tincture-modifier/ARMED = #"\barmed\b"
+tincture-modifier/ATTIRED = #"\battired\b"
+tincture-modifier/BEAKED = #"\bbeaked\b"
+tincture-modifier/COMBED = #"\bcombed\b"
+tincture-modifier/EYED = #"\beyed\b"
+tincture-modifier/EYED-PEACOCK
     = #"\beyed +peacock\b"
     | #"\beyed-peacock\b"
     | #"\bpeacock +eyed\b"
     | #"\bpeacock-eyed\b"
-FINNED = #"\bfinned\b"
-INCENSED = #"\bincensed\b"
-LANGUED = #"\blangued\b"
-LEGGED = #"\blegged\b"
-MANED = #"\bmaned\b"
-ORBED = #"\borbed\b"
-TAILED = #"\btailed\b"
-TOOTHED = #"\btoothed\b"
-UNGULED = #"\bunguled\b"
-WATTLED = #"\bwattled\b"
-WINGED = #"\bwinged\b"
-BARBED = #"\bbarbed\b"
-BLADED = #"\bbladed\b"
-FRUCTED = #"\bfructed\b"
-LEAVED = #"\bleaved\b"
-SEEDED = #"\bseeded\b"
-SLIPPED = #"\bslipped\b"
-BARRED = #"\bbarred\b"
-TRIMMED = #"\btrimmed\b"
-CAPARISONED = #"\bcaparisoned\b"
-COLLARED = #"\bcollared\b"
-ERASED = #"\berased\b"
-GARNISHED = #"\bgarnished\b"
-HANDLED = #"\bhandled\b"
-HILTED = #"\bhilted\b"
-ILLUMINATED = #"\billuminated\b"
-HOODED = #"\bhooded\b"
-MASONED = #"\bmasoned\b"
-POMMELED = #"\bpommeled\b"
-STRINGED = #"\bstringed\b"
+tincture-modifier/FINNED = #"\bfinned\b"
+tincture-modifier/INCENSED = #"\bincensed\b"
+tincture-modifier/LANGUED = #"\blangued\b"
+tincture-modifier/LEGGED = #"\blegged\b"
+tincture-modifier/MANED = #"\bmaned\b"
+tincture-modifier/ORBED = #"\borbed\b"
+tincture-modifier/TAILED = #"\btailed\b"
+tincture-modifier/TOOTHED = #"\btoothed\b"
+tincture-modifier/UNGULED = #"\bunguled\b"
+tincture-modifier/WATTLED = #"\bwattled\b"
+tincture-modifier/WINGED = #"\bwinged\b"
+tincture-modifier/BARBED = #"\bbarbed\b"
+tincture-modifier/BLADED = #"\bbladed\b"
+tincture-modifier/FRUCTED = #"\bfructed\b"
+tincture-modifier/LEAVED = #"\bleaved\b"
+tincture-modifier/SEEDED = #"\bseeded\b"
+tincture-modifier/SLIPPED = #"\bslipped\b"
+tincture-modifier/BARRED = #"\bbarred\b"
+tincture-modifier/TRIMMED = #"\btrimmed\b"
+tincture-modifier/CAPARISONED = #"\bcaparisoned\b"
+tincture-modifier/COLLARED = #"\bcollared\b"
+tincture-modifier/ERASED = #"\berased\b"
+tincture-modifier/GARNISHED = #"\bgarnished\b"
+tincture-modifier/HANDLED = #"\bhandled\b"
+tincture-modifier/HILTED = #"\bhilted\b"
+tincture-modifier/ILLUMINATED = #"\billuminated\b"
+tincture-modifier/HOODED = #"\bhooded\b"
+tincture-modifier/MASONED = #"\bmasoned\b"
+tincture-modifier/POMMELED = #"\bpommeled\b"
+tincture-modifier/STRINGED = #"\bstringed\b"
 
 MIRRORED = #"\bmirrored\b"
 ERASED = #"\berased\b"
 
-ROUNDEL = #"\broundels?\b"
-ANNULET = #"\bannulets?\b"
-BILLET = #"\bbillets?\b"
-ESCUTCHEON
+charge/ROUNDEL = #"\broundels?\b"
+charge/ANNULET = #"\bannulets?\b"
+charge/BILLET = #"\bbillets?\b"
+charge/ESCUTCHEON
     = #"\binescutcheons?\b"
     | #"\bescutcheons?\b"
-LOZENGE = #"\blozenges?\b"
-FUSIL = #"\bfusils?\b"
-MASCLE = #"\bmascles?\b"
-RUSTRE = #"\brustres?\b"
-STAR
+charge/LOZENGE = #"\blozenges?\b"
+charge/FUSIL = #"\bfusils?\b"
+charge/MASCLE = #"\bmascles?\b"
+charge/RUSTRE = #"\brustres?\b"
+charge/STAR
     = #"\bstars?\b"
     | #"\bmullets?\b"
-ESTOILE
+charge/ESTOILE
     = #"\bestoiles?\b"
-CRESCENT = #"\bcrescents?\b"
+charge/CRESCENT = #"\bcrescents?\b"
 
-PALEWISE = #"\bpale[ -]?wise\b"
-FESSWISE = #"\bfess[ -]?wise\b"
-BENDWISE = #"\bbend[ -]?wise\b"
-BENDWISE-SINISTER
+arrangement/PALEWISE = #"\bpale[ -]?wise\b"
+arrangement/FESSWISE = #"\bfess[ -]?wise\b"
+arrangement/BENDWISE = #"\bbend[ -]?wise\b"
+arrangement/BENDWISE-SINISTER
     = #"\bbend[ -]?wise +sinister\b"
     | #"\bbend[ -]?wise\b" "\bsinister\b"
-CHEVRONWISE = #"\bchevron[ -]?wise\b"
-IN-ANNULLO
+arrangement/CHEVRONWISE = #"\bchevron[ -]?wise\b"
+arrangement/IN-ANNULLO
     = #"\bin +annullo\b"
-IN-ORLE = #"\bin +orle\b"
-ARRANGED
+arrangement/IN-ORLE = #"\bin +orle\b"
+arrangement/ARRANGED
     = #"\barranged\b"
     | #"\barranged +as\b"
 
@@ -539,58 +545,58 @@ of-the
     | LIKE? THE
 
 tincture
-    = OR
-    | ARGENT
-    | SABLE
-    | AZURE
-    | GULES
-    | PURPURE
-    | VERT
-    | TENNE
-    | ORANGE
-    | SANGUINE
-    | MURREY
-    | BLEU-CELESTE
-    | ROSE
-    | COPPER
-    | PROPER
-    | WHITE
-    | BRUNATRE
-    | BUFF
-    | ERMINE
-    | ERMINES
-    | ERMINOIS
-    | PEAN
+    = tincture/OR
+    | tincture/ARGENT
+    | tincture/SABLE
+    | tincture/AZURE
+    | tincture/GULES
+    | tincture/PURPURE
+    | tincture/VERT
+    | tincture/TENNE
+    | tincture/ORANGE
+    | tincture/SANGUINE
+    | tincture/MURREY
+    | tincture/BLEU-CELESTE
+    | tincture/ROSE
+    | tincture/COPPER
+    | tincture/PROPER
+    | tincture/WHITE
+    | tincture/BRUNATRE
+    | tincture/BUFF
+    | tincture/ERMINE
+    | tincture/ERMINES
+    | tincture/ERMINOIS
+    | tincture/PEAN
     | <of-the> ordinal <TINCTURE>?
     | <of-the> FIELD
     | <of-the> SAME
 
 (* used for suggestion labeling *)
 partition-type
-    = BARRY
-    | BENDY
-    | BENDY-SINISTER
-    | CHEQUY
-    | CHEVRONNY
-    | FRETTY
-    | GYRONNY
-    | LOZENGY
-    | MASONY
-    | PALY
-    | PAPELLONY
-    | PER-BEND
-    | PER-BEND-SINISTER
-    | PER-CHEVRON
-    | PER-FESS
-    | PER-PALE
-    | PER-PILE
-    | PER-SALTIRE
-    | POTENTY
-    | QUARTERED
-    | TIERCED-PER-FESS
-    | TIERCED-PER-PALE
-    | TIERCED-PER-PALL
-    | VAIRY
+    = partition/BARRY
+    | partition/BENDY
+    | partition/BENDY-SINISTER
+    | partition/CHEQUY
+    | partition/CHEVRONNY
+    | partition/FRETTY
+    | partition/GYRONNY
+    | partition/LOZENGY
+    | partition/MASONY
+    | partition/PALY
+    | partition/PAPELLONY
+    | partition/PER-BEND
+    | partition/PER-BEND-SINISTER
+    | partition/PER-CHEVRON
+    | partition/PER-FESS
+    | partition/PER-PALE
+    | partition/PER-PILE
+    | partition/PER-SALTIRE
+    | partition/POTENTY
+    | partition/QUARTERED
+    | partition/TIERCED-PER-FESS
+    | partition/TIERCED-PER-PALE
+    | partition/TIERCED-PER-PALL
+    | partition/VAIRY
 
 (* used for suggestion labeling *)
 layout-words
@@ -624,19 +630,19 @@ layout
     | vertical-layout-explicit layout-times? horizontal-layout
 
 field-location
-    = POINT-DEXTER
-    | POINT-SINISTER
-    | POINT-CHIEF
-    | POINT-BASE
-    | POINT-FESS
-    | POINT-DEXTER-CHIEF
-    | POINT-CHIEF-DEXTER
-    | POINT-SINISTER-CHIEF
-    | POINT-CHIEF-SINISTER
-    | POINT-DEXTER-BASE
-    | POINT-BASE-DEXTER
-    | POINT-SINISTER-BASE
-    | POINT-BASE-SINISTER
+    = point/DEXTER
+    | point/SINISTER
+    | point/CHIEF
+    | point/BASE
+    | point/FESS
+    | point/DEXTER-CHIEF
+    | point/CHIEF-DEXTER
+    | point/SINISTER-CHIEF
+    | point/CHIEF-SINISTER
+    | point/DEXTER-BASE
+    | point/BASE-DEXTER
+    | point/SINISTER-BASE
+    | point/BASE-SINISTER
 
 field-reference
     = ordinal-including-dot
@@ -649,38 +655,76 @@ partition-field-plain
     = (field-reference (AND* field-reference)*)? root-plain
 
 partition
-    = PER-PALE line? partition-field AND+ partition-field
-    | (PER-FESS
-       | PER-BEND
-       | PER-BEND-SINISTER) (enhanced-dehanced* line?
-                       | line? enhanced-dehanced*) partition-field AND+ partition-field
-    | PER-CHEVRON (enhanced-dehanced-reversed* line?
-                       | line? enhanced-dehanced-reversed*) partition-field AND+ partition-field
-    | PER-PILE (REVERSED? (line (AND+ line)?)?
-                | (line (AND+ line)?)? REVERSED?) partition-field AND+ partition-field (AND+ partition-field)?
-    | TIERCED-PER-PALE (line (AND+ line)?)? partition-field AND+ partition-field (AND+ partition-field)?
-    | TIERCED-PER-FESS (enhanced-dehanced* (line (AND+ line)?)?
-                        | (line (AND+ line)?)? enhanced-dehanced*) partition-field AND+ partition-field (AND+ partition-field)?
-    | TIERCED-PER-PALL (enhanced-dehanced-reversed* (line (AND+ line)? (AND+ line)?)?
-                        | (line (AND+ line)? (AND+ line)?)? enhanced-dehanced-reversed*) partition-field AND+ partition-field (AND+ partition-field)?
-    | (PER-SALTIRE
-       | QUARTERED) (enhanced-dehanced* line?
-                     | line? enhanced-dehanced*) partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)?
-    | GYRONNY (enhanced-dehanced* line?
-               | line? enhanced-dehanced*) partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)?
-    | QUARTERED enhanced-dehanced* partition-field AND+ partition-field (AND+ partition-field)*
-    | (CHEQUY
-       | LOZENGY
-       | VAIRY
-       | POTENTY
-       | PAPELLONY
-       | MASONY
-       | FRETTY) (OF? layout)? partition-field-plain AND+ partition-field-plain
-    | PALY (OF? horizontal-layout)? partition-field AND+ partition-field
-    | (BARRY
-       | BENDY
-       | BENDY-SINISTER
-       | CHEVRONNY) (OF? vertical-layout)? partition-field AND+ partition-field
+    = partition/PER-PALE
+      line?
+      partition-field AND+ partition-field
+
+    | (partition/PER-FESS
+       | partition/PER-BEND
+       | partition/PER-BEND-SINISTER)
+      (enhanced-dehanced* line?
+       | line? enhanced-dehanced*)
+      partition-field AND+ partition-field
+
+    | partition/PER-CHEVRON
+      (enhanced-dehanced-reversed* line?
+       | line? enhanced-dehanced-reversed*)
+      partition-field AND+ partition-field
+
+    | partition/PER-PILE
+      (REVERSED? (line (AND+ line)?)?
+       | (line (AND+ line)?)? REVERSED?)
+      partition-field AND+ partition-field (AND+ partition-field)?
+
+    | partition/TIERCED-PER-PALE
+      (line (AND+ line)?)?
+      partition-field AND+ partition-field (AND+ partition-field)?
+
+    | partition/TIERCED-PER-FESS
+      (enhanced-dehanced* (line (AND+ line)?)?
+       | (line (AND+ line)?)? enhanced-dehanced*)
+      partition-field AND+ partition-field (AND+ partition-field)?
+
+    | partition/TIERCED-PER-PALL
+      (enhanced-dehanced-reversed* (line (AND+ line)? (AND+ line)?)?
+       | (line (AND+ line)? (AND+ line)?)? enhanced-dehanced-reversed*)
+      partition-field AND+ partition-field (AND+ partition-field)?
+
+    | (partition/PER-SALTIRE
+       | partition/QUARTERED)
+      (enhanced-dehanced* line?
+       | line? enhanced-dehanced*)
+      partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)?
+
+    | partition/GYRONNY
+      (enhanced-dehanced* line?
+       | line? enhanced-dehanced*)
+      partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)?
+
+    | partition/QUARTERED
+      enhanced-dehanced*
+      partition-field AND+ partition-field (AND+ partition-field)*
+
+    | (partition/CHEQUY
+       | partition/LOZENGY
+       | partition/VAIRY
+       | partition/POTENTY
+       | partition/PAPELLONY
+       | partition/MASONY
+       | partition/FRETTY)
+      (OF? layout)?
+      partition-field-plain AND+ partition-field-plain
+
+    | partition/PALY
+      (OF? horizontal-layout)?
+      partition-field AND+ partition-field
+
+    | (partition/BARRY
+       | partition/BENDY
+       | partition/BENDY-SINISTER
+       | partition/CHEVRONNY)
+      (OF? vertical-layout)?
+      partition-field AND+ partition-field
 
 components
     = component (AND+ component)*
@@ -691,25 +735,25 @@ component
     | semy
 
 number-word
-    = DIGIT-WORD
-    | <A>? MULTI-WORD
-    | TEEN-WORD
-    | MULTIPLE-OF-TEN-WORD
-    | MULTIPLE-OF-TEN-WORD #"-?" DIGIT-WORD
+    = number/DIGIT-WORD
+    | <A>? number/MULTI-WORD
+    | number/TEEN-WORD
+    | number/MULTIPLE-OF-TEN-WORD
+    | number/MULTIPLE-OF-TEN-WORD #"-?" number/DIGIT-WORD
 
 ordinal
-    = ORDINAL-NUMBER
-    | ORDINAL-WORD
+    = ordinal/NUMBER
+    | ordinal/WORD
 
 ordinal-including-dot
-    = ORDINAL-NUMBER
-    | ORDINAL-WORD
-    | ORDINAL-NUMBER-DOT
-    | ORDINAL-ROMAN-DOT
+    = ordinal/NUMBER
+    | ordinal/WORD
+    | ordinal/NUMBER-DOT
+    | ordinal/ROMAN-DOT
 
 amount
     = A
-    | NUMBER
+    | number/NUMBER
     | number-word
 
 <between-or-with>
@@ -735,27 +779,27 @@ ordinary-group
 
 (* used for suggestion labeling *)
 ordinary-type
-    = BARRULET
-    | BASE
-    | BEND
-    | BENDLET
-    | BEND-SINISTER
-    | BENDLET-SINISTER
-    | BORDURE
-    | CHEVRON
-    | CHEVRONNEL
-    | CHIEF
-    | CROSS
-    | FESS
-    | GORE
-    | LABEL
-    | ORLE
-    | PALE
-    | PALL
-    | PILE
-    | POINT
-    | QUARTER
-    | SALTIRE
+    = ordinary/BARRULET
+    | ordinary/BASE
+    | ordinary/BEND
+    | ordinary/BENDLET
+    | ordinary/BEND-SINISTER
+    | ordinary/BENDLET-SINISTER
+    | ordinary/BORDURE
+    | ordinary/CHEVRON
+    | ordinary/CHEVRONNEL
+    | ordinary/CHIEF
+    | ordinary/CROSS
+    | ordinary/FESS
+    | ordinary/GORE
+    | ordinary/LABEL
+    | ordinary/ORLE
+    | ordinary/PALE
+    | ordinary/PALL
+    | ordinary/PILE
+    | ordinary/POINT
+    | ordinary/QUARTER
+    | ordinary/SALTIRE
 
 (* used for suggestion labeling *)
 ordinary-option
@@ -798,8 +842,8 @@ ordinary-option
     | reversed-throughout
 
 <dexter-sinister>
-    = AND* POINT-DEXTER
-    | AND* POINT-SINISTER
+    = AND* point/DEXTER
+    | AND* point/SINISTER
 
 <humetty-voided-enhanced-dehanced-dexter-sinister>
     = humetty-voided
@@ -814,78 +858,123 @@ label-points
     = (of-or-with? amount LABEL-POINT?)
 
 ordinary
-    = LABEL (humetty-voided-truncated-dovetailed* label-points?
-             | label-points? humetty-voided-truncated-dovetailed*) fimbriation? field
-    | BORDURE line? field
-    | GORE dexter-sinister? line? field
-    | (CHIEF
-       | BASE) (humetty-voided-enhanced-dehanced* line?
-                 | line? humetty-voided-enhanced-dehanced*) field cottising?
-    | POINT (humetty-voided-enhanced-dehanced-dexter-sinister* line?
-                 | line? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
-    | ORLE (line (AND+ line)?)? field
-    | (CROSS
-       | SALTIRE) (humetty-voided-enhanced-dehanced* (line (AND+ line)?)?
-                   | (line (AND+ line)?)? humetty-voided-enhanced-dehanced*) field cottising?
-    | QUARTER (humetty-voided-enhanced-dehanced-dexter-sinister* (line (AND+ line)?)?
-                   | (line (AND+ line)?)? humetty-voided-enhanced-dehanced-dexter-sinister*) field cottising?
-    | PILE (humetty-voided-reversed-throughout* (line (AND+ line)?)?
-            | (line (AND+ line)?)? humetty-voided-reversed-throughout*) field cottising?
-    | (PALE
-       | PALLET) (humetty-voided* (line (AND+ line)?)?
-                  | (line (AND+ line)?)? humetty-voided*) field (cottising (AND? cottising)?)?
-    | (FESS
-       | BARRULET
-       | BEND
-       | BENDLET
-       | BEND-SINISTER
-       | BENDLET-SINISTER) (humetty-voided-enhanced-dehanced* (line (AND+ line)?)?
-                            | (line (AND+ line)?)? humetty-voided-enhanced-dehanced*) field (cottising (AND? cottising)?)?
-    | (PALL
-       | CHEVRON
-       | CHEVRONNEL) (humetty-voided-enhanced-dehanced-reversed* (line (AND+ line (AND+ line)?)?)?
-                      | (line (AND+ line (AND+ line)?)?)? humetty-voided-enhanced-dehanced-reversed*) field (cottising (AND? cottising (AND? cottising)?)?)?
+    = ordinary/LABEL
+      (humetty-voided-truncated-dovetailed* label-points?
+       | label-points? humetty-voided-truncated-dovetailed*)
+      fimbriation?
+      field
+
+    | ordinary/BORDURE
+      line?
+      field
+
+    | ordinary/GORE
+      dexter-sinister?
+      line?
+      field
+
+    | (ordinary/CHIEF
+       | ordinary/BASE)
+      (humetty-voided-enhanced-dehanced* line?
+       | line? humetty-voided-enhanced-dehanced*)
+      field
+      cottising?
+
+    | ordinary/POINT
+      (humetty-voided-enhanced-dehanced-dexter-sinister* line?
+       | line? humetty-voided-enhanced-dehanced-dexter-sinister*)
+      field
+      cottising?
+
+    | ordinary/ORLE
+      (line (AND+ line)?)?
+      field
+
+    | (ordinary/CROSS
+       | ordinary/SALTIRE)
+      (humetty-voided-enhanced-dehanced* (line (AND+ line)?)?
+       | (line (AND+ line)?)? humetty-voided-enhanced-dehanced*)
+      field
+      cottising?
+
+    | ordinary/QUARTER
+      (humetty-voided-enhanced-dehanced-dexter-sinister* (line (AND+ line)?)?
+       | (line (AND+ line)?)? humetty-voided-enhanced-dehanced-dexter-sinister*)
+      field
+      cottising?
+
+    | ordinary/PILE
+      (humetty-voided-reversed-throughout* (line (AND+ line)?)?
+       | (line (AND+ line)?)? humetty-voided-reversed-throughout*)
+      field
+      cottising?
+
+    | (ordinary/PALE
+       | ordinary/PALLET)
+      (humetty-voided* (line (AND+ line)?)?
+       | (line (AND+ line)?)? humetty-voided*)
+      field
+      (cottising (AND? cottising)?)?
+
+    | (ordinary/FESS
+       | ordinary/BARRULET
+       | ordinary/BEND
+       | ordinary/BENDLET
+       | ordinary/BEND-SINISTER
+       | ordinary/BENDLET-SINISTER)
+      (humetty-voided-enhanced-dehanced* (line (AND+ line)?)?
+       | (line (AND+ line)?)? humetty-voided-enhanced-dehanced*)
+      field
+      (cottising (AND? cottising)?)?
+
+    | (ordinary/PALL
+       | ordinary/CHEVRON
+       | ordinary/CHEVRONNEL)
+      (humetty-voided-enhanced-dehanced-reversed* (line (AND+ line (AND+ line)?)?)?
+       | (line (AND+ line (AND+ line)?)?)? humetty-voided-enhanced-dehanced-reversed*)
+      field
+      (cottising (AND? cottising (AND? cottising)?)?)?
 
 line
     = line-type fimbriation?
     | fimbriation
 
 line-type
-    = STRAIGHT
-    | INVECTED
-    | ENGRAILED
-    | EMBATTLED
-    | EMBATTLED-GRADY
-    | EMBATTLED-IN-CROSSES
-    | POTENTY
-    | INDENTED
-    | DANCETTY
-    | WAVY
-    | NEBULY
-    | DOVETAILED
-    | RAGULY
-    | THORNY
-    | URDY
-    | FIR-TREE-TOPPED
-    | FIR-TWIGGED
-    | WOLF-TOOTHED
-    | RAYONNY
-    | ANGLED
-    | BEVILLED
-    | ENARCHED
+    = line/STRAIGHT
+    | line/INVECTED
+    | line/ENGRAILED
+    | line/EMBATTLED
+    | line/EMBATTLED-GRADY
+    | line/EMBATTLED-IN-CROSSES
+    | line/POTENTY
+    | line/INDENTED
+    | line/DANCETTY
+    | line/WAVY
+    | line/NEBULY
+    | line/DOVETAILED
+    | line/RAGULY
+    | line/THORNY
+    | line/URDY
+    | line/FIR-TREE-TOPPED
+    | line/FIR-TWIGGED
+    | line/WOLF-TOOTHED
+    | line/RAYONNY
+    | line/ANGLED
+    | line/BEVILLED
+    | line/ENARCHED
 
 fimbriation
     = FIMBRIATED of-or-with? tincture
     | FIMBRIATED of-or-with? tincture AND? tincture
 
 <charge-location-point>
-    = POINT-DEXTER
-    | POINT-SINISTER
-    | POINT-CHIEF
-    | POINT-BASE
-    | POINT-FESS
-    | POINT-HONOUR
-    | POINT-NOMBRIL
+    = point/DEXTER
+    | point/SINISTER
+    | point/CHIEF
+    | point/BASE
+    | point/FESS
+    | point/HONOUR
+    | point/NOMBRIL
 
 charge-location
     = (IN | AT) charge-location-point POINT?
@@ -908,17 +997,17 @@ charge
     | charge-other fimbriation?
 
 charge-arrangement
-    = PALEWISE
-    | FESSWISE
-    | BENDWISE
-    | BENDWISE-SINISTER
-    | CHEVRONWISE
-    | IN-ANNULLO
-    | IN-ORLE
+    = arrangement/PALEWISE
+    | arrangement/FESSWISE
+    | arrangement/BENDWISE
+    | arrangement/BENDWISE-SINISTER
+    | arrangement/CHEVRONWISE
+    | arrangement/IN-ANNULLO
+    | arrangement/IN-ORLE
     | charge-grid
 
 charge-grid
-    = ARRANGED? amount (AND? amount)*
+    = arrangement/ARRANGED? amount (AND? amount)*
 
 (* used for suggestion labeling *)
 charge-option
@@ -933,124 +1022,125 @@ star-points
 
 (* used for bad charge type only *)
 charge-standard-type
-    = ROUNDEL
-    | ANNULET
-    | BILLET
-    | ESCUTCHEON
-    | LOZENGE
-    | FUSIL
-    | MASCLE
-    | RUSTRE
-    | STAR
-    | ESTOILE
-    | CRESCENT
+    = charge/ROUNDEL
+    | charge/ANNULET
+    | charge/BILLET
+    | charge/ESCUTCHEON
+    | charge/LOZENGE
+    | charge/FUSIL
+    | charge/MASCLE
+    | charge/RUSTRE
+    | charge/STAR
+    | charge/ESTOILE
+    | charge/CRESCENT
 
 charge-standard
-    = ROUNDEL
-    | ANNULET
-    | BILLET
-    | ESCUTCHEON mirrored-reversed*
-    | LOZENGE
-    | FUSIL
-    | MASCLE
-    | RUSTRE
-    | (STAR
-       | ESTOILE) (star-points? REVERSED?
-                   | REVERSED? star-points?)
-    | CRESCENT REVERSED?
+    = charge/ROUNDEL
+    | charge/ANNULET
+    | charge/BILLET
+    | charge/ESCUTCHEON mirrored-reversed*
+    | charge/LOZENGE
+    | charge/FUSIL
+    | charge/MASCLE
+    | charge/RUSTRE
+    | (charge/STAR
+       | charge/ESTOILE)
+      (star-points? REVERSED?
+       | REVERSED? star-points?)
+    | charge/CRESCENT REVERSED?
 
 (* need one of them to have a valid charge-other-type rule,
    it will be overwritten when charges have been loaded, if
    it contains lion as well *)
-custom-charge-type-lion
+charge-other-type/lion
     = #'\blion\b'
     | #'\blions\b'
 
 charge-other-type
-    = custom-charge-type-lion
+    = charge-other-type/lion
 
 charge-other
     = charge-other-type AND* attitude? AND* facing? mirrored-reversed*
 
 attitude
-    = CADENT
-    | COUCHANT
-    | COURANT
-    | DORMANT
-    | PASCUANT
-    | PASSANT
-    | RAMPANT
-    | SALIENT
-    | SEGREANT
-    | SEJANT
-    | SEJANT-ERECT
-    | STATANT
-    | ADDORSED
-    | COMBATANT
-    | RESPECTANT
-    | CLOSE
-    | DISPLAYED
-    | IN-HER-PIETY
-    | ISSUANT
-    | OVERT
-    | RECURSANT
-    | RISING
-    | VIGILANT
-    | VOLANT
-    | VULNING
-    | HAURIANT
-    | NAIANT
-    | URINANT
-    | GLISSANT
-    | NOWED
+    = attitude/CADENT
+    | attitude/COUCHANT
+    | attitude/COURANT
+    | attitude/DORMANT
+    | attitude/PASCUANT
+    | attitude/PASSANT
+    | attitude/RAMPANT
+    | attitude/SALIENT
+    | attitude/SEGREANT
+    | attitude/SEJANT
+    | attitude/SEJANT-ERECT
+    | attitude/STATANT
+    | attitude/ADDORSED
+    | attitude/COMBATANT
+    | attitude/RESPECTANT
+    | attitude/CLOSE
+    | attitude/DISPLAYED
+    | attitude/IN-HER-PIETY
+    | attitude/ISSUANT
+    | attitude/OVERT
+    | attitude/RECURSANT
+    | attitude/RISING
+    | attitude/VIGILANT
+    | attitude/VOLANT
+    | attitude/VULNING
+    | attitude/HAURIANT
+    | attitude/NAIANT
+    | attitude/URINANT
+    | attitude/GLISSANT
+    | attitude/NOWED
 
 facing
-    = TO-DEXTER
-    | TO-SINISTER
-    | AFFRONTE
-    | EN-ARRIERE
-    | GUARDANT
-    | IN-TRIAN-ASPECT
-    | REGUARDANT
-    | SALIENT
+    = facing/TO-DEXTER
+    | facing/TO-SINISTER
+    | facing/AFFRONTE
+    | facing/EN-ARRIERE
+    | facing/GUARDANT
+    | facing/IN-TRIAN-ASPECT
+    | facing/REGUARDANT
+    | facing/SALIENT
 
 tincture-modifier-type
-    = ARMED
-    | ATTIRED
-    | BEAKED
-    | COMBED
-    | EYED
-    | EYED-PEACOCK
-    | FINNED
-    | INCENSED
-    | LANGUED
-    | LEGGED
-    | MANED
-    | ORBED
-    | TAILED
-    | TOOTHED
-    | UNGULED
-    | WATTLED
-    | WINGED
-    | BARBED
-    | BLADED
-    | FRUCTED
-    | LEAVED
-    | SEEDED
-    | SLIPPED
-    | BARRED
-    | TRIMMED
-    | CAPARISONED
-    | COLLARED
-    | ERASED
-    | GARNISHED
-    | HANDLED
-    | HILTED
-    | ILLUMINATED
-    | HOODED
-    | MASONED
-    | POMMELED
-    | STRINGED
+    = tincture-modifier/ARMED
+    | tincture-modifier/ATTIRED
+    | tincture-modifier/BEAKED
+    | tincture-modifier/COMBED
+    | tincture-modifier/EYED
+    | tincture-modifier/EYED-PEACOCK
+    | tincture-modifier/FINNED
+    | tincture-modifier/INCENSED
+    | tincture-modifier/LANGUED
+    | tincture-modifier/LEGGED
+    | tincture-modifier/MANED
+    | tincture-modifier/ORBED
+    | tincture-modifier/TAILED
+    | tincture-modifier/TOOTHED
+    | tincture-modifier/UNGULED
+    | tincture-modifier/WATTLED
+    | tincture-modifier/WINGED
+    | tincture-modifier/BARBED
+    | tincture-modifier/BLADED
+    | tincture-modifier/FRUCTED
+    | tincture-modifier/LEAVED
+    | tincture-modifier/SEEDED
+    | tincture-modifier/SLIPPED
+    | tincture-modifier/BARRED
+    | tincture-modifier/TRIMMED
+    | tincture-modifier/CAPARISONED
+    | tincture-modifier/COLLARED
+    | tincture-modifier/ERASED
+    | tincture-modifier/GARNISHED
+    | tincture-modifier/HANDLED
+    | tincture-modifier/HILTED
+    | tincture-modifier/ILLUMINATED
+    | tincture-modifier/HOODED
+    | tincture-modifier/MASONED
+    | tincture-modifier/POMMELED
+    | tincture-modifier/STRINGED
 
 tincture-modifier
     = AND* tincture-modifier-type tincture
