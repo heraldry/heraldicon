@@ -22,4 +22,5 @@
         com.taoensso/tufte {:mvn/version "2.2.0"}
         org.clojure/data.json {:mvn/version "2.4.0"}
         instaparse/instaparse {:local/root "deps/instaparse-1.4.10-namespaced-nts.jar"
-                               #_#_:mvn/version "1.4.10"}}}
+                               #_#_:mvn/version "1.4.10"}
+        org.slf4j/slf4j-nop {:mvn/version "2.0.0-alpha7"}}}
