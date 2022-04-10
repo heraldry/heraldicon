@@ -3,7 +3,7 @@
    [clojure.pprint :refer [pprint]]
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [com.wsscode.common.async-cljs :refer [<? go-catch]]
+   [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [goog.crypt :as crypt]
    [goog.crypt.base64 :as b64]
    [heraldry.config :as config]

@@ -1,7 +1,7 @@
 (ns heraldry.frontend.user-library
   (:require
    [cljs.core.async :refer [go]]
-   [com.wsscode.common.async-cljs :refer [<?]]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldry.config :as config]
    [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.arms-library :as arms-library]

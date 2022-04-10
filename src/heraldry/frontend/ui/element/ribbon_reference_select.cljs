@@ -1,6 +1,6 @@
 (ns heraldry.frontend.ui.element.ribbon-reference-select
   (:require
-   [com.wsscode.common.async-cljs :refer [<? go-catch]]
+   [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldry.frontend.language :refer [tr]]
    [heraldry.frontend.macros :as macros]
    [heraldry.frontend.preview :as preview]

@@ -3,7 +3,7 @@
    [cljs-http.client :as http]
    [cljs.reader :as reader]
    [clojure.string :as s]
-   [com.wsscode.common.async-cljs :refer [<? go-catch]]))
+   [com.wsscode.async.async-cljs :refer [<? go-catch]]))
 
 (defn fetch [url]
   (go-catch

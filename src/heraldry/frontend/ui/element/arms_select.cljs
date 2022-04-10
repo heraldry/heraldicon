@@ -1,7 +1,7 @@
 (ns heraldry.frontend.ui.element.arms-select
   (:require
    [cljs.core.async :refer [go]]
-   [com.wsscode.common.async-cljs :refer [<?]]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.filter :as filter]
    [heraldry.frontend.language :refer [tr]]

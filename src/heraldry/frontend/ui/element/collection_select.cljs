@@ -2,7 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [clojure.string :as s]
-   [com.wsscode.common.async-cljs :refer [<?]]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldry.attribution :as attribution]
    [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.filter :as filter]
