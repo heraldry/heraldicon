@@ -1,7 +1,7 @@
 (ns heraldry.frontend.charge
   (:require
    [cljs.core.async :refer [go]]
-   [com.wsscode.common.async-cljs :refer [<?]]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.http :as http]
    [heraldry.frontend.state :as state]

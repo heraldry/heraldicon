@@ -1,7 +1,7 @@
 (ns heraldry.frontend.state
   (:require
    [cljs.core.async :refer [go]]
-   [com.wsscode.common.async-cljs :refer [<?]]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.coat-of-arms.default :as default]
    [heraldry.component :as component]

@@ -2,7 +2,7 @@
   (:require
    ["copy-to-clipboard" :as copy-to-clipboard]
    [cljs.core.async :refer [go]]
-   [com.wsscode.common.async-cljs :refer [<?]]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.default :as default]
    [heraldry.context :as c]
    [heraldry.frontend.api.request :as api.request]

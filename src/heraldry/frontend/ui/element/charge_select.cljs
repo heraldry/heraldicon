@@ -2,7 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [clojure.walk :as walk]
-   [com.wsscode.common.async-cljs :refer [<?]]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.attributes :as attributes]
    [heraldry.frontend.api.request :as api.request]
    [heraldry.frontend.charge-map :as charge-map]

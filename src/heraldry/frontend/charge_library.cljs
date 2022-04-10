@@ -6,7 +6,7 @@
    [clojure.set :as set]
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [com.wsscode.common.async-cljs :refer [<? go-catch]]
+   [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldry.colour :as colour]
    [heraldry.context :as c]
    [heraldry.frontend.api.request :as api.request]

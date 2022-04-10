@@ -1,7 +1,7 @@
 (ns heraldry.frontend.collection-library
   (:require
    [cljs.core.async :refer [go]]
-   [com.wsscode.common.async-cljs :refer [<?]]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldry.coat-of-arms.default :as default]
    [heraldry.context :as c]
    [heraldry.font :as font]
