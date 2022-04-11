@@ -259,9 +259,6 @@ ordinary/PALLET = #"\bpallets?\b"
 ordinary/FESS
     = #"\bfess(es?)?\b"
     | #"\bbars?\b"
-ordinary/FESS
-    = #"\bfess(es?)?\b"
-    | #"\bbars?\b"
 ordinary/BARRULET = #"\bbarrulets?\b"
 ordinary/CHIEF = #"\bchief\b"
 ordinary/BASE = #"\bbase\b"
