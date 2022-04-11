@@ -141,11 +141,6 @@
   [coll pos el]
   (vec (concat (subvec coll 0 pos) [el] (subvec coll pos))))
 
-(defn vec-replace
-  "Replace elem in coll by index."
-  [coll pos el]
-  (vec (concat (subvec coll 0 pos) [el] (subvec coll (inc pos)))))
-
 (defn vec-move
   "Move elem in coll by index"
   [coll pos1 pos2]

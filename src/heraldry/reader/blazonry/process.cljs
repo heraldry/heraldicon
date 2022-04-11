@@ -2,8 +2,7 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldry.coat-of-arms.charge.options :as charge.options]
-   [heraldry.util :as util]))
+   [heraldry.coat-of-arms.charge.options :as charge.options]))
 
 (defn add-charge-group-defaults [{:heraldry.reader.blazonry.transform/keys [default-charge-group-amount]
                                   :keys [type]
@@ -84,7 +83,7 @@
              [[index component] & rest] indexed-components]
         (if index
           (recur
-           (util/vec-replace components index component)
+           (assoc components index component)
            rest)
           components))))))
 
