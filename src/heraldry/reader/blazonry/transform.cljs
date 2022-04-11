@@ -9,7 +9,6 @@
    [heraldry.coat-of-arms.field.options :as field.options]
    [heraldry.coat-of-arms.ordinary.options :as ordinary.options]
    [heraldry.coat-of-arms.tincture.core :as tincture]
-   [heraldry.util :as util]
    [taoensso.timbre :as log]))
 
 (defmulti ast->hdn first)
@@ -447,8 +446,8 @@
       (if-let [reference (-> fields (get index) :index)]
         (let [real-reference (first (get reference-map reference))]
           (if (int? real-reference)
-            (recur (util/vec-replace fields index {:type :heraldry.field.type/ref
-                                                   :index real-reference})
+            (recur (assoc fields index {:type :heraldry.field.type/ref
+                                        :index real-reference})
                    rest)
             (recur fields rest)))
         (recur fields rest))
@@ -467,7 +466,7 @@
                             new-field)]
             (if new-field
               (recur
-               (util/vec-replace fields index new-field)
+               (assoc fields index new-field)
                rest)
               ;; if the default field already is a reference, then we might have to
               (recur fields rest)))
