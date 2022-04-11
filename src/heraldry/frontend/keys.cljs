@@ -16,7 +16,6 @@
 
 (defn key-down-handler [event]
   (let [shift? (.-shiftKey event)
-        alt? (.-altKey event)
         ctrl? (.-ctrlKey event)
         meta? (.-metaKey event)
         code (.-code event)
@@ -39,17 +38,14 @@
                                            event [:heraldry.frontend.history.core/undo undo-path]))
       (entity-edit-page? "ribbon") (rf/dispatch
                                     [:heraldry.frontend.ribbon-library/edit-set-key-modifiers
-                                     {:alt? alt?
-                                      :shift? shift?}]))))
+                                     {:shift? shift?}]))))
 
 (defn key-up-handler [event]
-  (let [shift? (.-shiftKey event)
-        alt? (.-altKey event)]
+  (let [shift? (.-shiftKey event)]
     (when (entity-edit-page? "ribbon")
       (rf/dispatch
        [:heraldry.frontend.ribbon-library/edit-set-key-modifiers
-        {:alt? alt?
-         :shift? shift?}]))))
+        {:shift? shift?}]))))
 
 (js/window.removeEventListener "keydown" key-down-handler)
 (js/window.addEventListener "keydown" key-down-handler)
