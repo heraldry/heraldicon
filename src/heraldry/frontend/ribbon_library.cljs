@@ -451,8 +451,9 @@
                         {:color "#ffffff"
                          :background-color "#ff8020"})}
       [tr :string.button/edit]]
+     " "
      (when-not (= edit-mode :none)
-       " Shift - add point or remove points")]))
+       [tr :string.ribbon.editor/shift-info])]))
 
 (defn ribbon-form []
   (rf/dispatch [:set-title-from-path-or-default
