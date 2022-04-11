@@ -143,11 +143,10 @@
     [(rf/subscribe [::edit-show-points?])
      (rf/subscribe [::edit-key-modifiers])])
 
-  (fn [[show-points? {:keys [shift? alt?]}] _]
+  (fn [[show-points? {:keys [shift?]}] _]
     (if show-points?
       (cond
-        shift? :add
-        alt? :remove
+        shift? :add-or-remove
         :else :edit)
       :none)))
 
@@ -199,10 +198,9 @@
             height (* size 0.2)
             {:keys [x y]} (interface/get-raw-data {:path path})
             deletable? @(rf/subscribe [::edit-point-deletable? path])
-            route-path-point-click-fn (case edit-mode
-                                        :remove (when deletable?
-                                                  #(rf/dispatch [::edit-remove-point %]))
-                                        nil)
+            route-path-point-click-fn (when (and (= edit-mode :add-or-remove)
+                                                 deletable?)
+                                        #(rf/dispatch [::edit-remove-point %]))
             route-path-point-mouse-down-fn (when (= edit-mode :edit)
                                              (fn [pos]
                                                (rf/dispatch [::edit-select-point path pos])))
@@ -223,15 +221,13 @@
                                    "#fff")
                            :stroke "#000"}
                    :r size}]
-         (case edit-mode
-           :remove (when deletable?
-                     [:g
-                      [:rect {:x (/ width -2)
-                              :y (/ height -2)
-                              :width width
-                              :height height
-                              :style {:fill "#000"}}]])
-           nil)]))))
+         (when (and (= edit-mode :add-or-remove)
+                    deletable?) [:g
+                                 [:rect {:x (/ width -2)
+                                         :y (/ height -2)
+                                         :width width
+                                         :height height
+                                         :style {:fill "#000"}}]])]))))
 
 (defn add-point [path idx {:keys [x y] :as point}]
   (let [size path-point-size
@@ -338,7 +334,7 @@
        (doall
         (for [idx (range num-points)]
           ^{:key idx} [path-point (conj points-path idx)]))
-       (when (= edit-mode :add)
+       (when (= edit-mode :add-or-remove)
          (doall
           (for [[idx point] @(rf/subscribe [::edit-addable-points points-path])]
             ^{:key idx} [add-point points-path idx point])))]]]))
@@ -456,7 +452,7 @@
                          :background-color "#ff8020"})}
       [tr :string.button/edit]]
      (when-not (= edit-mode :none)
-       " Shift - add point, Alt - remove points")]))
+       " Shift - add point or remove points")]))
 
 (defn ribbon-form []
   (rf/dispatch [:set-title-from-path-or-default
