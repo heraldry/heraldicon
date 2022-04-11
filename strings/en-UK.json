@@ -805,7 +805,10 @@
       "right-to-left": "Right to left"
     },
     "segments": "Segments",
-    "topology": "Topology"
+    "topology": "Topology",
+    "editor": {
+      "shift-info": "Shift - add or remove points"
+    }
   },
   "escutcheon": {
     "type": {

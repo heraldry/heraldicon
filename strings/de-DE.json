@@ -801,7 +801,10 @@
       "right-to-left": "Von rechts nach links"
     },
     "segments": "Segmente",
-    "topology": "Topologie"
+    "topology": "Topologie",
+    "editor": {
+      "shift-info": "Umschalttaste - Punkt hinzufügen oder entfernen"
+    }
   },
   "escutcheon": {
     "type": {
