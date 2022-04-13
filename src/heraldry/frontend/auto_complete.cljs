@@ -28,16 +28,17 @@
                                                       :left
                                                       (str "px"))
                                             :top (str "calc(" (:top position) "px + 5px + 1em)")}}]
-            (map (fn [[choice hint]]
-                   [:li.auto-complete-suggestion {:on-click (fn [event]
-                                                              (doto event
-                                                                .preventDefault
-                                                                .stopPropagation)
-                                                              (when on-click
-                                                                (on-click choice)))}
-                    choice
-                    (when hint
-                      [:span.hint hint])]))
+            (keep (fn [[choice hint]]
+                    (when (-> choice count pos?)
+                      [:li.auto-complete-suggestion {:on-click (fn [event]
+                                                                 (doto event
+                                                                   .preventDefault
+                                                                   .stopPropagation)
+                                                                 (when on-click
+                                                                   (on-click choice)))}
+                       choice
+                       (when hint
+                         [:span.hint hint])])))
             choices))))
 
 (defn auto-complete-first []
