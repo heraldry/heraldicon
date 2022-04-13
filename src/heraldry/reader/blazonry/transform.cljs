@@ -834,10 +834,10 @@
 (def attitude-map
   (->> attributes/attitude-map
        (map (fn [[key _]]
-              [(-> key
-                   name
-                   s/upper-case
-                   keyword)
+              [(->> key
+                    name
+                    s/upper-case
+                    (keyword "attitude"))
                key]))
        (into {})))
 
@@ -850,10 +850,10 @@
 (def facing-map
   (->> attributes/facing-map
        (map (fn [[key _]]
-              [(-> key
-                   name
-                   s/upper-case
-                   keyword)
+              [(->> key
+                    name
+                    s/upper-case
+                    (keyword "facing"))
                key]))
        (into {})))
 
