@@ -168,7 +168,9 @@
                                        sort
                                        dedupe
                                        (map (fn [choice]
-                                              [choice (parser/parse-as-part choice parser)]))
+                                              [choice (-> parser
+                                                          :suggestion-classifications
+                                                          (get choice))]))
                                        (sort-by (fn [[choice hint]]
                                                   [(get suggestion-hint-order hint 1000)
                                                    choice]))

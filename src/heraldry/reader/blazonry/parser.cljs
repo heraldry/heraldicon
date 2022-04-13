@@ -12,8 +12,8 @@
     (str charge-type "es")
     (str charge-type "s")))
 
-(defn bad-charge-types [parser]
-  (let [result (insta/parse parser "±" :start :bad-charge-type)]
+(defn generate-strings-for-rule [parser rule]
+  (let [result (insta/parse parser "±" :start rule)]
     (->> result
          :reason
          (mapcat (fn [{:keys [tag expecting]}]
@@ -27,10 +27,35 @@
          (map s/trim)
          (into #{}))))
 
+(defn suggestion-classifications [parser]
+  (->> [[:layout-words "layout"]
+        [:cottising-word "cottising"]
+        [:tincture "tincture"]
+        [:COUNTERCHANGED "tincture"]
+        [:partition-type "partition"]
+        [:line-type "line"]
+        [:FIMBRIATED "fimbriation"]
+        [:amount "number"]
+        [:attitude "attitude"]
+        [:facing "facing"]
+        [:tincture-modifier-type "extra tincture"]
+        [:ordinary-type "ordinary"]
+        [:ordinary-option "ordinary option"]
+        [:charge-standard-type "charge"]
+        [:charge-other-type "charge"]
+        [:charge-option "charge option"]]
+       (map (fn [[rule class]]
+              (->> (generate-strings-for-rule parser rule)
+                   (map (fn [s]
+                          [s class]))
+                   (into {}))))
+       (apply merge-with (fn [a _] a))))
+
 (def default
   (let [parser (default-parser)]
     {:parser parser
-     :bad-charge-types (bad-charge-types parser)
+     :bad-charge-types (generate-strings-for-rule parser :bad-charge-type)
+     :suggestion-classifications (suggestion-classifications parser)
      :charge-map {}}))
 
 (defn make-rule [[rule terminals]]
@@ -123,6 +148,7 @@
                     default-parser
                     charge-type-rules)]
     {:parser new-parser
+     :suggestion-classifications (suggestion-classifications new-parser)
      :charge-map charge-map}))
 
 (def ast-node-normalization
@@ -156,35 +182,6 @@
   (->> ast
        normalize-nodes
        enumerate-same-tincture-references))
-
-(defn -parse-as-part [s {:keys [parser]}]
-  (let [s (s/lower-case s)]
-    (loop [[[rule part-name] & rest] [[:layout-words "layout"]
-                                      [:cottising-word "cottising"]
-                                      [:tincture "tincture"]
-                                      [:COUNTERCHANGED "tincture"]
-                                      [:partition-type "partition"]
-                                      [:line-type "line"]
-                                      [:FIMBRIATED "fimbriation"]
-                                      [:amount "number"]
-                                      [:attitude "attitude"]
-                                      [:facing "facing"]
-                                      [:tincture-modifier-type "extra tincture"]
-                                      [:ordinary-type "ordinary"]
-                                      [:ordinary-option "ordinary option"]
-                                      [:charge-standard-type "charge"]
-                                      [:charge-other-type "charge"]
-                                      [:charge-option "charge option"]]]
-      (when rule
-        (or (try
-              (let [parsed (parser s :start rule)]
-                (when (vector? parsed)
-                  part-name))
-              (catch :default _))
-            (recur rest))))))
-
-(def parse-as-part
-  (memoize -parse-as-part))
 
 (defn parse [s {:keys [parser]}]
   (let [result (-> s
