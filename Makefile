@@ -36,6 +36,15 @@ prod-frontend-release:
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(PROD_FRONTEND_RELEASE_DIR)/index.html
 	yarn shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
 
+PROD_FRONTEND_DEV_DIR = build/dev-prod
+PROD_DEV_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/commit "$(COMMIT)"}} :output-dir "$(PROD_FRONTEND_DEV_DIR)"}
+dev-prod:
+	rm -rf $(PROD_FRONTEND_DEV_DIR) 2> /dev/null || true
+	mkdir -p $(PROD_FRONTEND_DEV_DIR)
+	cp -r assets/* $(PROD_FRONTEND_DEV_DIR)
+	rm -rf $(PROD_FRONTEND_DEV_DIR)/js/generated 2> /dev/null || true
+	yarn shadow-cljs watch frontend --config-merge '$(PROD_DEV_CONFIG)'
+
 dirty-prod-frontend-deploy: actual-prod-frontend-deploy
 prod-frontend-deploy: check-before-deploy-frontend actual-prod-frontend-deploy
 
