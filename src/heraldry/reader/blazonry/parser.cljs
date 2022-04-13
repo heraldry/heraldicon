@@ -1,5 +1,6 @@
 (ns heraldry.reader.blazonry.parser
   (:require
+   ["genex" :as genex]
    [clojure.string :as s]
    [clojure.walk :as walk]
    [instaparse.core :as insta])
@@ -11,19 +12,26 @@
     (str charge-type "es")
     (str charge-type "s")))
 
+(defn bad-charge-types [parser]
+  (let [result (insta/parse parser "±" :start :bad-charge-type)]
+    (->> result
+         :reason
+         (mapcat (fn [{:keys [tag expecting]}]
+                   (case tag
+                     :optional []
+                     :string [expecting]
+                     :regexp (-> expecting
+                                 genex
+                                 .generate
+                                 js->clj))))
+         (map s/trim)
+         (into #{}))))
+
 (def default
-  {:parser (default-parser)
-   :charge-map {}})
-
-(defn -bad-charge-type? [charge-type]
-  (try
-    (let [parsed (insta/parse (:parser default) charge-type :start :bad-charge-type)]
-      (vector? parsed))
-    (catch :default _
-      false)))
-
-(def bad-charge-type?
-  (memoize -bad-charge-type?))
+  (let [parser (default-parser)]
+    {:parser parser
+     :bad-charge-types (bad-charge-types parser)
+     :charge-map {}}))
 
 (defn make-rule [[rule terminals]]
   [rule
@@ -105,7 +113,7 @@
                                              valid-charge-type? (re-matches #"^[a-zA-Z0-9-]+$" charge-type-name)]
                                          (when (and valid-charge-type?
                                                     (-> clean-name count pos?)
-                                                    (not (bad-charge-type? clean-name)))
+                                                    (not (contains? (:bad-charge-types default) clean-name)))
                                            [rule-name
                                             (set [clean-name
                                                   (pluralize clean-name)])]))))
