@@ -118,7 +118,7 @@
     {:type :heraldry.field.type/plain
      :tincture :or
      :components [{:type :heraldry.ordinary.type/chevron
-                   :direction-anchor {:point :chief}
+                   :direction-intermediate-name {:point :chief}
                    :field {:type :heraldry.field.type/plain
                            :tincture :gules}}]}
 
@@ -307,7 +307,7 @@
                :tincture :ermine}
               {:type :heraldry.field.type/plain
                :tincture :vert}]
-     :direction-anchor {:point :bottom}}
+     :direction-intermediate-name {:point :bottom}}
 
     "per pile reversed sable and ermine and vert"
     {:type :heraldry.field.type/per-pile

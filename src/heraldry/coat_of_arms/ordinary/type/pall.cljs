@@ -33,27 +33,27 @@
                              (options/override-if-exists [:offset :min] 0)
                              (options/override-if-exists [:base-line] nil)
                              (options/override-if-exists [:fimbriation :alignment :default] :outside))
-        direction-anchor-point-option {:type :choice
-                                       :choices [[:string.option.point-choice/chief :chief]
-                                                 [:string.option.point-choice/base :base]
-                                                 [:string.option.point-choice/dexter :dexter]
-                                                 [:string.option.point-choice/sinister :sinister]
-                                                 [:string.option.point-choice/top-left :top-left]
-                                                 [:string.option.point-choice/top :top]
-                                                 [:string.option.point-choice/top-right :top-right]
-                                                 [:string.option.point-choice/left :left]
-                                                 [:string.option.point-choice/right :right]
-                                                 [:string.option.point-choice/bottom-left :bottom-left]
-                                                 [:string.option.point-choice/bottom :bottom]
-                                                 [:string.option.point-choice/bottom-right :bottom-right]
-                                                 [:string.option.anchor-point-choice/angle :angle]]
-                                       :default :top
-                                       :ui {:label :string.option/point}}
-        current-direction-anchor-point (options/get-value
-                                        (interface/get-raw-data (c/++ context :direction-anchor :point))
-                                        direction-anchor-point-option)
+        direction-intermediate-name-point-option {:type :choice
+                                                  :choices [[:string.option.point-choice/chief :chief]
+                                                            [:string.option.point-choice/base :base]
+                                                            [:string.option.point-choice/dexter :dexter]
+                                                            [:string.option.point-choice/sinister :sinister]
+                                                            [:string.option.point-choice/top-left :top-left]
+                                                            [:string.option.point-choice/top :top]
+                                                            [:string.option.point-choice/top-right :top-right]
+                                                            [:string.option.point-choice/left :left]
+                                                            [:string.option.point-choice/right :right]
+                                                            [:string.option.point-choice/bottom-left :bottom-left]
+                                                            [:string.option.point-choice/bottom :bottom]
+                                                            [:string.option.point-choice/bottom-right :bottom-right]
+                                                            [:string.option.anchor-point-choice/angle :angle]]
+                                                  :default :top
+                                                  :ui {:label :string.option/point}}
+        current-direction-intermediate-name-point (options/get-value
+                                                   (interface/get-raw-data (c/++ context :direction-intermediate-name :point))
+                                                   direction-intermediate-name-point-option)
         anchor-point-option {:type :choice
-                             :choices (case current-direction-anchor-point
+                             :choices (case current-direction-intermediate-name-point
                                         :bottom [[:string.option.point-choice/bottom-left :bottom-left]
                                                  [:string.option.point-choice/bottom :bottom]
                                                  [:string.option.point-choice/bottom-right :bottom-right]
@@ -111,7 +111,7 @@
                                          [:string.option.point-choice/bottom :bottom]
                                          [:string.option.point-choice/bottom-right :bottom-right]
                                          [:string.option.anchor-point-choice/angle :angle]])
-                             :default (case current-direction-anchor-point
+                             :default (case current-direction-intermediate-name-point
                                         :bottom :bottom-left
                                         :top :top-right
                                         :left :top-left
@@ -164,30 +164,30 @@
                                   :step 0.1}}
                   :ui {:label :string.option/origin
                        :form-type :position}}
-         :direction-anchor (cond-> {:point direction-anchor-point-option
-                                    :ui {:label :string.charge.attitude/issuant
-                                         :form-type :position}}
+         :direction-intermediate-name (cond-> {:point direction-intermediate-name-point-option
+                                               :ui {:label :string.charge.attitude/issuant
+                                                    :form-type :position}}
 
-                             (= current-direction-anchor-point
-                                :angle) (assoc :angle {:type :range
-                                                       :min -180
-                                                       :max 180
-                                                       :default 0
-                                                       :ui {:label :string.option/angle}})
+                                        (= current-direction-intermediate-name-point
+                                           :angle) (assoc :angle {:type :range
+                                                                  :min -180
+                                                                  :max 180
+                                                                  :default 0
+                                                                  :ui {:label :string.option/angle}})
 
-                             (not= current-direction-anchor-point
-                                   :angle) (assoc :offset-x {:type :range
-                                                             :min -45
-                                                             :max 45
-                                                             :default 0
-                                                             :ui {:label :string.option/offset-x
-                                                                  :step 0.1}}
-                                                  :offset-y {:type :range
-                                                             :min -45
-                                                             :max 45
-                                                             :default 0
-                                                             :ui {:label :string.option/offset-y
-                                                                  :step 0.1}}))
+                                        (not= current-direction-intermediate-name-point
+                                              :angle) (assoc :offset-x {:type :range
+                                                                        :min -45
+                                                                        :max 45
+                                                                        :default 0
+                                                                        :ui {:label :string.option/offset-x
+                                                                             :step 0.1}}
+                                                             :offset-y {:type :range
+                                                                        :min -45
+                                                                        :max 45
+                                                                        :default 0
+                                                                        :ui {:label :string.option/offset-y
+                                                                             :step 0.1}}))
          :anchor (cond-> {:point anchor-point-option
                           :ui {:label :string.option/anchor
                                :form-type :position}}
@@ -239,22 +239,22 @@
         extra-line (interface/get-sanitized-data (c/++ context :extra-line))
         origin (interface/get-sanitized-data (c/++ context :origin))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
-        direction-anchor (interface/get-sanitized-data (c/++ context :direction-anchor))
+        direction-intermediate-name (interface/get-sanitized-data (c/++ context :direction-intermediate-name))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
-        raw-direction-anchor (interface/get-raw-data (c/++ context :direction-anchor))
-        direction-anchor (cond-> direction-anchor
-                           (-> direction-anchor
-                               :point
-                               #{:left
-                                 :right
-                                 :top
-                                 :bottom}) (->
-                                            (assoc :offset-x (or (:offset-x raw-direction-anchor)
-                                                                 (:offset-x origin)))
-                                            (assoc :offset-y (or (:offset-y raw-direction-anchor)
-                                                                 (:offset-y origin)))))
+        raw-direction-intermediate-name (interface/get-raw-data (c/++ context :direction-intermediate-name))
+        direction-intermediate-name (cond-> direction-intermediate-name
+                                      (-> direction-intermediate-name
+                                          :point
+                                          #{:left
+                                            :right
+                                            :top
+                                            :bottom}) (->
+                                                       (assoc :offset-x (or (:offset-x raw-direction-intermediate-name)
+                                                                            (:offset-x origin)))
+                                                       (assoc :offset-y (or (:offset-y raw-direction-intermediate-name)
+                                                                            (:offset-y origin)))))
         points (:points environment)
         unadjusted-origin-point (position/calculate origin environment)
         top-left (:top-left points)
@@ -264,15 +264,15 @@
         band-width (-> size
                        ((util/percent-of height)))
         {direction-origin-point :real-origin
-         direction-anchor-point :real-anchor} (angle/calculate-origin-and-anchor
-                                               environment
-                                               origin
-                                               direction-anchor
-                                               0
-                                               -90)
+         direction-intermediate-name-point :real-anchor} (angle/calculate-origin-and-anchor
+                                                          environment
+                                                          origin
+                                                          direction-intermediate-name
+                                                          0
+                                                          -90)
         pall-angle (math/normalize-angle
                     (v/angle-to-point direction-origin-point
-                                      direction-anchor-point))
+                                      direction-intermediate-name-point))
         {origin-point :real-origin
          anchor-point :real-anchor} (angle/calculate-origin-and-anchor
                                      environment

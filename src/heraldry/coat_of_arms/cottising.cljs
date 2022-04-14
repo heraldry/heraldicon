@@ -222,8 +222,8 @@
                                      :alignment alignment}
                             :anchor {:point :angle
                                      :angle [:force half-joint-angle]}
-                            :direction-anchor {:point :angle
-                                               :angle [:force (- chevron-angle 90)]}
+                            :direction-intermediate-name {:point :angle
+                                                          :angle [:force (- chevron-angle 90)]}
                             :outline? outline?}))])))
 
 (defmethod interface/options-subscriptions :heraldry.component/cottise [_context]
