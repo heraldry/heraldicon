@@ -59,8 +59,8 @@
      :variant
      :thickness
      :gap
-     :anchor
      :origin
+     :anchor
      :orientation
      :geometry
      :layout

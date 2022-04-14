@@ -41,8 +41,8 @@
   (ui.interface/form-elements
    context
    [:type
-    :anchor
     :origin
+    :anchor
     :orientation
     :variant
     :line
