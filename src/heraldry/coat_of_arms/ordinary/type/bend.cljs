@@ -23,7 +23,7 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))
-        origin-point-option {:type :choice
+        anchor-point-option {:type :choice
                              :choices [[:string.option.point-choice/fess :fess]
                                        [:string.option.point-choice/chief :chief]
                                        [:string.option.point-choice/base :base]
@@ -33,11 +33,11 @@
                                        [:string.option.point-choice/bottom-right :bottom-right]]
                              :default :top-left
                              :ui {:label :string.option/point}}
-        current-origin-point (options/get-value
-                              (interface/get-raw-data (c/++ context :origin :point))
-                              origin-point-option)
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)
         orientation-point-option {:type :choice
-                                  :choices (case current-origin-point
+                                  :choices (case current-anchor-point
                                              :top-left [[:string.option.point-choice/fess :fess]
                                                         [:string.option.point-choice/chief :chief]
                                                         [:string.option.point-choice/base :base]
@@ -55,7 +55,7 @@
                                              [[:string.option.point-choice/top-left :top-left]
                                               [:string.option.point-choice/bottom-right :bottom-right]
                                               [:string.option.orientation-point-choice/angle :angle]])
-                                  :default (case current-origin-point
+                                  :default (case current-anchor-point
                                              :top-left :fess
                                              :bottom-right :fess
                                              :top-left)
@@ -63,7 +63,7 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    (-> {:origin {:point origin-point-option
+    (-> {:anchor {:point anchor-point-option
                   :alignment {:type :choice
                               :choices position/alignment-choices
                               :default :middle
@@ -81,7 +81,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :orientation (cond-> {:point orientation-point-option
                                :ui {:label :string.option/orientation
@@ -135,7 +135,7 @@
            override-center-point] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
@@ -147,17 +147,17 @@
         height (:height environment)
         band-height (-> size
                         ((util/percent-of height)))
-        {origin-point :real-origin
-         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                environment
-                                               origin
+                                               anchor
                                                orientation
                                                band-height
                                                nil)
         center-point (or override-center-point
-                         (v/line-intersection origin-point orientation-point
+                         (v/line-intersection anchor-point orientation-point
                                               top bottom))
-        direction (v/sub orientation-point origin-point)
+        direction (v/sub orientation-point anchor-point)
         direction (-> (v/v (-> direction :x Math/abs)
                            (-> direction :y Math/abs))
                       v/normal)
@@ -168,8 +168,8 @@
                             [override-middle-real-start
                              override-middle-real-end]
                             (v/environment-intersections
-                             origin-point
-                             (v/add origin-point direction)
+                             anchor-point
+                             (v/add anchor-point direction)
                              environment))
         band-length (-> (v/sub middle-real-start center-point)
                         v/abs

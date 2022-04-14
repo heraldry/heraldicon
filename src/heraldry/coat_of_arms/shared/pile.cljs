@@ -4,14 +4,14 @@
    [heraldry.math.vector :as v]
    [heraldry.util :as util]))
 
-(defn diagonals [origin-point point-point size]
+(defn diagonals [anchor-point point-point size]
   (let [direction (-> point-point
-                      (v/sub origin-point)
+                      (v/sub anchor-point)
                       v/normal)
         direction-orthogonal (v/orthogonal direction)
-        left-point (v/add origin-point
+        left-point (v/add anchor-point
                           (v/mul direction-orthogonal (/ size 2)))
-        right-point (v/sub origin-point
+        right-point (v/sub anchor-point
                            (v/mul direction-orthogonal (/ size 2)))]
     {:left (-> left-point
                (v/sub point-point)
@@ -44,25 +44,25 @@
      :part-length (* f stretch)
      :x rx}))
 
-(defn calculate-properties-for-angle [environment origin orientation
+(defn calculate-properties-for-angle [environment anchor orientation
                                       {:keys [size stretch]}
                                       _thickness-base base-angle]
   (let [orientation-type (or (:type orientation)
                              :edge)
-        alignment (-> origin :alignment (or :middle))
-        {real-origin :real-origin
-         real-orientation :real-orientation} (angle/calculate-origin-and-orientation
+        alignment (-> anchor :alignment (or :middle))
+        {real-anchor :real-anchor
+         real-orientation :real-orientation} (angle/calculate-anchor-and-orientation
                                               environment
-                                              (assoc origin :alignment :middle)
+                                              (assoc anchor :alignment :middle)
                                               (assoc orientation :alignment :middle)
                                               0
                                               base-angle)
         target-point (case orientation-type
                        :edge (-> (v/environment-intersections
-                                  real-origin real-orientation environment)
+                                  real-anchor real-orientation environment)
                                  last)
                        real-orientation)
-        direction-vector (v/sub target-point real-origin)
+        direction-vector (v/sub target-point real-anchor)
         direction-length (v/abs direction-vector)
         {:keys [angle x
                 length
@@ -80,56 +80,56 @@
         angle (case alignment
                 :left (- angle)
                 angle)
-        calculated-origin (-> real-origin
+        calculated-anchor (-> real-anchor
                               (v/sub target-point)
                               (v/mul (/ length direction-length))
                               (v/rotate angle)
                               (v/add target-point))
-        calculated-point (-> real-origin
+        calculated-point (-> real-anchor
                              (v/sub target-point)
                              (v/mul (/ (- length part-length) direction-length))
                              (v/rotate angle)
                              (v/add target-point))]
-    {:origin calculated-origin
+    {:anchor calculated-anchor
      :point calculated-point
      :thickness (* x 2)}))
 
-(defn calculate-properties-for-thickness [environment origin orientation
+(defn calculate-properties-for-thickness [environment anchor orientation
                                           {:keys [size stretch]}
                                           thickness-base base-angle]
   (let [thickness (-> size
                       ((util/percent-of thickness-base)))
         orientation-type (or (:type orientation)
                              :edge)
-        {real-origin :real-origin
-         real-orientation :real-orientation} (angle/calculate-origin-and-orientation
+        {real-anchor :real-anchor
+         real-orientation :real-orientation} (angle/calculate-anchor-and-orientation
                                               environment
-                                              origin
+                                              anchor
                                               orientation
                                               thickness
                                               base-angle)
         target-point (case orientation-type
                        :edge (-> (v/environment-intersections
-                                  real-origin real-orientation environment)
+                                  real-anchor real-orientation environment)
                                  last)
                        real-orientation)
-        direction-vector (v/sub target-point real-origin)
+        direction-vector (v/sub target-point real-anchor)
         direction-length (v/abs direction-vector)
         direction (v/div direction-vector direction-length)
         length (or stretch 1)
         point (-> direction
                   (v/mul (* direction-length length))
-                  (v/add real-origin))]
-    {:origin real-origin
+                  (v/add real-anchor))]
+    {:anchor real-anchor
      :point point
      :thickness thickness}))
 
-(defn calculate-properties [environment origin orientation
+(defn calculate-properties [environment anchor orientation
                             {:keys [size-mode]
                              :as geometry} thickness-base base-angle]
   (let [calculate-properties-fn (case size-mode
                                   :angle calculate-properties-for-angle
                                   calculate-properties-for-thickness)]
     (calculate-properties-fn
-     environment origin orientation
+     environment anchor orientation
      geometry thickness-base base-angle)))

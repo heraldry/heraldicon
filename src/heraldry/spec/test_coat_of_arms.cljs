@@ -18,7 +18,7 @@
                      :tincture :azure}
 
     :heraldry/field {:type :heraldry.field.type/per-pale
-                     :origin {:point :fess
+                     :anchor {:point :fess
                               :offset-x 0
                               :offset-y nil}
                      :line {:type :invected
@@ -83,7 +83,7 @@
                         :field {:type :heraldry.field.type/plain
                                 :tincture :azure}
                         :geometry {:size 50}
-                        :origin {:point :fess
+                        :anchor {:point :fess
                                  :offset-x -5
                                  :offset-y 5}
                         :line {:type :engrailed
@@ -136,7 +136,7 @@
                                  :highlight 0.5
                                  :primary :or}
                       :geometry {:size 50}
-                      :origin {:point :fess
+                      :anchor {:point :fess
                                :offset-x -5
                                :offset-y 5}}))
 

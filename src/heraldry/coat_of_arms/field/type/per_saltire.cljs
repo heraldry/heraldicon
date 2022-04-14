@@ -40,9 +40,9 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    ;; TODO: perhaps there should be origin options for the corners?
+    ;; TODO: perhaps there should be anchor options for the corners?
     ;; so one can align fro top-left to bottom-right
-    {:origin {:point {:type :choice
+    {:anchor {:point {:type :choice
                       :choices [[:string.option.point-choice/chief :chief]
                                 [:string.option.point-choice/base :base]
                                 [:string.option.point-choice/fess :fess]
@@ -64,7 +64,7 @@
                          :default 0
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label :string.option/origin
+              :ui {:label :string.option/anchor
                    :form-type :position}}
      :orientation (cond-> {:point orientation-point-option
                            :ui {:label :string.option/orientation
@@ -97,40 +97,40 @@
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
-        {origin-point :real-origin
-         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                environment
-                                               origin
+                                               anchor
                                                orientation
                                                0
                                                nil)
         [relative-top-left relative-top-right
-         relative-bottom-left relative-bottom-right] (saltire/arm-diagonals origin-point orientation-point)
-        diagonal-top-left (v/add origin-point relative-top-left)
-        diagonal-top-right (v/add origin-point relative-top-right)
-        diagonal-bottom-left (v/add origin-point relative-bottom-left)
-        diagonal-bottom-right (v/add origin-point relative-bottom-right)
-        intersection-top-left (v/find-first-intersection-of-ray origin-point diagonal-top-left environment)
-        intersection-top-right (v/find-first-intersection-of-ray origin-point diagonal-top-right environment)
-        intersection-bottom-left (v/find-first-intersection-of-ray origin-point diagonal-bottom-left environment)
-        intersection-bottom-right (v/find-first-intersection-of-ray origin-point diagonal-bottom-right environment)
+         relative-bottom-left relative-bottom-right] (saltire/arm-diagonals anchor-point orientation-point)
+        diagonal-top-left (v/add anchor-point relative-top-left)
+        diagonal-top-right (v/add anchor-point relative-top-right)
+        diagonal-bottom-left (v/add anchor-point relative-bottom-left)
+        diagonal-bottom-right (v/add anchor-point relative-bottom-right)
+        intersection-top-left (v/find-first-intersection-of-ray anchor-point diagonal-top-left environment)
+        intersection-top-right (v/find-first-intersection-of-ray anchor-point diagonal-top-right environment)
+        intersection-bottom-left (v/find-first-intersection-of-ray anchor-point diagonal-bottom-left environment)
+        intersection-bottom-right (v/find-first-intersection-of-ray anchor-point diagonal-bottom-right environment)
         arm-length (->> [intersection-top-left
                          intersection-top-right
                          intersection-bottom-left
                          intersection-bottom-right]
                         (map #(-> %
-                                  (v/sub origin-point)
+                                  (v/sub anchor-point)
                                   v/abs))
                         (apply max))
         line (-> line
                  (dissoc :fimbriation))
         {line-top-left :line
          line-top-left-start :line-start} (line/create line
-                                                       origin-point diagonal-top-left
+                                                       anchor-point diagonal-top-left
                                                        :reversed? true
                                                        :real-start 0
                                                        :real-end arm-length
@@ -138,7 +138,7 @@
                                                        :environment environment)
         {line-top-right :line
          line-top-right-start :line-start} (line/create opposite-line
-                                                        origin-point diagonal-top-right
+                                                        anchor-point diagonal-top-right
                                                         :flipped? true
                                                         :mirrored? true
                                                         :real-start 0
@@ -147,7 +147,7 @@
                                                         :environment environment)
         {line-bottom-right :line
          line-bottom-right-start :line-start} (line/create line
-                                                           origin-point diagonal-bottom-right
+                                                           anchor-point diagonal-bottom-right
                                                            :reversed? true
                                                            :real-start 0
                                                            :real-end arm-length
@@ -155,19 +155,19 @@
                                                            :environment environment)
         {line-bottom-left :line
          line-bottom-left-start :line-start} (line/create opposite-line
-                                                          origin-point diagonal-bottom-left
+                                                          anchor-point diagonal-bottom-left
                                                           :flipped? true
                                                           :mirrored? true
                                                           :real-start 0
                                                           :real-end arm-length
                                                           :context context
                                                           :environment environment)
-        ;; TODO: sub fields need better environment determination, especially with an adjusted origin,
+        ;; TODO: sub fields need better environment determination, especially with an adjusted anchor,
         ;; the resulting environments won't be very well centered
         parts [[["M" (v/add diagonal-top-left
                             line-top-left-start)
                  (path/stitch line-top-left)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-top-right)
                  (infinity/path :counter-clockwise
                                 [:right :left]
@@ -178,12 +178,12 @@
                  "z"]
                 [intersection-top-left
                  intersection-top-right
-                 origin-point]]
+                 anchor-point]]
 
                [["M" (v/add diagonal-top-left
                             line-top-left-start)
                  (path/stitch line-top-left)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-bottom-left)
                  (infinity/path :clockwise
                                 [:left :left]
@@ -194,12 +194,12 @@
                  "z"]
                 [intersection-top-left
                  intersection-bottom-left
-                 origin-point]]
+                 anchor-point]]
 
                [["M" (v/add diagonal-bottom-right
                             line-bottom-right-start)
                  (path/stitch line-bottom-right)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-top-right)
                  (infinity/path :clockwise
                                 [:right :right]
@@ -210,12 +210,12 @@
                  "z"]
                 [intersection-top-right
                  intersection-bottom-right
-                 origin-point]]
+                 anchor-point]]
 
                [["M" (v/add diagonal-bottom-right
                             line-bottom-right-start)
                  (path/stitch line-bottom-right)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-bottom-left)
                  (infinity/path :counter-clockwise
                                 [:left :right]
@@ -226,14 +226,14 @@
                  "z"]
                 [intersection-bottom-left
                  intersection-bottom-right
-                 origin-point]]]]
+                 anchor-point]]]]
 
     [:<>
      [shared/make-subfields
       context parts
       [:all
        [(path/make-path
-         ["M" (v/add origin-point
+         ["M" (v/add anchor-point
                      line-bottom-left-start)
           (path/stitch line-bottom-left)])]
        [(path/make-path
@@ -249,7 +249,7 @@
                                 line-top-left-start)
                      (path/stitch line-top-left)])}]
         [:path {:d (path/make-path
-                    ["M" (v/add origin-point
+                    ["M" (v/add anchor-point
                                 line-top-right-start)
                      (path/stitch line-top-right)])}]
         [:path {:d (path/make-path
@@ -257,6 +257,6 @@
                                 line-bottom-right-start)
                      (path/stitch line-bottom-right)])}]
         [:path {:d (path/make-path
-                    ["M" (v/add origin-point
+                    ["M" (v/add anchor-point
                                 line-bottom-left-start)
                      (path/stitch line-bottom-left)])}]])]))

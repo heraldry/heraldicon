@@ -71,7 +71,7 @@
                                                           (-> context
                                                               c/--
                                                               (c/++ cottise-2-key)))}
-                            :origin {:point :fess
+                            :anchor {:point :fess
                                      :offset-y [:force (offset-y-fn
                                                         (-> environment :points :fess :y)
                                                         distance)]
@@ -104,7 +104,7 @@
                                                           (-> context
                                                               c/--
                                                               (c/++ cottise-2-key)))}
-                            :origin {:point :fess
+                            :anchor {:point :fess
                                      :offset-x [:force (offset-x-fn
                                                         (-> environment :points :fess :y)
                                                         distance)]
@@ -151,7 +151,7 @@
                                                           (-> context
                                                               c/--
                                                               (c/++ cottise-2-key)))}
-                            :origin {:point :fess
+                            :anchor {:point :fess
                                      :offset-x [:force (-> fess-offset
                                                            :x
                                                            (/ width)
@@ -209,7 +209,7 @@
                                                           (-> context
                                                               c/--
                                                               (c/++ cottise-2-key)))}
-                            :origin {:point :fess
+                            :anchor {:point :fess
                                      :offset-x [:force (-> fess-offset
                                                            :x
                                                            (/ width)

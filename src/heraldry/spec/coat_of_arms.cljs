@@ -39,7 +39,7 @@
                                                       :heraldry.position/offset-x
                                                       :heraldry.position/offset-y])))
 
-(s/def :heraldry/origin #(s/valid? :heraldry/position %))
+(s/def :heraldry/anchor #(s/valid? :heraldry/position %))
 (s/def :heraldry/orientation #(s/valid? :heraldry/position %))
 
 (s/def :heraldry.geometry/size (s/nilable number?))
@@ -97,7 +97,7 @@
                                                :heraldry.field/components
                                                :heraldry/line
                                                :heraldry.field/layout
-                                               :heraldry.field/origin
+                                               :heraldry.field/anchor
                                                :heraldry.field/orientation
                                                :heraldry.field/outline?])))
 
@@ -106,7 +106,7 @@
                                            :heraldry/field]
                                   :opt-un [:heraldry/line
                                            :heraldry/opposite-line
-                                           :heraldry/origin
+                                           :heraldry/anchor
                                            :heraldry/orientation
                                            :heraldry/geometry]))
 

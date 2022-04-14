@@ -12,8 +12,8 @@
    [heraldry.math.vector :as v]
    [heraldry.options :as options]))
 
-(defn arm-diagonal [origin-point orientation-point]
-  (-> (v/sub orientation-point origin-point)
+(defn arm-diagonal [anchor-point orientation-point]
+  (-> (v/sub orientation-point anchor-point)
       v/normal
       (v/mul 200)))
 
@@ -39,7 +39,7 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/fess :fess]
                                     [:string.option.point-choice/chief :chief]
                                     [:string.option.point-choice/base :base]]
@@ -57,7 +57,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :orientation (cond-> {:point orientation-point-option
                                :ui {:label :string.option/orientation
@@ -92,7 +92,7 @@
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
@@ -105,24 +105,24 @@
                 :top-left true
                 :angle (-> orientation :angle neg?)
                 false)
-        {origin-point :real-origin
-         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                environment
-                                               origin
+                                               anchor
                                                orientation
                                                0
                                                -90)
         bottom (:bottom points)
-        relative-arm (arm-diagonal origin-point orientation-point)
-        diagonal-top (v/add origin-point relative-arm)
-        [_ intersection-top] (v/environment-intersections origin-point diagonal-top environment)
+        relative-arm (arm-diagonal anchor-point orientation-point)
+        diagonal-top (v/add anchor-point relative-arm)
+        [_ intersection-top] (v/environment-intersections anchor-point diagonal-top environment)
         flipped? (not left?)
         {line-diagonal :line
          line-diagonal-start :line-start
          :as line-diagonal-data} (line/create line
-                                              origin-point diagonal-top
+                                              anchor-point diagonal-top
                                               :real-start 0
-                                              :real-end (-> (v/sub intersection-top origin-point)
+                                              :real-end (-> (v/sub intersection-top anchor-point)
                                                             v/abs)
                                               :flipped? flipped?
                                               :reversed? true
@@ -131,10 +131,10 @@
         {line-down :line
          line-down-end :line-end
          :as line-down-data} (line/create opposite-line
-                                          origin-point bottom
+                                          anchor-point bottom
                                           :flipped? flipped?
                                           :real-start 0
-                                          :real-end (-> (v/sub bottom origin-point)
+                                          :real-end (-> (v/sub bottom anchor-point)
                                                         v/abs)
                                           :context context
                                           :environment environment)
@@ -142,7 +142,7 @@
                ["M" (v/add diagonal-top
                            line-diagonal-start)
                 (path/stitch line-diagonal)
-                "L" origin-point
+                "L" anchor-point
                 (path/stitch line-down)
                 (infinity/path (if left?
                                  :clockwise
@@ -160,7 +160,7 @@
               [(if left?
                  top-left
                  top-right)
-               origin-point
+               anchor-point
                bottom]]]
     [:<>
      [field.shared/make-subfield

@@ -17,7 +17,7 @@
 (defmethod field.interface/part-names field-type [_] ["dexter" "sinister"])
 
 (defmethod interface/options field-type [context]
-  {:origin {:point {:type :choice
+  {:anchor {:point {:type :choice
                     :choices [[:string.option.point-choice/fess :fess]
                               [:string.option.point-choice/dexter :dexter]
                               [:string.option.point-choice/sinister :sinister]
@@ -31,21 +31,21 @@
                        :default 0
                        :ui {:label :string.option/offset-x
                             :step 0.1}}
-            :ui {:label :string.option/origin
+            :ui {:label :string.option/anchor
                  :form-type :position}}
    :line (line/options (c/++ context :line))})
 
 (defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
+        anchor-point (position/calculate anchor environment :fess)
         top-left (:top-left points)
-        real-top (assoc (:top points) :x (:x origin-point))
-        real-bottom (assoc (:bottom points) :x (:x origin-point))
+        real-top (assoc (:top points) :x (:x anchor-point))
+        real-bottom (assoc (:bottom points) :x (:x anchor-point))
         bottom-right (:bottom-right points)
         effective-width (or (:width line) 1)
         effective-width (cond-> effective-width

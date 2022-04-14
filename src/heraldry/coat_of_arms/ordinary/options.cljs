@@ -121,7 +121,7 @@
     [:cottising :cottise-extra-2 :extra-line :type]
     [:cottising :cottise-extra-2 :extra-line :fimbriation :mode]
 
-    [:origin :point]
+    [:anchor :point]
     [:direction-intermediate-name :point]
     [:orientation :point]
 

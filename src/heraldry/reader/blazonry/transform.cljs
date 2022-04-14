@@ -263,17 +263,17 @@
                                              :tierced-per-fess
                                              :quartered
                                              :gyronny}
-                                           partition-type) (assoc-in [:origin :offset-y] 12.5)
+                                           partition-type) (assoc-in [:anchor :offset-y] 12.5)
                                           (#{:per-bend
                                              :per-bend-sinister}
                                            partition-type) (->
-                                                            (assoc-in [:origin :offset-y] 30)
-                                                            (assoc-in [:anchor :offset-y] 30))
+                                                            (assoc-in [:anchor :offset-y] 30)
+                                                            (assoc-in [:orientation :offset-y] 30))
                                           (= :per-chevron
                                              partition-type) (->
-                                                              (assoc-in [:origin :offset-y] 15)
-                                                              (assoc-in [:anchor :point] :angle)
-                                                              (assoc-in [:anchor :angle] 45)))
+                                                              (assoc-in [:anchor :offset-y] 15)
+                                                              (assoc-in [:orientation :point] :angle)
+                                                              (assoc-in [:orientation :angle] 45)))
       (get partition-options :DEHANCED) (cond->
                                           (#{:per-fess
                                              :per-saltire
@@ -281,24 +281,24 @@
                                              :tierced-per-fess
                                              :quartered
                                              :gyronny}
-                                           partition-type) (assoc-in [:origin :offset-y] -12.5)
+                                           partition-type) (assoc-in [:anchor :offset-y] -12.5)
                                           (#{:per-bend
                                              :per-bend-sinister}
                                            partition-type) (->
-                                                            (assoc-in [:origin :offset-y] -30)
-                                                            (assoc-in [:anchor :offset-y] -30))
+                                                            (assoc-in [:anchor :offset-y] -30)
+                                                            (assoc-in [:orientation :offset-y] -30))
                                           (= :per-chevron
                                              partition-type) (->
-                                                              (assoc-in [:origin :offset-y] -15)
-                                                              (assoc-in [:anchor :point] :angle)
-                                                              (assoc-in [:anchor :angle] 45)))
+                                                              (assoc-in [:anchor :offset-y] -15)
+                                                              (assoc-in [:orientation :point] :angle)
+                                                              (assoc-in [:orientation :angle] 45)))
       (get partition-options :REVERSED) (cond->
                                           (= :per-chevron
                                              partition-type) (assoc-in [:direction-intermediate-name :point] :chief)
                                           (= :tierced-per-pall
                                              partition-type) (assoc-in [:direction-intermediate-name :point] :bottom)
                                           (= :per-pile
-                                             partition-type) (assoc-in [:origin :point] :top)))))
+                                             partition-type) (assoc-in [:anchor :point] :top)))))
 
 (def field-locations
   {:point/DEXTER :dexter
@@ -657,7 +657,7 @@
                                          (= :pall
                                             ordinary-type) (assoc-in [:direction-intermediate-name :point] :bottom)
                                          (= :pile
-                                            ordinary-type) (assoc-in [:origin :point] :bottom))
+                                            ordinary-type) (assoc-in [:anchor :point] :bottom))
       (get ordinary-options :THROUGHOUT) (cond->
                                            (= :pile
                                               ordinary-type) (assoc-in [:geometry :stretch] 1))
@@ -669,21 +669,21 @@
                                             :gore
                                             :quarter
                                             :label}
-                                          ordinary-type) (assoc-in [:origin :offset-y] 12.5)
+                                          ordinary-type) (assoc-in [:anchor :offset-y] 12.5)
                                          (#{:bend
                                             :bend-sinister}
                                           ordinary-type) (->
-                                                          (assoc-in [:origin :offset-y] 30)
-                                                          (assoc-in [:anchor :offset-y] 30))
+                                                          (assoc-in [:anchor :offset-y] 30)
+                                                          (assoc-in [:orientation :offset-y] 30))
                                          (= :chief
                                             ordinary-type) (assoc-in [:geometry :size] (- 25 10))
                                          (= :base
                                             ordinary-type) (assoc-in [:geometry :size] (+ 25 10))
                                          (= :chevron
                                             ordinary-type) (->
-                                                            (assoc-in [:origin :offset-y] 15)
-                                                            (assoc-in [:anchor :point] :angle)
-                                                            (assoc-in [:anchor :angle] 45))
+                                                            (assoc-in [:anchor :offset-y] 15)
+                                                            (assoc-in [:orientation :point] :angle)
+                                                            (assoc-in [:orientation :angle] 45))
                                          (= :point
                                             ordinary-type) (assoc-in [:geometry :height] (- 50 25)))
       (get ordinary-options :DEHANCED) (cond->
@@ -694,21 +694,21 @@
                                             :gore
                                             :quarter
                                             :label}
-                                          ordinary-type) (assoc-in [:origin :offset-y] -12.5)
+                                          ordinary-type) (assoc-in [:anchor :offset-y] -12.5)
                                          (#{:bend
                                             :bend-sinister}
                                           ordinary-type) (->
-                                                          (assoc-in [:origin :offset-y] -30)
-                                                          (assoc-in [:anchor :offset-y] -30))
+                                                          (assoc-in [:anchor :offset-y] -30)
+                                                          (assoc-in [:orientation :offset-y] -30))
                                          (= :chief
                                             ordinary-type) (assoc-in [:geometry :size] (+ 25 10))
                                          (= :base
                                             ordinary-type) (assoc-in [:geometry :size] (- 25 10))
                                          (= :chevron
                                             ordinary-type) (->
-                                                            (assoc-in [:origin :offset-y] -15)
-                                                            (assoc-in [:anchor :point] :angle)
-                                                            (assoc-in [:anchor :angle] 45))
+                                                            (assoc-in [:anchor :offset-y] -15)
+                                                            (assoc-in [:orientation :point] :angle)
+                                                            (assoc-in [:orientation :angle] 45))
                                          (= :point
                                             ordinary-type) (assoc-in [:geometry :height] (+ 50 25)))
       (get ordinary-options :TRUNCATED) (cond->
@@ -719,7 +719,7 @@
                                               ordinary-type) (assoc-in [:geometry :eccentricity] 0.4))
       (get ordinary-options :SINISTER) (cond->
                                          (= :gore
-                                            ordinary-type) (assoc-in [:anchor :point] :top-right)
+                                            ordinary-type) (assoc-in [:orientation :point] :top-right)
                                          (= :point
                                             ordinary-type) (assoc :variant :sinister)
                                          (= :quarter
@@ -1075,7 +1075,7 @@
         amount (-> amount
                    (max 1)
                    (min max-charge-group-amount))
-        origin-point (some-> (get-child #{:charge-location} nodes)
+        anchor-point (some-> (get-child #{:charge-location} nodes)
                              ast->hdn)
         field (ast->hdn (get-child #{:field} nodes))
         charge (-> #{:charge}
@@ -1086,7 +1086,7 @@
     [(cond-> (if (= amount 1)
                charge
                (charge-group charge amount nodes))
-       origin-point (assoc-in [:origin :point] origin-point))]))
+       anchor-point (assoc-in [:anchor :point] anchor-point))]))
 
 (defn semy [charge nodes]
   (let [layout (some-> (get-child #{:layout

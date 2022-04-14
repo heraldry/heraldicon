@@ -126,7 +126,7 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/chief :chief]
                                     [:string.option.point-choice/base :base]
                                     [:string.option.point-choice/fess :fess]
@@ -162,7 +162,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :direction-intermediate-name (cond-> {:point direction-intermediate-name-point-option
                                                :ui {:label :string.charge.attitude/issuant
@@ -237,7 +237,7 @@
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         extra-line (interface/get-sanitized-data (c/++ context :extra-line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         direction-intermediate-name (interface/get-sanitized-data (c/++ context :direction-intermediate-name))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
@@ -252,43 +252,43 @@
                                             :top
                                             :bottom}) (->
                                                        (assoc :offset-x (or (:offset-x raw-direction-intermediate-name)
-                                                                            (:offset-x origin)))
+                                                                            (:offset-x anchor)))
                                                        (assoc :offset-y (or (:offset-y raw-direction-intermediate-name)
-                                                                            (:offset-y origin)))))
+                                                                            (:offset-y anchor)))))
         points (:points environment)
-        unadjusted-origin-point (position/calculate origin environment)
+        unadjusted-anchor-point (position/calculate anchor environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
         width (:width environment)
         height (:height environment)
         band-width (-> size
                        ((util/percent-of height)))
-        {direction-origin-point :real-origin
-         direction-intermediate-name-point :real-orientation} (angle/calculate-origin-and-orientation
+        {direction-anchor-point :real-anchor
+         direction-intermediate-name-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                                environment
-                                                               origin
+                                                               anchor
                                                                direction-intermediate-name
                                                                0
                                                                -90)
         pall-angle (math/normalize-angle
-                    (v/angle-to-point direction-origin-point
+                    (v/angle-to-point direction-anchor-point
                                       direction-intermediate-name-point))
-        {origin-point :real-origin
-         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                environment
-                                               origin
+                                               anchor
                                                orientation
                                                band-width
                                                pall-angle)
-        [mirrored-origin mirrored-orientation] [(chevron/mirror-point pall-angle unadjusted-origin-point origin-point)
-                                                (chevron/mirror-point pall-angle unadjusted-origin-point orientation-point)]
-        origin-point (v/line-intersection origin-point orientation-point
-                                          mirrored-origin mirrored-orientation)
-        [relative-left relative-right] (chevron/arm-diagonals pall-angle origin-point orientation-point)
-        diagonal-left (v/add origin-point relative-left)
-        diagonal-right (v/add origin-point relative-right)
-        angle-left (math/normalize-angle (v/angle-to-point origin-point diagonal-left))
-        angle-right (math/normalize-angle (v/angle-to-point origin-point diagonal-right))
+        [mirrored-anchor mirrored-orientation] [(chevron/mirror-point pall-angle unadjusted-anchor-point anchor-point)
+                                                (chevron/mirror-point pall-angle unadjusted-anchor-point orientation-point)]
+        anchor-point (v/line-intersection anchor-point orientation-point
+                                          mirrored-anchor mirrored-orientation)
+        [relative-left relative-right] (chevron/arm-diagonals pall-angle anchor-point orientation-point)
+        diagonal-left (v/add anchor-point relative-left)
+        diagonal-right (v/add anchor-point relative-right)
+        angle-left (math/normalize-angle (v/angle-to-point anchor-point diagonal-left))
+        angle-right (math/normalize-angle (v/angle-to-point anchor-point diagonal-right))
         joint-angle (math/normalize-angle (- angle-left angle-right))
         delta (/ band-width 2 (Math/sin (-> joint-angle
                                             (* Math/PI)
@@ -300,7 +300,7 @@
         offset-upper (v/rotate
                       (v/v (- delta) 0)
                       pall-angle)
-        corner-lower (v/add origin-point offset-lower)
+        corner-lower (v/add anchor-point offset-lower)
         left-upper (v/add diagonal-left offset-upper)
         left-lower (v/add diagonal-left offset-lower)
         right-upper (v/add diagonal-right offset-upper)
@@ -318,8 +318,8 @@
                             (v/v (- dy) (- dx))
                             pall-angle)
         direction-three (v/mul (v/add relative-left relative-right) -1)
-        corner-left (v/add origin-point offset-three-left)
-        corner-right (v/add origin-point offset-three-right)
+        corner-left (v/add anchor-point offset-three-left)
+        corner-right (v/add anchor-point offset-three-right)
         corner-left-end (v/add corner-left direction-three)
         corner-right-end (v/add corner-right direction-three)
         intersection-left-upper (v/find-first-intersection-of-ray corner-left left-upper environment)

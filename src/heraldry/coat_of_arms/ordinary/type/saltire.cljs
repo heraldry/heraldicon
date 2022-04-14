@@ -35,9 +35,9 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    ;; TODO: perhaps there should be origin options for the corners?
+    ;; TODO: perhaps there should be anchor options for the corners?
     ;; so one can align fro top-left to bottom-right
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/chief :chief]
                                     [:string.option.point-choice/base :base]
                                     [:string.option.point-choice/fess :fess]
@@ -59,7 +59,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :orientation (cond-> {:point orientation-point-option
                                :ui {:label :string.option/orientation
@@ -106,35 +106,35 @@
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
-        unadjusted-origin-point (position/calculate origin environment :fess)
-        top (assoc (:top points) :x (:x unadjusted-origin-point))
-        bottom (assoc (:bottom points) :x (:x unadjusted-origin-point))
-        left (assoc (:left points) :y (:y unadjusted-origin-point))
-        right (assoc (:right points) :y (:y unadjusted-origin-point))
+        unadjusted-anchor-point (position/calculate anchor environment :fess)
+        top (assoc (:top points) :x (:x unadjusted-anchor-point))
+        bottom (assoc (:bottom points) :x (:x unadjusted-anchor-point))
+        left (assoc (:left points) :y (:y unadjusted-anchor-point))
+        right (assoc (:right points) :y (:y unadjusted-anchor-point))
         width (:width environment)
         height (:height environment)
         band-width (-> size
                        ((util/percent-of width)))
-        {origin-point :real-origin
-         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                environment
-                                               origin
+                                               anchor
                                                orientation
                                                band-width
                                                nil)
         [relative-top-left relative-top-right
-         relative-bottom-left relative-bottom-right] (saltire/arm-diagonals origin-point orientation-point)
-        diagonal-top-left (v/add origin-point relative-top-left)
-        diagonal-top-right (v/add origin-point relative-top-right)
-        diagonal-bottom-left (v/add origin-point relative-bottom-left)
-        diagonal-bottom-right (v/add origin-point relative-bottom-right)
-        angle-bottom-right (v/angle-to-point origin-point diagonal-bottom-right)
+         relative-bottom-left relative-bottom-right] (saltire/arm-diagonals anchor-point orientation-point)
+        diagonal-top-left (v/add anchor-point relative-top-left)
+        diagonal-top-right (v/add anchor-point relative-top-right)
+        diagonal-bottom-left (v/add anchor-point relative-bottom-left)
+        diagonal-bottom-right (v/add anchor-point relative-bottom-right)
+        angle-bottom-right (v/angle-to-point anchor-point diagonal-bottom-right)
         angle (-> angle-bottom-right (* Math/PI) (/ 180))
         dx (/ band-width 2 (Math/sin angle))
         dy (/ band-width 2 (Math/cos angle))
@@ -142,10 +142,10 @@
         offset-bottom (v/v 0 dy)
         offset-left (v/v (- dx) 0)
         offset-right (v/v dx 0)
-        corner-top (v/add origin-point offset-top)
-        corner-bottom (v/add origin-point offset-bottom)
-        corner-left (v/add origin-point offset-left)
-        corner-right (v/add origin-point offset-right)
+        corner-top (v/add anchor-point offset-top)
+        corner-bottom (v/add anchor-point offset-bottom)
+        corner-left (v/add anchor-point offset-left)
+        corner-right (v/add anchor-point offset-right)
         top-left-upper (v/add diagonal-top-left offset-top)
         top-left-lower (v/add diagonal-top-left offset-bottom)
         top-right-upper (v/add diagonal-top-right offset-top)

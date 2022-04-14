@@ -69,7 +69,7 @@
    :function :heraldry.charge.function/helmet
    :variant {:id (config/get :helmet-charge-id)
              :version 0}
-   :origin {:point :bottom
+   :anchor {:point :bottom
             :offset-x 0
             :offset-y 20}
    :geometry {:size 100}
@@ -83,7 +83,7 @@
    :function :heraldry.charge.function/torse
    :variant {:id (config/get :torse-charge-id)
              :version 0}
-   :origin {:point :fess
+   :anchor {:point :fess
             :offset-x 15
             :offset-y -1}
    :geometry {:size 60}
@@ -129,7 +129,7 @@
    :tincture {:shadow 1
               :highlight 1
               :secondary :or}
-   :origin {:point :honour}
+   :anchor {:point :honour}
    :orientation {:point :angle
                  :angle 0}
    :geometry {:size 200}})
@@ -142,7 +142,7 @@
            :tincture :vert}
    :tincture {:shadow 1
               :highlight 1}
-   :origin {:point :bottom}
+   :anchor {:point :bottom}
    :orientation {:point :angle
                  :angle 0}
    :geometry {:size 270}})
@@ -154,7 +154,7 @@
    :field field
    :tincture {:shadow 1
               :highlight 1}
-   :origin {:point :left
+   :anchor {:point :left
             :offset-x -25
             :offset-y 10}
    :orientation {:point :angle
@@ -169,7 +169,7 @@
    :field field
    :tincture {:shadow 1
               :highlight 1}
-   :origin {:point :right
+   :anchor {:point :right
             :offset-x 25
             :offset-y 10}
    :orientation {:point :angle
@@ -179,14 +179,14 @@
 (def ornament-charge
   {:type :heraldry.charge.type/roundel
    :field field
-   :origin {:point :bottom}
+   :anchor {:point :bottom}
    :geometry {:size 30}
    :tincture {:shadow 1
               :highlight 1}})
 
 (def ornament-charge-group
   {:type :heraldry.charge-group.type/rows
-   :origin {:point :bottom}
+   :anchor {:point :bottom}
    :strip-angle 0
    :spacing 40
    :stretch 0.866

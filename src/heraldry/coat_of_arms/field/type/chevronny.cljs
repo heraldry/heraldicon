@@ -116,8 +116,8 @@
                   (:y top-left))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         chevron-angle 90
-        {origin-point :real-origin
-         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                environment
                                                {:point :fess
                                                 :offset-x 0
@@ -125,11 +125,11 @@
                                                orientation
                                                0 ;; ignored, since there's no alignment
                                                chevron-angle)
-        [relative-left relative-right] (chevron/arm-diagonals chevron-angle origin-point orientation-point)
-        diagonal-left (v/add origin-point relative-left)
-        diagonal-right (v/add origin-point relative-right)
-        angle-left (math/normalize-angle (v/angle-to-point origin-point diagonal-left))
-        angle-right (math/normalize-angle (v/angle-to-point origin-point diagonal-right))
+        [relative-left relative-right] (chevron/arm-diagonals chevron-angle anchor-point orientation-point)
+        diagonal-left (v/add anchor-point relative-left)
+        diagonal-right (v/add anchor-point relative-right)
+        angle-left (math/normalize-angle (v/angle-to-point anchor-point diagonal-left))
+        angle-right (math/normalize-angle (v/angle-to-point anchor-point diagonal-right))
         joint-angle (math/normalize-angle (- angle-left angle-right))
         chevron-middle-height (-> height
                                   (/ (dec num-fields-y))
@@ -143,7 +143,7 @@
                (- (/ required-height 2))
                (+ (* offset-y
                      chevron-middle-height)))
-        x (:x origin-point)
+        x (:x anchor-point)
         left-x (:x top-left)
         right-x (:x bottom-right)
         start (v/v 0 0)

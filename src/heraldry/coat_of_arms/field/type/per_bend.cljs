@@ -19,7 +19,7 @@
 
 (defmethod interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line))
-        origin-point-option {:type :choice
+        anchor-point-option {:type :choice
                              :choices [[:string.option.point-choice/fess :fess]
                                        [:string.option.point-choice/chief :chief]
                                        [:string.option.point-choice/base :base]
@@ -29,11 +29,11 @@
                                        [:string.option.point-choice/bottom-right :bottom-right]]
                              :default :top-left
                              :ui {:label :string.option/point}}
-        current-origin-point (options/get-value
-                              (interface/get-raw-data (c/++ context :origin :point))
-                              origin-point-option)
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)
         orientation-point-option {:type :choice
-                                  :choices (case current-origin-point
+                                  :choices (case current-anchor-point
                                              :top-left [[:string.option.point-choice/fess :fess]
                                                         [:string.option.point-choice/chief :chief]
                                                         [:string.option.point-choice/base :base]
@@ -51,7 +51,7 @@
                                              [[:string.option.point-choice/top-left :top-left]
                                               [:string.option.point-choice/bottom-right :bottom-right]
                                               [:string.option.orientation-point-choice/angle :angle]])
-                                  :default (case current-origin-point
+                                  :default (case current-anchor-point
                                              :top-left :fess
                                              :bottom-right :fess
                                              :top-left)
@@ -59,7 +59,7 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    {:origin {:point origin-point-option
+    {:anchor {:point anchor-point-option
               :offset-x {:type :range
                          :min -45
                          :max 45
@@ -72,7 +72,7 @@
                          :default 0
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label :string.option/origin
+              :ui {:label :string.option/anchor
                    :form-type :position}}
      :orientation (cond-> {:point orientation-point-option
                            :ui {:label :string.option/orientation
@@ -103,29 +103,29 @@
 (defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-right (:top-right points)
         bottom-left (:bottom-left points)
-        {origin-point :real-origin
-         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                environment
-                                               origin
+                                               anchor
                                                orientation
                                                0
                                                nil)
-        direction (v/sub orientation-point origin-point)
+        direction (v/sub orientation-point anchor-point)
         direction (v/normal (v/v (-> direction :x Math/abs)
                                  (-> direction :y Math/abs)))
         initial-diagonal-start (-> direction
                                    (v/mul -1000)
-                                   (v/add origin-point))
+                                   (v/add anchor-point))
         initial-diagonal-end (-> direction
                                  (v/mul 1000)
-                                 (v/add origin-point))
+                                 (v/add anchor-point))
         [real-diagonal-start
          real-diagonal-end] (v/environment-intersections
                              initial-diagonal-start

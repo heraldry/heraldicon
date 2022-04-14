@@ -119,12 +119,12 @@
              :y
              (+ dy)))))
 
-(defn calculate-orientation [{:keys [point angle] :as orientation} environment origin base-angle]
+(defn calculate-orientation [{:keys [point angle] :as orientation} environment anchor base-angle]
   (if (= point :angle)
     (let [angle-rad (-> angle
                         (+ base-angle)
                         (* Math/PI) (/ 180))]
-      (v/add origin (v/mul (v/v (Math/cos angle-rad)
+      (v/add anchor (v/mul (v/v (Math/cos angle-rad)
                                 (Math/sin angle-rad))
                            200)))
     (calculate orientation environment)))

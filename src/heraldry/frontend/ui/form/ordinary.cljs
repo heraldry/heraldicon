@@ -41,7 +41,7 @@
   (ui.interface/form-elements
    context
    [:type
-    :origin
+    :anchor
     :direction-intermediate-name
     :orientation
     :variant

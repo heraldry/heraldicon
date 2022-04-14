@@ -23,7 +23,7 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/fess :fess]
                                     [:string.option.point-choice/dexter :dexter]
                                     [:string.option.point-choice/sinister :sinister]
@@ -42,7 +42,7 @@
                              :default 0
                              :ui {:label :string.option/offset-x
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :line line-style
          :opposite-line opposite-line-style
@@ -65,21 +65,21 @@
            override-shared-start-y] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
-        top (assoc (:top points) :x (:x origin-point))
-        bottom (assoc (:bottom points) :x (:x origin-point))
+        anchor-point (position/calculate anchor environment :fess)
+        top (assoc (:top points) :x (:x anchor-point))
+        bottom (assoc (:bottom points) :x (:x anchor-point))
         width (:width environment)
         band-width (-> size
                        ((util/percent-of width)))
-        col1 (case (:alignment origin)
-               :left (:x origin-point)
-               :right (- (:x origin-point) band-width)
-               (- (:x origin-point) (/ band-width 2)))
+        col1 (case (:alignment anchor)
+               :left (:x anchor-point)
+               :right (- (:x anchor-point) band-width)
+               (- (:x anchor-point) (/ band-width 2)))
         col2 (+ col1 band-width)
         first-top (v/v col1 (:y top))
         first-bottom (v/v col1 (:y bottom))

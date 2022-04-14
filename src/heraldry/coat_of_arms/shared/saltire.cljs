@@ -2,8 +2,8 @@
   (:require
    [heraldry.math.vector :as v]))
 
-(defn arm-diagonals [origin-point orientation-point]
-  (let [direction (-> (v/sub orientation-point origin-point)
+(defn arm-diagonals [anchor-point orientation-point]
+  (let [direction (-> (v/sub orientation-point anchor-point)
                       v/normal
                       (v/mul 200))
         direction (v/v (-> direction :x Math/abs -)

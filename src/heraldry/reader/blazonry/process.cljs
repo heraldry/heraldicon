@@ -129,7 +129,7 @@
                                         [parent-index
                                          (-> component
                                              (assoc-in [:geometry :size] (* size stretch-factor))
-                                             (assoc-in [:origin offset-keyword] offset))]))]
+                                             (assoc-in [:anchor offset-keyword] offset))]))]
     (replace-adjusted-components hdn adjusted-indexed-components)))
 
 (defn arrange-orles [hdn indexed-components]
@@ -179,8 +179,8 @@
              (->> indexed-components
                   (map (fn [[index component]]
                          [index (-> component
-                                    (assoc-in [:anchor :point] :angle)
-                                    (assoc-in [:anchor :angle] 0))])))
+                                    (assoc-in [:orientation :point] :angle)
+                                    (assoc-in [:orientation :angle] 0))])))
              :offset-keyword :offset-x
              :spacing 0
              :default-size 33.333333)
@@ -193,8 +193,8 @@
              (->> indexed-components
                   (map (fn [[index component]]
                          [index (-> component
-                                    (assoc-in [:anchor :point] :angle)
-                                    (assoc-in [:anchor :angle] 45))])))
+                                    (assoc-in [:orientation :point] :angle)
+                                    (assoc-in [:orientation :angle] 45))])))
 
              :offset-keyword :offset-y
              :spacing 15
@@ -204,8 +204,8 @@
                       (->> indexed-components
                            (map (fn [[index component]]
                                   [index (-> component
-                                             (assoc-in [:anchor :point] :angle)
-                                             (assoc-in [:anchor :angle] 45))])))
+                                             (assoc-in [:orientation :point] :angle)
+                                             (assoc-in [:orientation :angle] 45))])))
 
                       :offset-keyword :offset-y
                       :spacing 15
@@ -215,8 +215,8 @@
                 (->> indexed-components
                      (map (fn [[index component]]
                             [index (-> component
-                                       (assoc-in [:anchor :point] :angle)
-                                       (assoc-in [:anchor :angle] 45)
+                                       (assoc-in [:orientation :point] :angle)
+                                       (assoc-in [:orientation :angle] 45)
                                        (assoc-in [:direction-intermediate-name :point] :angle)
                                        (assoc-in [:direction-intermediate-name :angle] 0))])))
                 :offset-keyword :offset-y

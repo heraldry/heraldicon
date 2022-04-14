@@ -182,7 +182,7 @@
 (defmethod charge.interface/render-charge :heraldry.charge.type/other
   [{:keys [path environment
            load-charge-data charge-group
-           origin-override size-default
+           anchor-override size-default
            self-below-shield? render-pass-below-shield?
            auto-resize?
            ui-show-colours
@@ -204,12 +204,12 @@
                  (and (not ignore-layer-separator?)
                       (seq layer-separator-colours))))
       (let [context (-> context
-                        (dissoc :origin-override)
+                        (dissoc :anchor-override)
                         (dissoc :size-default)
                         (dissoc :charge-group))
             highlight-colours? (seq ui-show-colours)
             ui-show-colours (set ui-show-colours)
-            origin (interface/get-sanitized-data (c/++ context :origin))
+            anchor (interface/get-sanitized-data (c/++ context :anchor))
             orientation (interface/get-sanitized-data (c/++ context :orientation))
             vertical-mask (interface/get-sanitized-data (c/++ context :vertical-mask))
             fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
@@ -255,29 +255,29 @@
             positional-charge-height (js/parseFloat (-> charge-data :height (or "1")))
             width (:width environment)
             height (:height environment)
-            environment-for-origin (if origin-override
-                                     (assoc-in environment [:points :special] origin-override)
+            environment-for-anchor (if anchor-override
+                                     (assoc-in environment [:points :special] anchor-override)
                                      environment)
-            origin (if origin-override
+            anchor (if anchor-override
                      {:point :special
                       :offset-x 0
                       :offset-y 0}
-                     origin)
-            {origin-point :real-origin
-             orientation-point :real-orientation} (angle/calculate-origin-and-orientation
-                                                   environment-for-origin
-                                                   origin
+                     anchor)
+            {anchor-point :real-anchor
+             orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
+                                                   environment-for-anchor
+                                                   anchor
                                                    orientation
                                                    0
                                                    -90)
-            angle (+ (v/angle-to-point origin-point orientation-point)
+            angle (+ (v/angle-to-point anchor-point orientation-point)
                      90)
             min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.9))
-                               (min (- (:x origin-point) (:x left))
-                                    (- (:x right) (:x origin-point))))
+                               (min (- (:x anchor-point) (:x left))
+                                    (- (:x right) (:x anchor-point))))
             min-y-distance (or (some-> slot-spacing :height (/ 2) (/ 0.8))
-                               (min (- (:y origin-point) (:y top))
-                                    (- (:y bottom) (:y origin-point))))
+                               (min (- (:y anchor-point) (:y top))
+                                    (- (:y bottom) (:y anchor-point))))
             target-width (if size
                            (-> size
                                ((util/percent-of width)))
@@ -410,7 +410,7 @@
             position (-> clip-size
                          (v/sub)
                          (v/div 2)
-                         (v/add origin-point))
+                         (v/add anchor-point))
             charge-environment (environment/create
                                 (path/make-path ["M" position
                                                  "l" (v/v (:x clip-size) 0)
@@ -434,7 +434,7 @@
          (when-not svg-export?
            [:defs
             [:clipPath {:id charge-clip-path-id}
-             [:rect {:transform (str "translate(" (v/->str origin-point) ")")
+             [:rect {:transform (str "translate(" (v/->str anchor-point) ")")
                      :x min-x
                      :y min-y
                      :width (- max-x min-x)
@@ -446,7 +446,7 @@
                  mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
              [:defs
               [:mask {:id vertical-mask-id}
-               [:g {:transform (str "translate(" (v/->str origin-point) ")")}
+               [:g {:transform (str "translate(" (v/->str anchor-point) ")")}
                 [:rect {:x (- min-x 10)
                         :y (- min-y 10)
                         :width (+ total-width 20)
@@ -551,14 +551,14 @@
                (svg/make-unique-ids mask)]
               [:mask {:id mask-inverted-id}
                (svg/make-unique-ids mask-inverted)]])]
-          (let [transform (str "translate(" (v/->str origin-point) ")"
+          (let [transform (str "translate(" (v/->str anchor-point) ")"
                                "rotate(" angle ")"
                                "scale(" scale-x "," scale-y ")"
                                "translate(" (v/->str shift) ")")
                 reverse-transform (str "translate(" (-> shift (v/mul -1) v/->str) ")"
                                        "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
                                        "rotate(" (- angle) ")"
-                                       "translate(" (-> origin-point (v/mul -1) v/->str) ")")]
+                                       "translate(" (-> anchor-point (v/mul -1) v/->str) ")")]
             [:g {:transform transform}
              (when (-> fimbriation :mode #{:double})
                (let [thickness (+ (-> fimbriation

@@ -17,7 +17,7 @@
    [heraldry.util :as util]))
 
 (defn options [context]
-  (let [origin-point-option {:type :choice
+  (let [anchor-point-option {:type :choice
                              :choices [[:string.option.point-choice/fess :fess]
                                        [:string.option.point-choice/chief :chief]
                                        [:string.option.point-choice/base :base]
@@ -57,7 +57,7 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    {:origin {:point origin-point-option
+    {:anchor {:point anchor-point-option
               :offset-x {:type :range
                          :min -45
                          :max 45
@@ -70,7 +70,7 @@
                          :default 0
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label :string.option/origin
+              :ui {:label :string.option/anchor
                    :form-type :position}}
      :orientation (cond-> {:point orientation-point-option
                            :ui {:label :string.option/orientation
@@ -121,7 +121,7 @@
 (defn make-charge
   [{:keys [environment
            charge-group
-           origin-override
+           anchor-override
            size-default
            self-below-shield?
            render-pass-below-shield?
@@ -133,10 +133,10 @@
   (if (= (boolean self-below-shield?)
          (boolean render-pass-below-shield?))
     (let [context (-> context
-                      (dissoc :origin-override)
+                      (dissoc :anchor-override)
                       (dissoc :size-default)
                       (dissoc :charge-group))
-          origin (interface/get-sanitized-data (c/++ context :origin))
+          anchor (interface/get-sanitized-data (c/++ context :anchor))
           orientation (interface/get-sanitized-data (c/++ context :orientation))
           vertical-mask (interface/get-sanitized-data (c/++ context :vertical-mask))
           fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
@@ -156,18 +156,18 @@
           {:keys [slot-spacing
                   slot-angle]} charge-group
           context (dissoc context :charge-group)
-          environment-for-origin (if origin-override
-                                   (assoc-in environment [:points :special] origin-override)
+          environment-for-anchor (if anchor-override
+                                   (assoc-in environment [:points :special] anchor-override)
                                    environment)
-          origin (if origin-override
+          anchor (if anchor-override
                    {:point :special
                     :offset-x 0
                     :offset-y 0}
-                   origin)
-          {origin-point :real-origin
-           orientation-point :real-orientation} (angle/calculate-origin-and-orientation
-                                                 environment-for-origin
-                                                 origin
+                   anchor)
+          {anchor-point :real-anchor
+           orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
+                                                 environment-for-anchor
+                                                 anchor
                                                  orientation
                                                  0
                                                  -90)
@@ -178,7 +178,7 @@
           right (:right points)
           width (:width environment)
           height (:height environment)
-          angle (+ (v/angle-to-point origin-point orientation-point)
+          angle (+ (v/angle-to-point anchor-point orientation-point)
                    90)
           arg-value (get environment arg)
 
@@ -201,11 +201,11 @@
                   shape
                   {:paths [shape]})
           min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.9))
-                             (min (- (:x origin-point) (:x left))
-                                  (- (:x right) (:x origin-point))))
+                             (min (- (:x anchor-point) (:x left))
+                                  (- (:x right) (:x anchor-point))))
           min-y-distance (or (some-> slot-spacing :height (/ 2) (/ 0.8))
-                             (min (- (:y origin-point) (:y top))
-                                  (- (:y bottom) (:y origin-point))))
+                             (min (- (:y anchor-point) (:y top))
+                                  (- (:y bottom) (:y anchor-point))))
           target-width (if size
                          (-> size
                              ((util/percent-of width)))
@@ -240,7 +240,7 @@
                                                             squiggly/squiggly-path
                                                             path/parse-path)
                                                  (not= angle 0) (.rotate angle))
-                                               (path/translate (:x origin-point) (:y origin-point))
+                                               (path/translate (:x anchor-point) (:y anchor-point))
                                                path/to-svg))
                                      (:paths shape))}
           [min-x max-x min-y max-y] (bounding-box/rotate charge-top-left
@@ -251,9 +251,9 @@
                                                          :middle (v/v 0 0)
                                                          :scale (v/v scale-x scale-y))
           part [charge-shape
-                [(v/add origin-point
+                [(v/add anchor-point
                         (v/v min-x min-y))
-                 (v/add origin-point
+                 (v/add anchor-point
                         (v/v max-x max-y))]]
           charge-id (util/id "charge")
           vertical-mask? (not (zero? vertical-mask))
@@ -265,13 +265,13 @@
                mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
            [:defs
             [:mask {:id vertical-mask-id}
-             [:rect {:transform (str "translate(" (v/->str origin-point) ")")
+             [:rect {:transform (str "translate(" (v/->str anchor-point) ")")
                      :x (- min-x 10)
                      :y (- min-y 10)
                      :width (+ total-width 20)
                      :height (+ total-height 20)
                      :style {:fill "#ffffff"}}]
-             [:rect {:transform (str "translate(" (v/->str origin-point) ")")
+             [:rect {:transform (str "translate(" (v/->str anchor-point) ")")
                      :x (- min-x 10)
                      :y (if (pos? vertical-mask)
                           (-> min-y

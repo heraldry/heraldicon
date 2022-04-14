@@ -36,7 +36,7 @@
    (ui.interface/form-elements
     context
     [:type
-     :origin
+     :anchor
      :geometry])
 
    [:div {:style {:font-size "1.3em"

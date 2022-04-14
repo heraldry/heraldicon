@@ -129,7 +129,7 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    {:origin {:point {:type :choice
+    {:anchor {:point {:type :choice
                       :choices [[:string.option.point-choice/chief :chief]
                                 [:string.option.point-choice/base :base]
                                 [:string.option.point-choice/fess :fess]
@@ -165,7 +165,7 @@
                          :default 0
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label :string.option/origin
+              :ui {:label :string.option/anchor
                    :form-type :position}}
      :direction-intermediate-name (cond-> {:point direction-intermediate-name-point-option
                                            :ui {:label :string.charge.attitude/issuant
@@ -229,7 +229,7 @@
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         extra-line (interface/get-sanitized-data (c/++ context :extra-line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         direction-intermediate-name (interface/get-sanitized-data (c/++ context :direction-intermediate-name))
         outline? (or (interface/render-option :outline? context)
@@ -243,51 +243,51 @@
                                             :top
                                             :bottom}) (->
                                                        (assoc :offset-x (or (:offset-x raw-direction-intermediate-name)
-                                                                            (:offset-x origin)))
+                                                                            (:offset-x anchor)))
                                                        (assoc :offset-y (or (:offset-y raw-direction-intermediate-name)
-                                                                            (:offset-y origin)))))
+                                                                            (:offset-y anchor)))))
         points (:points environment)
-        unadjusted-origin-point (position/calculate origin environment)
-        {direction-origin-point :real-origin
-         direction-intermediate-name-point :real-orientation} (angle/calculate-origin-and-orientation
+        unadjusted-anchor-point (position/calculate anchor environment)
+        {direction-anchor-point :real-anchor
+         direction-intermediate-name-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                                environment
-                                                               origin
+                                                               anchor
                                                                direction-intermediate-name
                                                                0
                                                                -90)
         pall-angle (math/normalize-angle
-                    (v/angle-to-point direction-origin-point
+                    (v/angle-to-point direction-anchor-point
                                       direction-intermediate-name-point))
-        {origin-point :real-origin
-         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
                                                environment
-                                               origin
+                                               anchor
                                                orientation
                                                0
                                                pall-angle)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        [mirrored-origin mirrored-orientation] [(chevron/mirror-point pall-angle unadjusted-origin-point origin-point)
-                                                (chevron/mirror-point pall-angle unadjusted-origin-point orientation-point)]
-        origin-point (v/line-intersection origin-point orientation-point
-                                          mirrored-origin mirrored-orientation)
-        [relative-right relative-left] (chevron/arm-diagonals pall-angle origin-point orientation-point)
-        diagonal-left (v/add origin-point relative-left)
-        diagonal-right (v/add origin-point relative-right)
-        direction-three (v/add origin-point (v/mul (v/add relative-left relative-right) -1))
-        intersection-left (v/find-first-intersection-of-ray origin-point diagonal-left environment)
-        intersection-right (v/find-first-intersection-of-ray origin-point diagonal-right environment)
-        intersection-three (v/find-first-intersection-of-ray origin-point direction-three environment)
+        [mirrored-anchor mirrored-orientation] [(chevron/mirror-point pall-angle unadjusted-anchor-point anchor-point)
+                                                (chevron/mirror-point pall-angle unadjusted-anchor-point orientation-point)]
+        anchor-point (v/line-intersection anchor-point orientation-point
+                                          mirrored-anchor mirrored-orientation)
+        [relative-right relative-left] (chevron/arm-diagonals pall-angle anchor-point orientation-point)
+        diagonal-left (v/add anchor-point relative-left)
+        diagonal-right (v/add anchor-point relative-right)
+        direction-three (v/add anchor-point (v/mul (v/add relative-left relative-right) -1))
+        intersection-left (v/find-first-intersection-of-ray anchor-point diagonal-left environment)
+        intersection-right (v/find-first-intersection-of-ray anchor-point diagonal-right environment)
+        intersection-three (v/find-first-intersection-of-ray anchor-point direction-three environment)
         end-left (-> intersection-left
-                     (v/sub origin-point)
+                     (v/sub anchor-point)
                      v/abs)
         end-right (-> intersection-right
-                      (v/sub origin-point)
+                      (v/sub anchor-point)
                       v/abs)
         end (max end-left end-right)
         {line-left :line
          line-left-start :line-start} (line/create line
-                                                   origin-point diagonal-left
+                                                   anchor-point diagonal-left
                                                    :reversed? true
                                                    :real-start 0
                                                    :real-end end
@@ -295,7 +295,7 @@
                                                    :environment environment)
         {line-right :line
          line-right-end :line-end} (line/create opposite-line
-                                                origin-point diagonal-right
+                                                anchor-point diagonal-right
                                                 :flipped? true
                                                 :mirrored? true
                                                 :real-start 0
@@ -304,14 +304,14 @@
                                                 :environment environment)
         {line-three :line
          line-three-start :line-start} (line/create extra-line
-                                                    origin-point intersection-three
+                                                    anchor-point intersection-three
                                                     :flipped? true
                                                     :mirrored? true
                                                     :context context
                                                     :environment environment)
         {line-three-reversed :line
          line-three-reversed-start :line-start} (line/create extra-line
-                                                             origin-point intersection-three
+                                                             anchor-point intersection-three
                                                              :reversed? true
                                                              :context context
                                                              :environment environment)
@@ -328,7 +328,7 @@
         parts [[["M" (v/add diagonal-left
                             line-left-start)
                  (path/stitch line-left)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-right)
                  (infinity/path :counter-clockwise
                                 fork-infinity-points
@@ -343,7 +343,7 @@
                [["M" (v/add intersection-three
                             line-three-reversed-start)
                  (path/stitch line-three-reversed)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-right)
                  (infinity/path :clockwise
                                 side-infinity-points
@@ -358,7 +358,7 @@
                [["M" (v/add diagonal-left
                             line-left-start)
                  (path/stitch line-left)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-three)
                  (infinity/path :clockwise
                                 (reverse side-infinity-points)
@@ -386,8 +386,8 @@
                                 line-left-start)
                      (path/stitch line-left)])}]
         [:path {:d (path/make-path
-                    ["M" origin-point
+                    ["M" anchor-point
                      (path/stitch line-right)])}]
         [:path {:d (path/make-path
-                    ["M" origin-point
+                    ["M" anchor-point
                      (path/stitch line-three)])}]])]))

@@ -255,7 +255,7 @@
                    :vertical-align "top"}}
      [charge-group-preset-select/charge-group-preset-select context]
 
-     [ui.interface/form-element (c/++ context :origin)]
+     [ui.interface/form-element (c/++ context :anchor)]
 
      [preview-form path]
 
