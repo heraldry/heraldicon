@@ -94,7 +94,7 @@
           ^{:key idx}
           [charge.interface/render-charge
            (-> charge-context
-               (assoc :origin-override shift)
+               (assoc :anchor-override shift)
                (update :environment shift-environment shift))]))]]
      [:g {:transform (str "rotate(" (- rotation) ")")}
       [:rect {:x -500

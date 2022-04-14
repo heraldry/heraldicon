@@ -102,7 +102,7 @@
     {:type :heraldry.field.type/plain
      :tincture :or
      :components [{:type :heraldry.ordinary.type/fess
-                   :origin {:offset-y 12.5}
+                   :anchor {:offset-y 12.5}
                    :field {:type :heraldry.field.type/plain
                            :tincture :gules}}]}
 
@@ -110,7 +110,7 @@
     {:type :heraldry.field.type/plain
      :tincture :or
      :components [{:type :heraldry.ordinary.type/fess
-                   :origin {:offset-y -12.5}
+                   :anchor {:offset-y -12.5}
                    :field {:type :heraldry.field.type/plain
                            :tincture :gules}}]}
 
@@ -126,7 +126,7 @@
     {:type :heraldry.field.type/plain
      :tincture :or
      :components [{:type :heraldry.ordinary.type/pile
-                   :origin {:point :bottom}
+                   :anchor {:point :bottom}
                    :field {:type :heraldry.field.type/plain
                            :tincture :gules}}]}
 
@@ -287,7 +287,7 @@
                :tincture :sable}
               {:type :heraldry.field.type/plain
                :tincture :ermine}]
-     :origin {:offset-y 15}
+     :anchor {:offset-y 15}
      :orientation {:point :angle
                    :angle 45}}
 
@@ -297,7 +297,7 @@
                :tincture :sable}
               {:type :heraldry.field.type/plain
                :tincture :ermine}]
-     :origin {:offset-y -12.5}}
+     :anchor {:offset-y -12.5}}
 
     "tierced per pall reversed sable and ermine and vert"
     {:type :heraldry.field.type/tierced-per-pall
@@ -317,7 +317,7 @@
                :tincture :ermine}
               {:type :heraldry.field.type/plain
                :tincture :vert}]
-     :origin {:point :top}}
+     :anchor {:point :top}}
 
     "per pale azure and argent, a fess sable"
     {:type :heraldry.field.type/per-pale

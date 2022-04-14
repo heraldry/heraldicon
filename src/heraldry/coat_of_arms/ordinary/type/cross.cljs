@@ -23,7 +23,7 @@
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/chief :chief]
                                     [:string.option.point-choice/base :base]
                                     [:string.option.point-choice/fess :fess]
@@ -45,7 +45,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :line line-style
          :geometry {:size {:type :range
@@ -63,29 +63,29 @@
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        origin-point (position/calculate origin environment :fess)
-        top (assoc (:top points) :x (:x origin-point))
-        bottom (assoc (:bottom points) :x (:x origin-point))
-        left (assoc (:left points) :y (:y origin-point))
-        right (assoc (:right points) :y (:y origin-point))
+        anchor-point (position/calculate anchor environment :fess)
+        top (assoc (:top points) :x (:x anchor-point))
+        bottom (assoc (:bottom points) :x (:x anchor-point))
+        left (assoc (:left points) :y (:y anchor-point))
+        right (assoc (:right points) :y (:y anchor-point))
         width (:width environment)
         height (:height environment)
         band-width (-> size
                        ((util/percent-of width)))
-        col1 (- (:x origin-point) (/ band-width 2))
+        col1 (- (:x anchor-point) (/ band-width 2))
         col2 (+ col1 band-width)
         pale-top-left (v/v col1 (-> top :y (- 10)))
         pale-bottom-left (v/v col1 (-> bottom :y (+ 10)))
         pale-top-right (v/v col2 (-> top :y (- 10)))
         pale-bottom-right (v/v col2 (-> bottom :y (+ 10)))
-        row1 (- (:y origin-point) (/ band-width 2))
+        row1 (- (:y anchor-point) (/ band-width 2))
         row2 (+ row1 band-width)
         fess-top-left (v/v (-> left :x (- 10)) row1)
         fess-top-right (v/v (-> right :x (+ 10)) row1)

@@ -47,11 +47,11 @@
 (defn post-process-options [options context & {:keys [part-of-semy?
                                                       part-of-charge-group?]}]
   (let [ornament? (some #(= % :ornaments) (:path context))
-        without-origin? (or part-of-semy?
+        without-anchor? (or part-of-semy?
                             part-of-charge-group?)]
     (-> options
         (cond->
-          without-origin? (dissoc :origin)
+          without-anchor? (dissoc :anchor)
           ornament? (update-in [:geometry :size] (fn [size]
                                                    (when size
                                                      (assoc size

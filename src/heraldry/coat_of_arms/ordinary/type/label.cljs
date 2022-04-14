@@ -20,7 +20,7 @@
 (defmethod interface/options ordinary-type [context]
   (let [num-points (or (interface/get-raw-data (c/++ context :num-points))
                        3)]
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/fess :fess]
                                     [:string.option.point-choice/chief :chief]
                                     [:string.option.point-choice/base :base]
@@ -41,7 +41,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :variant {:type :choice
                    :choices [[:string.option.variant-label-choice/full :full]
@@ -121,7 +121,7 @@
   (reduce (fn [result point]
             (conj result (v/add (last result) point))) [(first points)] (rest points)))
 
-(defn draw-label [variant origin-point num-points width band-height point-width point-height eccentricity
+(defn draw-label [variant anchor-point num-points width band-height point-width point-height eccentricity
                   line environment context]
   (let [points (:points environment)
         left (:left points)
@@ -129,7 +129,7 @@
         extra (-> point-width
                   (/ 2)
                   (* eccentricity))
-        label-start (-> origin-point
+        label-start (-> anchor-point
                         :x
                         (- (/ width 2)))
         label-end (+ label-start width)
@@ -137,7 +137,7 @@
                     (- (* num-points point-width))
                     (/ (dec num-points))
                     (+ (* 2 extra)))
-        row1 (- (:y origin-point) (/ band-height 2))
+        row1 (- (:y anchor-point) (/ band-height 2))
         row2 (+ row1 band-height)
         first-left (v/v (- (:x left) 20) row1)
         second-left (v/v (- (:x left) 20) row2)
@@ -196,7 +196,7 @@
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
-  (let [origin (interface/get-sanitized-data (c/++ context :origin))
+  (let [anchor (interface/get-sanitized-data (c/++ context :anchor))
         variant (interface/get-sanitized-data (c/++ context :variant))
         num-points (interface/get-sanitized-data (c/++ context :num-points))
         fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
@@ -209,13 +209,13 @@
                      (interface/get-sanitized-data (c/++ context :outline?)))
         line {:type :straight
               :fimbriation fimbriation}
-        origin-point (position/calculate origin environment :fess)
+        anchor-point (position/calculate anchor environment :fess)
         band-height (-> thickness
                         ((util/percent-of (:width environment))))
-        origin-point (case (:alignment origin)
-                       :left (v/add origin-point (v/v 0 (/ band-height 2)))
-                       :right (v/sub origin-point (v/v 0 (/ band-height 2)))
-                       origin-point)
+        anchor-point (case (:alignment anchor)
+                       :left (v/add anchor-point (v/v 0 (/ band-height 2)))
+                       :right (v/sub anchor-point (v/v 0 (/ band-height 2)))
+                       anchor-point)
         point-width (-> size
                         ((util/percent-of (:width environment))))
         point-height (* point-width stretch)
@@ -224,7 +224,7 @@
                 shape
                 points
                 environment-points]} (draw-label variant
-                                                 origin-point num-points
+                                                 anchor-point num-points
                                                  label-width band-height point-width point-height
                                                  eccentricity
                                                  line

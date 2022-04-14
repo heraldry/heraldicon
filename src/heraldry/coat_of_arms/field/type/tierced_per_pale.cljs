@@ -20,7 +20,7 @@
 (defmethod interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]
-    {:origin {:point {:type :choice
+    {:anchor {:point {:type :choice
                       :choices [[:string.option.point-choice/fess :fess]
                                 [:string.option.point-choice/dexter :dexter]
                                 [:string.option.point-choice/sinister :sinister]
@@ -34,7 +34,7 @@
                          :default 0
                          :ui {:label :string.option/offset-x
                               :step 0.1}}
-              :ui {:label :string.option/origin
+              :ui {:label :string.option/anchor
                    :form-type :position}}
      :layout {:stretch-x {:type :range
                           :min 0.5
@@ -50,21 +50,21 @@
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         stretch-x (interface/get-sanitized-data (c/++ context :layout :stretch-x))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
-        top (assoc (:top points) :x (:x origin-point))
+        anchor-point (position/calculate anchor environment :fess)
+        top (assoc (:top points) :x (:x anchor-point))
         top-left (:top-left points)
-        bottom (assoc (:bottom points) :x (:x origin-point))
+        bottom (assoc (:bottom points) :x (:x anchor-point))
         bottom-right (:bottom-right points)
         width (:width environment)
         middle-half-width (-> width
                               (/ 6)
                               (* stretch-x))
-        col1 (- (:x origin-point) middle-half-width)
-        col2 (+ (:x origin-point) middle-half-width)
+        col1 (- (:x anchor-point) middle-half-width)
+        col2 (+ (:x anchor-point) middle-half-width)
         [first-top first-bottom] (v/environment-intersections
                                   (v/v col1 (:y top))
                                   (v/v col1 (:y bottom))

@@ -439,7 +439,7 @@
     "offset": "Offset",
     "offset-x": "Offset x",
     "offset-y": "Offset y",
-    "origin": "Origin",
+    "anchor": "Anchor",
     "outline-mode": "Outline",
     "outline-mode-choice": {
       "keep": "Keep",

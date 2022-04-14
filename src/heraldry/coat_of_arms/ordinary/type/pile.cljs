@@ -27,7 +27,7 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))
-        origin-point-option {:type :choice
+        anchor-point-option {:type :choice
                              :choices [[:string.option.point-choice/chief :chief]
                                        [:string.option.point-choice/base :base]
                                        [:string.option.point-choice/dexter :dexter]
@@ -42,9 +42,9 @@
                                        [:string.option.point-choice/bottom-right :bottom-right]]
                              :default :top
                              :ui {:label :string.option/point}}
-        current-origin-point (options/get-value
-                              (interface/get-raw-data (c/++ context :origin :point))
-                              origin-point-option)
+        current-anchor-point (options/get-value
+                              (interface/get-raw-data (c/++ context :anchor :point))
+                              anchor-point-option)
         orientation-point-option {:type :choice
                                   :choices (util/filter-choices
                                             [[:string.option.point-choice/top-left :top-left]
@@ -63,7 +63,7 @@
                                              [:string.option.point-choice/honour :honour]
                                              [:string.option.point-choice/nombril :nombril]
                                              [:string.option.orientation-point-choice/angle :angle]]
-                                            #(not= % current-origin-point))
+                                            #(not= % current-anchor-point))
                                   :default :fess
                                   :ui {:label :string.option/point}}
         current-orientation-point (options/get-value
@@ -78,7 +78,7 @@
         current-size-mode (options/get-value
                            (interface/get-raw-data (c/++ context :geometry :size-mode))
                            size-mode-option)]
-    (-> {:origin {:point origin-point-option
+    (-> {:anchor {:point anchor-point-option
                   :alignment {:type :choice
                               :choices position/alignment-choices
                               :default :middle
@@ -96,7 +96,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :orientation (cond-> {:point orientation-point-option
                                :ui {:label :string.option/orientation
@@ -108,14 +108,14 @@
                                                          (#{:top-left
                                                             :top-right
                                                             :bottom-left
-                                                            :bottom-right} current-origin-point) 0
+                                                            :bottom-right} current-anchor-point) 0
                                                          :else -90)
                                                   :max 90
                                                   :default (cond
                                                              (#{:top-left
                                                                 :top-right
                                                                 :bottom-left
-                                                                :bottom-right} current-origin-point) 45
+                                                                :bottom-right} current-anchor-point) 45
                                                              :else 0)
                                                   :ui {:label :string.option/angle}})
 
@@ -165,7 +165,7 @@
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         geometry (interface/get-sanitized-data (c/++ context :geometry))
         outline? (or (interface/render-option :outline? context)
@@ -177,22 +177,22 @@
         bottom-right (:bottom-right points)
         width (:width environment)
         height (:height environment)
-        thickness-base (if (#{:left :right} (:point origin))
+        thickness-base (if (#{:left :right} (:point anchor))
                          height
                          width)
-        {origin-point :origin
+        {anchor-point :anchor
          point :point
          thickness :thickness} (pile/calculate-properties
                                 environment
-                                origin
+                                anchor
                                 (cond-> orientation
                                   (#{:top-right
                                      :right
-                                     :bottom-left} (:point origin)) (update :angle #(when %
+                                     :bottom-left} (:point anchor)) (update :angle #(when %
                                                                                       (- %))))
                                 geometry
                                 thickness-base
-                                (case (:point origin)
+                                (case (:point anchor)
                                   :top-left 0
                                   :top 90
                                   :top-right 180
@@ -202,9 +202,9 @@
                                   :bottom -90
                                   :bottom-right 180
                                   0))
-        pile-angle (v/angle-to-point point origin-point)
+        pile-angle (v/angle-to-point point anchor-point)
         {left-point :left
-         right-point :right} (pile/diagonals origin-point point thickness)
+         right-point :right} (pile/diagonals anchor-point point thickness)
         intersection-left (-> (v/environment-intersections point left-point environment)
                               last)
         intersection-right (-> (v/environment-intersections point right-point environment)

@@ -21,7 +21,7 @@
      :flag-swallow-tail
      :flag-tail-point-height
      :flag-tail-tongue
-     :origin
+     :anchor
      :orientation
      :geometry
      :num-points

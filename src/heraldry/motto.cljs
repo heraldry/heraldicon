@@ -27,7 +27,7 @@
 (defmethod interface/options :heraldry.component/motto [context]
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
         motto-type (interface/get-raw-data (c/++ context :type))]
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/top :top]
                                     [:string.option.point-choice/bottom :bottom]]
                           :default (case motto-type
@@ -46,7 +46,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :geometry (-> geometry/default-options
                        (select-keys [:size :ui])

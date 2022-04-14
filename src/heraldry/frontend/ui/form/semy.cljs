@@ -8,7 +8,7 @@
 (defn form [context]
   (ui.interface/form-elements
    context
-   [:origin
+   [:anchor
     :layout
     :rectangular?
     :manual-blazon]))

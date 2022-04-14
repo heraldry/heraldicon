@@ -21,7 +21,7 @@
         :form-type :charge-group-type-select}})
 
 (def shared-options
-  {:origin {:point {:type :choice
+  {:anchor {:point {:type :choice
                     :choices position/point-choices
                     :default :fess
                     :ui {:label :string.option/point}}
@@ -37,7 +37,7 @@
                        :default 0
                        :ui {:label :string.option/offset-y
                             :step 0.1}}
-            :ui {:label :string.option/origin
+            :ui {:label :string.option/anchor
                  :form-type :position}}
    :manual-blazon {:type :text
                    :default nil
@@ -109,7 +109,7 @@
 
 (defmethod interface/options :heraldry.charge-group.type/in-orle [_context]
   (-> shared-options
-      (dissoc :origin)
+      (dissoc :anchor)
       (merge {:distance {:type :range
                          :min 0
                          :max 30

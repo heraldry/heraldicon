@@ -169,9 +169,9 @@
                     :height (/ charge-space 1.2)}}))
 
 (defmethod interface/render-component :heraldry.component/charge-group [{:keys [path environment] :as context}]
-  (let [origin (interface/get-sanitized-data (c/++ context :origin))
+  (let [anchor (interface/get-sanitized-data (c/++ context :anchor))
         rotate-charges? (interface/get-sanitized-data (c/++ context :rotate-charges?))
-        origin-point (position/calculate origin environment)
+        anchor-point (position/calculate anchor environment)
         {:keys [slot-positions
                 slot-spacing]} (calculate-points context)
         num-charges (interface/get-list-size (c/++ context :charges))]
@@ -184,7 +184,7 @@
        [charge.interface/render-charge
         (-> context
             (c/++ :charges charge-index)
-            (assoc :origin-override (v/add origin-point point))
+            (assoc :anchor-override (v/add anchor-point point))
             (assoc :charge-group {:charge-group-path path
                                   :slot-spacing slot-spacing
                                   :slot-angle (when rotate-charges?

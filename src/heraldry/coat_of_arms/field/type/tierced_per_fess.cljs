@@ -20,7 +20,7 @@
 (defmethod interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]
-    {:origin {:point {:type :choice
+    {:anchor {:point {:type :choice
                       :choices [[:string.option.point-choice/fess :fess]
                                 [:string.option.point-choice/chief :chief]
                                 [:string.option.point-choice/base :base]
@@ -36,7 +36,7 @@
                          :default 0
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
-              :ui {:label :string.option/origin
+              :ui {:label :string.option/anchor
                    :form-type :position}}
      :layout {:stretch-y {:type :range
                           :min 0.5
@@ -52,21 +52,21 @@
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
+        anchor-point (position/calculate anchor environment :fess)
         top-left (:top-left points)
         bottom-right (:bottom-right points)
-        left (assoc (:left points) :y (:y origin-point))
-        right (assoc (:right points) :y (:y origin-point))
+        left (assoc (:left points) :y (:y anchor-point))
+        right (assoc (:right points) :y (:y anchor-point))
         height (:height environment)
         middle-half-height (-> height
                                (/ 6)
                                (* stretch-y))
-        row1 (- (:y origin-point) middle-half-height)
-        row2 (+ (:y origin-point) middle-half-height)
+        row1 (- (:y anchor-point) middle-half-height)
+        row2 (+ (:y anchor-point) middle-half-height)
         [first-left first-right] (v/environment-intersections
                                   (v/v (:x left) row1)
                                   (v/v (:x right) row1)

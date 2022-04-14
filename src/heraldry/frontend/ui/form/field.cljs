@@ -59,7 +59,7 @@
      :variant
      :thickness
      :gap
-     :origin
+     :anchor
      :direction-intermediate-name
      :orientation
      :geometry

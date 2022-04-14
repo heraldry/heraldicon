@@ -17,7 +17,7 @@
 (defmethod field.interface/part-names field-type [_] ["chief" "base"])
 
 (defmethod interface/options field-type [context]
-  {:origin {:point {:type :choice
+  {:anchor {:point {:type :choice
                     :choices [[:string.option.point-choice/fess :fess]
                               [:string.option.point-choice/chief :chief]
                               [:string.option.point-choice/base :base]
@@ -33,21 +33,21 @@
                        :default 0
                        :ui {:label :string.option/offset-y
                             :step 0.1}}
-            :ui {:label :string.option/origin
+            :ui {:label :string.option/anchor
                  :form-type :position}}
    :line (line/options (c/++ context :line))})
 
 (defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
+        anchor-point (position/calculate anchor environment :fess)
         top-left (:top-left points)
-        real-left (assoc (:left points) :y (:y origin-point))
-        real-right (assoc (:right points) :y (:y origin-point))
+        real-left (assoc (:left points) :y (:y anchor-point))
+        real-right (assoc (:right points) :y (:y anchor-point))
         effective-width (or (:width line) 1)
         effective-width (cond-> effective-width
                           (:spacing line) (+ (* (:spacing line) effective-width)))

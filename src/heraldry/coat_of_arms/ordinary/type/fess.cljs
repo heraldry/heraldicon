@@ -23,7 +23,7 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/fess :fess]
                                     [:string.option.point-choice/chief :chief]
                                     [:string.option.point-choice/base :base]
@@ -44,7 +44,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :line line-style
          :opposite-line opposite-line-style
@@ -67,22 +67,22 @@
            override-shared-start-x] :as context}]
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
-        origin-point (position/calculate origin environment :fess)
-        left (assoc (:left points) :y (:y origin-point))
-        right (assoc (:right points) :y (:y origin-point))
+        anchor-point (position/calculate anchor environment :fess)
+        left (assoc (:left points) :y (:y anchor-point))
+        right (assoc (:right points) :y (:y anchor-point))
         width (:width environment)
         height (:height environment)
         band-height (-> size
                         ((util/percent-of height)))
-        row1 (case (:alignment origin)
-               :left (:y origin-point)
-               :right (- (:y origin-point) band-height)
-               (- (:y origin-point) (/ band-height 2)))
+        row1 (case (:alignment anchor)
+               :left (:y anchor-point)
+               :right (- (:y anchor-point) band-height)
+               (- (:y anchor-point) (/ band-height 2)))
         row2 (+ row1 band-height)
         first-left (v/v (:x left) row1)
         first-right (v/v (:x right) row1)

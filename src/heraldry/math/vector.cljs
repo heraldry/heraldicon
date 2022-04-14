@@ -252,15 +252,15 @@
          prune-duplicates
          (sort-by :t1))))
 
-(defn find-first-intersection-of-ray [origin orientation environment]
-  (let [direction-vector (sub orientation origin)
+(defn find-first-intersection-of-ray [anchor orientation environment]
+  (let [direction-vector (sub orientation anchor)
         line-end (-> direction-vector
                      normal
                      (mul 1000)
-                     (add origin))
-        intersections (find-intersections origin line-end environment)
-        origin-inside? (inside-environment? origin environment)
-        select-fn (if origin-inside?
+                     (add anchor))
+        intersections (find-intersections anchor line-end environment)
+        anchor-inside? (inside-environment? anchor environment)
+        select-fn (if anchor-inside?
                     first
                     second)]
     (-> intersections

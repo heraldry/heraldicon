@@ -439,7 +439,7 @@
     "offset": "Versatz",
     "offset-x": "Versatz y",
     "offset-y": "Versatz y",
-    "origin": "Ursprung",
+    "anchor": "Anker",
     "outline-mode": "Umrandung",
     "outline-mode-choice": {
       "keep": "Anzeigen",

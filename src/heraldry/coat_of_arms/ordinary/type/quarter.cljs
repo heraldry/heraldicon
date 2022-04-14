@@ -26,7 +26,7 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    (-> {:origin {:point {:type :choice
+    (-> {:anchor {:point {:type :choice
                           :choices [[:string.option.point-choice/fess :fess]
                                     [:string.option.point-choice/chief :chief]
                                     [:string.option.point-choice/base :base]
@@ -47,7 +47,7 @@
                              :default 0
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
-                  :ui {:label :string.option/origin
+                  :ui {:label :string.option/anchor
                        :form-type :position}}
          :line line-style
          :opposite-line opposite-line-style
@@ -76,22 +76,22 @@
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         variant (interface/get-sanitized-data (c/++ context :variant))
-        origin (interface/get-sanitized-data (c/++ context :origin))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         points (:points environment)
         width (:width environment)
         height (:height environment)
-        origin-point (position/calculate origin environment :fess)
-        top (assoc (:top points) :x (:x origin-point))
+        anchor-point (position/calculate anchor environment :fess)
+        top (assoc (:top points) :x (:x anchor-point))
         top-left (:top-left points)
         top-right (:top-right points)
-        bottom (assoc (:bottom points) :x (:x origin-point))
+        bottom (assoc (:bottom points) :x (:x anchor-point))
         bottom-left (:bottom-left points)
         bottom-right (:bottom-right points)
-        left (assoc (:left points) :y (:y origin-point))
-        right (assoc (:right points) :y (:y origin-point))
+        left (assoc (:left points) :y (:y anchor-point))
+        right (assoc (:right points) :y (:y anchor-point))
         target-part-index (get {:dexter-chief 0
                                 :sinister-chief 1
                                 :dexter-base 2
@@ -101,15 +101,15 @@
                           1 top-right
                           2 bottom-left
                           3 bottom-right)
-        origin-point (-> origin-point
+        anchor-point (-> anchor-point
                          (v/sub relevant-corner)
                          (v/mul (/ size 100))
                          (v/add relevant-corner))
 
-        intersection-top (v/find-first-intersection-of-ray origin-point top environment)
-        intersection-bottom (v/find-first-intersection-of-ray origin-point bottom environment)
-        intersection-left (v/find-first-intersection-of-ray origin-point left environment)
-        intersection-right (v/find-first-intersection-of-ray origin-point right environment)
+        intersection-top (v/find-first-intersection-of-ray anchor-point top environment)
+        intersection-bottom (v/find-first-intersection-of-ray anchor-point bottom environment)
+        intersection-left (v/find-first-intersection-of-ray anchor-point left environment)
+        intersection-right (v/find-first-intersection-of-ray anchor-point right environment)
         arm-length (->> [(when (#{0 1} target-part-index)
                            intersection-top)
                          (when (#{2 3} target-part-index)
@@ -120,27 +120,27 @@
                            intersection-right)]
                         (filter identity)
                         (map #(-> %
-                                  (v/sub origin-point)
+                                  (v/sub anchor-point)
                                   v/abs))
                         (apply max))
         full-arm-length (+ arm-length 30)
         point-top (-> (v/v 0 -1)
                       (v/mul full-arm-length)
-                      (v/add origin-point))
+                      (v/add anchor-point))
         point-bottom (-> (v/v 0 1)
                          (v/mul full-arm-length)
-                         (v/add origin-point))
+                         (v/add anchor-point))
         point-left (-> (v/v -1 0)
                        (v/mul full-arm-length)
-                       (v/add origin-point))
+                       (v/add anchor-point))
         point-right (-> (v/v 1 0)
                         (v/mul full-arm-length)
-                        (v/add origin-point))
+                        (v/add anchor-point))
         {line-top :line
          line-top-start :line-start
          :as line-top-data
          line-top-min :line-min} (line/create line
-                                              origin-point point-top
+                                              anchor-point point-top
                                               :reversed? true
                                               :real-start 0
                                               :real-end arm-length
@@ -149,7 +149,7 @@
         {line-right :line
          line-right-start :line-start
          :as line-right-data} (line/create opposite-line
-                                           origin-point point-right
+                                           anchor-point point-right
                                            :flipped? true
                                            :mirrored? true
                                            :real-start 0
@@ -159,7 +159,7 @@
         {line-bottom :line
          line-bottom-start :line-start
          :as line-bottom-data} (line/create line
-                                            origin-point point-bottom
+                                            anchor-point point-bottom
                                             :reversed? true
                                             :real-start 0
                                             :real-end arm-length
@@ -168,7 +168,7 @@
         {line-left :line
          line-left-start :line-start
          :as line-left-data} (line/create opposite-line
-                                          origin-point point-left
+                                          anchor-point point-left
                                           :flipped? true
                                           :mirrored? true
                                           :real-start 0
@@ -178,7 +178,7 @@
         parts [[["M" (v/add point-top
                             line-top-start)
                  (path/stitch line-top)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-left)
                  (infinity/path :clockwise
                                 [:left :top]
@@ -187,12 +187,12 @@
                                  (v/add point-top
                                         line-top-start)])
                  "z"]
-                [top-left origin-point]]
+                [top-left anchor-point]]
 
                [["M" (v/add point-top
                             line-top-start)
                  (path/stitch line-top)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-right)
                  (infinity/path :counter-clockwise
                                 [:right :top]
@@ -201,12 +201,12 @@
                                  (v/add point-top
                                         line-top-start)])
                  "z"]
-                [origin-point top-right]]
+                [anchor-point top-right]]
 
                [["M" (v/add point-bottom
                             line-bottom-start)
                  (path/stitch line-bottom)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-left)
                  (infinity/path :counter-clockwise
                                 [:left :bottom]
@@ -215,12 +215,12 @@
                                  (v/add point-bottom
                                         line-bottom-start)])
                  "z"]
-                [origin-point bottom-left]]
+                [anchor-point bottom-left]]
 
                [["M" (v/add point-bottom
                             line-bottom-start)
                  (path/stitch line-bottom)
-                 "L" origin-point
+                 "L" anchor-point
                  (path/stitch line-right)
                  (infinity/path :clockwise
                                 [:right :bottom]
@@ -229,7 +229,7 @@
                                  (v/add point-bottom
                                         line-bottom-start)])
                  "z"]
-                [origin-point bottom-right]]]
+                [anchor-point bottom-right]]]
         [line-one-data
          line-two-data] (case target-part-index
                           0 [line-top-data line-left-data]
@@ -271,4 +271,4 @@
                        2 135
                        3 45)
       :joint-angle 90
-      :corner-point origin-point]]))
+      :corner-point anchor-point]]))
