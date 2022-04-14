@@ -294,9 +294,9 @@
                                                               (assoc-in [:anchor :angle] 45)))
       (get partition-options :REVERSED) (cond->
                                           (= :per-chevron
-                                             partition-type) (assoc-in [:direction-anchor :point] :chief)
+                                             partition-type) (assoc-in [:direction-intermediate-name :point] :chief)
                                           (= :tierced-per-pall
-                                             partition-type) (assoc-in [:direction-anchor :point] :bottom)
+                                             partition-type) (assoc-in [:direction-intermediate-name :point] :bottom)
                                           (= :per-pile
                                              partition-type) (assoc-in [:origin :point] :top)))))
 
@@ -653,9 +653,9 @@
       (get ordinary-options :VOIDED) (assoc :voided {:voided? true})
       (get ordinary-options :REVERSED) (cond->
                                          (= :chevron
-                                            ordinary-type) (assoc-in [:direction-anchor :point] :chief)
+                                            ordinary-type) (assoc-in [:direction-intermediate-name :point] :chief)
                                          (= :pall
-                                            ordinary-type) (assoc-in [:direction-anchor :point] :bottom)
+                                            ordinary-type) (assoc-in [:direction-intermediate-name :point] :bottom)
                                          (= :pile
                                             ordinary-type) (assoc-in [:origin :point] :bottom))
       (get ordinary-options :THROUGHOUT) (cond->
