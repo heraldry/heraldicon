@@ -61,7 +61,7 @@
      :gap
      :origin
      :direction-intermediate-name
-     :anchor
+     :orientation
      :geometry
      :layout
      :outline?

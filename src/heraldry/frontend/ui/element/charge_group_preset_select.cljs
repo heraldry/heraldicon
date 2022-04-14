@@ -15,8 +15,8 @@
                      (update-in path (fn [charge-group]
                                        (-> charge-group-preset
                                            (assoc :charges (:charges charge-group)))))
-                     (assoc-in (conj path :charges 0 :anchor :point) :angle)
-                     (assoc-in (conj path :charges 0 :anchor :angle) 0)
+                     (assoc-in (conj path :charges 0 :orientation :point) :angle)
+                     (assoc-in (conj path :charges 0 :orientation :angle) 0)
                      (assoc-in (conj path :charges 0 :geometry :size) nil))]
       (loop [new-db new-db
              [[rel-path value] & rest] charge-adjustments]

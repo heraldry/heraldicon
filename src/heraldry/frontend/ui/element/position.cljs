@@ -12,7 +12,7 @@
 (defn submenu-link-name [options position]
   (let [changes [(-> position
                      :point
-                     position/anchor-point-map)
+                     position/orientation-point-map)
                  (when (some #(options/changed? % position options)
                              [:offset-x :offset-y :angle])
                    "adjusted")

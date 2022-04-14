@@ -210,7 +210,7 @@
             highlight-colours? (seq ui-show-colours)
             ui-show-colours (set ui-show-colours)
             origin (interface/get-sanitized-data (c/++ context :origin))
-            anchor (interface/get-sanitized-data (c/++ context :anchor))
+            orientation (interface/get-sanitized-data (c/++ context :orientation))
             vertical-mask (interface/get-sanitized-data (c/++ context :vertical-mask))
             fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
             size (if (and size-default
@@ -264,13 +264,13 @@
                       :offset-y 0}
                      origin)
             {origin-point :real-origin
-             anchor-point :real-anchor} (angle/calculate-origin-and-anchor
-                                         environment-for-origin
-                                         origin
-                                         anchor
-                                         0
-                                         -90)
-            angle (+ (v/angle-to-point origin-point anchor-point)
+             orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+                                                   environment-for-origin
+                                                   origin
+                                                   orientation
+                                                   0
+                                                   -90)
+            angle (+ (v/angle-to-point origin-point orientation-point)
                      90)
             min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.9))
                                (min (- (:x origin-point) (:x left))
@@ -287,7 +287,7 @@
                                    ((util/percent-of height)))
                                (* (* min-y-distance 2) 0.7))
                              stretch)
-            angle (if (and (-> anchor :point (= :angle))
+            angle (if (and (-> orientation :point (= :angle))
                            slot-angle)
                     (if (< positional-charge-height positional-charge-width)
                       (+ angle slot-angle 90)

@@ -306,22 +306,22 @@
       :charges [{:type :heraldry.charge.type/billet
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}
-                 :anchor {:point :angle
-                          :angle 180}}]
+                 :orientation {:point :angle
+                               :angle 180}}]
       :slots [0 0 0 0 0 0 0]}
-     {[:charges 0 :anchor :point] :angle
-      [:charges 0 :anchor :angle] 180}]
+     {[:charges 0 :orientation :point] :angle
+      [:charges 0 :orientation :angle] 180}]
     [:string.charge-group.presets/in-annullo-follow :in-annullo-follow
      {:type :heraldry.charge-group.type/arc
       :rotate-charges? true
       :charges [{:type :heraldry.charge.type/billet
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}
-                 :anchor {:point :angle
-                          :angle 90}}]
+                 :orientation {:point :angle
+                               :angle 90}}]
       :slots [0 0 0 0 0 0 0]}
-     {[:charges 0 :anchor :point] :angle
-      [:charges 0 :anchor :angle] 90}]]
+     {[:charges 0 :orientation :point] :angle
+      [:charges 0 :orientation :angle] 90}]]
    [:string.charge-group.presets.group/others
     [:string.charge-group.presets/in-orle :in-orle
      {:type :heraldry.charge-group.type/in-orle
@@ -344,6 +344,6 @@
                  :geometry {:size 50
                             :stretch 3}}]
       :slots [0 0 0]}
-     {[:charges 0 :anchor :point] :angle
-      [:charges 0 :anchor :angle] 0
+     {[:charges 0 :orientation :point] :angle
+      [:charges 0 :orientation :angle] 0
       [:charges 0 :geometry :size] 50}]]])

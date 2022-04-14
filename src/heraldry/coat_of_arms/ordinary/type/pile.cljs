@@ -45,30 +45,30 @@
         current-origin-point (options/get-value
                               (interface/get-raw-data (c/++ context :origin :point))
                               origin-point-option)
-        anchor-point-option {:type :choice
-                             :choices (util/filter-choices
-                                       [[:string.option.point-choice/top-left :top-left]
-                                        [:string.option.point-choice/top :top]
-                                        [:string.option.point-choice/top-right :top-right]
-                                        [:string.option.point-choice/left :left]
-                                        [:string.option.point-choice/right :right]
-                                        [:string.option.point-choice/bottom-left :bottom-left]
-                                        [:string.option.point-choice/bottom :bottom]
-                                        [:string.option.point-choice/bottom-right :bottom-right]
-                                        [:string.option.point-choice/fess :fess]
-                                        [:string.option.point-choice/chief :chief]
-                                        [:string.option.point-choice/base :base]
-                                        [:string.option.point-choice/dexter :dexter]
-                                        [:string.option.point-choice/sinister :sinister]
-                                        [:string.option.point-choice/honour :honour]
-                                        [:string.option.point-choice/nombril :nombril]
-                                        [:string.option.anchor-point-choice/angle :angle]]
-                                       #(not= % current-origin-point))
-                             :default :fess
-                             :ui {:label :string.option/point}}
-        current-anchor-point (options/get-value
-                              (interface/get-raw-data (c/++ context :anchor :point))
-                              anchor-point-option)
+        orientation-point-option {:type :choice
+                                  :choices (util/filter-choices
+                                            [[:string.option.point-choice/top-left :top-left]
+                                             [:string.option.point-choice/top :top]
+                                             [:string.option.point-choice/top-right :top-right]
+                                             [:string.option.point-choice/left :left]
+                                             [:string.option.point-choice/right :right]
+                                             [:string.option.point-choice/bottom-left :bottom-left]
+                                             [:string.option.point-choice/bottom :bottom]
+                                             [:string.option.point-choice/bottom-right :bottom-right]
+                                             [:string.option.point-choice/fess :fess]
+                                             [:string.option.point-choice/chief :chief]
+                                             [:string.option.point-choice/base :base]
+                                             [:string.option.point-choice/dexter :dexter]
+                                             [:string.option.point-choice/sinister :sinister]
+                                             [:string.option.point-choice/honour :honour]
+                                             [:string.option.point-choice/nombril :nombril]
+                                             [:string.option.orientation-point-choice/angle :angle]]
+                                            #(not= % current-origin-point))
+                                  :default :fess
+                                  :ui {:label :string.option/point}}
+        current-orientation-point (options/get-value
+                                   (interface/get-raw-data (c/++ context :orientation :point))
+                                   orientation-point-option)
         size-mode-option {:type :choice
                           :choices [[:string.option.size-mode-choice/thickness :thickness]
                                     [:string.option.size-mode-choice/angle :angle]]
@@ -98,46 +98,46 @@
                                   :step 0.1}}
                   :ui {:label :string.option/origin
                        :form-type :position}}
-         :anchor (cond-> {:point anchor-point-option
-                          :ui {:label :string.option/anchor
-                               :form-type :position}}
+         :orientation (cond-> {:point orientation-point-option
+                               :ui {:label :string.option/orientation
+                                    :form-type :position}}
 
-                   (= current-anchor-point
-                      :angle) (assoc :angle {:type :range
-                                             :min (cond
-                                                    (#{:top-left
-                                                       :top-right
-                                                       :bottom-left
-                                                       :bottom-right} current-origin-point) 0
-                                                    :else -90)
-                                             :max 90
-                                             :default (cond
-                                                        (#{:top-left
-                                                           :top-right
-                                                           :bottom-left
-                                                           :bottom-right} current-origin-point) 45
-                                                        :else 0)
-                                             :ui {:label :string.option/angle}})
+                        (= current-orientation-point
+                           :angle) (assoc :angle {:type :range
+                                                  :min (cond
+                                                         (#{:top-left
+                                                            :top-right
+                                                            :bottom-left
+                                                            :bottom-right} current-origin-point) 0
+                                                         :else -90)
+                                                  :max 90
+                                                  :default (cond
+                                                             (#{:top-left
+                                                                :top-right
+                                                                :bottom-left
+                                                                :bottom-right} current-origin-point) 45
+                                                             :else 0)
+                                                  :ui {:label :string.option/angle}})
 
-                   (not= current-anchor-point
-                         :angle) (assoc :offset-x {:type :range
-                                                   :min -50
-                                                   :max 50
-                                                   :default 0
-                                                   :ui {:label :string.option/offset-x
-                                                        :step 0.1}}
-                                        :offset-y {:type :range
-                                                   :min -75
-                                                   :max 75
-                                                   :default 0
-                                                   :ui {:label :string.option/offset-y
-                                                        :step 0.1}}
-                                        :type {:type :choice
-                                               :choices [[:string.option.anchor-type-choice/edge :edge]
-                                                         [:string.option.anchor-type-choice/anchor-point :point]]
-                                               :default :edge
-                                               :ui {:label :string.render-options/mode
-                                                    :form-type :radio-select}}))
+                        (not= current-orientation-point
+                              :angle) (assoc :offset-x {:type :range
+                                                        :min -50
+                                                        :max 50
+                                                        :default 0
+                                                        :ui {:label :string.option/offset-x
+                                                             :step 0.1}}
+                                             :offset-y {:type :range
+                                                        :min -75
+                                                        :max 75
+                                                        :default 0
+                                                        :ui {:label :string.option/offset-y
+                                                             :step 0.1}}
+                                             :type {:type :choice
+                                                    :choices [[:string.option.orientation-type-choice/edge :edge]
+                                                              [:string.option.orientation-type-choice/orientation-point :point]]
+                                                    :default :edge
+                                                    :ui {:label :string.render-options/mode
+                                                         :form-type :radio-select}}))
          :line line-style
          :opposite-line opposite-line-style
          :geometry {:size-mode size-mode-option
@@ -166,7 +166,7 @@
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         origin (interface/get-sanitized-data (c/++ context :origin))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        orientation (interface/get-sanitized-data (c/++ context :orientation))
         geometry (interface/get-sanitized-data (c/++ context :geometry))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
@@ -185,7 +185,7 @@
          thickness :thickness} (pile/calculate-properties
                                 environment
                                 origin
-                                (cond-> anchor
+                                (cond-> orientation
                                   (#{:top-right
                                      :right
                                      :bottom-left} (:point origin)) (update :angle #(when %

@@ -123,7 +123,7 @@
 
     [:origin :point]
     [:direction-intermediate-name :point]
-    [:anchor :point]
+    [:orientation :point]
 
     [:fimbriation :mode]
     [:geometry :size-mode]

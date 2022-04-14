@@ -30,52 +30,52 @@
                                               :inherited-options line-style)
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
-        anchor-point-option {:type :choice
-                             :choices [[:string.option.point-choice/top-left :top-left]
-                                       [:string.option.point-choice/top :top]
-                                       [:string.option.point-choice/top-right :top-right]
-                                       [:string.option.point-choice/left :left]
-                                       [:string.option.point-choice/right :right]
-                                       [:string.option.point-choice/bottom-left :bottom-left]
-                                       [:string.option.point-choice/bottom :bottom]
-                                       [:string.option.point-choice/bottom-right :bottom-right]
-                                       [:string.option.point-choice/fess :fess]
-                                       [:string.option.point-choice/chief :chief]
-                                       [:string.option.point-choice/base :base]
-                                       [:string.option.point-choice/dexter :dexter]
-                                       [:string.option.point-choice/sinister :sinister]
-                                       [:string.option.point-choice/honour :honour]
-                                       [:string.option.point-choice/nombril :nombril]
-                                       [:string.option.anchor-point-choice/angle :angle]]
-                             :default :angle
-                             :ui {:label :string.option/point}}
-        current-anchor-point (options/get-value
-                              (interface/get-raw-data (c/++ context :anchor :point))
-                              anchor-point-option)]
-    {:anchor (cond-> {:point anchor-point-option
-                      :ui {:label :string.option/anchor
-                           :form-type :position}}
+        orientation-point-option {:type :choice
+                                  :choices [[:string.option.point-choice/top-left :top-left]
+                                            [:string.option.point-choice/top :top]
+                                            [:string.option.point-choice/top-right :top-right]
+                                            [:string.option.point-choice/left :left]
+                                            [:string.option.point-choice/right :right]
+                                            [:string.option.point-choice/bottom-left :bottom-left]
+                                            [:string.option.point-choice/bottom :bottom]
+                                            [:string.option.point-choice/bottom-right :bottom-right]
+                                            [:string.option.point-choice/fess :fess]
+                                            [:string.option.point-choice/chief :chief]
+                                            [:string.option.point-choice/base :base]
+                                            [:string.option.point-choice/dexter :dexter]
+                                            [:string.option.point-choice/sinister :sinister]
+                                            [:string.option.point-choice/honour :honour]
+                                            [:string.option.point-choice/nombril :nombril]
+                                            [:string.option.orientation-point-choice/angle :angle]]
+                                  :default :angle
+                                  :ui {:label :string.option/point}}
+        current-orientation-point (options/get-value
+                                   (interface/get-raw-data (c/++ context :orientation :point))
+                                   orientation-point-option)]
+    {:orientation (cond-> {:point orientation-point-option
+                           :ui {:label :string.option/orientation
+                                :form-type :position}}
 
-               (= current-anchor-point
-                  :angle) (assoc :angle {:type :range
-                                         :min 10
-                                         :max 170
-                                         :default 45
-                                         :ui {:label :string.option/angle}})
+                    (= current-orientation-point
+                       :angle) (assoc :angle {:type :range
+                                              :min 10
+                                              :max 170
+                                              :default 45
+                                              :ui {:label :string.option/angle}})
 
-               (not= current-anchor-point
-                     :angle) (assoc :offset-x {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label :string.option/offset-x
-                                                    :step 0.1}}
-                                    :offset-y {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label :string.option/offset-y
-                                                    :step 0.1}}))
+                    (not= current-orientation-point
+                          :angle) (assoc :offset-x {:type :range
+                                                    :min -45
+                                                    :max 45
+                                                    :default 0
+                                                    :ui {:label :string.option/offset-x
+                                                         :step 0.1}}
+                                         :offset-y {:type :range
+                                                    :min -45
+                                                    :max 45
+                                                    :default 0
+                                                    :ui {:label :string.option/offset-y
+                                                         :step 0.1}}))
      :layout {:num-fields-y {:type :range
                              :min 1
                              :max 20
@@ -114,18 +114,18 @@
         stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
         height (- (:y bottom-right)
                   (:y top-left))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        orientation (interface/get-sanitized-data (c/++ context :orientation))
         chevron-angle 90
         {origin-point :real-origin
-         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
-                                     environment
-                                     {:point :fess
-                                      :offset-x 0
-                                      :offset-y 0}
-                                     anchor
-                                     0 ;; ignored, since there's no alignment
-                                     chevron-angle)
-        [relative-left relative-right] (chevron/arm-diagonals chevron-angle origin-point anchor-point)
+         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+                                               environment
+                                               {:point :fess
+                                                :offset-x 0
+                                                :offset-y 0}
+                                               orientation
+                                               0 ;; ignored, since there's no alignment
+                                               chevron-angle)
+        [relative-left relative-right] (chevron/arm-diagonals chevron-angle origin-point orientation-point)
         diagonal-left (v/add origin-point relative-left)
         diagonal-right (v/add origin-point relative-right)
         angle-left (math/normalize-angle (v/angle-to-point origin-point diagonal-left))

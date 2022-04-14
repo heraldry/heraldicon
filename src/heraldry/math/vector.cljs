@@ -252,8 +252,8 @@
          prune-duplicates
          (sort-by :t1))))
 
-(defn find-first-intersection-of-ray [origin anchor environment]
-  (let [direction-vector (sub anchor origin)
+(defn find-first-intersection-of-ray [origin orientation environment]
+  (let [direction-vector (sub orientation origin)
         line-end (-> direction-vector
                      normal
                      (mul 1000)

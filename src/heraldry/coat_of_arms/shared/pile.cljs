@@ -44,24 +44,24 @@
      :part-length (* f stretch)
      :x rx}))
 
-(defn calculate-properties-for-angle [environment origin anchor
+(defn calculate-properties-for-angle [environment origin orientation
                                       {:keys [size stretch]}
                                       _thickness-base base-angle]
-  (let [anchor-type (or (:type anchor)
-                        :edge)
+  (let [orientation-type (or (:type orientation)
+                             :edge)
         alignment (-> origin :alignment (or :middle))
         {real-origin :real-origin
-         real-anchor :real-anchor} (angle/calculate-origin-and-anchor
-                                    environment
-                                    (assoc origin :alignment :middle)
-                                    (assoc anchor :alignment :middle)
-                                    0
-                                    base-angle)
-        target-point (case anchor-type
+         real-orientation :real-orientation} (angle/calculate-origin-and-orientation
+                                              environment
+                                              (assoc origin :alignment :middle)
+                                              (assoc orientation :alignment :middle)
+                                              0
+                                              base-angle)
+        target-point (case orientation-type
                        :edge (-> (v/environment-intersections
-                                  real-origin real-anchor environment)
+                                  real-origin real-orientation environment)
                                  last)
-                       real-anchor)
+                       real-orientation)
         direction-vector (v/sub target-point real-origin)
         direction-length (v/abs direction-vector)
         {:keys [angle x
@@ -94,25 +94,25 @@
      :point calculated-point
      :thickness (* x 2)}))
 
-(defn calculate-properties-for-thickness [environment origin anchor
+(defn calculate-properties-for-thickness [environment origin orientation
                                           {:keys [size stretch]}
                                           thickness-base base-angle]
   (let [thickness (-> size
                       ((util/percent-of thickness-base)))
-        anchor-type (or (:type anchor)
-                        :edge)
+        orientation-type (or (:type orientation)
+                             :edge)
         {real-origin :real-origin
-         real-anchor :real-anchor} (angle/calculate-origin-and-anchor
-                                    environment
-                                    origin
-                                    anchor
-                                    thickness
-                                    base-angle)
-        target-point (case anchor-type
+         real-orientation :real-orientation} (angle/calculate-origin-and-orientation
+                                              environment
+                                              origin
+                                              orientation
+                                              thickness
+                                              base-angle)
+        target-point (case orientation-type
                        :edge (-> (v/environment-intersections
-                                  real-origin real-anchor environment)
+                                  real-origin real-orientation environment)
                                  last)
-                       real-anchor)
+                       real-orientation)
         direction-vector (v/sub target-point real-origin)
         direction-length (v/abs direction-vector)
         direction (v/div direction-vector direction-length)
@@ -124,12 +124,12 @@
      :point point
      :thickness thickness}))
 
-(defn calculate-properties [environment origin anchor
+(defn calculate-properties [environment origin orientation
                             {:keys [size-mode]
                              :as geometry} thickness-base base-angle]
   (let [calculate-properties-fn (case size-mode
                                   :angle calculate-properties-for-angle
                                   calculate-properties-for-thickness)]
     (calculate-properties-fn
-     environment origin anchor
+     environment origin orientation
      geometry thickness-base base-angle)))
