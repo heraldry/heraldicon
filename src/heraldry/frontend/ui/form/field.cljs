@@ -60,7 +60,7 @@
      :thickness
      :gap
      :anchor
-     :direction-intermediate-name
+     :origin
      :orientation
      :geometry
      :layout
