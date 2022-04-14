@@ -122,7 +122,7 @@
     [:cottising :cottise-extra-2 :extra-line :fimbriation :mode]
 
     [:anchor :point]
-    [:direction-intermediate-name :point]
+    [:origin :point]
     [:orientation :point]
 
     [:fimbriation :mode]

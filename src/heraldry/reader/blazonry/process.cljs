@@ -217,8 +217,8 @@
                             [index (-> component
                                        (assoc-in [:orientation :point] :angle)
                                        (assoc-in [:orientation :angle] 45)
-                                       (assoc-in [:direction-intermediate-name :point] :angle)
-                                       (assoc-in [:direction-intermediate-name :angle] 0))])))
+                                       (assoc-in [:origin :point] :angle)
+                                       (assoc-in [:origin :angle] 0))])))
                 :offset-keyword :offset-y
                 :spacing 15
                 :default-size 15)

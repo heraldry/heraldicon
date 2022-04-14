@@ -42,7 +42,7 @@
    context
    [:type
     :anchor
-    :direction-intermediate-name
+    :origin
     :orientation
     :variant
     :line

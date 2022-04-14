@@ -88,7 +88,7 @@
     [:extra-line :type]
     [:extra-line :fimbriation :mode]
     [:anchor :point]
-    [:direction-intermediate-name :point]
+    [:origin :point]
     [:orientation :point]
     [:geometry :size-mode]
     [:tincture]})
