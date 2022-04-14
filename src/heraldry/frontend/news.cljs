@@ -26,6 +26,15 @@
     [:p [tr :string.text.home/release-news-info-1]]
     [:p [tr :string.text.home/release-news-info-2]]]
 
+   [:h3 "2022-04-14 - Change of 'origin'/'anchor' naming"]
+   [:div.release-row
+    [:div.info
+     [:p "The names for the two points used to position and orient partitions, ordinaries, and charges, have been renamed."]
+     [:ul
+      [:li [:strong "anchor"] " (previously " [:em "origin"] "): is the main point an element is positioned with."]
+      [:li [:strong "orientation"] " (previously " [:em "anchor"] "): is the point an element orients itself towards, but it can also be a fixed angle."]]
+     [:p "This might be confusing for a while for anyone already used to the old names, but I think it more accurately describes these concepts and simplifies using them. I hope it won't cause too much trouble."]]]
+
    [:h3 "2022-04-07 - Blazonry reader, translations, bordures with line styles, metadata"]
    [:div.release-row
     [:div.info
