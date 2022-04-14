@@ -21,7 +21,7 @@ prod-backend-release:
 dirty-prod-backend-deploy: actual-prod-backend-deploy
 prod-backend-deploy: check-before-deploy-backend actual-prod-backend-deploy
 
-actual-prod-backend-deploy:
+actual-prod-backend-deploy: prod-backend-release
 	make copy-fonts-to-backend
 	cd backend && yarn sls deploy --stage prod
 	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
