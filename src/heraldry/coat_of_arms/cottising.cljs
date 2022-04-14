@@ -162,8 +162,8 @@
                                                            (* 100)
                                                            -)]
                                      :alignment alignment}
-                            :anchor {:point :angle
-                                     :angle angle}
+                            :orientation {:point :angle
+                                          :angle angle}
                             :outline? outline?})
            (assoc :override-center-point new-center-point)
            (assoc :override-middle-real-start (middle-real-start-fn point-offset))
@@ -220,8 +220,8 @@
                                                            (* 100)
                                                            -)]
                                      :alignment alignment}
-                            :anchor {:point :angle
-                                     :angle [:force half-joint-angle]}
+                            :orientation {:point :angle
+                                          :angle [:force half-joint-angle]}
                             :direction-intermediate-name {:point :angle
                                                           :angle [:force (- chevron-angle 90)]}
                             :outline? outline?}))])))

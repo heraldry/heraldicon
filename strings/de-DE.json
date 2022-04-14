@@ -369,13 +369,13 @@
       "inside": "Innen",
       "outside": "Außen"
     },
-    "anchor": "Anker",
-    "anchor-point-choice": {
+    "orientation": "Ausrichtung",
+    "orientation-point-choice": {
       "angle": "Winkel"
     },
-    "anchor-type-choice": {
+    "orientation-type-choice": {
       "edge": "Kante",
-      "anchor-point": "Anker-Punkt"
+      "orientation-point": "Punkt"
     },
     "angle": "Winkel",
     "arc-angle": "Bogenwinkel",

@@ -8,25 +8,25 @@
                    v/abs
                    (/ 2))
         middle-height (* length (util/map-to-interval eccentricity -0.1 0.2))
-        anchor1-height (- (* length (util/map-to-interval eccentricity 0.1 0.9)))
+        orientation1-height (- (* length (util/map-to-interval eccentricity 0.1 0.9)))
         angle (v/angle-to-point (v/v 0 0) direction)
-        anchor1 (v/v (* length 0.5) anchor1-height)
-        anchor2 (v/v (* length 0.75) (- middle-height))
+        orientation1 (v/v (* length 0.5) orientation1-height)
+        orientation2 (v/v (* length 0.75) (- middle-height))
         middle (v/v length (- middle-height))
-        anchor3 (v/v (- length (* length 0.75)) 0)
-        anchor4 (v/v (- length (* length 0.5)) (+ middle-height
-                                                  anchor1-height))
+        orientation3 (v/v (- length (* length 0.75)) 0)
+        orientation4 (v/v (- length (* length 0.5)) (+ middle-height
+                                                       orientation1-height))
         end (v/v length middle-height)
         vf (if flipped?
              (v/v 1 -1)
              (v/v 1 1))]
     ["c"
-     (v/rotate (v/dot anchor1 vf) angle)
-     (v/rotate (v/dot anchor2 vf) angle)
+     (v/rotate (v/dot orientation1 vf) angle)
+     (v/rotate (v/dot orientation2 vf) angle)
      (v/rotate (v/dot middle vf) angle)
      "c"
-     (v/rotate (v/dot anchor3 vf) angle)
-     (v/rotate (v/dot anchor4 vf) angle)
+     (v/rotate (v/dot orientation3 vf) angle)
+     (v/rotate (v/dot orientation4 vf) angle)
      (v/rotate (v/dot end vf) angle)]))
 
 (def pattern

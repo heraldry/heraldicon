@@ -62,7 +62,7 @@
 (defmethod interface/options-subscriptions :heraldry.component/charge [_context]
   #{[:type]
     [:escutcheon]
-    [:anchor :point]
+    [:orientation :point]
     [:num-points]
     [:variant]
     [:data]

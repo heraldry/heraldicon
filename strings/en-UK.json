@@ -369,13 +369,13 @@
       "inside": "Inside",
       "outside": "Outside"
     },
-    "anchor": "Anchor",
-    "anchor-point-choice": {
+    "orientation": "Orientation",
+    "orientation-point-choice": {
       "angle": "Angle"
     },
-    "anchor-type-choice": {
+    "orientation-type-choice": {
       "edge": "Edge",
-      "anchor-point": "Anchor-Point"
+      "orientation-point": "Point"
     },
     "angle": "Angle",
     "arc-angle": "Arc angle",

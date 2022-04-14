@@ -21,10 +21,10 @@
     "special" : { }
   },
   "option" : {
-    "anchor-point-choice" : { },
+    "orientation-point-choice" : { },
     "alignment-choice" : { },
     "point-choice" : { },
-    "anchor-type-choice" : { },
+    "orientation-type-choice" : { },
     "dampening-mode-choice" : { },
     "radius" : "Raio",
     "variant-quarter-choice" : { },

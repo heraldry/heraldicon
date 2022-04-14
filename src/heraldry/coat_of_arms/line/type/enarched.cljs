@@ -15,15 +15,15 @@
                                (util/map-to-interval height 0 0.4))
                      pos-x (-> relevant-length
                                (* eccentricity))
-                     anchor-1 (- 1 (/ width 100))
-                     anchor-2 (- 1 anchor-1)]
+                     orientation-1 (- 1 (/ width 100))
+                     orientation-2 (- 1 orientation-1)]
                  {:pattern ["h" real-start
                             "c"
                             (-> pos-x
-                                (* anchor-1)) "," (- height) " "
+                                (* orientation-1)) "," (- height) " "
                             (-> relevant-length
                                 (- pos-x)
-                                (* anchor-2)
+                                (* orientation-2)
                                 (+ pos-x)) "," (- height) " "
                             relevant-length "," 0
                             "h" (- length real-end)]

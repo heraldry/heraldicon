@@ -100,7 +100,7 @@
     "sanguine" : "Кровяной"
   },
   "option" : {
-    "anchor-point-choice" : { },
+    "orientation-point-choice" : { },
     "alignment-choice" : { },
     "width" : "Ширина",
     "manual-blazon" : "Ввести блазон вручную",
@@ -108,7 +108,7 @@
     "select-arms" : "Выбрать герб",
     "height" : "Высота",
     "point-choice" : { },
-    "anchor-type-choice" : { },
+    "orientation-type-choice" : { },
     "dampening-mode-choice" : { },
     "radius" : "Радиус",
     "partition" : "Деление",

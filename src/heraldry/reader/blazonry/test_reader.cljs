@@ -288,8 +288,8 @@
               {:type :heraldry.field.type/plain
                :tincture :ermine}]
      :origin {:offset-y 15}
-     :anchor {:point :angle
-              :angle 45}}
+     :orientation {:point :angle
+                   :angle 45}}
 
     "per fess dehanced sable and ermine"
     {:type :heraldry.field.type/per-fess

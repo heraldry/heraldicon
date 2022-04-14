@@ -32,7 +32,7 @@
                                                   :heraldry.line/mirrored?
                                                   :heraldry.line/flipped?])))
 
-(s/def :heraldry.position/point (s/nilable position/anchor-point-map))
+(s/def :heraldry.position/point (s/nilable position/orientation-point-map))
 (s/def :heraldry.position/offset-x (s/nilable number?))
 (s/def :heraldry.position/offset-y (s/nilable number?))
 (s/def :heraldry/position (s/nilable (s/keys :opt-un [:heraldry.position/point
@@ -40,7 +40,7 @@
                                                       :heraldry.position/offset-y])))
 
 (s/def :heraldry/origin #(s/valid? :heraldry/position %))
-(s/def :heraldry/anchor #(s/valid? :heraldry/position %))
+(s/def :heraldry/orientation #(s/valid? :heraldry/position %))
 
 (s/def :heraldry.geometry/size (s/nilable number?))
 (s/def :heraldry/geometry (s/nilable (s/keys :opt-un [:heraldry.geometry/size])))
@@ -98,7 +98,7 @@
                                                :heraldry/line
                                                :heraldry.field/layout
                                                :heraldry.field/origin
-                                               :heraldry.field/anchor
+                                               :heraldry.field/orientation
                                                :heraldry.field/outline?])))
 
 (s/def :heraldry.ordinary/type ordinary.options/ordinary-map)
@@ -107,7 +107,7 @@
                                   :opt-un [:heraldry/line
                                            :heraldry/opposite-line
                                            :heraldry/origin
-                                           :heraldry/anchor
+                                           :heraldry/orientation
                                            :heraldry/geometry]))
 
 (s/def :heraldry.charge/type keyword?)

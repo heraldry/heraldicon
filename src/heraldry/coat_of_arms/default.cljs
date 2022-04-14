@@ -130,8 +130,8 @@
               :highlight 1
               :secondary :or}
    :origin {:point :honour}
-   :anchor {:point :angle
-            :angle 0}
+   :orientation {:point :angle
+                 :angle 0}
    :geometry {:size 200}})
 
 (def compartment-charge
@@ -143,8 +143,8 @@
    :tincture {:shadow 1
               :highlight 1}
    :origin {:point :bottom}
-   :anchor {:point :angle
-            :angle 0}
+   :orientation {:point :angle
+                 :angle 0}
    :geometry {:size 270}})
 
 (def supporter-left-charge
@@ -157,8 +157,8 @@
    :origin {:point :left
             :offset-x -25
             :offset-y 10}
-   :anchor {:point :angle
-            :angle 0}
+   :orientation {:point :angle
+                 :angle 0}
    :geometry {:size 150
               :mirrored? true}})
 
@@ -172,8 +172,8 @@
    :origin {:point :right
             :offset-x 25
             :offset-y 10}
-   :anchor {:point :angle
-            :angle 0}
+   :orientation {:point :angle
+                 :angle 0}
    :geometry {:size 150}})
 
 (def ornament-charge

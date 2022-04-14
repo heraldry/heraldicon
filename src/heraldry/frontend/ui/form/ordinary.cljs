@@ -43,7 +43,7 @@
    [:type
     :origin
     :direction-intermediate-name
-    :anchor
+    :orientation
     :variant
     :line
     :opposite-line

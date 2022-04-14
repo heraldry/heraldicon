@@ -29,17 +29,17 @@
                                               :inherited-options line-style)
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
-        anchor-point-option {:type :choice
-                             :choices [[:string.option.point-choice/top-left :top-left]
-                                       [:string.option.point-choice/top-right :top-right]
-                                       [:string.option.point-choice/bottom-left :bottom-left]
-                                       [:string.option.point-choice/bottom-right :bottom-right]
-                                       [:string.option.anchor-point-choice/angle :angle]]
-                             :default :top-left
-                             :ui {:label :string.option/point}}
-        current-anchor-point (options/get-value
-                              (interface/get-raw-data (c/++ context :anchor :point))
-                              anchor-point-option)]
+        orientation-point-option {:type :choice
+                                  :choices [[:string.option.point-choice/top-left :top-left]
+                                            [:string.option.point-choice/top-right :top-right]
+                                            [:string.option.point-choice/bottom-left :bottom-left]
+                                            [:string.option.point-choice/bottom-right :bottom-right]
+                                            [:string.option.orientation-point-choice/angle :angle]]
+                                  :default :top-left
+                                  :ui {:label :string.option/point}}
+        current-orientation-point (options/get-value
+                                   (interface/get-raw-data (c/++ context :orientation :point))
+                                   orientation-point-option)]
     ;; TODO: perhaps there should be origin options for the corners?
     ;; so one can align fro top-left to bottom-right
     {:origin {:point {:type :choice
@@ -66,30 +66,30 @@
                               :step 0.1}}
               :ui {:label :string.option/origin
                    :form-type :position}}
-     :anchor (cond-> {:point anchor-point-option
-                      :ui {:label :string.option/anchor
-                           :form-type :position}}
+     :orientation (cond-> {:point orientation-point-option
+                           :ui {:label :string.option/orientation
+                                :form-type :position}}
 
-               (= current-anchor-point
-                  :angle) (assoc :angle {:type :range
-                                         :min 10
-                                         :max 80
-                                         :default 45
-                                         :ui {:label :string.option/angle}})
+                    (= current-orientation-point
+                       :angle) (assoc :angle {:type :range
+                                              :min 10
+                                              :max 80
+                                              :default 45
+                                              :ui {:label :string.option/angle}})
 
-               (not= current-anchor-point
-                     :angle) (assoc :offset-x {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label :string.option/offset-x
-                                                    :step 0.1}}
-                                    :offset-y {:type :range
-                                               :min -45
-                                               :max 45
-                                               :default 0
-                                               :ui {:label :string.option/offset-y
-                                                    :step 0.1}}))
+                    (not= current-orientation-point
+                          :angle) (assoc :offset-x {:type :range
+                                                    :min -45
+                                                    :max 45
+                                                    :default 0
+                                                    :ui {:label :string.option/offset-x
+                                                         :step 0.1}}
+                                         :offset-y {:type :range
+                                                    :min -45
+                                                    :max 45
+                                                    :default 0
+                                                    :ui {:label :string.option/offset-y
+                                                         :step 0.1}}))
      :line line-style
      :opposite-line opposite-line-style}))
 
@@ -98,18 +98,18 @@
   (let [line (interface/get-sanitized-data (c/++ context :line))
         opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
         origin (interface/get-sanitized-data (c/++ context :origin))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        orientation (interface/get-sanitized-data (c/++ context :orientation))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         {origin-point :real-origin
-         anchor-point :real-anchor} (angle/calculate-origin-and-anchor
-                                     environment
-                                     origin
-                                     anchor
-                                     0
-                                     nil)
+         orientation-point :real-orientation} (angle/calculate-origin-and-orientation
+                                               environment
+                                               origin
+                                               orientation
+                                               0
+                                               nil)
         [relative-top-left relative-top-right
-         relative-bottom-left relative-bottom-right] (saltire/arm-diagonals origin-point anchor-point)
+         relative-bottom-left relative-bottom-right] (saltire/arm-diagonals origin-point orientation-point)
         diagonal-top-left (v/add origin-point relative-top-left)
         diagonal-top-right (v/add origin-point relative-top-right)
         diagonal-bottom-left (v/add origin-point relative-bottom-left)

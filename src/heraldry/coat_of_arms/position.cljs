@@ -31,7 +31,7 @@
    point-choices
    #{:chief :honour :fess :nombril :base}))
 
-(def anchor-point-choices
+(def orientation-point-choices
   [[:string.option.point-choice/top-left :top-left]
    [:string.option.point-choice/top :top]
    [:string.option.point-choice/top-right :top-right]
@@ -47,10 +47,10 @@
    [:string.option.point-choice/sinister :sinister]
    [:string.option.point-choice/honour :honour]
    [:string.option.point-choice/nombril :nombril]
-   [:string.option.anchor-point-choice/angle :angle]])
+   [:string.option.orientation-point-choice/angle :angle]])
 
-(def anchor-point-map
-  (util/choices->map anchor-point-choices))
+(def orientation-point-map
+  (util/choices->map orientation-point-choices))
 
 (def alignment-choices
   [[:string.option.alignment-choice/left :left]
@@ -90,9 +90,9 @@
    :ui {:label :string.option/position
         :form-type :position}})
 
-(def anchor-default-options
+(def orientation-default-options
   (-> default-options
-      (assoc-in [:point :choices] anchor-point-choices)
+      (assoc-in [:point :choices] orientation-point-choices)
       (assoc :angle (merge (:angle default-options)
                            {:min 10
                             :max 80
@@ -119,7 +119,7 @@
              :y
              (+ dy)))))
 
-(defn calculate-anchor [{:keys [point angle] :as anchor} environment origin base-angle]
+(defn calculate-orientation [{:keys [point angle] :as orientation} environment origin base-angle]
   (if (= point :angle)
     (let [angle-rad (-> angle
                         (+ base-angle)
@@ -127,4 +127,4 @@
       (v/add origin (v/mul (v/v (Math/cos angle-rad)
                                 (Math/sin angle-rad))
                            200)))
-    (calculate anchor environment)))
+    (calculate orientation environment)))
