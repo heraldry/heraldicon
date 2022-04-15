@@ -24,7 +24,7 @@
                                  :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
            :static-files-url "http://localhost:8081"
-           :base-font-dir "/Users/oliver/dev/armory/assets/font"
+           :base-font-dir "/Users/thi/dev/armory/assets/font"
            :fleur-de-lis-charge-id "charge:ZfqrIl"
            :torse-charge-id "charge:8vwlZ2"
            :helmet-charge-id "charge:hlsnvP"
