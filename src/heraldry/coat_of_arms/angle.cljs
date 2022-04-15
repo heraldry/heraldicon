@@ -8,6 +8,12 @@
   (let [target-anchor (position/calculate anchor environment)
         target-orientation (position/calculate-orientation orientation environment target-anchor
                                                            (or base-angle 0))
+        ;; TODO: this is a hack to avoid both points being the same, which causes errors,
+        ;; but it might not always be the right thing to do, so far I've only seen it for
+        ;; very special per-chevron partitions
+        target-orientation (cond-> target-orientation
+                             (= target-orientation
+                                target-anchor) (update :y - 10))
         anchor-align (or (:alignment anchor) :middle)
         orientation-align (if (-> orientation :point (= :angle))
                             anchor-align
