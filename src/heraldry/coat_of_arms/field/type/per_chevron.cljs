@@ -187,15 +187,7 @@
                                                     :ui {:label :string.option/offset-y
                                                          :step 0.1}}))
      :line line-style
-     :opposite-line opposite-line-style
-     :geometry {:size {:type :range
-                       :min 0.1
-                       :max 90
-                       :default 25
-                       :ui {:label :string.option/size
-                            :step 0.1}}
-                :ui {:label :string.option/geometry
-                     :form-type :geometry}}}))
+     :opposite-line opposite-line-style}))
 
 (defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]
