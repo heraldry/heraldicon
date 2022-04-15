@@ -219,6 +219,11 @@
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         origin (interface/get-sanitized-data (c/++ context :origin))
+        origin (update origin :point (fn [origin-point]
+                                       (get {:chief :top
+                                             :base :bottom
+                                             :dexter :left
+                                             :sinister :right} origin-point origin-point)))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
