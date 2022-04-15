@@ -128,8 +128,9 @@
 (s/def :heraldry.charge.variant/version number?)
 (s/def :heraldry.charge/variant (s/nilable (s/keys :req-un [:heraldry.charge.variant/id
                                                             :heraldry.charge.variant/version])))
-(s/def :heraldry.charge/escutcheon #(or (= % :root)
-                                        (s/valid? :heraldry/escutcheon %)))
+(s/def :heraldry.charge/escutcheon (s/nilable
+                                    #(or (= % :none)
+                                         (s/valid? :heraldry/escutcheon %))))
 (s/def :heraldry/charge (s/keys :req-un [:heraldry.charge/type
                                          :heraldry/field]
                                 :opt-un [:heraldry.charge/attitude
