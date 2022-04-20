@@ -16,14 +16,14 @@ PROD_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/co
 
 prod-backend-release:
 	rm -rf $(PROD_BACKEND_RELEASE_DIR) 2> /dev/null || true
-	yarn shadow-cljs release backend --config-merge '$(PROD_CONFIG)'
+	npx shadow-cljs release backend --config-merge '$(PROD_CONFIG)'
 
 dirty-prod-backend-deploy: actual-prod-backend-deploy
 prod-backend-deploy: check-before-deploy-backend actual-prod-backend-deploy
 
 actual-prod-backend-deploy: prod-backend-release
 	make copy-fonts-to-backend
-	cd backend && yarn sls deploy --stage prod
+	cd backend && npx sls deploy --stage prod
 	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 	git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 	make remove-backend-fonts
@@ -34,7 +34,7 @@ prod-frontend-release:
 	cp -r assets/* $(PROD_FRONTEND_RELEASE_DIR)
 	rm -rf $(PROD_FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(PROD_FRONTEND_RELEASE_DIR)/index.html
-	yarn shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
+	npx shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
 
 PROD_FRONTEND_DEV_DIR = build/dev-prod
 PROD_DEV_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/commit "$(COMMIT)"}} :output-dir "$(PROD_FRONTEND_DEV_DIR)"}
@@ -43,7 +43,7 @@ dev-prod:
 	mkdir -p $(PROD_FRONTEND_DEV_DIR)
 	cp -r assets/* $(PROD_FRONTEND_DEV_DIR)
 	rm -rf $(PROD_FRONTEND_DEV_DIR)/js/generated 2> /dev/null || true
-	yarn shadow-cljs watch frontend --config-merge '$(PROD_DEV_CONFIG)'
+	npx shadow-cljs watch frontend --config-merge '$(PROD_DEV_CONFIG)'
 
 dirty-prod-frontend-deploy: actual-prod-frontend-deploy
 prod-frontend-deploy: check-before-deploy-frontend actual-prod-frontend-deploy
@@ -62,11 +62,11 @@ STAGING_CONFIG = {:closure-defines {heraldry.config/stage "staging" heraldry.con
 
 staging-backend-release:
 	rm -rf $(STAGING_BACKEND_RELEASE_DIR) 2> /dev/null || true
-	yarn shadow-cljs release backend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-to "./backend/build/staging/backend.js"}'
+	npx shadow-cljs release backend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-to "./backend/build/staging/backend.js"}'
 
 staging-backend-deploy: staging-backend-release
 	make copy-fonts-to-backend
-	cd backend && yarn sls deploy --stage staging
+	cd backend && npx sls deploy --stage staging
 	make remove-backend-fonts
 
 staging-frontend-release:
@@ -75,7 +75,7 @@ staging-frontend-release:
 	cp -r assets/* $(STAGING_FRONTEND_RELEASE_DIR)
 	rm -rf $(STAGING_FRONTEND_RELEASE_DIR)/js/generated 2> /dev/null || true
 	perl -p -i -e "s/__GIT-COMMIT-HASH__/$(COMMIT)/" $(STAGING_FRONTEND_RELEASE_DIR)/index.html
-	yarn shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./build/staging/js/generated"}'
+	npx shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./build/staging/js/generated"}'
 
 staging-frontend-deploy: staging-frontend-release
 	./sync-with-s3.py $(STAGING_FRONTEND_RELEASE_DIR) cdn.staging.heraldicon.org
@@ -85,10 +85,10 @@ staging-frontend-deploy: staging-frontend-release
 # DEV
 
 dev-local:
-	yarn shadow-cljs watch frontend backend test manage
+	npx shadow-cljs watch frontend backend test manage
 
 dev-test:
-	yarn shadow-cljs watch test
+	npx shadow-cljs watch test
 
 check-debug-print-frontend:
 	! rg println src --glob=!src/**/*test*.cljs
