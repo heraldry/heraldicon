@@ -54,6 +54,7 @@
           :test
           {:target :node-test
            :output-to "./backend/build/test/node-tests.js"
+           :main heraldry.test/main
            :compiler-options {:warnings {:redef false}}
-           :ns-regexp "test"
+           :ns-regexp "[.]test-"
            :autorun true}}}
