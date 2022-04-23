@@ -38,7 +38,8 @@
     ["Rainbow Groom" :community-rainbow-groom theme/theme-community-rainbow-groom]
     ["The Monet Maker" :community-the-monet-maker theme/theme-community-the-monet-maker]
     ["Van Goes Vroem" :community-van-goes-vroem theme/theme-community-van-goes-vroem]
-    ["Content Cranium" :community-content-cranium theme/theme-community-content-cranium]]])
+    ["Content Cranium" :community-content-cranium theme/theme-community-content-cranium]
+    ["Sodacan by Bananasplit1611" :community-sodacan theme/theme-community-sodacan]]])
 
 (def default-theme
   :wappenwiki)
