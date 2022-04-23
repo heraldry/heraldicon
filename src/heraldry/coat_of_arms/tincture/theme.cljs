@@ -452,3 +452,26 @@
    :sanguine "#b00000" ;; 30% darkened gules
    :tenne "#666400" ;; 60% darkened or
    })
+
+(def theme-community-sodacan
+  {;; metals
+   :argent "#ececec"
+   :or "#fee46e"
+   ;; colours
+   :azure "#1353b4"
+   :vert "#21ad5e"
+   :gules "#ce0f25"
+   :sable "#2d2d2d"
+   :purpure "#a44476"
+   ;; stains
+   :murrey "#a52969"
+   :sanguine "#791717"
+   :tenne "#c15f1d"
+   ;; other
+   :bleu-celeste "#66c8e1"
+   :brunatre "#693310"
+   :buff "#dfad42"
+   :carnation "#fcbf8c"
+   :cendree "#999999"
+   :orange "#e35d03"
+   :rose "#df2ddf"})
