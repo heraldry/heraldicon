@@ -456,15 +456,15 @@
 (def theme-community-sodacan
   {;; metals
    :argent "#ececec"
-   :or "#fee46e"
+   :or "#e7cd54"
    ;; colours
    :azure "#1353b4"
-   :vert "#21ad5e"
+   :vert "#5e9436"
    :gules "#ce0f25"
    :sable "#2d2d2d"
    :purpure "#a44476"
    ;; stains
-   :murrey "#a52969"
+   :murrey "#9a234eff"
    :sanguine "#791717"
    :tenne "#c15f1d"
    ;; other
