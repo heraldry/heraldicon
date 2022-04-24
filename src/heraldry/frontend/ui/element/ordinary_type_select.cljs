@@ -32,8 +32,8 @@
           (assoc-in (conj path :type) new-type)
           (cond->
             has-default-line-style? (->
-                                     (assoc-in (conj path :line :type) new-default-line-style)
-                                     (assoc-in (conj path :line :flipped?) new-flipped)))
+                                      (assoc-in (conj path :line :type) new-default-line-style)
+                                      (assoc-in (conj path :line :flipped?) new-flipped)))
           ;; TODO: the switch to context here is problematic
           (update-in path #(util/deep-merge-with (fn [_current-value new-value]
                                                    new-value)

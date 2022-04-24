@@ -267,13 +267,13 @@
                                           (#{:per-bend
                                              :per-bend-sinister}
                                            partition-type) (->
-                                                            (assoc-in [:anchor :offset-y] 30)
-                                                            (assoc-in [:orientation :offset-y] 30))
+                                                             (assoc-in [:anchor :offset-y] 30)
+                                                             (assoc-in [:orientation :offset-y] 30))
                                           (= :per-chevron
                                              partition-type) (->
-                                                              (assoc-in [:anchor :offset-y] 15)
-                                                              (assoc-in [:orientation :point] :angle)
-                                                              (assoc-in [:orientation :angle] 45)))
+                                                               (assoc-in [:anchor :offset-y] 15)
+                                                               (assoc-in [:orientation :point] :angle)
+                                                               (assoc-in [:orientation :angle] 45)))
       (get partition-options :DEHANCED) (cond->
                                           (#{:per-fess
                                              :per-saltire
@@ -285,13 +285,13 @@
                                           (#{:per-bend
                                              :per-bend-sinister}
                                            partition-type) (->
-                                                            (assoc-in [:anchor :offset-y] -30)
-                                                            (assoc-in [:orientation :offset-y] -30))
+                                                             (assoc-in [:anchor :offset-y] -30)
+                                                             (assoc-in [:orientation :offset-y] -30))
                                           (= :per-chevron
                                              partition-type) (->
-                                                              (assoc-in [:anchor :offset-y] -15)
-                                                              (assoc-in [:orientation :point] :angle)
-                                                              (assoc-in [:orientation :angle] 45)))
+                                                               (assoc-in [:anchor :offset-y] -15)
+                                                               (assoc-in [:orientation :point] :angle)
+                                                               (assoc-in [:orientation :angle] 45)))
       (get partition-options :REVERSED) (cond->
                                           (= :per-chevron
                                              partition-type) (assoc-in [:origin :point] :chief)
@@ -673,17 +673,17 @@
                                          (#{:bend
                                             :bend-sinister}
                                           ordinary-type) (->
-                                                          (assoc-in [:anchor :offset-y] 30)
-                                                          (assoc-in [:orientation :offset-y] 30))
+                                                           (assoc-in [:anchor :offset-y] 30)
+                                                           (assoc-in [:orientation :offset-y] 30))
                                          (= :chief
                                             ordinary-type) (assoc-in [:geometry :size] (- 25 10))
                                          (= :base
                                             ordinary-type) (assoc-in [:geometry :size] (+ 25 10))
                                          (= :chevron
                                             ordinary-type) (->
-                                                            (assoc-in [:anchor :offset-y] 15)
-                                                            (assoc-in [:orientation :point] :angle)
-                                                            (assoc-in [:orientation :angle] 45))
+                                                             (assoc-in [:anchor :offset-y] 15)
+                                                             (assoc-in [:orientation :point] :angle)
+                                                             (assoc-in [:orientation :angle] 45))
                                          (= :point
                                             ordinary-type) (assoc-in [:geometry :height] (- 50 25)))
       (get ordinary-options :DEHANCED) (cond->
@@ -698,17 +698,17 @@
                                          (#{:bend
                                             :bend-sinister}
                                           ordinary-type) (->
-                                                          (assoc-in [:anchor :offset-y] -30)
-                                                          (assoc-in [:orientation :offset-y] -30))
+                                                           (assoc-in [:anchor :offset-y] -30)
+                                                           (assoc-in [:orientation :offset-y] -30))
                                          (= :chief
                                             ordinary-type) (assoc-in [:geometry :size] (+ 25 10))
                                          (= :base
                                             ordinary-type) (assoc-in [:geometry :size] (- 25 10))
                                          (= :chevron
                                             ordinary-type) (->
-                                                            (assoc-in [:anchor :offset-y] -15)
-                                                            (assoc-in [:orientation :point] :angle)
-                                                            (assoc-in [:orientation :angle] 45))
+                                                             (assoc-in [:anchor :offset-y] -15)
+                                                             (assoc-in [:orientation :point] :angle)
+                                                             (assoc-in [:orientation :angle] 45))
                                          (= :point
                                             ordinary-type) (assoc-in [:geometry :height] (+ 50 25)))
       (get ordinary-options :TRUNCATED) (cond->

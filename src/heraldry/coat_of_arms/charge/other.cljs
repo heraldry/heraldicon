@@ -109,9 +109,10 @@
                            (let [new-v (cond-> v
                                          (some-> (get v attribute)
                                                  colour/normalize
-                                                 layer-separator-colours) (-> (assoc opacity-attribute opacity)
-                                                                              (cond->
-                                                                                (:opacity v) (assoc :opacity opacity))))]
+                                                 layer-separator-colours) (->
+                                                                            (assoc opacity-attribute opacity)
+                                                                            (cond->
+                                                                              (:opacity v) (assoc :opacity opacity))))]
                              (if (seq rest)
                                (recur new-v rest)
                                new-v)))
@@ -475,76 +476,72 @@
              [:mask {:id shadow-mask-id}
               [:defs
                [:mask {:id shadow-helper-mask-id}
-                (->
-                 adjusted-charge-without-shading
-                 (replace-colours
-                  (fn [colour]
-                    (if (s/starts-with? colour "url")
-                      "none"
-                      (let [colour-lower (colour/normalize colour)
-                            kind (placeholder-colour-modifier placeholder-colours colour-lower)]
-                        (case kind
-                          :outline "#000000"
-                          :shadow "none"
-                          :highlight "none"
-                          :layer-separator layer-separator-colour-for-shadow-highlight
-                          "#ffffff")))))
-                 svg/make-unique-ids)]]
+                (-> adjusted-charge-without-shading
+                    (replace-colours
+                     (fn [colour]
+                       (if (s/starts-with? colour "url")
+                         "none"
+                         (let [colour-lower (colour/normalize colour)
+                               kind (placeholder-colour-modifier placeholder-colours colour-lower)]
+                           (case kind
+                             :outline "#000000"
+                             :shadow "none"
+                             :highlight "none"
+                             :layer-separator layer-separator-colour-for-shadow-highlight
+                             "#ffffff")))))
+                    svg/make-unique-ids)]]
               [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
-               (->
-                adjusted-charge
-                (replace-colours
-                 (fn [colour]
-                   (if (s/starts-with? colour "url")
-                     colour
-                     (let [colour-lower (colour/normalize colour)
-                           kind (placeholder-colour-modifier placeholder-colours colour-lower)
-                           qualifier (placeholder-colour-qualifier placeholder-colours colour-lower)
-                           specific (attributes/shadow-qualifiers qualifier)]
-                       (cond
-                         specific specific
-                         (= kind :shadow) "#ffffff"
-                         (= kind :highlight) "none"
-                         (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
-                         :else "#000000")))))
-                svg/make-unique-ids)]])
+               (-> adjusted-charge
+                   (replace-colours
+                    (fn [colour]
+                      (if (s/starts-with? colour "url")
+                        colour
+                        (let [colour-lower (colour/normalize colour)
+                              kind (placeholder-colour-modifier placeholder-colours colour-lower)
+                              qualifier (placeholder-colour-qualifier placeholder-colours colour-lower)
+                              specific (attributes/shadow-qualifiers qualifier)]
+                          (cond
+                            specific specific
+                            (= kind :shadow) "#ffffff"
+                            (= kind :highlight) "none"
+                            (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
+                            :else "#000000")))))
+                   svg/make-unique-ids)]])
            (when render-highlight?
              [:mask {:id highlight-mask-id}
               [:defs
                [:mask {:id highlight-helper-mask-id}
-                (->
-                 adjusted-charge-without-shading
-                 (replace-colours
-                  (fn [colour]
-                    (if (s/starts-with? colour "url")
-                      "none"
-                      (let [colour-lower (colour/normalize colour)
-                            kind (placeholder-colour-modifier placeholder-colours colour-lower)]
-                        (case kind
-                          :outline "#000000"
-                          :shadow "none"
-                          :highlight "none"
-                          :layer-separator layer-separator-colour-for-shadow-highlight
-                          "#ffffff")))))
-                 svg/make-unique-ids)]]
+                (-> adjusted-charge-without-shading
+                    (replace-colours
+                     (fn [colour]
+                       (if (s/starts-with? colour "url")
+                         "none"
+                         (let [colour-lower (colour/normalize colour)
+                               kind (placeholder-colour-modifier placeholder-colours colour-lower)]
+                           (case kind
+                             :outline "#000000"
+                             :shadow "none"
+                             :highlight "none"
+                             :layer-separator layer-separator-colour-for-shadow-highlight
+                             "#ffffff")))))
+                    svg/make-unique-ids)]]
               [:g {:mask (str "url(#" highlight-helper-mask-id ")")}
-               (->
-                adjusted-charge
-                (replace-colours
-                 (fn [colour]
-                   (if (s/starts-with? colour "url")
-                     colour
-                     (let [colour-lower (colour/normalize colour)
-                           kind (placeholder-colour-modifier placeholder-colours colour-lower)
-                           qualifier (placeholder-colour-qualifier placeholder-colours colour-lower)
-                           specific (attributes/highlight-qualifiers qualifier)]
-                       (cond
-                         specific specific
-                         (= kind :highlight) "#ffffff"
-                         (= kind :shadow) "none"
-                         (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
-                         :else "#000000")))))
-                svg/make-unique-ids)]])
+               (-> adjusted-charge
+                   (replace-colours
+                    (fn [colour]
+                      (if (s/starts-with? colour "url")
+                        colour
+                        (let [colour-lower (colour/normalize colour)
+                              kind (placeholder-colour-modifier placeholder-colours colour-lower)
+                              qualifier (placeholder-colour-qualifier placeholder-colours colour-lower)
+                              specific (attributes/highlight-qualifiers qualifier)]
+                          (cond
+                            specific specific
+                            (= kind :highlight) "#ffffff"
+                            (= kind :shadow) "none"
+                            (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
+                            :else "#000000")))))
+                   svg/make-unique-ids)]])
            (when-not landscape?
              [:<>
               [:mask {:id mask-id}

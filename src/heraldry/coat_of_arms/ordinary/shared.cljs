@@ -15,10 +15,10 @@
                :humetty (humetty/options (c/++ context :humetty)))
         (cond->
           humetty? (->
-                    (update :line dissoc :fimbriation)
-                    (update :opposite-line dissoc :fimbriation)
-                    (update :extra-line dissoc :fimbriation)
-                    (dissoc :fimbriation))))))
+                     (update :line dissoc :fimbriation)
+                     (update :opposite-line dissoc :fimbriation)
+                     (update :extra-line dissoc :fimbriation)
+                     (dissoc :fimbriation))))))
 
 (defn adjust-shape [shape base-width base-thickness context]
   (let [voided? (interface/get-sanitized-data (c/++ context :voided :voided?))
