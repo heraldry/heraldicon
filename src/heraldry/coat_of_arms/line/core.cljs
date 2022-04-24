@@ -65,7 +65,7 @@
                        (pos? real-spacing) (cond->
                                              (not effective-mirrored?) (conj "h" real-spacing)
                                              effective-mirrored? (->>
-                                                                  (concat ["h" real-spacing]))))
+                                                                   (concat ["h" real-spacing]))))
         line-pattern (if effective-mirrored?
                        [(-> line-pattern
                             (->> (into ["M" 0 0]))
@@ -724,9 +724,9 @@
   (let [pattern-data (get kinds-pattern-map type)
         guiding-path (cond-> path
                        (not (path/clockwise? path)) (->
-                                                     path/parse-path
-                                                     path/reverse
-                                                     path/to-svg))
+                                                      path/parse-path
+                                                      path/reverse
+                                                      path/to-svg))
         full-length (-> guiding-path
                         path/parse-path
                         path/length)

@@ -42,9 +42,9 @@
               (fn [tincture-mapping]
                 (-> tincture-mapping
                     (->>
-                     (map (fn [[k v]]
-                            [k (get tincture-replacer v v)]))
-                     (into {}))
+                      (map (fn [[k v]]
+                             [k (get tincture-replacer v v)]))
+                      (into {}))
                     (as-> new-mapping
                           (cond-> new-mapping
                             (not (contains? new-mapping t1)) (assoc t1 t2)
@@ -89,9 +89,9 @@
         field-context (cond-> context
                         (= field-type
                            :heraldry.field.type/ref) (->
-                                                      c/--
-                                                      (c/++ (interface/get-raw-data
-                                                             (c/++ context :index)))))
+                                                       c/--
+                                                       (c/++ (interface/get-raw-data
+                                                              (c/++ context :index)))))
         inherit-environment? (interface/get-sanitized-data
                               (c/++ field-context :inherit-environment?))
         counterchanged? (= (interface/get-raw-data (c/++ field-context :type))

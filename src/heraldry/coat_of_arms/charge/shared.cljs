@@ -236,9 +236,9 @@
                                                (path/scale scale-x scale-y)
                                                (cond->
                                                  squiggly? (->
-                                                            path/to-svg
-                                                            squiggly/squiggly-path
-                                                            path/parse-path)
+                                                             path/to-svg
+                                                             squiggly/squiggly-path
+                                                             path/parse-path)
                                                  (not= angle 0) (.rotate angle))
                                                (path/translate (:x anchor-point) (:y anchor-point))
                                                path/to-svg))

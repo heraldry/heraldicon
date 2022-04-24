@@ -43,8 +43,8 @@
         first-leg (when-not (= last-index index 0)
                     (cond-> (get full-curve last-index)
                       end-t (->
-                             (bezier/split end-t)
-                             :bezier2)))]
+                              (bezier/split end-t)
+                              :bezier2)))]
     (if (empty? ts)
       [[(-> (concat (when first-leg [first-leg])
                     (subvec full-curve (inc last-index) (inc index)))
