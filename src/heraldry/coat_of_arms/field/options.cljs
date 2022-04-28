@@ -9,6 +9,7 @@
    [heraldry.coat-of-arms.field.type.counterchanged :as counterchanged]
    [heraldry.coat-of-arms.field.type.fretty :as fretty]
    [heraldry.coat-of-arms.field.type.gyronny :as gyronny]
+   [heraldry.coat-of-arms.field.type.gyronny-n :as gyronny-n]
    [heraldry.coat-of-arms.field.type.lozengy :as lozengy]
    [heraldry.coat-of-arms.field.type.masony :as masony]
    [heraldry.coat-of-arms.field.type.paly :as paly]
@@ -46,6 +47,7 @@
    quartered/field-type
    quarterly/field-type
    gyronny/field-type
+   gyronny-n/field-type
    tierced-per-pale/field-type
    tierced-per-fess/field-type
    tierced-per-pall/field-type
