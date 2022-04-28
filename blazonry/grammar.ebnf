@@ -694,6 +694,7 @@ partition
       partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)?
 
     | partition/GYRONNY
+      (OF? horizontal-layout)?
       (enhanced-dehanced* line?
        | line? enhanced-dehanced*)
       partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)?
