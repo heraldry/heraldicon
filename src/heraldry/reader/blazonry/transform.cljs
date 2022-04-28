@@ -529,6 +529,11 @@
                                     :horizontal-layout
                                     :vertical-layout} nodes)
                        ast->hdn)
+        field-type (if (and (= field-type :heraldry.field.type/gyronny)
+                            layout
+                            (-> layout :num-fields-x (not= 8)))
+                     :heraldry.field.type/gyronny-n
+                     field-type)
         ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
         default-fields (walk/postwalk
                         (fn [data]
