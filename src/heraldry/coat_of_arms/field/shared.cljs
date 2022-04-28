@@ -122,7 +122,7 @@
 (defn -make-subfields [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
   [:<>
    (doall
-    (for [[idx [part-context [shape bounding-box-points] overlap-paths]]
+    (for [[idx [part-context [shape bounding-box-points meta] overlap-paths]]
           (->> (map vector paths parts mask-overlaps)
                (map-indexed vector))]
       (let [clip-path-id (util/id (str "clip-" idx))
@@ -132,9 +132,10 @@
                                                (map path/make-path)
                                                %))
                    {:paths [(path/make-path shape)]})
-                 {:parent context
-                  :parent-environment parent-environment
-                  :bounding-box (bounding-box/bounding-box bounding-box-points)})
+                 (merge meta
+                        {:parent context
+                         :parent-environment parent-environment
+                         :bounding-box (bounding-box/bounding-box bounding-box-points)}))
             environment-shape-paths (-> env :shape :paths)]
         ^{:key idx}
         [:<>

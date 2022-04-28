@@ -34,7 +34,19 @@
                   (-> default/field
                       (assoc :tincture :or))
                   (-> default/field
-                      (assoc :tincture :vert))]]
+                      (assoc :tincture :vert))
+                  (-> default/field
+                      (assoc :tincture :purpure))
+                  (-> default/field
+                      (assoc :tincture :tenne))
+                  (-> default/field
+                      (assoc :tincture :sanguine))
+                  (-> default/field
+                      (assoc :tincture :rose))
+                  (-> default/field
+                      (assoc :tincture :murrey))
+                  (-> default/field
+                      (assoc :tincture :bleu-celeste))]]
     (cond
       (#{:plain :counterchanged} type) []
       (= :per-saltire type) (-> (subvec defaults 0 2)
@@ -69,6 +81,11 @@
                                     :index 1}
                                    {:type :heraldry.field.type/ref
                                     :index 0}]))
+      (= :gyronny-n type) (into (subvec defaults 0 num-base-fields)
+                                (->> (for [i (range num-fields-x)]
+                                       {:type :heraldry.field.type/ref
+                                        :index (mod i num-base-fields)})
+                                     (drop num-base-fields)))
       (= :paly type) (if (= num-fields-y 1)
                        (subvec defaults 0 1)
                        (-> (subvec defaults 0 2)
