@@ -177,7 +177,9 @@
                 num-fields (interface/get-list-size (c/++ context :fields))]
             (util/combine
              " "
-             [(util/translate field-type)
+             [(util/translate (if (= field-type :heraldry.field.type/gyronny-n)
+                                :heraldry.field.type/gyronny
+                                field-type))
               (util/translate-line line)
               (util/combine " and "
                             (->> (range num-fields)
