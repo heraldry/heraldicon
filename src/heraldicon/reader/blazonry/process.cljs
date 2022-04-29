@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.coat-of-arms.charge.options :as charge.options]))
+   [heraldicon.heraldry.charge.options :as charge.options]))
 
 (defn add-charge-group-defaults [{:heraldicon.reader.blazonry.transform/keys [default-charge-group-amount]
                                   :keys [type]

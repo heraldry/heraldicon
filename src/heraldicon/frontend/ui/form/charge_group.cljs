@@ -1,9 +1,9 @@
 (ns heraldicon.frontend.ui.form.charge-group
   (:require
-   [heraldicon.coat-of-arms.charge-group.core :as charge-group]
-   [heraldicon.coat-of-arms.charge.options :as charge.options]
-   [heraldicon.coat-of-arms.default :as default]
-   [heraldicon.coat-of-arms.tincture.core :as tincture]
+   [heraldicon.heraldry.charge-group.core :as charge-group]
+   [heraldicon.heraldry.charge.options :as charge.options]
+   [heraldicon.heraldry.default :as default]
+   [heraldicon.heraldry.tincture.core :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]

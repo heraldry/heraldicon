@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.validation
   (:require
    [clojure.string :as s]
-   [heraldicon.coat-of-arms.tincture.core :as tincture]
-   [heraldicon.component :as component]
+   [heraldicon.heraldry.component :as component]
+   [heraldicon.heraldry.tincture.core :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]

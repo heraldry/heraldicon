@@ -2,20 +2,20 @@
   (:require
    ["paper" :refer [paper Size]]
    [heraldicon.attribution :as attribution]
-   [heraldicon.coat-of-arms.attributes :as attributes]
-   [heraldicon.coat-of-arms.charge-group.core] ;; needed for side effects
-   [heraldicon.coat-of-arms.charge-group.options] ;; needed for side effects
-   [heraldicon.coat-of-arms.charge.core] ;; needed for side effects
-   [heraldicon.coat-of-arms.charge.options] ;; needed for side effects
-   [heraldicon.coat-of-arms.charge.other] ;; needed for side effects
-   [heraldicon.coat-of-arms.core] ;; needed for side effects
-   [heraldicon.coat-of-arms.field.core] ;; needed for side effects
-   [heraldicon.coat-of-arms.field.shared] ;; needed for side effects
-   [heraldicon.coat-of-arms.ordinary.core] ;; needed for side effects
-   [heraldicon.coat-of-arms.ordinary.options] ;; needed for side effects
-   [heraldicon.coat-of-arms.semy.core] ;; needed for side effects
-   [heraldicon.coat-of-arms.semy.options] ;; needed for side effects
-   [heraldicon.coat-of-arms.tincture.core :as tincture]
+   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.charge-group.core] ;; needed for side effects
+   [heraldicon.heraldry.charge-group.options] ;; needed for side effects
+   [heraldicon.heraldry.charge.core] ;; needed for side effects
+   [heraldicon.heraldry.charge.options] ;; needed for side effects
+   [heraldicon.heraldry.charge.other] ;; needed for side effects
+   [heraldicon.heraldry.coat-of-arms] ;; needed for side effects
+   [heraldicon.heraldry.field.core] ;; needed for side effects
+   [heraldicon.heraldry.field.shared] ;; needed for side effects
+   [heraldicon.heraldry.ordinary.core] ;; needed for side effects
+   [heraldicon.heraldry.ordinary.options] ;; needed for side effects
+   [heraldicon.heraldry.semy.core] ;; needed for side effects
+   [heraldicon.heraldry.semy.options] ;; needed for side effects
+   [heraldicon.heraldry.tincture.core :as tincture]
    [heraldicon.collection.element] ;; needed for side effects
    [heraldicon.collection.options] ;; needed for side effects
    [heraldicon.context :as c]

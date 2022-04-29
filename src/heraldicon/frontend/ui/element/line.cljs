@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.element.line
   (:require
-   [heraldicon.coat-of-arms.line.core :as line]
+   [heraldicon.heraldry.line.core :as line]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]

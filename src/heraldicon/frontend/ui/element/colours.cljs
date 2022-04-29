@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.element.colours
   (:require
-   [heraldicon.coat-of-arms.attributes :as attributes]
+   [heraldicon.heraldry.attributes :as attributes]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]

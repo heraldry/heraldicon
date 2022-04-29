@@ -3,7 +3,7 @@
    ["copy-to-clipboard" :as copy-to-clipboard]
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.coat-of-arms.default :as default]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.context :as c]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]

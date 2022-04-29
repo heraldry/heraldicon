@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.ui.form.field
   (:require
-   [heraldicon.coat-of-arms.default :as default]
-   [heraldicon.coat-of-arms.field.core :as field]
-   [heraldicon.coat-of-arms.tincture.core :as tincture]
+   [heraldicon.heraldry.default :as default]
+   [heraldicon.heraldry.field.core :as field]
+   [heraldicon.heraldry.tincture.core :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]

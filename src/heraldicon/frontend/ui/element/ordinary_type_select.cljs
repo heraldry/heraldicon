@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.element.ordinary-type-select
   (:require
-   [heraldicon.coat-of-arms.ordinary.options :as ordinary.options]
+   [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]

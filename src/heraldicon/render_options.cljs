@@ -1,8 +1,8 @@
 (ns heraldicon.render-options
   (:require
-   [heraldicon.coat-of-arms.escutcheon :as escutcheon]
-   [heraldicon.coat-of-arms.texture :as texture]
-   [heraldicon.coat-of-arms.tincture.core :as tincture]
+   [heraldicon.heraldry.escutcheon :as escutcheon]
+   [heraldicon.heraldry.texture :as texture]
+   [heraldicon.heraldry.tincture.core :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]))
 

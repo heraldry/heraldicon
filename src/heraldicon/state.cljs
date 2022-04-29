@@ -1,6 +1,6 @@
 (ns heraldicon.state
   (:require
-   [heraldicon.component :as component]
+   [heraldicon.heraldry.component :as component]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [re-frame.core :as rf])

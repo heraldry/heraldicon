@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.form.charge
   (:require
-   [heraldicon.coat-of-arms.charge.options :as charge.options]
+   [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.element.charge-type-select :as charge-type-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
