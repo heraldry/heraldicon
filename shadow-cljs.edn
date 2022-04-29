@@ -27,8 +27,7 @@
 
           :backend
           {:target :node-library
-           :exports {:init heraldicon.backend.shim/init
-                     :handler heraldicon.backend.api.core/handler
+           :exports {:handler heraldicon.backend.api.core/handler
                      :site_handler heraldicon.backend.site/handler
                      :options_handler heraldicon.backend.api.core/options-handler
                      :migration_handler heraldicon.backend.migration.core/migrate-handler
