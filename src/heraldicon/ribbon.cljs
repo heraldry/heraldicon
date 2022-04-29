@@ -5,8 +5,8 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
+   [heraldicon.math.curve.core :as curve]
    [heraldicon.math.core :as math]
-   [heraldicon.math.curve :as curve]
    [heraldicon.math.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.util :as util]))
