@@ -20,7 +20,7 @@
    [heraldicon.frontend.ui.element.blazonry-editor :as blazonry-editor]
    [heraldicon.frontend.user :as user]
    [heraldicon.interface :as interface]
-   [heraldicon.render :as render]
+   [heraldicon.render.core :as render]
    [heraldicon.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]

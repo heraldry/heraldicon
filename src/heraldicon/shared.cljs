@@ -25,7 +25,7 @@
    [heraldicon.font :as font]
    [heraldicon.interface :as interface]
    [heraldicon.metadata :as metadata]
-   [heraldicon.render-options] ;; needed for side effects
+   [heraldicon.render.options] ;; needed for side effects
    [heraldicon.ribbon :as ribbon]
    [heraldicon.state] ;; needed for side effects
    ))

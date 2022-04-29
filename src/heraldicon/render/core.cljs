@@ -1,4 +1,4 @@
-(ns heraldicon.render
+(ns heraldicon.render.core
   (:require
    [clojure.string :as s]
    [heraldicon.heraldry.escutcheon :as escutcheon]

@@ -15,7 +15,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.reader :as reader]
-   [heraldicon.render :as render]
+   [heraldicon.render.core :as render]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
