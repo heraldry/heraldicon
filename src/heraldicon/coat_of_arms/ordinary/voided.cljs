@@ -1,4 +1,4 @@
-(ns heraldicon.coat-of-arms.voided
+(ns heraldicon.coat-of-arms.ordinary.voided
   (:require
    [heraldicon.coat-of-arms.field.environment :as environment]
    [heraldicon.context :as c]

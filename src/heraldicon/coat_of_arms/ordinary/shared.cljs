@@ -1,9 +1,9 @@
 (ns heraldicon.coat-of-arms.ordinary.shared
   (:require
    [clojure.string :as s]
-   [heraldicon.coat-of-arms.humetty :as humetty]
+   [heraldicon.coat-of-arms.ordinary.humetty :as humetty]
+   [heraldicon.coat-of-arms.ordinary.voided :as voided]
    [heraldicon.coat-of-arms.outline :as outline]
-   [heraldicon.coat-of-arms.voided :as voided]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.svg.path :as path]))
