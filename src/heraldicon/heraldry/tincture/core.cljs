@@ -3,66 +3,10 @@
    [clojure.string :as s]
    [heraldicon.heraldry.hatching :as hatching]
    [heraldicon.heraldry.tincture.pattern :as pattern]
-   [heraldicon.heraldry.tincture.theme :as theme]
+   [heraldicon.render.theme :as theme]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.util :as util]))
-
-(def themes
-  [[:string.theme.group/general
-    [:string.theme/wappenwiki :wappenwiki theme/theme-wappenwiki]
-    [:string.theme/web :web theme/theme-web]
-    [:string.theme/ral-traffic :ral-traffic theme/theme-ral-traffic]
-    [:string.theme/all :all theme/theme-all]]
-   ["Wikipedia"
-    [:string.theme/wikipedia-default :wikipedia-default theme/theme-wikipedia-default]
-    [:string.theme/wikipedia-web :wikipedia-web theme/theme-wikipedia-web]
-    [:string.theme/wikipedia-bajuvarian :wikipedia-bajuvarian theme/theme-wikipedia-bajuvarian]
-    [:string.theme/wikipedia-brandenburg :wikipedia-brandenburg theme/theme-wikipedia-brandenburg]
-    [:string.theme/wikipedia-wurttemberg :wikipedia-wurttemberg theme/theme-wikipedia-wuerttemberg]
-    [:string.theme/wikipedia-france :wikipedia-france theme/theme-wikipedia-france]
-    [:string.theme/wikipedia-hungary :wikipedia-hungary theme/theme-wikipedia-hungary]
-    [:string.theme/wikipedia-spain :wikipedia-spain theme/theme-wikipedia-spain]
-    [:string.theme/wikipedia-sweden :wikipedia-sweden theme/theme-wikipedia-sweden]
-    [:string.theme/wikipedia-switzerland :wikipedia-switzerland theme/theme-wikipedia-switzerland]]
-   [:string.theme.group/community
-    ["CMwhyK" :community-cmwhyk theme/theme-community-cmwhyk]
-    ["Cotton Candy" :community-cotton-candy theme/theme-community-cotton-candy]
-    ["Crystal Gems" :community-crystal-gems theme/theme-community-crystal-gems]
-    ["Home World" :community-home-world theme/theme-community-home-world]
-    ["Jewelicious" :community-jewelicious theme/theme-community-jewelicious]
-    ["Main Seven" :community-main-seven theme/theme-community-main-seven]
-    ["Mother Earth" :community-mother-earth theme/theme-community-mother-earth]
-    ["Pastell Puffs" :community-pastell-puffs theme/theme-community-pastell-puffs]
-    ["Pretty Soldier" :community-pretty-soldier theme/theme-community-pretty-soldier]
-    ["Rainbow Groom" :community-rainbow-groom theme/theme-community-rainbow-groom]
-    ["The Monet Maker" :community-the-monet-maker theme/theme-community-the-monet-maker]
-    ["Van Goes Vroem" :community-van-goes-vroem theme/theme-community-van-goes-vroem]
-    ["Content Cranium" :community-content-cranium theme/theme-community-content-cranium]
-    ["Sodacan by Bananasplit1611" :community-sodacan theme/theme-community-sodacan]]])
-
-(def default-theme
-  :wappenwiki)
-
-(def theme-choices
-  (->> themes
-       (map (fn [[group-name & items]]
-              (vec (concat [group-name] (->> items
-                                             (map (fn [[display-name key _]]
-                                                    [display-name key])))))))
-       vec))
-
-(def theme-map
-  (util/choices->map theme-choices))
-
-(def theme-data-map
-  (->> themes
-       (map (fn [[_group-name & items]]
-              (->> items
-                   (map (fn [[_ key colours]]
-                          [key colours])))))
-       (apply concat)
-       (into {})))
 
 (def choices
   [[:string.tincture.group/metal
@@ -123,12 +67,6 @@
 (def fixed-tincture-map
   (util/choices->map fixed-tincture-choices))
 
-(defn lookup-colour [tincture theme]
-  (let [theme-colours (merge
-                       (get theme-data-map default-theme)
-                       (get theme-data-map theme))]
-    (get theme-colours tincture)))
-
 (def ermine
   ["ermine" :argent :sable])
 
@@ -163,7 +101,7 @@
       (= mode :hatching) (or
                           (hatching/get-for tincture)
                           "#eee")
-      :else (or (lookup-colour tincture theme)
+      :else (or (theme/lookup-colour tincture theme)
                 (get special tincture)
                 "url(#void)"))))
 
@@ -175,8 +113,8 @@
    (for [[id background foreground] (vals furs)]
      (pattern/ermine-base
       id
-      (lookup-colour background theme)
-      (lookup-colour foreground theme)))))
+      (theme/lookup-colour background theme)
+      (theme/lookup-colour foreground theme)))))
 
 (defn tinctured-field [{:keys [tincture-mapping
                                svg-export?
@@ -196,7 +134,7 @@
                 theme)
         effective-tincture (get tincture-mapping tincture tincture)
         [colour animation] (if (and (= theme :all)
-                                    (-> theme-data-map
+                                    (-> theme/theme-data-map
                                         (get :wappenwiki)
                                         (get effective-tincture)))
                              [nil (str "all-theme-transition-" (name effective-tincture))]

@@ -1,4 +1,6 @@
-(ns heraldicon.heraldry.tincture.theme)
+(ns heraldicon.render.theme
+  (:require
+   [heraldicon.util :as util]))
 
 (def theme-all
   {:all true})
@@ -475,3 +477,65 @@
    :cendree "#999999"
    :orange "#e35d03"
    :rose "#df2ddf"})
+
+(def themes
+  [[:string.theme.group/general
+    [:string.theme/wappenwiki :wappenwiki theme-wappenwiki]
+    [:string.theme/web :web theme-web]
+    [:string.theme/ral-traffic :ral-traffic theme-ral-traffic]
+    [:string.theme/all :all theme-all]]
+   ["Wikipedia"
+    [:string.theme/wikipedia-default :wikipedia-default theme-wikipedia-default]
+    [:string.theme/wikipedia-web :wikipedia-web theme-wikipedia-web]
+    [:string.theme/wikipedia-bajuvarian :wikipedia-bajuvarian theme-wikipedia-bajuvarian]
+    [:string.theme/wikipedia-brandenburg :wikipedia-brandenburg theme-wikipedia-brandenburg]
+    [:string.theme/wikipedia-wurttemberg :wikipedia-wurttemberg theme-wikipedia-wuerttemberg]
+    [:string.theme/wikipedia-france :wikipedia-france theme-wikipedia-france]
+    [:string.theme/wikipedia-hungary :wikipedia-hungary theme-wikipedia-hungary]
+    [:string.theme/wikipedia-spain :wikipedia-spain theme-wikipedia-spain]
+    [:string.theme/wikipedia-sweden :wikipedia-sweden theme-wikipedia-sweden]
+    [:string.theme/wikipedia-switzerland :wikipedia-switzerland theme-wikipedia-switzerland]]
+   [:string.theme.group/community
+    ["CMwhyK" :community-cmwhyk theme-community-cmwhyk]
+    ["Cotton Candy" :community-cotton-candy theme-community-cotton-candy]
+    ["Crystal Gems" :community-crystal-gems theme-community-crystal-gems]
+    ["Home World" :community-home-world theme-community-home-world]
+    ["Jewelicious" :community-jewelicious theme-community-jewelicious]
+    ["Main Seven" :community-main-seven theme-community-main-seven]
+    ["Mother Earth" :community-mother-earth theme-community-mother-earth]
+    ["Pastell Puffs" :community-pastell-puffs theme-community-pastell-puffs]
+    ["Pretty Soldier" :community-pretty-soldier theme-community-pretty-soldier]
+    ["Rainbow Groom" :community-rainbow-groom theme-community-rainbow-groom]
+    ["The Monet Maker" :community-the-monet-maker theme-community-the-monet-maker]
+    ["Van Goes Vroem" :community-van-goes-vroem theme-community-van-goes-vroem]
+    ["Content Cranium" :community-content-cranium theme-community-content-cranium]
+    ["Sodacan by Bananasplit1611" :community-sodacan theme-community-sodacan]]])
+
+(def default
+  :wappenwiki)
+
+(def theme-choices
+  (->> themes
+       (map (fn [[group-name & items]]
+              (vec (concat [group-name] (->> items
+                                             (map (fn [[display-name key _]]
+                                                    [display-name key])))))))
+       vec))
+
+(def theme-map
+  (util/choices->map theme-choices))
+
+(def theme-data-map
+  (->> themes
+       (map (fn [[_group-name & items]]
+              (->> items
+                   (map (fn [[_ key colours]]
+                          [key colours])))))
+       (apply concat)
+       (into {})))
+
+(defn lookup-colour [tincture theme]
+  (let [theme-colours (merge
+                       (get theme-data-map default)
+                       (get theme-data-map theme))]
+    (get theme-colours tincture)))
