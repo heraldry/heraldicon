@@ -1,7 +1,7 @@
 (ns heraldicon.math.svg.squiggly
   (:require
    [clojure.walk :as walk]
-   [heraldicon.math.catmullrom :as catmullrom]
+   [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.random :as random]))
