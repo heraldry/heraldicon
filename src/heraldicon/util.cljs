@@ -319,8 +319,8 @@
        result))))
 
 (defn avatar-url [username]
-  (str (or (config/get :heraldry-site-url)
-           (config/get :heraldry-url))
+  (str (or (config/get :heraldicon-site-url)
+           (config/get :heraldicon-url))
        "/avatar/" username))
 
 (defn integer-string? [s]

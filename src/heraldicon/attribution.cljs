@@ -147,7 +147,7 @@
           version (if (zero? version)
                     (interface/get-raw-data (c/++ context :latest-version))
                     version)]
-      (str (config/get :heraldry-url) base (util/id-for-url object-id) "/" version))))
+      (str (config/get :heraldicon-url) base (util/id-for-url object-id) "/" version))))
 
 (defn full-url-for-arms [context]
   (full-url context "/arms/"))
@@ -162,4 +162,4 @@
   (full-url context "/ribbons/"))
 
 (defn full-url-for-username [username]
-  (str (config/get :heraldry-url) "/users/" username))
+  (str (config/get :heraldicon-url) "/users/" username))

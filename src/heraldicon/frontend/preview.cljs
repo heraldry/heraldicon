@@ -11,8 +11,8 @@
       version)))
 
 (defn preview-url [kind {:keys [id] :as arms} & {:keys [width height]}]
-  (let [url (or (config/get :heraldry-site-url)
-                (config/get :heraldry-url))]
+  (let [url (or (config/get :heraldicon-site-url)
+                (config/get :heraldicon-url))]
     (str url "/preview/" (name kind) "/" (-> id (s/split #":") last) "/" (effective-version arms) "/preview.png"
          (when (and width height)
            (str "?width=" width "&height=" height)))))
