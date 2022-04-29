@@ -1,4 +1,4 @@
-(ns heraldicon.heraldry.texture
+(ns heraldicon.render.texture
   (:require
    [heraldicon.config :as config]
    [heraldicon.util :as util]))

@@ -1,7 +1,7 @@
 (ns heraldicon.render.options
   (:require
    [heraldicon.heraldry.escutcheon :as escutcheon]
-   [heraldicon.heraldry.texture :as texture]
+   [heraldicon.render.texture :as texture]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.render.theme :as theme]
    [heraldicon.context :as c]
