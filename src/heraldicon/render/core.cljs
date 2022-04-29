@@ -1,6 +1,9 @@
 (ns heraldicon.render.core
   (:require
    [clojure.string :as s]
+   [heraldicon.colour :as colour]
+   [heraldicon.context :as c]
+   [heraldicon.font :as font]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.shared :as field.shared]
@@ -8,13 +11,11 @@
    [heraldicon.heraldry.outline :as outline]
    [heraldicon.heraldry.texture :as texture]
    [heraldicon.heraldry.tincture.core :as tincture]
-   [heraldicon.colour :as colour]
-   [heraldicon.context :as c]
-   [heraldicon.font :as font]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
    [heraldicon.math.filter :as filter]
    [heraldicon.math.vector :as v]
+   [heraldicon.render.pattern :as pattern]
    [heraldicon.ribbon :as ribbon]
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
@@ -101,7 +102,7 @@
                                  :k4 0}]])
                (when-not svg-export?
                  filter/shadow)
-               [tincture/patterns theme]
+               [pattern/defs theme]
                (when (= mode :hatching)
                  hatching/patterns)]
               [:defs

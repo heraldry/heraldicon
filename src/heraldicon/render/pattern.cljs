@@ -1,4 +1,7 @@
-(ns heraldicon.heraldry.tincture.pattern)
+(ns heraldicon.render.pattern
+  (:require
+   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.render.theme :as theme]))
 
 (def ermine-shape
   [100 160
@@ -99,3 +102,14 @@
       [:circle {:cx spacing
                 :cy spacing
                 :r size}]]]))
+
+(defn defs [theme]
+  (into
+   [:<>
+    void
+    selected]
+   (for [[id background foreground] (vals tincture/furs)]
+     (ermine-base
+      id
+      (theme/lookup-colour background theme)
+      (theme/lookup-colour foreground theme)))))
