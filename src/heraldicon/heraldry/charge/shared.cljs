@@ -4,7 +4,7 @@
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.orientation :as orientation]
-   [heraldicon.heraldry.outline :as outline]
+   [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
