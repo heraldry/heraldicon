@@ -1,4 +1,4 @@
-(ns heraldicon.coat-of-arms.angle
+(ns heraldicon.coat-of-arms.orientation
   (:require
    [clojure.set :as set]
    [heraldicon.coat-of-arms.position :as position]

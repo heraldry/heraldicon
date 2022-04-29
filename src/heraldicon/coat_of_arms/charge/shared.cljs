@@ -1,7 +1,7 @@
 (ns heraldicon.coat-of-arms.charge.shared
   (:require
    [clojure.string :as s]
-   [heraldicon.coat-of-arms.angle :as angle]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.field.shared :as field.shared]
    [heraldicon.coat-of-arms.geometry :as geometry]
    [heraldicon.coat-of-arms.line.fimbriation :as fimbriation]
@@ -165,7 +165,7 @@
                     :offset-y 0}
                    anchor)
           {anchor-point :real-anchor
-           orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
+           orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
                                                  environment-for-anchor
                                                  anchor
                                                  orientation

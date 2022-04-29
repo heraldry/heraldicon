@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.coat-of-arms.angle :as angle]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.attributes :as attributes]
    [heraldicon.coat-of-arms.charge.interface :as charge.interface]
    [heraldicon.coat-of-arms.charge.shared :as charge.shared]
@@ -265,7 +265,7 @@
                       :offset-y 0}
                      anchor)
             {anchor-point :real-anchor
-             orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
+             orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
                                                    environment-for-anchor
                                                    anchor
                                                    orientation
