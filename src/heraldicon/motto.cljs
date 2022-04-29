@@ -1,6 +1,5 @@
 (ns heraldicon.motto
   (:require
-   [heraldicon.coat-of-arms.geometry :as geometry]
    [heraldicon.coat-of-arms.tincture.core :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
@@ -48,11 +47,14 @@
                                   :step 0.1}}
                   :ui {:label :string.option/anchor
                        :form-type :position}}
-         :geometry (-> geometry/default-options
-                       (select-keys [:size :ui])
-                       (assoc-in [:size :min] 5)
-                       (assoc-in [:size :max] 300)
-                       (assoc-in [:size :default] 100))
+         :geometry {:size {:type :range
+                           :min 5
+                           :max 300
+                           :default 100
+                           :ui {:label :string.option/size
+                                :step 0.1}}
+                    :ui {:label :string.option/geometry
+                         :form-type :geometry}}
          :ribbon-variant {:ui {:label :string.entity/ribbon
                                :form-type :ribbon-reference-select}}
 

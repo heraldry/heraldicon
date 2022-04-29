@@ -2,7 +2,6 @@
   (:require
    [clojure.string :as s]
    [heraldicon.coat-of-arms.field.shared :as field.shared]
-   [heraldicon.coat-of-arms.geometry :as geometry]
    [heraldicon.coat-of-arms.line.fimbriation :as fimbriation]
    [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.outline :as outline]
@@ -96,7 +95,26 @@
                                                     :default 0
                                                     :ui {:label :string.option/offset-y
                                                          :step 0.1}}))
-     :geometry geometry/default-options
+     :geometry {:size {:type :range
+                       :min 5
+                       :max 250
+                       :default 50
+                       :ui {:label :string.option/size
+                            :step 0.1}}
+                :stretch {:type :range
+                          :min 0.33
+                          :max 3
+                          :default 1
+                          :ui {:label :string.option/stretch
+                               :step 0.01}}
+                :mirrored? {:type :boolean
+                            :default false
+                            :ui {:label :string.option/mirrored?}}
+                :reversed? {:type :boolean
+                            :default false
+                            :ui {:label :string.option/reversed?}}
+                :ui {:label :string.option/geometry
+                     :form-type :geometry}}
      :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
                       (dissoc :alignment)
                       (options/override-if-exists [:corner :default] :round)
