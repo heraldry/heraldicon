@@ -1,11 +1,10 @@
 (ns heraldicon.heraldry.tincture.core
   (:require
    [clojure.string :as s]
-   [heraldicon.heraldry.hatching :as hatching]
-   [heraldicon.heraldry.tincture.pattern :as pattern]
-   [heraldicon.render.theme :as theme]
    [heraldicon.context :as c]
+   [heraldicon.heraldry.hatching :as hatching]
    [heraldicon.interface :as interface]
+   [heraldicon.render.theme :as theme]
    [heraldicon.util :as util]))
 
 (def choices
@@ -104,17 +103,6 @@
       :else (or (theme/lookup-colour tincture theme)
                 (get special tincture)
                 "url(#void)"))))
-
-(defn patterns [theme]
-  (into
-   [:<>
-    pattern/void
-    pattern/selected]
-   (for [[id background foreground] (vals furs)]
-     (pattern/ermine-base
-      id
-      (theme/lookup-colour background theme)
-      (theme/lookup-colour foreground theme)))))
 
 (defn tinctured-field [{:keys [tincture-mapping
                                svg-export?
