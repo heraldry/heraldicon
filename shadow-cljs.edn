@@ -8,7 +8,7 @@
           {:target :browser
            :asset-path "/js/generated"
            :js-options {:js-package-dirs ["./node_modules"]}
-           :devtools {:after-load heraldry.frontend.main/init
+           :devtools {:after-load heraldicon.frontend.main/init
                       :http-root "./assets"
                       :http-port 8081
                       :preloads [devtools.preload
@@ -16,8 +16,8 @@
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}}
 
-           :modules {:main {:init-fn heraldry.frontend.main/init
-                            :preloads [heraldry.frontend.preload]}}
+           :modules {:main {:init-fn heraldicon.frontend.main/init
+                            :preloads [heraldicon.frontend.preload]}}
 
            :dev {:output-dir "./build/dev/generated"
                  :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
@@ -27,15 +27,15 @@
 
           :backend
           {:target :node-library
-           :exports {:init heraldry.backend.shim/init
-                     :handler heraldry.backend.api.core/handler
-                     :site_handler heraldry.backend.site/handler
-                     :options_handler heraldry.backend.api.core/options-handler
-                     :migration_handler heraldry.backend.migration.core/migrate-handler
-                     :rollback_handler heraldry.backend.migration.core/rollback-handler
-                     :collect_statistics_handler heraldry.backend.monitoring.core/collect-statistics-handler
-                     :collect_user_statistics_handler heraldry.backend.monitoring.core/collect-user-statistics-handler
-                     :canary_handler heraldry.backend.canary/handler}
+           :exports {:init heraldicon.backend.shim/init
+                     :handler heraldicon.backend.api.core/handler
+                     :site_handler heraldicon.backend.site/handler
+                     :options_handler heraldicon.backend.api.core/options-handler
+                     :migration_handler heraldicon.backend.migration.core/migrate-handler
+                     :rollback_handler heraldicon.backend.migration.core/rollback-handler
+                     :collect_statistics_handler heraldicon.backend.monitoring.core/collect-statistics-handler
+                     :collect_user_statistics_handler heraldicon.backend.monitoring.core/collect-user-statistics-handler
+                     :canary_handler heraldicon.backend.canary/handler}
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}}
@@ -46,7 +46,7 @@
 
           :manage
           {:target :node-script
-           :main heraldry.manage/main
+           :main heraldicon.manage/main
            :output-to "./backend/build/manage/manage.js"
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}}}
@@ -54,7 +54,7 @@
           :test
           {:target :node-test
            :output-to "./backend/build/test/node-tests.js"
-           :main heraldry.test/main
+           :main heraldicon.test/main
            :compiler-options {:warnings {:redef false}}
            :ns-regexp "[.]test-"
            :autorun true}}}
