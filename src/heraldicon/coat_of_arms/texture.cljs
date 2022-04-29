@@ -49,4 +49,4 @@
 (defn full-path [texture]
   (some->> texture
            (get relative-paths)
-           (str (config/get :heraldry-url))))
+           (str (config/get :heraldicon-url))))

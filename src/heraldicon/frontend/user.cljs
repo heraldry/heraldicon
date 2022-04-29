@@ -55,12 +55,12 @@
         user-id (get-item local-storage local-storage-user-id-name)
         username (get-item local-storage local-storage-username-name)]
     (when (some-> session-id count pos?)
-      (when-let [site-url (config/get :heraldry-site-url)]
+      (when-let [site-url (config/get :heraldicon-site-url)]
         (set! js/document.cookie (str "session-id=" session-id
                                       ";domain=" (extract-domain site-url)
                                       ";path=/")))
       (set! js/document.cookie (str "session-id=" session-id
-                                    ";domain=" (extract-domain (config/get :heraldry-url))
+                                    ";domain=" (extract-domain (config/get :heraldicon-url))
                                     ";path=/")))
     (rf/dispatch-sync [:set user-db-path
                        (if (and session-id username user-id)
@@ -505,13 +505,13 @@
   (remove-item local-storage local-storage-session-id-name)
   (remove-item local-storage local-storage-user-id-name)
   (remove-item local-storage local-storage-username-name)
-  (when-let [site-url (config/get :heraldry-site-url)]
+  (when-let [site-url (config/get :heraldicon-site-url)]
     (set! js/document.cookie (str "session-id="
                                   ";domain=" (extract-domain site-url)
                                   ";path=/"
                                   ";Max-Age=-99999999")))
   (set! js/document.cookie (str "session-id="
-                                ";domain=" (extract-domain (config/get :heraldry-url))
+                                ";domain=" (extract-domain (config/get :heraldicon-url))
                                 ";path=/"
                                 ";Max-Age=-99999999"))
   (state/invalidate-cache-all-but-new)

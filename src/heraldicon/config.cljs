@@ -17,9 +17,9 @@
 
 (def config-data
   (case stage
-    "dev" {:heraldry-api-endpoint "http://localhost:4000/api"
-           :heraldry-url "http://localhost:8081"
-           :heraldry-site-url "http://localhost:4000/dev"
+    "dev" {:heraldicon-api-endpoint "http://localhost:4000/api"
+           :heraldicon-url "http://localhost:8081"
+           :heraldicon-site-url "http://localhost:4000/dev"
            :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                  :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
@@ -32,8 +32,8 @@
            :supporter-charge-id "charge:fxOk19"
            :mantling-charge-id "charge:gTrIM7"}
 
-    "staging" {:heraldry-api-endpoint "https://ru73nh6ozg.execute-api.eu-central-1.amazonaws.com/api"
-               :heraldry-url "https://staging.heraldicon.org"
+    "staging" {:heraldicon-api-endpoint "https://ru73nh6ozg.execute-api.eu-central-1.amazonaws.com/api"
+               :heraldicon-url "https://staging.heraldicon.org"
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                      :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                      :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
@@ -46,8 +46,8 @@
                :supporter-charge-id "charge:fxOk19"
                :mantling-charge-id "charge:gTrIM7"}
 
-    "prod" {:heraldry-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
-            :heraldry-url "https://heraldicon.org"
+    "prod" {:heraldicon-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
+            :heraldicon-url "https://heraldicon.org"
             :cognito-pool-config {:UserPoolId "eu-central-1_WXqnJUEOT"
                                   :ClientId "21pvp6cc4l3gptoj4bl3jc9s7r"
                                   :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}

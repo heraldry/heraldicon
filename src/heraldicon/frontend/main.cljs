@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.main
   (:require
+   [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys] ;; needed for side effects
-   [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.route :as route]
