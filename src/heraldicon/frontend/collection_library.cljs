@@ -18,7 +18,7 @@
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user :as user]
    [heraldicon.interface :as interface]
-   [heraldicon.render :as render]
+   [heraldicon.render.core :as render]
    [heraldicon.util :as util :refer [id-for-url]]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]

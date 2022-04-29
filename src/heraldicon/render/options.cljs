@@ -1,4 +1,4 @@
-(ns heraldicon.render-options
+(ns heraldicon.render.options
   (:require
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.texture :as texture]

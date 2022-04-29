@@ -20,7 +20,7 @@
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.filter :as filter]
    [heraldicon.math.vector :as v]
-   [heraldicon.render :as render]
+   [heraldicon.render.core :as render]
    [heraldicon.ribbon :as ribbon]
    [heraldicon.svg.path :as path]
    [heraldicon.util :as util :refer [id-for-url]]
