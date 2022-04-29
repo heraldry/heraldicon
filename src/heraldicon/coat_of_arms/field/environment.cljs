@@ -8,9 +8,7 @@
    [heraldicon.svg.path :as path]))
 
 (defn create [shape {:keys [bounding-box context
-                            width height
-                            offset] :as meta
-                     :or {offset {:x 0 :y 0}}}]
+                            width height] :as meta}]
   (let [shape (if (map? shape)
                 shape
                 {:paths [shape]})

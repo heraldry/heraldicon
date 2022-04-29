@@ -125,8 +125,7 @@
            size-default
            self-below-shield?
            render-pass-below-shield?
-           auto-resize?
-           svg-export?]
+           auto-resize?]
     :or {auto-resize? true}
     :as context} arg function]
   ;; only render, if we are in the right render pass
