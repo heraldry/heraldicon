@@ -3,12 +3,12 @@
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.curve.core :as curve]
-   [heraldicon.math.core :as math]
-   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
+   [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 
 (defn options [_context]

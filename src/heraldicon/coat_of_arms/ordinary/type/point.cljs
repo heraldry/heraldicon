@@ -8,9 +8,9 @@
    [heraldicon.coat-of-arms.ordinary.shared :as ordinary.shared]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/point)

@@ -1,16 +1,16 @@
 (ns heraldicon.coat-of-arms.ordinary.type.gore
   (:require
-   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.field.shared :as field.shared]
    [heraldicon.coat-of-arms.infinity :as infinity]
    [heraldicon.coat-of-arms.line.core :as line]
    [heraldicon.coat-of-arms.ordinary.interface :as ordinary.interface]
    [heraldicon.coat-of-arms.ordinary.shared :as ordinary.shared]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
-   [heraldicon.options :as options]))
+   [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]))
 
 (defn arm-diagonal [anchor-point orientation-point]
   (-> (v/sub orientation-point anchor-point)

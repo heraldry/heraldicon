@@ -1,18 +1,18 @@
 (ns heraldicon.coat-of-arms.field.type.per-chevron
   (:require
-   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.field.interface :as field.interface]
    [heraldicon.coat-of-arms.field.shared :as shared]
    [heraldicon.coat-of-arms.infinity :as infinity]
    [heraldicon.coat-of-arms.line.core :as line]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.position :as position]
    [heraldicon.coat-of-arms.shared.chevron :as chevron]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.angle :as angle]
-   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
-   [heraldicon.options :as options]))
+   [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]))
 
 (def field-type :heraldry.field.type/per-chevron)
 

@@ -14,11 +14,11 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
    [heraldicon.math.filter :as filter]
-   [heraldicon.svg.path :as path]
-   [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.math.vector :as v]
    [heraldicon.ribbon :as ribbon]
    [heraldicon.svg.metadata :as svg.metadata]
+   [heraldicon.svg.path :as path]
+   [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.util :as util]))
 
 (defn coat-of-arms [{:keys

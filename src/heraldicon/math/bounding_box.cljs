@@ -1,7 +1,7 @@
 (ns heraldicon.math.bounding-box
   (:require
-   [heraldicon.svg.path :as path]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.math.vector :as v]
+   [heraldicon.svg.path :as path]))
 
 (defn min-max-x-y [[{x :x y :y} & rest]]
   (reduce (fn [[min-x max-x min-y max-y] {x :x y :y}]

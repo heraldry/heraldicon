@@ -1,19 +1,19 @@
 (ns heraldicon.coat-of-arms.charge.shared
   (:require
    [clojure.string :as s]
-   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.field.shared :as field.shared]
    [heraldicon.coat-of-arms.geometry :as geometry]
    [heraldicon.coat-of-arms.line.fimbriation :as fimbriation]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.outline :as outline]
    [heraldicon.coat-of-arms.tincture.core :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
-   [heraldicon.svg.path :as path]
-   [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]
+   [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.util :as util]))
 
 (defn options [context]
