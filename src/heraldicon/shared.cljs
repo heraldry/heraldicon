@@ -11,8 +11,11 @@
    [heraldicon.heraldry.coat-of-arms] ;; needed for side effects
    [heraldicon.heraldry.field.core] ;; needed for side effects
    [heraldicon.heraldry.field.shared] ;; needed for side effects
+   [heraldicon.heraldry.helm] ;; needed for side effects
+   [heraldicon.heraldry.motto] ;; needed for side effects
    [heraldicon.heraldry.ordinary.core] ;; needed for side effects
    [heraldicon.heraldry.ordinary.options] ;; needed for side effects
+   [heraldicon.heraldry.ornaments] ;; needed for side effects
    [heraldicon.heraldry.semy.core] ;; needed for side effects
    [heraldicon.heraldry.semy.options] ;; needed for side effects
    [heraldicon.heraldry.tincture.core :as tincture]
@@ -20,11 +23,8 @@
    [heraldicon.collection.options] ;; needed for side effects
    [heraldicon.context :as c]
    [heraldicon.font :as font]
-   [heraldicon.helm] ;; needed for side effects
    [heraldicon.interface :as interface]
    [heraldicon.metadata :as metadata]
-   [heraldicon.motto] ;; needed for side effects
-   [heraldicon.ornaments] ;; needed for side effects
    [heraldicon.render-options] ;; needed for side effects
    [heraldicon.ribbon :as ribbon]
    [heraldicon.state] ;; needed for side effects

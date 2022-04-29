@@ -1,4 +1,4 @@
-(ns heraldicon.ornaments
+(ns heraldicon.heraldry.ornaments
   (:require
    [heraldicon.interface :as interface]))
 
