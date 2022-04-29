@@ -9,7 +9,7 @@
    [heraldicon.coat-of-arms.shared.chevron :as chevron]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.math.core :as math]
+   [heraldicon.math.angle :as angle]
    [heraldicon.math.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
@@ -128,9 +128,9 @@
         [relative-left relative-right] (chevron/arm-diagonals chevron-angle anchor-point orientation-point)
         diagonal-left (v/add anchor-point relative-left)
         diagonal-right (v/add anchor-point relative-right)
-        angle-left (math/normalize-angle (v/angle-to-point anchor-point diagonal-left))
-        angle-right (math/normalize-angle (v/angle-to-point anchor-point diagonal-right))
-        joint-angle (math/normalize-angle (- angle-left angle-right))
+        angle-left (angle/normalize (v/angle-to-point anchor-point diagonal-left))
+        angle-right (angle/normalize (v/angle-to-point anchor-point diagonal-right))
+        joint-angle (angle/normalize (- angle-left angle-right))
         chevron-middle-height (-> height
                                   (/ (dec num-fields-y))
                                   (* stretch-y))

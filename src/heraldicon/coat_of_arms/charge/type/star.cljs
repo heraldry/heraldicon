@@ -5,7 +5,7 @@
    [heraldicon.coat-of-arms.line.type.rayonny-flaming :as rayonny-flaming]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.math.core :as math]
+   [heraldicon.math.angle :as angle]
    [heraldicon.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/star)
@@ -29,7 +29,7 @@
                                             (< num-points 5) 0.25
                                             (> num-points 6) 0.4
                                             :else (let [angle-step (-> (/ 360 num-points)
-                                                                       math/to-rad)
+                                                                       angle/to-rad)
                                                         angle-half-step (/ angle-step 2)]
                                                     (/ (Math/cos angle-step)
                                                        (Math/cos angle-half-step)))))
