@@ -3,9 +3,6 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]))
 
-(defn bezier [p1 cp1 cp2 p2]
-  [p1 cp1 cp2 p2])
-
 (defn square [x]
   (* x x))
 
