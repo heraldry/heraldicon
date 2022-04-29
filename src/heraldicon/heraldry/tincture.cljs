@@ -2,8 +2,8 @@
   (:require
    [clojure.string :as s]
    [heraldicon.context :as c]
-   [heraldicon.heraldry.hatching :as hatching]
    [heraldicon.interface :as interface]
+   [heraldicon.render.hatching :as hatching]
    [heraldicon.render.theme :as theme]
    [heraldicon.util :as util]))
 
