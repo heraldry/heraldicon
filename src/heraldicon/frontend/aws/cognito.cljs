@@ -1,4 +1,4 @@
-(ns heraldicon.aws.cognito
+(ns heraldicon.frontend.aws.cognito
   (:require
    ["amazon-cognito-identity-js" :refer [CognitoUserPool
                                          CognitoUser
