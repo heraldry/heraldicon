@@ -1,4 +1,4 @@
-(ns heraldicon.motto
+(ns heraldicon.heraldry.motto
   (:require
    [heraldicon.heraldry.tincture.core :as tincture]
    [heraldicon.context :as c]
