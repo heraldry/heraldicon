@@ -1,6 +1,6 @@
 (ns heraldicon.coat-of-arms.ordinary.type.bend
   (:require
-   [heraldicon.coat-of-arms.angle :as angle]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.cottising :as cottising]
    [heraldicon.coat-of-arms.field.shared :as field.shared]
    [heraldicon.coat-of-arms.line.core :as line]
@@ -148,7 +148,7 @@
         band-height (-> size
                         ((util/percent-of height)))
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
+         orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
                                                environment
                                                anchor
                                                orientation

@@ -1,6 +1,6 @@
 (ns heraldicon.coat-of-arms.field.type.tierced-per-pall
   (:require
-   [heraldicon.coat-of-arms.angle :as angle]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.field.interface :as field.interface]
    [heraldicon.coat-of-arms.field.shared :as shared]
    [heraldicon.coat-of-arms.infinity :as infinity]
@@ -249,7 +249,7 @@
         points (:points environment)
         unadjusted-anchor-point (position/calculate anchor environment)
         {direction-anchor-point :real-anchor
-         origin-point :real-orientation} (angle/calculate-anchor-and-orientation
+         origin-point :real-orientation} (orientation/calculate-anchor-and-orientation
                                           environment
                                           anchor
                                           origin
@@ -259,7 +259,7 @@
                     (v/angle-to-point direction-anchor-point
                                       origin-point))
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
+         orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
                                                environment
                                                anchor
                                                orientation

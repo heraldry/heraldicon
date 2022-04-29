@@ -1,6 +1,6 @@
 (ns heraldicon.coat-of-arms.ordinary.type.gore
   (:require
-   [heraldicon.coat-of-arms.angle :as angle]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.field.shared :as field.shared]
    [heraldicon.coat-of-arms.infinity :as infinity]
    [heraldicon.coat-of-arms.line.core :as line]
@@ -106,7 +106,7 @@
                 :angle (-> orientation :angle neg?)
                 false)
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (angle/calculate-anchor-and-orientation
+         orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
                                                environment
                                                anchor
                                                orientation
