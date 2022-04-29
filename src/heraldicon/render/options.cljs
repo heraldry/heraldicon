@@ -3,6 +3,7 @@
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.texture :as texture]
    [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.render.theme :as theme]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]))
 
@@ -87,7 +88,7 @@
                                    :ui {:label :string.render-options/simulate-surface}})
 
       (= mode :colours) (assoc :theme {:type :choice
-                                       :choices tincture/theme-choices
-                                       :default tincture/default-theme
+                                       :choices theme/theme-choices
+                                       :default theme/default
                                        :ui {:label :string.render-options/theme
                                             :form-type :theme-select}}))))
