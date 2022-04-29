@@ -200,3 +200,10 @@
                   (* 0.6 g)
                   (* 0.1 b)))]
     (hex-colour l l l)))
+
+(defn percent-grey [percentage]
+  (let [v (-> percentage
+              (/ 100)
+              (* 255)
+              int)]
+    (hex-colour v v v)))
