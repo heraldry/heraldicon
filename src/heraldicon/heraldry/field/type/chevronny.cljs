@@ -5,7 +5,7 @@
    [heraldicon.heraldry.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.orientation :as orientation]
-   [heraldicon.heraldry.outline :as outline]
+   [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.shared.chevron :as chevron]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]

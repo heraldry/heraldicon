@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldicon.heraldry.ordinary.humetty :as humetty]
    [heraldicon.heraldry.ordinary.voided :as voided]
-   [heraldicon.heraldry.outline :as outline]
+   [heraldicon.render.outline :as outline]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.svg.path :as path]))

@@ -1,4 +1,4 @@
-(ns heraldicon.heraldry.outline
+(ns heraldicon.render.outline
   (:require
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]))

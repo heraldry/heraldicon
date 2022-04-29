@@ -3,7 +3,7 @@
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.heraldry.infinity :as infinity]
-   [heraldicon.heraldry.outline :as outline]
+   [heraldicon.render.outline :as outline]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]

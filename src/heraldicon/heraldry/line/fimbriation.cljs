@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.heraldry.outline :as outline]
+   [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]

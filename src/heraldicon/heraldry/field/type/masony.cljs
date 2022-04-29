@@ -1,7 +1,7 @@
 (ns heraldicon.heraldry.field.type.masony
   (:require
    [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.heraldry.outline :as outline]
+   [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
