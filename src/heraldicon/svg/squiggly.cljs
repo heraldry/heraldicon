@@ -1,10 +1,10 @@
-(ns heraldicon.math.svg.squiggly
+(ns heraldicon.svg.squiggly
   (:require
    [clojure.walk :as walk]
    [heraldicon.math.curve.catmullrom :as catmullrom]
-   [heraldicon.math.svg.path :as path]
    [heraldicon.math.vector :as v]
-   [heraldicon.random :as random]))
+   [heraldicon.random :as random]
+   [heraldicon.svg.path :as path]))
 
 (defn jiggle [[previous
                {:keys [x y] :as current}

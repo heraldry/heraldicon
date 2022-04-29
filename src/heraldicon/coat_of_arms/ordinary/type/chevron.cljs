@@ -11,7 +11,7 @@
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.angle :as angle]
-   [heraldicon.math.svg.path :as path]
+   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.util :as util]))

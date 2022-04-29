@@ -19,7 +19,7 @@
    [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.filter :as filter]
-   [heraldicon.math.svg.path :as path]
+   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.render :as render]
    [heraldicon.ribbon :as ribbon]

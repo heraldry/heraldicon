@@ -6,7 +6,7 @@
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
-   [heraldicon.math.svg.path :as path]
+   [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 
 (def overlap-stroke-width 0.1)

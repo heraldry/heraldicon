@@ -4,7 +4,7 @@
    ["paperjs-offset" :refer [PaperOffset]]
    [clojure.string :as s]
    [heraldicon.math.bounding-box :as bounding-box]
-   [heraldicon.math.svg.path :as path]
+   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]))
 
 (defn create [shape {:keys [bounding-box context

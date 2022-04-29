@@ -1,4 +1,4 @@
-(ns heraldicon.math.svg.path
+(ns heraldicon.svg.path
   (:require
    ["paper" :refer [Path Point]]
    [clojure.string :as s]
