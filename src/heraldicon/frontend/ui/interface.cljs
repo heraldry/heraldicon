@@ -1,9 +1,7 @@
 (ns heraldicon.frontend.ui.interface
   (:require
-   [heraldicon.coat-of-arms.counterchange :as counterchange]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
 ;; component-node-data

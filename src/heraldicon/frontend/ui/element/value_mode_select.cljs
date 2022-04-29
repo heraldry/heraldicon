@@ -1,6 +1,5 @@
 (ns heraldicon.frontend.ui.element.value-mode-select
   (:require
-   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.interface :as interface]
