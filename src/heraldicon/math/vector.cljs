@@ -1,7 +1,7 @@
 (ns heraldicon.math.vector
   (:require
    ["paper" :refer [Path]]
-   [heraldicon.math.core :as math]))
+   [heraldicon.math.angle :as angle]))
 
 (defn v [x y]
   {:x x
@@ -58,7 +58,7 @@
       (div 2)))
 
 (defn rotate [{:keys [x y]} angle]
-  (let [rad (math/to-rad angle)]
+  (let [rad (angle/to-rad angle)]
     (v (- (* x (Math/cos rad))
           (* y (Math/sin rad)))
        (+ (* x (Math/sin rad))
@@ -271,13 +271,13 @@
 (defn angle-to-point [p1 p2]
   (let [d (sub p2 p1)
         angle-rad (Math/atan2 (:y d) (:x d))]
-    (math/to-deg angle-rad)))
+    (angle/to-deg angle-rad)))
 
 (defn angle-between-vectors [v1 v2]
   (let [a1 (angle-to-point (v 0 0) v1)
         a2 (angle-to-point (v 0 0) v2)
         angle (-> (- a1 a2)
-                  math/normalize-angle)]
+                  angle/normalize)]
     (if (> angle 180)
       (- angle 180)
       angle)))

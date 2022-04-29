@@ -10,7 +10,7 @@
    [heraldicon.coat-of-arms.shared.chevron :as chevron]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.math.core :as math]
+   [heraldicon.math.angle :as angle]
    [heraldicon.math.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
@@ -255,7 +255,7 @@
                                           origin
                                           0
                                           -90)
-        pall-angle (math/normalize-angle
+        pall-angle (angle/normalize
                     (v/angle-to-point direction-anchor-point
                                       origin-point))
         {anchor-point :real-anchor
