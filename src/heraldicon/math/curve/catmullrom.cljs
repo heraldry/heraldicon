@@ -1,6 +1,6 @@
 (ns heraldicon.math.curve.catmullrom
   (:require
-   [heraldicon.math.bezier :as bezier]
+   [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.vector :as v]))
 
 (defn smooth-point [main-fn p0 p1 p2 tension]

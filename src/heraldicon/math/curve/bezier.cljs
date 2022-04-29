@@ -1,7 +1,7 @@
-(ns heraldicon.math.bezier
+(ns heraldicon.math.curve.bezier
   (:require
-   [heraldicon.math.vector :as v]
-   [heraldicon.math.core :as math]))
+   [heraldicon.math.core :as math]
+   [heraldicon.math.vector :as v]))
 
 (defn bezier [p1 cp1 cp2 p2]
   [p1 cp1 cp2 p2])
