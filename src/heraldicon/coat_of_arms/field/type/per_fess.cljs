@@ -7,8 +7,8 @@
    [heraldicon.coat-of-arms.position :as position]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.svg.path :as path]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.math.vector :as v]
+   [heraldicon.svg.path :as path]))
 
 (def field-type :heraldry.field.type/per-fess)
 

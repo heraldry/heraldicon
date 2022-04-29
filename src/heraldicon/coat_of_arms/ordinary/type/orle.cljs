@@ -7,8 +7,8 @@
    [heraldicon.coat-of-arms.outline :as outline]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.svg.path :as path]
    [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/orle)

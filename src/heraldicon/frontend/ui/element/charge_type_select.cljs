@@ -11,9 +11,9 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.static :as static]
+   [heraldicon.util :as util]
    [re-frame.core :as rf]
-   [reitit.frontend.easy :as reife]
-   [heraldicon.util :as util]))
+   [reitit.frontend.easy :as reife]))
 
 (macros/reg-event-db :update-charge
   (fn [db [_ path changes]]

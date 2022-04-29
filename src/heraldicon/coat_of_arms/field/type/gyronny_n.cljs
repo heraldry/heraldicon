@@ -7,9 +7,9 @@
    [heraldicon.coat-of-arms.position :as position]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
-   [heraldicon.options :as options]))
+   [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]))
 
 (def field-type :heraldry.field.type/gyronny-n)
 

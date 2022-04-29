@@ -1,10 +1,10 @@
 (ns heraldicon.coat-of-arms.field.type.bendy-sinister
   (:require
-   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.field.interface :as field.interface]
    [heraldicon.coat-of-arms.field.shared :as shared]
    [heraldicon.coat-of-arms.field.type.barry :as barry]
    [heraldicon.coat-of-arms.line.core :as line]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]

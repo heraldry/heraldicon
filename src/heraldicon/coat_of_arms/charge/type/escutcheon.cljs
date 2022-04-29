@@ -6,8 +6,8 @@
    [heraldicon.coat-of-arms.field.environment :as environment]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.svg.path :as path]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.math.vector :as v]
+   [heraldicon.svg.path :as path]))
 
 (def charge-type :heraldry.charge.type/escutcheon)
 

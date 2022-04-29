@@ -8,7 +8,8 @@
    [heraldicon.coat-of-arms.line.type.dovetailed :as dovetailed]
    [heraldicon.coat-of-arms.line.type.embattled :as embattled]
    [heraldicon.coat-of-arms.line.type.embattled-grady :as embattled-grady]
-   [heraldicon.coat-of-arms.line.type.embattled-in-crosses :as embattled-in-crosses]
+   [heraldicon.coat-of-arms.line.type.embattled-in-crosses
+    :as embattled-in-crosses]
    [heraldicon.coat-of-arms.line.type.enarched :as enarched]
    [heraldicon.coat-of-arms.line.type.engrailed :as engrailed]
    [heraldicon.coat-of-arms.line.type.fir-tree-topped :as fir-tree-topped]
@@ -29,10 +30,10 @@
    [heraldicon.coat-of-arms.tincture.core :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.svg.path :as path]
-   [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]
+   [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.util :as util]))
 
 (defn line-base [{:keys [base-line]} {line-min :min

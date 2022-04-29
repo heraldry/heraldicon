@@ -1,19 +1,19 @@
 (ns heraldicon.coat-of-arms.ordinary.type.chevron
   (:require
-   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.cottising :as cottising]
    [heraldicon.coat-of-arms.field.shared :as field.shared]
    [heraldicon.coat-of-arms.line.core :as line]
    [heraldicon.coat-of-arms.ordinary.interface :as ordinary.interface]
    [heraldicon.coat-of-arms.ordinary.shared :as ordinary.shared]
+   [heraldicon.coat-of-arms.orientation :as orientation]
    [heraldicon.coat-of-arms.position :as position]
    [heraldicon.coat-of-arms.shared.chevron :as chevron]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.angle :as angle]
-   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 
 (def ordinary-type :heraldry.ordinary.type/chevron)
