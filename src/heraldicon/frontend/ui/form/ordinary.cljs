@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.ui.form.ordinary
   (:require
-   [heraldicon.coat-of-arms.default :as default]
-   [heraldicon.coat-of-arms.ordinary.core :as ordinary]
+   [heraldicon.heraldry.default :as default]
+   [heraldicon.heraldry.ordinary.core :as ordinary]
    [heraldicon.context :as c]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]

@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.form.helm
   (:require
-   [heraldicon.coat-of-arms.default :as default]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.context :as c]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.interface :as ui.interface]

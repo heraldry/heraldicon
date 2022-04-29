@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.ui.element.field-type-select
   (:require
-   [heraldicon.coat-of-arms.field.core :as field]
-   [heraldicon.coat-of-arms.field.options :as field.options]
+   [heraldicon.heraldry.field.core :as field]
+   [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]

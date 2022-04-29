@@ -1,6 +1,6 @@
 (ns heraldicon.shield-separator
   (:require
-   [heraldicon.coat-of-arms.default :as default]))
+   [heraldicon.heraldry.default :as default]))
 
 (defn shield-separator? [element]
   (-> element

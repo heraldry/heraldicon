@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.form.semy
   (:require
-   [heraldicon.coat-of-arms.charge.options :as charge.options]
+   [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.util :as util]))

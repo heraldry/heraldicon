@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.element.attributes
   (:require
-   [heraldicon.coat-of-arms.attributes :as attributes]
+   [heraldicon.heraldry.attributes :as attributes]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.interface :as ui.interface]

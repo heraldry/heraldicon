@@ -3,12 +3,12 @@
    [clojure.set :as set]
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.coat-of-arms.attributes :as attributes]
-   [heraldicon.coat-of-arms.charge.options :as charge.options]
-   [heraldicon.coat-of-arms.field.core :as field]
-   [heraldicon.coat-of-arms.field.options :as field.options]
-   [heraldicon.coat-of-arms.ordinary.options :as ordinary.options]
-   [heraldicon.coat-of-arms.tincture.core :as tincture]
+   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.charge.options :as charge.options]
+   [heraldicon.heraldry.field.core :as field]
+   [heraldicon.heraldry.field.options :as field.options]
+   [heraldicon.heraldry.ordinary.options :as ordinary.options]
+   [heraldicon.heraldry.tincture.core :as tincture]
    [taoensso.timbre :as log]))
 
 (defmulti ast->hdn first)

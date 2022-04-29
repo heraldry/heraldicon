@@ -1,7 +1,7 @@
 (ns heraldicon.interface
   (:require
-   [heraldicon.coat-of-arms.counterchange :as counterchange]
-   [heraldicon.component :as component]
+   [heraldicon.heraldry.counterchange :as counterchange]
+   [heraldicon.heraldry.component :as component]
    [heraldicon.context :as c]
    [heraldicon.options :as options]
    [heraldicon.shield-separator :as shield-separator]

@@ -3,7 +3,7 @@
    [cljs.core.async :refer [go]]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.coat-of-arms.attributes :as attributes]
+   [heraldicon.heraldry.attributes :as attributes]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.charge-map :as charge-map]
    [heraldicon.frontend.filter :as filter]

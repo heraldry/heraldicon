@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.element.charge-type-select
   (:require
-   [heraldicon.coat-of-arms.charge.options :as charge.options]
+   [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]

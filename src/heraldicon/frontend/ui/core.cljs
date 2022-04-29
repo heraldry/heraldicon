@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.core
   (:require
-   [heraldicon.component :as component]
+   [heraldicon.heraldry.component :as component]
    [heraldicon.context :as c]
    [heraldicon.frontend.history.state] ;; needed for side effects
    [heraldicon.frontend.language :refer [tr]]
