@@ -7,7 +7,7 @@
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.shared :as field.shared]
-   [heraldicon.heraldry.hatching :as hatching]
+   [heraldicon.render.hatching :as hatching]
    [heraldicon.heraldry.outline :as outline]
    [heraldicon.render.texture :as texture]
    [heraldicon.heraldry.tincture :as tincture]
@@ -104,7 +104,7 @@
                  filter/shadow)
                [pattern/defs theme]
                (when (= mode :hatching)
-                 hatching/patterns)]
+                 hatching/defs)]
               [:defs
                [(if svg-export?
                   :mask

@@ -1,4 +1,4 @@
-(ns heraldicon.heraldry.hatching)
+(ns heraldicon.render.hatching)
 
 (def spacing 2.5)
 (def line-thickness 0.2)
@@ -248,11 +248,11 @@
    ;; nontraditional
    :white argent})
 
-(def patterns
-  (into
-   [:<>]
-   (for [[_ pattern] (vals (concat metals colours))]
-     pattern)))
+(def defs
+  (->> (merge metals colours)
+       vals
+       (map second)
+       (into [:<>])))
 
 (defn get-for [tincture]
   (let [[id _] (clojure.core/or (get metals tincture)
