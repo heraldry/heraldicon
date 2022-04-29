@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.interface :as interface]
-   [heraldicon.math.bezier :as bezier]
+   [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.core :as math]
    [heraldicon.math.curve :as curve]

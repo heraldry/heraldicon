@@ -16,7 +16,7 @@
    [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.user :as user]
    [heraldicon.interface :as interface]
-   [heraldicon.math.bezier :as bezier]
+   [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.filter :as filter]
    [heraldicon.math.svg.path :as path]

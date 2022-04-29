@@ -1,6 +1,6 @@
 (ns heraldicon.math.curve
   (:require
-   [heraldicon.math.bezier :as bezier]))
+   [heraldicon.math.curve.bezier :as bezier]))
 
 (defn length [curve]
   (->> curve
