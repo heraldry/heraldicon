@@ -9,7 +9,7 @@
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.hatching :as hatching]
    [heraldicon.heraldry.outline :as outline]
-   [heraldicon.heraldry.texture :as texture]
+   [heraldicon.render.texture :as texture]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]

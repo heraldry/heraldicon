@@ -7,7 +7,7 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.heraldry.position :as position]
-   [heraldicon.heraldry.texture :as texture]
+   [heraldicon.render.texture :as texture]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.render.theme :as theme]))
 
