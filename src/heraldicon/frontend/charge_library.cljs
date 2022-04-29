@@ -21,7 +21,7 @@
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user :as user]
-   [heraldicon.math.svg.core :as svg]
+   [heraldicon.svg.core :as svg]
    [heraldicon.render :as render]
    [heraldicon.util :as util :refer [id-for-url]]
    [hickory.core :as hickory]

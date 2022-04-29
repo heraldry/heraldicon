@@ -7,7 +7,7 @@
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.curve.core :as curve]
    [heraldicon.math.core :as math]
-   [heraldicon.math.svg.path :as path]
+   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.util :as util]))
 

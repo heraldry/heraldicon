@@ -1,4 +1,4 @@
-(ns heraldicon.math.svg.core
+(ns heraldicon.svg.core
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]

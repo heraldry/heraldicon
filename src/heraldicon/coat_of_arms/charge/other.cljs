@@ -15,8 +15,8 @@
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
-   [heraldicon.math.svg.core :as svg]
-   [heraldicon.math.svg.path :as path]
+   [heraldicon.svg.core :as svg]
+   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.util :as util]))

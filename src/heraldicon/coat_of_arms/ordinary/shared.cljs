@@ -6,7 +6,7 @@
    [heraldicon.coat-of-arms.voided :as voided]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.math.svg.path :as path]))
+   [heraldicon.svg.path :as path]))
 
 (defn add-humetty-and-voided [options context]
   (let [humetty? (interface/get-raw-data (c/++ context :humetty :humetty?))]

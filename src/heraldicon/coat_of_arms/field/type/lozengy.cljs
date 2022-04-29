@@ -5,7 +5,7 @@
    [heraldicon.coat-of-arms.tincture.core :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.math.svg.path :as path]
+   [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 
 (def field-type :heraldry.field.type/lozengy)

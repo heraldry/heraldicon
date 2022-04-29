@@ -9,7 +9,7 @@
    [heraldicon.coat-of-arms.shared.pile :as pile]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
-   [heraldicon.math.svg.path :as path]
+   [heraldicon.svg.path :as path]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.util :as util]))
