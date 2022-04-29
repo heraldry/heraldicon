@@ -1,4 +1,4 @@
-(ns heraldicon.math.catmullrom
+(ns heraldicon.math.curve.catmullrom
   (:require
    [heraldicon.math.bezier :as bezier]
    [heraldicon.math.vector :as v]))
@@ -8,15 +8,13 @@
            (v/mul (v/sub p2 p0)
                   (/ tension 6))))
 
-(defn calculate-cubic-bezier-curve
-  [tension [p0 p1 p2 p3]]
+(defn calculate-cubic-bezier-curve [tension [p0 p1 p2 p3]]
   (bezier/bezier p1
                  (smooth-point v/add p0 p1 p2 tension)
                  (smooth-point v/sub p1 p2 p3 tension)
                  p2))
 
-(defn catmullrom
-  [points & {:keys [tension] :or {tension 1}}]
+(defn catmullrom [points & {:keys [tension] :or {tension 1}}]
   (->> (concat [(first points)] points [(last points)])
        (partition 4 1)
        (map (partial calculate-cubic-bezier-curve tension))))

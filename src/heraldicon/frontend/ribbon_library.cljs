@@ -17,7 +17,7 @@
    [heraldicon.frontend.user :as user]
    [heraldicon.interface :as interface]
    [heraldicon.math.bezier :as bezier]
-   [heraldicon.math.catmullrom :as catmullrom]
+   [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.filter :as filter]
    [heraldicon.math.svg.path :as path]
    [heraldicon.math.vector :as v]

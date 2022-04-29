@@ -2,7 +2,7 @@
   (:require
    ["paper" :refer [Path Point]]
    [clojure.string :as s]
-   [heraldicon.math.catmullrom :as catmullrom]
+   [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.vector :as v]))
 
 (defn stitch [path]
