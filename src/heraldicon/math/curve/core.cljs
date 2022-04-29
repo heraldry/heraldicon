@@ -1,4 +1,4 @@
-(ns heraldicon.math.curve
+(ns heraldicon.math.curve.core
   (:require
    [heraldicon.math.curve.bezier :as bezier]))
 
