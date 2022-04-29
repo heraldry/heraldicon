@@ -18,7 +18,7 @@
    [heraldicon.heraldry.ornaments] ;; needed for side effects
    [heraldicon.heraldry.semy.core] ;; needed for side effects
    [heraldicon.heraldry.semy.options] ;; needed for side effects
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.collection.element] ;; needed for side effects
    [heraldicon.collection.options] ;; needed for side effects
    [heraldicon.context :as c]

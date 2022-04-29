@@ -3,7 +3,7 @@
    [clojure.set :as set]
    [clojure.string :as s]
    [heraldicon.heraldry.attributes :as attributes]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.language :refer [tr]]

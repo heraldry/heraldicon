@@ -8,7 +8,7 @@
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.heraldry.position :as position]
    [heraldicon.heraldry.texture :as texture]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.render.theme :as theme]))
 
 (s/def :heraldry/spec-version number?)

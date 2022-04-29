@@ -3,7 +3,7 @@
    [heraldicon.heraldry.charge-group.core :as charge-group]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]

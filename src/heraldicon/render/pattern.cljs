@@ -1,6 +1,6 @@
 (ns heraldicon.render.pattern
   (:require
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.render.theme :as theme]))
 
 (def ermine-shape

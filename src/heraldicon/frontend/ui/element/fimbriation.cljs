@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.element.fimbriation
   (:require
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
