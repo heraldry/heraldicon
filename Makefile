@@ -12,7 +12,7 @@ copy-fonts-to-backend:
 
 PROD_FRONTEND_RELEASE_DIR = build/prod
 PROD_BACKEND_RELEASE_DIR = backend/build/prod
-PROD_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/commit "$(COMMIT)"}}}
+PROD_CONFIG = {:closure-defines {heraldicon.config/stage "prod" heraldicon.config/commit "$(COMMIT)"}}}
 
 prod-backend-release:
 	rm -rf $(PROD_BACKEND_RELEASE_DIR) 2> /dev/null || true
@@ -37,7 +37,7 @@ prod-frontend-release:
 	npx shadow-cljs release frontend --config-merge '$(PROD_CONFIG)'
 
 PROD_FRONTEND_DEV_DIR = build/dev-prod
-PROD_DEV_CONFIG = {:closure-defines {heraldry.config/stage "prod" heraldry.config/commit "$(COMMIT)"}} :output-dir "$(PROD_FRONTEND_DEV_DIR)"}
+PROD_DEV_CONFIG = {:closure-defines {heraldicon.config/stage "prod" heraldicon.config/commit "$(COMMIT)"}} :output-dir "$(PROD_FRONTEND_DEV_DIR)"}
 dev-prod:
 	rm -rf $(PROD_FRONTEND_DEV_DIR) 2> /dev/null || true
 	mkdir -p $(PROD_FRONTEND_DEV_DIR)
@@ -58,7 +58,7 @@ actual-prod-frontend-deploy: prod-frontend-release
 
 STAGING_FRONTEND_RELEASE_DIR = build/staging
 STAGING_BACKEND_RELEASE_DIR = backend/build/staging
-STAGING_CONFIG = {:closure-defines {heraldry.config/stage "staging" heraldry.config/commit "$(COMMIT)"}}
+STAGING_CONFIG = {:closure-defines {heraldicon.config/stage "staging" heraldicon.config/commit "$(COMMIT)"}}
 
 staging-backend-release:
 	rm -rf $(STAGING_BACKEND_RELEASE_DIR) 2> /dev/null || true
@@ -98,7 +98,7 @@ check-dirty-frontend:
 	git diff --quiet || (echo ". is dirty" && false)
 
 check-debug-print-backend:
-	! rg println src backend/src --glob=!src/**/*test*.cljs --glob=!backend/src/heraldry/manage.cljs
+	! rg println src backend/src --glob=!src/**/*test*.cljs --glob=!backend/src/heraldicon/manage.cljs
 	! rg js/console backend/src
 
 check-dirty-backend:
