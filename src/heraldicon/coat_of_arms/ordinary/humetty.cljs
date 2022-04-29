@@ -1,4 +1,4 @@
-(ns heraldicon.coat-of-arms.humetty
+(ns heraldicon.coat-of-arms.ordinary.humetty
   (:require
    [heraldicon.coat-of-arms.field.environment :as environment]
    [heraldicon.context :as c]
