@@ -43,7 +43,7 @@
                                                              :version version} user-data))
             edn-data (<? (http/fetch (:edn-data-url charge-data)))]
         (-> charge-data
-            (assoc-in [:data] edn-data)))
+            (assoc :data edn-data)))
       (catch :default e
         (log/error "fetch charge for rendering error:" e)))))
 
