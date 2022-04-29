@@ -2,7 +2,7 @@
   (:require
    [cljs.spec.alpha :as s]
    [heraldicon.heraldry.attributes :as attributes]
-   [heraldicon.heraldry.tincture.core :as tincture]))
+   [heraldicon.heraldry.tincture :as tincture]))
 
 (s/def :heraldry.charge-data.data.edn-data/width number?)
 (s/def :heraldry.charge-data.data.edn-data/height number?)

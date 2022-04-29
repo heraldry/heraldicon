@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.core :as field]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]

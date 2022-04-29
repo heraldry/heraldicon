@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.heraldry.component :as component]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]

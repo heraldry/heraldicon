@@ -1,4 +1,4 @@
-(ns heraldicon.heraldry.tincture.core
+(ns heraldicon.heraldry.tincture
   (:require
    [clojure.string :as s]
    [heraldicon.context :as c]

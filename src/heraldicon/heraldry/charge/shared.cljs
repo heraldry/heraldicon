@@ -5,7 +5,7 @@
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.orientation :as orientation]
    [heraldicon.heraldry.outline :as outline]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]

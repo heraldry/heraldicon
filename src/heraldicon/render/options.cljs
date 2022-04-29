@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.texture :as texture]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.render.theme :as theme]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]))

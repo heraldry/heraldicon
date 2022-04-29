@@ -1,7 +1,7 @@
 (ns heraldicon.heraldry.field.type.plain
   (:require
    [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]))
 

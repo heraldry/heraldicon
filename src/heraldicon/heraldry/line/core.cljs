@@ -27,7 +27,7 @@
    [heraldicon.heraldry.line.type.wavy :as wavy]
    [heraldicon.heraldry.line.type.wolf-toothed :as wolf-toothed]
    [heraldicon.heraldry.outline :as outline]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]

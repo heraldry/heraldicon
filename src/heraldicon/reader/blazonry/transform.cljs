@@ -8,7 +8,7 @@
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [taoensso.timbre :as log]))
 
 (defmulti ast->hdn first)

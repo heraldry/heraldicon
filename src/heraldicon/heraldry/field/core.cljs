@@ -3,7 +3,7 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.options :as field.options]
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.util :as util]))

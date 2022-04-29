@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.outline
   (:require
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]))
 
 (def stroke-width 0.5)

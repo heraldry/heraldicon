@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.motto
   (:require
-   [heraldicon.heraldry.tincture.core :as tincture]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.ribbon :as ribbon]))
