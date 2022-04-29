@@ -12,7 +12,7 @@
           [x x y y]
           rest))
 
-(defn bounding-box-from-paths [paths]
+(defn from-paths [paths]
   (let [points (mapcat
                 #(-> %
                      path/parse-path
@@ -21,7 +21,7 @@
         box (min-max-x-y points)]
     box))
 
-(defn bounding-box [points]
+(defn from-points [points]
   (min-max-x-y points))
 
 (defn combine [[[first-min-x first-max-x
@@ -57,4 +57,4 @@
                        (v/rotate (v/dot (v/sub (v/v x2 y2)
                                                middle)
                                         scale) rotation))]]
-    (bounding-box points)))
+    (from-points points)))

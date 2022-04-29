@@ -15,7 +15,7 @@
                 shape
                 {:paths [shape]})
         [min-x max-x min-y max-y] (or bounding-box
-                                      (bounding-box/bounding-box-from-paths
+                                      (bounding-box/from-paths
                                        (:paths shape)))
         top-left (v/v min-x min-y)
         top-right (v/v max-x min-y)

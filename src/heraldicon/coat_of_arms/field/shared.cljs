@@ -135,7 +135,7 @@
                  (merge meta
                         {:parent context
                          :parent-environment parent-environment
-                         :bounding-box (bounding-box/bounding-box bounding-box-points)}))
+                         :bounding-box (bounding-box/from-points bounding-box-points)}))
             environment-shape-paths (-> env :shape :paths)]
         ^{:key idx}
         [:<>

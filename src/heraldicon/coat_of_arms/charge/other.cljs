@@ -422,7 +422,7 @@
                                 {:parent path
                                  :parent-environment environment
                                  :context [:charge]
-                                 :bounding-box (bounding-box/bounding-box
+                                 :bounding-box (bounding-box/from-points
                                                 [position (v/add position
                                                                  clip-size)])})
             vertical-mask? (not (zero? vertical-mask))
