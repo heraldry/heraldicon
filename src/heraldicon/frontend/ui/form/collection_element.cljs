@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]
+   [heraldicon.translation.string :as string]
    [re-frame.core :as rf]))
 
 (def ui-highlighted-element-path [:ui :collection-library :selected-element])
@@ -34,10 +34,10 @@
 (defmethod ui.interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as context}]
   (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
-    {:title (util/str-tr (inc index) ": "
-                         (if (-> name count pos?)
-                           name
-                           :string.miscellaneous/no-name))}))
+    {:title (string/str-tr (inc index) ": "
+                           (if (-> name count pos?)
+                             name
+                             :string.miscellaneous/no-name))}))
 
 (defmethod ui.interface/component-form-data :heraldry.component/collection-element [_context]
   {:form form})

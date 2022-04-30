@@ -11,6 +11,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.curve.core :as curve]
    [heraldicon.ribbon :as ribbon]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
@@ -189,9 +190,9 @@
   (let [segment-type (interface/get-raw-data (c/++ context :type))
         idx (-> context :path last)
         z-index (interface/get-sanitized-data (c/++ context :z-index))
-        title (util/str-tr (inc idx) ". "
-                           (ribbon/segment-type-map segment-type)
-                           ", layer " z-index)]
+        title (string/str-tr (inc idx) ". "
+                             (ribbon/segment-type-map segment-type)
+                             ", layer " z-index)]
 
     [:div {:style {:position "relative"}}
      [submenu/submenu context nil [tr title] {:style {:width "28em"}

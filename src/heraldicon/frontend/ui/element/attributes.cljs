@@ -1,10 +1,11 @@
 (ns heraldicon.frontend.ui.element.attributes
   (:require
-   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
@@ -51,7 +52,7 @@
                  :value :none}
         (doall
          (for [[group-name & group-choices] (concat
-                                             [[(util/str-tr "--- " :string.charge.attribute.ui/add " ---") :none]]
+                                             [[(string/str-tr "--- " :string.charge.attribute.ui/add " ---") :none]]
                                              attributes/attribute-choices)]
            (if (and (-> group-choices count (= 1))
                     (-> group-choices first keyword?))

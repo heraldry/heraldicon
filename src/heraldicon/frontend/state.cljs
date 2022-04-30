@@ -2,12 +2,12 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.heraldry.option.attributes :as attributes]
-   [heraldicon.heraldry.component :as component]
-   [heraldicon.heraldry.default :as default]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.form.collection-element :as collection-element]
-   [heraldicon.util :as util]
+   [heraldicon.heraldry.component :as component]
+   [heraldicon.heraldry.default :as default]
+   [heraldicon.heraldry.option.attributes :as attributes]
+   [heraldicon.translation.string :as string]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -29,7 +29,7 @@
      (rf/subscribe [:heraldicon.frontend.language/selected-language])])
 
   (fn [[value selected-language] [_ _path]]
-    (util/tr-raw value selected-language)))
+    (string/tr-raw value selected-language)))
 
 (rf/reg-sub :used-charge-variants
   (fn [[_ path] _]

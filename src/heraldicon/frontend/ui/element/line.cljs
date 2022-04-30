@@ -1,11 +1,12 @@
 (ns heraldicon.frontend.ui.element.line
   (:require
-   [heraldicon.heraldry.line.core :as line]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.line.core :as line]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 ;; TODO: likely can be further improved by reading out the various description strings
@@ -25,7 +26,7 @@
                  (when (and (-> line :fimbriation :mode)
                             (-> line :fimbriation :mode (not= :none)))
                    :string.submenu-summary/fimbriated)]]
-    (-> (util/combine ", " changes)
+    (-> (string/combine ", " changes)
         util/upper-case-first)))
 
 (defn line-submenu [context]

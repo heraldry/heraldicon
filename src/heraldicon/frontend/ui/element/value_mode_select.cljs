@@ -3,6 +3,7 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.interface :as interface]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (defn value-mode-select [context & {:keys [display-fn disabled? on-change default-option]}]
@@ -35,20 +36,20 @@
                              first)
         menu (cond-> []
                (and (some? inherited)
-                    (some? default)) (conj {:title (util/str-tr :string.submenu-summary/default " (" (display-fn default) ")")
+                    (some? default)) (conj {:title (string/str-tr :string.submenu-summary/default " (" (display-fn default) ")")
                                             :icon "fas fa-redo"
                                             :handler (handler-for-value default)})
                (or (some? inherited)
-                   (some? default)) (conj {:title (util/str-tr (if (some? inherited)
-                                                                 :string.miscellaneous/inherited
-                                                                 :string.miscellaneous/auto)
-                                                               " (" (display-fn (or inherited default)) ")")
+                   (some? default)) (conj {:title (string/str-tr (if (some? inherited)
+                                                                   :string.miscellaneous/inherited
+                                                                   :string.miscellaneous/auto)
+                                                                 " (" (display-fn (or inherited default)) ")")
                                            :icon (if (some? current-value)
                                                    "far fa-square"
                                                    "far fa-check-square")
                                            :handler (handler-for-value nil)})
                (seq additional-values) (-> (concat (map (fn [[display-value value]]
-                                                          {:title (util/str-tr display-value " (" (display-fn value) ")")
+                                                          {:title (string/str-tr display-value " (" (display-fn value) ")")
                                                            :icon (if (= current-value value)
                                                                    "far fa-check-square"
                                                                    "far fa-square")

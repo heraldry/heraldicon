@@ -1,11 +1,12 @@
 (ns heraldicon.heraldry.field.core
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (defn mandatory-part-count [context]
@@ -175,36 +176,36 @@
           (let [line (interface/get-sanitized-data (c/++ context :line))
                 mandatory-part-count (mandatory-part-count context)
                 num-fields (interface/get-list-size (c/++ context :fields))]
-            (util/combine
+            (string/combine
              " "
              [(util/translate (if (= field-type :heraldry.field.type/gyronny-n)
                                 :heraldry.field.type/gyronny
                                 field-type))
               (util/translate-line line)
-              (util/combine " and "
-                            (->> (range num-fields)
-                                 (map
-                                  (fn [index]
-                                    (let [subfield-context (c/++ context :fields index)]
-                                      (cond
-                                        (< index mandatory-part-count) (interface/blazon subfield-context)
-                                        (not= (interface/get-raw-data (c/++ subfield-context :type))
-                                              :heraldry.field.type/ref) (util/combine
-                                                                         " "
-                                                                         [(when (> num-fields 3)
-                                                                            (util/str-tr (part-name field-type index) ":"))
-                                                                          (interface/blazon subfield-context)])))))))])))
-        components-description (util/combine
+              (string/combine " and "
+                              (->> (range num-fields)
+                                   (map
+                                    (fn [index]
+                                      (let [subfield-context (c/++ context :fields index)]
+                                        (cond
+                                          (< index mandatory-part-count) (interface/blazon subfield-context)
+                                          (not= (interface/get-raw-data (c/++ subfield-context :type))
+                                                :heraldry.field.type/ref) (string/combine
+                                                                           " "
+                                                                           [(when (> num-fields 3)
+                                                                              (string/str-tr (part-name field-type index) ":"))
+                                                                            (interface/blazon subfield-context)])))))))])))
+        components-description (string/combine
                                 ", "
                                 (map (fn [index]
                                        (interface/blazon (c/++ context :components index)))
                                      (range num-components)))
 
-        blazon (-> (util/combine ", " [field-description
-                                       components-description])
+        blazon (-> (string/combine ", " [field-description
+                                         components-description])
                    util/upper-case-first)]
     (if (or root?
             (and (= field-type :heraldry.field.type/plain)
                  (zero? num-components)))
       blazon
-      (util/str-tr "(" blazon ")"))))
+      (string/str-tr "(" blazon ")"))))

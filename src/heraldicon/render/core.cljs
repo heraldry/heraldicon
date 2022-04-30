@@ -7,19 +7,20 @@
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.shared :as field.shared]
-   [heraldicon.render.hatching :as hatching]
-   [heraldicon.render.outline :as outline]
-   [heraldicon.render.texture :as texture]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
    [heraldicon.math.filter :as filter]
    [heraldicon.math.vector :as v]
+   [heraldicon.render.hatching :as hatching]
+   [heraldicon.render.outline :as outline]
    [heraldicon.render.pattern :as pattern]
+   [heraldicon.render.texture :as texture]
    [heraldicon.ribbon :as ribbon]
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (defn coat-of-arms [{:keys
@@ -247,37 +248,37 @@
                           (and (pos? end-split)
                                (zero? idx)
                                (= idx (dec num-curves))) (str top-edge
-                                                              (util/combine " "
-                                                                            (ribbon/split-end
-                                                                             :end
-                                                                             partial-curve
-                                                                             (/ end-split 2)
-                                                                             second-edge-vector))
+                                                              (string/combine " "
+                                                                              (ribbon/split-end
+                                                                               :end
+                                                                               partial-curve
+                                                                               (/ end-split 2)
+                                                                               second-edge-vector))
                                                               (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                              (util/combine " "
-                                                                            (ribbon/split-end
-                                                                             :start
-                                                                             partial-curve
-                                                                             (/ end-split 2)
-                                                                             first-edge-vector)))
+                                                              (string/combine " "
+                                                                              (ribbon/split-end
+                                                                               :start
+                                                                               partial-curve
+                                                                               (/ end-split 2)
+                                                                               first-edge-vector)))
                           (and (pos? end-split)
                                (zero? idx)) (str top-edge
                                                  (path/line-to second-edge-vector)
                                                  (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                 (util/combine " "
-                                                               (ribbon/split-end
-                                                                :start
-                                                                partial-curve
-                                                                end-split
-                                                                first-edge-vector)))
+                                                 (string/combine " "
+                                                                 (ribbon/split-end
+                                                                  :start
+                                                                  partial-curve
+                                                                  end-split
+                                                                  first-edge-vector)))
                           (and (pos? end-split)
                                (= idx (dec num-curves))) (str top-edge
-                                                              (util/combine " "
-                                                                            (ribbon/split-end
-                                                                             :end
-                                                                             partial-curve
-                                                                             end-split
-                                                                             second-edge-vector))
+                                                              (string/combine " "
+                                                                              (ribbon/split-end
+                                                                               :end
+                                                                               partial-curve
+                                                                               end-split
+                                                                               second-edge-vector))
                                                               (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
                                                               (path/line-to (v/mul first-edge-vector -1))))
               segment-context (c/++ context :segments idx)

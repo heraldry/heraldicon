@@ -1,9 +1,9 @@
 (ns heraldicon.frontend.ui.form.semy
   (:require
-   [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]
-   [heraldicon.util :as util]))
+   [heraldicon.heraldry.charge.options :as charge.options]
+   [heraldicon.translation.string :as string]))
 
 (defn form [context]
   (ui.interface/form-elements
@@ -15,9 +15,9 @@
 
 (defmethod ui.interface/component-node-data :heraldry.component/semy [context]
   (let [charge-context (c/++ context :charge)]
-    {:title (util/str-tr :string.miscellaneous/semy-of
-                         " "
-                         (charge.options/title charge-context))
+    {:title (string/str-tr :string.miscellaneous/semy-of
+                           " "
+                           (charge.options/title charge-context))
      :nodes [{:context charge-context}]}))
 
 (defmethod ui.interface/component-form-data :heraldry.component/semy [_context]

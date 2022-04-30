@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.charge.options
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.type.annulet :as annulet]
    [heraldicon.heraldry.charge.type.billet :as billet]
@@ -11,9 +12,9 @@
    [heraldicon.heraldry.charge.type.roundel :as roundel]
    [heraldicon.heraldry.charge.type.rustre :as rustre]
    [heraldicon.heraldry.charge.type.star :as star]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (def charges
@@ -84,8 +85,8 @@
                    :none)
         charge-name (or (choice-map charge-type)
                         (util/translate-cap-first charge-type))]
-    (util/combine " " [charge-name
-                       (when-not (= attitude :none)
-                         (util/translate attitude))
-                       (when-not (#{:none :to-dexter} facing)
-                         (util/translate facing))])))
+    (string/combine " " [charge-name
+                         (when-not (= attitude :none)
+                           (util/translate attitude))
+                         (when-not (#{:none :to-dexter} facing)
+                           (util/translate facing))])))

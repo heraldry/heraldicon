@@ -4,7 +4,8 @@
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
-   [heraldicon.util :as util]))
+   [heraldicon.util :as util]
+   [heraldicon.translation.string :as string]))
 
 (defmethod interface/options-subscriptions :heraldry.component/semy [_context]
   #{})
@@ -159,7 +160,7 @@
               :fill (str "url(#" pattern-id ")")}]]]))
 
 (defmethod interface/blazon-component :heraldry.component/semy [context]
-  (util/str-tr "semy of " (interface/blazon
-                           (-> context
-                               (c/++ :charge)
-                               (assoc-in [:blazonry :drop-article?] true)))))
+  (string/str-tr "semy of " (interface/blazon
+                             (-> context
+                                 (c/++ :charge)
+                                 (assoc-in [:blazonry :drop-article?] true)))))

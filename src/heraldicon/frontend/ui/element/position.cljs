@@ -1,11 +1,12 @@
 (ns heraldicon.frontend.ui.element.position
   (:require
-   [heraldicon.heraldry.option.position :as position]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 ;; TODO: probably can be improved with better subscriptions
@@ -18,7 +19,7 @@
                    "adjusted")
                  (when (options/changed? :alignment position options)
                    "aligned")]]
-    (-> (util/combine ", " changes)
+    (-> (string/combine ", " changes)
         util/upper-case-first)))
 
 (defn position-submenu [context]

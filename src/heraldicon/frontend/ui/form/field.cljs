@@ -1,8 +1,5 @@
 (ns heraldicon.frontend.ui.form.field
   (:require
-   [heraldicon.heraldry.default :as default]
-   [heraldicon.heraldry.field.core :as field]
-   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
@@ -10,8 +7,12 @@
    [heraldicon.frontend.ui.element.tincture-select :as tincture-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
+   [heraldicon.heraldry.default :as default]
+   [heraldicon.heraldry.field.core :as field]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.static :as static]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (macros/reg-event-db :override-field-part-reference
@@ -105,15 +106,15 @@
         tincture (interface/get-sanitized-data (c/++ context :tincture))
         components-context (c/++ context :components)
         num-components (interface/get-list-size components-context)]
-    {:title (util/combine ": "
-                          [(name-prefix-for-part context)
-                           (if ref?
-                             (str "like " (name-prefix-for-part
-                                           (-> context
-                                               c/--
-                                               (c/++ (interface/get-raw-data
-                                                      (c/++ context :index))))))
-                             (field/title context))])
+    {:title (string/combine ": "
+                            [(name-prefix-for-part context)
+                             (if ref?
+                               (str "like " (name-prefix-for-part
+                                             (-> context
+                                                 c/--
+                                                 (c/++ (interface/get-raw-data
+                                                        (c/++ context :index))))))
+                               (field/title context))])
      :icon (case field-type
              :heraldry.field.type/plain (let [[scale-x
                                                scale-y

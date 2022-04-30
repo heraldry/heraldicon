@@ -1,6 +1,7 @@
 (ns heraldicon.heraldry.escutcheon
   (:require
    [heraldicon.heraldry.field.environment :as environment]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (def heater
@@ -389,7 +390,7 @@
 
 (def flag-options
   {:flag-aspect-ratio-preset {:type :choice
-                              :choices [[(util/str-tr "--- " :string.escutcheon.type/select-ratio " ---") :none]
+                              :choices [[(string/str-tr "--- " :string.escutcheon.type/select-ratio " ---") :none]
                                         ["2:3 (most common)" :preset-2-3]
                                         ["1:2 (common)" :preset-1-2]
                                         ["3:5 (common)" :preset-3-5]

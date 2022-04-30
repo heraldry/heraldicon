@@ -2,8 +2,6 @@
   (:require
    [clojure.set :as set]
    [clojure.string :as s]
-   [heraldicon.heraldry.option.attributes :as attributes]
-   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.language :refer [tr]]
@@ -11,8 +9,11 @@
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.element.tincture-select :as tincture-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.option.attributes :as attributes]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (defn tincture-modifiers-submenu [context]
@@ -83,7 +84,7 @@
             tinctures-title (if (-> tinctures-set count pos?)
                               (->> tinctures-set
                                    (map util/translate)
-                                   (util/combine ", ")
+                                   (string/combine ", ")
                                    s/lower-case
                                    util/upper-case-first)
                               :string.charge.tincture-modifier/none)

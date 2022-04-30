@@ -8,6 +8,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
@@ -15,15 +16,15 @@
 (defn submenu-link-name [options layout]
   (let [main-name (when (or (:num-fields-x options)
                             (:num-fields-y options))
-                    (util/str-tr (util/combine "x"
-                                               [(:num-fields-x layout)
-                                                (:num-fields-y layout)])
-                                 " "
-                                 :string.miscellaneous/fields))
+                    (string/str-tr (string/combine "x"
+                                                   [(:num-fields-x layout)
+                                                    (:num-fields-y layout)])
+                                   " "
+                                   :string.miscellaneous/fields))
         changes (filter identity
                         [main-name
                          (when (options/changed? :num-base-fields layout options)
-                           (util/str-tr (:num-base-fields layout) " " :string.submenu-summary/base-fields))
+                           (string/str-tr (:num-base-fields layout) " " :string.submenu-summary/base-fields))
                          (when (some #(options/changed? % layout options)
                                      [:offset-x :offset-y])
                            :string.submenu-summary/shifted)
@@ -35,7 +36,7 @@
         changes (if (seq changes)
                   changes
                   [:string.submenu-summary/default])]
-    (-> (util/combine ", " changes)
+    (-> (string/combine ", " changes)
         util/upper-case-first)))
 
 (macros/reg-event-db :set-field-layout-num-fields-x

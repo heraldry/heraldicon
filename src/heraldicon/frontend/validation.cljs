@@ -1,12 +1,12 @@
 (ns heraldicon.frontend.validation
   (:require
    [clojure.string :as s]
-   [heraldicon.heraldry.component :as component]
-   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.heraldry.component :as component]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]))
+   [heraldicon.translation.string :as string]))
 
 (def level-order
   {:error 0
@@ -54,7 +54,7 @@
   (->> tinctures
        sort
        (map tincture/translate-tincture)
-       (util/combine
+       (string/combine
         ", ")))
 
 (defn verify-rule-of-tincture [parent-tinctures own-tinctures fimbriated?]
@@ -68,21 +68,21 @@
       (= #{:metal}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (util/format-tr (tr
-                                               (if fimbriated?
-                                                 :string.validation.rule-of-tincture/metal-fimbriation-on-metal-field
-                                                 :string.validation.rule-of-tincture/metal-field-on-metal-field))
-                                              (list-tinctures own-tinctures)
-                                              (list-tinctures parent-tinctures))}
+                     :message (string/format-tr (tr
+                                                 (if fimbriated?
+                                                   :string.validation.rule-of-tincture/metal-fimbriation-on-metal-field
+                                                   :string.validation.rule-of-tincture/metal-field-on-metal-field))
+                                                (list-tinctures own-tinctures)
+                                                (list-tinctures parent-tinctures))}
       (= #{:colour}
          parent-kinds
          own-kinds) {:level :warning
-                     :message (util/format-tr (tr
-                                               (if fimbriated?
-                                                 :string.validation.rule-of-tincture/colour-fimbriation-on-colour-field
-                                                 :string.validation.rule-of-tincture/colour-field-on-colour-field))
-                                              (list-tinctures own-tinctures)
-                                              (list-tinctures parent-tinctures))})))
+                     :message (string/format-tr (tr
+                                                 (if fimbriated?
+                                                   :string.validation.rule-of-tincture/colour-fimbriation-on-colour-field
+                                                   :string.validation.rule-of-tincture/colour-field-on-colour-field))
+                                                (list-tinctures own-tinctures)
+                                                (list-tinctures parent-tinctures))})))
 
 (defn validate-tinctures [field-context parent-field-context fimbriation-context]
   (let [field-tinctures (field-tinctures-for-validation field-context)
@@ -117,44 +117,45 @@
          (cond-> []
            main-check (conj (-> main-check
                                 (update :message (fn [message]
-                                                   (util/str-tr (case which
-                                                                  :line (util/str-tr :string.entity/main-line ": ")
-                                                                  :opposite-line (util/str-tr :string.entity/opposite-line ": ")
-                                                                  :extra-line (util/str-tr :string.entity/extra-line ": ")
-                                                                  nil)
-                                                                message)))))
+                                                   (string/str-tr
+                                                    (case which
+                                                      :line (string/str-tr :string.entity/main-line ": ")
+                                                      :opposite-line (string/str-tr :string.entity/opposite-line ": ")
+                                                      :extra-line (string/str-tr :string.entity/extra-line ": ")
+                                                      nil)
+                                                    message)))))
 
            (= fimbriation-tincture-1-kind
               fimbriation-tincture-2-kind
               :metal) (conj {:level :note
-                             :message (util/format-tr (tr
-                                                       :string.validation.rule-of-tincture/fimbriation-tinctures-both-metal)
-                                                      (tincture/translate-tincture fimbriation-tincture-1)
-                                                      (tincture/translate-tincture fimbriation-tincture-2))})
+                             :message (string/format-tr (tr
+                                                         :string.validation.rule-of-tincture/fimbriation-tinctures-both-metal)
+                                                        (tincture/translate-tincture fimbriation-tincture-1)
+                                                        (tincture/translate-tincture fimbriation-tincture-2))})
 
            (= fimbriation-tincture-1-kind
               fimbriation-tincture-2-kind
               :colour) (conj {:level :note
-                              :message (util/format-tr (tr
-                                                        :string.validation.rule-of-tincture/fimbriation-tinctures-both-colour)
-                                                       (tincture/translate-tincture fimbriation-tincture-1)
-                                                       (tincture/translate-tincture fimbriation-tincture-2))})
+                              :message (string/format-tr (tr
+                                                          :string.validation.rule-of-tincture/fimbriation-tinctures-both-colour)
+                                                         (tincture/translate-tincture fimbriation-tincture-1)
+                                                         (tincture/translate-tincture fimbriation-tincture-2))})
 
            (= (set [fimbriation-tincture-1-kind])
               field-tincture-kinds
               #{:metal}) (conj {:level :note
-                                :message (util/format-tr (tr
-                                                          :string.validation.rule-of-tincture/metal-fimbriation-touches-metal-field)
-                                                         (tincture/translate-tincture fimbriation-tincture-1)
-                                                         (list-tinctures field-tinctures))})
+                                :message (string/format-tr (tr
+                                                            :string.validation.rule-of-tincture/metal-fimbriation-touches-metal-field)
+                                                           (tincture/translate-tincture fimbriation-tincture-1)
+                                                           (list-tinctures field-tinctures))})
 
            (= (set [fimbriation-tincture-1-kind])
               field-tincture-kinds
               #{:colour}) (conj {:level :note
-                                 :message (util/format-tr (tr
-                                                           :string.validation.rule-of-tincture/colour-fimbriation-touches-colour-field)
-                                                          (tincture/translate-tincture fimbriation-tincture-1)
-                                                          (list-tinctures field-tinctures))}))]))))
+                                 :message (string/format-tr (tr
+                                                             :string.validation.rule-of-tincture/colour-fimbriation-touches-colour-field)
+                                                            (tincture/translate-tincture fimbriation-tincture-1)
+                                                            (list-tinctures field-tinctures))}))]))))
 
 (defn sort-validations [validations]
   (sort-by (fn [validation]

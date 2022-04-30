@@ -2,7 +2,6 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.heraldry.default :as default]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.frontend.api.request :as api.request]
@@ -17,8 +16,10 @@
    [heraldicon.frontend.ui.form.collection-element :as collection-element]
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user :as user]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.render.core :as render]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util :refer [id-for-url]]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -62,7 +63,7 @@
         (rf/dispatch-sync [:set list-db-path nil])
         (state/invalidate-cache list-db-path (:user-id user-data))
         (rf/dispatch-sync [:set-form-message form-db-path
-                           (util/str-tr :string.user.message/collection-saved " " (:version response))])
+                           (string/str-tr :string.user.message/collection-saved " " (:version response))])
         (reife/push-state :view-collection-by-id {:id (id-for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)
