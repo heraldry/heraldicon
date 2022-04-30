@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.shared :as field.shared]
-   [heraldicon.heraldry.infinity :as infinity]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]

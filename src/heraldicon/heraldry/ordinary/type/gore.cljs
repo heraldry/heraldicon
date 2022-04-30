@@ -1,7 +1,7 @@
 (ns heraldicon.heraldry.ordinary.type.gore
   (:require
    [heraldicon.heraldry.field.shared :as field.shared]
-   [heraldicon.heraldry.infinity :as infinity]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]

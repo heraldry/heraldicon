@@ -1,4 +1,4 @@
-(ns heraldicon.heraldry.infinity)
+(ns heraldicon.svg.infinity)
 
 (defn top [& [point]]
   (-> point
