@@ -5,8 +5,8 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.options :as options]
    [heraldicon.localization.string :as string]
+   [heraldicon.options :as options]
    [heraldicon.util :as util]))
 
 ;; TODO: can probably be improved with better subscriptions

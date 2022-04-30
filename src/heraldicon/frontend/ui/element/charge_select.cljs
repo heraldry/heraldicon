@@ -3,7 +3,6 @@
    [cljs.core.async :refer [go]]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.charge-map :as charge-map]
    [heraldicon.frontend.filter :as filter]
@@ -12,6 +11,7 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user :as user]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.util :as util]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))

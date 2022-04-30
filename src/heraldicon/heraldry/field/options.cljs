@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.field.options
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.type.barry :as barry]
    [heraldicon.heraldry.field.type.bendy :as bendy]
@@ -15,8 +16,7 @@
    [heraldicon.heraldry.field.type.paly :as paly]
    [heraldicon.heraldry.field.type.papellony :as papellony]
    [heraldicon.heraldry.field.type.per-bend :as per-bend]
-   [heraldicon.heraldry.field.type.per-bend-sinister
-    :as per-bend-sinister]
+   [heraldicon.heraldry.field.type.per-bend-sinister :as per-bend-sinister]
    [heraldicon.heraldry.field.type.per-chevron :as per-chevron]
    [heraldicon.heraldry.field.type.per-fess :as per-fess]
    [heraldicon.heraldry.field.type.per-pale :as per-pale]
@@ -30,7 +30,6 @@
    [heraldicon.heraldry.field.type.tierced-per-pale :as tierced-per-pale]
    [heraldicon.heraldry.field.type.tierced-per-pall :as tierced-per-pall]
    [heraldicon.heraldry.field.type.vairy :as vairy]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.util :as util]))

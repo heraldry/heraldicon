@@ -1,7 +1,7 @@
 (ns heraldicon.spec.test-coat-of-arms
   (:require
    [cljs.spec.alpha :as s]
-   [cljs.test :refer-macros [deftest are]]
+   [cljs.test :refer-macros [are deftest]]
    [heraldicon.spec.coat-of-arms]))
 
 (defn check-spec [spec form]

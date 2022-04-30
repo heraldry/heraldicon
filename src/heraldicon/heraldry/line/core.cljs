@@ -1,6 +1,7 @@
 (ns heraldicon.heraldry.line.core
   (:require
    [clojure.string :as s]
+   [heraldicon.context :as c]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.line.type.angled :as angled]
    [heraldicon.heraldry.line.type.bevilled :as bevilled]
@@ -26,12 +27,11 @@
    [heraldicon.heraldry.line.type.urdy :as urdy]
    [heraldicon.heraldry.line.type.wavy :as wavy]
    [heraldicon.heraldry.line.type.wolf-toothed :as wolf-toothed]
-   [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.util :as util]))

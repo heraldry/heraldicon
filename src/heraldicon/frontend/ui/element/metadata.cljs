@@ -8,8 +8,8 @@
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.metadata :as metadata]
    [heraldicon.localization.string :as string]
+   [heraldicon.metadata :as metadata]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 

@@ -1,15 +1,15 @@
 (ns heraldicon.heraldry.field.type.per-pile
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.shared :as shared]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.shared.pile :as pile]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 

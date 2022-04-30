@@ -1,17 +1,17 @@
 (ns heraldicon.heraldry.field.type.chevronny
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.shared :as shared]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
-   [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.shared.chevron :as chevron]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.angle :as angle]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.render.outline :as outline]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def field-type :heraldry.field.type/chevronny)

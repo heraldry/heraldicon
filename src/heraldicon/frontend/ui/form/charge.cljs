@@ -1,10 +1,10 @@
 (ns heraldicon.frontend.ui.form.charge
   (:require
-   [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.element.charge-type-select :as charge-type-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
+   [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.interface :as interface]))
 
 (defn form [context]

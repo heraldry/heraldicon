@@ -12,8 +12,8 @@
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.options :as options]
    [heraldicon.localization.string :as string]
+   [heraldicon.options :as options]
    [heraldicon.util :as util]))
 
 (defn tincture-modifiers-submenu [context]

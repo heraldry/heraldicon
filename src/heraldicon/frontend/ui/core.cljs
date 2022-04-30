@@ -1,6 +1,5 @@
 (ns heraldicon.frontend.ui.core
   (:require
-   [heraldicon.heraldry.component :as component]
    [heraldicon.context :as c]
    [heraldicon.frontend.history.state] ;; needed for side effects
    [heraldicon.frontend.language :refer [tr]]
@@ -62,8 +61,9 @@
    [heraldicon.frontend.ui.form.shield-separator] ;; needed for side effects
    [heraldicon.frontend.ui.interface :as ui.interface] ;; needed for side effects
    [heraldicon.frontend.validation :as validation] ;; needed for side effects
-   [heraldicon.shared] ;; needed for side effects
+   [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.shield-separator :as shield-separator]
+   [heraldicon.shared] ;; needed for side effects
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 

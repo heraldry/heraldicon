@@ -1,11 +1,11 @@
 (ns heraldicon.heraldry.ordinary.shared
   (:require
    [clojure.string :as s]
+   [heraldicon.context :as c]
    [heraldicon.heraldry.ordinary.humetty :as humetty]
    [heraldicon.heraldry.ordinary.voided :as voided]
-   [heraldicon.render.outline :as outline]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
+   [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]))
 
 (defn add-humetty-and-voided [options context]

@@ -1,9 +1,9 @@
 (ns heraldicon.heraldry.field.shared
   (:require
    [clojure.string :as s]
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
    [heraldicon.svg.path :as path]

@@ -1,6 +1,5 @@
 (ns heraldicon.frontend.ui.element.charge-type-select
   (:require
-   [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
@@ -9,6 +8,7 @@
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.interface :as interface]
    [heraldicon.static :as static]
    [heraldicon.util :as util]

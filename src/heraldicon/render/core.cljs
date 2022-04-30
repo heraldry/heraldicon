@@ -9,6 +9,7 @@
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
+   [heraldicon.localization.string :as string]
    [heraldicon.math.bounding-box :as bounding-box]
    [heraldicon.math.filter :as filter]
    [heraldicon.math.vector :as v]
@@ -20,7 +21,6 @@
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
-   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (defn coat-of-arms [{:keys

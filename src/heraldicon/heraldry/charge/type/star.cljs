@@ -1,9 +1,9 @@
 (ns heraldicon.heraldry.charge.type.star
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
    [heraldicon.heraldry.line.type.rayonny-flaming :as rayonny-flaming]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.angle :as angle]
    [heraldicon.math.vector :as v]))

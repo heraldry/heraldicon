@@ -13,8 +13,8 @@
    [heraldicon.heraldry.charge.type.rustre :as rustre]
    [heraldicon.heraldry.charge.type.star :as star]
    [heraldicon.interface :as interface]
-   [heraldicon.options :as options]
    [heraldicon.localization.string :as string]
+   [heraldicon.options :as options]
    [heraldicon.util :as util]))
 
 (def charges

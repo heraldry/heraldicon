@@ -1,13 +1,13 @@
 (ns heraldicon.heraldry.ordinary.type.orle
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
-   [heraldicon.render.outline :as outline]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 

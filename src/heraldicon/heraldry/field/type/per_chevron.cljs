@@ -1,17 +1,16 @@
 (ns heraldicon.heraldry.field.type.per-chevron
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.shared :as shared]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
-   [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.shared.chevron :as chevron]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.angle :as angle]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def field-type :heraldry.field.type/per-chevron)

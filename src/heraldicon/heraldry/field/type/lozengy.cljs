@@ -1,10 +1,10 @@
 (ns heraldicon.heraldry.field.type.lozengy
   (:require
-   [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.render.outline :as outline]
-   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
+   [heraldicon.heraldry.field.interface :as field.interface]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
+   [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 
