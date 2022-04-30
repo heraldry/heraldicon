@@ -1,4 +1,4 @@
-(ns heraldicon.translation.strings
+(ns heraldicon.translation.locale
   (:require
    [clojure.data.json :as json]
    [clojure.java.io :as io]
@@ -33,14 +33,14 @@
                      [[(keyword prefix k) v]]))))
        (into {})))
 
-(defmacro load-strings [filename]
+(defmacro load-locale [filename]
   (let [data (json/read-str (res/slurp-resource &env filename))]
     (build-keyword-keys data
                         :prefix "string"
                         :source-file filename)))
 
 (defn check-translation-string-usage []
-  (let [json-data (load-strings "en-UK.json")
+  (let [json-data (load-locale "en-UK.json")
         files (into []
                     (filter #(re-matches #".*\.cljs" (.getName %)))
                     (file-seq (io/file "src")))]

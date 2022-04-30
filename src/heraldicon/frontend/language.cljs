@@ -4,7 +4,7 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
    [heraldicon.translation.string :as string]
-   [heraldicon.translation.strings :as strings]
+   [heraldicon.translation.locale :as locale]
    [hodgepodge.core :refer [get-item local-storage set-item]]
    [re-frame.core :as rf]))
 
@@ -21,7 +21,7 @@
   (when-let [language (or (first js/navigator.languages)
                           js/navigator.language
                           js/navigator.userLanguage)]
-    (let [known-language-keys (-> strings/known-languages
+    (let [known-language-keys (-> locale/all
                                   keys
                                   set)]
       (or (get known-language-keys (keyword language))
@@ -36,7 +36,7 @@
         :en)))
 
 (defn set-language [db language]
-  (if (strings/known-languages language)
+  (if (locale/all language)
     (do
       (store-language-setting language)
       (assoc-in db language-path language))
@@ -61,11 +61,11 @@
 
 (defn selected-language-option []
   (let [selected-language-code @(rf/subscribe [::selected-language])
-        title (get strings/known-languages selected-language-code)]
+        title (get locale/all selected-language-code)]
     [tr title]))
 
 (defn language-option [language-code & {:keys [on-click]}]
-  (let [title (get strings/known-languages language-code)]
+  (let [title (get locale/all language-code)]
     [:a.nav-menu-link {:href "#"
                        :on-click (fn [event]
                                    (doto event
@@ -92,7 +92,7 @@
                          "block"
                          "none")}}
      (doall
-      (for [language-code (keys strings/known-languages)]
+      (for [language-code (keys locale/all)]
         ^{:key language-code}
         [:li.nav-menu-item
          [language-option language-code

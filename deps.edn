@@ -1,6 +1,6 @@
 {:paths ["src"
          "backend/src"
-         "strings"
+         "locales"
          "blazonry"]
 
  :deps {binaryage/devtools {:mvn/version "1.0.4"}
