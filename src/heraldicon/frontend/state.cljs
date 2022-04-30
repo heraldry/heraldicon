@@ -2,7 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.default :as default]
    [heraldicon.frontend.macros :as macros]

@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
-   [heraldicon.heraldry.position :as position]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]

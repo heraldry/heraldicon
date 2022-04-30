@@ -2,7 +2,7 @@
   (:require
    [clojure.set :as set]
    [clojure.string :as s]
-   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.charge :as charge]

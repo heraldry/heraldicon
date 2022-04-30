@@ -3,7 +3,7 @@
    [clojure.set :as set]
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.field.options :as field.options]

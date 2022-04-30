@@ -1,4 +1,4 @@
-(ns heraldicon.heraldry.attributes
+(ns heraldicon.heraldry.option.attributes
   (:require
    [goog.string :as gstring]
    [heraldicon.colour :as colour]

@@ -1,7 +1,7 @@
 (ns heraldicon.spec.charge-data
   (:require
    [cljs.spec.alpha :as s]
-   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.tincture :as tincture]))
 
 (s/def :heraldry.charge-data.data.edn-data/width number?)

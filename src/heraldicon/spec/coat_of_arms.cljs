@@ -1,12 +1,12 @@
 (ns heraldicon.spec.coat-of-arms
   (:require
    [cljs.spec.alpha :as s]
-   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.charge-group.options :as charge-group.options]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
-   [heraldicon.heraldry.position :as position]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.render.texture :as texture]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.render.theme :as theme]))

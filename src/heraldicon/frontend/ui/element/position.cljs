@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.element.position
   (:require
-   [heraldicon.heraldry.position :as position]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]

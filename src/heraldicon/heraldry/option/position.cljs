@@ -1,4 +1,4 @@
-(ns heraldicon.heraldry.position
+(ns heraldicon.heraldry.option.position
   (:require
    [clojure.set :as set]
    [heraldicon.math.vector :as v]
