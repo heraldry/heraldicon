@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.charge-group.options
   (:require
-   [heraldicon.heraldry.position :as position]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.util :as util]))

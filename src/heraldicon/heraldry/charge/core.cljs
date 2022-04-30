@@ -1,7 +1,7 @@
 (ns heraldicon.heraldry.charge.core
   (:require
    [clojure.string :as s]
-   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.context :as c]

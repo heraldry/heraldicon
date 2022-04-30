@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.shared.pile
   (:require
-   [heraldicon.heraldry.position :as position]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.math.vector :as v]
    [heraldicon.util :as util]))
 

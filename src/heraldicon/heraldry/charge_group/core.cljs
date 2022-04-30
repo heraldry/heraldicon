@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.field.environment :as environment]
-   [heraldicon.heraldry.position :as position]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]

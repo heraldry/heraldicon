@@ -2,7 +2,7 @@
   (:require
    ["paper" :refer [paper Size]]
    [heraldicon.attribution :as attribution]
-   [heraldicon.heraldry.attributes :as attributes]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.charge-group.core] ;; needed for side effects
    [heraldicon.heraldry.charge-group.options] ;; needed for side effects
    [heraldicon.heraldry.charge.core] ;; needed for side effects

@@ -4,7 +4,7 @@
    [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
-   [heraldicon.heraldry.position :as position]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.shared.pile :as pile]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
