@@ -2,6 +2,7 @@
   (:require
    [goog.string :as gstring]
    [heraldicon.colour :as colour]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (def attitude-choices
@@ -156,9 +157,9 @@
         colour (colour/percent-grey percentage)]
     {:kind :shadow
      :key (keyword (str (name kind) "-" keyword-suffix))
-     :name (util/str-tr qualifier-name " " (if (= kind :shadow)
-                                             :string.option/shadow
-                                             :string.option/highlight))
+     :name (string/str-tr qualifier-name " " (if (= kind :shadow)
+                                               :string.option/shadow
+                                               :string.option/highlight))
      :colour colour}))
 
 (def qualifier-percentages

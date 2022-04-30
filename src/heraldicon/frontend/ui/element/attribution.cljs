@@ -7,6 +7,7 @@
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
@@ -16,7 +17,7 @@
                  (if (= license :none)
                    :string.attribution/no-license
                    (attribution/license-display-name license license-version))]]
-    (-> (util/combine ", " changes)
+    (-> (string/combine ", " changes)
         util/upper-case-first)))
 
 (macros/reg-event-db :merge-attribution

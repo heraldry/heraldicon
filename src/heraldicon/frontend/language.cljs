@@ -3,8 +3,8 @@
    [clojure.string :as s]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
-   [heraldicon.translation.strings :refer [known-languages]]
-   [heraldicon.util :as util]
+   [heraldicon.translation.string :as string]
+   [heraldicon.translation.strings :as strings]
    [hodgepodge.core :refer [get-item local-storage set-item]]
    [re-frame.core :as rf]))
 
@@ -21,7 +21,7 @@
   (when-let [language (or (first js/navigator.languages)
                           js/navigator.language
                           js/navigator.userLanguage)]
-    (let [known-language-keys (-> known-languages
+    (let [known-language-keys (-> strings/known-languages
                                   keys
                                   set)]
       (or (get known-language-keys (keyword language))
@@ -36,7 +36,7 @@
         :en)))
 
 (defn set-language [db language]
-  (if (known-languages language)
+  (if (strings/known-languages language)
     (do
       (store-language-setting language)
       (assoc-in db language-path language))
@@ -57,15 +57,15 @@
         (set-language db (browser-preferred-language))))))
 
 (defn tr [data]
-  (util/tr-raw data @(rf/subscribe [::selected-language])))
+  (string/tr-raw data @(rf/subscribe [::selected-language])))
 
 (defn selected-language-option []
   (let [selected-language-code @(rf/subscribe [::selected-language])
-        title (get known-languages selected-language-code)]
+        title (get strings/known-languages selected-language-code)]
     [tr title]))
 
 (defn language-option [language-code & {:keys [on-click]}]
-  (let [title (get known-languages language-code)]
+  (let [title (get strings/known-languages language-code)]
     [:a.nav-menu-link {:href "#"
                        :on-click (fn [event]
                                    (doto event
@@ -92,7 +92,7 @@
                          "block"
                          "none")}}
      (doall
-      (for [language-code (keys known-languages)]
+      (for [language-code (keys strings/known-languages)]
         ^{:key language-code}
         [:li.nav-menu-item
          [language-option language-code

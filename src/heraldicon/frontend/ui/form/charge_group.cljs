@@ -1,9 +1,5 @@
 (ns heraldicon.frontend.ui.form.charge-group
   (:require
-   [heraldicon.heraldry.charge-group.core :as charge-group]
-   [heraldicon.heraldry.charge.options :as charge.options]
-   [heraldicon.heraldry.default :as default]
-   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
@@ -12,10 +8,14 @@
     :as charge-group-preset-select]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.charge-group.core :as charge-group]
+   [heraldicon.heraldry.charge.options :as charge.options]
+   [heraldicon.heraldry.default :as default]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.static :as static]
-   [heraldicon.util :as util]))
+   [heraldicon.translation.string :as string]))
 
 (macros/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]
@@ -219,12 +219,12 @@
   (let [num-slots (interface/get-list-size (c/++ context :slots))
         stretch (interface/get-sanitized-data (c/++ context :stretch))
         offset (interface/get-sanitized-data (c/++ context :offset))
-        title (util/combine
+        title (string/combine
                ", "
-               [(util/str-tr num-slots
-                             " " (if (= num-slots 1)
-                                   :string.submenu-summary/slot
-                                   :string.submenu-summary/slots))
+               [(string/str-tr num-slots
+                               " " (if (= num-slots 1)
+                                     :string.submenu-summary/slot
+                                     :string.submenu-summary/slots))
                 (when-not (= stretch 1)
                   :string.submenu-summary/stretched)
                 (when-not (zero? offset)
@@ -315,9 +315,9 @@
 (defmethod ui.interface/component-node-data :heraldry.component/charge-group [context]
   (let [charges-context (c/++ context :charges)
         num-charges (interface/get-list-size charges-context)]
-    {:title (util/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)
-                                                                    (charge.options/title (c/++ context :charges 0))
-                                                                    :string.charge-group/various))
+    {:title (string/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)
+                                                                      (charge.options/title (c/++ context :charges 0))
+                                                                      :string.charge-group/various))
      :icon {:default (static/static-url
                       (str "/svg/charge-group-preset-three.svg"))
             :selected (static/static-url

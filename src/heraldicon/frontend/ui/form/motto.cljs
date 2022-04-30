@@ -5,6 +5,7 @@
    [heraldicon.frontend.ui.form.ribbon-general :as ribbon-general]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
@@ -24,7 +25,7 @@
           relevant-elements (if (some (set [idx]) mottos)
                               mottos
                               slogans)]
-      (util/str-tr
+      (string/str-tr
        (when (-> relevant-elements count (> 1))
          (str (inc (util/index-of idx relevant-elements)) ". "))
        (if (= relevant-elements mottos)

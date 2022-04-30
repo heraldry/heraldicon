@@ -5,6 +5,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 ;; TODO: probably can be improved with better subscriptions
@@ -24,7 +25,7 @@
                  (when (:reversed? geometry)
                    [:string.submenu-summary/reversed]))]
     (if (seq changes)
-      (-> (util/combine ", " changes)
+      (-> (string/combine ", " changes)
           util/upper-case-first)
       "Default")))
 

@@ -2,7 +2,6 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.heraldry.default :as default]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.history.core :as history]
@@ -15,6 +14,7 @@
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.user :as user]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
@@ -23,6 +23,7 @@
    [heraldicon.render.core :as render]
    [heraldicon.ribbon :as ribbon]
    [heraldicon.svg.path :as path]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util :refer [id-for-url]]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -363,7 +364,7 @@
           (state/invalidate-cache-without-current form-db-path [ribbon-id 0])
           (invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
-                             (util/str-tr :string.user.message/ribbon-saved (:version response))])
+                             (string/str-tr :string.user.message/ribbon-saved (:version response))])
           (reife/push-state :view-ribbon-by-id {:id (id-for-url ribbon-id)}))
         (modal/stop-loading)
         (catch :default e

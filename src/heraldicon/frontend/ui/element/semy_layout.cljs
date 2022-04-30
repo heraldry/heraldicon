@@ -5,6 +5,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
@@ -16,10 +17,10 @@
 
   (fn [[layout options] [_ _path]]
     (let [sanitized-layout (options/sanitize layout options)
-          main-name (util/str-tr (:num-fields-x sanitized-layout) "x"
-                                 (:num-fields-y sanitized-layout)
-                                 " "
-                                 :string.miscellaneous/fields)
+          main-name (string/str-tr (:num-fields-x sanitized-layout) "x"
+                                   (:num-fields-y sanitized-layout)
+                                   " "
+                                   :string.miscellaneous/fields)
           changes [main-name
                    (when (some #(options/changed? % sanitized-layout options)
                                [:offset-x :offset-y])
@@ -29,7 +30,7 @@
                      :string.submenu-summary/stretched)
                    (when (options/changed? :rotation sanitized-layout options)
                      :string.submenu-summary/rotated)]]
-      (-> (util/combine ", " changes)
+      (-> (string/combine ", " changes)
           util/upper-case-first))))
 
 (defn layout-submenu [context]

@@ -2,12 +2,12 @@
   (:require
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.header :as header]
-   [heraldicon.frontend.keys] ;; needed for side effects
+   [heraldicon.frontend.keys]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.route :as route]
    [heraldicon.frontend.user :as user]
-   [heraldicon.util :as util]
+   [heraldicon.translation.string :as string]
    [re-frame.core :as rf]
    [reagent.dom :as r]
    [taoensso.timbre :as log]
@@ -24,7 +24,7 @@
     [auto-complete/render]]])
 
 (defn title []
-  (util/combine
+  (string/combine
    " - "
    [@(rf/subscribe [:get-title])
     "Heraldicon"]))

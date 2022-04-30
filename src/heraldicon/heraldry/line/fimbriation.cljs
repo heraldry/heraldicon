@@ -2,11 +2,12 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.render.outline :as outline]
-   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.context :as c]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
+   [heraldicon.render.outline :as outline]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (def type-choices
@@ -69,12 +70,12 @@
                                                 :min 1
                                                 :max 30
                                                 :default 3
-                                                :ui {:label (util/str-tr :string.option/thickness " 2")
+                                                :ui {:label (string/str-tr :string.option/thickness " 2")
                                                      :step 0.01}}
                                   :tincture-2 {:type :choice
                                                :choices tincture/choices
                                                :default :none
-                                               :ui {:label (util/str-tr :string.option/tincture " 2")
+                                               :ui {:label (string/str-tr :string.option/tincture " 2")
                                                     :form-type :tincture-select}}))
         (options/populate-inheritance inherited))))
 
@@ -184,10 +185,10 @@
 
 (defn blazon-fimbriation [{:keys [tincture-1 tincture-2]}]
   (if tincture-2
-    (util/str-tr :string.submenu-summary/fimbriated " " (tincture/translate-tincture tincture-2)
-                 " " :string.miscellaneous/and " " (tincture/translate-tincture tincture-1))
+    (string/str-tr :string.submenu-summary/fimbriated " " (tincture/translate-tincture tincture-2)
+                   " " :string.miscellaneous/and " " (tincture/translate-tincture tincture-1))
     (when tincture-1
-      (util/str-tr :string.submenu-summary/fimbriated " " (tincture/translate-tincture tincture-1)))))
+      (string/str-tr :string.submenu-summary/fimbriated " " (tincture/translate-tincture tincture-1)))))
 
 (defn blazon [context & {:keys [include-lines?]}]
   (->> (concat
@@ -197,4 +198,4 @@
            (blazon-fimbriation (interface/get-sanitized-data (c/++ context :opposite-line :fimbriation)))
            (blazon-fimbriation (interface/get-sanitized-data (c/++ context :extra-line :fimbriation)))]))
        distinct
-       (util/combine ", ")))
+       (string/combine ", ")))

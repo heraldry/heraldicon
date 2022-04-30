@@ -1,12 +1,13 @@
 (ns heraldicon.heraldry.charge-group.core
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.option.position :as position]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (defn calculate-strip-slot-positions [context spacing]
@@ -206,14 +207,14 @@
                                     (and k (pos? v))))
                           (sort-by second))
         context (assoc-in context [:blazonry :part-of-charge-group?] true)]
-    (util/str-tr (util/combine
-                  " and "
-                  (map (fn [[charge-index number]]
-                         (util/str-tr number " "
-                                      (interface/blazon (-> context
-                                                            (c/++ :charges charge-index)
-                                                            (cond->
-                                                              (> number 1) (assoc-in [:blazonry :pluralize?] true))))))
-                       used-charges))
-                 (when (= charge-group-type :heraldry.charge-group.type/in-orle)
-                   " in orle"))))
+    (string/str-tr (string/combine
+                    " and "
+                    (map (fn [[charge-index number]]
+                           (string/str-tr number " "
+                                          (interface/blazon (-> context
+                                                                (c/++ :charges charge-index)
+                                                                (cond->
+                                                                  (> number 1) (assoc-in [:blazonry :pluralize?] true))))))
+                         used-charges))
+                   (when (= charge-group-type :heraldry.charge-group.type/in-orle)
+                     " in orle"))))

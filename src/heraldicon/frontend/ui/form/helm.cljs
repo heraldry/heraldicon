@@ -1,12 +1,12 @@
 (ns heraldicon.frontend.ui.form.helm
   (:require
-   [heraldicon.heraldry.default :as default]
    [heraldicon.context :as c]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.shield-separator :as shield-separator]
-   [heraldicon.util :as util]
+   [heraldicon.translation.string :as string]
    [re-frame.core :as rf]))
 
 (rf/reg-sub :get-helm-status
@@ -50,8 +50,8 @@
                                           % [:add-element components-context default/crest-charge
                                              shield-separator/add-element-options])}))]
 
-    {:title (util/str-tr (when (> num-helms 1)
-                           (str (inc (last path)) ". ")) :string.entity/helm)
+    {:title (string/str-tr (when (> num-helms 1)
+                             (str (inc (last path)) ". ")) :string.entity/helm)
      :buttons (when (seq add-menu)
                 [{:icon "fas fa-plus"
                   :title :string.button/add

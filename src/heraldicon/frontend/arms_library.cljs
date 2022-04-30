@@ -3,7 +3,6 @@
    ["copy-to-clipboard" :as copy-to-clipboard]
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.heraldry.default :as default]
    [heraldicon.context :as c]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
@@ -19,8 +18,10 @@
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.blazonry-editor :as blazonry-editor]
    [heraldicon.frontend.user :as user]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.render.core :as render]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -93,7 +94,7 @@
     [:span {:style {:font-size "0.75em"}}
      " " [tr :string.miscellaneous/beta-blazon]]]
    [:div.blazon
-    (util/tr-raw (interface/blazon {:path (conj form-db-path :coat-of-arms)}) :en)]])
+    (string/tr-raw (interface/blazon {:path (conj form-db-path :coat-of-arms)}) :en)]])
 
 (defn generate-svg-clicked [event]
   (.preventDefault event)
@@ -153,7 +154,7 @@
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path
-                           (util/str-tr :string.user.message/arms-saved " " (:version response))])
+                           (string/str-tr :string.user.message/arms-saved " " (:version response))])
         (reife/push-state :view-arms-by-id {:id (util/id-for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e

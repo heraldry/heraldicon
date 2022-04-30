@@ -1,11 +1,12 @@
 (ns heraldicon.heraldry.charge.core
   (:require
    [clojure.string :as s]
-   [heraldicon.heraldry.option.attributes :as attributes]
+   [heraldicon.context :as c]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
-   [heraldicon.context :as c]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
+   [heraldicon.translation.string :as string]
    [heraldicon.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/charge [context]
@@ -35,29 +36,29 @@
         charge-name (util/translate charge-type)
         pluralize? (and pluralize?
                         (not (#{"fleur-de-lis"} charge-name)))]
-    (util/combine " " [(when (and (not part-of-charge-group?)
-                                  (not drop-article?))
-                         "a")
-                       (util/str-tr charge-name
-                                    (when pluralize?
-                                      (if (s/ends-with? charge-name "s")
-                                        "es"
-                                        "s")))
-                       (when-not (= attitude :none)
-                         (util/translate attitude))
-                       (when-not (#{:none :to-dexter} facing)
-                         (util/translate facing))
-                       (if fixed-tincture
-                         (util/translate fixed-tincture)
-                         (interface/blazon (c/++ context :field)))
-                       (util/combine
-                        " and "
-                        (map (fn [colour-key]
-                               (when-let [t (get tincture colour-key)]
-                                 (when (not= t :none)
-                                   (util/combine " " [(util/translate colour-key)
-                                                      (util/translate t)]))))
-                             (-> attributes/tincture-modifier-map
-                                 keys
-                                 sort)))
-                       (fimbriation/blazon context)])))
+    (string/combine " " [(when (and (not part-of-charge-group?)
+                                    (not drop-article?))
+                           "a")
+                         (string/str-tr charge-name
+                                        (when pluralize?
+                                          (if (s/ends-with? charge-name "s")
+                                            "es"
+                                            "s")))
+                         (when-not (= attitude :none)
+                           (util/translate attitude))
+                         (when-not (#{:none :to-dexter} facing)
+                           (util/translate facing))
+                         (if fixed-tincture
+                           (util/translate fixed-tincture)
+                           (interface/blazon (c/++ context :field)))
+                         (string/combine
+                          " and "
+                          (map (fn [colour-key]
+                                 (when-let [t (get tincture colour-key)]
+                                   (when (not= t :none)
+                                     (string/combine " " [(util/translate colour-key)
+                                                          (util/translate t)]))))
+                               (-> attributes/tincture-modifier-map
+                                   keys
+                                   sort)))
+                         (fimbriation/blazon context)])))
