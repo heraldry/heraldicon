@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
-   [heraldicon.strings :refer [known-languages]]
+   [heraldicon.translation.strings :refer [known-languages]]
    [heraldicon.util :as util]
    [hodgepodge.core :refer [get-item local-storage set-item]]
    [re-frame.core :as rf]))

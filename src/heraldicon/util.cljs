@@ -7,7 +7,7 @@
    [goog.crypt :as crypt]
    [goog.crypt.base64 :as b64]
    [heraldicon.config :as config]
-   [heraldicon.strings :refer [known-languages string]]
+   [heraldicon.translation.strings :refer [known-languages string]]
    [taoensso.timbre :as log]))
 
 (def -current-id

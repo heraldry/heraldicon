@@ -1,5 +1,5 @@
-(ns heraldicon.strings
-  (:require-macros [heraldicon.strings :refer [load-strings]]))
+(ns heraldicon.translation.strings
+  (:require-macros [heraldicon.translation.strings :refer [load-strings]]))
 
 (def JSON-DICT
   {:en (load-strings "en-UK.json")

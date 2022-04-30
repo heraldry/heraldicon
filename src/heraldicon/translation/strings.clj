@@ -1,4 +1,4 @@
-(ns heraldicon.strings
+(ns heraldicon.translation.strings
   (:require
    [clojure.data.json :as json]
    [clojure.java.io :as io]
