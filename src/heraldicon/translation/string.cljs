@@ -1,11 +1,11 @@
 (ns heraldicon.translation.string
   (:require
    [clojure.string :as s]
-   [heraldicon.translation.strings :as strings]))
+   [heraldicon.translation.locale :as locale]))
 
 (defn tr-raw [data language]
   (cond
-    (keyword? data) (tr-raw (strings/string data) language)
+    (keyword? data) (tr-raw (locale/string data) language)
     (map? data) (let [translated (get data language)]
                   (if (some-> translated count pos?)
                     translated
@@ -13,7 +13,7 @@
     :else (str data)))
 
 (defn combine [separator words]
-  (let [translated (->> strings/known-languages
+  (let [translated (->> locale/all
                         keys
                         (map (fn [language]
                                [language
@@ -38,7 +38,7 @@
       translated)))
 
 (defn str-tr [& strs]
-  (let [translated (->> strings/known-languages
+  (let [translated (->> locale/all
                         keys
                         (map (fn [language]
                                [language
