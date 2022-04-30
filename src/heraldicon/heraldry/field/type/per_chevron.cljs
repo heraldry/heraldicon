@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.shared :as shared]
-   [heraldicon.heraldry.infinity :as infinity]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.orientation :as orientation]
    [heraldicon.heraldry.position :as position]
