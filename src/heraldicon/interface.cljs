@@ -4,7 +4,7 @@
    [heraldicon.heraldry.component :as component]
    [heraldicon.context :as c]
    [heraldicon.options :as options]
-   [heraldicon.shield-separator :as shield-separator]
+   [heraldicon.heraldry.shield-separator :as shield-separator]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 

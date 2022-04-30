@@ -6,7 +6,7 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.shield-separator :as shield-separator]
+   [heraldicon.heraldry.shield-separator :as shield-separator]
    [re-frame.core :as rf]))
 
 (defn form [_context]
