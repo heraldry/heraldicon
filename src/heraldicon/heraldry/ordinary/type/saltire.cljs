@@ -5,7 +5,7 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
-   [heraldicon.heraldry.orientation :as orientation]
+   [heraldicon.heraldry.position :as position]
    [heraldicon.heraldry.position :as position]
    [heraldicon.heraldry.shared.saltire :as saltire]
    [heraldicon.context :as c]
@@ -122,7 +122,7 @@
         band-width (-> size
                        ((util/percent-of width)))
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
+         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
                                                anchor
                                                orientation

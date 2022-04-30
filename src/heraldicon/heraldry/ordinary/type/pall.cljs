@@ -5,7 +5,7 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
-   [heraldicon.heraldry.orientation :as orientation]
+   [heraldicon.heraldry.position :as position]
    [heraldicon.heraldry.position :as position]
    [heraldicon.heraldry.shared.chevron :as chevron]
    [heraldicon.context :as c]
@@ -264,7 +264,7 @@
         band-width (-> size
                        ((util/percent-of height)))
         {direction-anchor-point :real-anchor
-         origin-point :real-orientation} (orientation/calculate-anchor-and-orientation
+         origin-point :real-orientation} (position/calculate-anchor-and-orientation
                                           environment
                                           anchor
                                           origin
@@ -274,7 +274,7 @@
                     (v/angle-to-point direction-anchor-point
                                       origin-point))
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
+         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
                                                anchor
                                                orientation

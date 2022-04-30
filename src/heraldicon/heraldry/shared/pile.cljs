@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.shared.pile
   (:require
-   [heraldicon.heraldry.orientation :as orientation]
+   [heraldicon.heraldry.position :as position]
    [heraldicon.math.vector :as v]
    [heraldicon.util :as util]))
 
@@ -51,7 +51,7 @@
                              :edge)
         alignment (-> anchor :alignment (or :middle))
         {real-anchor :real-anchor
-         real-orientation :real-orientation} (orientation/calculate-anchor-and-orientation
+         real-orientation :real-orientation} (position/calculate-anchor-and-orientation
                                               environment
                                               (assoc anchor :alignment :middle)
                                               (assoc orientation :alignment :middle)
@@ -102,7 +102,7 @@
         orientation-type (or (:type orientation)
                              :edge)
         {real-anchor :real-anchor
-         real-orientation :real-orientation} (orientation/calculate-anchor-and-orientation
+         real-orientation :real-orientation} (position/calculate-anchor-and-orientation
                                               environment
                                               anchor
                                               orientation

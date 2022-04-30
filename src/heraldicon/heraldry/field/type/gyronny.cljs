@@ -4,7 +4,7 @@
    [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
-   [heraldicon.heraldry.orientation :as orientation]
+   [heraldicon.heraldry.position :as position]
    [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.shared.saltire :as saltire]
    [heraldicon.context :as c]
@@ -105,7 +105,7 @@
         bottom-left (:bottom-left points)
         bottom-right (:bottom-right points)
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
+         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
                                                anchor
                                                orientation
