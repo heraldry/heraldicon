@@ -4,7 +4,7 @@
    [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
-   [heraldicon.heraldry.orientation :as orientation]
+   [heraldicon.heraldry.position :as position]
    [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.position :as position]
    [heraldicon.heraldry.shared.chevron :as chevron]
@@ -249,7 +249,7 @@
         points (:points environment)
         unadjusted-anchor-point (position/calculate anchor environment)
         {direction-anchor-point :real-anchor
-         origin-point :real-orientation} (orientation/calculate-anchor-and-orientation
+         origin-point :real-orientation} (position/calculate-anchor-and-orientation
                                           environment
                                           anchor
                                           origin
@@ -259,7 +259,7 @@
                     (v/angle-to-point direction-anchor-point
                                       origin-point))
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
+         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
                                                anchor
                                                orientation

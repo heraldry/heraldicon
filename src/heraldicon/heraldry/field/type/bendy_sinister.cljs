@@ -4,7 +4,7 @@
    [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.heraldry.field.type.barry :as barry]
    [heraldicon.heraldry.line.core :as line]
-   [heraldicon.heraldry.orientation :as orientation]
+   [heraldicon.heraldry.position :as position]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
@@ -141,7 +141,7 @@
         top (:top points)
         bottom (:bottom points)
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (orientation/calculate-anchor-and-orientation
+         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
                                                anchor
                                                (update orientation :angle #(when %
