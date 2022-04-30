@@ -1,8 +1,8 @@
 (ns heraldicon.heraldry.cottising
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))

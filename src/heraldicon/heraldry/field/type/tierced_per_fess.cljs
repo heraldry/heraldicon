@@ -1,14 +1,14 @@
 (ns heraldicon.heraldry.field.type.tierced-per-fess
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.shared :as shared]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
-   [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.option.position :as position]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
+   [heraldicon.render.outline :as outline]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def field-type :heraldry.field.type/tierced-per-fess)

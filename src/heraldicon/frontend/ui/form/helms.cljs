@@ -1,10 +1,10 @@
 (ns heraldicon.frontend.ui.form.helms
   (:require
-   [heraldicon.heraldry.default :as default]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]))
 
 (defn form [_context]

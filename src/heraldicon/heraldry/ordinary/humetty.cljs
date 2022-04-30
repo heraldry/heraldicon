@@ -1,7 +1,7 @@
 (ns heraldicon.heraldry.ordinary.humetty
   (:require
-   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.context :as c]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
    [heraldicon.util :as util]))
 

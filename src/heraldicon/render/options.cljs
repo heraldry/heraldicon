@@ -1,11 +1,10 @@
 (ns heraldicon.render.options
   (:require
-   [heraldicon.heraldry.escutcheon :as escutcheon]
-   [heraldicon.render.texture :as texture]
-   [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.render.theme :as theme]
    [heraldicon.context :as c]
-   [heraldicon.interface :as interface]))
+   [heraldicon.heraldry.escutcheon :as escutcheon]
+   [heraldicon.interface :as interface]
+   [heraldicon.render.texture :as texture]
+   [heraldicon.render.theme :as theme]))
 
 (defmethod interface/options-subscriptions :heraldry.component/render-options [_context]
   #{[:escutcheon]

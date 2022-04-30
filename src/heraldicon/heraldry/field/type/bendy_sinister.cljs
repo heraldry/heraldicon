@@ -1,11 +1,11 @@
 (ns heraldicon.heraldry.field.type.bendy-sinister
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.heraldry.field.type.barry :as barry]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))

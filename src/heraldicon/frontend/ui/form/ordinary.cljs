@@ -1,13 +1,13 @@
 (ns heraldicon.frontend.ui.form.ordinary
   (:require
-   [heraldicon.heraldry.default :as default]
-   [heraldicon.heraldry.ordinary.core :as ordinary]
    [heraldicon.context :as c]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.form.cottise :as cottise]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
+   [heraldicon.heraldry.default :as default]
+   [heraldicon.heraldry.ordinary.core :as ordinary]
    [heraldicon.interface :as interface]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))

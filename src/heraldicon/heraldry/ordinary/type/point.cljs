@@ -1,15 +1,15 @@
 (ns heraldicon.heraldry.ordinary.type.point
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.shared :as field.shared]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]
    [heraldicon.util :as util]))
 

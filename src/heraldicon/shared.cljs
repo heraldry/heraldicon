@@ -2,7 +2,10 @@
   (:require
    ["paper" :refer [paper Size]]
    [heraldicon.attribution :as attribution]
-   [heraldicon.heraldry.option.attributes :as attributes]
+   [heraldicon.collection.element] ;; needed for side effects
+   [heraldicon.collection.options] ;; needed for side effects
+   [heraldicon.context :as c]
+   [heraldicon.font :as font]
    [heraldicon.heraldry.charge-group.core] ;; needed for side effects
    [heraldicon.heraldry.charge-group.options] ;; needed for side effects
    [heraldicon.heraldry.charge.core] ;; needed for side effects
@@ -12,15 +15,12 @@
    [heraldicon.heraldry.field.core] ;; needed for side effects
    [heraldicon.heraldry.field.shared] ;; needed for side effects
    [heraldicon.heraldry.motto] ;; needed for side effects
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.ordinary.core] ;; needed for side effects
    [heraldicon.heraldry.ordinary.options] ;; needed for side effects
    [heraldicon.heraldry.semy] ;; needed for side effects
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.heraldry.various] ;; needed for side effects
-   [heraldicon.collection.element] ;; needed for side effects
-   [heraldicon.collection.options] ;; needed for side effects
-   [heraldicon.context :as c]
-   [heraldicon.font :as font]
    [heraldicon.interface :as interface]
    [heraldicon.metadata :as metadata]
    [heraldicon.render.options] ;; needed for side effects

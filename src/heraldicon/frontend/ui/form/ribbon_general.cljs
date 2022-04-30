@@ -9,10 +9,9 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.interface :as interface]
+   [heraldicon.localization.string :as string]
    [heraldicon.math.curve.core :as curve]
    [heraldicon.ribbon :as ribbon]
-   [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
 (def layers-path

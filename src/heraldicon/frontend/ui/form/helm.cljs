@@ -4,8 +4,8 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.interface :as interface]
    [heraldicon.heraldry.shield-separator :as shield-separator]
+   [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 

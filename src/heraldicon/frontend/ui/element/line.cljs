@@ -5,8 +5,8 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.interface :as interface]
-   [heraldicon.options :as options]
    [heraldicon.localization.string :as string]
+   [heraldicon.options :as options]
    [heraldicon.util :as util]))
 
 ;; TODO: likely can be further improved by reading out the various description strings

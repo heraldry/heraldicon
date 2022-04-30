@@ -1,10 +1,10 @@
 (ns heraldicon.heraldry.charge.type.escutcheon
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.field.environment :as environment]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))

@@ -1,11 +1,11 @@
 (ns heraldicon.frontend.ui.element.colours
   (:require
-   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.checkbox :as checkbox]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))

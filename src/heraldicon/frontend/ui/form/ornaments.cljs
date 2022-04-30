@@ -1,12 +1,12 @@
 (ns heraldicon.frontend.ui.form.ornaments
   (:require
-   [heraldicon.heraldry.default :as default]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.interface :as ui.interface]
-   [heraldicon.interface :as interface]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.shield-separator :as shield-separator]
+   [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
 (defn form [_context]

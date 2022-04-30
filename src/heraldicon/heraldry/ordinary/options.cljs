@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.ordinary.options
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.type.base :as base]
    [heraldicon.heraldry.ordinary.type.bend :as bend]
@@ -18,7 +19,6 @@
    [heraldicon.heraldry.ordinary.type.point :as point]
    [heraldicon.heraldry.ordinary.type.quarter :as quarter]
    [heraldicon.heraldry.ordinary.type.saltire :as saltire]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.util :as util]))

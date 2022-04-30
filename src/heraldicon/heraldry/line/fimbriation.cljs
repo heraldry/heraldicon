@@ -5,9 +5,9 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
+   [heraldicon.localization.string :as string]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
-   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (def type-choices

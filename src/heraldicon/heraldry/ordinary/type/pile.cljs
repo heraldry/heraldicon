@@ -1,13 +1,13 @@
 (ns heraldicon.heraldry.ordinary.type.pile
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
-   [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.shared.pile :as pile]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]

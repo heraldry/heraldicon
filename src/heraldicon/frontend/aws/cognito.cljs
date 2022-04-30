@@ -1,8 +1,7 @@
 (ns heraldicon.frontend.aws.cognito
   (:require
-   ["amazon-cognito-identity-js" :refer [CognitoUserPool
-                                         CognitoUser
-                                         AuthenticationDetails]]
+   ["amazon-cognito-identity-js"
+    :refer [AuthenticationDetails CognitoUser CognitoUserPool]]
    [heraldicon.config :as config]))
 
 (def user-pool

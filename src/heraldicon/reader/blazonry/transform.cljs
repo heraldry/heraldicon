@@ -3,10 +3,10 @@
    [clojure.set :as set]
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.field.options :as field.options]
+   [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.heraldry.tincture :as tincture]
    [taoensso.timbre :as log]))

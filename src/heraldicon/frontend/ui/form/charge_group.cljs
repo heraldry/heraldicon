@@ -13,9 +13,9 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
+   [heraldicon.localization.string :as string]
    [heraldicon.math.vector :as v]
-   [heraldicon.static :as static]
-   [heraldicon.localization.string :as string]))
+   [heraldicon.static :as static]))
 
 (macros/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]

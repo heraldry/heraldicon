@@ -1,12 +1,12 @@
 (ns heraldicon.frontend.ui.element.ordinary-type-select
   (:require
-   [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.static :as static]

@@ -11,8 +11,8 @@
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.static :as static]
    [heraldicon.localization.string :as string]
+   [heraldicon.static :as static]
    [heraldicon.util :as util]))
 
 (macros/reg-event-db :override-field-part-reference

@@ -1,15 +1,15 @@
 (ns heraldicon.heraldry.ordinary.type.gore
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.shared :as field.shared]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.heraldry.line.core :as line]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
-   [heraldicon.heraldry.option.position :as position]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (defn arm-diagonal [anchor-point orientation-point]

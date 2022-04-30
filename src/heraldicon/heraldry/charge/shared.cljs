@@ -1,16 +1,16 @@
 (ns heraldicon.heraldry.charge.shared
   (:require
    [clojure.string :as s]
+   [heraldicon.context :as c]
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.option.position :as position]
-   [heraldicon.render.outline :as outline]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.util :as util]))

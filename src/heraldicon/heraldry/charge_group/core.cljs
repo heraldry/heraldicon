@@ -5,9 +5,9 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
+   [heraldicon.localization.string :as string]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]
-   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (defn calculate-strip-slot-positions [context spacing]
