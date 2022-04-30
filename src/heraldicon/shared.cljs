@@ -14,8 +14,7 @@
    [heraldicon.heraldry.motto] ;; needed for side effects
    [heraldicon.heraldry.ordinary.core] ;; needed for side effects
    [heraldicon.heraldry.ordinary.options] ;; needed for side effects
-   [heraldicon.heraldry.semy.core] ;; needed for side effects
-   [heraldicon.heraldry.semy.options] ;; needed for side effects
+   [heraldicon.heraldry.semy] ;; needed for side effects
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.heraldry.various] ;; needed for side effects
    [heraldicon.collection.element] ;; needed for side effects
