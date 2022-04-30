@@ -5,7 +5,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
-   [heraldicon.shield-separator :as shield-separator]
+   [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 

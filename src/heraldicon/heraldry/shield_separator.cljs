@@ -1,4 +1,4 @@
-(ns heraldicon.shield-separator
+(ns heraldicon.heraldry.shield-separator
   (:require
    [heraldicon.heraldry.default :as default]))
 

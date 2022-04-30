@@ -59,11 +59,11 @@
    [heraldicon.frontend.ui.form.render-options] ;; needed for side effects
    [heraldicon.frontend.ui.form.ribbon-general] ;; needed for side effects
    [heraldicon.frontend.ui.form.semy] ;; needed for side effects
+   [heraldicon.frontend.ui.form.shield-separator] ;; needed for side effects
    [heraldicon.frontend.ui.interface :as ui.interface] ;; needed for side effects
-   [heraldicon.frontend.ui.shield-separator] ;; needed for side effects
    [heraldicon.frontend.validation :as validation] ;; needed for side effects
    [heraldicon.shared] ;; needed for side effects
-   [heraldicon.shield-separator :as shield-separator]
+   [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
