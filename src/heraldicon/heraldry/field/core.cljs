@@ -6,7 +6,7 @@
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (defn mandatory-part-count [context]

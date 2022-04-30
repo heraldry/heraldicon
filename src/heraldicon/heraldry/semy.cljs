@@ -5,7 +5,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.util :as util]
-   [heraldicon.translation.string :as string]))
+   [heraldicon.localization.string :as string]))
 
 (defmethod interface/options-subscriptions :heraldry.component/semy [_context]
   #{})

@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 
 (def ui-highlighted-element-path [:ui :collection-library :selected-element])

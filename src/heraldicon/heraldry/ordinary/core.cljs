@@ -5,7 +5,7 @@
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.interface :as interface]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/ordinary [context]

@@ -4,7 +4,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.interface :as interface]
-   [heraldicon.translation.string :as string]))
+   [heraldicon.localization.string :as string]))
 
 (defn form [context]
   (ui.interface/form-elements

@@ -7,7 +7,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (def type-choices

@@ -1,7 +1,7 @@
 (ns heraldicon.heraldry.escutcheon
   (:require
    [heraldicon.heraldry.field.environment :as environment]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (def heater

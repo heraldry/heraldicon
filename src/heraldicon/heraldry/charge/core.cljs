@@ -6,7 +6,7 @@
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (defmethod interface/render-component :heraldry.component/charge [context]

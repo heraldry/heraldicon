@@ -6,7 +6,7 @@
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 ;; TODO: probably can be improved with better subscriptions

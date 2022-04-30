@@ -6,7 +6,7 @@
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.translation.string :as string]))
+   [heraldicon.localization.string :as string]))
 
 (def level-order
   {:error 0

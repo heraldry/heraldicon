@@ -23,7 +23,7 @@
    [heraldicon.frontend.user :as user]
    [heraldicon.render.core :as render]
    [heraldicon.svg.core :as svg]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util :refer [id-for-url]]
    [hickory.core :as hickory]
    [re-frame.core :as rf]

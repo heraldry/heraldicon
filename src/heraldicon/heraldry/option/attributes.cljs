@@ -2,7 +2,7 @@
   (:require
    [goog.string :as gstring]
    [heraldicon.colour :as colour]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (def attitude-choices

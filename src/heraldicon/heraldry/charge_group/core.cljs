@@ -7,7 +7,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (defn calculate-strip-slot-positions [context spacing]
