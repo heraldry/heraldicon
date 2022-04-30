@@ -1,11 +1,12 @@
 (ns heraldicon.heraldry.semy
   (:require
-   [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.context :as c]
+   [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.interface :as interface]
+   [heraldicon.localization.string :as string]
    [heraldicon.math.vector :as v]
-   [heraldicon.util :as util]
-   [heraldicon.localization.string :as string]))
+   [heraldicon.options :as options]
+   [heraldicon.util :as util]))
 
 (defmethod interface/options-subscriptions :heraldry.component/semy [_context]
   #{})
@@ -58,9 +59,7 @@
        :rectangular? {:type :boolean
                       :default false
                       :ui {:label :string.option/rectangular?}}
-       :manual-blazon {:type :text
-                       :default nil
-                       :ui {:label :string.option/manual-blazon}}}))
+       :manual-blazon options/manual-blazon}))
 
 (defn shift-environment [environment point]
   (-> environment

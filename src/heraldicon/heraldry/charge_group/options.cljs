@@ -1,8 +1,9 @@
 (ns heraldicon.heraldry.charge-group.options
   (:require
-   [heraldicon.heraldry.option.position :as position]
    [heraldicon.context :as c]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
+   [heraldicon.options :as options]
    [heraldicon.util :as util]))
 
 (def type-choices
@@ -39,9 +40,7 @@
                             :step 0.1}}
             :ui {:label :string.option/anchor
                  :form-type :position}}
-   :manual-blazon {:type :text
-                   :default nil
-                   :ui {:label :string.option/manual-blazon}}})
+   :manual-blazon options/manual-blazon})
 
 (defn rows-or-columns [_context]
   (-> shared-options
