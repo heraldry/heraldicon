@@ -1,4 +1,4 @@
-(ns heraldicon.translation.locale
+(ns heraldicon.localization.locale
   (:require
    [clojure.data.json :as json]
    [clojure.java.io :as io]

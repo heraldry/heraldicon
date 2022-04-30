@@ -7,7 +7,7 @@
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.option.attributes :as attributes]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 

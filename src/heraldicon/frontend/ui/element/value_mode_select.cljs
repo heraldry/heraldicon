@@ -3,7 +3,7 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.interface :as interface]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]))
 
 (defn value-mode-select [context & {:keys [display-fn disabled? on-change default-option]}]

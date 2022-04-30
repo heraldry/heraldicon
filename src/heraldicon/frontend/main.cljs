@@ -7,7 +7,7 @@
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.route :as route]
    [heraldicon.frontend.user :as user]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
    [reagent.dom :as r]
    [taoensso.timbre :as log]

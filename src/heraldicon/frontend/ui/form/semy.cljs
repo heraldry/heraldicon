@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.charge.options :as charge.options]
-   [heraldicon.translation.string :as string]))
+   [heraldicon.localization.string :as string]))
 
 (defn form [context]
   (ui.interface/form-elements

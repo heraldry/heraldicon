@@ -21,7 +21,7 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.render.core :as render]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]

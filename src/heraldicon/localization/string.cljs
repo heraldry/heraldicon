@@ -1,7 +1,7 @@
-(ns heraldicon.translation.string
+(ns heraldicon.localization.string
   (:require
    [clojure.string :as s]
-   [heraldicon.translation.locale :as locale]))
+   [heraldicon.localization.locale :as locale]))
 
 (defn tr-raw [data language]
   (cond

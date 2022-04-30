@@ -15,7 +15,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.static :as static]
-   [heraldicon.translation.string :as string]))
+   [heraldicon.localization.string :as string]))
 
 (macros/reg-event-db :cycle-charge-index
   (fn [db [_ path num-charges]]

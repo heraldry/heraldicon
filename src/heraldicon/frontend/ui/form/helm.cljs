@@ -6,7 +6,7 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.shield-separator :as shield-separator]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 
 (rf/reg-sub :get-helm-status

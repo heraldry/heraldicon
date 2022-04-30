@@ -5,7 +5,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 

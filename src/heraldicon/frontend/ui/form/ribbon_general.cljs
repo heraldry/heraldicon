@@ -11,7 +11,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.curve.core :as curve]
    [heraldicon.ribbon :as ribbon]
-   [heraldicon.translation.string :as string]
+   [heraldicon.localization.string :as string]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
