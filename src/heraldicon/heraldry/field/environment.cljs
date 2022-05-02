@@ -9,9 +9,10 @@
 
 (defn create [shape {:keys [bounding-box context
                             width height] :as meta}]
-  (let [shape (if (map? shape)
-                shape
-                {:paths [shape]})
+  (let [shape (cond
+                (nil? shape) nil
+                (map? shape) shape
+                :else {:paths [shape]})
         [min-x max-x min-y max-y] (or bounding-box
                                       (bounding-box/from-paths
                                        (:paths shape)))
