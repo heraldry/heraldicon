@@ -63,19 +63,34 @@
 
 (declare render)
 
+(defn effective-field-context [context]
+  (let [;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
+        ;; adding it to the choices in the option would affect the UI
+        field-type (interface/get-raw-data (c/++ context :type))]
+    (cond-> context
+      (= field-type
+         :heraldry.field.type/ref) (->
+                                     c/--
+                                     (c/++ (interface/get-raw-data
+                                            (c/++ context :index)))))))
+
 (defn render-counterchanged-field [{:keys [path
                                            parent-field-path
                                            parent-field-environment] :as context}]
   (if parent-field-path
-    (let [counterchange-tinctures (interface/get-counterchange-tinctures
-                                   (c/<< context :path parent-field-path))
+    (let [parent-field-context (-> context
+                                   (c/<< :path parent-field-path)
+                                   effective-field-context)
+          counterchange-tinctures (interface/get-counterchange-tinctures
+                                   parent-field-context)
           context (-> context
                       (update :counterchanged-paths conj path)
                       (add-tinctures-to-mapping counterchange-tinctures))]
       [:<>
        [render (-> context
                    (c/<< :path parent-field-path)
-                   (c/<< :environment parent-field-environment))]
+                   (c/<< :environment parent-field-environment)
+                   effective-field-context)]
        [render-components context]])
     [:<>]))
 
@@ -83,15 +98,7 @@
                       environment
                       svg-export?
                       transform] :as context}]
-  (let [;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
-        ;; adding it to the choices in the option would affect the UI
-        field-type (interface/get-raw-data (c/++ context :type))
-        field-context (cond-> context
-                        (= field-type
-                           :heraldry.field.type/ref) (->
-                                                       c/--
-                                                       (c/++ (interface/get-raw-data
-                                                              (c/++ context :index)))))
+  (let [field-context (effective-field-context context)
         inherit-environment? (interface/get-sanitized-data
                               (c/++ field-context :inherit-environment?))
         counterchanged? (= (interface/get-raw-data (c/++ field-context :type))
