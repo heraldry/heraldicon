@@ -461,12 +461,12 @@
    :or "#e7cd54"
    ;; colours
    :azure "#1353b4"
-   :vert "#5e9436"
+   :vert "#4c8a1e"
    :gules "#ce0f25"
    :sable "#2d2d2d"
    :purpure "#a44476"
    ;; stains
-   :murrey "#9a234eff"
+   :murrey "#9a234e"
    :sanguine "#791717"
    :tenne "#c15f1d"
    ;; other
