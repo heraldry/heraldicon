@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.blazonry :as blazonry]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.charge-map :as charge-map]
    [heraldicon.frontend.filter :as filter]
@@ -12,7 +13,6 @@
    [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.option.attributes :as attributes]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -192,12 +192,12 @@
    (when-let [attitude (-> charge
                            :attitude
                            (#(when (not= % :none) %)))]
-     [:div.tag.attitude (util/translate attitude)])
+     [:div.tag.attitude (blazonry/translate attitude)])
    " "
    (when-let [facing (-> charge
                          :facing
                          (#(when (-> % #{:none :to-dexter} not) %)))]
-     [:div.tag.facing (util/translate facing)])
+     [:div.tag.facing (blazonry/translate facing)])
    " "
    (for [attribute (->> charge
                         :attributes
@@ -205,7 +205,7 @@
                         (map first)
                         sort)]
      ^{:key attribute}
-     [:<> [:div.tag.attribute (util/translate attribute)] " "])
+     [:<> [:div.tag.attribute (blazonry/translate attribute)] " "])
    (when (or (->> charge :colours vals (map attributes/tincture-modifier) set :shadow)
              (->> charge :colours vals (map attributes/tincture-modifier-qualifier) (keep attributes/shadow-qualifiers) seq)
              (->> charge :colours vals (map attributes/tincture-modifier) set :highlight)
@@ -216,7 +216,7 @@
                                  :fixed-tincture
                                  (or :none)
                                  (#(when (not= % :none) %)))]
-     [:div.tag.fixed-tincture (util/translate fixed-tincture)])
+     [:div.tag.fixed-tincture (blazonry/translate fixed-tincture)])
    " "
    (for [modifier (->> charge
                        :colours
@@ -232,7 +232,7 @@
                        set
                        sort)]
      ^{:key modifier}
-     [:<> [:div.tag.modifier (util/translate modifier)] " "])
+     [:<> [:div.tag.modifier (blazonry/translate modifier)] " "])
    [tags/tags-view (-> charge :tags keys)]])
 
 (macros/reg-event-db :prune-false-flags
