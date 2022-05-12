@@ -1,4 +1,4 @@
-(ns heraldicon.util
+(ns heraldicon.util.core
   (:require
    [heraldicon.config :as config]))
 

@@ -9,8 +9,7 @@
    [heraldicon.heraldry.line.type.dovetailed :as dovetailed]
    [heraldicon.heraldry.line.type.embattled :as embattled]
    [heraldicon.heraldry.line.type.embattled-grady :as embattled-grady]
-   [heraldicon.heraldry.line.type.embattled-in-crosses
-    :as embattled-in-crosses]
+   [heraldicon.heraldry.line.type.embattled-in-crosses :as embattled-in-crosses]
    [heraldicon.heraldry.line.type.enarched :as enarched]
    [heraldicon.heraldry.line.type.engrailed :as engrailed]
    [heraldicon.heraldry.line.type.fir-tree-topped :as fir-tree-topped]
@@ -34,7 +33,7 @@
    [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [heraldicon.util.uid :as uid]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
@@ -448,7 +447,7 @@
                                  (v/dot line-start (v/v -1 1))]
                                 [line-start line-end])
         line-flipped? (:flipped? line-options-values)
-        effective-flipped? (heraldicon.util/xor flipped? line-flipped?)
+        effective-flipped? (util/xor flipped? line-flipped?)
         [line-start line-end] (if effective-flipped?
                                 [(v/dot line-start (v/v 1 -1))
                                  (v/dot line-end (v/v 1 -1))]

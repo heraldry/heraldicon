@@ -25,7 +25,7 @@
    [heraldicon.math.vector :as v]
    [heraldicon.render.core :as render]
    [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))

@@ -13,7 +13,7 @@
    [heraldicon.frontend.ui.element.search-field :as search-field]
    [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user :as user]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::filter-toggle-tag

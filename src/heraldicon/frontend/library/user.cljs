@@ -15,7 +15,7 @@
    [heraldicon.frontend.ui.element.collection-select :as collection-select]
    [heraldicon.frontend.ui.element.user-select :as user-select]
    [heraldicon.frontend.user :as user]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))

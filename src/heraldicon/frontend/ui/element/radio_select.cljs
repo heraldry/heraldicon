@@ -4,7 +4,7 @@
    [heraldicon.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
