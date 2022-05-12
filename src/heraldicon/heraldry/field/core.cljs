@@ -8,7 +8,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.number :as number]))
+   [heraldicon.util.number :as number]))
 
 (defn mandatory-part-count [context]
   (let [field-type (-> (interface/get-raw-data (c/++ context :type))

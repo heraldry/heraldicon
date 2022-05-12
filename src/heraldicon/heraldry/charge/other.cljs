@@ -2,7 +2,6 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.colour :as colour]
    [heraldicon.context :as c]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
@@ -20,6 +19,7 @@
    [heraldicon.svg.core :as svg]
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
+   [heraldicon.util.colour :as colour]
    [heraldicon.util.uid :as uid]))
 
 (defmethod interface/options :heraldry.charge.type/other [context]

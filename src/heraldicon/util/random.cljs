@@ -1,4 +1,4 @@
-(ns heraldicon.random
+(ns heraldicon.util.random
   (:require
    ["random" :as random-lib]
    ["seedrandom" :as seedrandom]))

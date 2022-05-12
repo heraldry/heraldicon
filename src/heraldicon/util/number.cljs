@@ -1,4 +1,4 @@
-(ns heraldicon.number)
+(ns heraldicon.util.number)
 
 ;; https://gist.github.com/jimweirich/1388782
 (def -roman-reductions

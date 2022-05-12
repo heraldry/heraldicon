@@ -1,4 +1,4 @@
-(ns heraldicon.colour)
+(ns heraldicon.util.colour)
 
 (def html-names
   {:indianred "#cd5c5c"
