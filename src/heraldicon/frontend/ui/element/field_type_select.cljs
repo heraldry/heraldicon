@@ -11,7 +11,6 @@
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.static :as static]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
 ;; TODO: this needs some more thinking, currently it creates dummy contexts to access db data
@@ -92,7 +91,7 @@
           value (or current-value
                     inherited
                     default)
-          choice-map (util/choices->map choices)
+          choice-map (options/choices->map choices)
           choice-name (get choice-map value)
           label (:label ui)]
       [:div.ui-setting

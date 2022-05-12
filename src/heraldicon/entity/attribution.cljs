@@ -4,7 +4,7 @@
    [heraldicon.context :as c]
    [heraldicon.entity.id :as id]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def license-choices
   [[:string.attribution.license-choice/none :none]
@@ -14,7 +14,7 @@
    [:string.attribution.license-choice/public-domain :public-domain]])
 
 (def license-map
-  (util/choices->map license-choices))
+  (options/choices->map license-choices))
 
 (def cc-license-version-choices
   [["4.0 (default)" :v4]
@@ -24,14 +24,14 @@
    ["1.0" :v1]])
 
 (def cc-license-version-map
-  (util/choices->map cc-license-version-choices))
+  (options/choices->map cc-license-version-choices))
 
 (def nature-choices
   [[:string.attribution.nature-choice/own-work :own-work]
    [:string.attribution.nature-choice/derivative :derivative]])
 
 (def nature-map
-  (util/choices->map nature-choices))
+  (options/choices->map nature-choices))
 
 (defn cc-license? [license]
   (#{:cc-attribution

@@ -8,7 +8,6 @@
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
-   [heraldicon.util :as util]
    [heraldicon.util.uid :as uid]))
 
 (def type-choices
@@ -17,7 +16,7 @@
    [:string.option.type-fimbriation-choice/double :double]])
 
 (def type-map
-  (util/choices->map type-choices))
+  (options/choices->map type-choices))
 
 (def alignment-choices
   [[:string.option.alignment-fimbriation-choice/even :even]
@@ -25,7 +24,7 @@
    [:string.option.alignment-fimbriation-choice/inside :inside]])
 
 (def alignment-map
-  (util/choices->map alignment-choices))
+  (options/choices->map alignment-choices))
 
 (def mode-option
   {:type :choice

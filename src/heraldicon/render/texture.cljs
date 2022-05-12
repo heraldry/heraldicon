@@ -1,7 +1,7 @@
 (ns heraldicon.render.texture
   (:require
    [heraldicon.config :as config]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def textures
   [[:string.render-options.texture-choice/none :none nil 0]
@@ -28,7 +28,7 @@
        vec))
 
 (def texture-map
-  (util/choices->map choices))
+  (options/choices->map choices))
 
 (def relative-paths
   (->> textures

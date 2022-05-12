@@ -7,8 +7,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.static :as static]
-   [heraldicon.util :as util]))
+   [heraldicon.static :as static]))
 
 (defn tincture-choice [context key display-name & {:keys [selected?
                                                           on-click?]
@@ -33,7 +32,7 @@
     (let [current-value (interface/get-raw-data context)
           {:keys [ui choices]} option
           value (options/get-value current-value option)
-          choice-map (util/choices->map choices)
+          choice-map (options/choices->map choices)
           choice-name (get choice-map value)
           label (or (:label ui) :string.option/tincture)]
       [:div.ui-setting
