@@ -6,8 +6,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.options :as options]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 ;; TODO: can probably be improved with better subscriptions
 (defn submenu-link-name [options fimbriation]
@@ -31,7 +30,7 @@
                    :string.submenu-summary/adjusted)]]
 
     (-> (string/combine ", " changes)
-        util/upper-case-first)))
+        string/upper-case-first)))
 
 (defn fimbriation-submenu [context]
   (when-let [options (interface/get-relevant-options context)]

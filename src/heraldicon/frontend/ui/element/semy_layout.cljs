@@ -6,7 +6,6 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
 ;; TODO: probably can be improved with better subscriptions
@@ -31,7 +30,7 @@
                    (when (options/changed? :rotation sanitized-layout options)
                      :string.submenu-summary/rotated)]]
       (-> (string/combine ", " changes)
-          util/upper-case-first))))
+          string/upper-case-first))))
 
 (defn layout-submenu [context]
   (when-let [options (interface/get-relevant-options context)]

@@ -86,7 +86,7 @@
                                    (map util/translate)
                                    (string/combine ", ")
                                    s/lower-case
-                                   util/upper-case-first)
+                                   string/upper-case-first)
                               :string.charge.tincture-modifier/none)
             link-name (if (and (string? tinctures-title)
                                (-> tinctures-title count (> 30)))

@@ -2,7 +2,8 @@
   (:require
    [clojure.string :as s]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
-   [heraldicon.config :as config]))
+   [heraldicon.config :as config]
+   [heraldicon.localization.string :as string]))
 
 (defn deep-merge-with [f & maps]
   (apply
@@ -21,17 +22,6 @@
       str
       (subs 1)))
 
-(defn upper-case-first-str [s]
-  (str (s/upper-case (or (first s) "")) (s/join (rest s))))
-
-(defn upper-case-first [s]
-  (if (map? s)
-    (->> s
-         (map (fn [[k v]]
-                [k (upper-case-first-str v)]))
-         (into {}))
-    (upper-case-first-str s)))
-
 (defn translate [keyword]
   (when keyword
     (-> keyword
@@ -47,7 +37,7 @@
 (defn translate-cap-first [keyword]
   (-> keyword
       translate
-      upper-case-first))
+      string/upper-case-first))
 
 (defn index-of [item coll]
   (count (take-while (partial not= item) coll)))
