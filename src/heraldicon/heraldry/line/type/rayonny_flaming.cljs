@@ -1,14 +1,14 @@
 (ns heraldicon.heraldry.line.type.rayonny-flaming
   (:require
    [heraldicon.math.vector :as v]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (defn curvy-line [direction eccentricity flipped?]
   (let [length (-> direction
                    v/abs
                    (/ 2))
-        middle-height (* length (util/map-to-interval eccentricity -0.1 0.2))
-        orientation1-height (- (* length (util/map-to-interval eccentricity 0.1 0.9)))
+        middle-height (* length (options/map-to-interval eccentricity -0.1 0.2))
+        orientation1-height (- (* length (options/map-to-interval eccentricity 0.1 0.9)))
         angle (v/angle-to-point (v/v 0 0) direction)
         orientation1 (v/v (* length 0.5) orientation1-height)
         orientation2 (v/v (* length 0.75) (- middle-height))

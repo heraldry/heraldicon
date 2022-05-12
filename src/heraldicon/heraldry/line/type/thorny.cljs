@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.line.type.thorny
   (:require
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def pattern
   {:display-name :string.line.type/thorny
@@ -11,7 +11,7 @@
                (let [half-width (/ width 2)
                      quarter-width (/ width 4)
                      height (* half-width height)
-                     rf (util/map-to-interval eccentricity 1.5 1)
+                     rf (options/map-to-interval eccentricity 1.5 1)
                      r (* quarter-width rf rf)]
                  {:pattern ["l" [quarter-width 0]
                             "a" r r 0 0 0 [0 (- height)]

@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.line.type.enarched
   (:require
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def pattern
   {:display-name :string.line.type/enarched
@@ -12,7 +12,7 @@
                      real-end (or real-end length)
                      relevant-length (- real-end real-start)
                      height (* relevant-length
-                               (util/map-to-interval height 0 0.4))
+                               (options/map-to-interval height 0 0.4))
                      pos-x (-> relevant-length
                                (* eccentricity))
                      orientation-1 (- 1 (/ width 100))
