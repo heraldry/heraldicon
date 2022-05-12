@@ -1,12 +1,12 @@
 (ns heraldicon.heraldry.ordinary.core
   (:require
+   [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.interface :as interface]
-   [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]))
+   [heraldicon.localization.string :as string]))
 
 (defmethod interface/render-component :heraldry.component/ordinary [context]
   (ordinary.interface/render-ordinary context))
@@ -22,12 +22,12 @@
                           (string/str-tr (if (< size 100)
                                            "Canton "
                                            "Quarter ")
-                                         (util/translate (interface/get-sanitized-data (c/++ context :variant)))))
+                                         (blazonry/translate (interface/get-sanitized-data (c/++ context :variant)))))
                         :heraldry.ordinary.type/point
-                        (string/str-tr "Point " (util/translate (interface/get-sanitized-data (c/++ context :variant))))
-                        (util/translate ordinary-type))
+                        (string/str-tr "Point " (blazonry/translate (interface/get-sanitized-data (c/++ context :variant))))
+                        (blazonry/translate ordinary-type))
         rest (string/combine " " [ordinary-name
-                                  (util/translate-line line)
+                                  (blazonry/translate-line line)
                                   (when voided? "voided")
                                   (when humetty? "humetty")
                                   (interface/blazon (c/++ context :field))

@@ -1,13 +1,13 @@
 (ns heraldicon.heraldry.charge.core
   (:require
    [clojure.string :as s]
+   [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
-   [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]))
+   [heraldicon.localization.string :as string]))
 
 (defmethod interface/render-component :heraldry.component/charge [context]
   [charge.interface/render-charge context])
@@ -33,7 +33,7 @@
                            :fixed-tincture
                            (or :none)
                            (#(when (not= :none %) %)))
-        charge-name (util/translate charge-type)
+        charge-name (blazonry/translate charge-type)
         pluralize? (and pluralize?
                         (not (#{"fleur-de-lis"} charge-name)))]
     (string/combine " " [(when (and (not part-of-charge-group?)
@@ -45,19 +45,19 @@
                                             "es"
                                             "s")))
                          (when-not (= attitude :none)
-                           (util/translate attitude))
+                           (blazonry/translate attitude))
                          (when-not (#{:none :to-dexter} facing)
-                           (util/translate facing))
+                           (blazonry/translate facing))
                          (if fixed-tincture
-                           (util/translate fixed-tincture)
+                           (blazonry/translate fixed-tincture)
                            (interface/blazon (c/++ context :field)))
                          (string/combine
                           " and "
                           (map (fn [colour-key]
                                  (when-let [t (get tincture colour-key)]
                                    (when (not= t :none)
-                                     (string/combine " " [(util/translate colour-key)
-                                                          (util/translate t)]))))
+                                     (string/combine " " [(blazonry/translate colour-key)
+                                                          (blazonry/translate t)]))))
                                (-> attributes/tincture-modifier-map
                                    keys
                                    sort)))

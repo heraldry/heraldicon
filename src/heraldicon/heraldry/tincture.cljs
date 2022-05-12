@@ -1,12 +1,12 @@
 (ns heraldicon.heraldry.tincture
   (:require
    [clojure.string :as s]
+   [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.render.hatching :as hatching]
-   [heraldicon.render.theme :as theme]
-   [heraldicon.util :as util]))
+   [heraldicon.render.theme :as theme]))
 
 (def choices
   [[:string.tincture.group/metal
@@ -47,7 +47,7 @@
   (options/choices->map choices))
 
 (defn translate-tincture [keyword]
-  (tincture-map keyword (util/translate keyword)))
+  (tincture-map keyword (blazonry/translate keyword)))
 
 (def fixed-tincture-choices
   (concat [[:string.tincture.special/none :none]

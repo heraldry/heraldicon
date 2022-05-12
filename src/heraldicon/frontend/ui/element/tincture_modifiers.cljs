@@ -2,6 +2,7 @@
   (:require
    [clojure.set :as set]
    [clojure.string :as s]
+   [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.language :refer [tr]]
@@ -13,8 +14,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.options :as options]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (defn tincture-modifiers-submenu [context]
   (let [preview? (interface/get-raw-data (-> context c/-- (c/++ :preview?)))
@@ -83,7 +83,7 @@
                                          pos?)) (conj :highlight)))
             tinctures-title (if (-> tinctures-set count pos?)
                               (->> tinctures-set
-                                   (map util/translate)
+                                   (map blazonry/translate)
                                    (string/combine ", ")
                                    s/lower-case
                                    string/upper-case-first)
@@ -116,7 +116,7 @@
                    :default-option {:type :choice
                                     :choices tincture/choices
                                     :default :none
-                                    :ui {:label (util/translate-cap-first t)}}])]])]])))))
+                                    :ui {:label (blazonry/translate-cap-first t)}}])]])]])))))
 
 (defmethod ui.interface/form-element :tincture-modifiers [context]
   [tincture-modifiers-submenu context])

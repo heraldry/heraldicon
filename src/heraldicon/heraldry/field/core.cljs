@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.field.core
   (:require
+   [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.interface :as field.interface]
@@ -7,8 +8,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.number :as number]
-   [heraldicon.util :as util]))
+   [heraldicon.number :as number]))
 
 (defn mandatory-part-count [context]
   (let [field-type (-> (interface/get-raw-data (c/++ context :type))
@@ -179,10 +179,10 @@
                 num-fields (interface/get-list-size (c/++ context :fields))]
             (string/combine
              " "
-             [(util/translate (if (= field-type :heraldry.field.type/gyronny-n)
-                                :heraldry.field.type/gyronny
-                                field-type))
-              (util/translate-line line)
+             [(blazonry/translate (if (= field-type :heraldry.field.type/gyronny-n)
+                                    :heraldry.field.type/gyronny
+                                    field-type))
+              (blazonry/translate-line line)
               (string/combine " and "
                               (->> (range num-fields)
                                    (map

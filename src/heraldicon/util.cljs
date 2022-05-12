@@ -2,8 +2,7 @@
   (:require
    [clojure.string :as s]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
-   [heraldicon.config :as config]
-   [heraldicon.localization.string :as string]))
+   [heraldicon.config :as config]))
 
 (defn deep-merge-with [f & maps]
   (apply
@@ -21,23 +20,6 @@
   (-> k
       str
       (subs 1)))
-
-(defn translate [keyword]
-  (when keyword
-    (-> keyword
-        name
-        (s/replace "-" " ")
-        (s/replace "fleur de lis" "fleur-de-lis")
-        (s/replace "fleur de lys" "fleur-de-lys"))))
-
-(defn translate-line [{:keys [type]}]
-  (when (not= type :straight)
-    (translate type)))
-
-(defn translate-cap-first [keyword]
-  (-> keyword
-      translate
-      string/upper-case-first))
 
 (defn index-of [item coll]
   (count (take-while (partial not= item) coll)))
