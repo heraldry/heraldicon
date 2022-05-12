@@ -1,12 +1,12 @@
 (ns heraldicon.frontend.ui.element.arms-reference-select
   (:require
+   [heraldicon.entity.id :as id]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
@@ -37,7 +37,7 @@
                   :top "10vh"
                   :height "80vh"}}
          [arms-select/list-arms (fn [{:keys [id]}]
-                                  {:href (reife/href :view-arms-by-id {:id (util/id-for-url id)})
+                                  {:href (reife/href :view-arms-by-id {:id (id/for-url id)})
                                    :on-click (fn [event]
                                                (doto event
                                                  .preventDefault

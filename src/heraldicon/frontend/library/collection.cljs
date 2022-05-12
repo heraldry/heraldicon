@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.context :as c]
+   [heraldicon.entity.id :as id]
    [heraldicon.font :as font]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
@@ -20,7 +21,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
-   [heraldicon.util :as util :refer [id-for-url]]
+   [heraldicon.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
@@ -64,7 +65,7 @@
         (state/invalidate-cache list-db-path (:user-id user-data))
         (rf/dispatch-sync [:set-form-message form-db-path
                            (string/str-tr :string.user.message/collection-saved " " (:version response))])
-        (reife/push-state :view-collection-by-id {:id (id-for-url collection-id)}))
+        (reife/push-state :view-collection-by-id {:id (id/for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
@@ -336,7 +337,7 @@
 (defn link-to-collection [collection]
   (let [collection-id (-> collection
                           :id
-                          id-for-url)]
+                          id/for-url)]
     [:a {:href (reife/href :view-collection-by-id {:id collection-id})
          :on-click #(do
                       (rf/dispatch-sync [:clear-form-errors form-db-path])

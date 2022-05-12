@@ -5,7 +5,8 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.outline :as outline]
-   [heraldicon.util :as util]))
+
+   [heraldicon.util.uid :as uid]))
 
 (def field-type :heraldry.field.type/chequy)
 
@@ -97,7 +98,7 @@
                    (* middle-x stretch-x))
         shift-y (- middle-y
                    (* middle-y stretch-y))
-        pattern-id (util/id "chequy")]
+        pattern-id (uid/generate "chequy")]
     [:g
      [:defs
       (when outline?
@@ -145,7 +146,7 @@
                       :fill "#ffffff"}]))]))]
      (doall
       (for [idx (range num-base-fields)]
-        (let [mask-id (util/id "mask")]
+        (let [mask-id (uid/generate "mask")]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}

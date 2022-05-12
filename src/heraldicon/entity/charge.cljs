@@ -1,10 +1,11 @@
 (ns heraldicon.entity.charge
-  (:require [heraldicon.context :as c]
-            [heraldicon.entity.attribution :as attribution]
-            [heraldicon.entity.metadata :as metadata]
-            [heraldicon.heraldry.option.attributes :as attributes]
-            [heraldicon.heraldry.tincture :as tincture]
-            [heraldicon.interface :as interface]))
+  (:require
+   [heraldicon.context :as c]
+   [heraldicon.entity.attribution :as attribution]
+   [heraldicon.entity.metadata :as metadata]
+   [heraldicon.heraldry.option.attributes :as attributes]
+   [heraldicon.heraldry.tincture :as tincture]
+   [heraldicon.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry.component/charge-general [_context]
   #{[:attribution :license]

@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.util :as util]))
+   [heraldicon.util.uid :as uid]))
 
 (defn split-style-value [value]
   (-> value
@@ -66,7 +66,7 @@
                  set)
         id-map (->> ids
                     (map (fn [id]
-                           [id (util/id (str "unique-" id))]))
+                           [id (uid/generate (str "unique-" id))]))
                     (into {}))]
     (-> data
         (replace-id-references id-map))))

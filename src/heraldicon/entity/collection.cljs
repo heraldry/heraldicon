@@ -1,9 +1,10 @@
 (ns heraldicon.entity.collection
-  (:require [heraldicon.context :as c]
-            [heraldicon.entity.attribution :as attribution]
-            [heraldicon.entity.metadata :as metadata]
-            [heraldicon.font :as font]
-            [heraldicon.interface :as interface]))
+  (:require
+   [heraldicon.context :as c]
+   [heraldicon.entity.attribution :as attribution]
+   [heraldicon.entity.metadata :as metadata]
+   [heraldicon.font :as font]
+   [heraldicon.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry.component/collection-general [_context]
   #{[:attribution :license]

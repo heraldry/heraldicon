@@ -8,7 +8,8 @@
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
-   [heraldicon.util :as util]))
+   [heraldicon.util :as util]
+   [heraldicon.util.uid :as uid]))
 
 (def type-choices
   [[:string.option.type-fimbriation-choice/none :none]
@@ -88,7 +89,7 @@
 
 (defn dilate-and-fill-path [shape negate-shape thickness color {:keys [svg-export?]}
                             & {:keys [fill? corner] :or {fill? true}}]
-  (let [mask-id (util/id "mask")
+  (let [mask-id (uid/generate "mask")
         linejoin-value (linejoin corner)]
     [:<>
      [:defs
@@ -137,7 +138,7 @@
 
 (defn dilate-and-fill [shape thickness color {:keys [svg-export?]}
                        & {:keys [transform corner]}]
-  (let [mask-id (util/id "mask")
+  (let [mask-id (uid/generate "mask")
         linejoin-value (linejoin corner)]
     [:<>
      [:defs

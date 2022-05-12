@@ -5,6 +5,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.util :as util]
+   [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
 (defn raw-select-inline [context value choices & {:keys [on-change component-id keywordize?]
@@ -39,7 +40,7 @@
              (tr display-name)]))])))])
 
 (defn raw-select [context value label choices & {:keys [on-change]}]
-  (let [component-id (util/id "select")]
+  (let [component-id (uid/generate "select")]
     [:div.ui-setting
      (when label
        [:label {:for component-id} [tr label]])

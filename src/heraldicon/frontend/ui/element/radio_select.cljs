@@ -5,10 +5,11 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.util :as util]
+   [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
 (defn radio-choice [context key display-name & {:keys [selected? on-change]}]
-  (let [component-id (util/id "radio")]
+  (let [component-id (uid/generate "radio")]
     [:<>
      [:input {:id component-id
               :type "radio"

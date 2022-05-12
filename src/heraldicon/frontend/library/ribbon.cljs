@@ -2,6 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.entity.id :as id]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.history.core :as history]
@@ -24,7 +25,7 @@
    [heraldicon.math.vector :as v]
    [heraldicon.render.core :as render]
    [heraldicon.svg.path :as path]
-   [heraldicon.util :as util :refer [id-for-url]]
+   [heraldicon.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
@@ -365,7 +366,7 @@
           (invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
                              (string/str-tr :string.user.message/ribbon-saved (:version response))])
-          (reife/push-state :view-ribbon-by-id {:id (id-for-url ribbon-id)}))
+          (reife/push-state :view-ribbon-by-id {:id (id/for-url ribbon-id)}))
         (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
@@ -509,7 +510,7 @@
       [ribbon-form])))
 
 (defn on-select [{:keys [id]}]
-  {:href (reife/href :view-ribbon-by-id {:id (util/id-for-url id)})
+  {:href (reife/href :view-ribbon-by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})

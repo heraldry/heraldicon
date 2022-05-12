@@ -4,7 +4,7 @@
    [heraldicon.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]
+   [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
@@ -13,7 +13,7 @@
         focused? (r/atom false)]
     (fn [context & {:keys [value on-change disabled?]}]
       (when-let [option (interface/get-relevant-options context)]
-        (let [component-id (util/id "range")
+        (let [component-id (uid/generate "range")
               current-value (interface/get-raw-data context)
               {:keys [ui inherited default min max]} option
               step (or (:step ui) 1)

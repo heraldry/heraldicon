@@ -9,6 +9,7 @@
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.colour :as colour]
    [heraldicon.context :as c]
+   [heraldicon.entity.id :as id]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
@@ -24,7 +25,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
    [heraldicon.svg.core :as svg]
-   [heraldicon.util :as util :refer [id-for-url]]
+   [heraldicon.util :as util]
    [hickory.core :as hickory]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -255,7 +256,7 @@
           (invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
                              (string/str-tr :string.user.message/charge-saved (:version response))])
-          (reife/push-state :view-charge-by-id {:id (id-for-url charge-id)}))
+          (reife/push-state :view-charge-by-id {:id (id/for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
@@ -409,7 +410,7 @@
       [charge-form])))
 
 (defn on-select [{:keys [id]}]
-  {:href (reife/href :view-charge-by-id {:id (util/id-for-url id)})
+  {:href (reife/href :view-charge-by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})

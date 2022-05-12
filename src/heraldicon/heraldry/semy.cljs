@@ -6,7 +6,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.util :as util]))
+   [heraldicon.util.uid :as uid]))
 
 (defmethod interface/options-subscriptions :heraldry.component/semy [_context]
   #{})
@@ -107,7 +107,7 @@
                    (* middle-x stretch-x))
         shift-y (- middle-y
                    (* middle-y stretch-y))
-        pattern-id (util/id "semy")
+        pattern-id (uid/generate "semy")
         part-width-half (/ part-width 2)
         part-height-half (/ part-height 2)
         charge-environment {:width part-width
