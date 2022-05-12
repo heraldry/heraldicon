@@ -1,7 +1,6 @@
 (ns heraldicon.render.core
   (:require
    [clojure.string :as s]
-   [heraldicon.colour :as colour]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.heraldry.escutcheon :as escutcheon]
@@ -22,6 +21,7 @@
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
+   [heraldicon.util.colour :as colour]
    [heraldicon.util.uid :as uid]))
 
 (defn coat-of-arms [{:keys

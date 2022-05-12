@@ -3,8 +3,8 @@
    [clojure.walk :as walk]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.vector :as v]
-   [heraldicon.random :as random]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.path :as path]
+   [heraldicon.util.random :as random]))
 
 (defn jiggle [[previous
                {:keys [x y] :as current}

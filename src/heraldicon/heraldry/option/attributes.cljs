@@ -1,9 +1,9 @@
 (ns heraldicon.heraldry.option.attributes
   (:require
    [goog.string :as gstring]
-   [heraldicon.colour :as colour]
    [heraldicon.localization.string :as string]
-   [heraldicon.options :as options]))
+   [heraldicon.options :as options]
+   [heraldicon.util.colour :as colour]))
 
 (def attitude-choices
   [[:string.charge.attitude/none :none]
