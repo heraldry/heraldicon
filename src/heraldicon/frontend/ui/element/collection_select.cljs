@@ -3,7 +3,7 @@
    [cljs.core.async :refer [go]]
    [clojure.string :as s]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.attribution :as attribution]
+   [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]

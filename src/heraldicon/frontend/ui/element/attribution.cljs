@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.ui.element.attribution
   (:require
-   [heraldicon.attribution :as attribution]
+   [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.element.select :as select]

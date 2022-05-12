@@ -1,6 +1,6 @@
 (ns heraldicon.svg.metadata
   (:require
-   [heraldicon.attribution :as attribution]
+   [heraldicon.entity.attribution :as attribution]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]))
 

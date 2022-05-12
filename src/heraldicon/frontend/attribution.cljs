@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.attribution
   (:require
-   [heraldicon.attribution :as attribution]
+   [heraldicon.entity.attribution :as attribution]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]))

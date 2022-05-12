@@ -1,4 +1,4 @@
-(ns heraldicon.tag
+(ns heraldicon.entity.tag
   (:require [clojure.string :as s]))
 
 (defn clean [tag]
