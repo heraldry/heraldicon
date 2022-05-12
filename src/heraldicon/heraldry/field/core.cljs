@@ -7,6 +7,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
+   [heraldicon.number :as number]
    [heraldicon.util :as util]))
 
 (defn mandatory-part-count [context]
@@ -154,7 +155,7 @@
     (raw-default-fields type num-fields-x num-fields-y num-base-fields)))
 
 (defn part-name [field-type index]
-  (-> field-type field.interface/part-names (get index) (or (util/to-roman (inc index)))))
+  (-> field-type field.interface/part-names (get index) (or (number/to-roman (inc index)))))
 
 (defn title [context]
   (let [field-type (interface/get-sanitized-data (c/++ context :type))]
