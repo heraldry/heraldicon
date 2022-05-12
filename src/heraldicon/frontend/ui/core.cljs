@@ -64,7 +64,7 @@
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.shared] ;; needed for side effects
-   [heraldicon.util :as util]
+   [heraldicon.util.vec :as vec]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db :add-element
@@ -118,7 +118,7 @@
               (neg? new-index))
         db
         (-> db
-            (update-in elements-path util/vec-move index new-index)
+            (update-in elements-path vec/move-element index new-index)
             (state/element-order-changed elements-path index new-index))))))
 
 (rf/reg-sub :element-removable?
