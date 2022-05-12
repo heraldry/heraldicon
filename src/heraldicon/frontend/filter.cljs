@@ -3,6 +3,7 @@
    ["react-infinite-scroll-component" :as InfiniteScroll]
    [clojure.set :as set]
    [clojure.string :as s]
+   [heraldicon.avatar :as avatar]
    [heraldicon.config :as config]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.language :refer [tr]]
@@ -13,7 +14,6 @@
    [heraldicon.frontend.ui.element.search-field :as search-field]
    [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user :as user]
-   [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::filter-toggle-tag
@@ -132,7 +132,7 @@
           [:a {:href (attribution/full-url-for-username username)
                :target "_blank"
                :title username}
-           [:img {:src (util/avatar-url username)
+           [:img {:src (avatar/url username)
                   :style {:border-radius "50%"}}]])]
        [:div.filter-result-card-title
         (:name item)]
