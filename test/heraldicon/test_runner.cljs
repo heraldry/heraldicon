@@ -1,4 +1,4 @@
-(ns heraldicon.test
+(ns heraldicon.test-runner
   {:dev/always true}
   (:require
    [clansi.core :as cla]

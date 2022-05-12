@@ -1,4 +1,4 @@
-(ns heraldicon.reader.blazonry.test-transform
+(ns heraldicon.reader.blazonry.transform-test
   (:require
    [cljs.test :refer-macros [are deftest]]
    [heraldicon.reader.blazonry.transform :as transform]))
