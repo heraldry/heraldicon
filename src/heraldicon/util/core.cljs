@@ -1,8 +1,7 @@
 (ns heraldicon.util.core
   (:require
    [cljs-time.core :as time]
-   [cljs-time.format :as format]
-   [heraldicon.config :as config]))
+   [cljs-time.format :as format]))
 
 (defn deep-merge-with [f & maps]
   (apply
@@ -23,11 +22,6 @@
 
 (defn index-of [item coll]
   (count (take-while (partial not= item) coll)))
-
-(defn avatar-url [username]
-  (str (or (config/get :heraldicon-site-url)
-           (config/get :heraldicon-url))
-       "/avatar/" username))
 
 (defn integer-string? [s]
   (re-matches #"^[0-9]+$" s))

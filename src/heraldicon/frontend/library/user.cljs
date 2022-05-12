@@ -2,6 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.avatar :as avatar]
    [heraldicon.config :as config]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.charge :as charge]
@@ -15,7 +16,6 @@
    [heraldicon.frontend.ui.element.collection-select :as collection-select]
    [heraldicon.frontend.ui.element.user-select :as user-select]
    [heraldicon.frontend.user :as user]
-   [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
@@ -97,7 +97,7 @@
      [:div.no-scrollbar {:style {:grid-area "user-info"
                                  :overflow-y "scroll"
                                  :padding-top "10px"}}
-      [:img {:src (util/avatar-url (:username user-info-data))
+      [:img {:src (avatar/url (:username user-info-data))
              :style {:width "80px"
                      :height "80px"}}]
       [:h2 {:style {:display "inline-block"
