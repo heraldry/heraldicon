@@ -6,10 +6,10 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/bordure)
 
@@ -62,7 +62,7 @@
         line-type (interface/get-sanitized-data (c/++ context :line :type))
         points (:points environment)
         width (:width environment)
-        thickness ((util/percent-of width) thickness)
+        thickness ((math/percent-of width) thickness)
         environment-shape (-> environment
                               (update-in [:shape :paths] (partial take 1))
                               environment/effective-shape)

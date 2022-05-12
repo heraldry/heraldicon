@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]))
+   [heraldicon.math.core :as math]))
 
 (defn options [context]
   (let [humetty? (interface/get-raw-data (c/++ context :humetty?))]
@@ -30,7 +30,7 @@
                 {:paths [shape]})]
     (if (interface/get-sanitized-data (c/++ context :humetty?))
       (let [distance (interface/get-sanitized-data (c/++ context :distance))
-            distance ((util/percent-of base-distance) distance)
+            distance ((math/percent-of base-distance) distance)
             corner (interface/get-sanitized-data (c/++ context :corner))
             environment-shape (environment/effective-shape environment)
             shrunken-environment-shape (environment/shrink-shape environment-shape distance corner)

@@ -8,11 +8,11 @@
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/pale)
 
@@ -75,7 +75,7 @@
         bottom (assoc (:bottom points) :x (:x anchor-point))
         width (:width environment)
         band-width (-> size
-                       ((util/percent-of width)))
+                       ((math/percent-of width)))
         col1 (case (:alignment anchor)
                :left (:x anchor-point)
                :right (- (:x anchor-point) band-width)
@@ -109,11 +109,11 @@
         first-bottom (v/v (:x first-bottom) shared-end-y)
         second-bottom (v/v (:x second-bottom) shared-end-y)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (util/percent-of width))
-                 (update-in [:fimbriation :thickness-2] (util/percent-of width)))
+                 (update-in [:fimbriation :thickness-1] (math/percent-of width))
+                 (update-in [:fimbriation :thickness-2] (math/percent-of width)))
         opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (util/percent-of width))
-                          (update-in [:fimbriation :thickness-2] (util/percent-of width)))
+                          (update-in [:fimbriation :thickness-1] (math/percent-of width))
+                          (update-in [:fimbriation :thickness-2] (math/percent-of width)))
         {line-one :line
          line-one-start :line-start
          line-one-min :line-min

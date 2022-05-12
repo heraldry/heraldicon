@@ -6,9 +6,9 @@
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (defn calculate-strip-slot-positions [context spacing]
   (let [stretch (interface/get-sanitized-data (c/++ context :stretch))
@@ -50,7 +50,7 @@
         strip-angle (interface/get-sanitized-data (c/++ context :strip-angle))
         num-charges (interface/get-list-size (c/++ context :charges))
         num-strips (interface/get-list-size (c/++ context :strips))
-        spacing ((util/percent-of reference-length) spacing)
+        spacing ((math/percent-of reference-length) spacing)
         strip-spacing (* spacing
                          stretch)
         length (* (-> num-strips dec (max 0))
@@ -91,7 +91,7 @@
         slots (interface/get-raw-data (c/++ context :slots))
         num-charges (interface/get-list-size (c/++ context :charges))
         num-slots (interface/get-list-size (c/++ context :slots))
-        radius ((util/percent-of (:width environment)) radius)
+        radius ((math/percent-of (:width environment)) radius)
         stretch-vector (if (> arc-stretch 1)
                          (v/v (/ 1 arc-stretch) 1)
                          (v/v 1 arc-stretch))
@@ -132,7 +132,7 @@
                               (update-in [:shape :paths] (partial take 1))
                               environment/effective-shape)
         width (:width environment)
-        distance ((util/percent-of width) distance)
+        distance ((math/percent-of width) distance)
         bordure-shape (environment/shrink-shape environment-shape distance :round)
         points (:points environment)
         shape-path (path/parse-path bordure-shape)

@@ -9,10 +9,10 @@
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.heraldry.shared.saltire :as saltire]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/saltire)
 
@@ -119,7 +119,7 @@
         width (:width environment)
         height (:height environment)
         band-width (-> size
-                       ((util/percent-of width)))
+                       ((math/percent-of width)))
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
@@ -194,8 +194,8 @@
                  end-bottom-left-lower
                  end-bottom-right-lower)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (util/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (util/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
         {line-top-left-lower :line
          line-top-left-lower-start :line-start
          line-top-left-lower-min :line-min

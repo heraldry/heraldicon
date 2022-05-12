@@ -1,8 +1,8 @@
 (ns heraldicon.heraldry.shared.pile
   (:require
    [heraldicon.heraldry.option.position :as position]
-   [heraldicon.math.vector :as v]
-   [heraldicon.util :as util]))
+   [heraldicon.math.core :as math]
+   [heraldicon.math.vector :as v]))
 
 (defn diagonals [anchor-point point-point size]
   (let [direction (-> point-point
@@ -98,7 +98,7 @@
                                           {:keys [size stretch]}
                                           thickness-base base-angle]
   (let [thickness (-> size
-                      ((util/percent-of thickness-base)))
+                      ((math/percent-of thickness-base)))
         orientation-type (or (:type orientation)
                              :edge)
         {real-anchor :real-anchor
