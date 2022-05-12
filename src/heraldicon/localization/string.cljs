@@ -57,7 +57,8 @@
       translated)))
 
 (defn interleave-all
-  "Returns a lazy seq of the first item in each coll, then the second etc., unlike the clojure.core version this includes all elements."
+  "Returns a lazy seq of the first item in each coll, then the second etc.,
+   unlike the clojure.core version this includes all elements."
   [c1 c2]
   (lazy-seq
    (let [s1 (seq c1) s2 (seq c2)]
