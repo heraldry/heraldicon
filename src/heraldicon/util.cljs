@@ -32,14 +32,6 @@
       (b64/decodeStringToByteArray true)
       crypt/utf8ByteArrayToString))
 
-(defn map-to-interval [value from to]
-  (let [value (-> value
-                  (max 0)
-                  (min 1))]
-    (-> (- to from)
-        (* value)
-        (+ from))))
-
 (defn xor [a b]
   (or (and a (not b))
       (and (not a) b)))

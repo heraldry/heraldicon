@@ -161,3 +161,11 @@
        (not= (get sanitized-data key)
              (or (-> options (get key) :inherited)
                  (-> options (get key) :default)))))
+
+(defn map-to-interval [value from to]
+  (let [value (-> value
+                  (max 0)
+                  (min 1))]
+    (-> (- to from)
+        (* value)
+        (+ from))))
