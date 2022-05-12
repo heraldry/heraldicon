@@ -1,6 +1,5 @@
 (ns heraldicon.util
   (:require
-   [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.config :as config]))
 
 (defn deep-merge-with [f & maps]
@@ -22,15 +21,6 @@
 
 (defn index-of [item coll]
   (count (take-while (partial not= item) coll)))
-
-(defn wait-for-all [chans]
-  (go-catch
-   (loop [result []
-          [c & rest] chans]
-     (if c
-       (let [arms (<? c)]
-         (recur (conj result arms) rest))
-       result))))
 
 (defn avatar-url [username]
   (str (or (config/get :heraldicon-site-url)
