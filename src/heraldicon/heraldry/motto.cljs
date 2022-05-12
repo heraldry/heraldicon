@@ -1,9 +1,9 @@
 (ns heraldicon.heraldry.motto
   (:require
    [heraldicon.context :as c]
+   [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.interface :as interface]
-   [heraldicon.ribbon :as ribbon]))
+   [heraldicon.interface :as interface]))
 
 (def tinctures-without-furs
   (-> tincture/choices

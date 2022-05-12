@@ -8,10 +8,10 @@
    [heraldicon.frontend.ui.element.text-field :as text-field]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
+   [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.math.curve.core :as curve]
-   [heraldicon.ribbon :as ribbon]
    [re-frame.core :as rf]))
 
 (def layers-path
