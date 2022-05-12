@@ -1,4 +1,4 @@
-(ns heraldicon.attribution
+(ns heraldicon.entity.attribution
   (:require
    [heraldicon.config :as config]
    [heraldicon.context :as c]

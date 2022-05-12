@@ -3,7 +3,7 @@
    ["react-infinite-scroll-component" :as InfiniteScroll]
    [clojure.set :as set]
    [clojure.string :as s]
-   [heraldicon.attribution :as attribution]
+   [heraldicon.entity.attribution :as attribution]
    [heraldicon.config :as config]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]

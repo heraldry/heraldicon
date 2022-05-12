@@ -1,4 +1,4 @@
-(ns heraldicon.metadata)
+(ns heraldicon.entity.metadata)
 
 (def known-metadata-keys
   ["source"

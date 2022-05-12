@@ -6,7 +6,7 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.tag :as tag]
+   [heraldicon.entity.tag :as tag]
    [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])

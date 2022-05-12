@@ -9,7 +9,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.metadata :as metadata]
+   [heraldicon.entity.metadata :as metadata]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
