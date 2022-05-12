@@ -10,7 +10,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]
+   [heraldicon.util.sanitize :as sanitize]
    [re-frame.core :as rf]))
 
 (def name-path [:ui :metadata :new-name])
@@ -32,7 +32,7 @@
 
 (macros/reg-event-db ::add-metadata
   (fn [db [_ context name value]]
-    (let [name (util/sanitize-string name)]
+    (let [name (sanitize/sanitize-string name)]
       (update-in db (:path context) (fn [metadata]
                                       (-> metadata
                                           (remove-metadata-name name)
