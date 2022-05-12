@@ -4,6 +4,8 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.context :as c]
+   [heraldicon.entity.arms :as entity.arms]
+   [heraldicon.entity.id :as id]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
@@ -155,7 +157,7 @@
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path
                            (string/str-tr :string.user.message/arms-saved " " (:version response))])
-        (reife/push-state :view-arms-by-id {:id (util/id-for-url arms-id)}))
+        (reife/push-state :view-arms-by-id {:id (id/for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
         (log/error "save form error:" e)
@@ -185,7 +187,7 @@
     (reife/push-state :create-arms)))
 
 (defn share-button-clicked [_event]
-  (let [short-url (util/short-url @(rf/subscribe [:get form-db-path]))]
+  (let [short-url (entity.arms/short-url @(rf/subscribe [:get form-db-path]))]
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (if (copy-to-clipboard short-url)
@@ -320,7 +322,7 @@
         [not-found/not-found]))))
 
 (defn on-select [{:keys [id]}]
-  {:href (reife/href :view-arms-by-id {:id (util/id-for-url id)})
+  {:href (reife/href :view-arms-by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})

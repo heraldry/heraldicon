@@ -1,8 +1,9 @@
 (ns heraldicon.entity.ribbon
-  (:require [heraldicon.context :as c]
-            [heraldicon.entity.attribution :as attribution]
-            [heraldicon.heraldry.ribbon :as ribbon]
-            [heraldicon.interface :as interface]))
+  (:require
+   [heraldicon.context :as c]
+   [heraldicon.entity.attribution :as attribution]
+   [heraldicon.heraldry.ribbon :as ribbon]
+   [heraldicon.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry.component/ribbon-general [_context]
   #{[:attribution :license]

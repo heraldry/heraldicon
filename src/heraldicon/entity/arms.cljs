@@ -1,7 +1,9 @@
 (ns heraldicon.entity.arms
   (:require
+   [heraldicon.config :as config]
    [heraldicon.context :as c]
    [heraldicon.entity.attribution :as attribution]
+   [heraldicon.entity.id :as id]
    [heraldicon.entity.metadata :as metadata]
    [heraldicon.interface :as interface]))
 
@@ -19,3 +21,12 @@
    :attribution (attribution/options (c/++ context :attribution))
    :metadata (metadata/options (c/++ context :metadata))
    :tags {:ui {:form-type :tags}}})
+
+(defn short-url [arms-data]
+  (if (= (config/get :stage) "prod")
+    (let [{:keys [id version]} arms-data]
+      (when (and id version)
+        (if (zero? version)
+          (str "https://coa.to/" (id/for-url id))
+          (str "https://coa.to/" (id/for-url id) "/" version))))
+    "https://dev"))

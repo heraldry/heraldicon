@@ -5,7 +5,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.outline :as outline]
-   [heraldicon.util :as util]))
+   [heraldicon.util.uid :as uid]))
 
 (def field-type :heraldry.field.type/papellony)
 
@@ -191,7 +191,7 @@
                    (* middle-x stretch-x))
         shift-y (- middle-y
                    (* middle-y stretch-y))
-        pattern-id-prefix (util/id "papellony")
+        pattern-id-prefix (uid/generate "papellony")
         {pattern-width :width
          pattern-height :height
          papellony-pattern :pattern
@@ -232,7 +232,7 @@
           papellony-pattern]])]
      (doall
       (for [idx (range 2)]
-        (let [mask-id (util/id "mask")]
+        (let [mask-id (uid/generate "mask")]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}

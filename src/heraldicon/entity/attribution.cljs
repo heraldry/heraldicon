@@ -2,6 +2,7 @@
   (:require
    [heraldicon.config :as config]
    [heraldicon.context :as c]
+   [heraldicon.entity.id :as id]
    [heraldicon.interface :as interface]
    [heraldicon.util :as util]))
 
@@ -147,7 +148,7 @@
           version (if (zero? version)
                     (interface/get-raw-data (c/++ context :latest-version))
                     version)]
-      (str (config/get :heraldicon-url) base (util/id-for-url object-id) "/" version))))
+      (str (config/get :heraldicon-url) base (id/for-url object-id) "/" version))))
 
 (defn full-url-for-arms [context]
   (full-url context "/arms/"))

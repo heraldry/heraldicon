@@ -9,21 +9,6 @@
    [heraldicon.config :as config]
    [taoensso.timbre :as log]))
 
-(def -current-id
-  (atom 0))
-
-(defn reset-id []
-  (reset! -current-id 0))
-
-(defn id [prefix]
-  (str prefix "_" (swap! -current-id inc)))
-
-(defn id-for-url [id]
-  (when id
-    (-> id
-        (s/split #":" 2)
-        second)))
-
 (defn choices->map [choices]
   (->> choices
        (map (fn [[group-name & items]]
@@ -211,15 +196,6 @@
                                  ;; must be truthy as well
                                  v)
                             (matches-word v word))) data)))
-
-(defn short-url [arms-data]
-  (if (= (config/get :stage) "prod")
-    (let [{:keys [id version]} arms-data]
-      (when (and id version)
-        (if (zero? version)
-          (str "https://coa.to/" (id-for-url id))
-          (str "https://coa.to/" (id-for-url id) "/" version))))
-    "https://dev"))
 
 (defn index-of [item coll]
   (count (take-while (partial not= item) coll)))

@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.ui.element.ribbon-reference-select
   (:require
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
+   [heraldicon.entity.id :as id]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
@@ -10,7 +11,6 @@
    [heraldicon.frontend.ui.form.ribbon-general :as ribbon-general]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
@@ -84,7 +84,7 @@
                   :height "80vh"}}
          [ribbon-select/list-ribbons
           (fn [ribbon]
-            {:href (reife/href :view-ribbon-by-id {:id (util/id-for-url (:id ribbon))})
+            {:href (reife/href :view-ribbon-by-id {:id (id/for-url (:id ribbon))})
              :on-click (fn [event]
                          (doto event
                            .preventDefault

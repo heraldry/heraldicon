@@ -6,7 +6,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.util.uid :as uid]))
 
 (def field-type :heraldry.field.type/lozengy)
 
@@ -97,7 +97,7 @@
                    (* middle-x stretch-x))
         shift-y (- middle-y
                    (* middle-y stretch-y))
-        pattern-id (util/id "lozengy")
+        pattern-id (uid/generate "lozengy")
         lozenge-shape (path/make-path ["M" [(/ part-width 2) 0]
                                        "L" [part-width (/ part-height 2)]
                                        "L" [(/ part-width 2) part-height]
@@ -155,7 +155,7 @@
      [:g {:transform (str "rotate(" (- rotation) ")")}
       (doall
        (for [idx (range 2)]
-         (let [mask-id (util/id "mask")]
+         (let [mask-id (uid/generate "mask")]
            ^{:key idx}
            [:<>
             [:mask {:id mask-id}

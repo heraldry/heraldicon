@@ -19,7 +19,8 @@
    [heraldicon.svg.core :as svg]
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.util :as util]
+   [heraldicon.util.uid :as uid]))
 
 (defmethod interface/options :heraldry.charge.type/other [context]
   (-> (charge.shared/options context)
@@ -310,9 +311,9 @@
                                 (:shadow tincture)
                                 (pos? (:shadow tincture)))
             shadow-mask-id (when render-shadow?
-                             (util/id "mask"))
+                             (uid/generate "mask"))
             shadow-helper-mask-id (when render-shadow?
-                                    (util/id "mask"))
+                                    (uid/generate "mask"))
             render-highlight? (and (not preview-original?)
                                    (->> placeholder-colours
                                         vals
@@ -324,9 +325,9 @@
                                    (:highlight tincture)
                                    (pos? (:highlight tincture)))
             highlight-mask-id (when render-highlight?
-                                (util/id "mask"))
+                                (uid/generate "mask"))
             highlight-helper-mask-id (when render-highlight?
-                                       (util/id "mask"))
+                                       (uid/generate "mask"))
             unadjusted-charge (:data charge-data)
             adjusted-charge (-> unadjusted-charge
                                 (cond->
@@ -350,8 +351,8 @@
             hide-lower-layer? (and (seq layer-separator-colours)
                                    (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
-            mask-id (util/id "mask")
-            mask-inverted-id (util/id "mask")
+            mask-id (uid/generate "mask")
+            mask-inverted-id (uid/generate "mask")
             [mask mask-inverted] (when-not landscape?
                                    (make-mask adjusted-charge-without-shading
                                               placeholder-colours
@@ -426,11 +427,11 @@
                                                 [position (v/add position
                                                                  clip-size)])})
             vertical-mask? (not (zero? vertical-mask))
-            vertical-mask-id (util/id "mask")
+            vertical-mask-id (uid/generate "mask")
             layer-separator-colour-for-shadow-highlight (if hide-lower-layer?
                                                           "#000000"
                                                           "none")
-            charge-clip-path-id (util/id "mask")]
+            charge-clip-path-id (uid/generate "mask")]
         [:<>
          (when-not svg-export?
            [:defs

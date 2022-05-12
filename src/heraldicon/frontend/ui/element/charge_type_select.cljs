@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.ui.element.charge-type-select
   (:require
    [heraldicon.context :as c]
+   [heraldicon.entity.id :as id]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
@@ -11,7 +12,6 @@
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.interface :as interface]
    [heraldicon.static :as static]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
@@ -99,7 +99,7 @@
                                                                                         (not variant))])
           [charge-select/list-charges
            (fn [{:keys [id latest-version] :as charge-data}]
-             {:href (reife/href :view-charge-by-id {:id (util/id-for-url id)})
+             {:href (reife/href :view-charge-by-id {:id (id/for-url id)})
               :on-click (fn [event]
                           (doto event
                             .preventDefault

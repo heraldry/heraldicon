@@ -21,7 +21,8 @@
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
-   [heraldicon.util :as util]))
+   [heraldicon.util :as util]
+   [heraldicon.util.uid :as uid]))
 
 (defn coat-of-arms [{:keys
                      [svg-export?
@@ -51,9 +52,9 @@
                                                #(into []
                                                       (map squiggly/squiggly-path)
                                                       %))))
-        mask-id (util/id "mask")
-        texture-id (util/id "texture")
-        shiny-id (util/id "shiny")
+        mask-id (uid/generate "mask")
+        texture-id (uid/generate "texture")
+        shiny-id (uid/generate "shiny")
         texture-link (or texture-link (texture/full-path texture))]
     {:environment environment
      :result [:g {:filter (when escutcheon-shadow?
@@ -303,7 +304,7 @@
                                           foreground-colour
                                           background-colour)})}]
            (when text?
-             (let [path-id (util/id "path")
+             (let [path-id (uid/generate "path")
                    spacing (interface/get-sanitized-data (c/++ segment-context :spacing))
                    offset-x (interface/get-sanitized-data (c/++ segment-context :offset-x))
                    offset-y (interface/get-sanitized-data (c/++ segment-context :offset-y))

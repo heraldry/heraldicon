@@ -7,7 +7,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
    [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.util.uid :as uid]))
 
 (def overlap-stroke-width 0.1)
 
@@ -132,7 +132,7 @@
     (for [[idx [part-context [shape bounding-box-points meta] overlap-paths]]
           (->> (map vector paths parts mask-overlaps)
                (map-indexed vector))]
-      (let [clip-path-id (util/id (str "clip-" idx))
+      (let [clip-path-id (uid/generate (str "clip-" idx))
             env (environment/create
                  (if (map? shape)
                    (update shape :paths #(into []

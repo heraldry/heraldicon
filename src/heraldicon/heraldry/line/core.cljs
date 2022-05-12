@@ -34,7 +34,8 @@
    [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
-   [heraldicon.util :as util]))
+   [heraldicon.util :as util]
+   [heraldicon.util.uid :as uid]))
 
 (defn line-base [{:keys [base-line]} {line-min :min
                                       line-max :max}]
@@ -574,9 +575,9 @@
                                                "z"])))
         combined-thickness (+ thickness-1 thickness-2)
         mask-id-top (when mask-shape-top
-                      (util/id "mask-line-top"))
+                      (uid/generate "mask-line-top"))
         mask-id-bottom (when mask-shape-bottom
-                         (util/id "mask-line-bottom"))]
+                         (uid/generate "mask-line-bottom"))]
     [:<>
      (when (#{:single :double} mode)
        [:<>

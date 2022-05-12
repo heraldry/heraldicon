@@ -5,7 +5,8 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.outline :as outline]
-   [heraldicon.util :as util]))
+
+   [heraldicon.util.uid :as uid]))
 
 (def field-type :heraldry.field.type/fretty)
 
@@ -216,7 +217,7 @@
                    (* middle-x stretch-x))
         shift-y (- middle-y
                    (* middle-y stretch-y))
-        pattern-id-prefix (util/id "fretty")
+        pattern-id-prefix (uid/generate "fretty")
         {pattern-width :width
          pattern-height :height
          fretty-pattern :pattern
@@ -257,7 +258,7 @@
           fretty-pattern]])]
      (doall
       (for [idx (range 2)]
-        (let [mask-id (util/id "mask")]
+        (let [mask-id (uid/generate "mask")]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}

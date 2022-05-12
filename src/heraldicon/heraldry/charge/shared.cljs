@@ -13,7 +13,8 @@
    [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
-   [heraldicon.util :as util]))
+   [heraldicon.util :as util]
+   [heraldicon.util.uid :as uid]))
 
 (defn options [context]
   (let [anchor-point-option {:type :choice
@@ -272,9 +273,9 @@
                         (v/v min-x min-y))
                  (v/add anchor-point
                         (v/v max-x max-y))]]
-          charge-id (util/id "charge")
+          charge-id (uid/generate "charge")
           vertical-mask? (not (zero? vertical-mask))
-          vertical-mask-id (util/id "mask")]
+          vertical-mask-id (uid/generate "mask")]
       [:<>
        (when vertical-mask?
          (let [total-width (- max-x min-x)

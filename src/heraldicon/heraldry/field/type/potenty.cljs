@@ -5,7 +5,8 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.outline :as outline]
-   [heraldicon.util :as util]))
+
+   [heraldicon.util.uid :as uid]))
 
 (def field-type :heraldry.field.type/potenty)
 
@@ -331,7 +332,7 @@
                    (* middle-x stretch-x))
         shift-y (- middle-y
                    (* middle-y stretch-y))
-        pattern-id (util/id "potenty")
+        pattern-id (uid/generate "potenty")
         potent-function (case variant
                           :counter potent-counter
                           :in-pale potent-in-pale
@@ -378,7 +379,7 @@
            potent-pattern]]))]
      (doall
       (for [idx (range 2)]
-        (let [mask-id (util/id "mask")]
+        (let [mask-id (uid/generate "mask")]
           ^{:key idx}
           [:<>
            [:mask {:id mask-id}
