@@ -8,10 +8,10 @@
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/label)
 
@@ -211,13 +211,13 @@
               :fimbriation fimbriation}
         anchor-point (position/calculate anchor environment :fess)
         band-height (-> thickness
-                        ((util/percent-of (:width environment))))
+                        ((math/percent-of (:width environment))))
         anchor-point (case (:alignment anchor)
                        :left (v/add anchor-point (v/v 0 (/ band-height 2)))
                        :right (v/sub anchor-point (v/v 0 (/ band-height 2)))
                        anchor-point)
         point-width (-> size
-                        ((util/percent-of (:width environment))))
+                        ((math/percent-of (:width environment))))
         point-height (* point-width stretch)
         width (:width environment)
         {:keys [lines

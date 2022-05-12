@@ -12,13 +12,6 @@
        (apply f maps)))
    maps))
 
-(defn percent-of [base-value]
-  (fn [v]
-    (when v
-      (-> v
-          (* base-value)
-          (/ 100)))))
-
 (defn xor [a b]
   (or (and a (not b))
       (and (not a) b)))

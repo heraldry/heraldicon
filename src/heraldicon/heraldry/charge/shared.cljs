@@ -8,12 +8,12 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bounding-box]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
-   [heraldicon.util :as util]
    [heraldicon.util.uid :as uid]))
 
 (defn options [context]
@@ -210,7 +210,7 @@
                  nil)
           target-arg-value (-> (or size
                                    80)
-                               ((util/percent-of arg-value)))
+                               ((math/percent-of arg-value)))
           {:keys [shape
                   charge-width
                   charge-height
@@ -226,11 +226,11 @@
                                   (- (:y bottom) (:y anchor-point))))
           target-width (if size
                          (-> size
-                             ((util/percent-of width)))
+                             ((math/percent-of width)))
                          (* (* min-x-distance 2) 0.8))
           target-height (/ (if size
                              (-> size
-                                 ((util/percent-of height)))
+                                 ((math/percent-of height)))
                              (* (* min-y-distance 2) 0.7))
                            stretch)
           angle (if (and (-> orientation :point (= :angle))
@@ -280,7 +280,7 @@
        (when vertical-mask?
          (let [total-width (- max-x min-x)
                total-height (- max-y min-y)
-               mask-height ((util/percent-of total-height) (Math/abs vertical-mask))]
+               mask-height ((math/percent-of total-height) (Math/abs vertical-mask))]
            [:defs
             [:mask {:id vertical-mask-id}
              [:rect {:transform (str "translate(" (v/->str anchor-point) ")")
@@ -305,10 +305,10 @@
         (when (-> fimbriation :mode #{:double})
           (let [thickness (+ (-> fimbriation
                                  :thickness-1
-                                 ((util/percent-of charge-width)))
+                                 ((math/percent-of charge-width)))
                              (-> fimbriation
                                  :thickness-2
-                                 ((util/percent-of charge-width))))]
+                                 ((math/percent-of charge-width))))]
             [:<>
              (when outline?
                [fimbriation/dilate-and-fill-path
@@ -329,7 +329,7 @@
         (when (-> fimbriation :mode #{:single :double})
           (let [thickness (-> fimbriation
                               :thickness-1
-                              ((util/percent-of charge-width)))]
+                              ((math/percent-of charge-width)))]
             [:<>
              (when outline?
                [fimbriation/dilate-and-fill-path

@@ -12,6 +12,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.math.bounding-box :as bounding-box]
+   [heraldicon.math.core :as math]
    [heraldicon.math.filter :as filter]
    [heraldicon.math.vector :as v]
    [heraldicon.render.hatching :as hatching]
@@ -21,7 +22,6 @@
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
-   [heraldicon.util :as util]
    [heraldicon.util.uid :as uid]))
 
 (defn coat-of-arms [{:keys
@@ -411,8 +411,8 @@
             size (interface/get-sanitized-data (c/++ context :geometry :size))
             thickness (interface/get-sanitized-data (c/++ context :ribbon :thickness))
             position (-> (-> environment :points (get anchor-point))
-                         (v/add (v/v ((util/percent-of width) offset-x)
-                                     (- ((util/percent-of height) offset-y)))))
+                         (v/add (v/v ((math/percent-of width) offset-x)
+                                     (- ((math/percent-of height) offset-y)))))
             ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
             ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
             ;; height; could perhaps be a subscription or the ribbon function can provide it?
@@ -422,7 +422,7 @@
                                                             (map (partial v/add (v/v 0 thickness)) points)))
             ribbon-width (- max-x min-x)
             ribbon-height (- max-y min-y)
-            target-width ((util/percent-of width) size)
+            target-width ((math/percent-of width) size)
             scale (/ target-width ribbon-width)
             outline-thickness (/ outline/stroke-width
                                  2

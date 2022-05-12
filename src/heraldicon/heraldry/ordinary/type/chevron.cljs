@@ -10,10 +10,10 @@
    [heraldicon.heraldry.shared.chevron :as chevron]
    [heraldicon.interface :as interface]
    [heraldicon.math.angle :as angle]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/chevron)
 
@@ -245,7 +245,7 @@
         width (:width environment)
         height (:height environment)
         band-width (-> size
-                       ((util/percent-of height)))
+                       ((math/percent-of height)))
         {direction-anchor-point :real-anchor
          origin-point :real-orientation} (position/calculate-anchor-and-orientation
                                           environment
@@ -310,11 +310,11 @@
                  end-left-lower
                  end-right-lower)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (util/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (util/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
         opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (util/percent-of height))
-                          (update-in [:fimbriation :thickness-2] (util/percent-of height)))
+                          (update-in [:fimbriation :thickness-1] (math/percent-of height))
+                          (update-in [:fimbriation :thickness-2] (math/percent-of height)))
         {line-right-upper :line
          line-right-upper-start :line-start
          line-right-upper-min :line-min

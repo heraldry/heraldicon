@@ -6,10 +6,10 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/orle)
 
@@ -79,8 +79,8 @@
         opposite-line-type (interface/get-sanitized-data (c/++ context :opposite-line :type))
         points (:points environment)
         width (:width environment)
-        distance ((util/percent-of width) distance)
-        thickness ((util/percent-of width) thickness)
+        distance ((math/percent-of width) distance)
+        thickness ((math/percent-of width) thickness)
         environment-shape (-> environment
                               (update-in [:shape :paths] (partial take 1))
                               environment/effective-shape)

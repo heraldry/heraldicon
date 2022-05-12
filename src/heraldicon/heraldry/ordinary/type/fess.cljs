@@ -8,11 +8,11 @@
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/fess)
 
@@ -78,7 +78,7 @@
         width (:width environment)
         height (:height environment)
         band-height (-> size
-                        ((util/percent-of height)))
+                        ((math/percent-of height)))
         row1 (case (:alignment anchor)
                :left (:y anchor-point)
                :right (- (:y anchor-point) band-height)
@@ -112,11 +112,11 @@
         first-right (v/v shared-end-x (:y first-right))
         second-right (v/v shared-end-x (:y second-right))
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (util/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (util/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
         opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (util/percent-of height))
-                          (update-in [:fimbriation :thickness-2] (util/percent-of height)))
+                          (update-in [:fimbriation :thickness-1] (math/percent-of height))
+                          (update-in [:fimbriation :thickness-2] (math/percent-of height)))
         {line-one :line
          line-one-start :line-start
          line-one-min :line-min

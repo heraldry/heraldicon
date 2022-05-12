@@ -7,11 +7,11 @@
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/chief)
 
@@ -50,7 +50,7 @@
         width (:width environment)
         height (:height environment)
         band-height (-> size
-                        ((util/percent-of height)))
+                        ((math/percent-of height)))
         row (+ (:y top) band-height)
         row-left (v/v (:x left) row)
         row-right (v/v (:x right) row)
@@ -69,8 +69,8 @@
         row-left (v/v shared-start-x (:y row-left))
         row-right (v/v shared-end-x (:y row-right))
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (util/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (util/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
         {line-reversed :line
          line-reversed-start :line-start
          line-reversed-min :line-min

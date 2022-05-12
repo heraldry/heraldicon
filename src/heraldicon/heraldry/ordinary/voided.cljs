@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]))
+   [heraldicon.math.core :as math]))
 
 (defn options [context]
   (let [voided? (interface/get-raw-data (c/++ context :voided?))]
@@ -30,7 +30,7 @@
                 {:paths [shape]})]
     (if (interface/get-sanitized-data (c/++ context :voided?))
       (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
-            thickness ((util/percent-of base-thickness) thickness)
+            thickness ((math/percent-of base-thickness) thickness)
             corner (interface/get-sanitized-data (c/++ context :corner))
             environment-shape (environment/effective-shape
                                environment

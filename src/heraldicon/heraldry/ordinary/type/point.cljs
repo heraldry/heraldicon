@@ -7,11 +7,11 @@
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/point)
 
@@ -59,8 +59,8 @@
         top-left (:top-left points)
         top-right (:top-right points)
 
-        real-point-width ((util/percent-of width) point-width)
-        real-point-height ((util/percent-of width) point-height)
+        real-point-width ((math/percent-of width) point-width)
+        real-point-height ((math/percent-of width) point-height)
 
         ideal-point-side (v/v (if (= variant :dexter)
                                 (-> top-left :x)

@@ -9,10 +9,10 @@
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.heraldry.shared.pile :as pile]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/pile)
 
@@ -219,8 +219,8 @@
                       v/abs)
         end (max end-left end-right)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (util/percent-of thickness-base))
-                 (update-in [:fimbriation :thickness-2] (util/percent-of thickness-base)))
+                 (update-in [:fimbriation :thickness-1] (math/percent-of thickness-base))
+                 (update-in [:fimbriation :thickness-2] (math/percent-of thickness-base)))
         {line-left :line
          line-left-start :line-start
          line-left-min :line-min

@@ -8,11 +8,11 @@
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/cross)
 
@@ -78,7 +78,7 @@
         width (:width environment)
         height (:height environment)
         band-width (-> size
-                       ((util/percent-of width)))
+                       ((math/percent-of width)))
         col1 (- (:x anchor-point) (/ band-width 2))
         col2 (+ col1 band-width)
         pale-top-left (v/v col1 (-> top :y (- 10)))
@@ -136,8 +136,8 @@
                  end-fess-bottom-left
                  end-fess-bottom-right)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (util/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (util/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
         {line-pale-top-left :line
          line-pale-top-left-start :line-start
          line-pale-top-left-min :line-min
