@@ -2,11 +2,11 @@
   (:require
    [clojure.string :as s]
    [heraldicon.context :as c]
+   [heraldicon.entity.tag :as tag]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.entity.tag :as tag]
    [re-frame.core :as rf]))
 
 (def value-path [:ui :tag-input-value])

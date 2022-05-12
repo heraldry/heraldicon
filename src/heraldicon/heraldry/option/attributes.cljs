@@ -3,7 +3,7 @@
    [goog.string :as gstring]
    [heraldicon.colour :as colour]
    [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def attitude-choices
   [[:string.charge.attitude/none :none]
@@ -44,7 +44,7 @@
     [:string.charge.attitude/nowed :nowed]]])
 
 (def attitude-map
-  (util/choices->map attitude-choices))
+  (options/choices->map attitude-choices))
 
 (def facing-choices
   [[:string.charge.facing/none :none]
@@ -58,7 +58,7 @@
    [:string.charge.facing/salient :salient]])
 
 (def facing-map
-  (util/choices->map facing-choices))
+  (options/choices->map facing-choices))
 
 (def attribute-choices
   [[:string.charge.attribute.group/general
@@ -79,7 +79,7 @@
     [:string.charge.attribute/queue-fourche :queue-fourche]]])
 
 (def attribute-map
-  (util/choices->map attribute-choices))
+  (options/choices->map attribute-choices))
 
 (def tincture-modifier-choices
   [[:string.charge.tincture-modifier.group/fauna
@@ -124,7 +124,7 @@
     [:string.charge.tincture-modifier/stringed :stringed]]])
 
 (def tincture-modifier-map
-  (util/choices->map tincture-modifier-choices))
+  (options/choices->map tincture-modifier-choices))
 
 (def tincture-modifier-for-charge-choices
   (vec (concat [[:string.charge.tincture-modifier.group/technical
@@ -139,7 +139,7 @@
                tincture-modifier-choices)))
 
 (def tincture-modifier-for-charge-map
-  (util/choices->map tincture-modifier-for-charge-choices))
+  (options/choices->map tincture-modifier-for-charge-choices))
 
 (defn tincture-modifier [value]
   (if (vector? value)
@@ -192,4 +192,4 @@
                              [name key])))))))
 
 (def tincture-modifier-qualifier-for-charge-map
-  (util/choices->map tincture-modifier-qualifier-choices))
+  (options/choices->map tincture-modifier-qualifier-choices))

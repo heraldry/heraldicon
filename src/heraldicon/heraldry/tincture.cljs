@@ -3,6 +3,7 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
+   [heraldicon.options :as options]
    [heraldicon.render.hatching :as hatching]
    [heraldicon.render.theme :as theme]
    [heraldicon.util :as util]))
@@ -43,7 +44,7 @@
     [:string.tincture/white :white]]])
 
 (def tincture-map
-  (util/choices->map choices))
+  (options/choices->map choices))
 
 (defn translate-tincture [keyword]
   (tincture-map keyword (util/translate keyword)))
@@ -64,7 +65,7 @@
     :else :colour))
 
 (def fixed-tincture-map
-  (util/choices->map fixed-tincture-choices))
+  (options/choices->map fixed-tincture-choices))
 
 (def ermine
   ["ermine" :argent :sable])

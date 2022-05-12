@@ -4,7 +4,7 @@
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (defn value-mode-select [context & {:keys [display-fn disabled? on-change default-option]}]
   (let [current-value (interface/get-raw-data context)
@@ -25,7 +25,7 @@
         display-fn (or display-fn
                        (when (= type :choice)
                          (fn [v]
-                           ((util/choices->map choices) v)))
+                           ((options/choices->map choices) v)))
                        identity)
         effective-value (->> [current-value
                               inherited

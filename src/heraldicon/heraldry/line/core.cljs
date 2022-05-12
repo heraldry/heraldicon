@@ -153,7 +153,7 @@
               [(-> pattern deref :display-name) (get-line-identifier pattern)]))))
 
 (def line-map
-  (util/choices->map choices))
+  (options/choices->map choices))
 
 (def type-option
   {:type :choice

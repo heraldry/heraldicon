@@ -3,8 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
-   [heraldicon.options :as options]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def type-choices
   [[:string.charge-group.type/rows :heraldry.charge-group.type/rows]
@@ -13,7 +12,7 @@
    [:string.charge-group.type/in-orle :heraldry.charge-group.type/in-orle]])
 
 (def type-map
-  (util/choices->map type-choices))
+  (options/choices->map type-choices))
 
 (def type-option
   {:type :choice

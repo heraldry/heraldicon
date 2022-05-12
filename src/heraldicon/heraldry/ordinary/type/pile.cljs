@@ -46,7 +46,7 @@
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)
         orientation-point-option {:type :choice
-                                  :choices (util/filter-choices
+                                  :choices (options/filter-choices
                                             [[:string.option.point-choice/top-left :top-left]
                                              [:string.option.point-choice/top :top]
                                              [:string.option.point-choice/top-right :top-right]

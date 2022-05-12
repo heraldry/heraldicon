@@ -1,7 +1,7 @@
 (ns heraldicon.svg.metadata
   (:require
-   [heraldicon.entity.attribution :as attribution]
    [heraldicon.context :as c]
+   [heraldicon.entity.attribution :as attribution]
    [heraldicon.interface :as interface]))
 
 (defn actual-attribution [title creator creator-url url

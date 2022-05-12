@@ -35,7 +35,7 @@
               [(charge.interface/display-name key) key]))))
 
 (def choice-map
-  (util/choices->map choices))
+  (options/choices->map choices))
 
 (def type-option
   {:type :choice

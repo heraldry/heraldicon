@@ -1,6 +1,6 @@
 (ns heraldicon.font
   (:require
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def default :prince-valiant)
 
@@ -29,7 +29,7 @@
        vec))
 
 (def choice-map
-  (util/choices->map choices))
+  (options/choices->map choices))
 
 (def path-map
   (->> font-data

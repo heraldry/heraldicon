@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.context :as c]
+   [heraldicon.entity.metadata :as metadata]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.element.select :as select]
@@ -9,7 +10,6 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.entity.metadata :as metadata]
    [heraldicon.util :as util]
    [re-frame.core :as rf]))
 

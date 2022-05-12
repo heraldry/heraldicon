@@ -2,7 +2,7 @@
   (:require
    [clojure.set :as set]
    [heraldicon.math.vector :as v]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def point-choices
   [[:string.option.point-choice/fess :fess]
@@ -28,7 +28,7 @@
        vec))
 
 (def point-choices-y
-  (util/filter-choices
+  (options/filter-choices
    point-choices
    #{:chief :honour :fess :nombril :base}))
 
@@ -51,7 +51,7 @@
    [:string.option.orientation-point-choice/angle :angle]])
 
 (def orientation-point-map
-  (util/choices->map orientation-point-choices))
+  (options/choices->map orientation-point-choices))
 
 (def alignment-choices
   [[:string.option.alignment-choice/left :left]
@@ -59,7 +59,7 @@
    [:string.option.alignment-choice/right :right]])
 
 (def alignment-map
-  (util/choices->map alignment-choices))
+  (options/choices->map alignment-choices))
 
 (def default-options
   {:point {:type :choice

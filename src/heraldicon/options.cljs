@@ -1,7 +1,6 @@
 (ns heraldicon.options
   (:require
-   [clojure.walk :as walk]
-   [heraldicon.util :as util]))
+   [clojure.walk :as walk]))
 
 (def option-types #{:range :choice :boolean :text})
 
@@ -15,6 +14,37 @@
    :default false
    :ui {:label :string.charge.tincture-modifier.special/outline}})
 
+(defn choices->map [choices]
+  (->> choices
+       (map (fn [[group-name & items]]
+              (if (and (-> items count (= 1))
+                       (-> items first keyword?))
+                ;; in this case there is no group, treat the first element of "items" as key
+                ;; and "group-name" as display-name
+                [[(first items) group-name]]
+                (->> items
+                     (map (comp vec reverse))))))
+       (apply concat)
+       (into {})))
+
+(defn filter-choices [choices pred]
+  (let [pred (if (or (vector? pred)
+                     (seq? pred))
+               (set pred)
+               pred)]
+    (walk/postwalk (fn [v]
+                     (cond
+                       (and (vector? v)
+                            (-> v count (= 2))
+                            (-> v second keyword?)
+                            (-> v second pred not)) nil
+                       (and (vector? v)
+                            (-> v count (= 2))
+                            (-> v second vector?)
+                            (-> v second count zero?)) nil
+                       (vector? v) (filterv identity v)
+                       :else v)) choices)))
+
 (defn get-value [value options]
   (if (and (vector? value)
            (-> value first (= :force)))
@@ -25,7 +55,7 @@
                                        fallback]))]
       (case (:type options)
         :boolean (boolean value)
-        :choice (let [choices (util/choices->map (:choices options))]
+        :choice (let [choices (choices->map (:choices options))]
                   (if (contains? choices value)
                     value
                     (if (contains? choices fallback)
@@ -46,7 +76,7 @@
     nil
     (case (:type options)
       :boolean (boolean value)
-      :choice (let [choices (util/choices->map (:choices options))]
+      :choice (let [choices (choices->map (:choices options))]
                 (if (contains? choices value)
                   value
                   nil))

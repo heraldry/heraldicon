@@ -31,8 +31,7 @@
    [heraldicon.heraldry.field.type.tierced-per-pall :as tierced-per-pall]
    [heraldicon.heraldry.field.type.vairy :as vairy]
    [heraldicon.interface :as interface]
-   [heraldicon.options :as options]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def fields
   [plain/field-type
@@ -70,7 +69,7 @@
               [(field.interface/display-name key) key]))))
 
 (def field-map
-  (util/choices->map choices))
+  (options/choices->map choices))
 
 (def type-option
   {:type :choice

@@ -20,8 +20,7 @@
    [heraldicon.heraldry.ordinary.type.quarter :as quarter]
    [heraldicon.heraldry.ordinary.type.saltire :as saltire]
    [heraldicon.interface :as interface]
-   [heraldicon.options :as options]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def ordinaries
   [pale/ordinary-type
@@ -48,7 +47,7 @@
               [(ordinary.interface/display-name key) key]))))
 
 (def ordinary-map
-  (util/choices->map choices))
+  (options/choices->map choices))
 
 (def type-option
   {:type :choice

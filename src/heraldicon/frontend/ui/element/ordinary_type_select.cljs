@@ -61,7 +61,7 @@
           value (or current-value
                     inherited
                     default)
-          choice-map (util/choices->map choices)
+          choice-map (options/choices->map choices)
           choice-name (get choice-map value)
           label (:label ui)]
       [:div.ui-setting

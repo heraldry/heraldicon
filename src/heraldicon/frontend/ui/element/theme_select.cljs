@@ -6,8 +6,8 @@
    [heraldicon.frontend.ui.element.value-mode-select :as value-mode-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.static :as static]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]
+   [heraldicon.static :as static]))
 
 (defn theme-choice [context key display-name & {:keys [selected?
                                                        on-click?]
@@ -37,7 +37,7 @@
                     inherited
                     default)
           label (:label ui)
-          choice-map (util/choices->map choices)
+          choice-map (options/choices->map choices)
           choice-name (get choice-map value)]
       [:div.ui-setting
        (when label

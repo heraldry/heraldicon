@@ -8,8 +8,8 @@
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.curve.core :as curve]
    [heraldicon.math.vector :as v]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]
+   [heraldicon.svg.path :as path]))
 
 (defn options [_context]
   {:thickness {:type :range
@@ -122,7 +122,7 @@
    [:string.ribbon.segment-type-choice/background :heraldry.ribbon.segment/background]])
 
 (def segment-type-map
-  (util/choices->map segment-type-choices))
+  (options/choices->map segment-type-choices))
 
 (def type-option
   {:type :choice

@@ -1,6 +1,6 @@
 (ns heraldicon.render.theme
   (:require
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def theme-all
   {:all true})
@@ -523,7 +523,7 @@
        vec))
 
 (def theme-map
-  (util/choices->map theme-choices))
+  (options/choices->map theme-choices))
 
 (def theme-data-map
   (->> themes

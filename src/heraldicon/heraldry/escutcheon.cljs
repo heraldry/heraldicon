@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 (def heater
   {:display-name :string.escutcheon.type/heater
@@ -380,7 +380,7 @@
        (into [[:string.escutcheon.type/none :none]])))
 
 (def choice-map
-  (util/choices->map choices))
+  (options/choices->map choices))
 
 (defn field [escutcheon-type flag-width flag-height swallow-tail tail-point-height tail-tongue]
   (let [escutcheon-data (get kinds-map escutcheon-type)]
