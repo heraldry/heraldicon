@@ -261,7 +261,7 @@
      :charge
      on-select
      refresh-fn
-     :sort-fn (juxt (comp util/normalize-string-for-sort :name)
+     :sort-fn (juxt (comp filter/normalize-string-for-sort :name)
                     :type
                     :id
                     :version)
