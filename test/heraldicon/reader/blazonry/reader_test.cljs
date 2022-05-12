@@ -1,4 +1,4 @@
-(ns heraldicon.reader.blazonry.test-reader
+(ns heraldicon.reader.blazonry.reader-test
   (:require
    [cljs.test :refer-macros [are deftest]]
    [heraldicon.reader.blazonry.parser :as parser]

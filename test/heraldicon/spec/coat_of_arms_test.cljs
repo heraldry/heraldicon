@@ -1,4 +1,4 @@
-(ns heraldicon.spec.test-coat-of-arms
+(ns heraldicon.spec.coat-of-arms-test
   (:require
    [cljs.spec.alpha :as s]
    [cljs.test :refer-macros [are deftest]]

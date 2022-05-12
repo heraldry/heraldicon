@@ -53,7 +53,7 @@
           :test
           {:target :node-test
            :output-to "./backend/build/test/node-tests.js"
-           :main heraldicon.test/main
+           :main heraldicon.test-runner/main
            :compiler-options {:warnings {:redef false}}
-           :ns-regexp "[.]test-"
+           :ns-regexp "-test$"
            :autorun true}}}
