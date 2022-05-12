@@ -3,8 +3,6 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
-   [goog.crypt :as crypt]
-   [goog.crypt.base64 :as b64]
    [heraldicon.config :as config]))
 
 (defn deep-merge-with [f & maps]
@@ -21,16 +19,6 @@
       (-> v
           (* base-value)
           (/ 100)))))
-
-(defn base64-encode [data]
-  (if (string? data)
-    (b64/encodeString data)
-    (b64/encodeByteArray data)))
-
-(defn base64-decode-utf-8 [data]
-  (-> data
-      (b64/decodeStringToByteArray true)
-      crypt/utf8ByteArrayToString))
 
 (defn xor [a b]
   (or (and a (not b))
