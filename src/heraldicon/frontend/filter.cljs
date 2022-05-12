@@ -23,9 +23,39 @@
                               (dissoc current-tags tag)
                               (assoc current-tags tag true))))))
 
+(defn- -normalize-string [s]
+  (some-> s
+          (.normalize "NFD")))
+
+(defn normalize-string-for-sort [s]
+  (some-> s
+          -normalize-string
+          s/lower-case))
+
+(defn normalize-string-for-match [s]
+  (some-> s
+          -normalize-string
+          (s/replace #"[\u0300-\u036f]" "")
+          s/lower-case))
+
+(defn- -matches-word [data word]
+  (cond
+    (keyword? data) (-> data name (-matches-word word))
+    (string? data) (-> data normalize-string-for-match
+                       (s/includes? word))
+    (vector? data) (some (fn [e]
+                           (-matches-word e word)) data)
+    (map? data) (some (fn [[k v]]
+                        (or (and (keyword? k)
+                                 (-matches-word k word)
+                                 ;; this would be an attribute entry, the value
+                                 ;; must be truthy as well
+                                 v)
+                            (-matches-word v word))) data)))
+
 (defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-ownership]
   (let [words (-> filter-string
-                  util/normalize-string-for-match
+                  normalize-string-for-match
                   (s/split #" +"))
         filter-tags-set (-> filter-tags
                             keys
@@ -45,7 +75,7 @@
                               (some (fn [attribute]
                                       (-> item
                                           (get attribute)
-                                          (util/matches-word word)))
+                                          (-matches-word word)))
                                     filter-keys))
                             words)
                     (set/subset? filter-tags-set

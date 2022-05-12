@@ -7,7 +7,6 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.user :as user]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -67,7 +66,7 @@
      :arms
      on-select
      refresh-fn
-     :sort-fn (juxt (comp util/normalize-string-for-sort :name)
+     :sort-fn (juxt (comp filter/normalize-string-for-sort :name)
                     :type
                     :id
                     :version)
