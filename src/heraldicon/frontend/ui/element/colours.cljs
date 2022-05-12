@@ -7,7 +7,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
 (defn choice-keywords [choices]

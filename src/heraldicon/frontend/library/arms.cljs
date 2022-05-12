@@ -24,7 +24,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))

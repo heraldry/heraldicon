@@ -6,7 +6,7 @@
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db :add-attribute

@@ -25,7 +25,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
    [heraldicon.svg.core :as svg]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [hickory.core :as hickory]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]

@@ -10,7 +10,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.static :as static]
-   [heraldicon.util :as util]))
+   [heraldicon.util.core :as util]))
 
 (defn -default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type

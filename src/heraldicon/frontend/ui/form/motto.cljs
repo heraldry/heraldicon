@@ -6,7 +6,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]
+   [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
 (rf/reg-sub :motto-name
