@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ribbon-library
+(ns heraldicon.frontend.library.ribbon
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]

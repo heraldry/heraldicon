@@ -2,14 +2,14 @@
   (:require
    [clojure.string :as s]
    [heraldicon.frontend.account :as account]
-   [heraldicon.frontend.arms-library :as arms-library]
-   [heraldicon.frontend.charge-library :as charge-library]
-   [heraldicon.frontend.collection-library :as collection-library]
    [heraldicon.frontend.contact :as contact]
    [heraldicon.frontend.home :as home]
+   [heraldicon.frontend.library.arms :as library.arms]
+   [heraldicon.frontend.library.charge :as library.charge]
+   [heraldicon.frontend.library.collection :as library.collection]
+   [heraldicon.frontend.library.ribbon :as library.ribbon]
+   [heraldicon.frontend.library.user :as library.user]
    [heraldicon.frontend.news :as news]
-   [heraldicon.frontend.ribbon-library :as ribbon-library]
-   [heraldicon.frontend.user-library :as user-library]
    [reagent.core :as rc]
    [reitit.frontend :as reif]
    [reitit.frontend.easy :as reife]))
@@ -39,174 +39,174 @@
 
    ["/collections/"
     {:name :collections
-     :view collection-library/view-list-collection}]
+     :view library.collection/view-list-collection}]
 
    ["/collections"
     {:name :collections-without-slash
-     :view collection-library/view-list-collection}]
+     :view library.collection/view-list-collection}]
 
    ["/collections/new"
     {:name :create-collection
-     :view collection-library/create-collection
+     :view library.collection/create-collection
      :conflicting true}]
 
    ["/collections/new/"
     {:name :create-collection-with-slash
-     :view collection-library/create-collection
+     :view library.collection/create-collection
      :conflicting true}]
 
    ["/collections/:id"
     {:name :view-collection-by-id
-     :view collection-library/view-collection-by-id
+     :view library.collection/view-collection-by-id
      :conflicting true}]
 
    ["/collections/:id/"
     {:name :view-collection-by-id-with-slash
-     :view collection-library/view-collection-by-id
+     :view library.collection/view-collection-by-id
      :conflicting true}]
 
    ["/collections/:id/:version"
     {:name :view-collection-by-id-and-version
-     :view collection-library/view-collection-by-id
+     :view library.collection/view-collection-by-id
      :conflicting true}]
 
    ["/collections/:id/:version/"
     {:name :view-collection-by-id-and-version-with-slash
-     :view collection-library/view-collection-by-id
+     :view library.collection/view-collection-by-id
      :conflicting true}]
 
    ["/arms/"
     {:name :arms
-     :view arms-library/view-list-arms}]
+     :view library.arms/view-list-arms}]
 
    ["/arms"
     {:name :arms-without-slash
-     :view arms-library/view-list-arms}]
+     :view library.arms/view-list-arms}]
 
    ["/arms/new"
     {:name :create-arms
-     :view arms-library/create-arms
+     :view library.arms/create-arms
      :conflicting true}]
 
    ["/arms/new/"
     {:name :create-arms-with-slash
-     :view arms-library/create-arms
+     :view library.arms/create-arms
      :conflicting true}]
 
    ["/arms/:id"
     {:name :view-arms-by-id
-     :view arms-library/view-arms-by-id
+     :view library.arms/view-arms-by-id
      :conflicting true}]
 
    ["/arms/:id/"
     {:name :view-arms-by-id-with-slash
-     :view arms-library/view-arms-by-id
+     :view library.arms/view-arms-by-id
      :conflicting true}]
 
    ["/arms/:id/:version"
     {:name :view-arms-by-id-and-version
-     :view arms-library/view-arms-by-id
+     :view library.arms/view-arms-by-id
      :conflicting true}]
 
    ["/arms/:id/:version/"
     {:name :view-arms-by-id-and-version-with-slash
-     :view arms-library/view-arms-by-id
+     :view library.arms/view-arms-by-id
      :conflicting true}]
 
    ["/charges/"
     {:name :charges
-     :view charge-library/view-list-charges}]
+     :view library.charge/view-list-charges}]
 
    ["/charges"
     {:name :charges-without-slash
-     :view charge-library/view-list-charges}]
+     :view library.charge/view-list-charges}]
 
    ["/charges/new"
     {:name :create-charge
-     :view charge-library/create-charge
+     :view library.charge/create-charge
      :conflicting true}]
 
    ["/charges/new/"
     {:name :create-charge-with-slash
-     :view charge-library/create-charge
+     :view library.charge/create-charge
      :conflicting true}]
 
    ["/charges/:id"
     {:name :view-charge-by-id
-     :view charge-library/view-charge-by-id
+     :view library.charge/view-charge-by-id
      :conflicting true}]
 
    ["/charges/:id/"
     {:name :view-charge-by-id-with-slash
-     :view charge-library/view-charge-by-id
+     :view library.charge/view-charge-by-id
      :conflicting true}]
 
    ["/charges/:id/:version"
     {:name :view-charge-by-id-and-version
-     :view charge-library/view-charge-by-id
+     :view library.charge/view-charge-by-id
      :conflicting true}]
 
    ["/charges/:id/:version/"
     {:name :view-charge-by-id-and-version-with-slash
-     :view charge-library/view-charge-by-id
+     :view library.charge/view-charge-by-id
      :conflicting true}]
 
    ["/ribbons/"
     {:name :ribbons
-     :view ribbon-library/view-list-ribbons}]
+     :view library.ribbon/view-list-ribbons}]
 
    ["/ribbons"
     {:name :ribbons-without-slash
-     :view ribbon-library/view-list-ribbons}]
+     :view library.ribbon/view-list-ribbons}]
 
    ["/ribbons/new"
     {:name :create-ribbon
-     :view ribbon-library/create-ribbon
+     :view library.ribbon/create-ribbon
      :conflicting true}]
 
    ["/ribbons/new/"
     {:name :create-ribbon-with-slash
-     :view ribbon-library/create-ribbon
+     :view library.ribbon/create-ribbon
      :conflicting true}]
 
    ["/ribbons/:id"
     {:name :view-ribbon-by-id
-     :view ribbon-library/view-ribbon-by-id
+     :view library.ribbon/view-ribbon-by-id
      :conflicting true}]
 
    ["/ribbons/:id/"
     {:name :view-ribbon-by-id-with-slash
-     :view ribbon-library/view-ribbon-by-id
+     :view library.ribbon/view-ribbon-by-id
      :conflicting true}]
 
    ["/ribbons/:id/:version"
     {:name :view-ribbon-by-id-and-version
-     :view ribbon-library/view-ribbon-by-id
+     :view library.ribbon/view-ribbon-by-id
      :conflicting true}]
 
    ["/ribbons/:id/:version/"
     {:name :view-ribbon-by-id-and-version-with-slash
-     :view ribbon-library/view-ribbon-by-id
+     :view library.ribbon/view-ribbon-by-id
      :conflicting true}]
 
    ["/users/"
     {:name :users
-     :view user-library/view-list-users
+     :view library.user/view-list-users
      :conflicting true}]
 
    ["/users"
     {:name :users-without-slash
-     :view user-library/view-list-users
+     :view library.user/view-list-users
      :conflicting true}]
 
    ["/users/:username"
     {:name :view-user
-     :view user-library/view-user-by-username
+     :view library.user/view-user-by-username
      :conflicting true}]
 
    ["/users/:username/"
     {:name :view-user-with-slash
-     :view user-library/view-user-by-username
+     :view library.user/view-user-by-username
      :conflicting true}]
 
    ["/account/"

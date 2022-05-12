@@ -1,14 +1,14 @@
-(ns heraldicon.frontend.user-library
+(ns heraldicon.frontend.library.user
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.config :as config]
    [heraldicon.frontend.api.request :as api.request]
-   [heraldicon.frontend.arms-library :as arms-library]
    [heraldicon.frontend.charge :as charge]
-   [heraldicon.frontend.charge-library :as charge-library]
-   [heraldicon.frontend.collection-library :as collection-library]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.library.arms :as library.arms]
+   [heraldicon.frontend.library.charge :as library.charge]
+   [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
@@ -42,7 +42,7 @@
     (if (= status :done)
       [charge-select/component
        [:user-charges]
-       charge-library/on-select
+       library.charge/on-select
        #(invalidate-charges-cache-for-user user-id)
        :remove-empty-groups? true
        :hide-ownership-filter? true]
@@ -59,7 +59,7 @@
     (if (= status :done)
       [arms-select/component
        [:user-arms]
-       arms-library/on-select
+       library.arms/on-select
        #(invalidate-arms-cache-for-user user-id)
        :hide-ownership-filter? true]
       [:div [tr :string.miscellaneous/loading]])))
@@ -75,7 +75,7 @@
     (if (= status :done)
       [collection-select/component
        collection-list
-       collection-library/link-to-collection
+       library.collection/link-to-collection
        #(invalidate-collection-cache-for-user user-id)
        :hide-ownership-filter? true]
       [:div [tr :string.miscellaneous/loading]])))
