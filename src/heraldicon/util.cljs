@@ -1,23 +1,11 @@
 (ns heraldicon.util
   (:require
-   [clojure.pprint :refer [pprint]]
    [clojure.string :as s]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [goog.crypt :as crypt]
    [goog.crypt.base64 :as b64]
-   [heraldicon.config :as config]
-   [taoensso.timbre :as log]))
-
-(defn spy [value msg]
-  (log/debug "spy:" msg)
-  (pprint value)
-  value)
-
-(defn spy->> [msg value]
-  (log/debug "spy:" msg)
-  (pprint value)
-  value)
+   [heraldicon.config :as config]))
 
 (defn deep-merge-with [f & maps]
   (apply
