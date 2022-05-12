@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
+   [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.util.uid :as uid]))
 
 (defn split-style-value [value]
@@ -85,3 +86,12 @@
                      (dissoc value :class)
                      value))
                  data))
+
+(defn optimize [data svgo-optimize-fn]
+  (go-catch
+   (-> {:removeUnknownsAndDefaults false}
+       clj->js
+       (svgo-optimize-fn data)
+       <?
+       (js->clj :keywordize-keys true)
+       :data)))
