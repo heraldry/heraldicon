@@ -1,7 +1,6 @@
 (ns heraldicon.util
   (:require
    [clojure.string :as s]
-   [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.config :as config]))
 
@@ -75,12 +74,6 @@
   (-> keyword
       translate
       upper-case-first))
-
-(defn replace-recursively [data value replacement]
-  (walk/postwalk #(if (= % value)
-                    replacement
-                    %)
-                 data))
 
 (defn normalize-string [s]
   (some-> s
