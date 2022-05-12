@@ -12,8 +12,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.static :as static]
-   [heraldicon.util :as util]))
+   [heraldicon.static :as static]))
 
 (macros/reg-event-db :override-field-part-reference
   (fn [db [_ path]]
@@ -92,7 +91,7 @@
   (when-let [parent-context (parent-context context)]
     (let [parent-type (interface/get-raw-data (c/++ parent-context :type))]
       (-> (field/part-name parent-type (last path))
-          util/upper-case-first))))
+          string/upper-case-first))))
 
 (defn non-mandatory-part-of-parent? [{:keys [path] :as context}]
   (let [index (last path)]

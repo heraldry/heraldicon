@@ -8,7 +8,6 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.util :as util]
    [re-frame.core :as rf]))
 
 (defn submenu-link-name [{:keys [nature license license-version]}]
@@ -18,7 +17,7 @@
                    :string.attribution/no-license
                    (attribution/license-display-name license license-version))]]
     (-> (string/combine ", " changes)
-        util/upper-case-first)))
+        string/upper-case-first)))
 
 (macros/reg-event-db :merge-attribution
   (fn [db [_ path data]]

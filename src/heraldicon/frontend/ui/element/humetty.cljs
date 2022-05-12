@@ -5,8 +5,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.options :as options]
-   [heraldicon.util :as util]))
+   [heraldicon.options :as options]))
 
 ;; TODO: probably can be improved with better subscriptions
 (defn submenu-link-name [options humetty]
@@ -19,7 +18,7 @@
                    [:string.submenu-summary/resized]))]
     (if (seq changes)
       (-> (string/combine ", " changes)
-          util/upper-case-first)
+          string/upper-case-first)
       :string.submenu-summary/no)))
 
 (defn humetty-submenu [context]

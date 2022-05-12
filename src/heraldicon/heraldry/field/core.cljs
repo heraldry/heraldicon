@@ -204,7 +204,7 @@
 
         blazon (-> (string/combine ", " [field-description
                                          components-description])
-                   util/upper-case-first)]
+                   string/upper-case-first)]
     (if (or root?
             (and (= field-type :heraldry.field.type/plain)
                  (zero? num-components)))
