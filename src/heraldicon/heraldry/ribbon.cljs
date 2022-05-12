@@ -1,4 +1,4 @@
-(ns heraldicon.ribbon
+(ns heraldicon.heraldry.ribbon
   (:require
    [heraldicon.context :as c]
    [heraldicon.font :as font]
