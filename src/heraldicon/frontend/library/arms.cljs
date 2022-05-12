@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.arms-library
+(ns heraldicon.frontend.library.arms
   (:require
    ["copy-to-clipboard" :as copy-to-clipboard]
    [cljs.core.async :refer [go]]

@@ -1,10 +1,10 @@
 (ns heraldicon.frontend.keys
   (:require
    [clojure.string :as s]
-   [heraldicon.frontend.arms-library :as arms-library]
-   [heraldicon.frontend.charge-library :as charge-library]
-   [heraldicon.frontend.collection-library :as collection-library]
-   [heraldicon.frontend.ribbon-library :as ribbon-library]
+   [heraldicon.frontend.library.arms :as library.arms]
+   [heraldicon.frontend.library.charge :as library.charge]
+   [heraldicon.frontend.library.collection :as library.collection]
+   [heraldicon.frontend.library.ribbon :as library.ribbon]
    [heraldicon.frontend.route :as route]
    [heraldicon.frontend.state :as state]
    [re-frame.core :as rf]))
@@ -21,10 +21,10 @@
         code (.-code event)
         z-pressed? (= code "KeyZ")
         undo-path (cond
-                    (entity-edit-page? "arms") arms-library/form-db-path
-                    (entity-edit-page? "charge") charge-library/form-db-path
-                    (entity-edit-page? "ribbon") ribbon-library/form-db-path
-                    (entity-edit-page? "collection") collection-library/form-db-path
+                    (entity-edit-page? "arms") library.arms/form-db-path
+                    (entity-edit-page? "charge") library.charge/form-db-path
+                    (entity-edit-page? "ribbon") library.ribbon/form-db-path
+                    (entity-edit-page? "collection") library.collection/form-db-path
                     :else nil)]
     (cond
       (and undo-path
@@ -37,14 +37,14 @@
                                           (state/dispatch-on-event-and-prevent-default
                                            event [:heraldicon.frontend.history.core/undo undo-path]))
       (entity-edit-page? "ribbon") (rf/dispatch
-                                    [:heraldicon.frontend.ribbon-library/edit-set-key-modifiers
+                                    [:heraldicon.frontend.library.ribbon/edit-set-key-modifiers
                                      {:shift? shift?}]))))
 
 (defn key-up-handler [event]
   (let [shift? (.-shiftKey event)]
     (when (entity-edit-page? "ribbon")
       (rf/dispatch
-       [:heraldicon.frontend.ribbon-library/edit-set-key-modifiers
+       [:heraldicon.frontend.library.ribbon/edit-set-key-modifiers
         {:shift? shift?}]))))
 
 (js/window.removeEventListener "keydown" key-down-handler)
