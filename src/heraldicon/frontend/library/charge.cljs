@@ -98,12 +98,12 @@
   (go-catch
    (try
      (-> data
-         (util/optimize-svg (fn [options data]
-                              (go-catch
-                               (-> options
-                                   getSvgoInstance
-                                   (.optimize data)
-                                   <p!))))
+         (svg/optimize (fn [options data]
+                         (go-catch
+                          (-> options
+                              getSvgoInstance
+                              (.optimize data)
+                              <p!))))
          <?
          hickory/parse-fragment
          first
