@@ -94,14 +94,14 @@
 
   (fn [points [_ _path]]
     (concat [[-1 (clamp-point (v/sub (first points)
-                                     {:x 50 :y 10}))]]
+                                     (v/Vector. 50 10)))]]
 
             (-> points
                 catmullrom/catmullrom
                 (->> (map-indexed (fn [idx leg]
                                     [idx (bezier/interpolate-point leg 0.5)]))))
             [[(dec (count points)) (clamp-point (v/add (last points)
-                                                       {:x 50 :y 10}))]])))
+                                                       (v/Vector. 50 10)))]])))
 
 (rf/reg-sub ::edit-point-deletable?
   (fn [[_ path] _]
@@ -214,7 +214,7 @@
                              (let [mx (.-clientX event)
                                    my (.-clientY event)
                                    [sx sy] (map-to-svg-space mx my)]
-                               (route-path-point-mouse-down-fn {:x sx :y sy}))))
+                               (route-path-point-mouse-down-fn (v/Vector. sx sy)))))
           :on-click (when route-path-point-click-fn
                       #(route-path-point-click-fn path))
           :style {:cursor "pointer"}}
@@ -316,7 +316,7 @@
                               (let [mx (.-clientX event)
                                     my (.-clientY event)
                                     [sx sy] (map-to-svg-space mx my)]
-                                (route-path-point-move-fn {:x sx :y sy}))))}
+                                (route-path-point-move-fn (v/Vector. sx sy)))))}
      [:defs
       filter/shadow]
      [:g {:transform "translate(10,10)"}

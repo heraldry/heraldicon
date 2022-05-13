@@ -67,7 +67,7 @@
   (let [width (:width environment)
         top-left (v/add (get-in environment [:points :top-left])
                         (or (get-in environment [:meta :offset])
-                            {:x 0 :y 0}))
+                            v/zero))
         offset (v/sub top-left)
         scale-factor (/ target-width width)]
     (-> environment

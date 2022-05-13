@@ -2,6 +2,7 @@
   (:require
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.localization.string :as string]
+   [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
 
 (def heater
@@ -74,7 +75,7 @@
                   :bounding-box [-7 7 0 16]
                   :width 14
                   :height 17
-                  :points {:fess {:x 0 :y 8}}})})
+                  :points {:fess (v/Vector. 0 8)}})})
 
 (def lozenge
   {:display-name :string.escutcheon.type/lozenge
@@ -86,7 +87,7 @@
                       "z")
                  {:context :root
                   :bounding-box [-5 5 0 13]
-                  :points {:fess {:x 0 :y 6.5}}})})
+                  :points {:fess (v/Vector. 0 6.5)}})})
 
 (def oval
   {:display-name :string.escutcheon.type/oval
@@ -99,7 +100,7 @@
                       "z")
                  {:context :root
                   :bounding-box [-5 5 0 13]
-                  :points {:fess {:x 0 :y 6.5}}})})
+                  :points {:fess (v/Vector. 0 6.5)}})})
 
 (def roundel
   {:display-name :string.escutcheon.type/roundel
@@ -110,7 +111,7 @@
                       "z")
                  {:context :root
                   :bounding-box [-5 5 0 10]
-                  :points {:fess {:x 0 :y 5}}})})
+                  :points {:fess (v/Vector. 0 5)}})})
 
 (def swiss
   {:display-name :string.escutcheon.type/swiss
@@ -148,8 +149,8 @@
                   :bounding-box [-7 7 0 16]
                   :width 16
                   :height 17
-                  :offset {:x -1 :y 0}
-                  :points {:fess {:x 0 :y 8}}})})
+                  :offset (v/Vector. -1 0)
+                  :points {:fess (v/Vector. 0 8)}})})
 
 (def polish
   {:display-name :string.escutcheon.type/polish
@@ -172,7 +173,7 @@
                       "z")
                  {:context :root
                   :bounding-box [0 100 0 130]
-                  :points {:fess {:x 50 :y 60}}})})
+                  :points {:fess (v/Vector. 50 60)}})})
 
 (def polish-19th-century
   {:display-name :string.escutcheon.type/polish-19th-century
@@ -189,7 +190,7 @@
                   "Z")
                  {:context :root
                   :bounding-box [0 100 0 120]
-                  :points {:fess {:x 50 :y 60}}})})
+                  :points {:fess (v/Vector. 50 60)}})})
 
 (def renaissance
   {:display-name :string.escutcheon.type/renaissance
@@ -208,7 +209,7 @@
                   "Z")
                  {:context :root
                   :bounding-box [0 100 0 117]
-                  :points {:fess {:x 50 :y 55}}})})
+                  :points {:fess (v/Vector. 50 55)}})})
 
 (def rectangle
   {:display-name :string.escutcheon.type/rectangle
@@ -221,7 +222,7 @@
                   "z")
                  {:context :root
                   :bounding-box [0 10 0 12]
-                  :points {:fess {:x 5 :y 6}}})})
+                  :points {:fess (v/Vector. 5 6)}})})
 
 (def flag
   {:display-name :string.escutcheon.type/flag
@@ -246,7 +247,7 @@
                    "z")
                   {:context :root
                    :bounding-box [0 width 0 height]
-                   :points {:fess {:x (/ width 2) :y (/ height 2)}}})))
+                   :points {:fess (v/Vector. (/ width 2) (/ height 2))}})))
    :environment (environment/create
                  (str
                   "M 0,0"
@@ -256,7 +257,7 @@
                   "z")
                  {:context :root
                   :bounding-box [0 5 0 3]
-                  :points {:fess {:x 2.5 :y 1.5}}})})
+                  :points {:fess (v/Vector. 2.5 1.5)}})})
 
 (def wedge
   {:display-name :string.escutcheon.type/wedge
@@ -301,7 +302,7 @@
                         "z")
                    {:context :root
                     :bounding-box [(- half-width) half-width 0 height]
-                    :points {:fess {:x 0 :y half-width}}}))})
+                    :points {:fess (v/Vector. 0 half-width)}}))})
 
 (def norman
   {:display-name :string.escutcheon.type/norman-late
@@ -320,7 +321,7 @@
                         "z")
                    {:context :root
                     :bounding-box [(- half-width) half-width 0 height]
-                    :points {:fess {:x 0 :y half-width}}}))})
+                    :points {:fess (v/Vector. 0 half-width)}}))})
 
 (def norman-rounded
   {:display-name :string.escutcheon.type/rounded-norman-late
@@ -344,7 +345,7 @@
                         "z")
                    {:context :root
                     :bounding-box [(- half-width) half-width 0 height]
-                    :points {:fess {:x 0 :y half-width}}}))})
+                    :points {:fess (v/Vector. 0 half-width)}}))})
 
 (def escutcheons
   [#'heater

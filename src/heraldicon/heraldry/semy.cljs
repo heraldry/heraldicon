@@ -112,15 +112,15 @@
         part-height-half (/ part-height 2)
         charge-environment {:width part-width
                             :height part-height
-                            :points {:top-left {:x (- part-width-half) :y (- part-height-half)}
-                                     :top {:x 0 :y (- part-height-half)}
-                                     :top-right {:x part-width-half :y (- part-height-half)}
-                                     :left {:x (- part-width-half) :y 0}
-                                     :fess {:x 0 :y 0}
-                                     :right {:x part-width-half :y 0}
-                                     :bottom-left {:x (- part-width-half) :y part-height-half}
-                                     :bottom {:x 0 :y part-height-half}
-                                     :bottom-right {:x part-width-half :y part-height-half}}}
+                            :points {:top-left (v/Vector. (- part-width-half) (- part-height-half))
+                                     :top (v/Vector. 0 (- part-height-half))
+                                     :top-right (v/Vector. part-width-half (- part-height-half))
+                                     :left (v/Vector. (- part-width-half) 0)
+                                     :fess (v/Vector. 0 0)
+                                     :right (v/Vector. part-width-half 0)
+                                     :bottom-left (v/Vector. (- part-width-half) part-height-half)
+                                     :bottom (v/Vector. 0 part-height-half)
+                                     :bottom-right (v/Vector. part-width-half part-height-half)}}
         charge-context (-> context
                            (c/++ :charge)
                            (assoc :size-default 50)
@@ -142,10 +142,10 @@
                            vector
                            (cond->
                              [v/zero
-                              {:x part-width :y 0}
-                              {:x 0 :y part-height}
-                              {:x part-width :y part-height}]
-                             (not rectangular?) (conj {:x part-width-half :y part-height-half})))]
+                              (v/Vector. part-width 0)
+                              (v/Vector. 0 part-height)
+                              (v/Vector. part-width part-height)]
+                             (not rectangular?) (conj (v/Vector. part-width-half part-height-half))))]
           ^{:key idx}
           [charge.interface/render-charge
            (-> charge-context
