@@ -8,21 +8,35 @@
 (def zero
   (Vector. 0 0))
 
-(defn add ^Vector [& args]
-  (Vector. (apply + (map :x args))
-           (apply + (map :y args))))
+(defn add
+  (^Vector [] zero)
+  (^Vector [^Vector v] v)
+  (^Vector [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
+   (Vector. (+ x1 x2) (+ y1 y2)))
+  (^Vector [^Vector v1 ^Vector v2 & more]
+   (reduce add (add v1 v2) more)))
 
-(defn sub ^Vector [& args]
-  (Vector. (apply - (map :x args))
-           (apply - (map :y args))))
+(defn sub
+  (^Vector [] zero)
+  (^Vector [^Vector {x :x y :y}] (Vector. (- x) (- y)))
+  (^Vector [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
+   (Vector. (- x1 x2) (- y1 y2)))
+  (^Vector [^Vector v1 ^Vector v2 & more]
+   (reduce sub (sub v1 v2) more)))
 
-(defn mul ^Vector [{x :x y :y} f & args]
-  (Vector. (apply * (concat [x f] args))
-           (apply * (concat [y f] args))))
+(defn mul
+  (^Vector [^Vector v] v)
+  (^Vector [^Vector {x :x y :y} ^js/Number f]
+   (Vector. (* x f) (* y f)))
+  (^Vector [^Vector v ^js/Number f & more]
+   (reduce mul (mul v f) more)))
 
-(defn div ^Vector [{x :x y :y} f & args]
-  (Vector. (apply / (concat [x f] args))
-           (apply / (concat [y f] args))))
+(defn div
+  (^Vector [^Vector v] v)
+  (^Vector [^Vector {x :x y :y} ^js/Number f]
+   (Vector. (/ x f) (/ y f)))
+  (^Vector [^Vector v ^js/Number f & more]
+   (reduce div (div v f) more)))
 
 (defn dot ^Vector [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
   (Vector. (* x1 x2) (* y1 y2)))
