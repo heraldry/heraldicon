@@ -1,4 +1,4 @@
-(ns heraldicon.math.filter)
+(ns heraldicon.svg.filter)
 
 (def shadow
   [:filter#shadow {:x "-20%"
