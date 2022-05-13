@@ -7,7 +7,7 @@
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.math.bounding-box :as bounding-box]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
@@ -261,13 +261,14 @@
                                                (path/translate (:x anchor-point) (:y anchor-point))
                                                path/to-svg))
                                      (:paths shape))}
-          [min-x max-x min-y max-y] (bounding-box/rotate charge-top-left
-                                                         (v/add charge-top-left
-                                                                (v/Vector. charge-width
-                                                                           charge-height))
-                                                         angle
-                                                         :middle v/zero
-                                                         :scale (v/Vector. scale-x scale-y))
+          {:keys [min-x max-x
+                  min-y max-y]} (bb/rotate charge-top-left
+                                           (v/add charge-top-left
+                                                  (v/Vector. charge-width
+                                                             charge-height))
+                                           angle
+                                           :middle v/zero
+                                           :scale (v/Vector. scale-x scale-y))
           part [charge-shape
                 [(v/add anchor-point
                         (v/Vector. min-x min-y))

@@ -3,7 +3,7 @@
    ["paper" :refer [Path]]
    ["paperjs-offset" :refer [PaperOffset]]
    [clojure.string :as s]
-   [heraldicon.math.bounding-box :as bounding-box]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
 
@@ -13,9 +13,10 @@
                 (nil? shape) nil
                 (map? shape) shape
                 :else {:paths [shape]})
-        [min-x max-x min-y max-y] (or bounding-box
-                                      (bounding-box/from-paths
-                                       (:paths shape)))
+        {:keys [min-x max-x
+                min-y max-y]} (or bounding-box
+                                  (bb/from-paths
+                                   (:paths shape)))
         top-left (v/Vector. min-x min-y)
         top-right (v/Vector. max-x min-y)
         bottom-left (v/Vector. min-x max-y)
