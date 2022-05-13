@@ -3,14 +3,18 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]))
 
-(defn square [x]
+(defn square ^js/Number [^js/Number x]
   (* x x))
 
-(defn length [[p1 _ _ p2]]
+(defn length ^js/Number [[^v/Vector p1 _ _ ^v/Vector p2]]
   ;; TODO: this is inaccurate and fine for now, but maybe the real value would be nice
   (v/abs (v/sub p1 p2)))
 
-(defn interpolate-point [[p1 cp1 cp2 p2] t]
+(defn interpolate-point ^v/Vector [[^v/Vector p1
+                                    ^v/Vector cp1
+                                    ^v/Vector cp2
+                                    ^v/Vector p2]
+                                   ^js/Number t]
   (let [t2 (* t t)
         t3 (* t2 t)
         tr (- 1 t)
@@ -21,7 +25,11 @@
            (v/mul cp2 3 tr t2)
            (v/mul p2 t3))))
 
-(defn calculate-tangent-points [[p1 cp1 cp2 p2] slope]
+(defn calculate-tangent-points [[^v/Vector p1
+                                 ^v/Vector cp1
+                                 ^v/Vector cp2
+                                 ^v/Vector p2]
+                                ^v/Vector slope]
   (let [;; shift them such that p1 = 0, the translation does not change the solutions
         {c :x
          d :y} (v/sub cp1 p1)
@@ -96,7 +104,11 @@
                         (<= 0 t 1))))
          sort)))
 
-(defn split [[p1 c1 c2 p2] t]
+(defn split [[^v/Vector p1
+              ^v/Vector c1
+              ^v/Vector c2
+              ^v/Vector p2]
+             ^js/Number t]
   (let [n 3
         tr (- 1 t)]
     (loop [j 1

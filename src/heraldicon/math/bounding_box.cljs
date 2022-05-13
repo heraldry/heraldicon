@@ -3,8 +3,8 @@
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
 
-(defn min-max-x-y [[{x :x y :y} & rest]]
-  (reduce (fn [[min-x max-x min-y max-y] {x :x y :y}]
+(defn min-max-x-y [[^v/Vector {x :x y :y} & rest]]
+  (reduce (fn [[min-x max-x min-y max-y] ^v/Vector {x :x y :y}]
             [(min min-x x)
              (max max-x x)
              (min min-y y)
@@ -36,9 +36,11 @@
            first-min-y first-max-y]
           rest))
 
-(defn rotate [{x1 :x y1 :y :as p1} {x2 :x y2 :y :as p2} rotation & {:keys [middle scale]}]
+(defn rotate [^v/Vector {x1 :x y1 :y :as v1}
+              ^v/Vector {x2 :x y2 :y :as v2}
+              ^js/Number rotation & {:keys [^v/Vector middle ^js/Number scale]}]
   (let [middle (or middle
-                   (v/avg p1 p2))
+                   (v/avg v1 v2))
         scale (or scale
                   (v/Vector. 1 1))
         points [(v/add middle

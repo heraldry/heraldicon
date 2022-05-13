@@ -2,7 +2,7 @@
   (:require
    [heraldicon.math.curve.bezier :as bezier]))
 
-(defn length [curve]
+(defn length ^js/Number [curve]
   (->> curve
        (map bezier/length)
        (apply +)))
