@@ -257,7 +257,7 @@
               (if use-parent-environment?
                 [first-real-start first-real-end
                  second-real-start second-real-end]
-                [(v/Vector. 0 0)
+                [v/zero
                  (v/Vector. band-length band-height)])]
         cottise-context (merge
                          context

@@ -154,7 +154,7 @@
         direction (v/Vector. (-> direction :x Math/abs)
                              (-> direction :y Math/abs -))
         direction-orthogonal (v/orthogonal direction)
-        angle (v/angle-to-point (v/Vector. 0 0) direction)
+        angle (v/angle-to-point v/zero direction)
         required-half-width (v/distance-point-to-line top-right center-point (v/add center-point direction-orthogonal))
         required-half-height (v/distance-point-to-line top-left center-point (v/add center-point direction))
         [parts overlap outlines] (barry/barry-parts

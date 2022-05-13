@@ -141,7 +141,7 @@
         (for [[idx shift] (map-indexed
                            vector
                            (cond->
-                             [(v/Vector. 0 0)
+                             [v/zero
                               {:x part-width :y 0}
                               {:x 0 :y part-height}
                               {:x part-width :y part-height}]

@@ -272,8 +272,8 @@
     (angle/to-deg angle-rad)))
 
 (defn angle-between-vectors [v1 v2]
-  (let [a1 (angle-to-point (Vector. 0 0) v1)
-        a2 (angle-to-point (Vector. 0 0) v2)
+  (let [a1 (angle-to-point zero v1)
+        a2 (angle-to-point zero v2)
         angle (-> (- a1 a2)
                   angle/normalize)]
     (if (> angle 180)

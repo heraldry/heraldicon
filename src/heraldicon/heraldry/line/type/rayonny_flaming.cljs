@@ -9,7 +9,7 @@
                    (/ 2))
         middle-height (* length (options/map-to-interval eccentricity -0.1 0.2))
         orientation1-height (- (* length (options/map-to-interval eccentricity 0.1 0.9)))
-        angle (v/angle-to-point (v/Vector. 0 0) direction)
+        angle (v/angle-to-point v/zero direction)
         orientation1 (v/Vector. (* length 0.5) orientation1-height)
         orientation2 (v/Vector. (* length 0.75) (- middle-height))
         middle (v/Vector. length (- middle-height))

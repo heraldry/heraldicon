@@ -146,7 +146,7 @@
         x (:x anchor-point)
         left-x (:x top-left)
         right-x (:x bottom-right)
-        start (v/Vector. 0 0)
+        start v/zero
         end-left (-> (v/Vector. (* 2 height) 0)
                      (v/rotate (+ 90 (/ joint-angle 2))))
         end-right (-> (v/Vector. (* 2 height) 0)
