@@ -178,17 +178,17 @@
 (defn ->str ^js/String [^Vector {:keys [x y]}]
   (str x "," y))
 
-(defn prune-duplicates [intersections]
+(defn- -prune-duplicates [intersections]
   (->> intersections
        (group-by (juxt :x :y))
        (map (comp first second))))
 
-(defn prune-point [intersections point]
+(defn- -prune-point [intersections point]
   (->> intersections
        (filter #(not= (select-keys % [:x :y])
                       (select-keys point [:x :y])))))
 
-(defn -path-intersection [path1 path2]
+(defn- --path-intersection [path1 path2]
   (let [p1 (new Path path1)
         p2 (new Path path2)]
     (into []
@@ -200,36 +200,36 @@
                   :t2 (/ (.. location -intersection -offset) (.-length p2)))))
           (.getIntersections p1 p2))))
 
-(def path-intersection
-  (memoize -path-intersection))
+(def ^:private -path-intersection
+  (memoize --path-intersection))
 
-(defn inside-shape? [point shape]
+(defn- -inside-shape? [point shape]
   (let [ray (str "M" (->str point) "l" 10000 "," 9000)
         intersections (into []
-                            (map #(-> (path-intersection ray %)
-                                      prune-duplicates
-                                      (prune-point point)))
+                            (map #(-> (-path-intersection ray %)
+                                      -prune-duplicates
+                                      (-prune-point point)))
                             (:paths shape))]
     (-> intersections
         count
         odd?)))
 
-(defn close-to-single-path? [point path]
+(defn- -close-to-single-path? [point path]
   (let [radius 0.0001
         left (sub point (Vector. radius 0))
         right (add point (Vector. radius 0))
         neighbourhood (str "M" (->str left)
                            "A" radius " " radius " 0 0 0 " (->str right)
                            "A" radius " " radius " 0 0 1 " (->str left))
-        intersections (path-intersection neighbourhood path)]
+        intersections (-path-intersection neighbourhood path)]
     (-> intersections count pos?)))
 
-(defn close-to-edge? [point {:keys [paths] :as _shape}]
+(defn- -close-to-edge? [point {:keys [paths] :as _shape}]
   (->> paths
-       (map (partial close-to-single-path? point))
+       (map (partial -close-to-single-path? point))
        (some true?)))
 
-(defn inside-environment? [point environment]
+(defn- -inside-environment? [point environment]
   (->> environment
        (tree-seq map? (comp list :parent-environment :meta))
        (map :shape)
@@ -243,8 +243,8 @@
                       ;; intersects with the shape, then we consider the point close enough
                       ;; and "on" the edge
                       (or (-> point :parent-index (= parent-idx))
-                          (close-to-edge? point shape)
-                          (inside-shape? point shape))))
+                          (-close-to-edge? point shape)
+                          (-inside-shape? point shape))))
        (every? true?)))
 
 (defn find-intersections [from to environment]
@@ -258,14 +258,14 @@
                            (map-indexed (fn [parent-idx shape]
                                           (into []
                                                 (mapcat (fn [path]
-                                                          (->> (path-intersection line-path path)
+                                                          (->> (-path-intersection line-path path)
                                                                (map #(assoc % :parent-index parent-idx)))))
                                                 (:paths shape))))
                            (apply concat)
-                           (filter #(inside-environment? % environment))
+                           (filter #(-inside-environment? % environment))
                            vec)]
     (->> intersections
-         prune-duplicates
+         -prune-duplicates
          (sort-by :t1))))
 
 (defn find-first-intersection-of-ray [anchor orientation environment]
@@ -275,7 +275,7 @@
                      (mul 1000)
                      (add anchor))
         intersections (find-intersections anchor line-end environment)
-        anchor-inside? (inside-environment? anchor environment)
+        anchor-inside? (-inside-environment? anchor environment)
         select-fn (if anchor-inside?
                     first
                     second)]
