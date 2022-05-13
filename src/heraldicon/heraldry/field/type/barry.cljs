@@ -74,7 +74,7 @@
          line-right-start :line-start
          line-right-end :line-end} (line/create line
                                                 top-left
-                                                (v/add top-left (v/v width 0))
+                                                (v/add top-left (v/Vector. width 0))
                                                 :real-start 0
                                                 :real-end width
                                                 :context context
@@ -83,7 +83,7 @@
          line-left-start :line-start
          line-left-end :line-end} (line/create line
                                                top-left
-                                               (v/add top-left (v/v width 0))
+                                               (v/add top-left (v/Vector. width 0))
                                                :flipped? true
                                                :mirrored? true
                                                :reversed? true
@@ -96,10 +96,10 @@
                           (let [y1 (+ y0 (* i bar-height))
                                 y2 (+ y1 bar-height)
                                 last-part? (-> i inc (= num-fields-y))
-                                line-one-left (v/v x1 y1)
-                                line-one-right (v/v x2 y1)
-                                line-two-left (v/v x1 y2)
-                                line-two-right (v/v x2 y2)]
+                                line-one-left (v/Vector. x1 y1)
+                                line-one-right (v/Vector. x2 y1)
+                                line-two-left (v/Vector. x1 y2)
+                                line-two-right (v/Vector. x2 y2)]
                             [(cond
                                (and (zero? i)
                                     last-part?) ["M" -1000 -1000
@@ -174,8 +174,8 @@
                    (map (fn [i]
                           (let [y1 (+ y0 (* i bar-height))
                                 y2 (+ y1 bar-height)
-                                line-two-left (v/v x1 y2)
-                                line-two-right (v/v x2 y2)]
+                                line-two-left (v/Vector. x1 y2)
+                                line-two-right (v/Vector. x2 y2)]
                             (if (even? i)
                               (path/make-path ["M" (v/add line-two-left
                                                           line-right-start)

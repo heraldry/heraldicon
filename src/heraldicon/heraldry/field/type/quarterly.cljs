@@ -130,85 +130,85 @@
                                          "v" 2000
                                          "h" -2000
                                          "z"]
-                                        [(v/v x1 y1) (v/v x2 y2)]]
+                                        [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          (and first-x?
                               first-y?) [["M" [x1 y2]
                                           "L" [x2 y2]
                                           "L" [x2 y1]
                                           (infinity/path :counter-clockwise
                                                          [:top :left]
-                                                         [(v/v x2 y1) (v/v x1 y2)])
+                                                         [(v/Vector. x2 y1) (v/Vector. x1 y2)])
                                           "z"]
-                                         [(v/v x1 y1) (v/v x2 y2)]]
+                                         [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          (and last-x?
                               first-y?) [["M" [x1 y1]
                                           "L" [x1 y2]
                                           "L" [x2 y2]
                                           (infinity/path :counter-clockwise
                                                          [:right :top]
-                                                         [(v/v x2 y2) (v/v x1 y1)])
+                                                         [(v/Vector. x2 y2) (v/Vector. x1 y1)])
                                           "z"]
-                                         [(v/v x1 y1) (v/v x2 y2)]]
+                                         [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          (and first-x?
                               last-y?) [["M" [x1 y1]
                                          "L" [x2 y1]
                                          "L" [x2 y2]
                                          (infinity/path :clockwise
                                                         [:bottom :left]
-                                                        [(v/v x2 y2) (v/v x1 y1)])
+                                                        [(v/Vector. x2 y2) (v/Vector. x1 y1)])
                                          "z"]
-                                        [(v/v x1 y1) (v/v x2 y2)]]
+                                        [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          (and last-x?
                               last-y?) [["M" [x1 y2]
                                          "L" [x1 y1]
                                          "L" [x2 y1]
                                          (infinity/path :clockwise
                                                         [:right :bottom]
-                                                        [(v/v x2 y1) (v/v x1 y2)])
+                                                        [(v/Vector. x2 y1) (v/Vector. x1 y2)])
                                          "z"]
-                                        [(v/v x1 y1) (v/v x2 y2)]]
+                                        [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          first-x? [["M" [x1 y1]
                                     "L" [x2 y1]
                                     "L" [x2 y2]
                                     "L" [x1 y2]
                                     (infinity/path :counter-clockwise
                                                    [:left :left]
-                                                   [(v/v x1 y2) (v/v x1 y1)])
+                                                   [(v/Vector. x1 y2) (v/Vector. x1 y1)])
                                     "z"]
-                                   [(v/v x1 y1) (v/v x2 y2)]]
+                                   [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          first-y? [["M" [x1 y1]
                                     "L" [x1 y2]
                                     "L" [x2 y2]
                                     "L" [x2 y1]
                                     (infinity/path :counter-clockwise
                                                    [:top :top]
-                                                   [(v/v x2 y1) (v/v x1 y1)])
+                                                   [(v/Vector. x2 y1) (v/Vector. x1 y1)])
                                     "z"]
-                                   [(v/v x1 y1) (v/v x2 y2)]]
+                                   [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          last-x? [["M" [x2 y2]
                                    "L" [x1 y2]
                                    "L" [x1 y1]
                                    "L" [x2 y1]
                                    (infinity/path :clockwise
                                                   [:right :right]
-                                                  [(v/v x2 y1) (v/v x2 y2)])
+                                                  [(v/Vector. x2 y1) (v/Vector. x2 y2)])
                                    "z"]
-                                  [(v/v x1 y1) (v/v x2 y2)]]
+                                  [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          last-y? [["M" [x1 y2]
                                    "L" [x1 y1]
                                    "L" [x2 y1]
                                    "L" [x2 y2]
                                    (infinity/path :clockwise
                                                   [:bottom :bottom]
-                                                  [(v/v x2 y2) (v/v x1 y2)])
+                                                  [(v/Vector. x2 y2) (v/Vector. x1 y2)])
                                    "z"]
-                                  [(v/v x1 y1) (v/v x2 y2)]]
+                                  [(v/Vector. x1 y1) (v/Vector. x2 y2)]]
                          :else [["M" [x1 y1]
                                  "L" [x2 y1]
                                  "L" [x2 y2]
                                  "L" [x1 y2]
                                  "z"]
-                                [(v/v x1 y1) (v/v x2 y2)]])))
+                                [(v/Vector. x1 y1) (v/Vector. x2 y2)]])))
                    vec)
         overlap (->> (for [j (range num-fields-y)
                            i (range num-fields-x)]

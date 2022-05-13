@@ -23,10 +23,10 @@
      (let [width (/ height 1.3)
            width-half (/ width 2)
            height-half (/ height 2)]
-       {:shape ["m" (v/v 0 (- height-half))
-                "l" (v/v width-half height-half)
-                "l " (v/v (- width-half) height-half)
-                "l" (v/v (- width-half) (- height-half))
+       {:shape ["m" (v/Vector. 0 (- height-half))
+                "l" (v/Vector. width-half height-half)
+                "l " (v/Vector. (- width-half) height-half)
+                "l" (v/Vector. (- width-half) (- height-half))
                 "z"]
         :charge-width width
         :charge-height height}))))

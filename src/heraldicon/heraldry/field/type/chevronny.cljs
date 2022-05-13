@@ -146,10 +146,10 @@
         x (:x anchor-point)
         left-x (:x top-left)
         right-x (:x bottom-right)
-        start (v/v 0 0)
-        end-left (-> (v/v (* 2 height) 0)
+        start (v/Vector. 0 0)
+        end-left (-> (v/Vector. (* 2 height) 0)
                      (v/rotate (+ 90 (/ joint-angle 2))))
-        end-right (-> (v/v (* 2 height) 0)
+        end-right (-> (v/Vector. (* 2 height) 0)
                       (v/rotate (- 90 (/ joint-angle 2))))
         {line-left-upper :line
          line-left-upper-start :line-start} (line/create line
@@ -179,8 +179,8 @@
                           (let [y1 (+ y0 (* (dec i) chevron-middle-height))
                                 y2 (+ y1 chevron-middle-height)
                                 last-part? (-> i inc (= num-fields-y))
-                                line-corner-upper (v/v x y1)
-                                line-corner-lower (v/v x y2)]
+                                line-corner-upper (v/Vector. x y1)
+                                line-corner-lower (v/Vector. x y2)]
                             [(cond
                                (and (zero? i)
                                     last-part?) ["M" -1000 -1000
@@ -234,7 +234,7 @@
                    range
                    (map (fn [i]
                           (let [y1 (+ y0 (* i chevron-middle-height))
-                                line-corner-lower (v/v x y1)]
+                                line-corner-lower (v/Vector. x y1)]
                             (path/make-path ["M" (v/add line-corner-lower
                                                         end-left
                                                         line-left-upper-start)

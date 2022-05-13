@@ -119,8 +119,8 @@
                                                0
                                                nil)
         direction (v/sub orientation-point anchor-point)
-        direction (v/normal (v/v (-> direction :x Math/abs)
-                                 (-> direction :y Math/abs -)))
+        direction (v/normal (v/Vector. (-> direction :x Math/abs)
+                                       (-> direction :y Math/abs -)))
         initial-diagonal-start (-> direction
                                    (v/mul -1000)
                                    (v/add anchor-point))

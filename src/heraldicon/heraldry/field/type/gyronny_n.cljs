@@ -90,7 +90,7 @@
                                   (v/find-first-intersection-of-ray
                                    anchor-point
                                    (v/add anchor-point
-                                          (v/rotate (v/v 0 -1) angle))
+                                          (v/rotate (v/Vector. 0 -1) angle))
                                    environment))
                                 arm-angles)
         arm-length (->> arm-intersections
@@ -102,7 +102,7 @@
         line (-> line
                  (dissoc :fimbriation))
         arm-points (mapv (fn [angle]
-                           (-> (v/v 0 -1)
+                           (-> (v/Vector. 0 -1)
                                (v/rotate angle)
                                (v/mul full-arm-length)
                                (v/add anchor-point)))
@@ -116,18 +116,18 @@
                                  (-> (v/find-first-intersection-of-ray
                                       anchor-point
                                       (v/add anchor-point
-                                             (v/rotate (v/v 0 -1) angle))
+                                             (v/rotate (v/Vector. 0 -1) angle))
                                       environment)
                                      (v/sub anchor-point)
                                      (v/mul 0.6)
                                      (v/add anchor-point)))))
         infinity-points (vec (mapcat (fn [angle]
-                                       [(-> (v/v 0 -1)
+                                       [(-> (v/Vector. 0 -1)
                                             (v/rotate angle)
                                             (v/mul full-arm-length)
                                             (v/mul 2)
                                             (v/add anchor-point))
-                                        (-> (v/v 0 -1)
+                                        (-> (v/Vector. 0 -1)
                                             (v/rotate (+ angle (/ angle-step 2)))
                                             (v/mul full-arm-length)
                                             (v/mul 2)

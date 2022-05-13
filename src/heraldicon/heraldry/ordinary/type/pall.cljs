@@ -294,10 +294,10 @@
                                             (/ 180)
                                             (/ 2))))
         offset-lower (v/rotate
-                      (v/v delta 0)
+                      (v/Vector. delta 0)
                       pall-angle)
         offset-upper (v/rotate
-                      (v/v (- delta) 0)
+                      (v/Vector. (- delta) 0)
                       pall-angle)
         corner-lower (v/add anchor-point offset-lower)
         left-upper (v/add diagonal-left offset-upper)
@@ -311,10 +311,10 @@
                                          (* Math/PI)
                                          (/ 180))))
         offset-three-left (v/rotate
-                           (v/v (- dy) dx)
+                           (v/Vector. (- dy) dx)
                            pall-angle)
         offset-three-right (v/rotate
-                            (v/v (- dy) (- dx))
+                            (v/Vector. (- dy) (- dx))
                             pall-angle)
         direction-three (v/mul (v/add relative-left relative-right) -1)
         corner-left (v/add anchor-point offset-three-left)

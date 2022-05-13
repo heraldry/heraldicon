@@ -16,10 +16,10 @@
         [min-x max-x min-y max-y] (or bounding-box
                                       (bounding-box/from-paths
                                        (:paths shape)))
-        top-left (v/v min-x min-y)
-        top-right (v/v max-x min-y)
-        bottom-left (v/v min-x max-y)
-        bottom-right (v/v max-x max-y)
+        top-left (v/Vector. min-x min-y)
+        top-right (v/Vector. max-x min-y)
+        bottom-left (v/Vector. min-x max-y)
+        bottom-right (v/Vector. max-x max-y)
         width (or width
                   (- max-x min-x))
         height (or height
@@ -33,10 +33,10 @@
         ;; just get the middle, even if that'll break saltire-like divisions
         fess (or (-> meta :points :fess)
                  (if (= context :root)
-                   (v/v (:x top) (+ min-y (/ (- max-x min-x) 2)))
+                   (v/Vector. (:x top) (+ min-y (/ (- max-x min-x) 2)))
                    (v/avg top-left bottom-right)))
-        left (v/v min-x (:y fess))
-        right (v/v max-x (:y fess))
+        left (v/Vector. min-x (:y fess))
+        right (v/Vector. max-x (:y fess))
         honour (v/avg top fess)
         nombril (v/avg honour bottom)
         chief (v/avg top honour)

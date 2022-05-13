@@ -9,22 +9,22 @@
                    (/ 2))
         middle-height (* length (options/map-to-interval eccentricity 0.1 -0.2))
         orientation1-height (- (* length (options/map-to-interval eccentricity 0.2 0.8)))
-        angle (v/angle-to-point (v/v 0 0) direction)
-        orientation1 (v/v (* length 0.5) orientation1-height)
-        orientation2 (v/v (* length 0.75) (- middle-height))
-        middle (v/v length (- middle-height))
-        orientation3 (v/v (- length (* length 0.75)) 0)
+        angle (v/angle-to-point (v/Vector. 0 0) direction)
+        orientation1 (v/Vector. (* length 0.5) orientation1-height)
+        orientation2 (v/Vector. (* length 0.75) (- middle-height))
+        middle (v/Vector. length (- middle-height))
+        orientation3 (v/Vector. (- length (* length 0.75)) 0)
         orientation4 (if flipped?
-                       (v/v (- length (* length 0.5)) (+ middle-height
-                                                         orientation1-height))
-                       (-> (v/v (- (* 1.5 orientation1-height)) 0)
+                       (v/Vector. (- length (* length 0.5)) (+ middle-height
+                                                               orientation1-height))
+                       (-> (v/Vector. (- (* 1.5 orientation1-height)) 0)
                            (v/rotate (- (- 90 angle)))
-                           (v/dot (v/v -1 1))
-                           (v/add (v/v length middle-height))))
-        end (v/v length middle-height)
+                           (v/dot (v/Vector. -1 1))
+                           (v/add (v/Vector. length middle-height))))
+        end (v/Vector. length middle-height)
         vf (if flipped?
-             (v/v 1 -1)
-             (v/v 1 1))]
+             (v/Vector. 1 -1)
+             (v/Vector. 1 1))]
     ["c"
      (v/rotate (v/dot orientation1 vf) angle)
      (v/rotate (v/dot orientation2 vf) angle)
@@ -43,8 +43,8 @@
                (let [half-width (/ width 2)
                      quarter-width (/ half-width 2)
                      height (* 1.2 width height)
-                     line-up (curvy-line (v/v (* half-width 0.4) (- height)) eccentricity true)
-                     line-down (curvy-line (v/v (* half-width 0.6) height) eccentricity false)]
+                     line-up (curvy-line (v/Vector. (* half-width 0.4) (- height)) eccentricity true)
+                     line-down (curvy-line (v/Vector. (* half-width 0.6) height) eccentricity false)]
                  {:pattern (concat line-up line-down
                                    ["l" quarter-width (- height)]
                                    ["l" quarter-width height])

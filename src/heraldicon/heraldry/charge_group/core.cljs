@@ -56,8 +56,8 @@
         length (* (-> num-strips dec (max 0))
                   strip-spacing)
         make-point-fn (case charge-group-type
-                        :heraldry.charge-group.type/rows v/v
-                        :heraldry.charge-group.type/columns (fn [y x] (v/v x y)))]
+                        :heraldry.charge-group.type/rows (fn [x y] (v/Vector. x y))
+                        :heraldry.charge-group.type/columns (fn [y x] (v/Vector. x y)))]
     {:slot-positions (->> (range num-strips)
                           (map (fn [idx]
                                  (let [slot-positions (calculate-strip-slot-positions
@@ -93,15 +93,15 @@
         num-slots (interface/get-list-size (c/++ context :slots))
         radius ((math/percent-of (:width environment)) radius)
         stretch-vector (if (> arc-stretch 1)
-                         (v/v (/ 1 arc-stretch) 1)
-                         (v/v 1 arc-stretch))
+                         (v/Vector. (/ 1 arc-stretch) 1)
+                         (v/Vector. 1 arc-stretch))
         angle-step (/ arc-angle (max (if (= arc-angle 360)
                                        num-slots
                                        (dec num-slots)) 1))
         distance (if (<= num-slots 1)
                    50
-                   (-> (v/v radius 0)
-                       (v/sub (v/rotate (v/v radius 0) angle-step))
+                   (-> (v/Vector. radius 0)
+                       (v/sub (v/rotate (v/Vector. radius 0) angle-step))
                        v/abs))]
     {:slot-positions (->> slots
                           (map-indexed (fn [slot-index charge-index]
@@ -109,7 +109,7 @@
                                                               (* angle-step)
                                                               (+ start-angle)
                                                               (- 90))]
-                                           {:point (-> (v/v radius 0)
+                                           {:point (-> (v/Vector. radius 0)
                                                        (v/rotate slot-angle)
                                                        (v/dot stretch-vector))
                                             :slot-path (-> context :path (conj :slots slot-index))
@@ -158,7 +158,7 @@
                                            {:point (-> shape-path
                                                        (.getPointAt slot-t)
                                                        (as-> p
-                                                             (v/v (.-x p) (.-y p))))
+                                                             (v/Vector. (.-x p) (.-y p))))
                                             :slot-path (-> context :path (conj :slots slot-index))
                                             :charge-index (if (and (int? charge-index)
                                                                    (< -1 charge-index num-charges))

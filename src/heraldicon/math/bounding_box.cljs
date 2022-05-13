@@ -40,21 +40,21 @@
   (let [middle (or middle
                    (v/avg p1 p2))
         scale (or scale
-                  (v/v 1 1))
+                  (v/Vector. 1 1))
         points [(v/add middle
-                       (v/rotate (v/dot (v/sub (v/v x1 y1)
+                       (v/rotate (v/dot (v/sub (v/Vector. x1 y1)
                                                middle)
                                         scale) rotation))
                 (v/add middle
-                       (v/rotate (v/dot (v/sub (v/v x2 y1)
+                       (v/rotate (v/dot (v/sub (v/Vector. x2 y1)
                                                middle)
                                         scale) rotation))
                 (v/add middle
-                       (v/rotate (v/dot (v/sub (v/v x1 y2)
+                       (v/rotate (v/dot (v/sub (v/Vector. x1 y2)
                                                middle)
                                         scale) rotation))
                 (v/add middle
-                       (v/rotate (v/dot (v/sub (v/v x2 y2)
+                       (v/rotate (v/dot (v/sub (v/Vector. x2 y2)
                                                middle)
                                         scale) rotation))]]
     (from-points points)))

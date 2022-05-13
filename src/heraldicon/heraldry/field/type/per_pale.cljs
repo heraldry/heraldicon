@@ -55,8 +55,8 @@
                                   Math/ceil
                                   inc
                                   (* effective-width))
-        top (v/sub real-top (v/v 0 required-extra-length))
-        bottom (v/add real-bottom (v/v 0 required-extra-length))
+        top (v/sub real-top (v/Vector. 0 required-extra-length))
+        bottom (v/add real-bottom (v/Vector. 0 required-extra-length))
         {line-one :line
          line-one-start :line-start
          line-one-end :line-end

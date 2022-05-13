@@ -91,7 +91,7 @@
                             (fn [idx leg]
                               ;; TODO: probably better to calculate the angle based
                               ;; on the average x-value of the leg
-                              (let [base-edge-vector (v/v 0 1)
+                              (let [base-edge-vector (v/Vector. 0 1)
                                     leg-edge-angle (-> (* 2 edge-angle)
                                                        (/ (max 1
                                                                (dec num-legs)))
@@ -104,9 +104,9 @@
                                   [idx ts edge-vector])))
                             curve))
         curves-and-edge-vectors (split-curve curve tangent-points
-                                             (-> (v/v 0 1)
+                                             (-> (v/Vector. 0 1)
                                                  (v/rotate edge-angle))
-                                             (-> (v/v 0 1)
+                                             (-> (v/Vector. 0 1)
                                                  (v/rotate (- edge-angle))))]
     {:curve curve
      :curves (->> curves-and-edge-vectors

@@ -54,8 +54,8 @@
      (fn [width]
        (let [radius (/ width 2)
              small-radius (* radius (- 1 eccentricity))
-             first-point (v/v 0 (- radius))
-             first-valley (-> (v/v 0 (- small-radius))
+             first-point (v/Vector. 0 (- radius))
+             first-valley (-> (v/Vector. 0 (- small-radius))
                               (v/rotate (/ angle-step 2)))]
          {:shape (-> (into ["M" first-point]
                            (mapcat (fn [i]

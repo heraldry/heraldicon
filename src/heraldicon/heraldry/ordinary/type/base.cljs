@@ -52,8 +52,8 @@
         band-height (-> size
                         ((math/percent-of height)))
         row (- (:y bottom) band-height)
-        row-left (v/v (:x left) row)
-        row-right (v/v (:x right) row)
+        row-left (v/Vector. (:x left) row)
+        row-right (v/Vector. (:x right) row)
         [row-real-left _row-real-right] (v/environment-intersections
                                          row-left
                                          row-right
@@ -66,8 +66,8 @@
         real-end (or override-real-end
                      (-> row-right :x (- shared-start-x)))
         shared-end-x (+ real-end 30)
-        row-left (v/v shared-start-x (:y row-left))
-        row-right (v/v shared-end-x (:y row-right))
+        row-left (v/Vector. shared-start-x (:y row-left))
+        row-right (v/Vector. shared-end-x (:y row-right))
         line (-> line
                  (update-in [:fimbriation :thickness-1] (math/percent-of height))
                  (update-in [:fimbriation :thickness-2] (math/percent-of height)))
@@ -93,8 +93,8 @@
                band-height
                context)
         part [shape
-              [(v/v (:x left)
-                    (:y row-left))
+              [(v/Vector. (:x left)
+                          (:y row-left))
                bottom-right]]
         cottise-context (merge
                          context

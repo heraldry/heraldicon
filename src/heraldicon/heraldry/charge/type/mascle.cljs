@@ -27,15 +27,15 @@
            hole-height (* height 0.55)
            hole-width-half (/ hole-width 2)
            hole-height-half (/ hole-height 2)]
-       {:shape {:paths [["m" (v/v 0 (- height-half))
-                         "l" (v/v width-half height-half)
-                         "l " (v/v (- width-half) height-half)
-                         "l" (v/v (- width-half) (- height-half))
+       {:shape {:paths [["m" (v/Vector. 0 (- height-half))
+                         "l" (v/Vector. width-half height-half)
+                         "l " (v/Vector. (- width-half) height-half)
+                         "l" (v/Vector. (- width-half) (- height-half))
                          "z"]
-                        ["m" (v/v 0 (- hole-height-half))
-                         "l" (v/v hole-width-half hole-height-half)
-                         "l " (v/v (- hole-width-half) hole-height-half)
-                         "l" (v/v (- hole-width-half) (- hole-height-half))
+                        ["m" (v/Vector. 0 (- hole-height-half))
+                         "l" (v/Vector. hole-width-half hole-height-half)
+                         "l " (v/Vector. (- hole-width-half) hole-height-half)
+                         "l" (v/Vector. (- hole-width-half) (- hole-height-half))
                          "z"]]}
         :charge-width width
         :charge-height height}))))

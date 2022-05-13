@@ -23,7 +23,7 @@
      (let [width (/ height 2)
            width-half (/ width 2)
            height-half (/ height 2)]
-       {:shape ["m" (v/v (- width-half) (- height-half))
+       {:shape ["m" (v/Vector. (- width-half) (- height-half))
                 "h" width
                 "v" height
                 "h" (- width)

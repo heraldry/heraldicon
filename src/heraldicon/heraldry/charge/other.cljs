@@ -383,14 +383,14 @@
                                    replacement (tincture/pick replacement context)
                                    (= kind :keep) colour
                                    :else (outline/color context)))))
-            shift (-> (v/v positional-charge-width positional-charge-height)
+            shift (-> (v/Vector. positional-charge-width positional-charge-height)
                       (v/div 2)
                       (v/sub))
             [min-x max-x min-y max-y] (bounding-box/rotate
                                        shift
-                                       (v/dot shift (v/v -1 -1))
+                                       (v/dot shift (v/Vector. -1 -1))
                                        angle
-                                       :scale (v/v scale-x scale-y))
+                                       :scale (v/Vector. scale-x scale-y))
             extra-margin (-> (case (-> fimbriation :mode)
                                :double (+ (-> fimbriation
                                               :thickness-1
@@ -408,17 +408,17 @@
                                        (+ max-x extra-margin)
                                        (- min-y extra-margin)
                                        (+ max-y extra-margin)]
-            clip-size (v/v (- max-x min-x) (- max-y min-y))
+            clip-size (v/Vector. (- max-x min-x) (- max-y min-y))
             position (-> clip-size
                          (v/sub)
                          (v/div 2)
                          (v/add anchor-point))
             charge-environment (environment/create
                                 (path/make-path ["M" position
-                                                 "l" (v/v (:x clip-size) 0)
-                                                 "l" (v/v 0 (:y clip-size))
-                                                 "l" (v/v (- (:x clip-size)) 0)
-                                                 "l" (v/v 0 (- (:y clip-size)))
+                                                 "l" (v/Vector. (:x clip-size) 0)
+                                                 "l" (v/Vector. 0 (:y clip-size))
+                                                 "l" (v/Vector. (- (:x clip-size)) 0)
+                                                 "l" (v/Vector. 0 (- (:y clip-size)))
                                                  "z"])
                                 {:parent path
                                  :parent-environment environment

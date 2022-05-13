@@ -84,10 +84,10 @@
                :right (- (:y anchor-point) band-height)
                (- (:y anchor-point) (/ band-height 2)))
         row2 (+ row1 band-height)
-        first-left (v/v (:x left) row1)
-        first-right (v/v (:x right) row1)
-        second-left (v/v (:x left) row2)
-        second-right (v/v (:x right) row2)
+        first-left (v/Vector. (:x left) row1)
+        first-right (v/Vector. (:x right) row1)
+        second-left (v/Vector. (:x left) row2)
+        second-right (v/Vector. (:x right) row2)
         [first-real-left _first-real-right] (v/environment-intersections
                                              first-left
                                              first-right
@@ -107,10 +107,10 @@
                      (max (-> first-right :x (- shared-start-x))
                           (-> second-right :x (- shared-start-x))))
         shared-end-x (+ real-end 30)
-        first-left (v/v shared-start-x (:y first-left))
-        second-left (v/v shared-start-x (:y second-left))
-        first-right (v/v shared-end-x (:y first-right))
-        second-right (v/v shared-end-x (:y second-right))
+        first-left (v/Vector. shared-start-x (:y first-left))
+        second-left (v/Vector. shared-start-x (:y second-left))
+        first-right (v/Vector. shared-end-x (:y first-right))
+        second-right (v/Vector. shared-end-x (:y second-right))
         line (-> line
                  (update-in [:fimbriation :thickness-1] (math/percent-of height))
                  (update-in [:fimbriation :thickness-2] (math/percent-of height)))
@@ -158,10 +158,10 @@
                band-height
                context)
         part [shape
-              [(v/v (:x right)
-                    (:y first-right))
-               (v/v (:x left)
-                    (:y second-left))]]
+              [(v/Vector. (:x right)
+                          (:y first-right))
+               (v/Vector. (:x left)
+                          (:y second-left))]]
         cottise-context (merge
                          context
                          {:override-shared-start-x shared-start-x

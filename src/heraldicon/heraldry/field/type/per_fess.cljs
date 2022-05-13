@@ -56,8 +56,8 @@
                                   Math/ceil
                                   inc
                                   (* effective-width))
-        left (v/sub real-left (v/v required-extra-length 0))
-        right (v/add real-right (v/v required-extra-length 0))
+        left (v/sub real-left (v/Vector. required-extra-length 0))
+        right (v/add real-right (v/Vector. required-extra-length 0))
         bottom-right (:bottom-right points)
         {line-one :line
          line-one-start :line-start

@@ -24,14 +24,14 @@
            width-half (/ width 2)
            height-half (/ height 2)
            hole-radius (/ width 4)]
-       {:shape {:paths [["m" (v/v 0 (- height-half))
-                         "l" (v/v width-half height-half)
-                         "l " (v/v (- width-half) height-half)
-                         "l" (v/v (- width-half) (- height-half))
+       {:shape {:paths [["m" (v/Vector. 0 (- height-half))
+                         "l" (v/Vector. width-half height-half)
+                         "l " (v/Vector. (- width-half) height-half)
+                         "l" (v/Vector. (- width-half) (- height-half))
                          "z"]
-                        ["m" (v/v hole-radius 0)
+                        ["m" (v/Vector. hole-radius 0)
                          ["a" hole-radius hole-radius
-                          0 0 0 (v/v (* hole-radius -2) 0)]
+                          0 0 0 (v/Vector. (* hole-radius -2) 0)]
                          ["a" hole-radius hole-radius
                           0 0 0 (* hole-radius 2) 0]
                          "z"]]}

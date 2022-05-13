@@ -348,7 +348,7 @@
         ;; but then can't use the ribbon function as reagent component
         [min-x max-x
          min-y max-y] (bounding-box/min-max-x-y (concat points
-                                                        (map (partial v/add (v/v 0 thickness)) points)))
+                                                        (map (partial v/add (v/Vector. 0 thickness)) points)))
         margin 10
         [result-width result-height] [(+ (- max-x min-x)
                                          (* 2 margin))
@@ -411,15 +411,15 @@
             size (interface/get-sanitized-data (c/++ context :geometry :size))
             thickness (interface/get-sanitized-data (c/++ context :ribbon :thickness))
             position (-> (-> environment :points (get anchor-point))
-                         (v/add (v/v ((math/percent-of width) offset-x)
-                                     (- ((math/percent-of height) offset-y)))))
+                         (v/add (v/Vector. ((math/percent-of width) offset-x)
+                                           (- ((math/percent-of height) offset-y)))))
             ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
             ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
             ;; height; could perhaps be a subscription or the ribbon function can provide it?
             ;; but then can't use the ribbon function as reagent component
             [min-x max-x
              min-y max-y] (bounding-box/min-max-x-y (concat points
-                                                            (map (partial v/add (v/v 0 thickness)) points)))
+                                                            (map (partial v/add (v/Vector. 0 thickness)) points)))
             ribbon-width (- max-x min-x)
             ribbon-height (- max-y min-y)
             target-width ((math/percent-of width) size)
@@ -429,9 +429,9 @@
                                  scale)]
         {:result [:g {:transform (str "translate(" (v/->str position) ")"
                                       "scale(" scale "," scale ")"
-                                      "translate(" (v/->str (-> (v/v ribbon-width ribbon-height)
+                                      "translate(" (v/->str (-> (v/Vector. ribbon-width ribbon-height)
                                                                 (v/div 2)
-                                                                (v/add (v/v min-x min-y))
+                                                                (v/add (v/Vector. min-x min-y))
                                                                 (v/mul -1))) ")")}
                   [ribbon
                    (c/++ context :ribbon)
@@ -439,10 +439,10 @@
                    tincture-background
                    tincture-text
                    :outline-thickness outline-thickness]]
-         :bounding-box (let [top-left (-> (v/v min-x min-y)
+         :bounding-box (let [top-left (-> (v/Vector. min-x min-y)
                                           (v/mul scale)
                                           (v/add position))
-                             bottom-right (-> (v/v max-x max-y)
+                             bottom-right (-> (v/Vector. max-x max-y)
                                               (v/mul scale)
                                               (v/add position))]
 
@@ -586,17 +586,17 @@
                           (* coat-of-arms-height (Math/sin coa-angle-counter-rad-abs)))
         rotated? (not (zero? coat-of-arms-angle))
         helm-position (cond
-                        (neg? coat-of-arms-angle) (v/v (- (/ coat-of-arms-width 2)) 0)
-                        (pos? coat-of-arms-angle) (v/v (/ coat-of-arms-width 2) 0)
-                        :else (v/v 0 0))
+                        (neg? coat-of-arms-angle) (v/Vector. (- (/ coat-of-arms-width 2)) 0)
+                        (pos? coat-of-arms-angle) (v/Vector. (/ coat-of-arms-width 2) 0)
+                        :else (v/Vector. 0 0))
         helms-bounding-box (bounding-box/min-max-x-y [(-> helm-position
-                                                          (v/add (v/v (/ coat-of-arms-width 2) 0))
-                                                          (v/add (v/v (- (/ helms-width 2))
-                                                                      (- helms-height))))
+                                                          (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
+                                                          (v/add (v/Vector. (- (/ helms-width 2))
+                                                                            (- helms-height))))
                                                       (-> helm-position
-                                                          (v/add (v/v (/ coat-of-arms-width 2) 0))
-                                                          (v/add (v/v (/ helms-width 2)
-                                                                      0)))])
+                                                          (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
+                                                          (v/add (v/Vector. (/ helms-width 2)
+                                                                            0)))])
         coat-of-arms-bounding-box (if rotated?
                                     [rotated-min-x rotated-max-x
                                      0 rotated-height]
