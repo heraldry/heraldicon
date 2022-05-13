@@ -5,7 +5,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.math.bounding-box :as bounding-box]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.svg.path :as path]
    [heraldicon.util.uid :as uid]))
 
@@ -142,7 +142,7 @@
                  (merge meta
                         {:parent context
                          :parent-environment parent-environment
-                         :bounding-box (bounding-box/from-points bounding-box-points)}))
+                         :bounding-box (bb/from-points bounding-box-points)}))
             environment-shape-paths (-> env :shape :paths)]
         ^{:key idx}
         [:<>

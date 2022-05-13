@@ -3,42 +3,40 @@
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
 
-(defn min-max-x-y [[^v/Vector {x :x y :y} & rest]]
-  (reduce (fn [[min-x max-x min-y max-y] ^v/Vector {x :x y :y}]
-            [(min min-x x)
-             (max max-x x)
-             (min min-y y)
-             (max max-y y)])
-          [x x y y]
-          rest))
+(defrecord BoundingBox [^js/Number min-x
+                        ^js/Number max-x
+                        ^js/Number min-y
+                        ^js/Number max-y])
 
-(defn from-paths [paths]
+(defn combine
+  (^BoundingBox [^BoundingBox {min-x1 :min-x max-x1 :max-x
+                               min-y1 :min-y max-y1 :max-y}
+                 ^BoundingBox {min-x2 :min-x max-x2 :max-x
+                               min-y2 :min-y max-y2 :max-y}]
+   (BoundingBox. (min min-x1 min-x2)
+                 (max max-x1 max-x2)
+                 (min min-y1 min-y2)
+                 (max max-y1 max-y2)))
+  (^BoundingBox [^BoundingBox b1 ^BoundingBox b2 & more]
+   (reduce combine (combine b1 b2) more)))
+
+(defn from-vector ^BoundingBox [^v/Vector {x :x y :y}]
+  (BoundingBox. x x y y))
+
+(defn from-points ^BoundingBox [[^v/Vector v & more]]
+  (reduce combine (from-vector v) (map from-vector more)))
+
+(defn from-paths ^BoundingBox [paths]
   (let [points (mapcat
                 #(-> %
                      path/parse-path
                      (path/points 50))
-                paths)
-        box (min-max-x-y points)]
-    box))
+                paths)]
+    (from-points points)))
 
-(defn from-points [points]
-  (min-max-x-y points))
-
-(defn combine [[[first-min-x first-max-x
-                 first-min-y first-max-y] & rest]]
-  (reduce (fn [[min-x max-x min-y max-y]
-               [next-min-x next-max-x next-min-y next-max-y]]
-            [(min min-x next-min-x)
-             (max max-x next-max-x)
-             (min min-y next-min-y)
-             (max max-y next-max-y)])
-          [first-min-x first-max-x
-           first-min-y first-max-y]
-          rest))
-
-(defn rotate [^v/Vector {x1 :x y1 :y :as v1}
-              ^v/Vector {x2 :x y2 :y :as v2}
-              ^js/Number rotation & {:keys [^v/Vector middle ^js/Number scale]}]
+(defn rotate ^BoundingBox [^v/Vector {x1 :x y1 :y :as v1}
+                           ^v/Vector {x2 :x y2 :y :as v2}
+                           ^js/Number rotation & {:keys [^v/Vector middle ^v/Vector scale]}]
   (let [middle (or middle
                    (v/avg v1 v2))
         scale (or scale

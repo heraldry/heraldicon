@@ -10,7 +10,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.math.bounding-box :as bounding-box]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.render.hatching :as hatching]
@@ -172,13 +172,14 @@
                                 (for [idx (range num-helms)]
                                   (let [helm-environment (environment/create
                                                           nil
-                                                          {:bounding-box [(+ (* idx helm-width-with-gap)
+                                                          {:bounding-box (bb/BoundingBox.
+                                                                          (+ (* idx helm-width-with-gap)
                                                                              gap)
                                                                           (+ (* idx helm-width-with-gap)
                                                                              gap
                                                                              helm-width)
                                                                           (- helm-height)
-                                                                          0]})]
+                                                                          0)})]
                                     ^{:key idx}
                                     [helm (-> context
                                               (c/++ :elements idx)
@@ -189,13 +190,14 @@
                                 (for [idx (range num-helms)]
                                   (let [helm-environment (environment/create
                                                           nil
-                                                          {:bounding-box [(+ (* idx helm-width-with-gap)
+                                                          {:bounding-box (bb/BoundingBox.
+                                                                          (+ (* idx helm-width-with-gap)
                                                                              gap)
                                                                           (+ (* idx helm-width-with-gap)
                                                                              gap
                                                                              helm-width)
                                                                           (- helm-height)
-                                                                          0]})]
+                                                                          0)})]
                                     ^{:key idx}
                                     [helm (-> context
                                               (c/++ :elements idx)
@@ -346,9 +348,10 @@
         ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
         ;; height; could perhaps be a subscription or the ribbon function can provide it?
         ;; but then can't use the ribbon function as reagent component
-        [min-x max-x
-         min-y max-y] (bounding-box/min-max-x-y (concat points
-                                                        (map (partial v/add (v/Vector. 0 thickness)) points)))
+        {:keys [min-x max-x
+                min-y max-y]} (bb/from-points
+                               (concat points
+                                       (map (partial v/add (v/Vector. 0 thickness)) points)))
         margin 10
         [result-width result-height] [(+ (- max-x min-x)
                                          (* 2 margin))
@@ -417,9 +420,10 @@
             ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
             ;; height; could perhaps be a subscription or the ribbon function can provide it?
             ;; but then can't use the ribbon function as reagent component
-            [min-x max-x
-             min-y max-y] (bounding-box/min-max-x-y (concat points
-                                                            (map (partial v/add (v/Vector. 0 thickness)) points)))
+            {:keys [min-x max-x
+                    min-y max-y]} (bb/from-points
+                                   (concat points
+                                           (map (partial v/add (v/Vector. 0 thickness)) points)))
             ribbon-width (- max-x min-x)
             ribbon-height (- max-y min-y)
             target-width ((math/percent-of width) size)
@@ -439,15 +443,13 @@
                    tincture-background
                    tincture-text
                    :outline-thickness outline-thickness]]
-         :bounding-box (let [top-left (-> (v/Vector. min-x min-y)
-                                          (v/mul scale)
-                                          (v/add position))
-                             bottom-right (-> (v/Vector. max-x max-y)
-                                              (v/mul scale)
-                                              (v/add position))]
-
-                         [(:x top-left) (:x bottom-right)
-                          (:y top-left) (:y bottom-right)])})
+         :bounding-box (bb/from-points
+                        [(-> (v/Vector. min-x min-y)
+                             (v/mul scale)
+                             (v/add position))
+                         (-> (v/Vector. max-x max-y)
+                             (v/mul scale)
+                             (v/add position))])})
       {:result nil
        :bounding-box nil})))
 
@@ -468,7 +470,10 @@
            [interface/render-component updated-context])])))])
 
 (defn ornaments [context coa-bounding-box]
-  (let [[bb-min-x bb-max-x bb-min-y bb-max-y] coa-bounding-box
+  (let [{bb-min-x :min-x
+         bb-max-x :max-x
+         bb-min-y :min-y
+         bb-max-y :max-y} coa-bounding-box
         num-ornaments (count (interface/get-element-indices (c/++ context :elements)))
         width (- bb-max-x bb-min-x)
         height (- bb-max-y bb-min-y)
@@ -492,13 +497,15 @@
       {:result-below-shield [ornaments-elements updated-context :below-shield? true]
        :result-above-shield [ornaments-elements updated-context :below-shield? false]
 
-       :bounding-box [ornaments-left
+       :bounding-box (bb/BoundingBox.
+                      ornaments-left
                       (+ ornaments-left ornaments-width)
                       ornaments-top
-                      (+ ornaments-top ornaments-height)]}
-      {:bounding-box [0 0 0 0]})))
+                      (+ ornaments-top ornaments-height))}
+      {:bounding-box (bb/BoundingBox. 0 0 0 0)})))
 
-(defn transform-bounding-box [[min-x max-x min-y max-y] target-width & {:keys [max-aspect-ratio]}]
+(defn transform-bounding-box [^BoundingBox {:keys [min-x max-x min-y max-y]}
+                              ^js/Number target-width & {:keys [^js/Number max-aspect-ratio]}]
   (let [total-width (- max-x min-x)
         total-height (- max-y min-y)
         target-height (-> target-width
@@ -589,28 +596,28 @@
                         (neg? coat-of-arms-angle) (v/Vector. (- (/ coat-of-arms-width 2)) 0)
                         (pos? coat-of-arms-angle) (v/Vector. (/ coat-of-arms-width 2) 0)
                         :else v/zero)
-        helms-bounding-box (bounding-box/min-max-x-y [(-> helm-position
-                                                          (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
-                                                          (v/add (v/Vector. (- (/ helms-width 2))
-                                                                            (- helms-height))))
-                                                      (-> helm-position
-                                                          (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
-                                                          (v/add (v/Vector. (/ helms-width 2)
-                                                                            0)))])
+        helms-bounding-box (bb/from-points
+                            [(-> helm-position
+                                 (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
+                                 (v/add (v/Vector. (- (/ helms-width 2))
+                                                   (- helms-height))))
+                             (-> helm-position
+                                 (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
+                                 (v/add (v/Vector. (/ helms-width 2)
+                                                   0)))])
         coat-of-arms-bounding-box (if rotated?
-                                    [rotated-min-x rotated-max-x
-                                     0 rotated-height]
-                                    [0 coat-of-arms-width
-                                     0 coat-of-arms-height])
-        coa-and-helms-bounding-box (bounding-box/combine
-                                    (cond-> [coat-of-arms-bounding-box]
-                                      helms-result-below-shield (conj helms-bounding-box)))
+                                    (bb/BoundingBox. rotated-min-x rotated-max-x
+                                                     0 rotated-height)
+                                    (bb/BoundingBox. 0 coat-of-arms-width
+                                                     0 coat-of-arms-height))
+        coa-and-helms-bounding-box (cond-> coat-of-arms-bounding-box
+                                     helms-result-below-shield (bb/combine helms-bounding-box))
 
         {ornaments-result-below-shield :result-below-shield
          ornaments-result-above-shield :result-above-shield
          ornaments-bounding-box :bounding-box} (if (#{:coat-of-arms
                                                       :coat-of-arms-and-helm} scope)
-                                                 {:bounding-box [0 0 0 0]}
+                                                 {:bounding-box (bb/BoundingBox. 0 0 0 0)}
                                                  (ornaments
                                                   (c/++ context :ornaments)
                                                   coat-of-arms-bounding-box))
@@ -618,11 +625,10 @@
         used-fonts (cond-> (get-used-fonts context)
                      short-url (conj short-url-font))
 
-        achievement-bounding-box (bounding-box/combine
-                                  (cond-> [coa-and-helms-bounding-box]
-                                    ;; TODO: restore this functionality, resize the achievement based on mottos
-                                    ;;mottos-result-below-shield (conj mottos-bounding-box)
-                                    ornaments-result-below-shield (conj ornaments-bounding-box)))
+        achievement-bounding-box (cond-> coa-and-helms-bounding-box
+                                   ;; TODO: restore this functionality, resize the achievement based on mottos
+                                   ;; mottos-result-below-shield (bb/combine mottos-bounding-box)
+                                   ornaments-result-below-shield (bb/combine ornaments-bounding-box))
 
         achievement-width 1000
         {achievement-width :target-width

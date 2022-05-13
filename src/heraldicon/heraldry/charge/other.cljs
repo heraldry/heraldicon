@@ -12,7 +12,7 @@
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.math.bounding-box :as bounding-box]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.render.outline :as outline]
@@ -386,11 +386,12 @@
             shift (-> (v/Vector. positional-charge-width positional-charge-height)
                       (v/div 2)
                       (v/sub))
-            [min-x max-x min-y max-y] (bounding-box/rotate
-                                       shift
-                                       (v/dot shift (v/Vector. -1 -1))
-                                       angle
-                                       :scale (v/Vector. scale-x scale-y))
+            {:keys [min-x max-x
+                    min-y max-y]} (bb/rotate
+                                   shift
+                                   (v/dot shift (v/Vector. -1 -1))
+                                   angle
+                                   :scale (v/Vector. scale-x scale-y))
             extra-margin (-> (case (-> fimbriation :mode)
                                :double (+ (-> fimbriation
                                               :thickness-1
@@ -423,9 +424,8 @@
                                 {:parent path
                                  :parent-environment environment
                                  :context [:charge]
-                                 :bounding-box (bounding-box/from-points
-                                                [position (v/add position
-                                                                 clip-size)])})
+                                 :bounding-box (bb/from-points
+                                                [position (v/add position clip-size)])})
             vertical-mask? (not (zero? vertical-mask))
             vertical-mask-id (uid/generate "mask")
             layer-separator-colour-for-shadow-highlight (if hide-lower-layer?
