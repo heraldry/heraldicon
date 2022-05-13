@@ -9,24 +9,24 @@
   (Vector. 0 0))
 
 (defn add [& args]
-  {:x (apply + (map :x args))
-   :y (apply + (map :y args))})
+  (Vector. (apply + (map :x args))
+           (apply + (map :y args))))
 
 (defn sub [& args]
-  {:x (apply - (map :x args))
-   :y (apply - (map :y args))})
+  (Vector. (apply - (map :x args))
+           (apply - (map :y args))))
 
 (defn mul [{x :x y :y} f & args]
-  {:x (apply * (concat [x f] args))
-   :y (apply * (concat [y f] args))})
+  (Vector. (apply * (concat [x f] args))
+           (apply * (concat [y f] args))))
 
 (defn div [{x :x y :y} f & args]
-  {:x (apply / (concat [x f] args))
-   :y (apply / (concat [y f] args))})
+  (Vector. (apply / (concat [x f] args))
+           (apply / (concat [y f] args))))
 
 (defn dot [{x1 :x y1 :y} {x2 :x y2 :y}]
-  {:x (* x1 x2)
-   :y (* y1 y2)})
+  (Vector. (* x1 x2)
+           (* y1 y2)))
 
 (defn abs [{x :x y :y}]
   (Math/sqrt (+
@@ -176,10 +176,11 @@
         p2 (new Path path2)]
     (into []
           (map (fn [^js/Object location]
-                 {:x (.. location -point -x)
-                  :y (.. location -point -y)
+                 (assoc
+                  (Vector. (.. location -point -x)
+                           (.. location -point -y))
                   :t1 (/ (.. location -offset) (.-length p1))
-                  :t2 (/ (.. location -intersection -offset) (.-length p2))}))
+                  :t2 (/ (.. location -intersection -offset) (.-length p2)))))
           (.getIntersections p1 p2))))
 
 (def path-intersection
