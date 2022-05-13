@@ -8,71 +8,68 @@
 (def zero
   (Vector. 0 0))
 
-(defn add [& args]
+(defn add ^Vector [& args]
   (Vector. (apply + (map :x args))
            (apply + (map :y args))))
 
-(defn sub [& args]
+(defn sub ^Vector [& args]
   (Vector. (apply - (map :x args))
            (apply - (map :y args))))
 
-(defn mul [{x :x y :y} f & args]
+(defn mul ^Vector [{x :x y :y} f & args]
   (Vector. (apply * (concat [x f] args))
            (apply * (concat [y f] args))))
 
-(defn div [{x :x y :y} f & args]
+(defn div ^Vector [{x :x y :y} f & args]
   (Vector. (apply / (concat [x f] args))
            (apply / (concat [y f] args))))
 
-(defn dot [{x1 :x y1 :y} {x2 :x y2 :y}]
-  (Vector. (* x1 x2)
-           (* y1 y2)))
+(defn dot ^Vector [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
+  (Vector. (* x1 x2) (* y1 y2)))
 
-(defn abs [{x :x y :y}]
-  (Math/sqrt (+
-              (* x x)
-              (* y y))))
+(defn abs ^js/Number [^Vector {:keys [x y]}]
+  (Math/sqrt (+ (* x x) (* y y))))
 
-(defn dot-product [p1 p2]
-  (let [p1-length (abs p1)
-        p2-length (abs p2)
-        {:keys [x y]} (dot p1 p2)]
-    (if (or (zero? p1-length)
-            (zero? p2-length))
+(defn dot-product ^js/Number [^Vector v1 ^Vector v2]
+  (let [v1-length (abs v1)
+        v2-length (abs v2)
+        {:keys [x y]} (dot v1 v2)]
+    (if (or (zero? v1-length)
+            (zero? v2-length))
       0
       (-> (+ x y)
-          (/ p1-length)
-          (/ p2-length)))))
+          (/ v1-length)
+          (/ v2-length)))))
 
-(defn normal [v]
+(defn normal ^Vector [^Vector v]
   (let [d (abs v)]
     (if (> d 0)
       (div v d)
       v)))
 
-(defn avg [v1 v2]
-  (-> v1
-      (add v2)
-      (div 2)))
+(defn avg ^Vector [^Vector v1 ^Vector v2]
+  (div (add v1 v2) 2))
 
-(defn rotate [{:keys [x y]} angle]
+(defn rotate ^Vector [{:keys [x y]} ^js/Number angle]
   (let [rad (angle/to-rad angle)]
     (Vector. (- (* x (Math/cos rad))
                 (* y (Math/sin rad)))
              (+ (* x (Math/sin rad))
                 (* y (Math/cos rad))))))
 
-(defn distance-point-to-line [{x0 :x y0 :y} {x1 :x y1 :y :as p1} {x2 :x y2 :y :as p2}]
+(defn distance-point-to-line ^js/Number [^Vector {x0 :x y0 :y}
+                                         ^Vector {x1 :x y1 :y :as v1}
+                                         ^Vector {x2 :x y2 :y :as v2}]
   (/ (Math/abs (- (* (- x2 x1)
                      (- y1 y0))
                   (* (- x1 x0)
                      (- y2 y1))))
-     (abs (sub p1 p2))))
+     (abs (sub v1 v2))))
 
-(defn line-intersection [{x1 :x y1 :y}
-                         {x2 :x y2 :y :as end1}
-                         {x3 :x y3 :y :as start2}
-                         {x4 :x y4 :y}]
+(defn line-intersection ^Vector [^Vector {x1 :x y1 :y}
+                                 ^Vector {x2 :x y2 :y :as end1}
+                                 ^Vector {x3 :x y3 :y :as start2}
+                                 ^Vector {x4 :x y4 :y}]
   (let [D (- (* (- x1 x2)
                 (- y3 y4))
              (* (- y1 y2)
@@ -97,7 +94,9 @@
                                  (* y3 x4))))))
            D))))
 
-(defn tangent-point [{cx :x cy :y} r {px :x py :y}]
+(defn tangent-point ^Vector [^Vector {cx :x cy :y}
+                             ^js/Number r
+                             ^Vector {px :x py :y}]
   (let [dx (- px cx)
         dy (- py cy)
         r2 (* r r)
@@ -115,8 +114,10 @@
                      (/ sum-d2)
                      (+ cy)))))))
 
-(defn outer-tangent-between-circles [{x0 :x y0 :y} r0
-                                     {x1 :x y1 :y} r1
+(defn outer-tangent-between-circles [^Vector {x0 :x y0 :y}
+                                     ^js/Number r0
+                                     ^Vector {x1 :x y1 :y}
+                                     ^js/Number r1
                                      edge]
   (let [dir-factor (if (= edge :left)
                      1
@@ -135,8 +136,10 @@
      (Vector. (+ x1 (* dir-factor r1 (Math/sin alpha)))
               (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
 
-(defn inner-tangent-between-circles [{x0 :x y0 :y} r0
-                                     {x1 :x y1 :y} r1
+(defn inner-tangent-between-circles [^Vector {x0 :x y0 :y}
+                                     ^js/Number r0
+                                     ^Vector {x1 :x y1 :y}
+                                     ^js/Number r1
                                      edge]
   (let [dir-factor (if (= edge :left)
                      1
@@ -155,10 +158,10 @@
      (Vector. (+ x1 (* dir-factor r1 (Math/sin alpha)))
               (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
 
-(defn orthogonal [{:keys [x y]}]
+(defn orthogonal ^Vector [^Vector {:keys [x y]}]
   (Vector. y (- x)))
 
-(defn ->str [{:keys [x y]}]
+(defn ->str ^js/String [^Vector {:keys [x y]}]
   (str x "," y))
 
 (defn prune-duplicates [intersections]
@@ -267,12 +270,12 @@
         select-fn
         (select-keys [:x :y :t1 :t2]))))
 
-(defn angle-to-point [p1 p2]
-  (let [d (sub p2 p1)
+(defn angle-to-point ^js/Number [^Vector v1 ^Vector v2]
+  (let [d (sub v2 v1)
         angle-rad (Math/atan2 (:y d) (:x d))]
     (angle/to-deg angle-rad)))
 
-(defn angle-between-vectors [v1 v2]
+(defn angle-between-vectors ^js/Number [^Vector v1 ^Vector v2]
   (let [a1 (angle-to-point zero v1)
         a2 (angle-to-point zero v2)
         angle (-> (- a1 a2)
