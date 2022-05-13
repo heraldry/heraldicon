@@ -266,7 +266,7 @@
                                                                 (v/Vector. charge-width
                                                                            charge-height))
                                                          angle
-                                                         :middle (v/Vector. 0 0)
+                                                         :middle v/zero
                                                          :scale (v/Vector. scale-x scale-y))
           part [charge-shape
                 [(v/add anchor-point

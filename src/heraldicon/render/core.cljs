@@ -588,7 +588,7 @@
         helm-position (cond
                         (neg? coat-of-arms-angle) (v/Vector. (- (/ coat-of-arms-width 2)) 0)
                         (pos? coat-of-arms-angle) (v/Vector. (/ coat-of-arms-width 2) 0)
-                        :else (v/Vector. 0 0))
+                        :else v/zero)
         helms-bounding-box (bounding-box/min-max-x-y [(-> helm-position
                                                           (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
                                                           (v/add (v/Vector. (- (/ helms-width 2))
