@@ -62,16 +62,16 @@
         real-point-width ((math/percent-of width) point-width)
         real-point-height ((math/percent-of width) point-height)
 
-        ideal-point-side (v/v (if (= variant :dexter)
-                                (-> top-left :x)
-                                (-> top-right :x))
-                              (-> top-left
-                                  :y
-                                  (+ real-point-height)))
-        ideal-point-top (v/v (if (= variant :dexter)
-                               (-> top-left :x (+ real-point-width))
-                               (-> top-right :x (- real-point-width)))
-                             (-> top-left :y))
+        ideal-point-side (v/Vector. (if (= variant :dexter)
+                                      (-> top-left :x)
+                                      (-> top-right :x))
+                                    (-> top-left
+                                        :y
+                                        (+ real-point-height)))
+        ideal-point-top (v/Vector. (if (= variant :dexter)
+                                     (-> top-left :x (+ real-point-width))
+                                     (-> top-right :x (- real-point-width)))
+                                   (-> top-left :y))
 
         extra-length 30
         line-dir (v/sub ideal-point-side ideal-point-top)

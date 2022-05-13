@@ -3,12 +3,10 @@
    ["paper" :refer [Path]]
    [heraldicon.math.angle :as angle]))
 
-(defn v [x y]
-  {:x x
-   :y y})
+(defrecord Vector [^js/Number x ^js/Number y])
 
 (def zero
-  (v 0 0))
+  (Vector. 0 0))
 
 (defn add [& args]
   {:x (apply + (map :x args))
@@ -59,10 +57,10 @@
 
 (defn rotate [{:keys [x y]} angle]
   (let [rad (angle/to-rad angle)]
-    (v (- (* x (Math/cos rad))
-          (* y (Math/sin rad)))
-       (+ (* x (Math/sin rad))
-          (* y (Math/cos rad))))))
+    (Vector. (- (* x (Math/cos rad))
+                (* y (Math/sin rad)))
+             (+ (* x (Math/sin rad))
+                (* y (Math/cos rad))))))
 
 (defn distance-point-to-line [{x0 :x y0 :y} {x1 :x y1 :y :as p1} {x2 :x y2 :y :as p2}]
   (/ (Math/abs (- (* (- x2 x1)
@@ -85,18 +83,18 @@
       (-> end1
           (add start2)
           (div 2))
-      (div (v (-> (* (- (* x1 y2)
-                        (* y1 x2))
-                     (- x3 x4))
-                  (- (* (- x1 x2)
-                        (- (* x3 y4)
-                           (* y3 x4)))))
-              (-> (* (- (* x1 y2)
-                        (* y1 x2))
-                     (- y3 y4))
-                  (- (* (- y1 y2)
-                        (- (* x3 y4)
-                           (* y3 x4))))))
+      (div (Vector. (-> (* (- (* x1 y2)
+                              (* y1 x2))
+                           (- x3 x4))
+                        (- (* (- x1 x2)
+                              (- (* x3 y4)
+                                 (* y3 x4)))))
+                    (-> (* (- (* x1 y2)
+                              (* y1 x2))
+                           (- y3 y4))
+                        (- (* (- y1 y2)
+                              (- (* x3 y4)
+                                 (* y3 x4))))))
            D))))
 
 (defn tangent-point [{cx :x cy :y} r {px :x py :y}]
@@ -110,12 +108,12 @@
         dir-factor 1]
     (when (>= D 0)
       (let [sqrtD (Math/sqrt D)]
-        (v (-> (+ (* r2 dx) (* dir-factor r dy sqrtD))
-               (/ sum-d2)
-               (+ cx))
-           (-> (- (* r2 dy) (* dir-factor r dx sqrtD))
-               (/ sum-d2)
-               (+ cy)))))))
+        (Vector. (-> (+ (* r2 dx) (* dir-factor r dy sqrtD))
+                     (/ sum-d2)
+                     (+ cx))
+                 (-> (- (* r2 dy) (* dir-factor r dx sqrtD))
+                     (/ sum-d2)
+                     (+ cy)))))))
 
 (defn outer-tangent-between-circles [{x0 :x y0 :y} r0
                                      {x1 :x y1 :y} r1
@@ -132,10 +130,10 @@
                  Math/asin
                  (* dir-factor))
         alpha (- gamma beta)]
-    [(v (+ x0 (* dir-factor r0 (Math/sin alpha)))
-        (+ y0 (* dir-factor r0 (Math/cos alpha))))
-     (v (+ x1 (* dir-factor r1 (Math/sin alpha)))
-        (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
+    [(Vector. (+ x0 (* dir-factor r0 (Math/sin alpha)))
+              (+ y0 (* dir-factor r0 (Math/cos alpha))))
+     (Vector. (+ x1 (* dir-factor r1 (Math/sin alpha)))
+              (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
 
 (defn inner-tangent-between-circles [{x0 :x y0 :y} r0
                                      {x1 :x y1 :y} r1
@@ -152,13 +150,13 @@
                  Math/asin
                  (* dir-factor))
         alpha (- gamma beta)]
-    [(v (- x0 (* dir-factor r0 (Math/sin alpha)))
-        (- y0 (* dir-factor r0 (Math/cos alpha))))
-     (v (+ x1 (* dir-factor r1 (Math/sin alpha)))
-        (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
+    [(Vector. (- x0 (* dir-factor r0 (Math/sin alpha)))
+              (- y0 (* dir-factor r0 (Math/cos alpha))))
+     (Vector. (+ x1 (* dir-factor r1 (Math/sin alpha)))
+              (+ y1 (* dir-factor r1 (Math/cos alpha))))]))
 
 (defn orthogonal [{:keys [x y]}]
-  (v y (- x)))
+  (Vector. y (- x)))
 
 (defn ->str [{:keys [x y]}]
   (str x "," y))
@@ -200,8 +198,8 @@
 
 (defn close-to-single-path? [point path]
   (let [radius 0.0001
-        left (sub point (v radius 0))
-        right (add point (v radius 0))
+        left (sub point (Vector. radius 0))
+        right (add point (Vector. radius 0))
         neighbourhood (str "M" (->str left)
                            "A" radius " " radius " 0 0 0 " (->str right)
                            "A" radius " " radius " 0 0 1 " (->str left))
@@ -274,8 +272,8 @@
     (angle/to-deg angle-rad)))
 
 (defn angle-between-vectors [v1 v2]
-  (let [a1 (angle-to-point (v 0 0) v1)
-        a2 (angle-to-point (v 0 0) v2)
+  (let [a1 (angle-to-point (Vector. 0 0) v1)
+        a2 (angle-to-point (Vector. 0 0) v2)
         angle (-> (- a1 a2)
                   angle/normalize)]
     (if (> angle 180)

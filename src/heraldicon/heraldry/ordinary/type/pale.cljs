@@ -81,10 +81,10 @@
                :right (- (:x anchor-point) band-width)
                (- (:x anchor-point) (/ band-width 2)))
         col2 (+ col1 band-width)
-        first-top (v/v col1 (:y top))
-        first-bottom (v/v col1 (:y bottom))
-        second-top (v/v col2 (:y top))
-        second-bottom (v/v col2 (:y bottom))
+        first-top (v/Vector. col1 (:y top))
+        first-bottom (v/Vector. col1 (:y bottom))
+        second-top (v/Vector. col2 (:y top))
+        second-bottom (v/Vector. col2 (:y bottom))
         [first-top first-bottom] (v/environment-intersections
                                   first-top
                                   first-bottom
@@ -104,10 +104,10 @@
                      (max (-> first-bottom :y (- shared-start-y))
                           (-> second-bottom :y (- shared-start-y))))
         shared-end-y (+ real-end 30)
-        first-top (v/v (:x first-top) shared-start-y)
-        second-top (v/v (:x second-top) shared-start-y)
-        first-bottom (v/v (:x first-bottom) shared-end-y)
-        second-bottom (v/v (:x second-bottom) shared-end-y)
+        first-top (v/Vector. (:x first-top) shared-start-y)
+        second-top (v/Vector. (:x second-top) shared-start-y)
+        first-bottom (v/Vector. (:x first-bottom) shared-end-y)
+        second-bottom (v/Vector. (:x second-bottom) shared-end-y)
         line (-> line
                  (update-in [:fimbriation :thickness-1] (math/percent-of width))
                  (update-in [:fimbriation :thickness-2] (math/percent-of width)))
@@ -155,10 +155,10 @@
                band-width
                context)
         part [shape
-              [(v/v (:x second-top)
-                    (:y top))
-               (v/v (:x first-bottom)
-                    (:y bottom))]]
+              [(v/Vector. (:x second-top)
+                          (:y top))
+               (v/Vector. (:x first-bottom)
+                          (:y bottom))]]
         cottise-context (merge
                          context
                          {:override-shared-start-y shared-start-y

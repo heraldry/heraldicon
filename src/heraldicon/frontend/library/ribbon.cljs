@@ -170,7 +170,7 @@
       (if path
         (-> db
             (assoc-in path (clamp-point
-                            (v/sub pos (v/v dx dy)))))
+                            (v/sub pos (v/Vector. dx dy)))))
         db))))
 
 ;; views

@@ -150,15 +150,15 @@
         center-point (v/line-intersection anchor-point orientation-point
                                           top bottom)
         direction (v/sub orientation-point anchor-point)
-        direction (v/v (-> direction :x Math/abs)
-                       (-> direction :y Math/abs))
+        direction (v/Vector. (-> direction :x Math/abs)
+                             (-> direction :y Math/abs))
         direction-orthogonal (v/orthogonal direction)
-        angle (v/angle-to-point (v/v 0 0) direction)
+        angle (v/angle-to-point (v/Vector. 0 0) direction)
         required-half-width (v/distance-point-to-line top-left center-point (v/add center-point direction-orthogonal))
         required-half-height (v/distance-point-to-line top-right center-point (v/add center-point direction))
         [parts overlap outlines] (barry/barry-parts
-                                  (v/v (- required-half-width) (- required-half-height))
-                                  (v/v required-half-width required-half-height)
+                                  (v/Vector. (- required-half-width) (- required-half-height))
+                                  (v/Vector. required-half-width required-half-height)
                                   line outline? context)]
     [:g {:transform (str "translate(" (v/->str center-point) ")"
                          "rotate(" angle ")")}

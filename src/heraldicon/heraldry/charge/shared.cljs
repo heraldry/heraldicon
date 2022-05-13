@@ -245,7 +245,7 @@
           scale-y (* (if reversed? -1 1)
                      (* (Math/abs scale-x) stretch))
           charge-top-left (or charge-top-left
-                              (-> (v/v charge-width charge-height)
+                              (-> (v/Vector. charge-width charge-height)
                                   (v/div -2)))
           charge-shape {:paths (into []
                                      (map #(-> %
@@ -263,16 +263,16 @@
                                      (:paths shape))}
           [min-x max-x min-y max-y] (bounding-box/rotate charge-top-left
                                                          (v/add charge-top-left
-                                                                (v/v charge-width
-                                                                     charge-height))
+                                                                (v/Vector. charge-width
+                                                                           charge-height))
                                                          angle
-                                                         :middle (v/v 0 0)
-                                                         :scale (v/v scale-x scale-y))
+                                                         :middle (v/Vector. 0 0)
+                                                         :scale (v/Vector. scale-x scale-y))
           part [charge-shape
                 [(v/add anchor-point
-                        (v/v min-x min-y))
+                        (v/Vector. min-x min-y))
                  (v/add anchor-point
-                        (v/v max-x max-y))]]
+                        (v/Vector. max-x max-y))]]
           charge-id (uid/generate "charge")
           vertical-mask? (not (zero? vertical-mask))
           vertical-mask-id (uid/generate "mask")]

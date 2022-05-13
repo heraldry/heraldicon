@@ -21,9 +21,9 @@
    :width
    (fn [width]
      (let [radius (/ width 2)]
-       {:shape ["m" (v/v radius 0)
+       {:shape ["m" (v/Vector. radius 0)
                 ["a" radius radius
-                 0 0 0 (v/v (- width) 0)]
+                 0 0 0 (v/Vector. (- width) 0)]
                 ["a" radius radius
                  0 0 0 width 0]
                 "z"]

@@ -157,8 +157,8 @@
                          (v/line-intersection anchor-point orientation-point
                                               top bottom))
         direction (v/sub orientation-point anchor-point)
-        direction (-> (v/v (-> direction :x Math/abs)
-                           (-> direction :y Math/abs -))
+        direction (-> (v/Vector. (-> direction :x Math/abs)
+                                 (-> direction :y Math/abs -))
                       v/normal)
         direction-orthogonal (v/orthogonal direction)
         [middle-real-start
@@ -259,8 +259,8 @@
               (if use-parent-environment?
                 [first-real-start first-real-end
                  second-real-start second-real-end]
-                [(v/v 0 0)
-                 (v/v band-length band-height)])]
+                [(v/Vector. 0 0)
+                 (v/Vector. band-length band-height)])]
         cottise-context (merge
                          context
                          {:override-real-start real-start

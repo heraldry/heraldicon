@@ -110,7 +110,7 @@
 
 (def ribbon
   {:ribbon {:thickness nil
-            :points [(v/v -150 -20) (v/v -75 0) (v/v 0 5) (v/v 75 0) (v/v 150 -20)]
+            :points [(v/Vector. -150 -20) (v/Vector. -75 0) (v/Vector. 0 5) (v/Vector. 75 0) (v/Vector. 150 -20)]
             :segments [{:type :heraldry.ribbon.segment/foreground-with-text
                         :text "LOREM IPSUM"}]}})
 ;;

@@ -89,7 +89,7 @@
                             Math/ceil
                             int
                             inc))
-        line-start (v/v (min 0 offset-length) line-base)]
+        line-start (v/Vector. (min 0 offset-length) line-base)]
     {:line (-> []
                (cond->
                  (pos? offset-length) (into [["h" offset-length]]))
@@ -110,7 +110,7 @@
     {:line line-pattern
      :line-min line-min
      :line-max line-max
-     :line-start (v/v 0 line-base)}))
+     :line-start (v/Vector. 0 line-base)}))
 
 (def lines
   [#'straight/pattern
@@ -411,7 +411,7 @@
         line-options-values (cond-> line #_(options/sanitize line (options line))
                               (= type :straight) (-> (assoc :width length)
                                                      (assoc :offset 0)))
-        base-end (v/v length 0)
+        base-end (v/Vector. length 0)
         line-data (if (:full? pattern-data)
                     (full-line
                      line-options-values
@@ -443,14 +443,14 @@
                         path/to-svg)
                     line-path)
         [line-start line-end] (if reversed?
-                                [(v/dot line-end (v/v -1 1))
-                                 (v/dot line-start (v/v -1 1))]
+                                [(v/dot line-end (v/Vector. -1 1))
+                                 (v/dot line-start (v/Vector. -1 1))]
                                 [line-start line-end])
         line-flipped? (:flipped? line-options-values)
         effective-flipped? (util/xor flipped? line-flipped?)
         [line-start line-end] (if effective-flipped?
-                                [(v/dot line-start (v/v 1 -1))
-                                 (v/dot line-end (v/v 1 -1))]
+                                [(v/dot line-start (v/Vector. 1 -1))
+                                 (v/dot line-end (v/Vector. 1 -1))]
                                 [line-start line-end])
         squiggly? (interface/render-option :squiggly? context)]
     (-> line-data
@@ -465,8 +465,8 @@
                    path/to-svg))
         (assoc :line-start (when line-start (v/rotate line-start angle)))
         (assoc :line-end (when line-end (v/rotate (v/add base-end line-end) angle)))
-        (assoc :up (v/rotate (v/v 0 -50) angle))
-        (assoc :down (v/rotate (v/v 0 50) angle)))))
+        (assoc :up (v/rotate (v/Vector. 0 -50) angle))
+        (assoc :down (v/rotate (v/Vector. 0 50) angle)))))
 
 (defn get-intersections-before-and-after [t intersections]
   (let [before (or (-> intersections

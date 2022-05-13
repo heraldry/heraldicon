@@ -22,15 +22,15 @@
    (fn [width]
      (let [radius (/ width 2)
            hole-radius (* radius 0.6)]
-       {:shape {:paths [["m" (v/v radius 0)
+       {:shape {:paths [["m" (v/Vector. radius 0)
                          ["a" radius radius
-                          0 0 0 (v/v (- width) 0)]
+                          0 0 0 (v/Vector. (- width) 0)]
                          ["a" radius radius
                           0 0 0 width 0]
                          "z"]
-                        ["m" (v/v hole-radius 0)
+                        ["m" (v/Vector. hole-radius 0)
                          ["a" hole-radius hole-radius
-                          0 0 0 (v/v (* hole-radius -2) 0)]
+                          0 0 0 (v/Vector. (* hole-radius -2) 0)]
                          ["a" hole-radius hole-radius
                           0 0 0 (* hole-radius 2) 0]
                          "z"]]}

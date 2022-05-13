@@ -278,10 +278,10 @@
                                             (/ 180)
                                             (/ 2))))
         offset-lower (v/rotate
-                      (v/v delta 0)
+                      (v/Vector. delta 0)
                       chevron-angle)
         offset-upper (v/rotate
-                      (v/v (- delta) 0)
+                      (v/Vector. (- delta) 0)
                       chevron-angle)
         corner-upper (v/add anchor-point offset-upper)
         corner-lower (v/add anchor-point offset-lower)

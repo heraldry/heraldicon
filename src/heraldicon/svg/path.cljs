@@ -50,7 +50,7 @@
   (let [path-data (.-pathData path)
         regex #"^M[ ]*(-?[0-9.e]+)[, ] *(-?[0-9.e]+).*"
         [_ x y] (re-matches regex path-data)]
-    (v/v (js/parseFloat x) (js/parseFloat y))))
+    (v/Vector. (js/parseFloat x) (js/parseFloat y))))
 
 (defn move-to [p]
   (str "M" (v/->str p)))
@@ -78,7 +78,7 @@
                       (-> length (* i) (/ (dec n)) (+ start-offset) (mod length))
                       (-> length (* i) (/ (dec n)) (min length)))
                   p (.getPointAt path x)]
-              (v/v (.-x p) (.-y p)))) (range n))))
+              (v/Vector. (.-x p) (.-y p)))) (range n))))
 
 (defn clean-path [d]
   (s/replace d #"l *0 *[, ] *0" ""))

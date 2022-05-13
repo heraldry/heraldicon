@@ -81,7 +81,7 @@
          line-down-start :line-start
          line-down-end :line-end} (line/create line
                                                top-left
-                                               (v/add top-left (v/v 0 height))
+                                               (v/add top-left (v/Vector. 0 height))
                                                :real-start 0
                                                :real-end height
                                                :context context
@@ -90,7 +90,7 @@
          line-up-start :line-start
          line-up-end :line-end} (line/create line
                                              top-left
-                                             (v/add top-left (v/v 0 height))
+                                             (v/add top-left (v/Vector. 0 height))
                                              :flipped? true
                                              :mirrored? true
                                              :reversed? true
@@ -103,10 +103,10 @@
                           (let [x1 (+ x0 (* i pallet-width))
                                 x2 (+ x1 pallet-width)
                                 last-part? (-> i inc (= num-fields-x))
-                                line-one-top (v/v x1 y1)
-                                line-one-bottom (v/v x1 y2)
-                                line-two-top (v/v x2 y1)
-                                line-two-bottom (v/v x2 y2)]
+                                line-one-top (v/Vector. x1 y1)
+                                line-one-bottom (v/Vector. x1 y2)
+                                line-two-top (v/Vector. x2 y1)
+                                line-two-bottom (v/Vector. x2 y2)]
                             [(cond
                                (and (zero? i)
                                     last-part?) ["M" -1000 -1000
@@ -184,8 +184,8 @@
                    (map (fn [i]
                           (let [x1 (+ x0 (* i pallet-width))
                                 x2 (+ x1 pallet-width)
-                                line-two-top (v/v x2 y1)
-                                line-two-bottom (v/v x2 y2)]
+                                line-two-top (v/Vector. x2 y1)
+                                line-two-bottom (v/Vector. x2 y2)]
                             (if (even? i)
                               (path/make-path ["M" (v/add line-two-top
                                                           line-down-start)

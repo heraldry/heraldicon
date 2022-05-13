@@ -139,36 +139,36 @@
                     (+ (* 2 extra)))
         row1 (- (:y anchor-point) (/ band-height 2))
         row2 (+ row1 band-height)
-        first-left (v/v (- (:x left) 20) row1)
-        second-left (v/v (- (:x left) 20) row2)
-        first-right (v/v (+ (:x right) 20) row1)
-        second-right (v/v (+ (:x right) 20) row2)
+        first-left (v/Vector. (- (:x left) 20) row1)
+        second-left (v/Vector. (- (:x left) 20) row2)
+        first-right (v/Vector. (+ (:x right) 20) row1)
+        second-right (v/Vector. (+ (:x right) 20) row2)
         dynamic-points (relative-points
-                        (apply concat (-> [[(v/v (- label-end extra) row2)
-                                            (v/v (* 2 extra) point-height)
-                                            (v/v (- (+ point-width (* 2 extra))) 0)
-                                            (v/v (* 2 extra) (- point-height))]]
+                        (apply concat (-> [[(v/Vector. (- label-end extra) row2)
+                                            (v/Vector. (* 2 extra) point-height)
+                                            (v/Vector. (- (+ point-width (* 2 extra))) 0)
+                                            (v/Vector. (* 2 extra) (- point-height))]]
                                           (into
                                            (repeat (dec num-points)
-                                                   [(v/v (- spacing) 0)
-                                                    (v/v (* 2 extra) point-height)
-                                                    (v/v (- (+ point-width (* 2 extra))) 0)
-                                                    (v/v (* 2 extra) (- point-height))])))))
+                                                   [(v/Vector. (- spacing) 0)
+                                                    (v/Vector. (* 2 extra) point-height)
+                                                    (v/Vector. (- (+ point-width (* 2 extra))) 0)
+                                                    (v/Vector. (* 2 extra) (- point-height))])))))
         projected-extra (-> extra
                             (/ point-height)
                             (* 2)
                             (* band-height))
         fixed-start-points (case variant
-                             :truncated [(v/v (+ label-start extra projected-extra)
-                                              row1)
-                                         (v/v (- label-end extra projected-extra)
-                                              row1)]
+                             :truncated [(v/Vector. (+ label-start extra projected-extra)
+                                                    row1)
+                                         (v/Vector. (- label-end extra projected-extra)
+                                                    row1)]
                              [first-left
                               first-right
                               second-right])
         fixed-end-points (case variant
-                           :truncated [(v/v (+ label-start extra projected-extra)
-                                            row1)]
+                           :truncated [(v/Vector. (+ label-start extra projected-extra)
+                                                  row1)]
                            [second-left
                             first-left])
         points (concat fixed-start-points
@@ -185,8 +185,8 @@
                                         :environment environment))))]
     {:points points
      :environment-points (-> dynamic-points
-                             (conj (v/v label-start row1))
-                             (conj (v/v label-end row1)))
+                             (conj (v/Vector. label-start row1))
+                             (conj (v/Vector. label-end row1)))
      :lines lines
      :shape (-> ["M" (-> points
                          first
@@ -213,8 +213,8 @@
         band-height (-> thickness
                         ((math/percent-of (:width environment))))
         anchor-point (case (:alignment anchor)
-                       :left (v/add anchor-point (v/v 0 (/ band-height 2)))
-                       :right (v/sub anchor-point (v/v 0 (/ band-height 2)))
+                       :left (v/add anchor-point (v/Vector. 0 (/ band-height 2)))
+                       :right (v/sub anchor-point (v/Vector. 0 (/ band-height 2)))
                        anchor-point)
         point-width (-> size
                         ((math/percent-of (:width environment))))

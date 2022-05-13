@@ -113,20 +113,20 @@
                (* height)
                (/ 100)
                -)]
-    (v/v (-> p
-             :x
-             (+ dx))
-         (-> p
-             :y
-             (+ dy)))))
+    (v/Vector. (-> p
+                   :x
+                   (+ dx))
+               (-> p
+                   :y
+                   (+ dy)))))
 
 (defn calculate-orientation [{:keys [point angle] :as orientation} environment anchor base-angle]
   (if (= point :angle)
     (let [angle-rad (-> angle
                         (+ base-angle)
                         (* Math/PI) (/ 180))]
-      (v/add anchor (v/mul (v/v (Math/cos angle-rad)
-                                (Math/sin angle-rad))
+      (v/add anchor (v/mul (v/Vector. (Math/cos angle-rad)
+                                      (Math/sin angle-rad))
                            200)))
     (calculate orientation environment)))
 

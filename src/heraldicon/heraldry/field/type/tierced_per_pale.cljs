@@ -66,12 +66,12 @@
         col1 (- (:x anchor-point) middle-half-width)
         col2 (+ (:x anchor-point) middle-half-width)
         [first-top first-bottom] (v/environment-intersections
-                                  (v/v col1 (:y top))
-                                  (v/v col1 (:y bottom))
+                                  (v/Vector. col1 (:y top))
+                                  (v/Vector. col1 (:y bottom))
                                   environment)
         [second-top second-bottom] (v/environment-intersections
-                                    (v/v col2 (:y top))
-                                    (v/v col2 (:y bottom))
+                                    (v/Vector. col2 (:y top))
+                                    (v/Vector. col2 (:y bottom))
                                     environment)
         shared-start-y (- (min (:y first-top)
                                (:y second-top))
@@ -81,10 +81,10 @@
         real-end (max (-> first-bottom :y (- shared-start-y))
                       (-> second-bottom :y (- shared-start-y)))
         shared-end-y (+ real-end 30)
-        first-top (v/v (:x first-top) shared-start-y)
-        second-top (v/v (:x second-top) shared-start-y)
-        first-bottom (v/v (:x first-bottom) shared-end-y)
-        second-bottom (v/v (:x second-bottom) shared-end-y)
+        first-top (v/Vector. (:x first-top) shared-start-y)
+        second-top (v/Vector. (:x second-top) shared-start-y)
+        first-bottom (v/Vector. (:x first-bottom) shared-end-y)
+        second-bottom (v/Vector. (:x second-bottom) shared-end-y)
         {line-one :line
          line-one-start :line-start} (line/create line
                                                   first-top first-bottom
@@ -113,8 +113,8 @@
                                         line-one-start)])
                  "z"]
                 [top-left
-                 (v/v (:x first-bottom)
-                      (:y bottom))]]
+                 (v/Vector. (:x first-bottom)
+                            (:y bottom))]]
 
                [["M" (v/add second-bottom
                             line-reversed-start)
@@ -134,10 +134,10 @@
                                         line-reversed-start)
                                  first-bottom second-bottom])
                  "z"]
-                [(v/v (:x first-top)
-                      (:y top))
-                 (v/v (:x second-bottom)
-                      (:y bottom))]]
+                [(v/Vector. (:x first-top)
+                            (:y top))
+                 (v/Vector. (:x second-bottom)
+                            (:y bottom))]]
 
                [["M" (v/add second-bottom
                             line-reversed-start)
@@ -149,8 +149,8 @@
                                  (v/add second-bottom
                                         line-reversed-start)])
                  "z"]
-                [(v/v (:x second-top)
-                      (:y top))
+                [(v/Vector. (:x second-top)
+                            (:y top))
                  bottom-right]]]]
     [:<>
      [shared/make-subfields

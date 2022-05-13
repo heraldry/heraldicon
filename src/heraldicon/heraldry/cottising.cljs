@@ -192,7 +192,7 @@
                                    (/ 180)
                                    (* Math/PI))
           effective-distance (distance-fn distance half-joint-angle-rad)
-          point-offset (-> (v/v effective-distance 0)
+          point-offset (-> (v/Vector. effective-distance 0)
                            (v/rotate chevron-angle)
                            (v/add corner-point))
           fess-offset (v/sub point-offset (-> environment :points :fess))
