@@ -6,9 +6,7 @@
    [heraldicon.svg.path :as path]
    [heraldicon.util.random :as random]))
 
-(defn jiggle [[previous
-               {:keys [x y] :as current}
-               _]]
+(defn jiggle [[previous current _]]
   (let [dist (-> current
                  (v/sub previous)
                  (v/abs))
@@ -17,8 +15,7 @@
               jiggle-radius)
         dy (- (* (random/float) jiggle-radius)
               jiggle-radius)]
-    {:x (+ x dx)
-     :y (+ y dy)}))
+    (v/add current (v/Vector. dx dy))))
 
 (defn -squiggly-path [path & {:keys [seed]}]
   (random/seed (if seed

@@ -1,40 +1,37 @@
-(ns heraldicon.svg.infinity)
+(ns heraldicon.svg.infinity
+  (:require [heraldicon.math.vector :as v]))
 
 (defn top [& [point]]
   (-> point
-      (or {:x 0 :y 0})
+      (or v/zero)
       (assoc :y -1000)))
 
 (defn bottom [& [point]]
   (-> point
-      (or {:x 0 :y 0})
+      (or v/zero)
       (assoc :y 1000)))
 
 (defn left [& [point]]
   (-> point
-      (or {:x 0 :y 0})
+      (or v/zero)
       (assoc :x -1000)))
 
 (defn right [& [point]]
   (-> point
-      (or {:x 0 :y 0})
+      (or v/zero)
       (assoc :x 1000)))
 
 (defn top-left [& _]
-  {:x -1000
-   :y -1000})
+  (v/Vector. -1000 -1000))
 
 (defn top-right [& _]
-  {:x 1000
-   :y -1000})
+  (v/Vector. 1000 -1000))
 
 (defn bottom-left [& _]
-  {:x -1000
-   :y 1000})
+  (v/Vector. -1000 1000))
 
 (defn bottom-right [& _]
-  {:x 1000
-   :y 1000})
+  (v/Vector. 1000 1000))
 
 (defn function [type]
   (get {:top top
