@@ -312,9 +312,9 @@
        (c/++ context :ribbon)
        :title :string.ribbon.text/segment-explanation]])])
 
-(defmethod ui.interface/component-node-data :heraldry.component/ribbon-general [context]
+(defmethod ui.interface/component-node-data :heraldry/ribbon-general [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-ribbon-general context)})
 
-(defmethod ui.interface/component-form-data :heraldry.component/ribbon-general [_context]
+(defmethod ui.interface/component-form-data :heraldry/ribbon-general [_context]
   {:form form})

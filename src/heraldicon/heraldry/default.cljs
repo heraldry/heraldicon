@@ -33,17 +33,17 @@
    :spacing 40
    :stretch 0.866
    :charges [charge]
-   :strips [{:type :heraldry.component/charge-group-strip
+   :strips [{:type :heraldry/charge-group-strip
              :slots [0 0]}
-            {:type :heraldry.component/charge-group-strip
+            {:type :heraldry/charge-group-strip
              :slots [0]}]})
 
 (def charge-group-strip
-  {:type :heraldry.component/charge-group-strip
+  {:type :heraldry/charge-group-strip
    :slots [0 0 0]})
 
 (def semy
-  {:type :heraldry.component/semy
+  {:type :heraldry/semy
    :layout {:num-fields-x 6}
    :charge {:type :heraldry.charge.type/fleur-de-lis
             :variant {:id (config/get :fleur-de-lis-charge-id)
@@ -101,10 +101,10 @@
               :highlight 1}})
 
 (def shield-separator
-  {:type :heraldry.component/shield-separator})
+  {:type :heraldry/shield-separator})
 
 (def helm
-  {:type :heraldry.component/helm
+  {:type :heraldry/helm
    :components [shield-separator
                 helmet]})
 
@@ -191,7 +191,7 @@
    :spacing 40
    :stretch 0.866
    :charges [ornament-charge]
-   :strips [{:type :heraldry.component/charge-group-strip
+   :strips [{:type :heraldry/charge-group-strip
              :slots [0 0]}
-            {:type :heraldry.component/charge-group-strip
+            {:type :heraldry/charge-group-strip
              :slots [0]}]})

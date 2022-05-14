@@ -24,8 +24,8 @@
     :squiggly?
     :coat-of-arms-angle]))
 
-(defmethod ui.interface/component-node-data :heraldry.component/render-options [_context]
+(defmethod ui.interface/component-node-data :heraldry/render-options [_context]
   {:title :string.render-options/title})
 
-(defmethod ui.interface/component-form-data :heraldry.component/render-options [_context]
+(defmethod ui.interface/component-form-data :heraldry/render-options [_context]
   {:form form})

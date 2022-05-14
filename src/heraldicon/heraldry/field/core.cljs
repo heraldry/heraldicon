@@ -164,7 +164,7 @@
           tincture/translate-tincture)
       (get field.options/field-map field-type))))
 
-(defmethod interface/blazon-component :heraldry.component/field [context]
+(defmethod interface/blazon-component :heraldry/field [context]
   (let [root? (get-in context [:blazonry :root?])
         context (assoc-in context [:blazonry :root?] false)
         field-type (interface/get-sanitized-data (c/++ context :type))

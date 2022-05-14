@@ -133,19 +133,19 @@
                                     :default false
                                     :ui {:label :string.option/rotate-charges?}}})))
 
-(defmethod interface/options-subscriptions :heraldry.component/charge-group [_context]
+(defmethod interface/options-subscriptions :heraldry/charge-group [_context]
   #{[:type]})
 
-(defmethod interface/options :heraldry.component/charge-group [context]
+(defmethod interface/options :heraldry/charge-group [context]
   (-> context
       (assoc :dispatch-value (interface/get-raw-data (c/++ context :type)))
       interface/options
       (assoc :type type-option)))
 
-(defmethod interface/options-subscriptions :heraldry.component/charge-group-strip [_context]
+(defmethod interface/options-subscriptions :heraldry/charge-group-strip [_context]
   #{[:type]})
 
-(defmethod interface/options :heraldry.component/charge-group-strip [_context]
+(defmethod interface/options :heraldry/charge-group-strip [_context]
   {:slots {:type :range
            :min 0
            :max 10

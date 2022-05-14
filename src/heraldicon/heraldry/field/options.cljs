@@ -77,7 +77,7 @@
    :ui {:label :string.option/partition
         :form-type :field-type-select}})
 
-(defmethod interface/options-subscriptions :heraldry.component/field [_context]
+(defmethod interface/options-subscriptions :heraldry/field [_context]
   #{[:type]
     [:line]
     [:line :type]
@@ -93,7 +93,7 @@
     [:geometry :size-mode]
     [:tincture]})
 
-(defmethod interface/options :heraldry.component/field [context]
+(defmethod interface/options :heraldry/field [context]
   (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))
         subfield? (-> path last int?)

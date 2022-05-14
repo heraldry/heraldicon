@@ -40,7 +40,7 @@
                ;; TODO: cottises are special, in that they don't have their own options
                ;; right now, but still are components in the UI, so ignore the component
                ;; type here
-               (not= component-type :heraldry.component/cottise))
+               (not= component-type :heraldry/cottise))
       (let [context {:path path
                      :dispatch-value component-type
                      :entity-type entity-type}]

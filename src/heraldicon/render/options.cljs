@@ -6,12 +6,12 @@
    [heraldicon.render.texture :as texture]
    [heraldicon.render.theme :as theme]))
 
-(defmethod interface/options-subscriptions :heraldry.component/render-options [_context]
+(defmethod interface/options-subscriptions :heraldry/render-options [_context]
   #{[:escutcheon]
     [:mode]
     [:texture]})
 
-(defmethod interface/options :heraldry.component/render-options [context]
+(defmethod interface/options :heraldry/render-options [context]
   (let [mode (-> context (c/++ :mode) interface/get-raw-data (or :colours))
         texture (-> context (c/++ :texture) interface/get-raw-data (or :none))
         escutcheon-option (if (-> context :path (= [:collection-form :render-options]))

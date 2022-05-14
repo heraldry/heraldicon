@@ -9,10 +9,10 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
 
-(defmethod interface/render-component :heraldry.component/charge [context]
+(defmethod interface/render-component :heraldry/charge [context]
   [charge.interface/render-charge context])
 
-(defmethod interface/blazon-component :heraldry.component/charge [{:keys [load-charge-data] :as context}]
+(defmethod interface/blazon-component :heraldry/charge [{:keys [load-charge-data] :as context}]
   (let [charge-type (interface/get-raw-data (c/++ context :type))
         attitude (interface/get-sanitized-data (c/++ context :attitude))
         facing (interface/get-sanitized-data (c/++ context :facing))

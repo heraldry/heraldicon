@@ -46,10 +46,10 @@
                   :cottise-extra-2 (string/str-tr "2 " :string.miscellaneous/extra)})
          (get cottise-key)))))
 
-(defmethod ui.interface/component-node-data :heraldry.component/cottise [context]
+(defmethod ui.interface/component-node-data :heraldry/cottise [context]
   {:title (cottise-name context)
    :validation (validation/validate-cottise context)
    :nodes [{:context (c/++ context :field)}]})
 
-(defmethod ui.interface/component-form-data :heraldry.component/cottise [_context]
+(defmethod ui.interface/component-form-data :heraldry/cottise [_context]
   {:form form})

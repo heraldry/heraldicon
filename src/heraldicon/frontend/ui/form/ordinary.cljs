@@ -62,7 +62,7 @@
     :outline?
     :manual-blazon]))
 
-(defmethod ui.interface/component-node-data :heraldry.component/ordinary [context]
+(defmethod ui.interface/component-node-data :heraldry/ordinary [context]
   (let [ordinary-type (interface/get-raw-data (c/++ context :type))
         cottising-options (interface/get-relevant-options (c/++ context :cottising))
         cottise-1 (interface/get-raw-data (c/++ context :cottising :cottise-1))
@@ -181,5 +181,5 @@
                                                  :title :string.tooltip/remove
                                                  :handler #(state/dispatch-on-event % [:remove-cottise cottise-extra-2-context])}]}))}))
 
-(defmethod ui.interface/component-form-data :heraldry.component/ordinary [_context]
+(defmethod ui.interface/component-form-data :heraldry/ordinary [_context]
   {:form form})

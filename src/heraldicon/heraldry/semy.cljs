@@ -8,10 +8,10 @@
    [heraldicon.options :as options]
    [heraldicon.util.uid :as uid]))
 
-(defmethod interface/options-subscriptions :heraldry.component/semy [_context]
+(defmethod interface/options-subscriptions :heraldry/semy [_context]
   #{})
 
-(defmethod interface/options :heraldry.component/semy [_context]
+(defmethod interface/options :heraldry/semy [_context]
   (-> {:layout {:num-fields-x {:type :range
                                :min 1
                                :max 20
@@ -69,7 +69,7 @@
                                     [k (v/add v point)]))
                              (into {}))))))
 
-(defmethod interface/render-component :heraldry.component/semy [context]
+(defmethod interface/render-component :heraldry/semy [context]
   (let [environment (:environment context)
         points (:points environment)
         top-left (:top-left points)
@@ -158,7 +158,7 @@
               :height 1100
               :fill (str "url(#" pattern-id ")")}]]]))
 
-(defmethod interface/blazon-component :heraldry.component/semy [context]
+(defmethod interface/blazon-component :heraldry/semy [context]
   (string/str-tr "semy of " (interface/blazon
                              (-> context
                                  (c/++ :charge)

@@ -19,11 +19,11 @@
              [:string.entity/slogan :heraldry.motto.type/slogan]]
    :ui {:label :string.option/type}})
 
-(defmethod interface/options-subscriptions :heraldry.component/motto [_context]
+(defmethod interface/options-subscriptions :heraldry/motto [_context]
   #{[:type]
     [:ribbon-variant]})
 
-(defmethod interface/options :heraldry.component/motto [context]
+(defmethod interface/options :heraldry/motto [context]
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
         motto-type (interface/get-raw-data (c/++ context :type))]
     (-> {:anchor {:point {:type :choice

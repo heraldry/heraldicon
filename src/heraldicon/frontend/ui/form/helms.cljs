@@ -10,7 +10,7 @@
 (defn form [_context]
   [:<>])
 
-(defmethod ui.interface/component-node-data :heraldry.component/helms [context]
+(defmethod ui.interface/component-node-data :heraldry/helms [context]
   (let [elements-context (c/++ context :elements)
         num-helms (interface/get-list-size elements-context)]
     {:title :string.entity/helms-and-crests
@@ -39,5 +39,5 @@
                                       :title :string.tooltip/remove
                                       :handler #(state/dispatch-on-event % [:remove-element helm-context])}]}))))}))
 
-(defmethod ui.interface/component-form-data :heraldry.component/helms [_context]
+(defmethod ui.interface/component-form-data :heraldry/helms [_context]
   {:form form})

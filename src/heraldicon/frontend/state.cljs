@@ -298,7 +298,7 @@
         (ui-component-node-open (cond-> path
                                   (not open?) drop-last))
         (cond->
-          (= component-type :heraldry.component/collection-element)
+          (= component-type :heraldry/collection-element)
           (assoc-in collection-element/ui-highlighted-element-path path)))))
 
 (macros/reg-event-db :ui-component-node-select

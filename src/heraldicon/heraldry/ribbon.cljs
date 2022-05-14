@@ -130,10 +130,10 @@
    :ui {:label :string.option/type
         :form-type :radio-select}})
 
-(defmethod interface/options-subscriptions :heraldry.component/ribbon-segment [_context]
+(defmethod interface/options-subscriptions :heraldry/ribbon-segment [_context]
   #{[:type]})
 
-(defmethod interface/options :heraldry.component/ribbon-segment [context]
+(defmethod interface/options :heraldry/ribbon-segment [context]
   (-> {:z-index {:type :range
                  :min 0
                  :max 100
