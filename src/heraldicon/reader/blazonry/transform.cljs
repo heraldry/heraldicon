@@ -949,27 +949,27 @@
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
                                  :spacing (/ 95 amount)
-                                 :strips [{:type :heraldry.component/charge-group-strip
+                                 :strips [{:type :heraldry/charge-group-strip
                                            :slots (vec (repeat amount 0))}]})
           (= :PALEWISE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/columns
                                  :spacing (/ 95 amount)
-                                 :strips [{:type :heraldry.component/charge-group-strip
+                                 :strips [{:type :heraldry/charge-group-strip
                                            :slots (vec (repeat amount 0))}]})
           (= :BENDWISE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
                                  :strip-angle 45
                                  :spacing (/ 120 amount)
-                                 :strips [{:type :heraldry.component/charge-group-strip
+                                 :strips [{:type :heraldry/charge-group-strip
                                            :slots (vec (repeat amount 0))}]})
           (= :BENDWISE-SINISTER
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
                                  :strip-angle -45
                                  :spacing (/ 120 amount)
-                                 :strips [{:type :heraldry.component/charge-group-strip
+                                 :strips [{:type :heraldry/charge-group-strip
                                            :slots (vec (repeat amount 0))}]})
           (= :CHEVRONWISE
              arrangement-type) (merge
@@ -979,7 +979,7 @@
                                                          inc
                                                          (/ 2)))
                                               (map (fn [index]
-                                                     {:type :heraldry.component/charge-group-strip
+                                                     {:type :heraldry/charge-group-strip
                                                       :stretch (if (and (zero? index)
                                                                         (even? amount))
                                                                  1
@@ -1018,7 +1018,7 @@
                                   {:type :heraldry.charge-group.type/rows
                                    :spacing (/ 95 (max width height))
                                    :strips (mapv (fn [amount]
-                                                   {:type :heraldry.component/charge-group-strip
+                                                   {:type :heraldry/charge-group-strip
                                                     :slots (vec (repeat amount 0))})
                                                  amounts)}))))))
 
@@ -1098,7 +1098,7 @@
                                     :horizontal-layout
                                     :vertical-layout} nodes)
                        ast->hdn)]
-    (cond-> {:type :heraldry.component/semy
+    (cond-> {:type :heraldry/semy
              :charge charge}
       layout (assoc :layout layout))))
 

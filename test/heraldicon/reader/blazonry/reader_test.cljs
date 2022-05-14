@@ -459,13 +459,13 @@
                                       :tincture :purpure}}]
                    :type :heraldry.charge-group.type/rows
                    :spacing 23.75
-                   :strips [{:type :heraldry.component/charge-group-strip
+                   :strips [{:type :heraldry/charge-group-strip
                              :slots [0 0 0 0]}
-                            {:type :heraldry.component/charge-group-strip
+                            {:type :heraldry/charge-group-strip
                              :slots [0 0 0]}
-                            {:type :heraldry.component/charge-group-strip
+                            {:type :heraldry/charge-group-strip
                              :slots [0 0]}
-                            {:type :heraldry.component/charge-group-strip
+                            {:type :heraldry/charge-group-strip
                              :slots [0]}]}]}
 
     "or a lion sable, langued argent armed gules"
@@ -537,7 +537,7 @@
     "or semé star gules"
     {:type :heraldry.field.type/plain
      :tincture :or
-     :components [{:type :heraldry.component/semy
+     :components [{:type :heraldry/semy
                    :charge {:type :heraldry.charge.type/star
                             :field {:type :heraldry.field.type/plain
                                     :tincture :gules}}}]}
@@ -545,7 +545,7 @@
     "or semy of 10xfive stars sable"
     {:type :heraldry.field.type/plain
      :tincture :or
-     :components [{:type :heraldry.component/semy
+     :components [{:type :heraldry/semy
                    :charge {:type :heraldry.charge.type/star
                             :field {:type :heraldry.field.type/plain
                                     :tincture :sable}}

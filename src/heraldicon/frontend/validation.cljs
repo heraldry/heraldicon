@@ -195,8 +195,8 @@
                       (interface/get-raw-data (c/++ parent-charge-group-context :type)))
                      component/type->component-type)
         parent-field-context (case parent-type
-                               :heraldry.component/charge-group (c/-- parent-charge-group-context 2)
-                               :heraldry.component/semy (c/-- parent-semy-context 2)
+                               :heraldry/charge-group (c/-- parent-charge-group-context 2)
+                               :heraldry/semy (c/-- parent-semy-context 2)
                                (c/-- context 2))
         main-validation (validate-tinctures field-context parent-field-context (c/++ context :fimbriation))]
     (sort-validations (second main-validation))))

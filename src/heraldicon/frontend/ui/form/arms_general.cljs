@@ -15,9 +15,9 @@
 
    [:div {:style {:height "1.5em"}}]])
 
-(defmethod ui.interface/component-node-data :heraldry.component/arms-general [context]
+(defmethod ui.interface/component-node-data :heraldry/arms-general [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-arms-general context)})
 
-(defmethod ui.interface/component-form-data :heraldry.component/arms-general [_context]
+(defmethod ui.interface/component-form-data :heraldry/arms-general [_context]
   {:form form})

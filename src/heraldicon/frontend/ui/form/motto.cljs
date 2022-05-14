@@ -62,8 +62,8 @@
         [ribbon-general/ribbon-form ribbon-context]
         [ribbon-general/ribbon-segments-form ribbon-context]]))])
 
-(defmethod ui.interface/component-node-data :heraldry.component/motto [{:keys [path]}]
+(defmethod ui.interface/component-node-data :heraldry/motto [{:keys [path]}]
   {:title @(rf/subscribe [:motto-name path])})
 
-(defmethod ui.interface/component-form-data :heraldry.component/motto [_context]
+(defmethod ui.interface/component-form-data :heraldry/motto [_context]
   {:form form})

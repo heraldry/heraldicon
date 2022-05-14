@@ -312,7 +312,7 @@
 
      [ui.interface/form-element (c/++ context :manual-blazon)]]))
 
-(defmethod ui.interface/component-node-data :heraldry.component/charge-group [context]
+(defmethod ui.interface/component-node-data :heraldry/charge-group [context]
   (let [charges-context (c/++ context :charges)
         num-charges (interface/get-list-size charges-context)]
     {:title (string/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)
@@ -345,5 +345,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-context])}]})))
                          vec))}))
 
-(defmethod ui.interface/component-form-data :heraldry.component/charge-group [_context]
+(defmethod ui.interface/component-form-data :heraldry/charge-group [_context]
   {:form form})

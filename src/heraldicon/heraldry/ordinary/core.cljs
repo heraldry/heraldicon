@@ -8,10 +8,10 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
 
-(defmethod interface/render-component :heraldry.component/ordinary [context]
+(defmethod interface/render-component :heraldry/ordinary [context]
   (ordinary.interface/render-ordinary context))
 
-(defmethod interface/blazon-component :heraldry.component/ordinary [context]
+(defmethod interface/blazon-component :heraldry/ordinary [context]
   (let [ordinary-type (interface/get-sanitized-data (c/++ context :type))
         line (interface/get-sanitized-data (c/++ context :line))
         voided? (interface/get-sanitized-data (c/++ context :voided :voided?))

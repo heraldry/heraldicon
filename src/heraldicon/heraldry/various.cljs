@@ -2,37 +2,37 @@
   (:require
    [heraldicon.interface :as interface]))
 
-(defmethod interface/options-subscriptions :heraldry.component/helm [_context]
+(defmethod interface/options-subscriptions :heraldry/helm [_context]
   #{})
 
-(defmethod interface/options :heraldry.component/helm [_context]
+(defmethod interface/options :heraldry/helm [_context]
   {})
 
-(defmethod interface/options-subscriptions :heraldry.component/helms [_context]
+(defmethod interface/options-subscriptions :heraldry/helms [_context]
   #{})
 
-(defmethod interface/options :heraldry.component/helms [_context]
+(defmethod interface/options :heraldry/helms [_context]
   {})
 
-(defmethod interface/options-subscriptions :heraldry.component/ornaments [_context]
+(defmethod interface/options-subscriptions :heraldry/ornaments [_context]
   #{})
 
-(defmethod interface/options :heraldry.component/ornaments [_context]
+(defmethod interface/options :heraldry/ornaments [_context]
   {})
 
-(defmethod interface/options-subscriptions :heraldry.component/collection-element [_context]
+(defmethod interface/options-subscriptions :heraldry/collection-element [_context]
   #{})
 
-(defmethod interface/options :heraldry.component/collection-element [_context]
+(defmethod interface/options :heraldry/collection-element [_context]
   {:name {:type :text
           :ui {:label :string.option/name}}
    :reference {:ui {:label :string.option/arms
                     :form-type :arms-reference-select}}})
 
-(defmethod interface/options-subscriptions :heraldry.component/collection [_context]
+(defmethod interface/options-subscriptions :heraldry/collection [_context]
   #{})
 
-(defmethod interface/options :heraldry.component/collection [_context]
+(defmethod interface/options :heraldry/collection [_context]
   {:num-columns {:type :range
                  :default 6
                  :min 1

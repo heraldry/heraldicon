@@ -60,7 +60,7 @@
                                                             :max 400
                                                             :default 100))))))))
 
-(defmethod interface/options-subscriptions :heraldry.component/charge [_context]
+(defmethod interface/options-subscriptions :heraldry/charge [_context]
   #{[:type]
     [:escutcheon]
     [:orientation :point]
@@ -69,7 +69,7 @@
     [:data]
     [:fimbriation :mode]})
 
-(defmethod interface/options :heraldry.component/charge [context]
+(defmethod interface/options :heraldry/charge [context]
   (-> context
       (assoc :dispatch-value (charge.interface/effective-type context))
       interface/options

@@ -55,7 +55,7 @@
    :ui {:label :string.option/type
         :form-type :ordinary-type-select}})
 
-(defmethod interface/options-subscriptions :heraldry.component/ordinary [_context]
+(defmethod interface/options-subscriptions :heraldry/ordinary [_context]
   #{[:type]
     [:line]
     [:line :type]
@@ -133,7 +133,7 @@
 
     [:num-points]})
 
-(defmethod interface/options :heraldry.component/ordinary [context]
+(defmethod interface/options :heraldry/ordinary [context]
   (-> context
       (assoc :dispatch-value (interface/get-raw-data (c/++ context :type)))
       interface/options

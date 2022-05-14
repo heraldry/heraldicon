@@ -6,13 +6,13 @@
    [heraldicon.font :as font]
    [heraldicon.interface :as interface]))
 
-(defmethod interface/options-subscriptions :heraldry.component/collection-general [_context]
+(defmethod interface/options-subscriptions :heraldry/collection-general [_context]
   #{[:attribution :license]
     [:attribution :nature]
     [:attribution :source-license]})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-collection.[thing].options namespaces
-(defmethod interface/options :heraldry.component/collection-general [context]
+(defmethod interface/options :heraldry/collection-general [context]
   {:name {:type :text
           :default ""
           :ui {:label :string.option/name}}

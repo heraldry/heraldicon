@@ -85,11 +85,11 @@
           (state/ui-component-node-select new-element-path :open? true)
           submenu/ui-submenu-close-all
           (cond->
-            (#{:heraldry.component/ordinary
-               :heraldry.component/charge} added-type) (submenu/ui-submenu-open (conj new-element-path :type))
-            (#{:heraldry.component/charge-group} added-type) (submenu/ui-submenu-open new-element-path)
-            (#{:heraldry.component/collection-element} added-type) (submenu/ui-submenu-open (conj new-element-path :reference))
-            (#{:heraldry.component/motto} added-type) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant)))))))
+            (#{:heraldry/ordinary
+               :heraldry/charge} added-type) (submenu/ui-submenu-open (conj new-element-path :type))
+            (#{:heraldry/charge-group} added-type) (submenu/ui-submenu-open new-element-path)
+            (#{:heraldry/collection-element} added-type) (submenu/ui-submenu-open (conj new-element-path :reference))
+            (#{:heraldry/motto} added-type) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant)))))))
 
 (macros/reg-event-db :remove-element
   (fn [db [_ {:keys [path]} {:keys [post-fn]}]]

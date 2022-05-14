@@ -31,7 +31,7 @@
    [:name
     :reference]))
 
-(defmethod ui.interface/component-node-data :heraldry.component/collection-element [{:keys [path] :as context}]
+(defmethod ui.interface/component-node-data :heraldry/collection-element [{:keys [path] :as context}]
   (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
     {:title (string/str-tr (inc index) ": "
@@ -39,5 +39,5 @@
                              name
                              :string.miscellaneous/no-name))}))
 
-(defmethod ui.interface/component-form-data :heraldry.component/collection-element [_context]
+(defmethod ui.interface/component-form-data :heraldry/collection-element [_context]
   {:form form})

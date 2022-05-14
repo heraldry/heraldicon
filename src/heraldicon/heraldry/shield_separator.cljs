@@ -5,7 +5,7 @@
 (defn shield-separator? [element]
   (-> element
       :type
-      (= :heraldry.component/shield-separator)))
+      (= :heraldry/shield-separator)))
 
 (def remove-element-options
   {:post-fn (fn [elements]

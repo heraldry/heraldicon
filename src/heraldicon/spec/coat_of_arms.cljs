@@ -150,7 +150,7 @@
                                                :heraldry.charge-group/charges]
                                       :opt-un []))
 
-(s/def :heraldry.semy/type #(= % :heraldry.component/semy))
+(s/def :heraldry.semy/type #(= % :heraldry/semy))
 (s/def :heraldry.semy/layout #(s/valid? :heraldry.field/layout %))
 (s/def :heraldry/semy (s/keys :req-un [:heraldry.semy/type
                                        :heraldry/charge]

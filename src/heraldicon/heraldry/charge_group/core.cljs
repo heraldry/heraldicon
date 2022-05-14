@@ -169,7 +169,7 @@
      :slot-spacing {:width (/ charge-space 1.2)
                     :height (/ charge-space 1.2)}}))
 
-(defmethod interface/render-component :heraldry.component/charge-group [{:keys [path environment] :as context}]
+(defmethod interface/render-component :heraldry/charge-group [{:keys [path environment] :as context}]
   (let [anchor (interface/get-sanitized-data (c/++ context :anchor))
         rotate-charges? (interface/get-sanitized-data (c/++ context :rotate-charges?))
         anchor-point (position/calculate anchor environment)
@@ -191,7 +191,7 @@
                                   :slot-angle (when rotate-charges?
                                                 angle)}))])]))
 
-(defmethod interface/blazon-component :heraldry.component/charge-group [context]
+(defmethod interface/blazon-component :heraldry/charge-group [context]
   ;; TODO: no need to calculate all positions here
   (let [{:keys [slot-positions]} (calculate-points
                                   (-> context

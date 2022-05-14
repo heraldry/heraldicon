@@ -99,7 +99,7 @@
       (when-let [parent-context (parent-context context)]
         (>= index (field/mandatory-part-count parent-context))))))
 
-(defmethod ui.interface/component-node-data :heraldry.component/field [{:keys [path] :as context}]
+(defmethod ui.interface/component-node-data :heraldry/field [{:keys [path] :as context}]
   (let [field-type (interface/get-raw-data (c/++ context :type))
         ref? (= field-type :heraldry.field.type/ref)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
@@ -207,5 +207,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-element component-context])}]})))
                          vec))}))
 
-(defmethod ui.interface/component-form-data :heraldry.component/field [_context]
+(defmethod ui.interface/component-form-data :heraldry/field [_context]
   {:form form})
