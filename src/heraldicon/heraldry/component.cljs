@@ -28,6 +28,4 @@
     (-> path last (= :coat-of-arms)) :heraldry/coat-of-arms
     (-> path last (= :ornaments)) :heraldry/ornaments
     (keyword? raw-type) (type->component-type raw-type)
-    (and (-> path last keyword?)
-         (-> path last name (s/starts-with? "cottise"))) :heraldry/cottise
     :else nil))

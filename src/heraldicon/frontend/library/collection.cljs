@@ -97,7 +97,7 @@
   (let [selected-node-path @(rf/subscribe [:collection-library-highlighted-element])
         index (last selected-node-path)]
     (when (int? index)
-      (if (< index @(rf/subscribe [:get-list-size (conj form-db-path :collection :elements)]))
+      (if (< index @(rf/subscribe [:get-list-size (conj form-db-path :data :elements)]))
         index
         ;; index not valid anymore
         (do
@@ -124,7 +124,7 @@
                                [:arms-references arms-id version]
                                [arms-id version]
                                #(arms-select/fetch-arms arms-id version nil)))
-        collection-render-options (interface/get-sanitized-data {:path (conj form-db-path :render-options)})
+        collection-render-options (interface/get-sanitized-data {:path (conj form-db-path :data :render-options)})
         {:keys [result
                 environment]} (render/coat-of-arms
                                (-> shared/coa-select-option-context
@@ -154,13 +154,13 @@
        (:name data)]]]))
 
 (defn on-arms-click [event index]
-  (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :collection :elements index)]))
+  (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :data :elements index)]))
 
 (defn render-collection [& {:keys [allow-adding?]}]
-  (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :font)})
+  (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
                      font/css-string)
-        num-columns (interface/get-sanitized-data {:path (conj form-db-path :collection :num-columns)})
-        num-elements (interface/get-list-size {:path (conj form-db-path :collection :elements)})
+        num-columns (interface/get-sanitized-data {:path (conj form-db-path :data :num-columns)})
+        num-elements (interface/get-list-size {:path (conj form-db-path :data :elements)})
         name @(rf/subscribe [:get (conj form-db-path :name)])
         num-rows (inc (quot num-elements
                             num-columns))
@@ -205,14 +205,16 @@
                         margin))
                 (+ (/ arms-height 2)))
              arms-width
-             (conj form-db-path :collection :elements idx)
+             (conj form-db-path :data :elements idx)
              :font font]])))
 
       (when allow-adding?
         (let [x (mod num-elements num-columns)
               y (quot num-elements num-columns)]
           ^{:key num-elements}
-          [:g {:on-click #(state/dispatch-on-event % [:add-element {:path (conj form-db-path :collection :elements)} {}])
+          [:g {:on-click #(state/dispatch-on-event
+                           % [:add-element {:path (conj form-db-path :data :elements)}
+                              default/collection-element])
                :style {:cursor "pointer"}}
            [render-add-arms
             (+ margin
@@ -227,7 +229,7 @@
 
 (defn render-arms-preview []
   (when-let [selected-element-index (selected-element-index)]
-    (let [arms-reference @(rf/subscribe [:get (conj form-db-path :collection :elements selected-element-index :reference)])
+    (let [arms-reference @(rf/subscribe [:get (conj form-db-path :data :elements selected-element-index :reference)])
           {arms-id :id
            version :version} arms-reference
           [status arms-data] (when arms-id
@@ -235,7 +237,7 @@
                                 [:arms-references arms-id version]
                                 [arms-id version]
                                 #(arms-select/fetch-arms arms-id version nil)))
-          collection-render-options (interface/get-sanitized-data {:path (conj form-db-path :render-options)})]
+          collection-render-options (interface/get-sanitized-data {:path (conj form-db-path :data :render-options)})]
       (when (or (not arms-id)
                 (= status :done))
         (let [{:keys [result
@@ -321,8 +323,8 @@
                                :position "relative"}}
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path
-                        (conj form-db-path :render-options)
-                        (conj form-db-path :collection)]]]])
+                        (conj form-db-path :data :render-options)
+                        (conj form-db-path :data)]]]])
 
 (defn collection-display [collection-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path collection-id])
@@ -371,12 +373,7 @@
   (let [[status collection-data] (state/async-fetch-data
                                   form-db-path
                                   :new
-                                  #(go
-                                     {:num-columns 6
-                                      :elements []
-                                      :render-options (-> default/render-options
-                                                          (dissoc :escutcheon-shadow?)
-                                                          (assoc :escutcheon-outline? true))}))]
+                                  #(go default/collection-entity))]
     (when (= status :done)
       (if collection-data
         [collection-form]
