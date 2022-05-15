@@ -27,9 +27,6 @@
                                 (= :heraldry.charge.function/torse))))
                   seq)}))
 
-(defn form [_context]
-  [:<>])
-
 (defmethod ui.interface/component-node-data :heraldry/helm [{:keys [path] :as context}]
   (let [{:keys [helmet?
                 torse?]} @(rf/subscribe [:get-helm-status path])
@@ -52,6 +49,7 @@
 
     {:title (string/str-tr (when (> num-helms 1)
                              (str (inc (last path)) ". ")) :string.entity/helm)
+     :selectable? false
      :buttons (when (seq add-menu)
                 [{:icon "fas fa-plus"
                   :title :string.button/add
@@ -79,6 +77,3 @@
                                                               [:remove-element component-context
                                                                shield-separator/remove-element-options])}))})))
                  vec)}))
-
-(defmethod ui.interface/component-form-data :heraldry/helm [_context]
-  {:form form})

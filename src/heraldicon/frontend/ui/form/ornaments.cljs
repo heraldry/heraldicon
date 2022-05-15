@@ -9,13 +9,11 @@
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
-(defn form [_context]
-  [:<>])
-
 (defmethod ui.interface/component-node-data :heraldry/ornaments [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.charge.attribute.group/ornaments
+     :selectable? false
      :annotation [:div.tooltip.info {:style {:display "inline-block"
                                              :margin-left "0.2em"}}
                   [:sup {:style {:color "#d40"}}
@@ -73,6 +71,3 @@
                                                                    %
                                                                    [:remove-element ornament-context
                                                                     shield-separator/remove-element-options])}))}))))}))
-
-(defmethod ui.interface/component-form-data :heraldry/ornaments [_context]
-  {:form form})
