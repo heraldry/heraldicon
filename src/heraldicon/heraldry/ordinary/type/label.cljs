@@ -17,7 +17,7 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/label)
 
-(defmethod interface/options ordinary-type [context]
+(defmethod ordinary.interface/options ordinary-type [context]
   (let [num-points (or (interface/get-raw-data (c/++ context :num-points))
                        3)]
     (-> {:anchor {:point {:type :choice

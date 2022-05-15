@@ -1,6 +1,5 @@
 (ns heraldicon.heraldry.ordinary.options
   (:require
-   [heraldicon.context :as c]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.type.base :as base]
    [heraldicon.heraldry.ordinary.type.bend :as bend]
@@ -21,6 +20,8 @@
    [heraldicon.heraldry.ordinary.type.saltire :as saltire]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
+
+(derive :heraldry.ordinary/type :heraldry/ordinary)
 
 (def ordinaries
   [pale/ordinary-type
@@ -44,7 +45,9 @@
 (def choices
   (->> ordinaries
        (map (fn [key]
-              [(ordinary.interface/display-name key) key]))))
+              (derive key :heraldry.ordinary/type)
+              [(ordinary.interface/display-name key) key]))
+       vec))
 
 (def ordinary-map
   (options/choices->map choices))
@@ -135,7 +138,6 @@
 
 (defmethod interface/options :heraldry/ordinary [context]
   (-> context
-      (assoc :dispatch-value (interface/get-raw-data (c/++ context :type)))
-      interface/options
+      ordinary.interface/options
       (assoc :type type-option)
       (assoc :manual-blazon options/manual-blazon)))
