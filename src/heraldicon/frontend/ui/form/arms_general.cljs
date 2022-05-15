@@ -11,9 +11,7 @@
      :attribution
      :is-public
      :metadata
-     :tags])
-
-   [:div {:style {:height "1.5em"}}]])
+     :tags])])
 
 (defmethod ui.interface/component-node-data :heraldry/arms-general [context]
   {:title :string.miscellaneous/general
