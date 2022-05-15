@@ -13,9 +13,9 @@
      :metadata
      :tags])])
 
-(defmethod ui.interface/component-node-data :heraldry/arms-general [context]
+(defmethod ui.interface/component-node-data :heraldicon/arms [context]
   {:title :string.miscellaneous/general
-   :validation (validation/validate-arms-general context)})
+   :validation (validation/validate-entity context)})
 
-(defmethod ui.interface/component-form-data :heraldry/arms-general [_context]
+(defmethod ui.interface/component-form-data :heraldicon/arms [_context]
   {:form form})

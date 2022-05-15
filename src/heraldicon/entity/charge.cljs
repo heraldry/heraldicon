@@ -7,14 +7,14 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]))
 
-(defmethod interface/options-subscriptions :heraldry/charge-general [_context]
+(defmethod interface/options-subscriptions :heraldicon/charge [_context]
   #{[:attribution :license]
     [:attribution :nature]
     [:attribution :source-license]
     [:landscape?]})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
-(defmethod interface/options :heraldry/charge-general [context]
+(defmethod interface/options :heraldicon/charge [context]
   (cond-> {:name {:type :text
                   :default ""
                   :ui {:label :string.option/name}}

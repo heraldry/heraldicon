@@ -260,28 +260,7 @@
       [{:level :error
         :message :string.validation.attribution/license-required-for-public-objects}])))
 
-(defn validate-arms-general [context]
-  (let [is-public (validate-is-public context)
-        attribution (validate-attribution (c/++ context :attribution))]
-    (concat
-     is-public
-     attribution)))
-
-(defn validate-charge-general [context]
-  (let [is-public (validate-is-public context)
-        attribution (validate-attribution (c/++ context :attribution))]
-    (concat
-     is-public
-     attribution)))
-
-(defn validate-collection-general [context]
-  (let [is-public (validate-is-public context)
-        attribution (validate-attribution (c/++ context :attribution))]
-    (concat
-     is-public
-     attribution)))
-
-(defn validate-ribbon-general [context]
+(defn validate-entity [context]
   (let [is-public (validate-is-public context)
         attribution (validate-attribution (c/++ context :attribution))]
     (concat

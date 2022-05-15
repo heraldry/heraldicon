@@ -4,13 +4,13 @@
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.interface :as interface]))
 
-(defmethod interface/options-subscriptions :heraldry/ribbon-general [_context]
+(defmethod interface/options-subscriptions :heraldicon/ribbon [_context]
   #{[:attribution :license]
     [:attribution :nature]
     [:attribution :source-license]})
 
 ;; TODO: might not be the right place for it, others live in the coat-of-charge.[thing].options namespaces
-(defmethod interface/options :heraldry/ribbon-general [context]
+(defmethod interface/options :heraldicon/ribbon [context]
   {:name {:type :text
           :default ""
           :ui {:label :string.option/name}}
