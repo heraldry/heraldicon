@@ -12,6 +12,7 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.reader :as reader]
@@ -23,7 +24,7 @@
   [:ui :blazon-editor])
 
 (def hdn-path
-  (conj blazon-editor-path :arms-form))
+  (conj blazon-editor-path :hdn))
 
 (def editor-state-path
   (conj blazon-editor-path :editor-state))
@@ -447,13 +448,11 @@
                             (take-last 2)
                             (= [:coat-of-arms :field]))
                      (interface/get-sanitized-data (-> context
-                                                       (c/-- 2)
                                                        (c/++ :render-options :escutcheon)))
                      :rectangle)]
-    (rf/dispatch-sync [:set hdn-path {:coat-of-arms {:field {:type :heraldry.field.type/plain
-                                                             :tincture :none}}
-                                      :render-options {:escutcheon escutcheon
-                                                       :outline? true}}]))
+    (rf/dispatch-sync [:set hdn-path (update default/achievement :render-options
+                                             merge) {:escutcheon escutcheon
+                                                     :outline? true}]))
   (modal/create
    [:div
     [tr :string.button/from-blazon]
