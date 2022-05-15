@@ -13,7 +13,7 @@
 
 (defmethod field.interface/part-names field-type [_] nil)
 
-(defmethod interface/options field-type [_context]
+(defmethod field.interface/options field-type [_context]
   {:thickness {:type :range
                :min 0
                :max 0.5

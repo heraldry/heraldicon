@@ -16,7 +16,7 @@
 
 (defmethod field.interface/part-names field-type [_] nil)
 
-(defmethod interface/options field-type [context]
+(defmethod field.interface/options field-type [context]
   {:layout {:num-fields-y {:type :range
                            :min 1
                            :max 20

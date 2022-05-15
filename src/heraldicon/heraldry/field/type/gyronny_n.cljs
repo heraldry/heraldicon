@@ -17,7 +17,7 @@
 
 (defmethod field.interface/part-names field-type [_] nil)
 
-(defmethod interface/options field-type [context]
+(defmethod field.interface/options field-type [context]
   (let [line-style (-> (line/options (c/++ context :line)
                                      :fimbriation? false)
                        (options/override-if-exists [:offset :min] 0)

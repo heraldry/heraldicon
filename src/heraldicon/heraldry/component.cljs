@@ -5,7 +5,6 @@
 (defn type->component-type [t]
   (let [ts (str t)]
     (cond
-      (s/starts-with? ts ":heraldry.field") :heraldry/field
       (s/starts-with? ts ":heraldry.ordinary") :heraldry/ordinary
       (s/starts-with? ts ":heraldry.charge.") :heraldry/charge
       (s/starts-with? ts ":heraldry") t
