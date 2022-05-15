@@ -3,7 +3,6 @@
    [heraldicon.context :as c]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.metadata :as metadata]
-   [heraldicon.font :as font]
    [heraldicon.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldicon/collection [_context]
@@ -20,5 +19,4 @@
                :ui {:label :string.option/is-public}}
    :attribution (attribution/options (c/++ context :attribution))
    :metadata (metadata/options (c/++ context :metadata))
-   :tags {:ui {:form-type :tags}}
-   :font font/default-options})
+   :tags {:ui {:form-type :tags}}})

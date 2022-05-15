@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.ui.form.collection-general
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.ui.form.collection :as collection]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]))
 
@@ -16,7 +17,7 @@
 
    [:div {:style {:height "1.5em"}}]
 
-   [ui.interface/form-element (c/++ context :font)]])
+   [collection/form (c/++ context :data)]])
 
 (defmethod ui.interface/component-node-data :heraldicon/collection [context]
   {:title :string.miscellaneous/general
