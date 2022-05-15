@@ -3,7 +3,6 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
@@ -189,11 +188,9 @@
   (let [field-context (c/++ context :field)
         parent-semy-context (c/-- context)
         parent-charge-group-context (c/-- context 2)
-        parent-type (some->
-                     (or
-                      (interface/get-raw-data (c/++ parent-semy-context :type))
-                      (interface/get-raw-data (c/++ parent-charge-group-context :type)))
-                     component/type->component-type)
+        parent-type (or
+                     (interface/get-raw-data (c/++ parent-semy-context :type))
+                     (interface/get-raw-data (c/++ parent-charge-group-context :type)))
         parent-field-context (case parent-type
                                :heraldry/charge-group (c/-- parent-charge-group-context 2)
                                :heraldry/semy (c/-- parent-semy-context 2)

@@ -23,3 +23,9 @@
 (defmethod render-charge nil [context]
   (log/warn :not-implemented "render-charge" context)
   [:<>])
+
+(defmulti options effective-type)
+
+(defmethod options nil [context]
+  (log/warn :not-implemented "charge.options" context)
+  [:<>])

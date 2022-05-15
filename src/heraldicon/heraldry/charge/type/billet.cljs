@@ -2,14 +2,13 @@
   (:require
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
-   [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]))
 
 (def charge-type :heraldry.charge.type/billet)
 
 (defmethod charge.interface/display-name charge-type [_] :string.charge.type/billet)
 
-(defmethod interface/options charge-type [context]
+(defmethod charge.interface/options charge-type [context]
   (-> (charge.shared/options context)
       (update :geometry dissoc :mirrored?)
       (update :geometry dissoc :reversed?)))

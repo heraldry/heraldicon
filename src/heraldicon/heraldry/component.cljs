@@ -2,17 +2,15 @@
   (:require
    [clojure.string :as s]))
 
-(defn type->component-type [t]
-  (let [ts (str t)]
-    (cond
-      (s/starts-with? ts ":heraldry.charge.") :heraldry/charge
-      (s/starts-with? ts ":heraldry") t
-      (s/starts-with? ts ":heraldicon") t
-      :else nil)))
-
 (defn effective-type [path raw-type]
+  (when (some-> raw-type
+                str
+                (s/starts-with? ":heraldry.charge.type/"))
+    (derive raw-type :heraldry.charge/type))
   (cond
     (-> path last (= :helms)) :heraldry/helms
     (-> path last (= :ornaments)) :heraldry/ornaments
-    (keyword? raw-type) (type->component-type raw-type)
+    ;; TODO: needed while charge data uses :type as well
+    (and (keyword? raw-type)
+         (namespace raw-type)) raw-type
     :else nil))

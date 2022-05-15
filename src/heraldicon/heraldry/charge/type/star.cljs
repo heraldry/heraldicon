@@ -12,7 +12,7 @@
 
 (defmethod charge.interface/display-name charge-type [_] :string.charge.type/star)
 
-(defmethod interface/options charge-type [context]
+(defmethod charge.interface/options charge-type [context]
   (let [default-num-points 5
         num-points (or (interface/get-raw-data (c/++ context :num-points))
                        default-num-points)]
