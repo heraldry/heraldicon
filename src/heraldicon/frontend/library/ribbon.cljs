@@ -296,7 +296,7 @@
 
 (defn preview []
   (let [[width height] [preview-width preview-height]
-        ribbon-path (conj form-db-path :ribbon)
+        ribbon-path (conj form-db-path :data)
         points-path (conj ribbon-path :points)
         num-points (interface/get-list-size {:path points-path})
         edit-mode @(rf/subscribe [::edit-mode])
@@ -504,8 +504,7 @@
   (let [[status _ribbon-form-data] (state/async-fetch-data
                                     form-db-path
                                     :new
-                                    #(go
-                                       default/ribbon))]
+                                    #(go default/ribbon-entity))]
     (when (= status :done)
       [ribbon-form])))
 

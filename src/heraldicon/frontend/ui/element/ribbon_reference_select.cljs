@@ -37,7 +37,7 @@
              (let [ribbon-data (<? (ribbon-select/fetch-ribbon ribbon-id ribbon-version nil))]
                (rf/dispatch [:set-ribbon-data
                              (conj parent-path :ribbon)
-                             (-> ribbon-data :ribbon)])))]
+                             (:data ribbon-data)])))]
       (-> db
           (assoc-in path {:id ribbon-id
                           :version ribbon-version})))))

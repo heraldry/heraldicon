@@ -111,11 +111,12 @@
                 helmet]})
 
 (def ribbon
-  {:ribbon {:thickness nil
-            :points [(v/Vector. -150 -20) (v/Vector. -75 0) (v/Vector. 0 5) (v/Vector. 75 0) (v/Vector. 150 -20)]
-            :segments [{:type :heraldry.ribbon.segment/foreground-with-text
-                        :text "LOREM IPSUM"}]}})
-;;
+  {:type :heraldry/ribbon
+   :thickness nil
+   :points [(v/Vector. -150 -20) (v/Vector. -75 0) (v/Vector. 0 5) (v/Vector. 75 0) (v/Vector. 150 -20)]
+   :segments [{:type :heraldry.ribbon.segment/foreground-with-text
+               :text "LOREM IPSUM"}]})
+
 ;; TODO: fetch a default ribbon
 (def motto
   {:type :heraldry.motto.type/motto})
@@ -222,6 +223,10 @@
 (def charge-entity
   {:type :heraldicon/charge
    :data {}})
+
+(def ribbon-entity
+  {:type :heraldicon/ribbon
+   :data ribbon})
 
 (def collection-entity
   {:type :heraldicon/collection
