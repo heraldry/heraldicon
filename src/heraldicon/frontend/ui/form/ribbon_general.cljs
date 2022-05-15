@@ -60,23 +60,23 @@
         :foreground (even? n)
         :background (odd? n))
     (if (>= segment-length 0.1)
-      :heraldry.ribbon.segment/foreground-with-text
-      :heraldry.ribbon.segment/foreground)
-    :heraldry.ribbon.segment/background))
+      :heraldry.ribbon.segment.type/foreground-with-text
+      :heraldry.ribbon.segment.type/foreground)
+    :heraldry.ribbon.segment.type/background))
 
 (defn restore-previous-text-segments [segments previous-segments keys]
   (let [previous-text-segments (->> previous-segments
                                     (keep (fn [segment]
                                             (when (-> segment
                                                       :type
-                                                      (= :heraldry.ribbon.segment/foreground-with-text))
+                                                      (= :heraldry.ribbon.segment.type/foreground-with-text))
                                               (select-keys segment keys))))
                                     vec)
         text-segments (->> segments
                            (map :type)
                            (keep-indexed
                             (fn [idx segment-type]
-                              (when (= segment-type :heraldry.ribbon.segment/foreground-with-text)
+                              (when (= segment-type :heraldry.ribbon.segment.type/foreground-with-text)
                                 idx)))
                            vec)]
     (loop [segments segments
@@ -152,7 +152,7 @@
                        (let [new-segments (->> segments
                                                (map (fn [segment]
                                                       (if (-> segment :type
-                                                              (= :heraldry.ribbon.segment/foreground-with-text))
+                                                              (= :heraldry.ribbon.segment.type/foreground-with-text))
                                                         (assoc segment :text "LOREM IPSUM")
                                                         (dissoc segment :text))))
                                                vec)]
@@ -179,9 +179,9 @@
            (->> segments
                 (map (fn [segment]
                        (-> segment
-                           (update :type {:heraldry.ribbon.segment/foreground :heraldry.ribbon.segment/background
-                                          :heraldry.ribbon.segment/foreground-with-text :heraldry.ribbon.segment/background
-                                          :heraldry.ribbon.segment/background :heraldry.ribbon.segment/foreground})
+                           (update :type {:heraldry.ribbon.segment.type/foreground :heraldry.ribbon.segment.type/background
+                                          :heraldry.ribbon.segment.type/foreground-with-text :heraldry.ribbon.segment.type/background
+                                          :heraldry.ribbon.segment.type/background :heraldry.ribbon.segment.type/foreground})
                            (update :z-index #(- max-z-index %)))))
                 vec)))))))
 

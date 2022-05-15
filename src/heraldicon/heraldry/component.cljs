@@ -9,7 +9,6 @@
       (s/starts-with? ts ":heraldry.ordinary") :heraldry/ordinary
       (s/starts-with? ts ":heraldry.charge-group") :heraldry/charge-group
       (s/starts-with? ts ":heraldry.charge") :heraldry/charge
-      (s/starts-with? ts ":heraldry.ribbon.segment") :heraldry/ribbon-segment
       (s/starts-with? ts ":heraldry") t
       (s/starts-with? ts ":heraldicon") t
       :else nil)))

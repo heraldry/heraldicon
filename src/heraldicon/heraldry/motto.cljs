@@ -65,7 +65,7 @@
          :tincture-foreground {:type :choice
                                :choices tinctures-without-furs
                                :default :argent
-                               :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment/foreground)
+                               :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment.type/foreground)
                                     :form-type :tincture-select}}
 
          :tincture-background {:type :choice
@@ -74,13 +74,13 @@
                                                                          [(tincture/tincture-map :argent) :argent]
                                                                          [(tincture/tincture-map :or) :or]])
                                :default :none
-                               :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment/background)
+                               :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment.type/background)
                                     :form-type :tincture-select}}
 
          :tincture-text {:type :choice
                          :choices tinctures-without-furs
                          :default :helmet-dark
-                         :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment/foreground-with-text)
+                         :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment.type/foreground-with-text)
                               :form-type :tincture-select}}}
         (cond->
           ribbon-variant (assoc :ribbon (ribbon/options (c/++ context :ribbon))))
