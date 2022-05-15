@@ -15,7 +15,7 @@
                                      (case (some-> parent-ordinary-type name keyword)
                                        :pale {:type :heraldry.charge-group.type/columns
                                               :spacing (/ 95 default-charge-group-amount)
-                                              :strips [{:type :heraldry/charge-group-strip
+                                              :strips [{:type :heraldry.charge-group.element.type/strip
                                                         :slots (vec (repeat default-charge-group-amount 0))}]}
 
                                        :chevron {:type :heraldry.charge-group.type/rows
@@ -24,7 +24,7 @@
                                                                          inc
                                                                          (/ 2)))
                                                               (map (fn [index]
-                                                                     {:type :heraldry/charge-group-strip
+                                                                     {:type :heraldry.charge-group.element.type/strip
                                                                       :stretch (if (and (zero? index)
                                                                                         (even? default-charge-group-amount))
                                                                                  1
@@ -52,7 +52,7 @@
 
                                        {:type :heraldry.charge-group.type/rows
                                         :spacing (/ 95 default-charge-group-amount)
-                                        :strips [{:type :heraldry/charge-group-strip
+                                        :strips [{:type :heraldry.charge-group.element.type/strip
                                                   :slots (vec (repeat default-charge-group-amount 0))}]})))
 
       (= type-namespace

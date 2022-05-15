@@ -34,13 +34,13 @@
    :spacing 40
    :stretch 0.866
    :charges [charge]
-   :strips [{:type :heraldry/charge-group-strip
+   :strips [{:type :heraldry.charge-group.element.type/strip
              :slots [0 0]}
-            {:type :heraldry/charge-group-strip
+            {:type :heraldry.charge-group.element.type/strip
              :slots [0]}]})
 
 (def charge-group-strip
-  {:type :heraldry/charge-group-strip
+  {:type :heraldry.charge-group.element.type/strip
    :slots [0 0 0]})
 
 (def semy
@@ -194,9 +194,9 @@
    :spacing 40
    :stretch 0.866
    :charges [ornament-charge]
-   :strips [{:type :heraldry/charge-group-strip
+   :strips [{:type :heraldry.charge-group.element.type/strip
              :slots [0 0]}
-            {:type :heraldry/charge-group-strip
+            {:type :heraldry.charge-group.element.type/strip
              :slots [0]}]})
 
 (def achievement
