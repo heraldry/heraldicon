@@ -18,7 +18,8 @@
    :outline? true})
 
 (def cottise
-  {:field {:type :heraldry.field.type/plain
+  {:type :heraldry/cottise
+   :field {:type :heraldry.field.type/plain
            :tincture :or}})
 
 (def charge
@@ -54,11 +55,12 @@
                        :highlight 1}}})
 
 (def coat-of-arms
-  {:spec-version 1
+  {:type :heraldry/coat-of-arms
    :field field})
 
 (def render-options
-  {:mode :colours
+  {:type :heraldry/render-options
+   :mode :colours
    :outline? false
    :squiggly? false
    :escutcheon-shadow? true
@@ -195,3 +197,18 @@
              :slots [0 0]}
             {:type :heraldry/charge-group-strip
              :slots [0]}]})
+
+(def collection
+  {:type :heraldry/collection
+   :num-columns 6
+   :elements []
+   :render-options (-> render-options
+                       (dissoc :escutcheon-shadow?)
+                       (assoc :escutcheon-outline? true))})
+
+(def collection-element
+  {:type :heraldry/collection-element})
+
+(def collection-entity
+  {:type :heraldicon/collection
+   :data collection})

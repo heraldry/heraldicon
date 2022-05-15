@@ -11,6 +11,7 @@
    [heraldicon.heraldry.charge.options] ;; needed for side effects
    [heraldicon.heraldry.charge.other] ;; needed for side effects
    [heraldicon.heraldry.coat-of-arms] ;; needed for side effects
+   [heraldicon.heraldry.cottising] ;; needed for side effects
    [heraldicon.heraldry.field.core] ;; needed for side effects
    [heraldicon.heraldry.field.shared] ;; needed for side effects
    [heraldicon.heraldry.motto] ;; needed for side effects

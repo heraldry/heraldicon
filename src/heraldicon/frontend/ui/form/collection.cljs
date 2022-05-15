@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]))
 
 (defn form [context]
@@ -15,7 +16,7 @@
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :menu [{:title :string.entity/arms
-                        :handler #(state/dispatch-on-event % [:add-element elements-context {}])}]}]
+                        :handler #(state/dispatch-on-event % [:add-element elements-context default/collection-element])}]}]
      :nodes (->> (range num-elements)
                  (map (fn [idx]
                         (let [element-context (c/++ elements-context idx)]
