@@ -57,7 +57,7 @@
                         (vector? %)
                         (seq? %)) seq)
          (filter #(and (map? %)
-                       (some-> % :type namespace (= "heraldry.motto.type"))
+                       (some-> % :type (isa? :heraldry/motto))
                        (-> % :ribbon-variant)))
          (map :ribbon-variant)
          set)))
