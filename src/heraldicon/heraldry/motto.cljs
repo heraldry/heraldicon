@@ -13,6 +13,10 @@
                           %))
       (->> (filterv #(when (-> % first :en (not= "Fur")) %)))))
 
+(derive :heraldry.motto.type/motto :heraldry.motto/type)
+(derive :heraldry.motto.type/slogan :heraldry.motto/type)
+(derive :heraldry.motto/type :heraldry/motto)
+
 (def type-option
   {:type :choice
    :choices [[:string.entity/motto :heraldry.motto.type/motto]

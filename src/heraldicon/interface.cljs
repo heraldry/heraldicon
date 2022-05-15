@@ -66,8 +66,7 @@
         (get-in context (drop 1 path))
         @(rf/subscribe [:get path]))
       :type
-      #{:heraldry.motto.type/motto
-        :heraldry.motto.type/slogan}))
+      (isa? :heraldry/motto)))
 
 (defn get-sanitized-data [{:keys [path] :as context}]
   (if (-> path first (= :context))
