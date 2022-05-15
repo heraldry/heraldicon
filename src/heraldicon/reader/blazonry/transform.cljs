@@ -945,33 +945,33 @@
         (cond->
           (nil? arrangement-type) (merge
                                    {::default-charge-group-amount amount})
-          (= :FESSWISE
+          (= :arrangement/FESSWISE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
                                  :spacing (/ 95 amount)
                                  :strips [{:type :heraldry/charge-group-strip
                                            :slots (vec (repeat amount 0))}]})
-          (= :PALEWISE
+          (= :arrangement/PALEWISE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/columns
                                  :spacing (/ 95 amount)
                                  :strips [{:type :heraldry/charge-group-strip
                                            :slots (vec (repeat amount 0))}]})
-          (= :BENDWISE
+          (= :arrangement/BENDWISE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
                                  :strip-angle 45
                                  :spacing (/ 120 amount)
                                  :strips [{:type :heraldry/charge-group-strip
                                            :slots (vec (repeat amount 0))}]})
-          (= :BENDWISE-SINISTER
+          (= :arrangement/BENDWISE-SINISTER
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
                                  :strip-angle -45
                                  :spacing (/ 120 amount)
                                  :strips [{:type :heraldry/charge-group-strip
                                            :slots (vec (repeat amount 0))}]})
-          (= :CHEVRONWISE
+          (= :arrangement/CHEVRONWISE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/rows
                                  :spacing (/ 90 amount)
@@ -997,11 +997,11 @@
                                                                            [0])
                                                                    vec))}))
                                               vec)})
-          (= :IN-ORLE
+          (= :arrangement/IN-ORLE
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/in-orle
                                  :slots (vec (repeat amount 0))})
-          (= :IN-ANNULLO
+          (= :arrangement/IN-ANNULLO
              arrangement-type) (merge
                                 {:type :heraldry.charge-group.type/arc
                                  :slots (vec (repeat amount 0))})
