@@ -14,3 +14,9 @@
 (defmethod render-ordinary nil [context]
   (log/warn :not-implemented "render-ordinary" context)
   [:<>])
+
+(defmulti options interface/effective-component-type)
+
+(defmethod options nil [context]
+  (log/warn :not-implemented "ordinary.options" context)
+  [:<>])

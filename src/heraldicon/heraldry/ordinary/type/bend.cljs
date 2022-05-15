@@ -17,7 +17,7 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/bend)
 
-(defmethod interface/options ordinary-type [context]
+(defmethod ordinary.interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)

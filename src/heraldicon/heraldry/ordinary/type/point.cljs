@@ -17,7 +17,7 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/point)
 
-(defmethod interface/options ordinary-type [context]
+(defmethod ordinary.interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
