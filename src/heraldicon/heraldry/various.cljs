@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.various
   (:require
+   [heraldicon.font :as font]
    [heraldicon.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry/helm [_context]
@@ -37,4 +38,5 @@
                  :default 6
                  :min 1
                  :max 10
-                 :ui {:label :string.option/number-of-columns}}})
+                 :ui {:label :string.option/number-of-columns}}
+   :font font/default-options})

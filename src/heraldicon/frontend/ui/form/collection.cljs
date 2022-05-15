@@ -7,12 +7,16 @@
    [heraldicon.interface :as interface]))
 
 (defn form [context]
-  [ui.interface/form-element (c/++ context :num-columns)])
+  (ui.interface/form-elements
+   context
+   [:num-columns
+    :font]))
 
 (defmethod ui.interface/component-node-data :heraldry/collection [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.entity/arms
+     :selectable? false
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :menu [{:title :string.entity/arms
