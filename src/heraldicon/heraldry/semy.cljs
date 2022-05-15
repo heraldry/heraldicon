@@ -8,6 +8,8 @@
    [heraldicon.options :as options]
    [heraldicon.util.uid :as uid]))
 
+(derive :heraldry/semy :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/semy [_context]
   #{})
 

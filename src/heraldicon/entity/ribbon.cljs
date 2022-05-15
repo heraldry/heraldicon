@@ -4,6 +4,8 @@
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.interface :as interface]))
 
+(derive :heraldicon/ribbon :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldicon/ribbon [_context]
   #{[:attribution :license]
     [:attribution :nature]

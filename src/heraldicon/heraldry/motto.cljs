@@ -23,6 +23,8 @@
              [:string.entity/slogan :heraldry.motto.type/slogan]]
    :ui {:label :string.option/type}})
 
+(derive :heraldry/motto :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/motto [_context]
   #{[:type]
     [:ribbon-variant]})

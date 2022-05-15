@@ -32,15 +32,7 @@
      (rf/subscribe [:get (conj path :type)])])
 
   (fn [[component-type entity-type] [_ path]]
-    ;; TODO: entity-type could be a line style, which here doesn't count as
-    ;; component on its own; probably would be cleaner to deal with that special
-    ;; case (and others?) in a less magical way than checking for a namespace
-    (when (and (or component-type
-                   (some-> entity-type namespace))
-               ;; TODO: cottises are special, in that they don't have their own options
-               ;; right now, but still are components in the UI, so ignore the component
-               ;; type here
-               (not= component-type :heraldry/cottise))
+    (when (isa? component-type :heraldry.options/root)
       (let [context {:path path
                      :dispatch-value component-type
                      :entity-type entity-type}]

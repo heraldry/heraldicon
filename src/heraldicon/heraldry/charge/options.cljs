@@ -62,6 +62,8 @@
                                                             :max 400
                                                             :default 100))))))))
 
+(derive :heraldry/charge :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/charge [_context]
   #{[:type]
     [:escutcheon]

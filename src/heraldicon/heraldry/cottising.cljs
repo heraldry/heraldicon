@@ -226,6 +226,9 @@
                                      :angle [:force (- chevron-angle 90)]}
                             :outline? outline?}))])))
 
+; :heraldry/cottise is a special case, it's a UI component, but not a :heraldry.options/root,
+; because it is a child of the parent :cottising
+
 (defmethod interface/options-subscriptions :heraldry/cottise [_context]
   #{})
 

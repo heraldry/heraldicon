@@ -6,6 +6,8 @@
    [heraldicon.render.texture :as texture]
    [heraldicon.render.theme :as theme]))
 
+(derive :heraldry/render-options :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/render-options [_context]
   #{[:escutcheon]
     [:mode]

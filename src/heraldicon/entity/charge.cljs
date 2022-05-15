@@ -7,6 +7,8 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]))
 
+(derive :heraldicon/charge :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldicon/charge [_context]
   #{[:attribution :license]
     [:attribution :nature]
