@@ -92,7 +92,7 @@
             (#{:heraldry/helm} added-type) (submenu/ui-submenu-open (conj new-element-path :components 1 :type))
             (#{:heraldry/ordinary
                :heraldry/charge} added-type) (submenu/ui-submenu-open (conj new-element-path :type))
-            (#{:heraldry/charge-group} added-type) (submenu/ui-submenu-open new-element-path)
+            (isa? added-type :heraldry/charge-group) (submenu/ui-submenu-open new-element-path)
             (#{:heraldry/collection-element} added-type) (submenu/ui-submenu-open (conj new-element-path :reference))
             (isa? added-type :heraldry/motto) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant)))))))
 

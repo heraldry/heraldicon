@@ -10,7 +10,7 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}]}]
     [:string.charge-group.presets/palewise :palewise
      {:type :heraldry.charge-group.type/columns
@@ -20,7 +20,7 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}]}]
     [:string.charge-group.presets/bendwise :bendwise
      {:type :heraldry.charge-group.type/rows
@@ -30,7 +30,7 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}]}]
     [:string.charge-group.presets/bendwise-sinister :bendwise-sinister
      {:type :heraldry.charge-group.type/rows
@@ -40,7 +40,7 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}]}]
     [:string.charge-group.presets/chevronwise :chevronwise
      {:type :heraldry.charge-group.type/rows
@@ -50,11 +50,11 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 nil 0]}]}]
     [:string.charge-group.presets/in-cross :in-cross
      {:type :heraldry.charge-group.type/rows
@@ -64,15 +64,15 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 nil nil]}]}]
     [:string.charge-group.presets/in-saltire :in-saltire
      {:type :heraldry.charge-group.type/rows
@@ -82,15 +82,15 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 nil nil]}]}]
     [:string.charge-group.presets/in-pall :in-pall
      {:type :heraldry.charge-group.type/columns
@@ -101,16 +101,16 @@
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}
                  :geometry {:size 18}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 nil nil nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil 0 nil nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil nil 0 0 0]
                 :stretch 1.25}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil 0 nil nil nil]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 nil nil nil nil]}]}]
     [:string.charge-group.presets/three-above-bend :three-in-above-bend
      {:type :heraldry.charge-group.type/rows
@@ -121,9 +121,9 @@
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}
                  :geometry {:size 20}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [nil 0]}]}]
     [:string.charge-group.presets/three-below-bend :three-below-bend
      {:type :heraldry.charge-group.type/rows
@@ -134,9 +134,9 @@
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}
                  :geometry {:size 20}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0]}]}]]
    [:string.charge-group.presets.group/triangular
     [:string.charge-group.presets/three :three
@@ -147,9 +147,9 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0]}]}]
     [:string.charge-group.presets/three-inverted :three-inverted
      {:type :heraldry.charge-group.type/rows
@@ -159,9 +159,9 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0]}]}]
 
     [:string.charge-group.presets/three-columns :three-columns
@@ -172,9 +172,9 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0]}]}]
     [:string.charge-group.presets/three-columns-inverted :three-columns-inverted
      {:type :heraldry.charge-group.type/columns
@@ -184,9 +184,9 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0]}]}]
     [:string.charge-group.presets/six :six
      {:type :heraldry.charge-group.type/rows
@@ -196,11 +196,11 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0]}]}]]
    [:string.charge-group.presets.group/grid
     [:string.charge-group.presets/square :square
@@ -211,11 +211,11 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}]}]
     [:string.charge-group.presets/diamond :diamond
      {:type :heraldry.charge-group.type/rows
@@ -225,11 +225,11 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}]}]
     [:string.charge-group.presets/semy-rows :semy-rows
      {:type :heraldry.charge-group.type/rows
@@ -239,15 +239,15 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0]}]}]
     [:string.charge-group.presets/semy-columns :semy-columns
      {:type :heraldry.charge-group.type/columns
@@ -257,15 +257,15 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0]}]}]
     [:string.charge-group.presets/frame :frame
      {:type :heraldry.charge-group.type/rows
@@ -275,15 +275,15 @@
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
-      :strips [{:type :heraldry/charge-group-strip
+      :strips [{:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 nil nil nil 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 nil nil nil 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 nil nil nil 0]}
-               {:type :heraldry/charge-group-strip
+               {:type :heraldry.charge-group.element.type/strip
                 :slots [0 0 0 0 0]}]}]]
    [:string.charge-group.presets.group/arc
     [:string.charge-group.presets/in-annullo :in-annullo

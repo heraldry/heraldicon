@@ -1,6 +1,5 @@
 (ns heraldicon.heraldry.charge-group.options
   (:require
-   [heraldicon.context :as c]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
@@ -14,14 +13,12 @@
 (def type-map
   (options/choices->map type-choices))
 
-(def type-option
-  {:type :choice
-   :choices type-choices
-   :ui {:label :string.option/type
-        :form-type :charge-group-type-select}})
-
 (def shared-options
-  {:anchor {:point {:type :choice
+  {:type {:type :choice
+          :choices type-choices
+          :ui {:label :string.option/type
+               :form-type :charge-group-type-select}}
+   :anchor {:point {:type :choice
                     :choices position/point-choices
                     :default :fess
                     :ui {:label :string.option/point}}
@@ -136,16 +133,10 @@
 (defmethod interface/options-subscriptions :heraldry/charge-group [_context]
   #{[:type]})
 
-(defmethod interface/options :heraldry/charge-group [context]
-  (-> context
-      (assoc :dispatch-value (interface/get-raw-data (c/++ context :type)))
-      interface/options
-      (assoc :type type-option)))
-
-(defmethod interface/options-subscriptions :heraldry/charge-group-strip [_context]
+(defmethod interface/options-subscriptions :heraldry.charge-group.element.type/strip [_context]
   #{[:type]})
 
-(defmethod interface/options :heraldry/charge-group-strip [_context]
+(defmethod interface/options :heraldry.charge-group.element.type/strip [_context]
   {:slots {:type :range
            :min 0
            :max 10

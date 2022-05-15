@@ -32,6 +32,12 @@
                     :slot-index idx
                     :charge-index charge-index}) slots)))
 
+(derive :heraldry.charge-group.type/rows :heraldry.charge-group/type)
+(derive :heraldry.charge-group.type/columns :heraldry.charge-group/type)
+(derive :heraldry.charge-group.type/arc :heraldry.charge-group/type)
+(derive :heraldry.charge-group.type/in-orle :heraldry.charge-group/type)
+(derive :heraldry.charge-group/type :heraldry/charge-group)
+
 (defmulti calculate-points
   (fn [context]
     (case (interface/get-sanitized-data (c/++ context :type))

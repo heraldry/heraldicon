@@ -459,13 +459,13 @@
                                       :tincture :purpure}}]
                    :type :heraldry.charge-group.type/rows
                    :spacing 23.75
-                   :strips [{:type :heraldry/charge-group-strip
+                   :strips [{:type :heraldry.charge-group.element.type/strip
                              :slots [0 0 0 0]}
-                            {:type :heraldry/charge-group-strip
+                            {:type :heraldry.charge-group.element.type/strip
                              :slots [0 0 0]}
-                            {:type :heraldry/charge-group-strip
+                            {:type :heraldry.charge-group.element.type/strip
                              :slots [0 0]}
-                            {:type :heraldry/charge-group-strip
+                            {:type :heraldry.charge-group.element.type/strip
                              :slots [0]}]}]}
 
     "or a lion sable, langued argent armed gules"
