@@ -38,7 +38,7 @@
 ;; views
 
 (defn charge-attribution []
-  (let [used-charges @(rf/subscribe [:used-charge-variants form-db-path])
+  (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :data)])
         charges-data (->> used-charges
                           (map charge/fetch-charge-data))]
     (when (-> charges-data first :id)
@@ -54,7 +54,7 @@
                :charge-data charge}])))]])))
 
 (defn ribbon-attribution []
-  (let [used-ribbons @(rf/subscribe [:used-ribbons form-db-path])
+  (let [used-ribbons @(rf/subscribe [:used-ribbons (conj form-db-path :data)])
         ribbons-data (->> used-ribbons
                           (map ribbon/fetch-ribbon-data))]
     (when (-> ribbons-data first :id)
@@ -82,12 +82,12 @@
   (assoc
    context/default
    :path form-db-path
-   :render-options-path (conj form-db-path :render-options)
+   :render-options-path (conj form-db-path :data :render-options)
    :select-component-fn (fn [event context]
                           (state/dispatch-on-event event [:ui-component-node-select (:path context)]))))
 
 (defn render-coat-of-arms []
-  [render/achievement (base-context)])
+  [render/achievement (c/++ (base-context) :data)])
 
 (defn blazonry []
   [:div.blazonry
@@ -96,7 +96,7 @@
     [:span {:style {:font-size "0.75em"}}
      " " [tr :string.miscellaneous/beta-blazon]]]
    [:div.blazon
-    (string/tr-raw (interface/blazon {:path (conj form-db-path :coat-of-arms)}) :en)]])
+    (string/tr-raw (interface/blazon {:path (conj form-db-path :data :coat-of-arms)}) :en)]])
 
 (defn generate-svg-clicked [event]
   (.preventDefault event)
@@ -301,13 +301,13 @@
                                :position :relative}}
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path
-                        (conj form-db-path :render-options)
+                        (conj form-db-path :data :render-options)
                         :spacer
-                        (conj form-db-path :helms)
+                        (conj form-db-path :data :helms)
                         :spacer
-                        (conj form-db-path :coat-of-arms)
+                        (conj form-db-path :data :coat-of-arms)
                         :spacer
-                        (conj form-db-path :ornaments)]]]])
+                        (conj form-db-path :data :ornaments)]]]])
 
 (defn arms-display [arms-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path arms-id])
@@ -349,7 +349,7 @@
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
                   (reife/push-state :create-arms)
-                  (blazonry-editor/open (c/++ (base-context) :coat-of-arms :field)))}
+                  (blazonry-editor/open (c/++ (base-context) :data :coat-of-arms :field)))}
     [tr :string.button/create-from-blazon]]
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
@@ -360,9 +360,7 @@
   (let [[status _arms-form-data] (state/async-fetch-data
                                   form-db-path
                                   :new
-                                  #(go
-                                     {:coat-of-arms default/coat-of-arms
-                                      :render-options default/render-options}))]
+                                  #(go default/arms-entity))]
     (when (= status :done)
       [arms-form])))
 

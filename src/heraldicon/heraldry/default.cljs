@@ -198,6 +198,12 @@
             {:type :heraldry/charge-group-strip
              :slots [0]}]})
 
+(def achievement
+  {:type :heraldry/achievement
+   :spec 1
+   :render-options render-options
+   :coat-of-arms coat-of-arms})
+
 (def collection
   {:type :heraldry/collection
    :num-columns 6
@@ -208,6 +214,10 @@
 
 (def collection-element
   {:type :heraldry/collection-element})
+
+(def arms-entity
+  {:type :heraldicon/arms
+   :data achievement})
 
 (def collection-entity
   {:type :heraldicon/collection
