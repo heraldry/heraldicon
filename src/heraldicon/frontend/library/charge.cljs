@@ -21,6 +21,7 @@
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user :as user]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
    [heraldicon.svg.core :as svg]
@@ -403,9 +404,7 @@
   (let [[status _charge-form-data] (state/async-fetch-data
                                     form-db-path
                                     :new
-                                    #(go
-                                       ;; TODO: make a default charge here?
-                                       {}))]
+                                    #(go default/charge-entity))]
     (when (= status :done)
       [charge-form])))
 
