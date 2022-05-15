@@ -7,12 +7,12 @@
    [heraldicon.entity.metadata :as metadata]
    [heraldicon.interface :as interface]))
 
-(defmethod interface/options-subscriptions :heraldry/arms-general [_context]
+(defmethod interface/options-subscriptions :heraldicon/arms [_context]
   #{[:attribution :license]
     [:attribution :nature]
     [:attribution :source-license]})
 
-(defmethod interface/options :heraldry/arms-general [context]
+(defmethod interface/options :heraldicon/arms [context]
   {:name {:type :text
           :default ""
           :ui {:label :string.option/name}}

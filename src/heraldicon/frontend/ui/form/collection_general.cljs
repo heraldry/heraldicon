@@ -18,9 +18,9 @@
 
    [ui.interface/form-element (c/++ context :font)]])
 
-(defmethod ui.interface/component-node-data :heraldry/collection-general [context]
+(defmethod ui.interface/component-node-data :heraldicon/collection [context]
   {:title :string.miscellaneous/general
-   :validation (validation/validate-collection-general context)})
+   :validation (validation/validate-entity context)})
 
-(defmethod ui.interface/component-form-data :heraldry/collection-general [_context]
+(defmethod ui.interface/component-form-data :heraldicon/collection [_context]
   {:form form})
