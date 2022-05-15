@@ -286,11 +286,11 @@
                                                               (path/line-to (v/mul first-edge-vector -1))))
               segment-context (c/++ context :segments idx)
               segment-type (interface/get-raw-data (c/++ segment-context :type))
-              foreground? (#{:heraldry.ribbon.segment/foreground
-                             :heraldry.ribbon.segment/foreground-with-text} segment-type)
+              foreground? (#{:heraldry.ribbon.segment.type/foreground
+                             :heraldry.ribbon.segment.type/foreground-with-text} segment-type)
               text (some-> (interface/get-sanitized-data (c/++ segment-context :text))
                            (s/replace #"[*]" "⬪"))
-              text? (and (= segment-type :heraldry.ribbon.segment/foreground-with-text)
+              text? (and (= segment-type :heraldry.ribbon.segment.type/foreground-with-text)
                          (some-> text
                                  s/trim
                                  count

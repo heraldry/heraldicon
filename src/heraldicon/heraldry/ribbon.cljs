@@ -123,9 +123,14 @@
                         vec)}))
 
 (def segment-type-choices
-  [[:string.ribbon.segment-type-choice/foreground-with-text :heraldry.ribbon.segment/foreground-with-text]
-   [:string.ribbon.segment-type-choice/foreground :heraldry.ribbon.segment/foreground]
-   [:string.ribbon.segment-type-choice/background :heraldry.ribbon.segment/background]])
+  [[:string.ribbon.segment-type-choice/foreground-with-text :heraldry.ribbon.segment.type/foreground-with-text]
+   [:string.ribbon.segment-type-choice/foreground :heraldry.ribbon.segment.type/foreground]
+   [:string.ribbon.segment-type-choice/background :heraldry.ribbon.segment.type/background]])
+
+(derive :heraldry.ribbon.segment.type/foreground-with-text :heraldry.ribbon.segment/type)
+(derive :heraldry.ribbon.segment.type/foreground :heraldry.ribbon.segment/type)
+(derive :heraldry.ribbon.segment.type/background :heraldry.ribbon.segment/type)
+(derive :heraldry.ribbon.segment/type :heraldry.ribbon/segment)
 
 (def segment-type-map
   (options/choices->map segment-type-choices))
@@ -136,10 +141,10 @@
    :ui {:label :string.option/type
         :form-type :radio-select}})
 
-(defmethod interface/options-subscriptions :heraldry/ribbon-segment [_context]
+(defmethod interface/options-subscriptions :heraldry.ribbon/segment [_context]
   #{[:type]})
 
-(defmethod interface/options :heraldry/ribbon-segment [context]
+(defmethod interface/options :heraldry.ribbon/segment [context]
   (-> {:z-index {:type :range
                  :min 0
                  :max 100
@@ -147,7 +152,7 @@
                  :ui {:label :string.option/layer}}}
       (cond->
         (= (interface/get-raw-data (c/++ context :type))
-           :heraldry.ribbon.segment/foreground-with-text)
+           :heraldry.ribbon.segment.type/foreground-with-text)
         (merge {:offset-x {:type :range
                            :default 0
                            :min -0.5
