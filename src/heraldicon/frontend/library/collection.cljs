@@ -124,23 +124,24 @@
                                [:arms-references arms-id version]
                                [arms-id version]
                                #(arms-select/fetch-arms arms-id version nil)))
-        collection-render-options (interface/get-sanitized-data {:path (conj form-db-path :data :render-options)})
+        collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
         {:keys [result
                 environment]} (render/coat-of-arms
                                (-> shared/coa-select-option-context
                                    (c/<< :path [:context :coat-of-arms])
-                                   (c/<< :render-options-path [:context :render-options])
-                                   (c/<< :render-options (-> arms-data
-                                                             :render-options
-                                                             (merge (cond-> collection-render-options
-                                                                      (-> collection-render-options
-                                                                          :escutcheon (= :none)) (dissoc :escutcheon)))))
+                                   (c/<< :render-options (merge-with
+                                                          (fn [old new]
+                                                            (if (nil? new)
+                                                              old
+                                                              new))
+                                                          (:render-options shared/coa-select-option-context)
+                                                          (-> arms-data :data :render-options)
+                                                          collection-render-options))
                                    (c/<< :coat-of-arms
-                                         (if-let [coat-of-arms (:coat-of-arms arms-data)]
+                                         (if-let [coat-of-arms (-> arms-data :data :coat-of-arms)]
                                            coat-of-arms
                                            default/coat-of-arms)))
                                size)
-
         {:keys [width height]} environment]
     [:g
      [arms-highlight path x y width height]
@@ -237,23 +238,25 @@
                                 [:arms-references arms-id version]
                                 [arms-id version]
                                 #(arms-select/fetch-arms arms-id version nil)))
-          collection-render-options (interface/get-sanitized-data {:path (conj form-db-path :data :render-options)})]
+          collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})]
       (when (or (not arms-id)
                 (= status :done))
         (let [{:keys [result
                       environment]} (render/coat-of-arms
                                      (-> shared/coa-select-option-context
-                                         (assoc :path [:context :coat-of-arms])
-                                         (assoc :render-options-path [:context :render-options])
-                                         (assoc :render-options (-> arms-data
-                                                                    :render-options
-                                                                    (merge (cond-> collection-render-options
-                                                                             (-> collection-render-options
-                                                                                 :escutcheon (= :none)) (dissoc :escutcheon)))))
-                                         (assoc :coat-of-arms
-                                                (if-let [coat-of-arms (:coat-of-arms arms-data)]
-                                                  coat-of-arms
-                                                  default/coat-of-arms)))
+                                         (c/<< :path [:context :coat-of-arms])
+                                         (c/<< :render-options (merge-with
+                                                                (fn [old new]
+                                                                  (if (nil? new)
+                                                                    old
+                                                                    new))
+                                                                (:render-options shared/coa-select-option-context)
+                                                                (-> arms-data :data :render-options)
+                                                                collection-render-options))
+                                         (c/<< :coat-of-arms
+                                               (if-let [coat-of-arms (-> arms-data :data :coat-of-arms)]
+                                                 coat-of-arms
+                                                 default/coat-of-arms)))
                                      100)
               {:keys [width height]} environment]
           [:<>
