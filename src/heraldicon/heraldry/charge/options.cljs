@@ -17,6 +17,8 @@
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]))
 
+(derive :heraldry.charge/type :heraldry/charge)
+
 (def charges
   [roundel/charge-type
    annulet/charge-type
@@ -71,8 +73,7 @@
 
 (defmethod interface/options :heraldry/charge [context]
   (-> context
-      (assoc :dispatch-value (charge.interface/effective-type context))
-      interface/options
+      charge.interface/options
       (assoc :type type-option)
       (assoc :manual-blazon options/manual-blazon)
       (post-process-options context)))

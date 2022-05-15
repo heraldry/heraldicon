@@ -22,7 +22,7 @@
    [heraldicon.util.colour :as colour]
    [heraldicon.util.uid :as uid]))
 
-(defmethod interface/options :heraldry.charge.type/other [context]
+(defmethod charge.interface/options :heraldry.charge.type/other [context]
   (-> (charge.shared/options context)
       (assoc :tincture {:eyed {:type :choice
                                :choices tincture/choices
