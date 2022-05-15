@@ -11,7 +11,7 @@
 
 (defmethod field.interface/part-names field-type [_] [])
 
-(defmethod interface/options field-type [context]
+(defmethod field.interface/options field-type [context]
   (let [tincture (interface/get-raw-data (c/++ context :tincture))]
     (cond-> {:tincture {:type :choice
                         :choices tincture/choices

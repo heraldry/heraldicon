@@ -9,10 +9,14 @@
 (defmulti part-names identity)
 
 (defmulti render-field (fn [context]
-                         (let [field-type (interface/get-sanitized-data (c/++ context :type))]
-                           (when (keyword? field-type)
-                             field-type))))
+                         (interface/get-sanitized-data (c/++ context :type))))
 
 (defmethod render-field nil [context]
   (log/warn :not-implemented "render-field" context)
+  [:<>])
+
+(defmulti options interface/effective-component-type)
+
+(defmethod options nil [context]
+  (log/warn :not-implemented "field.options" context)
   [:<>])

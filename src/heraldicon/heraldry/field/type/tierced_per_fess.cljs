@@ -17,7 +17,7 @@
 
 (defmethod field.interface/part-names field-type [_] ["chief" "fess" "base"])
 
-(defmethod interface/options field-type [context]
+(defmethod field.interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]
     {:anchor {:point {:type :choice

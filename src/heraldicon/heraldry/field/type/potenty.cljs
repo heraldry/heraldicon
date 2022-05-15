@@ -14,7 +14,7 @@
 
 (defmethod field.interface/part-names field-type [_] nil)
 
-(defmethod interface/options field-type [_context]
+(defmethod field.interface/options field-type [_context]
   {:variant {:type :choice
              :choices [["Default" :default]
                        ["Counter" :counter]

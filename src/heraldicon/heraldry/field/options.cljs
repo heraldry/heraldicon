@@ -33,6 +33,9 @@
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
 
+(derive :heraldry.field.type/ref :heraldry.field/type)
+(derive :heraldry.field/type :heraldry/field)
+
 (def fields
   [plain/field-type
    counterchanged/field-type
@@ -66,7 +69,9 @@
 (def choices
   (->> fields
        (map (fn [key]
-              [(field.interface/display-name key) key]))))
+              (derive key :heraldry.field/type)
+              [(field.interface/display-name key) key]))
+       vec))
 
 (def field-map
   (options/choices->map choices))
@@ -106,7 +111,7 @@
       (not (or counterchanged?
                plain?
                ref?)) (assoc :outline? options/plain-outline?-option)
-      (not ref?) (-> (merge (interface/options (assoc context :dispatch-value field-type)))
+      (not ref?) (-> (merge (field.interface/options context))
                      (assoc :type type-option))
       (and (not ref?)
            (or subfield?

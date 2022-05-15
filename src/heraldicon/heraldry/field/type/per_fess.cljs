@@ -16,7 +16,7 @@
 
 (defmethod field.interface/part-names field-type [_] ["chief" "base"])
 
-(defmethod interface/options field-type [context]
+(defmethod field.interface/options field-type [context]
   {:anchor {:point {:type :choice
                     :choices [[:string.option.point-choice/fess :fess]
                               [:string.option.point-choice/chief :chief]
