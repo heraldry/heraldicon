@@ -7,6 +7,8 @@
    [heraldicon.entity.metadata :as metadata]
    [heraldicon.interface :as interface]))
 
+(derive :heraldicon/arms :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldicon/arms [_context]
   #{[:attribution :license]
     [:attribution :nature]

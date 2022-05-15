@@ -130,8 +130,12 @@
                                     :default false
                                     :ui {:label :string.option/rotate-charges?}}})))
 
+(derive :heraldry/charge-group :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/charge-group [_context]
   #{[:type]})
+
+(derive :heraldry.charge-group.element.type/strip :heraldry.options/root)
 
 (defmethod interface/options-subscriptions :heraldry.charge-group.element.type/strip [_context]
   #{[:type]})

@@ -4,6 +4,8 @@
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
 
+(derive :heraldry/coat-of-arms :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/coat-of-arms [_context]
   #{})
 

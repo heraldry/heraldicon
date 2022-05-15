@@ -58,6 +58,8 @@
    :ui {:label :string.option/type
         :form-type :ordinary-type-select}})
 
+(derive :heraldry/ordinary :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/ordinary [_context]
   #{[:type]
     [:line]

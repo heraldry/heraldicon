@@ -35,6 +35,8 @@
               :default true
               :ui {:label :string.charge.tincture-modifier.special/outline}}})
 
+(derive :heraldry/ribbon :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/ribbon [_context]
   #{})
 
@@ -140,6 +142,8 @@
    :choices segment-type-choices
    :ui {:label :string.option/type
         :form-type :radio-select}})
+
+(derive :heraldry.ribbon/segment :heraldry.options/root)
 
 (defmethod interface/options-subscriptions :heraldry.ribbon/segment [_context]
   #{[:type]})

@@ -82,6 +82,8 @@
    :ui {:label :string.option/partition
         :form-type :field-type-select}})
 
+(derive :heraldry/field :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldry/field [_context]
   #{[:type]
     [:line]

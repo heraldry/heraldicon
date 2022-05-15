@@ -5,6 +5,8 @@
    [heraldicon.entity.metadata :as metadata]
    [heraldicon.interface :as interface]))
 
+(derive :heraldicon/collection :heraldry.options/root)
+
 (defmethod interface/options-subscriptions :heraldicon/collection [_context]
   #{[:attribution :license]
     [:attribution :nature]
