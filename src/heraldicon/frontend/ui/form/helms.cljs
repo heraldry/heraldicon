@@ -7,13 +7,11 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]))
 
-(defn form [_context]
-  [:<>])
-
 (defmethod ui.interface/component-node-data :heraldry/helms [context]
   (let [elements-context (c/++ context :elements)
         num-helms (interface/get-list-size elements-context)]
     {:title :string.entity/helms-and-crests
+     :selectable? false
      :annotation [:div.tooltip.info {:style {:display "inline-block"
                                              :margin-left "0.2em"}}
                   [:sup {:style {:color "#d40"}}
@@ -38,6 +36,3 @@
                                       :remove? true
                                       :title :string.tooltip/remove
                                       :handler #(state/dispatch-on-event % [:remove-element helm-context])}]}))))}))
-
-(defmethod ui.interface/component-form-data :heraldry/helms [_context]
-  {:form form})

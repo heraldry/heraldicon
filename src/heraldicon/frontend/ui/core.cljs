@@ -82,9 +82,14 @@
           added-type (component/effective-type new-element-path (:type value))]
       (-> db
           (assoc-in path elements)
-          (state/ui-component-node-select new-element-path :open? true)
+          (state/ui-component-node-select
+           (if (#{:heraldry/helm} added-type)
+             (conj new-element-path :components 1)
+             new-element-path)
+           :open? true)
           submenu/ui-submenu-close-all
           (cond->
+            (#{:heraldry/helm} added-type) (submenu/ui-submenu-open (conj new-element-path :components 1 :type))
             (#{:heraldry/ordinary
                :heraldry/charge} added-type) (submenu/ui-submenu-open (conj new-element-path :type))
             (#{:heraldry/charge-group} added-type) (submenu/ui-submenu-open new-element-path)
