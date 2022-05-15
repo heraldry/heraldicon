@@ -35,6 +35,12 @@
               :default true
               :ui {:label :string.charge.tincture-modifier.special/outline}}})
 
+(defmethod interface/options-subscriptions :heraldry/ribbon [_context]
+  #{})
+
+(defmethod interface/options :heraldry/ribbon [context]
+  (options context))
+
 (defn curve-segments [full-curve
                       last-index end-t last-edge-vector
                       index ts edge-vector]

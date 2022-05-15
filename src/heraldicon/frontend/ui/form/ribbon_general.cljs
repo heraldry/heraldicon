@@ -250,7 +250,7 @@
      :attributes
      :tags])
 
-   [ribbon-form (c/++ context :ribbon)]
+   [ribbon-form (c/++ context :data)]
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
@@ -299,17 +299,17 @@
 
       [:div
        [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments
-                                          (-> context :path (conj :ribbon))
+                                          (-> context :path (conj :data))
                                           layer-mode-value
                                           flow-mode-value
                                           start-mode-value])}
         [tr :string.ribbon/apply-presets]]
        [:button {:on-click #(rf/dispatch [:ribbon-edit-invert-segments
-                                          (-> context :path (conj :ribbon))])}
+                                          (-> context :path (conj :data))])}
         [tr :string.ribbon.button/invert]]]
 
       [ribbon-segments-form
-       (c/++ context :ribbon)
+       (c/++ context :data)
        :title :string.ribbon.text/segment-explanation]])])
 
 (defmethod ui.interface/component-node-data :heraldry/ribbon-general [context]

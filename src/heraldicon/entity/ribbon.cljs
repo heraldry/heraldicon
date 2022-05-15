@@ -2,7 +2,6 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.entity.attribution :as attribution]
-   [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.interface :as interface]))
 
 (defmethod interface/options-subscriptions :heraldry/ribbon-general [_context]
@@ -18,5 +17,4 @@
    :is-public {:type :boolean
                :ui {:label :string.option/is-public}}
    :attribution (attribution/options (c/++ context :attribution))
-   :ribbon (ribbon/options context)
    :tags {:ui {:form-type :tags}}})
