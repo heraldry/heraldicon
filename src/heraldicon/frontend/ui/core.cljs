@@ -83,17 +83,17 @@
       (-> db
           (assoc-in path elements)
           (state/ui-component-node-select
-           (if (#{:heraldry/helm} added-type)
+           (if (isa? added-type :heraldry/helm)
              (conj new-element-path :components 1)
              new-element-path)
            :open? true)
           submenu/ui-submenu-close-all
           (cond->
-            (#{:heraldry/helm} added-type) (submenu/ui-submenu-open (conj new-element-path :components 1 :type))
+            (isa? added-type :heraldry/helm) (submenu/ui-submenu-open (conj new-element-path :components 1 :type))
             (isa? added-type :heraldry/ordinary) (submenu/ui-submenu-open (conj new-element-path :type))
             (isa? added-type :heraldry/charge) (submenu/ui-submenu-open (conj new-element-path :type))
             (isa? added-type :heraldry/charge-group) (submenu/ui-submenu-open new-element-path)
-            (#{:heraldry/collection-element} added-type) (submenu/ui-submenu-open (conj new-element-path :reference))
+            (isa? added-type :heraldry/collection-element) (submenu/ui-submenu-open (conj new-element-path :reference))
             (isa? added-type :heraldry/motto) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant)))))))
 
 (macros/reg-event-db :remove-element
