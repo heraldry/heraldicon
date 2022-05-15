@@ -219,6 +219,10 @@
   {:type :heraldicon/arms
    :data achievement})
 
+(def charge-entity
+  {:type :heraldicon/charge
+   :data {}})
+
 (def collection-entity
   {:type :heraldicon/collection
    :data collection})
