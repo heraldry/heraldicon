@@ -4,6 +4,8 @@
    [heraldicon.entity.arms] ;; needed for side effects
    [heraldicon.entity.charge] ;; needed for side effects
    [heraldicon.entity.collection] ;; needed for side effects
+   [heraldicon.entity.collection.data] ;; needed for side effects
+   [heraldicon.entity.collection.element] ;; needed for side effects
    [heraldicon.entity.ribbon] ;; needed for side effects
    [heraldicon.heraldry.charge-group.core] ;; needed for side effects
    [heraldicon.heraldry.charge-group.options] ;; needed for side effects
@@ -21,7 +23,6 @@
    [heraldicon.heraldry.ribbon] ;; needed for side effects
    [heraldicon.heraldry.semy] ;; needed for side effects
    [heraldicon.heraldry.tincture] ;; needed for side effects
-   [heraldicon.heraldry.various] ;; needed for side effects
    [heraldicon.render.options] ;; needed for side effects
    [heraldicon.state] ;; needed for side effects
    ))

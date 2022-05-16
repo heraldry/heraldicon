@@ -45,10 +45,10 @@
    [heraldicon.frontend.ui.form.charge-general] ;; needed for side effects
    [heraldicon.frontend.ui.form.charge-group] ;; needed for side effects
    [heraldicon.frontend.ui.form.coat-of-arms] ;; needed for side effects
-   [heraldicon.frontend.ui.form.collection] ;; needed for side effects
-   [heraldicon.frontend.ui.form.collection-element] ;; needed for side effects
-   [heraldicon.frontend.ui.form.collection-general] ;; needed for side effects
    [heraldicon.frontend.ui.form.cottise] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.collection] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.collection.data] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.collection.element] ;; needed for side effects
    [heraldicon.frontend.ui.form.field] ;; needed for side effects
    [heraldicon.frontend.ui.form.helm] ;; needed for side effects
    [heraldicon.frontend.ui.form.helms] ;; needed for side effects
@@ -93,8 +93,8 @@
             (isa? added-type :heraldry/ordinary) (submenu/ui-submenu-open (conj new-element-path :type))
             (isa? added-type :heraldry/charge) (submenu/ui-submenu-open (conj new-element-path :type))
             (isa? added-type :heraldry/charge-group) (submenu/ui-submenu-open new-element-path)
-            (isa? added-type :heraldry/collection-element) (submenu/ui-submenu-open (conj new-element-path :reference))
-            (isa? added-type :heraldry/motto) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant)))))))
+            (isa? added-type :heraldry/motto) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant))
+            (isa? added-type :heraldicon.collection/element) (submenu/ui-submenu-open (conj new-element-path :reference)))))))
 
 (macros/reg-event-db :remove-element
   (fn [db [_ {:keys [path]} {:keys [post-fn]}]]
