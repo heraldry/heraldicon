@@ -94,7 +94,6 @@
                                                                                  :pommeled :gules
                                                                                  :shadow 1.0
                                                                                  :highlight 1.0})}]}}}
-            :coat-of-arms {:escutcheon :rectangle}
             :ui {:charge-tree {:show-public? true
                                :show-own? true}
                  :component-tree {}
