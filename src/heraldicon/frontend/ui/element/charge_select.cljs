@@ -1,17 +1,12 @@
 (ns heraldicon.frontend.ui.element.charge-select
   (:require
    [cljs.core.async :refer [go]]
-   [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.blazonry :as blazonry]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user :as user]
-   [heraldicon.heraldry.option.attributes :as attributes]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -42,69 +37,6 @@
             :charges))
       (catch :default e
         (log/error "fetch charge list error:" e)))))
-
-(defn charge-properties [charge]
-  [:div.properties {:style {:display "inline-block"
-                            :line-height "1.5em"
-                            :vertical-align "middle"
-                            :white-space "normal"
-                            :margin-left "0.5em"}}
-   (when-let [attitude (-> charge
-                           :attitude
-                           (#(when (not= % :none) %)))]
-     [:div.tag.attitude (blazonry/translate attitude)])
-   " "
-   (when-let [facing (-> charge
-                         :facing
-                         (#(when (-> % #{:none :to-dexter} not) %)))]
-     [:div.tag.facing (blazonry/translate facing)])
-   " "
-   (for [attribute (->> charge
-                        :attributes
-                        (filter second)
-                        (map first)
-                        sort)]
-     ^{:key attribute}
-     [:<> [:div.tag.attribute (blazonry/translate attribute)] " "])
-   (when (or (->> charge :colours vals (map attributes/tincture-modifier) set :shadow)
-             (->> charge :colours vals (map attributes/tincture-modifier-qualifier) (keep attributes/shadow-qualifiers) seq)
-             (->> charge :colours vals (map attributes/tincture-modifier) set :highlight)
-             (->> charge :colours vals (map attributes/tincture-modifier-qualifier) (keep attributes/highlight-qualifiers) seq))
-     [:div.tag.shading "shading"])
-   " "
-   (when-let [fixed-tincture (-> charge
-                                 :fixed-tincture
-                                 (or :none)
-                                 (#(when (not= % :none) %)))]
-     [:div.tag.fixed-tincture (blazonry/translate fixed-tincture)])
-   " "
-   (for [modifier (->> charge
-                       :colours
-                       (map second)
-                       (keep attributes/tincture-modifier)
-                       (filter #(-> %
-                                    #{:primary
-                                      :keep
-                                      :outline
-                                      :shadow
-                                      :highlight}
-                                    not))
-                       set
-                       sort)]
-     ^{:key modifier}
-     [:<> [:div.tag.modifier (blazonry/translate modifier)] " "])
-   [tags/tags-view (-> charge :tags keys)]])
-
-(macros/reg-event-db :prune-false-flags
-  (fn [db [_ path]]
-    (update-in db path (fn [flags]
-                         (walk/postwalk (fn [value]
-                                          (if (map? value)
-                                            (->> value
-                                                 (filter #(-> % second (not= false)))
-                                                 (into {}))
-                                            value))
-                                        flags)))))
 
 (defn invalidate-charge-cache [key]
   (state/invalidate-cache list-db-path key))
