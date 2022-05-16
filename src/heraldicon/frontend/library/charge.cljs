@@ -383,7 +383,9 @@
                                :position "relative"}}
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path
+                        :spacer
                         (conj example-coa-db-path :render-options)
+                        :spacer
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
 
 (defn charge-display [charge-id version]
