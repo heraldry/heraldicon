@@ -2,7 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.ui.form.ribbon-general :as ribbon-general]
+   [heraldicon.frontend.ui.form.ribbon :as ribbon]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
@@ -59,8 +59,8 @@
    (when (interface/get-raw-data (c/++ context :ribbon-variant))
      (let [ribbon-context (c/++ context :ribbon)]
        [:<>
-        [ribbon-general/ribbon-form ribbon-context]
-        [ribbon-general/ribbon-segments-form ribbon-context]]))])
+        [ribbon/form ribbon-context]
+        [ribbon/segments-form ribbon-context]]))])
 
 (defmethod ui.interface/component-node-data :heraldry/motto [{:keys [path]}]
   {:title @(rf/subscribe [:motto-name path])})

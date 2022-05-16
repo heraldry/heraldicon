@@ -213,12 +213,16 @@
   {:type :heraldicon/charge
    :data charge-data})
 
-(def ribbon-data
+(def ribbon
   {:type :heraldry/ribbon
    :thickness nil
    :points [(v/Vector. -150 -20) (v/Vector. -75 0) (v/Vector. 0 5) (v/Vector. 75 0) (v/Vector. 150 -20)]
    :segments [{:type :heraldry.ribbon.segment.type/foreground-with-text
                :text "LOREM IPSUM"}]})
+
+(def ribbon-data
+  {:type :heraldicon.ribbon/data
+   :ribbon ribbon})
 
 (def ribbon-entity
   {:type :heraldicon/ribbon

@@ -8,7 +8,7 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.ui.element.submenu :as submenu]
-   [heraldicon.frontend.ui.form.ribbon-general :as ribbon-general]
+   [heraldicon.frontend.ui.form.entity.ribbon.data :as ribbon.data]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]
@@ -20,7 +20,7 @@
       (-> db
           (assoc-in path ribbon-data)
           (update-in (conj path :segments) (fn [segments]
-                                             (ribbon-general/restore-previous-text-segments
+                                             (ribbon.data/restore-previous-text-segments
                                               segments
                                               previous-segments
                                               [:text
@@ -37,7 +37,7 @@
              (let [ribbon-data (<? (ribbon-select/fetch-ribbon ribbon-id ribbon-version nil))]
                (rf/dispatch [:set-ribbon-data
                              (conj parent-path :ribbon)
-                             (:data ribbon-data)])))]
+                             (-> ribbon-data :data :ribbon)])))]
       (-> db
           (assoc-in path {:id ribbon-id
                           :version ribbon-version})))))

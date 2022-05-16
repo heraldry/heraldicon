@@ -296,7 +296,7 @@
 
 (defn preview []
   (let [[width height] [preview-width preview-height]
-        ribbon-path (conj form-db-path :data)
+        ribbon-path (conj form-db-path :data :ribbon)
         points-path (conj ribbon-path :points)
         num-points (interface/get-list-size {:path points-path})
         edit-mode @(rf/subscribe [::edit-mode])

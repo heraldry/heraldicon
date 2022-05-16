@@ -50,6 +50,7 @@
    [heraldicon.frontend.ui.form.entity.collection] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.collection.data] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.collection.element] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.ribbon] ;; needed for side effects
    [heraldicon.frontend.ui.form.field] ;; needed for side effects
    [heraldicon.frontend.ui.form.helm] ;; needed for side effects
    [heraldicon.frontend.ui.form.helms] ;; needed for side effects
@@ -57,7 +58,6 @@
    [heraldicon.frontend.ui.form.ordinary] ;; needed for side effects
    [heraldicon.frontend.ui.form.ornaments] ;; needed for side effects
    [heraldicon.frontend.ui.form.render-options] ;; needed for side effects
-   [heraldicon.frontend.ui.form.ribbon-general] ;; needed for side effects
    [heraldicon.frontend.ui.form.semy] ;; needed for side effects
    [heraldicon.frontend.ui.form.shield-separator] ;; needed for side effects
    [heraldicon.frontend.ui.interface :as ui.interface] ;; needed for side effects
