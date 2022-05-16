@@ -253,6 +253,7 @@
         candidates-with-attitude (cond->> candidates
                                    attitude (filter (fn [charge]
                                                       (-> charge
+                                                          :data
                                                           :attitude
                                                           (or :rampant)
                                                           (= attitude)))))
@@ -276,6 +277,7 @@
         candidates-with-facing (cond->> candidates
                                  facing (filter (fn [charge]
                                                   (-> charge
+                                                      :data
                                                       :facing
                                                       (or :to-dexter)
                                                       (= facing)))))

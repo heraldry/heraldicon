@@ -193,7 +193,8 @@
     :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (c/++ context :data))
         variant (interface/get-raw-data (c/++ context :variant))
-        full-charge-data (or data (when variant (load-charge-data variant)))
+        full-entity-data (or data (when variant (load-charge-data variant)))
+        full-charge-data (:data full-entity-data)
         placeholder-colours (:colours full-charge-data)
         layer-separator-colours (colours-for-modifier placeholder-colours :layer-separator)
         ignore-layer-separator? (interface/get-sanitized-data (c/++ context :ignore-layer-separator?))]
@@ -611,7 +612,7 @@
                :else [:g
                       [svg.metadata/attribution
                        {:path [:context :charge-data]
-                        :charge-data full-charge-data}
+                        :charge-data full-entity-data}
                        :charge]
                       (when render-field?
                         [:g {:mask (str "url(#" mask-inverted-id ")")}

@@ -49,7 +49,8 @@
      :charge-list
      user-data
      charge-list-path
-     [:name :type :attitude :facing :attributes :colours :username :metadata :tags]
+     [:name :username :metadata :tags
+      [:data :type] [:data :attitude] [:data :facing] [:data :attributes] [:data :colours]]
      :charge
      on-select
      refresh-fn
