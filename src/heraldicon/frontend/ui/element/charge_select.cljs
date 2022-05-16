@@ -5,7 +5,6 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.blazonry :as blazonry]
    [heraldicon.frontend.api.request :as api.request]
-   [heraldicon.frontend.charge-map :as charge-map]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
@@ -18,19 +17,6 @@
 
 (def list-db-path
   [:charge-list])
-
-(def node-icons
-  {:group {:closed "fa-plus-square"
-           :open "fa-minus-square"}
-   :attitude {:closed "fa-plus-square"
-              :open "fa-minus-square"}
-   :facing {:closed "fa-plus-square"
-            :open "fa-minus-square"}
-   :charge {:closed "fa-plus-square"
-            :open "fa-minus-square"}
-   :variant {:normal "fa-image"}})
-
-(def node-flag-db-path [:ui :charge-tree :nodes])
 
 (defn fetch-charge [charge-id version target-path]
   (go
@@ -56,132 +42,6 @@
             :charges))
       (catch :default e
         (log/error "fetch charge list error:" e)))))
-
-(defn tree-for-charge-map [{:keys [node-type name groups charges attitudes facings variants] :as node}
-                           tree-path
-                           selected-charge remaining-path-to-charge
-                           {:keys [still-on-path? render-variant open-all?]
-                            :as opts}]
-  (let [flag-path (conj node-flag-db-path tree-path)
-        flag-open? @(rf/subscribe [:get flag-path])
-        open? (or (and open-all?
-                       (nil? flag-open?))
-                  (= node-type :_root)
-                  (and (nil? flag-open?)
-                       still-on-path?)
-                  flag-open?)
-        variant? (= node-type :variant)]
-    (cond-> [:<>]
-      variant? (conj
-                [:div.node-name {:on-click nil
-                                 :style {:color (when still-on-path? "#1b6690")
-                                         :left 0}}
-                 "\u2022 " [render-variant node]])
-      (and (not variant?)
-           (not= node-type
-                 :_root)) (conj
-                           [:div.node-name.clickable
-                            {:on-click #(state/dispatch-on-event % [:set flag-path (not open?)])
-                             :style {:color (when still-on-path? "#1b6690")}}
-                            (if open?
-                              [:i.far {:class (-> node-icons (get node-type) :open)}]
-                              [:i.far {:class (-> node-icons (get node-type) :closed)}])
-                            [:<>
-                             [(cond
-                                (and (= node-type :variant)
-                                     still-on-path?) :b
-                                (= node-type :charge) :b
-                                (= node-type :attitude) :em
-                                (= node-type :facing) :em
-                                :else :<>) name]
-                             (let [c (charge-map/count-variants node)]
-                               (when (pos? c)
-                                 [:span.count-badge c]))]])
-      (and open?
-           groups) (conj [:ul
-                          (for [[key group] (sort-by first groups)]
-                            (let [following-path? (and still-on-path?
-                                                       (= (first remaining-path-to-charge)
-                                                          key))
-                                  remaining-path-to-charge (when following-path?
-                                                             (drop 1 remaining-path-to-charge))]
-                              ^{:key key}
-                              [:li.group
-                               [tree-for-charge-map
-                                group
-                                (conj tree-path :groups key)
-                                selected-charge
-                                remaining-path-to-charge
-                                (-> opts
-                                    (assoc :still-on-path? following-path?))]]))])
-      (and open?
-           charges) (conj [:ul
-                           (for [[key charge] (sort-by first charges)]
-                             (let [following-path? (and still-on-path?
-                                                        (-> remaining-path-to-charge
-                                                            count zero?)
-                                                        (= (:type charge)
-                                                           (:type selected-charge)))]
-                               ^{:key key}
-                               [:li.charge
-                                [tree-for-charge-map
-                                 charge
-                                 (conj tree-path :charges key)
-                                 selected-charge
-                                 remaining-path-to-charge
-                                 (-> opts
-                                     (assoc :still-on-path? following-path?))]]))])
-      (and open?
-           attitudes) (conj [:ul
-                             (for [[key attitude] (sort-by first attitudes)]
-                               (let [following-path? (and still-on-path?
-                                                          (-> remaining-path-to-charge
-                                                              count zero?)
-                                                          (= (:key attitude)
-                                                             (:attitude selected-charge)))]
-                                 ^{:key key}
-                                 [:li.attitude
-                                  [tree-for-charge-map
-                                   attitude
-                                   (conj tree-path :attitudes key)
-                                   selected-charge
-                                   remaining-path-to-charge
-                                   (-> opts
-                                       (assoc :still-on-path? following-path?))]]))])
-      (and open?
-           facings) (conj [:ul
-                           (for [[key facing] (sort-by first facings)]
-                             (let [following-path? (and still-on-path?
-                                                        (-> remaining-path-to-charge
-                                                            count zero?)
-                                                        (= (:key facing)
-                                                           (:facing selected-charge)))]
-                               ^{:key key}
-                               [:li.variant
-                                [tree-for-charge-map
-                                 facing
-                                 (conj tree-path :facings key)
-                                 selected-charge
-                                 remaining-path-to-charge
-                                 (-> opts
-                                     (assoc :still-on-path? following-path?))]]))])
-      (and open?
-           variants) (conj [:ul
-                            (for [[key variant] (sort-by (comp :name second) variants)]
-                              (let [following-path? (and still-on-path?
-                                                         (-> remaining-path-to-charge
-                                                             count zero?)
-                                                         (= (:key variant)
-                                                            (:facing selected-charge)))]
-                                ^{:key key}
-                                [:li.variant
-                                 [tree-for-charge-map
-                                  variant
-                                  (conj tree-path :variants key)
-                                  selected-charge
-                                  remaining-path-to-charge
-                                  (-> opts
-                                      (assoc :still-on-path? following-path?))]]))]))))
 
 (defn charge-properties [charge]
   [:div.properties {:style {:display "inline-block"
