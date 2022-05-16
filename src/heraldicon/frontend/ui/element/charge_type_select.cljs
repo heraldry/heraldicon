@@ -98,7 +98,7 @@
             [charge-type-choice (:path charge-context) key display-name :selected? (and (= key value)
                                                                                         (not variant))])
           [charge-select/list-charges
-           (fn [{:keys [id latest-version] :as charge-data}]
+           (fn [{:keys [id latest-version data]}]
              {:href (reife/href :view-charge-by-id {:id (id/for-url id)})
               :on-click (fn [event]
                           (doto event
@@ -106,16 +106,15 @@
                             .stopPropagation)
                           (rf/dispatch [:update-charge
                                         (:path charge-context)
-                                        (merge {:type (->> charge-data
+                                        (merge {:type (->> data
                                                            :type
                                                            name
                                                            (keyword "heraldry.charge.type"))
                                                 :variant {:id id
-                                                          :version latest-version}}
-                                               {:attitude nil
+                                                          :version latest-version}
+                                                :attitude nil
                                                 :facing nil}
-                                               (select-keys charge-data
-                                                            [:attitude :facing]))]))})
+                                               (select-keys data [:attitude :facing]))]))})
            :selected-charge variant
            :display-selected-item? true]]]]])))
 

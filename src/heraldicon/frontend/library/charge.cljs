@@ -169,32 +169,28 @@
                                           [c :keep]) (find-colours
                                                       edn-data)))
                      edn-data (-> edn-data
-                                  (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))]
-                 (let [existing-colours @(rf/subscribe [:get (conj db-path :colours)])
-                       new-colours (merge colours
-                                          (select-keys existing-colours
-                                                       (set/intersection
-                                                        (-> colours
-                                                            keys
-                                                            set)
-                                                        (-> existing-colours
-                                                            keys
-                                                            set))))]
-                   (rf/dispatch [:set (conj db-path :colours) new-colours]))
-                 (rf/dispatch [:set (conj db-path :data) {:edn-data {:data edn-data
-                                                                     :width width
-                                                                     :height height}
-                                                          :svg-data data}]))))
+                                  (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))
+                     existing-colours @(rf/subscribe [:get (conj db-path :colours)])
+                     new-colours (merge colours
+                                        (select-keys existing-colours
+                                                     (set/intersection
+                                                      (-> colours
+                                                          keys
+                                                          set)
+                                                      (-> existing-colours
+                                                          keys
+                                                          set))))]
+                 (rf/dispatch [:merge db-path {:colours new-colours
+                                               :edn-data {:data edn-data
+                                                          :width width
+                                                          :height height}
+                                               :svg-data data}]))))
      (catch :default e
        (log/error "load svg file error:" e)))))
 
 (defn preview []
-  (let [{:keys [data]
-         :as form-data} @(rf/subscribe [:get form-db-path])
-        {:keys [edn-data]} data
-        prepared-charge-data (-> form-data
-                                 (assoc :data edn-data)
-                                 (update :username #(or % (:username (user/data)))))
+  (let [form-data @(rf/subscribe [:get form-db-path])
+        prepared-charge-data (update form-data :username #(or % (:username (user/data))))
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
         {:keys [result
                 environment]} (render/coat-of-arms
@@ -227,7 +223,7 @@
       (let [reader (js/FileReader.)]
         (set! (.-onloadend reader) (fn []
                                      (let [raw-data (.-result reader)]
-                                       (load-svg-file form-db-path raw-data))
+                                       (load-svg-file (conj form-db-path :data) raw-data))
                                      (modal/stop-loading)))
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
@@ -290,7 +286,7 @@
         form-message @(rf/subscribe [:get-form-message form-db-path])
         charge-id @(rf/subscribe [:get (conj form-db-path :id)])
         charge-username @(rf/subscribe [:get (conj form-db-path :username)])
-        charge-svg-url @(rf/subscribe [:get (conj form-db-path :svg-data-url)])
+        charge-svg-url @(rf/subscribe [:get (conj form-db-path :data :svg-data-url)])
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         saved? charge-id

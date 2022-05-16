@@ -3,6 +3,7 @@
    ["paper" :refer [paper Size]]
    [heraldicon.entity.arms] ;; needed for side effects
    [heraldicon.entity.charge] ;; needed for side effects
+   [heraldicon.entity.charge.data] ;; needed for side effects
    [heraldicon.entity.collection] ;; needed for side effects
    [heraldicon.entity.collection.data] ;; needed for side effects
    [heraldicon.entity.collection.element] ;; needed for side effects

@@ -206,9 +206,12 @@
   {:type :heraldicon/arms
    :data arms-data})
 
+(def charge-data
+  {:type :heraldicon.charge/data})
+
 (def charge-entity
   {:type :heraldicon/charge
-   :data {}})
+   :data charge-data})
 
 (def ribbon-data
   {:type :heraldry/ribbon

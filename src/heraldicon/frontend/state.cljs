@@ -106,6 +106,12 @@
       (assoc-in db context value)
       (assoc-in db (:path context) value))))
 
+(macros/reg-event-db :merge
+  (fn [db [_ context value]]
+    (if (vector? context)
+      (update-in db context merge value)
+      (update-in db (:path context) merge value))))
+
 (macros/reg-event-db :set-title
   (fn [db [_ value]]
     (assoc-in db title-path value)))

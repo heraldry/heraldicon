@@ -27,8 +27,9 @@
             tincture-data (interface/get-raw-data context)
             sanitized-tincture-data (merge tincture-data
                                            (options/sanitize tincture-data options))
-            charge-data (when (not preview?)
+            entity-data (when (not preview?)
                           (charge/fetch-charge-data variant))
+            charge-data (:data entity-data)
             qualifiers (->> charge-data
                             :colours
                             (map second)
