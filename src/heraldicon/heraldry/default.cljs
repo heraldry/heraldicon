@@ -110,13 +110,6 @@
    :components [shield-separator
                 helmet]})
 
-(def ribbon
-  {:type :heraldry/ribbon
-   :thickness nil
-   :points [(v/Vector. -150 -20) (v/Vector. -75 0) (v/Vector. 0 5) (v/Vector. 75 0) (v/Vector. 150 -20)]
-   :segments [{:type :heraldry.ribbon.segment.type/foreground-with-text
-               :text "LOREM IPSUM"}]})
-
 ;; TODO: fetch a default ribbon
 (def motto
   {:type :heraldry.motto.type/motto})
@@ -224,9 +217,16 @@
   {:type :heraldicon/charge
    :data {}})
 
+(def ribbon-data
+  {:type :heraldry/ribbon
+   :thickness nil
+   :points [(v/Vector. -150 -20) (v/Vector. -75 0) (v/Vector. 0 5) (v/Vector. 75 0) (v/Vector. 150 -20)]
+   :segments [{:type :heraldry.ribbon.segment.type/foreground-with-text
+               :text "LOREM IPSUM"}]})
+
 (def ribbon-entity
   {:type :heraldicon/ribbon
-   :data ribbon})
+   :data ribbon-data})
 
 (def collection-entity
   {:type :heraldicon/collection
