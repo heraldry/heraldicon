@@ -3,30 +3,6 @@
    [heraldicon.font :as font]
    [heraldicon.interface :as interface]))
 
-(derive :heraldry/helm :heraldry.options/root)
-
-(defmethod interface/options-subscriptions :heraldry/helm [_context]
-  #{})
-
-(defmethod interface/options :heraldry/helm [_context]
-  {})
-
-(defmethod interface/options-subscriptions :heraldry/helms [_context]
-  #{})
-
-(derive :heraldry/helms :heraldry.options/root)
-
-(defmethod interface/options :heraldry/helms [_context]
-  {})
-
-(derive :heraldry/ornaments :heraldry.options/root)
-
-(defmethod interface/options-subscriptions :heraldry/ornaments [_context]
-  #{})
-
-(defmethod interface/options :heraldry/ornaments [_context]
-  {})
-
 (derive :heraldry/collection-element :heraldry.options/root)
 
 (defmethod interface/options-subscriptions :heraldry/collection-element [_context]
