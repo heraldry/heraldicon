@@ -74,7 +74,9 @@
                     (every? (fn [word]
                               (some (fn [attribute]
                                       (-> item
-                                          (get attribute)
+                                          ((if (seqable? attribute)
+                                             get-in
+                                             get) attribute)
                                           (-matches-word word)))
                                     filter-keys))
                             words)

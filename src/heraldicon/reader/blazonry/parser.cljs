@@ -100,7 +100,7 @@
 
 (defn generate [charges]
   (let [charge-map (->> charges
-                        (group-by #(some-> % :type name keyword))
+                        (group-by #(some-> % :data :type name keyword))
                         (map (fn [[key value]]
                                [key (sort-by (fn [charge]
                                                [(if (-> charge :username (= "heraldicon"))
@@ -113,17 +113,17 @@
                                                   (-> charge :name s/lower-case (s/includes? "ww")) 0
                                                   (-> charge :name s/lower-case (s/includes? "sodacan")) 1
                                                   :else 2)
-                                                (case (:attitude charge)
+                                                (case (-> charge :data :attitude)
                                                   :none [0 :_]
                                                   :rampant [1 :_]
                                                   nil [2 :_]
-                                                  [3 (:attitude charge)])
-                                                (case (:facing charge)
+                                                  [3 (-> charge :data :attitude)])
+                                                (case (-> charge :data :facing)
                                                   :none [0 :_]
                                                   :to-dexter [1 :_]
                                                   nil [2 :_]
-                                                  [3 (:facing charge)])
-                                                (-> charge :attributes count)
+                                                  [3 (-> charge :data :facing)])
+                                                (-> charge :data :attributes count)
                                                 (:id charge)]) value)]))
                         (into {}))
         charge-type-rules (->> charge-map
