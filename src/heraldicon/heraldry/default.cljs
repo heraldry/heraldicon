@@ -198,17 +198,6 @@
    :render-options render-options
    :coat-of-arms coat-of-arms})
 
-(def collection
-  {:type :heraldry/collection
-   :num-columns 6
-   :elements []
-   :render-options (-> render-options
-                       (dissoc :escutcheon-shadow?)
-                       (assoc :escutcheon-outline? true))})
-
-(def collection-element
-  {:type :heraldry/collection-element})
-
 (def arms-entity
   {:type :heraldicon/arms
    :data achievement})
@@ -228,6 +217,17 @@
   {:type :heraldicon/ribbon
    :data ribbon-data})
 
+(def collection-data
+  {:type :heraldicon.collection/data
+   :num-columns 6
+   :elements []
+   :render-options (-> render-options
+                       (dissoc :escutcheon-shadow?)
+                       (assoc :escutcheon-outline? true))})
+
+(def collection-element
+  {:type :heraldicon.collection/element})
+
 (def collection-entity
   {:type :heraldicon/collection
-   :data collection})
+   :data collection-data})

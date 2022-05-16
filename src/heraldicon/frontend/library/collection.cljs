@@ -14,7 +14,7 @@
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.collection-select :as collection-select]
-   [heraldicon.frontend.ui.form.collection-element :as collection-element]
+   [heraldicon.frontend.ui.form.entity.collection.element :as collection.element]
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.default :as default]
@@ -101,7 +101,7 @@
         index
         ;; index not valid anymore
         (do
-          (collection-element/highlight-element nil)
+          (collection.element/highlight-element nil)
           nil)))))
 
 (defn arms-highlight [path x y width height]
