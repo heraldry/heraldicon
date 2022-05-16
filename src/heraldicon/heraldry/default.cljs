@@ -198,9 +198,13 @@
    :render-options render-options
    :coat-of-arms coat-of-arms})
 
+(def arms-data
+  {:type :heraldicon.arms/data
+   :achievement achievement})
+
 (def arms-entity
   {:type :heraldicon/arms
-   :data achievement})
+   :data arms-data})
 
 (def charge-entity
   {:type :heraldicon/charge

@@ -135,10 +135,10 @@
                                                               old
                                                               new))
                                                           (:render-options shared/coa-select-option-context)
-                                                          (-> arms-data :data :render-options)
+                                                          (-> arms-data :data :achievement :render-options)
                                                           collection-render-options))
                                    (c/<< :coat-of-arms
-                                         (if-let [coat-of-arms (-> arms-data :data :coat-of-arms)]
+                                         (if-let [coat-of-arms (-> arms-data :data :achievement :coat-of-arms)]
                                            coat-of-arms
                                            default/coat-of-arms)))
                                size)
@@ -251,10 +251,10 @@
                                                                     old
                                                                     new))
                                                                 (:render-options shared/coa-select-option-context)
-                                                                (-> arms-data :data :render-options)
+                                                                (-> arms-data :data :achievement :render-options)
                                                                 collection-render-options))
                                          (c/<< :coat-of-arms
-                                               (if-let [coat-of-arms (-> arms-data :data :coat-of-arms)]
+                                               (if-let [coat-of-arms (-> arms-data :data :achievement :coat-of-arms)]
                                                  coat-of-arms
                                                  default/coat-of-arms)))
                                      100)
