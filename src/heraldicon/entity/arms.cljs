@@ -1,28 +1,7 @@
 (ns heraldicon.entity.arms
   (:require
    [heraldicon.config :as config]
-   [heraldicon.context :as c]
-   [heraldicon.entity.attribution :as attribution]
-   [heraldicon.entity.id :as id]
-   [heraldicon.entity.metadata :as metadata]
-   [heraldicon.interface :as interface]))
-
-(derive :heraldicon/arms :heraldry.options/root)
-
-(defmethod interface/options-subscriptions :heraldicon/arms [_context]
-  #{[:attribution :license]
-    [:attribution :nature]
-    [:attribution :source-license]})
-
-(defmethod interface/options :heraldicon/arms [context]
-  {:name {:type :text
-          :default ""
-          :ui {:label :string.option/name}}
-   :is-public {:type :boolean
-               :ui {:label :string.option/is-public}}
-   :attribution (attribution/options (c/++ context :attribution))
-   :metadata (metadata/options (c/++ context :metadata))
-   :tags {:ui {:form-type :tags}}})
+   [heraldicon.entity.id :as id]))
 
 (defn short-url [arms-data]
   (if (= (config/get :stage) "prod")

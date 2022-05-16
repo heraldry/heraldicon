@@ -44,13 +44,12 @@
    [heraldicon.frontend.ui.form.charge-group] ;; needed for side effects
    [heraldicon.frontend.ui.form.coat-of-arms] ;; needed for side effects
    [heraldicon.frontend.ui.form.cottise] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.arms] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.charge] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.arms.data] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.charge.data] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.collection] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.collection.data] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.collection.element] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.ribbon] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.core] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.ribbon.data] ;; needed for side effects
    [heraldicon.frontend.ui.form.field] ;; needed for side effects
    [heraldicon.frontend.ui.form.helm] ;; needed for side effects
    [heraldicon.frontend.ui.form.helms] ;; needed for side effects
