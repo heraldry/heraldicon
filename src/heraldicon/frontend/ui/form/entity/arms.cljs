@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.arms-general
+(ns heraldicon.frontend.ui.form.entity.arms
   (:require
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]))
