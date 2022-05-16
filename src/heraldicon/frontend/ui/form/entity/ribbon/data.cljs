@@ -1,16 +1,13 @@
-(ns heraldicon.frontend.ui.form.ribbon-general
+(ns heraldicon.frontend.ui.form.entity.ribbon.data
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.element.select :as select]
-   [heraldicon.frontend.ui.element.submenu :as submenu]
-   [heraldicon.frontend.ui.element.text-field :as text-field]
+   [heraldicon.frontend.ui.form.ribbon :as form.ribbon]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.ribbon :as ribbon]
-   [heraldicon.interface :as interface]
-   [heraldicon.localization.string :as string]
    [heraldicon.math.curve.core :as curve]
    [re-frame.core :as rf]))
 
@@ -185,72 +182,9 @@
                            (update :z-index #(- max-z-index %)))))
                 vec)))))))
 
-(defn segment-form [context]
-  (let [segment-type (interface/get-raw-data (c/++ context :type))
-        idx (-> context :path last)
-        z-index (interface/get-sanitized-data (c/++ context :z-index))
-        title (string/str-tr (inc idx) ". "
-                             (ribbon/segment-type-map segment-type)
-                             ", layer " z-index)]
-
-    [:div {:style {:position "relative"}}
-     [submenu/submenu context nil [tr title] {:style {:width "28em"}
-                                              :class "submenu-segment-form"}
-      (ui.interface/form-elements
-       context
-       [:type
-        :z-index
-        :font
-        :font-scale
-        :spacing
-        :offset-x
-        :offset-y])]
-
-     [text-field/text-field (c/++ context :text)
-      :style {:display "inline-block"
-              :position "absolute"
-              :left "13em"}]]))
-
-(defn ribbon-form [context]
-  (ui.interface/form-elements
-   context
-   [:thickness
-    :edge-angle
-    :end-split
-    :outline?]))
-
-(defn ribbon-segments-form [context & {:keys [tooltip]}]
-  (let [num-segments (interface/get-list-size (c/++ context :segments))]
-    [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
-     [:div {:style {:font-size "1.3em"}} [tr :string.ribbon/segments]
-      (when tooltip
-        [:div.tooltip.info {:style {:display "inline-block"
-                                    :margin-left "0.2em"
-                                    :vertical-align "top"}}
-         [:i.fas.fa-question-circle]
-         [:div.bottom {:style {:width "20em"}}
-          [tr tooltip]]])]
-
-     [:ul
-      (doall
-       (for [idx (range num-segments)]
-         ^{:key idx}
-         [segment-form (c/++ context :segments idx)]))]
-
-     [:p {:style {:color "#f86"}}
-      [tr :string.ribbon.text/svg-font-rendering-warning]]]))
-
 (defn form [context]
   [:<>
-   (ui.interface/form-elements
-    context
-    [:name
-     :attribution
-     :is-public
-     :attributes
-     :tags])
-
-   [ribbon-form (c/++ context :data)]
+   [form.ribbon/form (c/++ context :ribbon)]
 
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
@@ -299,22 +233,22 @@
 
       [:div
        [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments
-                                          (-> context :path (conj :data))
+                                          (-> context :path (conj :ribbon))
                                           layer-mode-value
                                           flow-mode-value
                                           start-mode-value])}
         [tr :string.ribbon/apply-presets]]
        [:button {:on-click #(rf/dispatch [:ribbon-edit-invert-segments
-                                          (-> context :path (conj :data))])}
+                                          (-> context :path (conj :ribbon))])}
         [tr :string.ribbon.button/invert]]]
 
-      [ribbon-segments-form
-       (c/++ context :data)
+      [form.ribbon/segments-form
+       (c/++ context :ribbon)
        :title :string.ribbon.text/segment-explanation]])])
 
-(defmethod ui.interface/component-node-data :heraldicon/ribbon [context]
+(defmethod ui.interface/component-node-data :heraldicon.ribbon/data [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 
-(defmethod ui.interface/component-form-data :heraldicon/ribbon [_context]
+(defmethod ui.interface/component-form-data :heraldicon.ribbon/data [_context]
   {:form form})
