@@ -41,11 +41,12 @@
    [heraldicon.frontend.ui.element.tincture-select] ;; needed for side effects
    [heraldicon.frontend.ui.element.voided] ;; needed for side effects
    [heraldicon.frontend.ui.form.charge] ;; needed for side effects
-   [heraldicon.frontend.ui.form.charge-general] ;; needed for side effects
    [heraldicon.frontend.ui.form.charge-group] ;; needed for side effects
    [heraldicon.frontend.ui.form.coat-of-arms] ;; needed for side effects
    [heraldicon.frontend.ui.form.cottise] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.arms] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.charge] ;; needed for side effects
+   [heraldicon.frontend.ui.form.entity.charge.data] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.collection] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.collection.data] ;; needed for side effects
    [heraldicon.frontend.ui.form.entity.collection.element] ;; needed for side effects

@@ -41,9 +41,8 @@
       (let [user-data (user/data)
             charge-data (<? (api.request/call :fetch-charge {:id charge-id
                                                              :version version} user-data))
-            edn-data (<? (http/fetch (:edn-data-url charge-data)))]
-        (-> charge-data
-            (assoc :data edn-data)))
+            edn-data (<? (http/fetch (-> charge-data :data :edn-data-url)))]
+        (update charge-data :data assoc :edn-data edn-data))
       (catch :default e
         (log/error "fetch charge for rendering error:" e)))))
 
@@ -53,11 +52,12 @@
       (let [user-data (user/data)
             charge-data (<? (api.request/call :fetch-charge {:id charge-id
                                                              :version version} user-data))
-            edn-data (<? (http/fetch (:edn-data-url charge-data)))
-            svg-data (<? (http/fetch (:svg-data-url charge-data)))]
-        (-> charge-data
-            (assoc-in [:data :edn-data] edn-data)
-            (assoc-in [:data :svg-data] svg-data)))
+            edn-data (<? (http/fetch (-> charge-data :data :edn-data-url)))
+            svg-data (<? (http/fetch (-> charge-data :data :svg-data-url)))]
+        (update charge-data
+                :data assoc
+                :edn-data edn-data
+                :svg-data svg-data))
       (catch :default e
         (log/error "fetch charge for editing error:" e)))))
 

@@ -54,7 +54,7 @@
      on-select
      refresh-fn
      :sort-fn (juxt (comp filter/normalize-string-for-sort :name)
-                    :type
+                    #(-> % :data :type)
                     :id
                     :version)
      :page-size 20

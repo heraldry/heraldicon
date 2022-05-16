@@ -197,7 +197,7 @@
         placeholder-colours (:colours full-charge-data)
         layer-separator-colours (colours-for-modifier placeholder-colours :layer-separator)
         ignore-layer-separator? (interface/get-sanitized-data (c/++ context :ignore-layer-separator?))]
-    (if (and (:data full-charge-data)
+    (if (and full-charge-data
              ;; in order to require rendering, we either have
              ;; to be located in the right render pass
              ;; OR have some layer separator in the charge
@@ -236,7 +236,7 @@
             {:keys [slot-spacing
                     slot-angle]} charge-group
             context (dissoc context :charge-group)
-            charge-data (:data full-charge-data)
+            charge-data (:edn-data full-charge-data)
             fixed-tincture (-> full-charge-data :fixed-tincture (or :none))
             render-field? (= fixed-tincture :none)
             landscape? (:landscape? full-charge-data)
