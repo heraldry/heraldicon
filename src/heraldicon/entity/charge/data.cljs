@@ -11,8 +11,8 @@
   #{[:landscape?]})
 
 (defmethod interface/options :heraldicon.charge/data [context]
-  (cond-> {:type {:type :text
-                  :ui {:label :string.option/charge-type}}
+  (cond-> {:charge-type {:type :text
+                         :ui {:label :string.option/charge-type}}
            :attributes {:ui {:form-type :attributes}}
            :landscape? {:type :boolean
                         :ui {:label :string.option/landscape?

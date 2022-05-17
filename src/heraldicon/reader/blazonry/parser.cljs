@@ -100,7 +100,7 @@
 
 (defn generate [charges]
   (let [charge-map (->> charges
-                        (group-by #(some-> % :data :type name keyword))
+                        (group-by #(some-> % :data :charge-type name keyword))
                         (map (fn [[key value]]
                                [key (sort-by (fn [charge]
                                                [(if (-> charge :username (= "heraldicon"))

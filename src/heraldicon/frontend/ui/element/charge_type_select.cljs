@@ -39,10 +39,10 @@
   (if (interface/get-raw-data (c/++ context :preview?))
     (static/static-url
      (str "/svg/charge-type-roundel-unselected.svg"))
-    (let [type-context (c/++ context :type)
+    (let [charge-type-context (c/++ context :type)
           variant-context (c/++ context :variant)
-          {:keys [inherited default]} (interface/get-relevant-options type-context)
-          current-value (interface/get-raw-data type-context)
+          {:keys [inherited default]} (interface/get-relevant-options charge-type-context)
+          current-value (interface/get-raw-data charge-type-context)
           value (or current-value
                     inherited
                     default)
@@ -107,7 +107,7 @@
                           (rf/dispatch [:update-charge
                                         (:path charge-context)
                                         (merge {:type (->> data
-                                                           :type
+                                                           :charge-type
                                                            name
                                                            (keyword "heraldry.charge.type"))
                                                 :variant {:id id
