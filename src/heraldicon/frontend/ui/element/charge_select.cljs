@@ -50,12 +50,12 @@
      user-data
      charge-list-path
      [:name :username :metadata :tags
-      [:data :type] [:data :attitude] [:data :facing] [:data :attributes] [:data :colours]]
+      [:data :charge-type] [:data :attitude] [:data :facing] [:data :attributes] [:data :colours]]
      :charge
      on-select
      refresh-fn
      :sort-fn (juxt (comp filter/normalize-string-for-sort :name)
-                    #(-> % :data :type)
+                    #(-> % :data :charge-type)
                     :id
                     :version)
      :page-size 20

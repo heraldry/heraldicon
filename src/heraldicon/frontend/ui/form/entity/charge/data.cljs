@@ -9,7 +9,7 @@
   [:<>
    (ui.interface/form-elements
     context
-    [:type
+    [:charge-type
      :landscape?
      :attitude
      :facing
