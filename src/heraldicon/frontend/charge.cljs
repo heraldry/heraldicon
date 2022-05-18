@@ -54,6 +54,7 @@
                                                              :version version} user-data))
             edn-data (<? (http/fetch (-> charge-data :data :edn-data-url)))
             svg-data (<? (http/fetch (-> charge-data :data :svg-data-url)))]
+        ;; currently need to fetch both, so saving a new version will send them again
         (update charge-data
                 :data assoc
                 :edn-data edn-data
