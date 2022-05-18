@@ -492,7 +492,7 @@
   (let [[status ribbon-data] (state/async-fetch-data
                               form-db-path
                               [ribbon-id version]
-                              #(frontend.ribbon/fetch-ribbon-for-editing ribbon-id version))]
+                              #(frontend.ribbon/fetch-ribbon ribbon-id version))]
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]

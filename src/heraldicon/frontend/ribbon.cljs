@@ -29,7 +29,7 @@
       (catch :default e
         (log/error "fetch ribbons error:" e)))))
 
-(defn fetch-ribbon-for-rendering [ribbon-id version]
+(defn fetch-ribbon [ribbon-id version]
   (go
     (try
       (let [user-data (user/data)
@@ -39,23 +39,13 @@
       (catch :default e
         (log/error "fetch ribbon for rendering error:" e)))))
 
-(defn fetch-ribbon-for-editing [ribbon-id version]
-  (go
-    (try
-      (let [user-data (user/data)
-            ribbon-data (<? (api.request/call :fetch-ribbon {:id ribbon-id
-                                                             :version version} user-data))]
-        ribbon-data)
-      (catch :default e
-        (log/error "fetch ribbon for editing error:" e)))))
-
 (defn fetch-ribbon-data [{:keys [id version] :as variant}]
   (if (and id version)
     (let [db-path [:ribbon-data variant]
           [status ribbon-data] (state/async-fetch-data
                                 db-path
                                 variant
-                                #(fetch-ribbon-for-rendering id version))]
+                                #(fetch-ribbon id version))]
       (when (= status :done)
         ribbon-data))
     (log/error "error fetching ribbon data, invalid variant:" variant)))
