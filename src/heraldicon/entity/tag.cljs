@@ -1,5 +1,6 @@
 (ns heraldicon.entity.tag
-  (:require [clojure.string :as s]))
+  (:require
+   [clojure.string :as s]))
 
 (defn clean [tag]
   (when-let [tag (some-> tag

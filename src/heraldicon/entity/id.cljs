@@ -1,5 +1,6 @@
 (ns heraldicon.entity.id
-  (:require [clojure.string :as s]))
+  (:require
+   [clojure.string :as s]))
 
 (defn for-url [id]
   (some-> id

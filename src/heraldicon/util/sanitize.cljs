@@ -1,5 +1,6 @@
 (ns heraldicon.util.sanitize
-  (:require [clojure.string :as s]))
+  (:require
+   [clojure.string :as s]))
 
 (defn sanitize-string [data]
   (or (some-> data
