@@ -18,9 +18,7 @@
     {:title :string.entity/arms
      :selectable? false
      :buttons [{:icon "fas fa-plus"
-                :title :string.button/add
-                :menu [{:title :string.entity/arms
-                        :handler #(state/dispatch-on-event % [:add-element elements-context default/collection-element])}]}]
+                :handler #(state/dispatch-on-event % [:add-element elements-context default/collection-element])}]
      :nodes (->> (range num-elements)
                  (map (fn [idx]
                         (let [element-context (c/++ elements-context idx)]
