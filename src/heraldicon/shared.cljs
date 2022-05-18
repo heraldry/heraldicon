@@ -1,10 +1,10 @@
 (ns heraldicon.shared
   (:require
    ["paper" :refer [paper Size]]
+   [heraldicon.entity] ;; needed for side effects
    [heraldicon.entity.charge.data] ;; needed for side effects
    [heraldicon.entity.collection.data] ;; needed for side effects
    [heraldicon.entity.collection.element] ;; needed for side effects
-   [heraldicon.entity.core] ;; needed for side effects
    [heraldicon.heraldry.charge-group.core] ;; needed for side effects
    [heraldicon.heraldry.charge-group.options] ;; needed for side effects
    [heraldicon.heraldry.charge.core] ;; needed for side effects
