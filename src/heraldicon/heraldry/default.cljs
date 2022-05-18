@@ -105,6 +105,10 @@
 (def shield-separator
   {:type :heraldry/shield-separator})
 
+(def helms
+  {:type :heraldry/helms
+   :elements []})
+
 (def helm
   {:type :heraldry/helm
    :components [shield-separator
@@ -172,6 +176,10 @@
                  :angle 0}
    :geometry {:size 150}})
 
+(def ornaments
+  {:type :heraldry/ornaments
+   :elements []})
+
 (def ornament-charge
   {:type :heraldry.charge.type/roundel
    :field field
@@ -196,7 +204,9 @@
   {:type :heraldry/achievement
    :spec 1
    :render-options render-options
-   :coat-of-arms coat-of-arms})
+   :coat-of-arms coat-of-arms
+   :helms helms
+   :ornaments ornaments})
 
 (def arms-data
   {:type :heraldicon.arms/data

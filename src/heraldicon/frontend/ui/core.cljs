@@ -79,7 +79,7 @@
           new-element-path (if selected-element-path-fn
                              (selected-element-path-fn new-element-path (last elements) elements)
                              new-element-path)
-          added-type (component/effective-type new-element-path (:type value))]
+          added-type (component/effective-type (:type value))]
       (-> db
           (assoc-in path elements)
           (state/ui-component-node-select

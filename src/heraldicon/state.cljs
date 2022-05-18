@@ -23,8 +23,8 @@
   (fn [[_ path] _]
     (rf/subscribe [:get (conj path :type)]))
 
-  (fn [raw-type [_ path]]
-    (component/effective-type path raw-type)))
+  (fn [raw-type _]
+    (component/effective-type raw-type)))
 
 (rf/reg-sub ::options-subscriptions-data
   (fn [[_ path] _]

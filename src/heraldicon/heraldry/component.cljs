@@ -2,15 +2,14 @@
   (:require
    [clojure.string :as s]))
 
-(defn effective-type [path raw-type]
+(defn effective-type [raw-type]
   (when (some-> raw-type
                 str
                 (s/starts-with? ":heraldry.charge.type/"))
     (derive raw-type :heraldry.charge/type))
-  (cond
-    (-> path last (= :helms)) :heraldry/helms
-    (-> path last (= :ornaments)) :heraldry/ornaments
-    ;; TODO: needed while charge data uses :type as well
-    (and (keyword? raw-type)
-         (namespace raw-type)) raw-type
-    :else nil))
+  ;; TODO: need to limit this to heraldry.* and heraldicon.* namespaces for now,
+  ;; as there are types that aren't option roots or components, e.g. lines, but there
+  ;; might be a better way
+  (when (and (keyword? raw-type)
+             (some-> raw-type namespace (s/starts-with? "herald")))
+    raw-type))

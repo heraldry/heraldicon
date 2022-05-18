@@ -297,7 +297,7 @@
 
 (defn ui-component-node-select [db path & {:keys [open?]}]
   (let [raw-type (get-in db (conj path :type))
-        component-type (component/effective-type path raw-type)]
+        component-type (component/effective-type raw-type)]
     (-> db
         (assoc-in ui-component-node-selected-path path)
         (ui-component-node-open (cond-> path
