@@ -1,6 +1,7 @@
 (ns heraldicon.blazonry
-  (:require [clojure.string :as s]
-            [heraldicon.localization.string :as string]))
+  (:require
+   [clojure.string :as s]
+   [heraldicon.localization.string :as string]))
 
 ;; TODO: this could become a multi method based on a keyword hierarchy,
 ;; heraldry.tincture/translate-tincture would then be a defmethod for a

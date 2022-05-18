@@ -92,6 +92,7 @@ dev-test:
 
 check:
 	clj-kondo --parallel --lint src test backend/src; cljfmt --parallel check src test backend/src
+	! rg ':require[ ]' src test backend/src
 
 check-debug-print-frontend:
 	! rg println src --glob=!src/**/*test*.cljs

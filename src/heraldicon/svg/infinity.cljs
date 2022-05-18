@@ -1,5 +1,6 @@
 (ns heraldicon.svg.infinity
-  (:require [heraldicon.math.vector :as v]))
+  (:require
+   [heraldicon.math.vector :as v]))
 
 (defn top [& [point]]
   (-> point
