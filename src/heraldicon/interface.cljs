@@ -21,8 +21,7 @@
     :else @(rf/subscribe [:get path])))
 
 (defn effective-component-type [context]
-  (component/effective-type (:path context)
-                            (get-raw-data (c/++ context :type))))
+  (component/effective-type (get-raw-data (c/++ context :type))))
 
 (defmulti options (fn [{:keys [dispatch-value] :as context}]
                     (or dispatch-value
