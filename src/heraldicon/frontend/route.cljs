@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.route
   (:require
    [clojure.string :as s]
+   [heraldicon.config :as config]
    [heraldicon.frontend.account :as account]
    [heraldicon.frontend.contact :as contact]
    [heraldicon.frontend.home :as home]
@@ -9,7 +10,9 @@
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.library.ribbon :as library.ribbon]
    [heraldicon.frontend.library.user :as library.user]
+   [heraldicon.frontend.maintenance :as maintenance]
    [heraldicon.frontend.news :as news]
+   [heraldicon.frontend.user :as user]
    [reagent.core :as rc]
    [reitit.frontend :as reif]
    [reitit.frontend.easy :as reife]))
@@ -265,10 +268,29 @@
     (let [view (:view (:data @current-match))]
       [view @current-match])))
 
+(defn blocked-by-maintenance-mode? [route-name]
+  (-> route-name
+      name
+      (s/split #"-+")
+      first
+      #{"arms"
+        "collections"
+        "ribbons"
+        "charges"
+        "users"
+        "account"
+        "create"
+        "view"}))
+
 (defn start-router []
   (reife/start!
    router
-   (fn [m] (when m
-             (reset! current-match m)))
+   (fn [m]
+     (when m
+       (reset! current-match (cond-> m
+                               (and (config/get :maintenance-mode?)
+                                    (-> (user/data) :username ((config/get :admins)) not)
+                                    (-> m :data :name blocked-by-maintenance-mode?))
+                               (assoc-in [:data :view] maintenance/view)))))
    ;; set to false to enable HistoryAPI
    {:use-fragment false}))
