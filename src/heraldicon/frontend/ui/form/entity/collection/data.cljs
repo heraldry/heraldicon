@@ -12,7 +12,7 @@
    [:num-columns
     :font]))
 
-(defmethod ui.interface/component-node-data :heraldicon.collection/data [context]
+(defmethod ui.interface/component-node-data :heraldicon.entity.collection/data [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.entity/arms
@@ -37,5 +37,5 @@
                                       :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
                  vec)}))
 
-(defmethod ui.interface/component-form-data :heraldicon.collection/data [_context]
+(defmethod ui.interface/component-form-data :heraldicon.entity.collection/data [_context]
   {:form form})

@@ -303,7 +303,7 @@
         (ui-component-node-open (cond-> path
                                   (not open?) drop-last))
         (cond->
-          (= component-type :heraldicon.collection/element)
+          (= component-type :heraldicon.entity.collection/element)
           (assoc-in collection.element/ui-highlighted-element-path path)))))
 
 (macros/reg-event-db :ui-component-node-select

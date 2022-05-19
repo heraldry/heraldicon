@@ -5,12 +5,12 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]))
 
-(derive :heraldicon.charge/data :heraldry.options/root)
+(derive :heraldicon.entity.charge/data :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldicon.charge/data [_context]
+(defmethod interface/options-subscriptions :heraldicon.entity.charge/data [_context]
   #{[:landscape?]})
 
-(defmethod interface/options :heraldicon.charge/data [context]
+(defmethod interface/options :heraldicon.entity.charge/data [context]
   (cond-> {:charge-type {:type :text
                          :ui {:label :string.option/charge-type}}
            :attributes {:ui {:form-type :attributes}}

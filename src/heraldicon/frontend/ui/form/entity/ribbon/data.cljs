@@ -246,9 +246,9 @@
        (c/++ context :ribbon)
        :title :string.ribbon.text/segment-explanation]])])
 
-(defmethod ui.interface/component-node-data :heraldicon.ribbon/data [context]
+(defmethod ui.interface/component-node-data :heraldicon.entity.ribbon/data [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 
-(defmethod ui.interface/component-form-data :heraldicon.ribbon/data [_context]
+(defmethod ui.interface/component-form-data :heraldicon.entity.ribbon/data [_context]
   {:form form})
