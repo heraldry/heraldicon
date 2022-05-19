@@ -8,7 +8,7 @@
    [shadow.test.env :as env]))
 
 (defmethod ct/report [::reporter :begin-test-ns] [m]
-  ((get-method ct/report [:cljs.test/default :begin-test-ns]) m))
+  (println "Testing" (name (:ns m))))
 
 (defmethod ct/report [::reporter :pass] [m]
   ((get-method ct/report [:cljs.test/default :pass]) m))
