@@ -20,9 +20,9 @@
    ;; TODO: not ideal, probably should move this at some point
    [checkbox/checkbox (c/<< context :path [:example-coa :render-options :preview-original?])]])
 
-(defmethod ui.interface/component-node-data :heraldicon.charge/data [context]
+(defmethod ui.interface/component-node-data :heraldicon.entity.charge/data [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 
-(defmethod ui.interface/component-form-data :heraldicon.charge/data [_context]
+(defmethod ui.interface/component-form-data :heraldicon.entity.charge/data [_context]
   {:form form})

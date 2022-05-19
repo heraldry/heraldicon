@@ -31,7 +31,7 @@
    [:name
     :reference]))
 
-(defmethod ui.interface/component-node-data :heraldicon.collection/element [{:keys [path] :as context}]
+(defmethod ui.interface/component-node-data :heraldicon.entity.collection/element [{:keys [path] :as context}]
   (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
     {:title (string/str-tr (inc index) ": "
@@ -39,5 +39,5 @@
                              name
                              :string.miscellaneous/no-name))}))
 
-(defmethod ui.interface/component-form-data :heraldicon.collection/element [_context]
+(defmethod ui.interface/component-form-data :heraldicon.entity.collection/element [_context]
   {:form form})

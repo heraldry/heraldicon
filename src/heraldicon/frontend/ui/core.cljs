@@ -94,7 +94,7 @@
             (isa? added-type :heraldry/charge) (submenu/ui-submenu-open (conj new-element-path :type))
             (isa? added-type :heraldry/charge-group) (submenu/ui-submenu-open new-element-path)
             (isa? added-type :heraldry/motto) (submenu/ui-submenu-open (conj new-element-path :ribbon-variant))
-            (isa? added-type :heraldicon.collection/element) (submenu/ui-submenu-open (conj new-element-path :reference)))))))
+            (isa? added-type :heraldicon.entity.collection/element) (submenu/ui-submenu-open (conj new-element-path :reference)))))))
 
 (macros/reg-event-db :remove-element
   (fn [db [_ {:keys [path]} {:keys [post-fn]}]]

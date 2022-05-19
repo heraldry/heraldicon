@@ -3,12 +3,12 @@
    [heraldicon.font :as font]
    [heraldicon.interface :as interface]))
 
-(derive :heraldicon.collection/data :heraldry.options/root)
+(derive :heraldicon.entity.collection/data :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldicon.collection/data [_context]
+(defmethod interface/options-subscriptions :heraldicon.entity.collection/data [_context]
   #{})
 
-(defmethod interface/options :heraldicon.collection/data [_context]
+(defmethod interface/options :heraldicon.entity.collection/data [_context]
   {:num-columns {:type :range
                  :default 6
                  :min 1

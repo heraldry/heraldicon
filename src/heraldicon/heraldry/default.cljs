@@ -209,18 +209,18 @@
    :ornaments ornaments})
 
 (def arms-data
-  {:type :heraldicon.arms/data
+  {:type :heraldicon.entity.arms/data
    :achievement achievement})
 
 (def arms-entity
-  {:type :heraldicon/arms
+  {:type :heraldicon.entity.type/arms
    :data arms-data})
 
 (def charge-data
-  {:type :heraldicon.charge/data})
+  {:type :heraldicon.entity.charge/data})
 
 (def charge-entity
-  {:type :heraldicon/charge
+  {:type :heraldicon.entity.type/charge
    :data charge-data})
 
 (def ribbon
@@ -231,15 +231,15 @@
                :text "LOREM IPSUM"}]})
 
 (def ribbon-data
-  {:type :heraldicon.ribbon/data
+  {:type :heraldicon.entity.ribbon/data
    :ribbon ribbon})
 
 (def ribbon-entity
-  {:type :heraldicon/ribbon
+  {:type :heraldicon.entity.type/ribbon
    :data ribbon-data})
 
 (def collection-data
-  {:type :heraldicon.collection/data
+  {:type :heraldicon.entity.collection/data
    :num-columns 6
    :elements []
    :render-options (-> render-options
@@ -247,8 +247,8 @@
                        (assoc :escutcheon-outline? true))})
 
 (def collection-element
-  {:type :heraldicon.collection/element})
+  {:type :heraldicon.entity.collection/element})
 
 (def collection-entity
-  {:type :heraldicon/collection
+  {:type :heraldicon.entity.type/collection
    :data collection-data})
