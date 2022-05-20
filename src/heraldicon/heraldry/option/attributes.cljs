@@ -141,6 +141,10 @@
 (def tincture-modifier-for-charge-map
   (options/choices->map tincture-modifier-for-charge-choices))
 
+(def applicable-tincture-modifier-map
+  (dissoc tincture-modifier-for-charge-map
+          :keep :primary :outline :layer-separator))
+
 (defn tincture-modifier [value]
   (if (vector? value)
     (first value)
