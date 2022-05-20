@@ -161,6 +161,22 @@
    :ui {:label :string.option/type
         :form-type :line-type-select}})
 
+(def base-line-choices
+  [[:string.option.point-choice/bottom :bottom]
+   [:string.option.alignment-choice/middle :middle]
+   [:string.option.point-choice/top :top]])
+
+(def base-line-map
+  (options/choices->map base-line-choices))
+
+(def corner-dampening-mode-choices
+  [[:string.option.dampening-mode-choice/clamp-to-zero :clamp-to-zero]
+   [:string.option.dampening-mode-choice/linear-dampening :linear-dampening]
+   [:string.option.dampening-mode-choice/square-root-dampening :square-root-dampening]])
+
+(def corner-dampening-mode-map
+  (options/choices->map corner-dampening-mode-choices))
+
 (def default-options
   {:eccentricity {:type :range
                   :min 0
@@ -193,9 +209,7 @@
              :ui {:label :string.option/spacing
                   :step 0.01}}
    :base-line {:type :choice
-               :choices [[:string.option.point-choice/bottom :bottom]
-                         [:string.option.alignment-choice/middle :middle]
-                         [:string.option.point-choice/top :top]]
+               :choices base-line-choices
                :default :middle
                :ui {:label :string.option/base-line
                     :form-type :radio-select}}
@@ -207,9 +221,7 @@
                                   :tooltip :string.tooltip/dampening-radius
                                   :step 0.01}}
    :corner-dampening-mode {:type :choice
-                           :choices [[:string.option.dampening-mode-choice/clamp-to-zero :clamp-to-zero]
-                                     [:string.option.dampening-mode-choice/linear-dampening :linear-dampening]
-                                     [:string.option.dampening-mode-choice/square-root-dampening :square-root-dampening]]
+                           :choices corner-dampening-mode-choices
                            :default :clamp-to-zero
                            :ui {:label :string.option/dampening-mode
                                 :tooltip :string.tooltip/dampening-mode

@@ -3,6 +3,8 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.interface :as interface]
+   [heraldicon.render.mode :as mode]
+   [heraldicon.render.scope :as scope]
    [heraldicon.render.texture :as texture]
    [heraldicon.render.theme :as theme]))
 
@@ -32,8 +34,7 @@
     (cond-> {:escutcheon escutcheon-option
 
              :mode {:type :choice
-                    :choices [[:string.render-options.mode-choice/colours :colours]
-                              [:string.render-options.mode-choice/catching :hatching]]
+                    :choices mode/choices
                     :default :colours
                     :ui {:label :string.render-options/mode
                          :form-type :radio-select}}
@@ -75,9 +76,7 @@
                                                            [:string.render-options.coat-of-arms-angle-presets/full 45]]
                                        :step 1}}
              :scope {:type :choice
-                     :choices [[:string.render-options.scope-choice/achievement :achievement]
-                               [:string.render-options.scope-choice/coat-of-arms-and-helm :coat-of-arms-and-helm]
-                               [:string.render-options.scope-choice/coat-of-arms :coat-of-arms]]
+                     :choices scope/choices
                      :default :achievement
                      :ui {:label :string.render-options/scope}}}
 

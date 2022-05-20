@@ -4,6 +4,7 @@
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
+   [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
 
    [heraldicon.util.uid :as uid]))
@@ -14,13 +15,20 @@
 
 (defmethod field.interface/part-names field-type [_] nil)
 
+;; TODO: needs translation
+(def variant-choices
+  [["Default" :default]
+   ["Counter" :counter]
+   ["In pale" :in-pale]
+   ["En point" :en-point]
+   ["Ancien" :ancien]])
+
+(def variant-map
+  (options/choices->map variant-choices))
+
 (defmethod field.interface/options field-type [_context]
   {:variant {:type :choice
-             :choices [["Default" :default]
-                       ["Counter" :counter]
-                       ["In pale" :in-pale]
-                       ["En point" :en-point]
-                       ["Ancien" :ancien]]
+             :choices variant-choices
              :default :default
              :ui {:label :string.option/variant}}
    :layout {:num-fields-x {:type :range

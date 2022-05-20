@@ -18,6 +18,20 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/pile)
 
+(def size-mode-choices
+  [[:string.option.size-mode-choice/thickness :thickness]
+   [:string.option.size-mode-choice/angle :angle]])
+
+(def size-mode-map
+  (options/choices->map size-mode-choices))
+
+(def orientation-type-choices
+  [[:string.option.orientation-type-choice/edge :edge]
+   [:string.option.orientation-type-choice/orientation-point :point]])
+
+(def orientation-type-map
+  (options/choices->map orientation-type-choices))
+
 (defmethod ordinary.interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
@@ -70,8 +84,7 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)
         size-mode-option {:type :choice
-                          :choices [[:string.option.size-mode-choice/thickness :thickness]
-                                    [:string.option.size-mode-choice/angle :angle]]
+                          :choices size-mode-choices
                           :default :thickness
                           :ui {:label :string.option/size-mode
                                :form-type :radio-select}}
@@ -133,8 +146,7 @@
                                                         :ui {:label :string.option/offset-y
                                                              :step 0.1}}
                                              :type {:type :choice
-                                                    :choices [[:string.option.orientation-type-choice/edge :edge]
-                                                              [:string.option.orientation-type-choice/orientation-point :point]]
+                                                    :choices orientation-type-choices
                                                     :default :edge
                                                     :ui {:label :string.render-options/mode
                                                          :form-type :radio-select}}))

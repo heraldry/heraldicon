@@ -1,8 +1,8 @@
-(ns heraldicon.spec.coat-of-arms-test
+(ns spec.heraldry.coat-of-arms-test
   (:require
    [cljs.spec.alpha :as s]
    [cljs.test :refer-macros [are deftest]]
-   [heraldicon.spec.coat-of-arms]))
+   [spec.heraldry.specs]))
 
 (defn check-spec [spec form]
   (let [explain-output (with-out-str (s/explain spec form))
@@ -196,27 +196,3 @@
 
     :heraldry/coat-of-arms {:field {:type :heraldry.field.type/plain
                                     :tincture :azure}}))
-
-(deftest valid-render-options
-  (are [spec form] (check-spec spec form)
-
-    :heraldry/render-options {}
-
-    :heraldry/render-options {:mode :colours}
-
-    :heraldry/render-options {:outline? false}
-
-    :heraldry/render-options {:squiggly true}
-
-    :heraldry/render-options {:escutcheon :heater}))
-
-(deftest invalid-render-options
-  (are [spec form] (not (s/valid? spec form))
-
-    :heraldry/render-options {:mode :does-not-exist}
-
-    :heraldry/render-options {:outline? 5}
-
-    :heraldry/render-options {:squiggly? "foo"}
-
-    :heraldry/render-options {:escutcheon :does-not-exist}))

@@ -10,13 +10,13 @@
    [heraldicon.render.outline :as outline]
    [heraldicon.util.uid :as uid]))
 
-(def type-choices
+(def mode-choices
   [[:string.option.type-fimbriation-choice/none :none]
    [:string.option.type-fimbriation-choice/single :single]
    [:string.option.type-fimbriation-choice/double :double]])
 
-(def type-map
-  (options/choices->map type-choices))
+(def mode-map
+  (options/choices->map mode-choices))
 
 (def alignment-choices
   [[:string.option.alignment-fimbriation-choice/even :even]
@@ -26,9 +26,17 @@
 (def alignment-map
   (options/choices->map alignment-choices))
 
+(def corner-choices
+  [[:string.option.corner-choice/round :round]
+   [:string.option.corner-choice/sharp :sharp]
+   [:string.option.corner-choice/bevel :bevel]])
+
+(def corner-map
+  (options/choices->map corner-choices))
+
 (def mode-option
   {:type :choice
-   :choices type-choices
+   :choices mode-choices
    :default :none
    :ui {:form-type :radio-select}})
 
@@ -50,9 +58,7 @@
                                                :default :even
                                                :ui {:label :string.option/alignment}}
                                    :corner {:type :choice
-                                            :choices [[:string.option.corner-choice/round :round]
-                                                      [:string.option.corner-choice/sharp :sharp]
-                                                      [:string.option.corner-choice/bevel :bevel]]
+                                            :choices corner-choices
                                             :default :sharp
                                             :ui {:label :string.option/corner}}
                                    :thickness-1 {:type :range

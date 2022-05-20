@@ -17,6 +17,13 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/label)
 
+(def variant-choices
+  [[:string.option.variant-label-choice/full :full]
+   [:string.option.variant-label-choice/truncated :truncated]])
+
+(def variant-map
+  (options/choices->map variant-choices))
+
 (defmethod ordinary.interface/options ordinary-type [context]
   (let [num-points (or (interface/get-raw-data (c/++ context :num-points))
                        3)]
@@ -44,8 +51,7 @@
                   :ui {:label :string.option/anchor
                        :form-type :position}}
          :variant {:type :choice
-                   :choices [[:string.option.variant-label-choice/full :full]
-                             [:string.option.variant-label-choice/truncated :truncated]]
+                   :choices variant-choices
                    :default :full
                    :ui {:label :string.option/variant
                         :form-type :radio-select}}
