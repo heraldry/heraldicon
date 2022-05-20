@@ -12,10 +12,10 @@
 (s/def :heraldry.ordinary.geometry/thickness (s/nilable number?))
 (s/def :heraldry.ordinary.geometry/eccentricity (s/nilable number?))
 
-(s/def :heraldry.ordinary/geometry (s/nilable (s/keys :opt-un [:heraldry.field.geometry/size-mode
-                                                               :heraldry.field.geometry/size
-                                                               :heraldry.field.geometry/stretch
-                                                               :heraldry.field.geometry/width
-                                                               :heraldry.field.geometry/height
-                                                               :heraldry.field.geometry/eccentricity
-                                                               :heraldry.field.geometry/thickness])))
+(s/def :heraldry.ordinary/geometry (s/nilable (s/keys :opt-un [:heraldry.ordinary.geometry/size-mode
+                                                               :heraldry.ordinary.geometry/size
+                                                               :heraldry.ordinary.geometry/stretch
+                                                               :heraldry.ordinary.geometry/width
+                                                               :heraldry.ordinary.geometry/height
+                                                               :heraldry.ordinary.geometry/eccentricity
+                                                               :heraldry.ordinary.geometry/thickness])))
