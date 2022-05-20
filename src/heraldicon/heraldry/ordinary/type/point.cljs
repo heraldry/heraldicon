@@ -17,6 +17,13 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/point)
 
+(def variant-choices
+  [[:string.option.point-choice/dexter :dexter]
+   [:string.option.point-choice/sinister :sinister]])
+
+(def variant-map
+  (options/choices->map variant-choices))
+
 (defmethod ordinary.interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
@@ -24,8 +31,7 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (-> {:line line-style
          :variant {:type :choice
-                   :choices [[:string.option.point-choice/dexter :dexter]
-                             [:string.option.point-choice/sinister :sinister]]
+                   :choices variant-choices
                    :default :dexter
                    :ui {:label :string.option/variant
                         :form-type :select}}

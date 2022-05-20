@@ -17,6 +17,15 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/quarter)
 
+(def variant-choices
+  [[:string.option.variant-quarter-choice/dexter-chief :dexter-chief]
+   [:string.option.variant-quarter-choice/sinister-chief :sinister-chief]
+   [:string.option.variant-quarter-choice/dexter-base :dexter-base]
+   [:string.option.variant-quarter-choice/sinister-base :sinister-base]])
+
+(def variant-map
+  (options/choices->map variant-choices))
+
 (defmethod ordinary.interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
@@ -52,10 +61,7 @@
          :line line-style
          :opposite-line opposite-line-style
          :variant {:type :choice
-                   :choices [[:string.option.variant-quarter-choice/dexter-chief :dexter-chief]
-                             [:string.option.variant-quarter-choice/sinister-chief :sinister-chief]
-                             [:string.option.variant-quarter-choice/dexter-base :dexter-base]
-                             [:string.option.variant-quarter-choice/sinister-base :sinister-base]]
+                   :choices variant-choices
                    :default :dexter-chief
                    :ui {:label :string.option/variant
                         :form-type :select}}

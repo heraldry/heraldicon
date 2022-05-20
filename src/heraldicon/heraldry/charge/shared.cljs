@@ -16,6 +16,15 @@
    [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.util.uid :as uid]))
 
+(def outline-mode-choices
+  [[:string.option.outline-mode-choice/keep :keep]
+   [:string.option.outline-mode-choice/transparent :transparent]
+   [:string.option.outline-mode-choice/primary :primary]
+   [:string.option.outline-mode-choice/remove :remove]])
+
+(def outline-mode-map
+  (options/choices->map outline-mode-choices))
+
 (defn options [context]
   (let [anchor-point-option {:type :choice
                              :choices [[:string.option.point-choice/fess :fess]
@@ -124,10 +133,7 @@
                       (options/override-if-exists [:thickness-2 :max :max] 50)
                       (options/override-if-exists [:thickness-2 :max :default] 10))
      :outline-mode {:type :choice
-                    :choices [[:string.option.outline-mode-choice/keep :keep]
-                              [:string.option.outline-mode-choice/transparent :transparent]
-                              [:string.option.outline-mode-choice/primary :primary]
-                              [:string.option.outline-mode-choice/remove :remove]]
+                    :choices outline-mode-choices
                     :default :keep
                     :ui {:label :string.option/outline-mode}}
      :vertical-mask {:type :range
