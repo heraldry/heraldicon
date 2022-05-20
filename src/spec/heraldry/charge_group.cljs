@@ -60,7 +60,7 @@
                    :heraldry.charge-group/arc-angle
                    :heraldry.charge-group/slots
                    :heraldry.charge-group/radius
-                   :heraldry.charge-group/acr-stretch
+                   :heraldry.charge-group/arc-stretch
                    :heraldry.charge-group/rotate-charges?]))
 
 (defmethod charge-group-type :heraldry.charge-group.type/in-orle [_]
