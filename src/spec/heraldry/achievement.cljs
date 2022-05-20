@@ -1,6 +1,8 @@
 (ns spec.heraldry.achievement
   (:require
-   [cljs.spec.alpha :as s]))
+   [cljs.spec.alpha :as s]
+   [spec.heraldry.coat-of-arms]
+   [spec.heraldry.render-options]))
 
 (s/def :heraldry.achievement/type #{:heraldry/achievement})
 

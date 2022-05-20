@@ -1,6 +1,7 @@
 (ns spec.heraldicon.entity.arms.data
   (:require
-   [cljs.spec.alpha :as s]))
+   [cljs.spec.alpha :as s]
+   [spec.heraldry.achievement]))
 
 (s/def :heraldicon.entity.arms.data/type #{:heraldicon.entity.arms/data})
 

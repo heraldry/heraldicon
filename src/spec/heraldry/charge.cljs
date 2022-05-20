@@ -4,7 +4,12 @@
    [heraldicon.heraldry.charge.shared :as charge.shared]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.option.attributes :as attributes]
-   [spec.heraldicon.spec-util :as su]))
+   [spec.heraldicon.spec-util :as su]
+   [spec.heraldry.charge.geometry]
+   [spec.heraldry.charge.tincture]
+   [spec.heraldry.charge.variant]
+   [spec.heraldry.fimbriation]
+   [spec.heraldry.position]))
 
 (s/def :heraldry.charge/type (s/and keyword?
                                     #(-> % namespace (= "heraldry.charge.type"))))
