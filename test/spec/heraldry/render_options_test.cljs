@@ -9,13 +9,13 @@
     {:type :heraldry/render-options}
 
     {:type :heraldry/render-options
-     :escutcheon :heater}
+     :escutcheon (tu/example :heraldry.render-options/escutcheon)}
 
     {:type :heraldry/render-options
-     :mode :colours}
+     :mode (tu/example :heraldry.render-options/mode)}
 
     {:type :heraldry/render-options
-     :texture :felt}
+     :texture (tu/example :heraldry.render-options/texture)}
 
     {:type :heraldry/render-options
      :texture-displacement? true}
@@ -39,7 +39,7 @@
      :coat-of-arms-angle 42}
 
     {:type :heraldry/render-options
-     :scope :achievement}))
+     :scope (tu/example :heraldry.render-options/scope)}))
 
 (deftest invalid-render-option
   (are [form] (tu/invalid? :heraldry/render-options form)
@@ -55,25 +55,25 @@
      :texture :wrong}
 
     {:type :heraldry/render-options
-     :texture-displacement? 42}
+     :texture-displacement? :wrong}
 
     {:type :heraldry/render-options
-     :shiny? 5.6}
+     :shiny? :wrong}
 
     {:type :heraldry/render-options
-     :escutcheon-shadow? :foobar}
+     :escutcheon-shadow? :wrong}
 
     {:type :heraldry/render-options
-     :escutcheon-outline? "foo"}
+     :escutcheon-outline? :wrong}
 
     {:type :heraldry/render-options
-     :outline? 5}
+     :outline? :wrong}
 
     {:type :heraldry/render-options
-     :squiggly? "foo"}
+     :squiggly? :wrong}
 
     {:type :heraldry/render-options
-     :coat-of-arms-angle true}
+     :coat-of-arms-angle :wrong}
 
     {:type :heraldry/render-options
-     :scope 0}))
+     :scope :wrong}))
