@@ -43,7 +43,7 @@
 (defmethod ct/report [::reporter :fail] [{:keys [message expected actual] :as m}]
   (ct/inc-report-counter! :fail)
 
-  (println "\nFAIL in" (ct/testing-vars-str m))
+  (println "FAIL in" (ct/testing-vars-str m))
   (when (seq (:testing-contexts (ct/get-current-env)))
     (println (ct/testing-contexts-str)))
   (when message
@@ -57,14 +57,15 @@
                 diff-printer))))
     (do
       (println "expected:" (cla/style expected :green))
-      (println "  actual:" (cla/style actual :red)))))
+      (println "  actual:" (cla/style actual :red))))
+  (println))
 
 (defmethod ct/report [::reporter :error] [m]
   ((get-method ct/report [:cljs.test/default :error]) m))
 
 (defmethod ct/report [::reporter :summary] [{:keys [test pass fail error]}]
   (let [total (+ pass fail error)]
-    (println (cla/style (str "\nRan " test " tests with " total " assertions.")
+    (println (cla/style (str "Ran " test " tests with " total " assertions.")
                         :cyan))
     (println (str
               (cla/style (str pass " passes,")
