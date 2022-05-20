@@ -5,7 +5,10 @@
    [heraldicon.heraldry.ordinary.type.label :as label]
    [heraldicon.heraldry.ordinary.type.point :as point]
    [heraldicon.heraldry.ordinary.type.quarter :as quarter]
-   [spec.heraldicon.spec-util :as su]))
+   [spec.heraldicon.spec-util :as su]
+   [spec.heraldry.line]
+   [spec.heraldry.ordinary.cottise]
+   [spec.heraldry.position]))
 
 (s/def :heraldry.ordinary/type (su/key-in? ordinary.options/ordinary-map))
 

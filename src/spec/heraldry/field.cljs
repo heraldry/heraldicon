@@ -6,7 +6,13 @@
    [heraldicon.heraldry.field.type.potenty :as potenty]
    [heraldicon.heraldry.field.type.vairy :as vairy]
    [heraldicon.heraldry.tincture :as tincture]
-   [spec.heraldicon.spec-util :as su]))
+   [spec.heraldicon.spec-util :as su]
+   [spec.heraldry.charge]
+   [spec.heraldry.charge-group]
+   [spec.heraldry.line]
+   [spec.heraldry.ordinary]
+   [spec.heraldry.position]
+   [spec.heraldry.semy]))
 
 (s/def :heraldry.field/type (su/key-in? field.options/field-map))
 

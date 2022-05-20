@@ -1,6 +1,8 @@
 (ns spec.heraldicon.entity.charge
   (:require
-   [cljs.spec.alpha :as s]))
+   [cljs.spec.alpha :as s]
+   [spec.heraldicon.entity]
+   [spec.heraldicon.entity.charge.data]))
 
 (s/def :heraldicon.entity.charge/type #{:heraldicon.entity.type/charge})
 

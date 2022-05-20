@@ -1,6 +1,8 @@
 (ns spec.heraldicon.entity
   (:require
    [cljs.spec.alpha :as s]
+   [spec.heraldicon.entity.attribution]
+   [spec.heraldicon.entity.metadata]
    [spec.heraldicon.spec-util :as su]))
 
 (try

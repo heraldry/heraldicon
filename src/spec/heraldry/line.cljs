@@ -2,7 +2,8 @@
   (:require
    [cljs.spec.alpha :as s]
    [heraldicon.heraldry.line.core :as line]
-   [spec.heraldicon.spec-util :as su]))
+   [spec.heraldicon.spec-util :as su]
+   [spec.heraldry.fimbriation]))
 
 (s/def :heraldry.line/type (s/nilable (su/key-in? line/line-map)))
 

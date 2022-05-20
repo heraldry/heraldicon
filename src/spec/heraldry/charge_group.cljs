@@ -2,7 +2,9 @@
   (:require
    [cljs.spec.alpha :as s]
    [heraldicon.heraldry.charge-group.options :as charge-group.options]
-   [spec.heraldicon.spec-util :as su]))
+   [spec.heraldicon.spec-util :as su]
+   [spec.heraldry.charge]
+   [spec.heraldry.position]))
 
 (s/def :heraldry.charge-group/type (su/key-in? charge-group.options/type-map))
 (s/def :heraldry.charge-group/charges (s/coll-of :heraldry/charge :into []))
