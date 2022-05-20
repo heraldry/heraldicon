@@ -16,7 +16,7 @@
 (s/def :heraldry.line/corner-dampening-mode (s/nilable (su/key-in? line/corner-dampening-mode-map)))
 (s/def :heraldry.line/flipped? (s/nilable boolean?))
 (s/def :heraldry.line/mirrored? (s/nilable boolean?))
-(s/def :heraldry.line/fimbriation :heraldry/fimbriation)
+(s/def :heraldry.line/fimbriation (s/nilable :heraldry/fimbriation))
 
 (s/def :heraldry/line (s/nilable (s/keys :opt-un [:heraldry.line/type
                                                   :heraldry.line/eccentricity

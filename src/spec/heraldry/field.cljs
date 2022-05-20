@@ -31,13 +31,13 @@
                                                    :semy :heraldry/semy)
                                              :into []))
 
-(s/def :heraldry.field/line :heraldry/line)
-(s/def :heraldry.field/opposite-line :heraldry/line)
-(s/def :heraldry.field/extra-line :heraldry/line)
+(s/def :heraldry.field/line (s/nilable :heraldry/line))
+(s/def :heraldry.field/opposite-line (s/nilable :heraldry/line))
+(s/def :heraldry.field/extra-line (s/nilable :heraldry/line))
 
-(s/def :heraldry.field/anchor :heraldry/position)
-(s/def :heraldry.field/orientation :heraldry/position)
-(s/def :heraldry.field/origin :heraldry/position)
+(s/def :heraldry.field/anchor (s/nilable :heraldry/position))
+(s/def :heraldry.field/orientation (s/nilable :heraldry/position))
+(s/def :heraldry.field/origin (s/nilable :heraldry/position))
 
 (s/def :heraldry.field/thickness (s/nilable number?))
 (s/def :heraldry.field/gap (s/nilable number?))

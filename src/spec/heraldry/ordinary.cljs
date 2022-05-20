@@ -9,15 +9,15 @@
 
 (s/def :heraldry.ordinary/type (su/key-in? ordinary.options/ordinary-map))
 
-(s/def :heraldry.ordinary/field :heraldry/field)
+(s/def :heraldry.ordinary/field (su/spec :heraldry/field))
 
-(s/def :heraldry.ordinary/line :heraldry/line)
-(s/def :heraldry.ordinary/opposite-line :heraldry/line)
-(s/def :heraldry.ordinary/extra-line :heraldry/line)
+(s/def :heraldry.ordinary/line (s/nilable :heraldry/line))
+(s/def :heraldry.ordinary/opposite-line (s/nilable :heraldry/line))
+(s/def :heraldry.ordinary/extra-line (s/nilable :heraldry/line))
 
-(s/def :heraldry.ordinary/anchor :heraldry/position)
-(s/def :heraldry.ordinary/orientation :heraldry/position)
-(s/def :heraldry.ordinary/origin :heraldry/position)
+(s/def :heraldry.ordinary/anchor (s/nilable :heraldry/position))
+(s/def :heraldry.ordinary/orientation (s/nilable :heraldry/position))
+(s/def :heraldry.ordinary/origin (s/nilable :heraldry/position))
 
 (s/def :heraldry.ordinary/thickness (s/nilable number?))
 (s/def :heraldry.ordinary/distance (s/nilable number?))
@@ -30,12 +30,12 @@
 
 (s/def :heraldry.ordinary/fimbriation (s/nilable :heraldry/fimbriation))
 
-(s/def :heraldry.ordinary/cottise-1 :heraldry.ordinary/cottise)
-(s/def :heraldry.ordinary/cottise-2 :heraldry.ordinary/cottise)
-(s/def :heraldry.ordinary/cottise-opposite-1 :heraldry.ordinary/cottise)
-(s/def :heraldry.ordinary/cottise-opposite-2 :heraldry.ordinary/cottise)
-(s/def :heraldry.ordinary/cottise-extra-1 :heraldry.ordinary/cottise)
-(s/def :heraldry.ordinary/cottise-extra-2 :heraldry.ordinary/cottise)
+(s/def :heraldry.ordinary/cottise-1 (s/nilable :heraldry.ordinary/cottise))
+(s/def :heraldry.ordinary/cottise-2 (s/nilable :heraldry.ordinary/cottise))
+(s/def :heraldry.ordinary/cottise-opposite-1 (s/nilable :heraldry.ordinary/cottise))
+(s/def :heraldry.ordinary/cottise-opposite-2 (s/nilable :heraldry.ordinary/cottise))
+(s/def :heraldry.ordinary/cottise-extra-1 (s/nilable :heraldry.ordinary/cottise))
+(s/def :heraldry.ordinary/cottise-extra-2 (s/nilable :heraldry.ordinary/cottise))
 
 (s/def :heraldry.ordinary/cottising (s/nilable (s/keys :opt-un [:heraldry.ordinary/cottise-1
                                                                 :heraldry.ordinary/cottise-2
