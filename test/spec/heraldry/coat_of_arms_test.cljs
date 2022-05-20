@@ -11,188 +11,127 @@
       (println explain-output))
     conforms?))
 
-(deftest valid-fields
-  (are [spec form] (check-spec spec form)
+;; (deftest valid-ordinaries
+;;   (are [spec form] (check-spec spec form)
 
-    :heraldry/field {:type :heraldry.field.type/plain
-                     :tincture :azure}
+;;     :heraldry/ordinary {:type :heraldry.ordinary.type/pale
+;;                         :field {:type :heraldry.field.type/plain
+;;                                 :tincture :azure}}
 
-    :heraldry/field {:type :heraldry.field.type/per-pale
-                     :anchor {:point :fess
-                              :offset-x 0
-                              :offset-y nil}
-                     :line {:type :invected
-                            :eccentricity 1.3
-                            :width nil
-                            :offset 0.2
-                            :flipped? false}
-                     :fields [{:type :heraldry.field.type/plain
-                               :tincture :azure}
-                              {:type :heraldry.field.type/plain
-                               :tincture :or}
-                              {:type :heraldry.field.type/ref
-                               :index 0}]
-                     :outline? true}
+;;     :heraldry/ordinary {:type :heraldry.ordinary.type/fess
+;;                         :field {:type :heraldry.field.type/plain
+;;                                 :tincture :azure}
+;;                         :geometry {:size 50}
+;;                         :anchor {:point :fess
+;;                                  :offset-x -5
+;;                                  :offset-y 5}
+;;                         :line {:type :engrailed
+;;                                :eccentricity 1.3
+;;                                :width 2
+;;                                :offset 0.2
+;;                                :flipped? false}
+;;                         :opposite-line {:type :engrailed
+;;                                         :eccentricity 1.3
+;;                                         :width 2
+;;                                         :offset 0.2
+;;                                         :flipped? true}}))
 
-    :heraldry/field {:type :heraldry.field.type/plain
-                     :tincture :azure
-                     :components [{:type :heraldry.ordinary.type/pale
-                                   :field {:type :heraldry.field.type/plain
-                                           :tincture :azure}}
-                                  {:type :heraldry.charge.type/lion
-                                   :attitude :rampant
-                                   :facing :reguardant
-                                   :field {:type :heraldry.field.type/plain
-                                           :tincture :azure}}]}))
+;; (deftest invalid-ordinaries
+;;   (are [spec form] (not (s/valid? spec form))
 
-(deftest invalid-fields
-  (are [spec form] (not (s/valid? spec form))
+;;     :heraldry/ordinary {}
 
-    :heraldry/field {}
+;;     :heraldry/ordinary {:type :heraldry.field.type/per-pale
+;;                         :field {:type :heraldry.field.type/plain
+;;                                 :tincture :azure}}
 
-    :heraldry/field {:type :heraldry.charge.type/roundel
-                     :tincture :or}
+;;     :heraldry/ordinary {:type :does-not-exist
+;;                         :field {:type :heraldry.field.type/plain
+;;                                 :tincture :azure}}
 
-    :heraldry/field {:type :heraldry.field.type/per-pale
-                     :tincture :azure}
+;;     :heraldry/ordinary {:type :fess
+;;                         :field {}}))
 
-    :heraldry/field {:type :heraldry.field.type/plain
-                     :fields [{:type :heraldry.field.type/plain
-                               :tincture :azure}
-                              {:type :heraldry.field.type/plain
-                               :tincture :or}
-                              {:type :heraldry.field.type/ref
-                               :index 1}]}
+;; (deftest valid-charges
+;;   (are [spec form] (check-spec spec form)
 
-    :heraldry/field {:type :does-not-exist}
+;;     :heraldry/charge {:type :heraldry.charge.type/roundel
+;;                       :attitude nil
+;;                       :facing nil
+;;                       :variant nil
+;;                       :field {:type :heraldry.field.type/plain
+;;                               :tincture :azure}}
 
-    :heraldry/field {:type :heraldry.field.type/plain
-                     :tincture :azure
-                     ;; the component here is just a field, not a charge or ordinary
-                     :components [{:type :heraldry.field.type/plain
-                                   :tincture :or}]}))
+;;     :heraldry/charge {:type :heraldry.charge.type/lion
+;;                       :attitude :rampant
+;;                       :facing :reguardant
+;;                       :field {:type :heraldry.field.type/plain
+;;                               :tincture :azure}}
 
-(deftest valid-ordinaries
-  (are [spec form] (check-spec spec form)
+;;     :heraldry/charge {:type :heraldry.charge.type/roundel
+;;                       :field {:type :heraldry.field.type/plain
+;;                               :tincture :azure}
+;;                       :tincture {:shadow 0.5
+;;                                  :highlight 0.5
+;;                                  :primary :or}
+;;                       :geometry {:size 50}
+;;                       :anchor {:point :fess
+;;                                :offset-x -5
+;;                                :offset-y 5}}))
 
-    :heraldry/ordinary {:type :heraldry.ordinary.type/pale
-                        :field {:type :heraldry.field.type/plain
-                                :tincture :azure}}
+;; (deftest invalid-charges
+;;   (are [spec form] (not (s/valid? spec form))
 
-    :heraldry/ordinary {:type :heraldry.ordinary.type/fess
-                        :field {:type :heraldry.field.type/plain
-                                :tincture :azure}
-                        :geometry {:size 50}
-                        :anchor {:point :fess
-                                 :offset-x -5
-                                 :offset-y 5}
-                        :line {:type :engrailed
-                               :eccentricity 1.3
-                               :width 2
-                               :offset 0.2
-                               :flipped? false}
-                        :opposite-line {:type :engrailed
-                                        :eccentricity 1.3
-                                        :width 2
-                                        :offset 0.2
-                                        :flipped? true}}))
+;;     :heraldry/charge {}
 
-(deftest invalid-ordinaries
-  (are [spec form] (not (s/valid? spec form))
+;;     :heraldry/charge {:type :heraldry.charge.type/wolf
+;;                       :field {}}
 
-    :heraldry/ordinary {}
+;;     :heraldry/charge {:type :heraldry.charge.type/wolf
+;;                       :attitude :foobar
+;;                       :field {:type :heraldry.field.type/plain
+;;                               :tincture :azure}}
 
-    :heraldry/ordinary {:type :heraldry.field.type/per-pale
-                        :field {:type :heraldry.field.type/plain
-                                :tincture :azure}}
+;;     :heraldry/charge {:type :heraldry.charge.type/wolf
+;;                       :attitude :rampant
+;;                       :field {:type :heraldry.field.type/plain
+;;                               :tincture :azure}
+;;                       :tincture {:shadow true}}
 
-    :heraldry/ordinary {:type :does-not-exist
-                        :field {:type :heraldry.field.type/plain
-                                :tincture :azure}}
+;;     :heraldry/charge {:type :heraldry.charge.type/wolf
+;;                       :attitude :rampant
+;;                       :field {:type :heraldry.field.type/plain
+;;                               :tincture :azure}
+;;                       :tincture {:highlight :or}}))
 
-    :heraldry/ordinary {:type :fess
-                        :field {}}))
+;; (deftest valid-coat-of-arms
+;;   (are [spec form] (check-spec spec form)
 
-(deftest valid-charges
-  (are [spec form] (check-spec spec form)
+;;     :heraldry/coat-of-arms {:spec-version 1
+;;                             :type :coat-of-arms
+;;                             :field {:type :heraldry.field.type/plain
+;;                                     :tincture :azure}}
 
-    :heraldry/charge {:type :heraldry.charge.type/roundel
-                      :attitude nil
-                      :facing nil
-                      :variant nil
-                      :field {:type :heraldry.field.type/plain
-                              :tincture :azure}}
+;;     :heraldry/coat-of-arms {:spec-version 1
+;;                             :type :coat-of-arms
+;;                             :field {:type :per-pale
+;;                                     :line {:type :invected
+;;                                            :eccentricity 1.3
+;;                                            :width 2
+;;                                            :offset 0.2
+;;                                            :flipped? false}
+;;                                     :fields [{:type :heraldry.field.type/plain
+;;                                               :tincture :azure}
+;;                                              {:type :heraldry.field.type/plain
+;;                                               :tincture :or}]
+;;                                     :outline? true}}))
 
-    :heraldry/charge {:type :heraldry.charge.type/lion
-                      :attitude :rampant
-                      :facing :reguardant
-                      :field {:type :heraldry.field.type/plain
-                              :tincture :azure}}
+;; (deftest invalid-coat-of-arms
+;;   (are [spec form] (not (s/valid? spec form))
 
-    :heraldry/charge {:type :heraldry.charge.type/roundel
-                      :field {:type :heraldry.field.type/plain
-                              :tincture :azure}
-                      :tincture {:shadow 0.5
-                                 :highlight 0.5
-                                 :primary :or}
-                      :geometry {:size 50}
-                      :anchor {:point :fess
-                               :offset-x -5
-                               :offset-y 5}}))
+;;     :heraldry/coat-of-arms {}
 
-(deftest invalid-charges
-  (are [spec form] (not (s/valid? spec form))
+;;     :heraldry/coat-of-arms {:spec-version 1}
 
-    :heraldry/charge {}
-
-    :heraldry/charge {:type :heraldry.charge.type/wolf
-                      :field {}}
-
-    :heraldry/charge {:type :heraldry.charge.type/wolf
-                      :attitude :foobar
-                      :field {:type :heraldry.field.type/plain
-                              :tincture :azure}}
-
-    :heraldry/charge {:type :heraldry.charge.type/wolf
-                      :attitude :rampant
-                      :field {:type :heraldry.field.type/plain
-                              :tincture :azure}
-                      :tincture {:shadow true}}
-
-    :heraldry/charge {:type :heraldry.charge.type/wolf
-                      :attitude :rampant
-                      :field {:type :heraldry.field.type/plain
-                              :tincture :azure}
-                      :tincture {:highlight :or}}))
-
-(deftest valid-coat-of-arms
-  (are [spec form] (check-spec spec form)
-
-    :heraldry/coat-of-arms {:spec-version 1
-                            :type :coat-of-arms
-                            :field {:type :heraldry.field.type/plain
-                                    :tincture :azure}}
-
-    :heraldry/coat-of-arms {:spec-version 1
-                            :type :coat-of-arms
-                            :field {:type :per-pale
-                                    :line {:type :invected
-                                           :eccentricity 1.3
-                                           :width 2
-                                           :offset 0.2
-                                           :flipped? false}
-                                    :fields [{:type :heraldry.field.type/plain
-                                              :tincture :azure}
-                                             {:type :heraldry.field.type/plain
-                                              :tincture :or}]
-                                    :outline? true}}))
-
-(deftest invalid-coat-of-arms
-  (are [spec form] (not (s/valid? spec form))
-
-    :heraldry/coat-of-arms {}
-
-    :heraldry/coat-of-arms {:spec-version 1}
-
-    :heraldry/coat-of-arms {:field {:type :heraldry.field.type/plain
-                                    :tincture :azure}}))
+;;     :heraldry/coat-of-arms {:field {:type :heraldry.field.type/plain
+;;                                     :tincture :azure}}))

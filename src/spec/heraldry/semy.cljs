@@ -1,7 +1,8 @@
 (ns spec.heraldry.semy
   (:require
    [cljs.spec.alpha :as s]
-   [spec.heraldry.charge]))
+   [spec.heraldry.charge]
+   [spec.heraldry.layout]))
 
 (s/def :heraldry.semy/type #{:heraldry/semy})
 (s/def :heraldry.semy/charge :heraldry/charge)

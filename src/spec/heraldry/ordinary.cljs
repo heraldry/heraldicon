@@ -8,6 +8,7 @@
    [spec.heraldicon.spec-util :as su]
    [spec.heraldry.line]
    [spec.heraldry.ordinary.cottise]
+   [spec.heraldry.ordinary.geometry]
    [spec.heraldry.position]))
 
 (s/def :heraldry.ordinary/type (su/key-in? ordinary.options/ordinary-map))
@@ -26,8 +27,10 @@
 (s/def :heraldry.ordinary/distance (s/nilable number?))
 (s/def :heraldry.ordinary/corner-radius (s/nilable number?))
 (s/def :heraldry.ordinary/smoothing (s/nilable number?))
+(s/def :heraldry.ordinary/num-points (s/nilable number?))
 
-(s/def :heraldrt.ordinary/variant (s/or :label (su/key-in? label/variant-map)
+;; TODO: multi-spec based on ordinary type
+(s/def :heraldry.ordinary/variant (s/or :label (su/key-in? label/variant-map)
                                         :quarter (su/key-in? quarter/variant-map)
                                         :point (su/key-in? point/variant-map)))
 

@@ -1,6 +1,7 @@
 (ns spec.heraldry.charge
   (:require
    [cljs.spec.alpha :as s]
+   [clojure.spec.gen.alpha :as g]
    [heraldicon.heraldry.charge.shared :as charge.shared]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.option.attributes :as attributes]
@@ -11,8 +12,10 @@
    [spec.heraldry.fimbriation]
    [spec.heraldry.position]))
 
-(s/def :heraldry.charge/type (s/and keyword?
-                                    #(-> % namespace (= "heraldry.charge.type"))))
+(s/def :heraldry.charge/type (s/with-gen
+                               (s/and keyword?
+                                      #(-> % namespace (= "heraldry.charge.type")))
+                               #(g/return :heraldry.charge.type/lion)))
 (s/def :heraldry.charge/field (su/spec :heraldry/field))
 
 (s/def :heraldry.charge/anchor (s/nilable :heraldry/position))
