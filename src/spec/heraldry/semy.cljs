@@ -7,9 +7,9 @@
 (s/def :heraldry.semy/type #{:heraldry/semy})
 (s/def :heraldry.semy/charge :heraldry/charge)
 
-(s/def :heraldry.semy/layout (s/nilable :heraldry/layout))
-(s/def :heraldry.semy/rectangular? (s/nilable boolean?))
-(s/def :heraldry.semy/manual-blazon (s/nilable string?))
+(s/def :heraldry.semy/layout :heraldry/layout)
+(s/def :heraldry.semy/rectangular? boolean?)
+(s/def :heraldry.semy/manual-blazon string?)
 
 (s/def :heraldry/semy (s/keys :req-un [:heraldry.semy/type
                                        :heraldry.semy/charge]

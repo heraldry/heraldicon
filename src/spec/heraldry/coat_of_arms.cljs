@@ -6,7 +6,7 @@
 (s/def :heraldry.coat-of-arms/type #{:heraldry/coat-of-arms})
 (s/def :heraldry.coat-of-arms/field :heraldry/field)
 
-(s/def :heraldry.coat-of-arms/manual-blazon (s/nilable string?))
+(s/def :heraldry.coat-of-arms/manual-blazon string?)
 
 (s/def :heraldry/coat-of-arms (s/keys :req-un [:heraldry.coat-of-arms/type
                                                :heraldry.coat-of-arms/field]

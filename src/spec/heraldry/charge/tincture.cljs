@@ -12,8 +12,8 @@
                                            :modifier (su/key-in? attributes/tincture-modifier-map)))
 (s/def :heraldry.charge.tincture.value/shading number?)
 (s/def :heraldry.charge.tincture.value/tincture (su/key-in? tincture/tincture-map))
-(s/def :heraldry.charge.tincture/value (s/nilable (s/or :tincture :heraldry.charge.tincture.value/tincture
-                                                        :shading :heraldry.charge.tincture.value/shading)))
+(s/def :heraldry.charge.tincture/value (s/or :tincture :heraldry.charge.tincture.value/tincture
+                                             :shading :heraldry.charge.tincture.value/shading))
 
 (s/def :heraldry.charge/tincture (s/and (s/map-of :heraldry.charge.tincture/key
                                                   :heraldry.charge.tincture/value)

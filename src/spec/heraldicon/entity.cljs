@@ -14,8 +14,8 @@
 
 (s/def :heraldicon.entity/type #(isa? % :heraldicon/entity))
 (s/def :heraldicon.entity/name su/non-blank-string?)
-(s/def :heraldicon.entity/is-public (s/nilable boolean?))
-(s/def :heraldicon.entity/tags (s/nilable (s/map-of keyword? boolean?)))
+(s/def :heraldicon.entity/is-public boolean?)
+(s/def :heraldicon.entity/tags (s/map-of keyword? boolean?))
 
 (s/def :heraldicon/entity (s/keys :req-un [:heraldicon.entity/type
                                            :heraldicon.entity/name]

@@ -20,19 +20,7 @@
 
     {:type :heraldicon.entity.type/arms
      :name "foobar"
-     :is-public nil}
-
-    {:type :heraldicon.entity.type/arms
-     :name "foobar"
      :is-public false}
-
-    {:type :heraldicon.entity.type/arms
-     :name "foobar"
-     :is-public false}
-
-    {:type :heraldicon.entity.type/arms
-     :name "foobar"
-     :tags nil}
 
     {:type :heraldicon.entity.type/arms
      :name "foobar"
@@ -45,19 +33,11 @@
 
     {:type :heraldicon.entity.type/arms
      :name "foobar"
-     :attribution nil}
-
-    {:type :heraldicon.entity.type/arms
-     :name "foobar"
      :attribution {}}
 
     {:type :heraldicon.entity.type/arms
      :name "foobar"
      :attribution (tu/example :heraldicon.entity/attribution)}
-
-    {:type :heraldicon.entity.type/arms
-     :name "foobar"
-     :metadata nil}
 
     {:type :heraldicon.entity.type/arms
      :name "foobar"

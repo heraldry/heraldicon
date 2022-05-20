@@ -5,11 +5,11 @@
    [heraldicon.heraldry.tincture :as tincture]
    [spec.heraldicon.spec-util :as su]))
 
-(s/def :heraldry.fimbriation/mode (s/nilable (su/key-in? fimbriation/mode-map)))
-(s/def :heraldry.fimbriation/alignment (s/nilable (su/key-in? fimbriation/alignment-map)))
-(s/def :heraldry.fimbriation/corner (s/nilable (su/key-in? fimbriation/corner-map)))
-(s/def :heraldry.fimbriation/thickness-1 (s/nilable number?))
-(s/def :heraldry.fimbriation/thickness-2 (s/nilable number?))
+(s/def :heraldry.fimbriation/mode (su/key-in? fimbriation/mode-map))
+(s/def :heraldry.fimbriation/alignment (su/key-in? fimbriation/alignment-map))
+(s/def :heraldry.fimbriation/corner (su/key-in? fimbriation/corner-map))
+(s/def :heraldry.fimbriation/thickness-1 number?)
+(s/def :heraldry.fimbriation/thickness-2 number?)
 
 (def tincture
   (s/or :none #{:none}

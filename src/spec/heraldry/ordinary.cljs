@@ -15,42 +15,42 @@
 
 (s/def :heraldry.ordinary/field (su/spec :heraldry/field))
 
-(s/def :heraldry.ordinary/line (s/nilable :heraldry/line))
-(s/def :heraldry.ordinary/opposite-line (s/nilable :heraldry/line))
-(s/def :heraldry.ordinary/extra-line (s/nilable :heraldry/line))
+(s/def :heraldry.ordinary/line :heraldry/line)
+(s/def :heraldry.ordinary/opposite-line :heraldry/line)
+(s/def :heraldry.ordinary/extra-line :heraldry/line)
 
-(s/def :heraldry.ordinary/anchor (s/nilable :heraldry/position))
-(s/def :heraldry.ordinary/orientation (s/nilable :heraldry/position))
-(s/def :heraldry.ordinary/origin (s/nilable :heraldry/position))
+(s/def :heraldry.ordinary/anchor :heraldry/position)
+(s/def :heraldry.ordinary/orientation :heraldry/position)
+(s/def :heraldry.ordinary/origin :heraldry/position)
 
-(s/def :heraldry.ordinary/thickness (s/nilable number?))
-(s/def :heraldry.ordinary/distance (s/nilable number?))
-(s/def :heraldry.ordinary/corner-radius (s/nilable number?))
-(s/def :heraldry.ordinary/smoothing (s/nilable number?))
-(s/def :heraldry.ordinary/num-points (s/nilable number?))
+(s/def :heraldry.ordinary/thickness number?)
+(s/def :heraldry.ordinary/distance number?)
+(s/def :heraldry.ordinary/corner-radius number?)
+(s/def :heraldry.ordinary/smoothing number?)
+(s/def :heraldry.ordinary/num-points number?)
 
 ;; TODO: multi-spec based on ordinary type
 (s/def :heraldry.ordinary/variant (s/or :label (su/key-in? label/variant-map)
                                         :quarter (su/key-in? quarter/variant-map)
                                         :point (su/key-in? point/variant-map)))
 
-(s/def :heraldry.ordinary/fimbriation (s/nilable :heraldry/fimbriation))
+(s/def :heraldry.ordinary/fimbriation :heraldry/fimbriation)
 
-(s/def :heraldry.ordinary/cottise-1 (s/nilable :heraldry.ordinary/cottise))
-(s/def :heraldry.ordinary/cottise-2 (s/nilable :heraldry.ordinary/cottise))
-(s/def :heraldry.ordinary/cottise-opposite-1 (s/nilable :heraldry.ordinary/cottise))
-(s/def :heraldry.ordinary/cottise-opposite-2 (s/nilable :heraldry.ordinary/cottise))
-(s/def :heraldry.ordinary/cottise-extra-1 (s/nilable :heraldry.ordinary/cottise))
-(s/def :heraldry.ordinary/cottise-extra-2 (s/nilable :heraldry.ordinary/cottise))
+(s/def :heraldry.ordinary/cottise-1 :heraldry.ordinary/cottise)
+(s/def :heraldry.ordinary/cottise-2 :heraldry.ordinary/cottise)
+(s/def :heraldry.ordinary/cottise-opposite-1 :heraldry.ordinary/cottise)
+(s/def :heraldry.ordinary/cottise-opposite-2 :heraldry.ordinary/cottise)
+(s/def :heraldry.ordinary/cottise-extra-1 :heraldry.ordinary/cottise)
+(s/def :heraldry.ordinary/cottise-extra-2 :heraldry.ordinary/cottise)
 
-(s/def :heraldry.ordinary/cottising (s/nilable (s/keys :opt-un [:heraldry.ordinary/cottise-1
-                                                                :heraldry.ordinary/cottise-2
-                                                                :heraldry.ordinary/cottise-opposite-1
-                                                                :heraldry.ordinary/cottise-opposite-2
-                                                                :heraldry.ordinary/cottise-extra-1
-                                                                :heraldry.ordinary/cottise-extra-2])))
+(s/def :heraldry.ordinary/cottising (s/keys :opt-un [:heraldry.ordinary/cottise-1
+                                                     :heraldry.ordinary/cottise-2
+                                                     :heraldry.ordinary/cottise-opposite-1
+                                                     :heraldry.ordinary/cottise-opposite-2
+                                                     :heraldry.ordinary/cottise-extra-1
+                                                     :heraldry.ordinary/cottise-extra-2]))
 
-(s/def :heraldry.ordinary/manual-blazon (s/nilable string?))
+(s/def :heraldry.ordinary/manual-blazon string?)
 
 (s/def :heraldry/ordinary (s/keys :req-un [:heraldry.ordinary/type
                                            :heraldry.ordinary/field]
