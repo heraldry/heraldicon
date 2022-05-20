@@ -4,15 +4,15 @@
    [heraldicon.entity.attribution :as attribution]
    [spec.heraldicon.spec-util :as su]))
 
-(s/def :heraldicon.entity.attribution/nature (s/nilable (su/key-in? attribution/nature-map)))
-(s/def :heraldicon.entity.attribution/license (s/nilable (su/key-in? attribution/license-map)))
-(s/def :heraldicon.entity.attribution/license-version (s/nilable (su/key-in? attribution/cc-license-version-map)))
-(s/def :heraldicon.entity.attribution/source-name (s/nilable su/non-blank-string?))
-(s/def :heraldicon.entity.attribution/source-link (s/nilable su/non-blank-string?))
-(s/def :heraldicon.entity.attribution/source-license (s/nilable (su/key-in? attribution/license-map)))
-(s/def :heraldicon.entity.attribution/source-license-version (s/nilable (su/key-in? attribution/cc-license-version-map)))
-(s/def :heraldicon.entity.attribution/source-creator-name (s/nilable su/non-blank-string?))
-(s/def :heraldicon.entity.attribution/source-creator-link (s/nilable su/non-blank-string?))
+(s/def :heraldicon.entity.attribution/nature (su/key-in? attribution/nature-map))
+(s/def :heraldicon.entity.attribution/license (su/key-in? attribution/license-map))
+(s/def :heraldicon.entity.attribution/license-version (su/key-in? attribution/cc-license-version-map))
+(s/def :heraldicon.entity.attribution/source-name su/non-blank-string?)
+(s/def :heraldicon.entity.attribution/source-link su/non-blank-string?)
+(s/def :heraldicon.entity.attribution/source-license (su/key-in? attribution/license-map))
+(s/def :heraldicon.entity.attribution/source-license-version (su/key-in? attribution/cc-license-version-map))
+(s/def :heraldicon.entity.attribution/source-creator-name su/non-blank-string?)
+(s/def :heraldicon.entity.attribution/source-creator-link su/non-blank-string?)
 
 (defmulti attribution-type #(-> % :nature (or :own-work)))
 
@@ -32,5 +32,5 @@
                    :heraldicon.entity.attribution/source-creator-name
                    :heraldicon.entity.attribution/source-creator-link]))
 
-(s/def :heraldicon.entity/attribution (s/nilable (s/multi-spec attribution-type
-                                                               :heraldicon.entity.attribution/type)))
+(s/def :heraldicon.entity/attribution (s/multi-spec attribution-type
+                                                    :heraldicon.entity.attribution/type))

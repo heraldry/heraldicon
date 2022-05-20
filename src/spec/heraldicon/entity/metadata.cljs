@@ -5,4 +5,4 @@
 
 (s/def :heraldicon.entity.metadata/pair (s/tuple su/non-blank-string? su/non-blank-string?))
 
-(s/def :heraldicon.entity/metadata (s/nilable (s/coll-of :heraldicon.entity.metadata/pair :into [])))
+(s/def :heraldicon.entity/metadata (s/coll-of :heraldicon.entity.metadata/pair :into []))
