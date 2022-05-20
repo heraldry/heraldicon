@@ -24,6 +24,9 @@
                                        :heraldry.line/height
                                        :heraldry.line/width
                                        :heraldry.line/spacing
+                                       :heraldry.line/base-line
+                                       :heraldry.line/corner-dampening-radius
+                                       :heraldry.line/corner-dampening-mode
                                        :heraldry.line/offset
                                        :heraldry.line/mirrored?
                                        :heraldry.line/flipped?
