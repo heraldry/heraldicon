@@ -18,10 +18,10 @@
 (s/def :heraldry.fimbriation/tincture-1 tincture)
 (s/def :heraldry.fimbriation/tincture-2 tincture)
 
-(s/def :heraldry/fimbriation (s/nilable (s/keys :opt-un [:heraldry.fimbriation/mode
-                                                         :heraldry.fimbriation/alignment
-                                                         :heraldry.fimbriation/corner
-                                                         :heraldry.fimbriation/thickness-1
-                                                         :heraldry.fimbriation/thickness-2
-                                                         :heraldry.fimbriation/tincture-1
-                                                         :heraldry.fimbriation/tincture-2])))
+(s/def :heraldry/fimbriation (s/keys :opt-un [:heraldry.fimbriation/mode
+                                              :heraldry.fimbriation/alignment
+                                              :heraldry.fimbriation/corner
+                                              :heraldry.fimbriation/thickness-1
+                                              :heraldry.fimbriation/thickness-2
+                                              :heraldry.fimbriation/tincture-1
+                                              :heraldry.fimbriation/tincture-2]))

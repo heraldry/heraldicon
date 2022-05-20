@@ -8,15 +8,15 @@
 
 (s/def :heraldry.charge/type (s/and keyword?
                                     #(-> % namespace (= "heraldry.charge.type"))))
-(s/def :heraldry.charge/field :heraldry/field)
+(s/def :heraldry.charge/field (su/spec :heraldry/field))
 
-(s/def :heraldry.charge/anchor :heraldry/position)
-(s/def :heraldry.charge/orientation :heraldry/position)
+(s/def :heraldry.charge/anchor (s/nilable :heraldry/position))
+(s/def :heraldry.charge/orientation (s/nilable :heraldry/position))
 
 (s/def :heraldry.charge/attitude (s/nilable (su/key-in? attributes/attitude-map)))
 (s/def :heraldry.charge/facing (s/nilable (su/key-in? attributes/facing-map)))
 
-(s/def :heraldry.charge/fimbriation :heraldry/fimbriation)
+(s/def :heraldry.charge/fimbriation (s/nilable :heraldry/fimbriation))
 (s/def :heraldry.charge/outline-mode (s/nilable (su/key-in? charge.shared/outline-mode-map)))
 (s/def :heraldry.charge/vertical-mask (s/nilable number?))
 

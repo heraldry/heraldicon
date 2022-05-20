@@ -11,8 +11,8 @@
 (s/def :heraldry.position/alignment (s/nilable (su/key-in? position/alignment-map)))
 (s/def :heraldry.position/type (s/nilable (su/key-in? per-pile/orientation-type-map)))
 
-(s/def :heraldry/position (s/nilable (s/keys :opt-un [:heraldry.position/point
-                                                      :heraldry.position/offset-x
-                                                      :heraldry.position/offset-y
-                                                      :heraldry.position/alignment
-                                                      :heraldry.position/type])))
+(s/def :heraldry/position (s/keys :opt-un [:heraldry.position/point
+                                           :heraldry.position/offset-x
+                                           :heraldry.position/offset-y
+                                           :heraldry.position/alignment
+                                           :heraldry.position/type]))

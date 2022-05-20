@@ -1,9 +1,10 @@
 (ns spec.heraldry.semy
   (:require
-   [cljs.spec.alpha :as s]))
+   [cljs.spec.alpha :as s]
+   [spec.heraldicon.spec-util :as su]))
 
 (s/def :heraldry.semy/type #{:heraldry/semy})
-(s/def :heraldry.semy/charge :heraldry/charge)
+(s/def :heraldry.semy/charge (su/spec :heraldry/charge))
 
 (s/def :heraldry.semy/layout (s/nilable :heraldry/layout))
 (s/def :heraldry.semy/rectangular? (s/nilable boolean?))
