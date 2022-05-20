@@ -41,13 +41,9 @@
             highlight-qualifiers? (->> qualifiers
                                        (keep attributes/highlight-qualifiers)
                                        first)
-            supported-tinctures (-> attributes/tincture-modifier-map
+            supported-tinctures (-> attributes/applicable-tincture-modifier-map
                                     keys
                                     set
-                                    (conj :secondary)
-                                    (conj :tertiary)
-                                    (conj :shadow)
-                                    (conj :highlight)
                                     (cond->
                                       (not preview?) (set/intersection
                                                       (->> charge-data

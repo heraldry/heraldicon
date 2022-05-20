@@ -52,58 +52,6 @@
 ;;     :heraldry/ordinary {:type :fess
 ;;                         :field {}}))
 
-;; (deftest valid-charges
-;;   (are [spec form] (check-spec spec form)
-
-;;     :heraldry/charge {:type :heraldry.charge.type/roundel
-;;                       :attitude nil
-;;                       :facing nil
-;;                       :variant nil
-;;                       :field {:type :heraldry.field.type/plain
-;;                               :tincture :azure}}
-
-;;     :heraldry/charge {:type :heraldry.charge.type/lion
-;;                       :attitude :rampant
-;;                       :facing :reguardant
-;;                       :field {:type :heraldry.field.type/plain
-;;                               :tincture :azure}}
-
-;;     :heraldry/charge {:type :heraldry.charge.type/roundel
-;;                       :field {:type :heraldry.field.type/plain
-;;                               :tincture :azure}
-;;                       :tincture {:shadow 0.5
-;;                                  :highlight 0.5
-;;                                  :primary :or}
-;;                       :geometry {:size 50}
-;;                       :anchor {:point :fess
-;;                                :offset-x -5
-;;                                :offset-y 5}}))
-
-;; (deftest invalid-charges
-;;   (are [spec form] (not (s/valid? spec form))
-
-;;     :heraldry/charge {}
-
-;;     :heraldry/charge {:type :heraldry.charge.type/wolf
-;;                       :field {}}
-
-;;     :heraldry/charge {:type :heraldry.charge.type/wolf
-;;                       :attitude :foobar
-;;                       :field {:type :heraldry.field.type/plain
-;;                               :tincture :azure}}
-
-;;     :heraldry/charge {:type :heraldry.charge.type/wolf
-;;                       :attitude :rampant
-;;                       :field {:type :heraldry.field.type/plain
-;;                               :tincture :azure}
-;;                       :tincture {:shadow true}}
-
-;;     :heraldry/charge {:type :heraldry.charge.type/wolf
-;;                       :attitude :rampant
-;;                       :field {:type :heraldry.field.type/plain
-;;                               :tincture :azure}
-;;                       :tincture {:highlight :or}}))
-
 ;; (deftest valid-coat-of-arms
 ;;   (are [spec form] (check-spec spec form)
 
