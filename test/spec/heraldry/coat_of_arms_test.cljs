@@ -1,44 +1,35 @@
 (ns spec.heraldry.coat-of-arms-test
   (:require
-   [cljs.spec.alpha :as s]
    [cljs.test :refer-macros [are deftest]]
+   [spec.heraldicon.test-util :as tu]
    [spec.heraldry.specs]))
 
-(defn check-spec [spec form]
-  (let [explain-output (with-out-str (s/explain spec form))
-        conforms? (s/valid? spec form)]
-    (when-not conforms?
-      (println explain-output))
-    conforms?))
+(def ^:private example-field
+  (tu/example :heraldry/field))
 
-;; (deftest valid-coat-of-arms
-;;   (are [spec form] (check-spec spec form)
+(deftest valid-coat-of-arms
+  (are [form] (tu/valid? :heraldry/coat-of-arms form)
+    {:type :heraldry/coat-of-arms
+     :field example-field}
 
-;;     :heraldry/coat-of-arms {:spec-version 1
-;;                             :type :coat-of-arms
-;;                             :field {:type :heraldry.field.type/plain
-;;                                     :tincture :azure}}
+    {:type :heraldry/coat-of-arms
+     :field example-field
+     :manual-blazon "foobar"}))
 
-;;     :heraldry/coat-of-arms {:spec-version 1
-;;                             :type :coat-of-arms
-;;                             :field {:type :per-pale
-;;                                     :line {:type :invected
-;;                                            :eccentricity 1.3
-;;                                            :width 2
-;;                                            :offset 0.2
-;;                                            :flipped? false}
-;;                                     :fields [{:type :heraldry.field.type/plain
-;;                                               :tincture :azure}
-;;                                              {:type :heraldry.field.type/plain
-;;                                               :tincture :or}]
-;;                                     :outline? true}}))
+(deftest invalid-coat-of-arms
+  (are [form] (tu/invalid? :heraldry/coat-of-arms form)
+    {}
 
-;; (deftest invalid-coat-of-arms
-;;   (are [spec form] (not (s/valid? spec form))
+    {:field example-field}
 
-;;     :heraldry/coat-of-arms {}
+    {:type :heraldry/coat-of-arms}
 
-;;     :heraldry/coat-of-arms {:spec-version 1}
+    {:type :wrong
+     :field example-field}
 
-;;     :heraldry/coat-of-arms {:field {:type :heraldry.field.type/plain
-;;                                     :tincture :azure}}))
+    {:type :heraldry/coat-of-arms
+     :field :wrong}
+
+    {:type :heraldry/coat-of-arms
+     :field example-field
+     :manual-blazon :wrong}))
