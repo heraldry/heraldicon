@@ -10,6 +10,8 @@
 
     (tu/example :heraldry/charge-group)
 
+    (tu/example :heraldry/motto)
+
     (tu/example :heraldry/shield-separator)))
 
 (deftest invalid-ornament
