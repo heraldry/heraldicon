@@ -3,6 +3,7 @@
    [cljs.spec.alpha :as s]
    [spec.heraldry.coat-of-arms]
    [spec.heraldry.helms]
+   [spec.heraldry.ornaments]
    [spec.heraldry.render-options]))
 
 (s/def :heraldry.achievement/type #{:heraldry/achievement})
@@ -14,4 +15,4 @@
                                               :heraldry.achievement/coat-of-arms
                                               :heraldry/render-options
                                               :heraldry/helms
-                                              #_:heraldry/ornaments]))
+                                              :heraldry/ornaments]))
