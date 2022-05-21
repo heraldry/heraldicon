@@ -10,26 +10,10 @@
 (deftest valid-coat-of-arms
   (are [form] (tu/valid? :heraldry/achievement form)
     {:type :heraldry/achievement
-     :coat-of-arms example-coat-of-arms}
-
-    {:type :heraldry/achievement
      :coat-of-arms example-coat-of-arms
-     :render-options (tu/example :heraldry/render-options)}))
+     :render-options (tu/example :heraldry/render-options)
+     :helms (tu/example :heraldry/helms)}))
 
 (deftest invalid-coat-of-arms
   (are [form] (tu/invalid? :heraldry/achievement form)
-    {}
-
-    {:coat-of-arms example-coat-of-arms}
-
-    {:type :heraldry/achievement}
-
-    {:type :wrong
-     :coat-of-arms example-coat-of-arms}
-
-    {:type :heraldry/achievement
-     :coat-of-arms :wrong}
-
-    {:type :heraldry/achievement
-     :coat-of-arms example-coat-of-arms
-     :render-options :wrong}))
+    {}))
