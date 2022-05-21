@@ -3,8 +3,10 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.interface :as interface]))
+   [heraldicon.interface :as interface]
+   [heraldicon.options :as options]))
 
+;; TODO: this appears to be broken
 (def tinctures-without-furs
   (-> tincture/choices
       (update 0 #(filterv (fn [v]
@@ -13,14 +15,23 @@
                           %))
       (->> (filterv #(when (-> % first :en (not= "Fur")) %)))))
 
+(def tinctures-without-furs-map
+  (options/choices->map tinctures-without-furs))
+
 (derive :heraldry.motto.type/motto :heraldry.motto/type)
 (derive :heraldry.motto.type/slogan :heraldry.motto/type)
 (derive :heraldry.motto/type :heraldry/motto)
 
+(def type-choices
+  [[:string.entity/motto :heraldry.motto.type/motto]
+   [:string.entity/slogan :heraldry.motto.type/slogan]])
+
+(def type-map
+  (options/choices->map type-choices))
+
 (def type-option
   {:type :choice
-   :choices [[:string.entity/motto :heraldry.motto.type/motto]
-             [:string.entity/slogan :heraldry.motto.type/slogan]]
+   :choices type-choices
    :ui {:label :string.option/type}})
 
 (derive :heraldry/motto :heraldry.options/root)
