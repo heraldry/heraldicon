@@ -32,5 +32,4 @@
                    :heraldicon.entity.attribution/source-creator-name
                    :heraldicon.entity.attribution/source-creator-link]))
 
-(s/def :heraldicon.entity/attribution (s/multi-spec attribution-type
-                                                    :heraldicon.entity.attribution/type))
+(s/def :heraldicon.entity/attribution (s/multi-spec attribution-type :attribution-type))
