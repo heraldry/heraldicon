@@ -10,7 +10,7 @@
     context
     [:name
      :attribution
-     :is-public
+     :access
      :metadata
      :tags])
 

@@ -106,7 +106,7 @@
                                                [(if (-> charge :username (= "heraldicon"))
                                                   0
                                                   1)
-                                                (if (-> charge :is-public)
+                                                (if (-> charge :access (= :public))
                                                   0
                                                   1)
                                                 (cond

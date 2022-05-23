@@ -250,18 +250,19 @@
       [{:level :error
         :message :string.validation.attribution/all-source-fields-required}])))
 
-(defn validate-is-public [context]
-  (let [is-public (interface/get-sanitized-data (c/++ context :is-public))
+(defn validate-access [context]
+  (let [public? (= (interface/get-sanitized-data (c/++ context :access))
+                   :public)
         license (interface/get-sanitized-data (c/++ context :attribution :license))]
-    (when (and is-public (= license :none))
+    (when (and public? (= license :none))
       [{:level :error
         :message :string.validation.attribution/license-required-for-public-objects}])))
 
 (defn validate-entity [context]
-  (let [is-public (validate-is-public context)
+  (let [access (validate-access context)
         attribution (validate-attribution (c/++ context :attribution))]
     (concat
-     is-public
+     access
      attribution)))
 
 (defn render-icon [level]

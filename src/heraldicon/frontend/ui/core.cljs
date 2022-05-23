@@ -5,6 +5,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.ui.element.access] ;; needed for side effects
    [heraldicon.frontend.ui.element.arms-reference-select] ;; needed for side effects
    [heraldicon.frontend.ui.element.attributes] ;; needed for side effects
    [heraldicon.frontend.ui.element.attribution] ;; needed for side effects

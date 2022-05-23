@@ -198,7 +198,8 @@
         form-message @(rf/subscribe [:get-form-message form-db-path])
         arms-id @(rf/subscribe [:get (conj form-db-path :id)])
         arms-username @(rf/subscribe [:get (conj form-db-path :username)])
-        is-public @(rf/subscribe [:get (conj form-db-path :is-public)])
+        public? (= @(rf/subscribe [:get (conj form-db-path :access)])
+                   :public)
         user-data (user/data)
         logged-in? (:logged-in? user-data)
         unsaved-changes? (not= (-> @(rf/subscribe [:get form-db-path])
@@ -215,7 +216,7 @@
         can-save? (and logged-in?
                        (or (not saved?)
                            owned-by-me?))
-        can-share? (and is-public
+        can-share? (and public?
                         saved?
                         (not unsaved-changes?))]
     [:<>

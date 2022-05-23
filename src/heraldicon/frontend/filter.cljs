@@ -67,9 +67,8 @@
                       :heraldicon (= (:username item) "heraldicon")
                       :community (not= (:username item) "heraldicon")
                       true)
-                    (case filter-access
-                      :public (:is-public item)
-                      :private (not (:is-public item))
+                    (if (#{:public :private} filter-access)
+                      (-> item :access (= filter-access))
                       true)
                     (every? (fn [word]
                               (some (fn [attribute]
@@ -141,7 +140,7 @@
        (when item
          [:div.filter-result-card-access
           (when (= own-username username)
-            (if (:is-public item)
+            (if (-> item :access (= :public))
               [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
               [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))])]
       [(if item
