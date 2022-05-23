@@ -181,7 +181,6 @@
          (dissoc :user-id)
          (dissoc :created-at)
          (dissoc :first-version-created-at)
-         (dissoc :is-current-version)
          (dissoc :name)))
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-arms)))
