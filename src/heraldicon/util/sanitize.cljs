@@ -3,10 +3,13 @@
    [clojure.string :as s]
    [clojure.walk :as walk]))
 
+(defn sanitize-string-or-nil [data]
+  (some-> data
+          (s/replace #"  *" " ")
+          s/trim))
+
 (defn sanitize-string [data]
-  (or (some-> data
-              (s/replace #"  *" " ")
-              s/trim)
+  (or (sanitize-string-or-nil data)
       ""))
 
 (defn sanitize-keyword [data]
