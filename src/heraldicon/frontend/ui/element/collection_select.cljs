@@ -71,7 +71,7 @@
            (let [username (-> collection :username)]
              ^{:key (:id collection)}
              [:li.collection
-              (if (-> collection :is-public)
+              (if (-> :access collection (= :public))
                 [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
                 [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
               " "

@@ -20,7 +20,7 @@
 
     {:type :heraldicon.entity.type/arms
      :name "foobar"
-     :is-public false}
+     :access :private}
 
     {:type :heraldicon.entity.type/arms
      :name "foobar"
@@ -58,6 +58,14 @@
 
     {:type :heraldicon.entity.type/arms
      :name ""}
+
+    {:type :heraldicon.entity.type/arms
+     :name "foobar"
+     :access nil}
+
+    {:type :heraldicon.entity.type/arms
+     :name "foobar"
+     :access :wrong}
 
     {:type :heraldicon.entity.type/arms
      :name "foobar"
