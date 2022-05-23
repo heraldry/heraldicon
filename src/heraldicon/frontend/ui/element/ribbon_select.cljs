@@ -16,9 +16,8 @@
 (defn fetch-ribbon [ribbon-id version target-path]
   (go
     (try
-      (let [user-data (user/data)
-            ribbon-data (<? (api.request/call :fetch-ribbon {:id ribbon-id
-                                                             :version version} user-data))]
+      (let [ribbon-data (<? (api.request/call :fetch-ribbon {:id ribbon-id
+                                                             :version version} (user/data)))]
         (when target-path
           (rf/dispatch [:set target-path ribbon-data]))
         ribbon-data)
@@ -28,26 +27,18 @@
 (defn fetch-ribbon-list []
   (go
     (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-ribbons-list
-             {}
-             user-data)
-            <?
-            :ribbons))
+      (-> (api.request/call :fetch-ribbons-list {} (user/data))
+          <?
+          :items)
       (catch :default e
         (log/error "fetch ribbon list error:" e)))))
 
 (defn fetch-ribbon-list-by-user [user-id]
   (go
     (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-ribbon-for-user
-             {:user-id user-id}
-             user-data)
-            <?
-            :ribbons))
+      (-> (api.request/call :fetch-ribbon-for-user {:user-id user-id} (user/data))
+          <?
+          :items)
       (catch :default e
         (log/error "fetch ribbon list by user error:" e)))))
 

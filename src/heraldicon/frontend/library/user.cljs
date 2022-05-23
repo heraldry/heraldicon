@@ -1,11 +1,7 @@
 (ns heraldicon.frontend.library.user
   (:require
-   [cljs.core.async :refer [go]]
-   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.avatar :as avatar]
    [heraldicon.config :as config]
-   [heraldicon.frontend.api.request :as api.request]
-   [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.arms :as library.arms]
    [heraldicon.frontend.library.charge :as library.charge]
@@ -17,19 +13,10 @@
    [heraldicon.frontend.ui.element.user-select :as user-select]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]
-   [reitit.frontend.easy :as reife]
-   [taoensso.timbre :as log]))
+   [reitit.frontend.easy :as reife]))
 
 (def user-info-db-path
   [:user-info])
-
-(defn fetch-user [username]
-  (go
-    (try
-      (let [user-data (user/data)]
-        (<? (api.request/call :fetch-user {:username username} user-data)))
-      (catch :default e
-        (log/error "fetch user error:" e)))))
 
 (defn invalidate-charges-cache-for-user [user-id]
   (state/invalidate-cache [:user-charges] user-id))
@@ -38,7 +25,7 @@
   (let [[status _charges] (state/async-fetch-data
                            [:user-charges]
                            user-id
-                           #(charge/fetch-charges-for-user user-id))]
+                           #(charge-select/fetch-charges-for-user user-id))]
     (if (= status :done)
       [charge-select/component
        [:user-charges]
@@ -121,7 +108,7 @@
   (let [[status _userform-data] (state/async-fetch-data
                                  user-info-db-path
                                  username
-                                 #(fetch-user username))]
+                                 #(user-select/fetch-user username))]
     (when (= status :done)
       [user-display])))
 

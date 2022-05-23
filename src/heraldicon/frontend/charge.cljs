@@ -9,32 +9,6 @@
    [heraldicon.interface :as interface]
    [taoensso.timbre :as log]))
 
-(defn fetch-charges-for-user [user-id]
-  (go
-    (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-charges-for-user
-             {:user-id user-id}
-             user-data)
-            <?
-            :charges))
-      (catch :default e
-        (log/error "fetch charges for user error:" e)))))
-
-(defn fetch-charges []
-  (go
-    (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-charges-list
-             {}
-             user-data)
-            <?
-            :charges))
-      (catch :default e
-        (log/error "fetch charges error:" e)))))
-
 (defn fetch-charge-for-rendering [charge-id version]
   (go
     (try

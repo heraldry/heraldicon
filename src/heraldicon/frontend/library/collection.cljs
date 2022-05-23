@@ -56,7 +56,7 @@
       (let [payload @(rf/subscribe [:get form-db-path])
             user-data (user/data)
             response (<? (api.request/call :save-collection payload user-data))
-            collection-id (-> response :collection-id)]
+            collection-id (:id response)]
         (rf/dispatch-sync [:set (conj form-db-path :id) collection-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
         (state/invalidate-cache-without-current form-db-path [collection-id nil])

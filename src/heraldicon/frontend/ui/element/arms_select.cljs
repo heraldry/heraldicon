@@ -16,9 +16,8 @@
 (defn fetch-arms [arms-id version target-path]
   (go
     (try
-      (let [user-data (user/data)
-            arms-data (<? (api.request/call :fetch-arms {:id arms-id
-                                                         :version version} user-data))]
+      (let [arms-data (<? (api.request/call :fetch-arms {:id arms-id
+                                                         :version version} (user/data)))]
         (when target-path
           (rf/dispatch [:set target-path arms-data]))
         arms-data)
@@ -28,26 +27,18 @@
 (defn fetch-arms-list []
   (go
     (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-arms-list
-             {}
-             user-data)
-            <?
-            :arms))
+      (-> (api.request/call :fetch-arms-list {} (user/data))
+          <?
+          :items)
       (catch :default e
         (log/error "fetch arms list error:" e)))))
 
 (defn fetch-arms-list-by-user [user-id]
   (go
     (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-arms-for-user
-             {:user-id user-id}
-             user-data)
-            <?
-            :arms))
+      (-> (api.request/call :fetch-arms-for-user {:user-id user-id} (user/data))
+          <?
+          :items)
       (catch :default e
         (log/error "fetch arms list by user error:" e)))))
 

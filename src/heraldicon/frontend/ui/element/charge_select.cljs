@@ -16,9 +16,8 @@
 (defn fetch-charge [charge-id version target-path]
   (go
     (try
-      (let [user-data (user/data)
-            charge-data (<? (api.request/call :fetch-charge {:id charge-id
-                                                             :version version} user-data))]
+      (let [charge-data (<? (api.request/call :fetch-charge {:id charge-id
+                                                             :version version} (user/data)))]
         (when target-path
           (rf/dispatch [:set target-path charge-data]))
         charge-data)
@@ -28,15 +27,20 @@
 (defn fetch-charge-list []
   (go
     (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-charges-list
-             {}
-             user-data)
-            <?
-            :charges))
+      (-> (api.request/call :fetch-charges-list {} (user/data))
+          <?
+          :items)
       (catch :default e
         (log/error "fetch charge list error:" e)))))
+
+(defn fetch-charges-for-user [user-id]
+  (go
+    (try
+      (-> (api.request/call :fetch-charges-for-user {:user-id user-id} (user/data))
+          <?
+          :items)
+      (catch :default e
+        (log/error "fetch charge list by user error:" e)))))
 
 (defn invalidate-charge-cache [key]
   (state/invalidate-cache list-db-path key))

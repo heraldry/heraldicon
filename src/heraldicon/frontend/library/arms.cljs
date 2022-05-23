@@ -147,7 +147,7 @@
             user-data (user/data)
             user-id (:user-id user-data)
             response (<? (api.request/call :save-arms payload user-data))
-            arms-id (-> response :arms-id)]
+            arms-id (:id response)]
         (rf/dispatch-sync [:set (conj form-db-path :id) arms-id])
         (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
         (state/invalidate-cache-without-current form-db-path [arms-id nil])
