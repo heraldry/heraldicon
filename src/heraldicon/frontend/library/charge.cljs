@@ -246,7 +246,7 @@
       (try
         (modal/start-loading)
         (let [response (<? (api.request/call :save-charge payload user-data))
-              charge-id (-> response :charge-id)]
+              charge-id (:id response)]
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
           (state/invalidate-cache-without-current form-db-path [charge-id nil])
           (state/invalidate-cache-without-current form-db-path [charge-id 0])

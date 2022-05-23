@@ -19,9 +19,8 @@
 (defn fetch-collection [collection-id version target-path]
   (go
     (try
-      (let [user-data (user/data)
-            collection-data (<? (api.request/call :fetch-collection {:id collection-id
-                                                                     :version version} user-data))]
+      (let [collection-data (<? (api.request/call :fetch-collection {:id collection-id
+                                                                     :version version} (user/data)))]
         (when target-path
           (rf/dispatch [:set target-path collection-data]))
         collection-data)
@@ -31,26 +30,18 @@
 (defn fetch-collection-list []
   (go
     (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-collections-list
-             {}
-             user-data)
-            <?
-            :collections))
+      (-> (api.request/call :fetch-collections-list {} (user/data))
+          <?
+          :items)
       (catch :default e
         (log/error "fetch collection list error:" e)))))
 
 (defn fetch-collection-list-by-user [user-id]
   (go
     (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-collections-for-user
-             {:user-id user-id}
-             user-data)
-            <?
-            :collections))
+      (-> (api.request/call :fetch-collections-for-user {:user-id user-id} (user/data))
+          <?
+          :items)
       (catch :default e
         (log/error "fetch collection list by user error:" e)))))
 

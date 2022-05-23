@@ -13,16 +13,19 @@
 (def list-db-path
   [:user-list])
 
+(defn fetch-user [username]
+  (go
+    (try
+      (<? (api.request/call :fetch-user {:username username} (user/data)))
+      (catch :default e
+        (log/error "fetch user error:" e)))))
+
 (defn fetch-user-list []
   (go
     (try
-      (let [user-data (user/data)]
-        (-> (api.request/call
-             :fetch-users-all
-             {}
-             user-data)
-            <?
-            :users))
+      (-> (api.request/call :fetch-users-all {} (user/data))
+          <?
+          :items)
       (catch :default e
         (log/error "fetch users list error:" e)))))
 

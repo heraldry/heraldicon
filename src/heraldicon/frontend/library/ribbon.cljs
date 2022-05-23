@@ -359,7 +359,7 @@
       (try
         (modal/start-loading)
         (let [response (<? (api.request/call :save-ribbon payload user-data))
-              ribbon-id (-> response :ribbon-id)]
+              ribbon-id (:id response)]
           (rf/dispatch-sync [:set (conj form-db-path :id) ribbon-id])
           (state/invalidate-cache-without-current form-db-path [ribbon-id nil])
           (state/invalidate-cache-without-current form-db-path [ribbon-id 0])

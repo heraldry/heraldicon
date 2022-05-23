@@ -22,7 +22,7 @@
   (go
     (try
       (let [user-data (user/data)]
-        (-> (api.request/call :fetch-ribbons {}
+        (-> (api.request/call :fetch-ribbons-list {}
                               user-data)
             <?
             :ribbons))
