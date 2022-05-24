@@ -39,25 +39,25 @@
    :manual-blazon options/manual-blazon})
 
 (defn rows-or-columns [_context]
-  (-> shared-options
-      (merge {:spacing {:type :range
-                        :min 1
-                        :max 100
-                        :default 40
-                        :ui {:label :string.option/spacing
-                             :step 0.1}}
-              :stretch {:type :range
-                        :min 0
-                        :max 5
-                        :default 1
-                        :ui {:label :string.option/stretch
-                             :step 0.01}}
-              :strip-angle {:type :range
-                            :min -90
-                            :max 90
-                            :default 0
-                            :ui {:label :string.option/strip-angle
-                                 :step 1}}})))
+  (merge shared-options
+         {:spacing {:type :range
+                    :min 1
+                    :max 100
+                    :default 40
+                    :ui {:label :string.option/spacing
+                         :step 0.1}}
+          :stretch {:type :range
+                    :min 0
+                    :max 5
+                    :default 1
+                    :ui {:label :string.option/stretch
+                         :step 0.01}}
+          :strip-angle {:type :range
+                        :min -90
+                        :max 90
+                        :default 0
+                        :ui {:label :string.option/strip-angle
+                             :step 1}}}))
 
 (defmethod interface/options :heraldry.charge-group.type/rows [context]
   (rows-or-columns context))
@@ -66,41 +66,41 @@
   (rows-or-columns context))
 
 (defmethod interface/options :heraldry.charge-group.type/arc [_context]
-  (-> shared-options
-      (merge {:start-angle {:type :range
-                            :min -180
-                            :max 180
-                            :default 0
-                            :ui {:label :string.option/start-angle
-                                 :step 1}}
-              :arc-angle {:type :range
-                          :min 0
-                          :max 360
-                          :default 360
-                          :ui {:label :string.option/arc-angle
-                               :step 1}}
-              :slots {:type :range
-                      :min 1
-                      :max 20
-                      :default 5
-                      :integer? true
-                      :ui {:label :string.option/number
-                           :form-type :charge-group-slot-number}}
-              :radius {:type :range
-                       :min 0
-                       :max 100
-                       :default 30
-                       :ui {:label :string.option/radius
-                            :step 0.1}}
-              :arc-stretch {:type :range
-                            :min 0
-                            :max 5
-                            :default 1
-                            :ui {:label :string.option/stretch
-                                 :step 0.01}}
-              :rotate-charges? {:type :boolean
-                                :default false
-                                :ui {:label :string.option/rotate-charges?}}})))
+  (merge shared-options
+         {:start-angle {:type :range
+                        :min -180
+                        :max 180
+                        :default 0
+                        :ui {:label :string.option/start-angle
+                             :step 1}}
+          :arc-angle {:type :range
+                      :min 0
+                      :max 360
+                      :default 360
+                      :ui {:label :string.option/arc-angle
+                           :step 1}}
+          :slots {:type :range
+                  :min 1
+                  :max 20
+                  :default 5
+                  :integer? true
+                  :ui {:label :string.option/number
+                       :form-type :charge-group-slot-number}}
+          :radius {:type :range
+                   :min 0
+                   :max 100
+                   :default 30
+                   :ui {:label :string.option/radius
+                        :step 0.1}}
+          :arc-stretch {:type :range
+                        :min 0
+                        :max 5
+                        :default 1
+                        :ui {:label :string.option/stretch
+                             :step 0.01}}
+          :rotate-charges? {:type :boolean
+                            :default false
+                            :ui {:label :string.option/rotate-charges?}}}))
 
 (defmethod interface/options :heraldry.charge-group.type/in-orle [_context]
   (-> shared-options

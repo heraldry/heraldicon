@@ -101,8 +101,7 @@
 
 (defn calculate [{:keys [point offset-x offset-y] :or {offset-x 0
                                                        offset-y 0}} environment & [default]]
-  (let [ref (-> point
-                (or default))
+  (let [ref (or point default)
         p (-> environment :points (get ref))
         width (:width environment)
         height (:height environment)

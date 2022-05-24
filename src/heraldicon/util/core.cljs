@@ -30,9 +30,7 @@
   "Applies f to each key of m. Also to keys of m's vals and so on."
   [f m]
   (zipmap
-   (map (fn [k]
-          (f k))
-        (keys m))
+   (map f (keys m))
    (map (fn [v]
           (if (map? v)
             (map-keys f v)
@@ -40,5 +38,4 @@
         (vals m))))
 
 (defn iso-now []
-  (->> (time/time-now)
-       (format/unparse (:date-time format/formatters))))
+  (format/unparse (:date-time format/formatters) (time/time-now)))

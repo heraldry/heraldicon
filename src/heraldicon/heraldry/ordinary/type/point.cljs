@@ -29,27 +29,27 @@
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    (-> {:line line-style
-         :variant {:type :choice
-                   :choices variant-choices
-                   :default :dexter
-                   :ui {:label :string.option/variant
-                        :form-type :select}}
-         :geometry {:width {:type :range
-                            :min 10
-                            :max 100
-                            :default 50
-                            :ui {:label :string.option/width}}
-                    :height {:type :range
-                             :min 10
-                             :max 100
-                             :default 50
-                             :ui {:label :string.option/height}}
-                    :ui {:label :string.option/geometry
-                         :form-type :geometry}}
-         :outline? options/plain-outline?-option
-         :cottising (cottising/add-cottising context 1)}
-        (ordinary.shared/add-humetty-and-voided context))))
+    (ordinary.shared/add-humetty-and-voided
+     {:line line-style
+      :variant {:type :choice
+                :choices variant-choices
+                :default :dexter
+                :ui {:label :string.option/variant
+                     :form-type :select}}
+      :geometry {:width {:type :range
+                         :min 10
+                         :max 100
+                         :default 50
+                         :ui {:label :string.option/width}}
+                 :height {:type :range
+                          :min 10
+                          :max 100
+                          :default 50
+                          :ui {:label :string.option/height}}
+                 :ui {:label :string.option/geometry
+                      :form-type :geometry}}
+      :outline? options/plain-outline?-option
+      :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
@@ -69,15 +69,15 @@
         real-point-height ((math/percent-of width) point-height)
 
         ideal-point-side (v/Vector. (if (= variant :dexter)
-                                      (-> top-left :x)
-                                      (-> top-right :x))
+                                      (:x top-left)
+                                      (:x top-right))
                                     (-> top-left
                                         :y
                                         (+ real-point-height)))
         ideal-point-top (v/Vector. (if (= variant :dexter)
                                      (-> top-left :x (+ real-point-width))
                                      (-> top-right :x (- real-point-width)))
-                                   (-> top-left :y))
+                                   (:y top-left))
 
         extra-length 30
         line-dir (v/sub ideal-point-side ideal-point-top)

@@ -8,17 +8,17 @@
                       (vector? %)
                       (seq? %)) (fn [data]
                                   (if (map? data)
-                                    ;; look in this order to really find the most important two tinctures
-                                    (concat (-> data :fields)
-                                            [(-> data :field)]
-                                            [(-> data :charge)]
-                                            (-> data :components)
-                                            (-> data :charges))
+                                    ;; look in this order to find the most important two tinctures
+                                    (concat (:fields data)
+                                            [(:field data)]
+                                            [(:charge data)]
+                                            (:components data)
+                                            (:charges data))
                                     (seq data))))
 
        (filter #(and (map? %)
                      (-> % :type (= :heraldry.field.type/plain))
-                     (-> % :tincture)))
+                     (:tincture %)))
        (map :tincture)
        (map #(get tincture-mapping % %))
        distinct))

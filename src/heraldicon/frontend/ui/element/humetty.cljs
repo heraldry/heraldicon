@@ -17,8 +17,7 @@
                                   [:distance]))
                    [:string.submenu-summary/resized]))]
     (if (seq changes)
-      (-> (string/combine ", " changes)
-          string/upper-case-first)
+      (string/upper-case-first (string/combine ", " changes))
       :string.submenu-summary/no)))
 
 (defn humetty-submenu [context]

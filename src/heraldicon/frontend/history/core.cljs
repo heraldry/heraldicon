@@ -11,7 +11,7 @@
      (rf/subscribe [:get (shared/index-path path)])])
 
   (fn [[history-length index] [_ _path]]
-    (and (-> history-length (>= index))
+    (and (>= history-length index)
          (pos? index))))
 
 (rf/reg-sub ::can-redo?

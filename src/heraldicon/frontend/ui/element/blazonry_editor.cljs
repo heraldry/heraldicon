@@ -96,18 +96,17 @@
                      (min index node-length)
                      (.-startOffset range))]
         (cond
-          (pos? offset) (let [rect (-> (doto (js/document.createRange)
-                                         (.setStart node (dec offset))
-                                         (.setEnd node offset))
-                                       .getBoundingClientRect)]
-                          {:top (.-top
-                                 rect)
+          (pos? offset) (let [rect (.getBoundingClientRect
+                                    (doto (js/document.createRange)
+                                      (.setStart node (dec offset))
+                                      (.setEnd node offset)))]
+                          {:top (.-top rect)
                            :left (.-left rect)})
           (< offset
-             node-length) (let [rect (-> (doto (js/document.createRange)
-                                           (.setStart node offset)
-                                           (.setEnd node (inc offset)))
-                                         .getBoundingClientRect)]
+             node-length) (let [rect (.getBoundingClientRect
+                                      (doto (js/document.createRange)
+                                        (.setStart node offset)
+                                        (.setEnd node (inc offset))))]
                             {:top (.-top rect)
                              :left (.-left rect)})
           :else (let [node (first (js/document.getElementsByClassName "DraftEditor-root"))
@@ -355,8 +354,7 @@
                         (draft-js/EditorState.push
                          new-content
                          "insert-characters")
-                        (put-cursor-at (-> (count choice)
-                                           (+ index))))]
+                        (put-cursor-at (+ (count choice) index)))]
       (on-editor-change new-state)
       (auto-complete/clear-data)
       db)))
@@ -447,8 +445,7 @@
                             :path
                             (take-last 2)
                             (= [:coat-of-arms :field]))
-                     (interface/get-sanitized-data (-> context
-                                                       (c/++ :render-options :escutcheon)))
+                     (interface/get-sanitized-data (c/++ context :render-options :escutcheon))
                      :rectangle)]
     (rf/dispatch-sync [:set hdn-path (update default/achievement :render-options
                                              merge {:escutcheon escutcheon

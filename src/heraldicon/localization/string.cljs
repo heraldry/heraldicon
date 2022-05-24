@@ -26,7 +26,7 @@
                                               (str s))))
                                      (map (fn [s]
                                             (tr-raw s language)))
-                                     (filter #(> (count %) 0))
+                                     (filter (comp pos? count))
                                      (s/join (tr-raw separator language)))]))
                         (into {}))]
     (if (-> translated
@@ -45,8 +45,8 @@
                                 (->> strs
                                      (map (fn [s]
                                             (tr-raw s language)))
-                                     (filter #(> (count %) 0))
-                                     (apply str))]))
+                                     (filter (comp pos? count))
+                                     s/join)]))
                         (into {}))]
     (if (-> translated
             vals

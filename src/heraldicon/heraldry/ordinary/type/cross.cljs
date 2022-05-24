@@ -23,42 +23,42 @@
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    (-> {:anchor {:point {:type :choice
-                          :choices [[:string.option.point-choice/chief :chief]
-                                    [:string.option.point-choice/base :base]
-                                    [:string.option.point-choice/fess :fess]
-                                    [:string.option.point-choice/dexter :dexter]
-                                    [:string.option.point-choice/sinister :sinister]
-                                    [:string.option.point-choice/honour :honour]
-                                    [:string.option.point-choice/nombril :nombril]]
-                          :default :fess
-                          :ui {:label :string.option/point}}
-                  :offset-x {:type :range
-                             :min -45
-                             :max 45
-                             :default 0
-                             :ui {:label :string.option/offset-x
-                                  :step 0.1}}
-                  :offset-y {:type :range
-                             :min -45
-                             :max 45
-                             :default 0
-                             :ui {:label :string.option/offset-y
-                                  :step 0.1}}
-                  :ui {:label :string.option/anchor
-                       :form-type :position}}
-         :line line-style
-         :geometry {:size {:type :range
-                           :min 0.1
-                           :max 90
-                           :default 25
-                           :ui {:label :string.option/size
-                                :step 0.1}}
-                    :ui {:label :string.option/geometry
-                         :form-type :geometry}}
-         :outline? options/plain-outline?-option
-         :cottising (cottising/add-cottising context 1)}
-        (ordinary.shared/add-humetty-and-voided context))))
+    (ordinary.shared/add-humetty-and-voided
+     {:anchor {:point {:type :choice
+                       :choices [[:string.option.point-choice/chief :chief]
+                                 [:string.option.point-choice/base :base]
+                                 [:string.option.point-choice/fess :fess]
+                                 [:string.option.point-choice/dexter :dexter]
+                                 [:string.option.point-choice/sinister :sinister]
+                                 [:string.option.point-choice/honour :honour]
+                                 [:string.option.point-choice/nombril :nombril]]
+                       :default :fess
+                       :ui {:label :string.option/point}}
+               :offset-x {:type :range
+                          :min -45
+                          :max 45
+                          :default 0
+                          :ui {:label :string.option/offset-x
+                               :step 0.1}}
+               :offset-y {:type :range
+                          :min -45
+                          :max 45
+                          :default 0
+                          :ui {:label :string.option/offset-y
+                               :step 0.1}}
+               :ui {:label :string.option/anchor
+                    :form-type :position}}
+      :line line-style
+      :geometry {:size {:type :range
+                        :min 0.1
+                        :max 90
+                        :default 25
+                        :ui {:label :string.option/size
+                             :step 0.1}}
+                 :ui {:label :string.option/geometry
+                      :form-type :geometry}}
+      :outline? options/plain-outline?-option
+      :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
@@ -77,8 +77,7 @@
         right (assoc (:right points) :y (:y anchor-point))
         width (:width environment)
         height (:height environment)
-        band-width (-> size
-                       ((math/percent-of width)))
+        band-width ((math/percent-of width) size)
         col1 (- (:x anchor-point) (/ band-width 2))
         col2 (+ col1 band-width)
         pale-top-left (v/Vector. col1 (-> top :y (- 10)))

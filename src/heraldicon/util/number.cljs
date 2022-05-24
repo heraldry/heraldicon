@@ -1,4 +1,5 @@
-(ns heraldicon.util.number)
+(ns heraldicon.util.number
+  (:require [clojure.string :as s]))
 
 ;; https://gist.github.com/jimweirich/1388782
 (def -roman-reductions
@@ -17,7 +18,7 @@
                                (list 0 number)
                                (map first -roman-reductions))))
         glyphs (map second -roman-reductions)]
-    (apply str
-           (flatten
-            (map (fn [[c g]] (take c (repeat g)))
-                 (map vector counts glyphs))))))
+    (s/join
+     (flatten
+      (map (fn [[c g]] (take c (repeat g)))
+           (map vector counts glyphs))))))

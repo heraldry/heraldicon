@@ -58,9 +58,8 @@
                                               0
                                               base-angle)
         target-point (case orientation-type
-                       :edge (-> (v/environment-intersections
-                                  real-anchor real-orientation environment)
-                                 last)
+                       :edge (last (v/environment-intersections
+                                    real-anchor real-orientation environment))
                        real-orientation)
         direction-vector (v/sub target-point real-anchor)
         direction-length (v/abs direction-vector)
@@ -97,8 +96,7 @@
 (defn calculate-properties-for-thickness [environment anchor orientation
                                           {:keys [size stretch]}
                                           thickness-base base-angle]
-  (let [thickness (-> size
-                      ((math/percent-of thickness-base)))
+  (let [thickness ((math/percent-of thickness-base) size)
         orientation-type (or (:type orientation)
                              :edge)
         {real-anchor :real-anchor
@@ -109,9 +107,8 @@
                                               thickness
                                               base-angle)
         target-point (case orientation-type
-                       :edge (-> (v/environment-intersections
-                                  real-anchor real-orientation environment)
-                                 last)
+                       :edge (last (v/environment-intersections
+                                    real-anchor real-orientation environment))
                        real-orientation)
         direction-vector (v/sub target-point real-anchor)
         direction-length (v/abs direction-vector)

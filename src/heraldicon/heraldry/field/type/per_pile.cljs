@@ -178,10 +178,8 @@
         geometry (interface/get-sanitized-data (c/++ context :geometry))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
-        orientation (-> orientation
-                        (assoc :type :edge))
-        geometry (-> geometry
-                     (assoc :stretch 1))
+        orientation (assoc orientation :type :edge)
+        geometry (assoc geometry :stretch 1)
         points (:points environment)
         top-left (:top-left points)
         top-right (:top-right points)
@@ -214,10 +212,8 @@
                                   0))
         {left-point :left
          right-point :right} (pile/diagonals anchor-point point thickness)
-        intersection-left (-> (v/environment-intersections point left-point environment)
-                              last)
-        intersection-right (-> (v/environment-intersections point right-point environment)
-                               last)
+        intersection-left (last (v/environment-intersections point left-point environment))
+        intersection-right (last (v/environment-intersections point right-point environment))
         end-left (-> intersection-left
                      (v/sub point)
                      v/abs)

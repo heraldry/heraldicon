@@ -39,8 +39,7 @@
 
 (defn charge-attribution []
   (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :data :achievement)])
-        charges-data (->> used-charges
-                          (map charge/fetch-charge-data))]
+        charges-data (map charge/fetch-charge-data used-charges)]
     (when (-> charges-data first :id)
       [:<>
        [:h3 [tr :string.entity/charges]]
@@ -55,8 +54,7 @@
 
 (defn ribbon-attribution []
   (let [used-ribbons @(rf/subscribe [:used-ribbons (conj form-db-path :data :achievement)])
-        ribbons-data (->> used-ribbons
-                          (map ribbon/fetch-ribbon-data))]
+        ribbons-data (map ribbon/fetch-ribbon-data used-ribbons)]
     (when (-> ribbons-data first :id)
       [:<>
        [:h3 [tr :string.menu/ribbon-library]]

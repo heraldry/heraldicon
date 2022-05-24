@@ -147,9 +147,9 @@
        (into {})))
 
 (def choices
-  (->> lines
-       (map (fn [pattern]
-              [(-> pattern deref :display-name) (get-line-identifier pattern)]))))
+  (map (fn [pattern]
+         [(-> pattern deref :display-name) (get-line-identifier pattern)])
+       lines))
 
 (def line-map
   (options/choices->map choices))
@@ -568,16 +568,16 @@
                                   [thickness-1 thickness-2
                                    tincture-1 tincture-2])
         mask-shape-top (when (#{:even :outside} alignment)
-                         (let [mask-points (-> [(v/add start line-start (-> line-datas first :up))]
-                                               (into (mask-intersection-points start line-datas :up)))]
+                         (let [mask-points (into [(v/add start line-start (-> line-datas first :up))]
+                                                 (mask-intersection-points start line-datas :up))]
                            (path/make-path [base-path
                                             "l" (-> line-datas last :up)
                                             (for [mask-point (reverse mask-points)]
                                               ["L" mask-point])
                                             "z"])))
         mask-shape-bottom (when (#{:even :inside} alignment)
-                            (let [mask-points (-> [(v/add start line-start (-> line-datas first :down))]
-                                                  (into (mask-intersection-points start line-datas :down)))]
+                            (let [mask-points (into [(v/add start line-start (-> line-datas first :down))]
+                                                    (mask-intersection-points start line-datas :down))]
                               (path/make-path [base-path
                                                "l" (-> line-datas last :down)
                                                (for [mask-point (reverse mask-points)]
@@ -784,12 +784,11 @@
                                path/length
                                (/ precision)
                                Math/floor)
-        line-pattern-points (-> line-pattern-parsed-path
-                                (path/points sample-per-pattern))
-        corners (->> (path/find-corners path-points precision 3)
-                     (mapv (fn [{:keys [index]
-                                 :as corner}]
-                             (assoc corner :x (* index path-x-steps)))))]
+        line-pattern-points (path/points line-pattern-parsed-path sample-per-pattern)
+        corners (mapv (fn [{:keys [index]
+                            :as corner}]
+                        (assoc corner :x (* index path-x-steps)))
+                      (path/find-corners path-points precision 3))]
     (-> (for [pattern-i (range repetitions)
               pattern-point line-pattern-points]
           (let [real-point (-> (v/add pattern-point line-start)

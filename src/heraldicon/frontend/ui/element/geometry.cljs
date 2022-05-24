@@ -24,8 +24,7 @@
                  (when (:reversed? geometry)
                    [:string.submenu-summary/reversed]))]
     (if (seq changes)
-      (-> (string/combine ", " changes)
-          string/upper-case-first)
+      (string/upper-case-first (string/combine ", " changes))
       "Default")))
 
 (defn geometry-submenu [context]

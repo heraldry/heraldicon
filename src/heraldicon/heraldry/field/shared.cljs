@@ -40,15 +40,13 @@
       (update context
               :tincture-mapping
               (fn [tincture-mapping]
-                (-> tincture-mapping
-                    (->>
-                      (map (fn [[k v]]
-                             [k (get tincture-replacer v v)]))
-                      (into {}))
-                    (as-> new-mapping
-                          (cond-> new-mapping
-                            (not (contains? new-mapping t1)) (assoc t1 t2)
-                            (not (contains? new-mapping t2)) (assoc t2 t1)))))))
+                (let [new-mapping (into {}
+                                        (map (fn [[k v]]
+                                               [k (get tincture-replacer v v)]))
+                                        tincture-mapping)]
+                  (cond-> new-mapping
+                    (not (contains? new-mapping t1)) (assoc t1 t2)
+                    (not (contains? new-mapping t2)) (assoc t2 t1))))))
     context))
 
 (defn render-components [context]
@@ -130,8 +128,7 @@
   [:<>
    (doall
     (for [[idx [part-context [shape bounding-box-points meta] overlap-paths]]
-          (->> (map vector paths parts mask-overlaps)
-               (map-indexed vector))]
+          (map-indexed vector (map vector paths parts mask-overlaps))]
       (let [clip-path-id (uid/generate (str "clip-" idx))
             env (environment/create
                  (if (map? shape)

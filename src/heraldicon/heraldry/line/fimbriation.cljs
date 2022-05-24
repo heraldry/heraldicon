@@ -179,7 +179,7 @@
       :fill? false])
    (let [effective-thickness (cond-> thickness
                                outline? (- outline/stroke-width))]
-     (when (> effective-thickness 0)
+     (when (pos? effective-thickness)
        [dilate-and-fill-path
         line-path
         nil

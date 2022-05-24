@@ -64,9 +64,8 @@
           idx (last path)]
       (update-in db points-path
                  (fn [path]
-                   (-> (concat (take idx path)
-                               (drop (inc idx) path))
-                       vec))))))
+                   (vec (concat (take idx path)
+                                (drop (inc idx) path))))))))
 
 (macros/reg-event-db ::edit-toggle-show-points
   (fn [db _]
@@ -76,10 +75,9 @@
   (fn [db [_ path idx new-point]]
     (update-in db path
                (fn [points]
-                 (-> (concat (take (inc idx) points)
-                             [new-point]
-                             (drop (inc idx) points))
-                     vec)))))
+                 (vec (concat (take (inc idx) points)
+                              [new-point]
+                              (drop (inc idx) points)))))))
 
 (defn clamp-point [p]
   (-> p
@@ -168,9 +166,8 @@
     (let [{:keys [dx dy
                   path]} (get-in db [:ui :ribbon-edit :selected-point])]
       (if path
-        (-> db
-            (assoc-in path (clamp-point
-                            (v/sub pos (v/Vector. dx dy)))))
+        (assoc-in db path (clamp-point
+                           (v/sub pos (v/Vector. dx dy))))
         db))))
 
 ;; views

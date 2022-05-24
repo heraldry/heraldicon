@@ -200,11 +200,10 @@
 (defmethod interface/blazon-component :heraldry/charge-group [context]
   ;; TODO: no need to calculate all positions here
   (let [{:keys [slot-positions]} (calculate-points
-                                  (-> context
-                                      (assoc :environment
-                                             {:width 200
-                                              :height 200
-                                              :shape {:paths ["M-100,-100 h200 v200 h-200 z"]}})))
+                                  (assoc context
+                                         :environment {:width 200
+                                                       :height 200
+                                                       :shape {:paths ["M-100,-100 h200 v200 h-200 z"]}}))
         charge-group-type (interface/get-raw-data (c/++ context :type))
         used-charges (->> (group-by :charge-index slot-positions)
                           (map (fn [[k v]]

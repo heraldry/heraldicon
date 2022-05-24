@@ -36,71 +36,71 @@
                                    orientation-point-option)]
     ;; TODO: perhaps there should be anchor options for the corners?
     ;; so one can align fro top-left to bottom-right
-    (-> {:anchor {:point {:type :choice
-                          :choices [[:string.option.point-choice/chief :chief]
-                                    [:string.option.point-choice/base :base]
-                                    [:string.option.point-choice/fess :fess]
-                                    [:string.option.point-choice/dexter :dexter]
-                                    [:string.option.point-choice/sinister :sinister]
-                                    [:string.option.point-choice/honour :honour]
-                                    [:string.option.point-choice/nombril :nombril]]
-                          :default :fess
-                          :ui {:label :string.option/point}}
-                  :offset-x {:type :range
-                             :min -45
-                             :max 45
-                             :default 0
-                             :ui {:label :string.option/offset-x
-                                  :step 0.1}}
-                  :offset-y {:type :range
-                             :min -45
-                             :max 45
-                             :default 0
-                             :ui {:label :string.option/offset-y
-                                  :step 0.1}}
-                  :ui {:label :string.option/anchor
-                       :form-type :position}}
-         :orientation (cond-> {:point orientation-point-option
-                               :ui {:label :string.option/orientation
-                                    :form-type :position}}
+    (ordinary.shared/add-humetty-and-voided
+     {:anchor {:point {:type :choice
+                       :choices [[:string.option.point-choice/chief :chief]
+                                 [:string.option.point-choice/base :base]
+                                 [:string.option.point-choice/fess :fess]
+                                 [:string.option.point-choice/dexter :dexter]
+                                 [:string.option.point-choice/sinister :sinister]
+                                 [:string.option.point-choice/honour :honour]
+                                 [:string.option.point-choice/nombril :nombril]]
+                       :default :fess
+                       :ui {:label :string.option/point}}
+               :offset-x {:type :range
+                          :min -45
+                          :max 45
+                          :default 0
+                          :ui {:label :string.option/offset-x
+                               :step 0.1}}
+               :offset-y {:type :range
+                          :min -45
+                          :max 45
+                          :default 0
+                          :ui {:label :string.option/offset-y
+                               :step 0.1}}
+               :ui {:label :string.option/anchor
+                    :form-type :position}}
+      :orientation (cond-> {:point orientation-point-option
+                            :ui {:label :string.option/orientation
+                                 :form-type :position}}
 
-                        (= current-orientation-point
-                           :angle) (assoc :angle {:type :range
-                                                  :min 10
-                                                  :max 80
-                                                  :default 45
-                                                  :ui {:label :string.option/angle}})
+                     (= current-orientation-point
+                        :angle) (assoc :angle {:type :range
+                                               :min 10
+                                               :max 80
+                                               :default 45
+                                               :ui {:label :string.option/angle}})
 
-                        (not= current-orientation-point
-                              :angle) (assoc :alignment {:type :choice
-                                                         :choices position/alignment-choices
-                                                         :default :middle
-                                                         :ui {:label :string.option/alignment
-                                                              :form-type :radio-select}}
-                                             :offset-x {:type :range
-                                                        :min -45
-                                                        :max 45
-                                                        :default 0
-                                                        :ui {:label :string.option/offset-x
-                                                             :step 0.1}}
-                                             :offset-y {:type :range
-                                                        :min -45
-                                                        :max 45
-                                                        :default 0
-                                                        :ui {:label :string.option/offset-y
-                                                             :step 0.1}}))
-         :line line-style
-         :geometry {:size {:type :range
-                           :min 0.1
-                           :max 90
-                           :default 25
-                           :ui {:label :string.option/size
-                                :step 0.1}}
-                    :ui {:label :string.option/geometry
-                         :form-type :geometry}}
-         :outline? options/plain-outline?-option
-         :cottising (cottising/add-cottising context 1)}
-        (ordinary.shared/add-humetty-and-voided context))))
+                     (not= current-orientation-point
+                           :angle) (assoc :alignment {:type :choice
+                                                      :choices position/alignment-choices
+                                                      :default :middle
+                                                      :ui {:label :string.option/alignment
+                                                           :form-type :radio-select}}
+                                          :offset-x {:type :range
+                                                     :min -45
+                                                     :max 45
+                                                     :default 0
+                                                     :ui {:label :string.option/offset-x
+                                                          :step 0.1}}
+                                          :offset-y {:type :range
+                                                     :min -45
+                                                     :max 45
+                                                     :default 0
+                                                     :ui {:label :string.option/offset-y
+                                                          :step 0.1}}))
+      :line line-style
+      :geometry {:size {:type :range
+                        :min 0.1
+                        :max 90
+                        :default 25
+                        :ui {:label :string.option/size
+                             :step 0.1}}
+                 :ui {:label :string.option/geometry
+                      :form-type :geometry}}
+      :outline? options/plain-outline?-option
+      :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
@@ -118,8 +118,7 @@
         right (assoc (:right points) :y (:y unadjusted-anchor-point))
         width (:width environment)
         height (:height environment)
-        band-width (-> size
-                       ((math/percent-of width)))
+        band-width ((math/percent-of width) size)
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment

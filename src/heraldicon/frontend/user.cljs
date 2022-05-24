@@ -63,12 +63,13 @@
                                     ";domain=" (extract-domain (config/get :heraldicon-url))
                                     ";path=/")))
     (rf/dispatch-sync [:set user-db-path
-                       (if (and session-id username user-id)
+                       (when (and session-id
+                                  username
+                                  user-id)
                          {:username username
                           :session-id session-id
                           :user-id user-id
-                          :logged-in? true}
-                         nil)])))
+                          :logged-in? true})])))
 
 (defn complete-login [db-path jwt-token]
   (go
@@ -518,7 +519,7 @@
   (rf/dispatch [:remove user-db-path]))
 
 (defn load-session-user-data []
-  (when (not (data))
+  (when-not (data)
     (read-session-data)))
 
 (defn login-modal [& [title]]

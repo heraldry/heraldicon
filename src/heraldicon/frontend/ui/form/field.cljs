@@ -28,9 +28,9 @@
 (macros/reg-event-db :reset-field-part-reference
   (fn [db [_ {:keys [path] :as context}]]
     (let [index (last path)
-          parent-context (c/-- context 2)]
-      (assoc-in db path (-> (field/default-fields parent-context)
-                            (get index))))))
+          parent-context (c/-- context 2)
+          default-fields (field/default-fields parent-context)]
+      (assoc-in db path (get default-fields index)))))
 
 (defn show-tinctures-only? [field-type]
   (-> field-type name keyword
@@ -90,8 +90,7 @@
 (defn name-prefix-for-part [{:keys [path] :as context}]
   (when-let [parent-context (parent-context context)]
     (let [parent-type (interface/get-raw-data (c/++ parent-context :type))]
-      (-> (field/part-name parent-type (last path))
-          string/upper-case-first))))
+      (string/upper-case-first (field/part-name parent-type (last path))))))
 
 (defn non-mandatory-part-of-parent? [{:keys [path] :as context}]
   (let [index (last path)]

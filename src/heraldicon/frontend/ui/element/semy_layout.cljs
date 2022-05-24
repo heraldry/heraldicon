@@ -29,8 +29,7 @@
                      :string.submenu-summary/stretched)
                    (when (options/changed? :rotation sanitized-layout options)
                      :string.submenu-summary/rotated)]]
-      (-> (string/combine ", " changes)
-          string/upper-case-first))))
+      (string/upper-case-first (string/combine ", " changes)))))
 
 (defn layout-submenu [context]
   (when-let [options (interface/get-relevant-options context)]

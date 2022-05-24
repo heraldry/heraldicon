@@ -322,17 +322,13 @@
         unstretched-part-width (-> width
                                    (/ (units num-fields-x))
                                    (* 4))
-        part-width (-> unstretched-part-width
-                       (* stretch-x))
+        part-width (* unstretched-part-width stretch-x)
         height (- (:y bottom-right)
                   (:y top-left))
         unstretched-part-height (if raw-num-fields-y
-                                  (-> height
-                                      (/ num-fields-y))
-                                  (-> part-width
-                                      (/ 2)))
-        part-height (-> unstretched-part-height
-                        (* stretch-y))
+                                  (/ height num-fields-y)
+                                  (/ part-width 2))
+        part-height (* unstretched-part-height stretch-y)
         middle-x (/ width 2)
         middle-y (/ height 2)
         shift-x (- middle-x

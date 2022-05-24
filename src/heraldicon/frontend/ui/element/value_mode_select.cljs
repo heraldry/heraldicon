@@ -48,14 +48,15 @@
                                                    "far fa-square"
                                                    "far fa-check-square")
                                            :handler (handler-for-value nil)})
-               (seq additional-values) (-> (concat (map (fn [[display-value value]]
-                                                          {:title (string/str-tr display-value " (" (display-fn value) ")")
-                                                           :icon (if (= current-value value)
-                                                                   "far fa-check-square"
-                                                                   "far fa-square")
-                                                           :handler (handler-for-value value)})
-                                                        additional-values))
-                                           vec))
+               (seq additional-values) (->
+                                         (concat (map (fn [[display-value value]]
+                                                        {:title (string/str-tr display-value " (" (display-fn value) ")")
+                                                         :icon (if (= current-value value)
+                                                                 "far fa-check-square"
+                                                                 "far fa-square")
+                                                         :handler (handler-for-value value)})
+                                                      additional-values))
+                                         vec))
         manual-icon (if (and (some? current-value)
                              (not (seq (filter (fn [[_ value]]
                                                  (= current-value value)) additional-values))))

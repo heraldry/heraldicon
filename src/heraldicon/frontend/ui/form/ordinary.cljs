@@ -18,21 +18,24 @@
           path (-> path drop-last vec)]
       (-> db
           (cond->
-            (= cottise :cottise-1) (-> (update-in path dissoc :cottise-2)
-                                       (assoc-in (conj path :cottise-1)
-                                                 (get-in db (conj path :cottise-2))))
+            (= cottise :cottise-1) (->
+                                     (update-in path dissoc :cottise-2)
+                                     (assoc-in (conj path :cottise-1)
+                                               (get-in db (conj path :cottise-2))))
 
             (= cottise :cottise-2) (update-in path dissoc :cottise-2)
 
-            (= cottise :cottise-opposite-1) (-> (update-in path dissoc :cottise-opposite-2)
-                                                (assoc-in (conj path :cottise-opposite-1)
-                                                          (get-in db (conj path :cottise-opposite-2))))
+            (= cottise :cottise-opposite-1) (->
+                                              (update-in path dissoc :cottise-opposite-2)
+                                              (assoc-in (conj path :cottise-opposite-1)
+                                                        (get-in db (conj path :cottise-opposite-2))))
 
             (= cottise :cottise-opposite-2) (update-in path dissoc :cottise-opposite-2)
 
-            (= cottise :cottise-extra-1) (-> (update-in path dissoc :cottise-extra-2)
-                                             (assoc-in (conj path :cottise-extra-1)
-                                                       (get-in db (conj path :cottise-extra-2))))
+            (= cottise :cottise-extra-1) (->
+                                           (update-in path dissoc :cottise-extra-2)
+                                           (assoc-in (conj path :cottise-extra-1)
+                                                     (get-in db (conj path :cottise-extra-2))))
 
             (= cottise :cottise-extra-2) (update-in path dissoc :cottise-extra-2))
           (state/change-selected-component-if-removed (-> path drop-last vec))))))

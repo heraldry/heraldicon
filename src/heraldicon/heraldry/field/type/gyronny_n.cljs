@@ -82,10 +82,10 @@
         anchor-point (position/calculate anchor environment)
         angle-step (/ 360 num-fields)
         start-angle (* offset angle-step)
-        arm-angles (->> (range num-fields)
-                        (map #(-> %
-                                  (* angle-step)
-                                  (+ start-angle))))
+        arm-angles (map #(-> %
+                             (* angle-step)
+                             (+ start-angle))
+                        (range num-fields))
         arm-intersections (mapv (fn [angle]
                                   (v/find-first-intersection-of-ray
                                    anchor-point
@@ -106,20 +106,18 @@
                                (v/mul full-arm-length)
                                (v/add anchor-point)))
                          arm-angles)
-        fess-points (->> (range num-fields)
-                         (map #(-> %
-                                   (* angle-step)
-                                   (+ start-angle)
-                                   (+ (/ angle-step 2))))
-                         (mapv (fn [angle]
-                                 (-> (v/find-first-intersection-of-ray
-                                      anchor-point
-                                      (v/add anchor-point
-                                             (v/rotate (v/Vector. 0 -1) angle))
-                                      environment)
-                                     (v/sub anchor-point)
-                                     (v/mul 0.6)
-                                     (v/add anchor-point)))))
+        fess-points (mapv (fn [angle]
+                            (-> (v/find-first-intersection-of-ray
+                                 anchor-point
+                                 (v/add anchor-point
+                                        (v/rotate (v/Vector. 0 -1)
+                                                  (+ angle
+                                                     (/ angle-step 2))))
+                                 environment)
+                                (v/sub anchor-point)
+                                (v/mul 0.6)
+                                (v/add anchor-point)))
+                          arm-angles)
         infinity-points (vec (mapcat (fn [angle]
                                        [(-> (v/Vector. 0 -1)
                                             (v/rotate angle)

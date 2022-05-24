@@ -32,9 +32,9 @@
    crescent/charge-type])
 
 (def choices
-  (->> charges
-       (map (fn [key]
-              [(charge.interface/display-name key) key]))))
+  (map (fn [key]
+         [(charge.interface/display-name key) key])
+       charges))
 
 (def choice-map
   (options/choices->map choices))
@@ -52,15 +52,14 @@
   (let [ornament? (some #(= % :ornaments) (:path context))
         without-anchor? (or part-of-semy?
                             part-of-charge-group?)]
-    (-> options
-        (cond->
-          without-anchor? (dissoc :anchor)
-          ornament? (update-in [:geometry :size] (fn [size]
-                                                   (when size
-                                                     (assoc size
-                                                            :min 5
-                                                            :max 400
-                                                            :default 100))))))))
+    (cond-> options
+      without-anchor? (dissoc :anchor)
+      ornament? (update-in [:geometry :size] (fn [size]
+                                               (when size
+                                                 (assoc size
+                                                        :min 5
+                                                        :max 400
+                                                        :default 100)))))))
 
 (derive :heraldry/charge :heraldry.options/root)
 

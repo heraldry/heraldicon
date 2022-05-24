@@ -59,7 +59,7 @@
        [:ul.collection-list
         (doall
          (for [collection (sort-by (comp s/lower-case :name) items)]
-           (let [username (-> collection :username)]
+           (let [username (:username collection)]
              ^{:key (:id collection)}
              [:li.collection
               (if (-> :access collection (= :public))

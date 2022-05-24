@@ -89,12 +89,11 @@
 
 (defn -shrink-step [shape distance join]
   (let [original-path (new Path shape)
-        outline-left (-> PaperOffset
-                         (.offset
-                          original-path
-                          (- distance)
-                          (clj->js {:join join
-                                    :insert false})))]
+        outline-left (.offset PaperOffset
+                              original-path
+                              (- distance)
+                              (clj->js {:join join
+                                        :insert false}))]
     ;; The path might be clockwise, then (- distance) is the
     ;; correct offset for the inner path; we expect that path
     ;; to surround a smaller area, so use it, if that's true, otherwise
@@ -144,8 +143,8 @@
     (reduce
      (fn [result shape]
        (let [combined-path (s/join "" (:paths shape))]
-         (if (not result)
-           combined-path
-           (intersect-shapes result combined-path))))
+         (if result
+           (intersect-shapes result combined-path)
+           combined-path)))
      nil
      shapes)))

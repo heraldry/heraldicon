@@ -187,7 +187,7 @@
                           :margin-right "5px"
                           :vertical-align "top"
                           :transform "translate(0,3px)"}]
-          (if (-> effective-icon vector?)
+          (if (vector? effective-icon)
             (update-in effective-icon [1 :style] merge icon-style)
             [:img {:src effective-icon
                    :style icon-style}])))

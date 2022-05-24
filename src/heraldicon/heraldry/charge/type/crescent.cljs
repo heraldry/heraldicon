@@ -19,19 +19,18 @@
    :width
    (fn [width]
      (let [radius (/ width 2)
-           inner-radius (* radius
-                           0.75)
+           inner-radius (* 0.75 radius)
            horn-angle -45
-           horn-point-x (* radius
-                           (-> horn-angle
-                               (* Math/PI)
-                               (/ 180)
-                               Math/cos))
-           horn-point-y (* radius
-                           (-> horn-angle
-                               (* Math/PI)
-                               (/ 180)
-                               Math/sin))
+           horn-point-x (-> horn-angle
+                            (* Math/PI)
+                            (/ 180)
+                            Math/cos
+                            (* radius))
+           horn-point-y (-> horn-angle
+                            (* Math/PI)
+                            (/ 180)
+                            Math/sin
+                            (* radius))
            horn-point-1 (v/Vector. horn-point-x horn-point-y)
            horn-point-2 (v/Vector. (- horn-point-x) horn-point-y)]
        {:shape ["m" horn-point-1

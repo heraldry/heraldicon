@@ -19,11 +19,11 @@
                      (assoc-in (conj path :charges 0 :geometry :size) nil))]
       (loop [new-db new-db
              [[rel-path value] & rest] charge-adjustments]
-        (if (not rel-path)
-          new-db
+        (if rel-path
           (recur
            (assoc-in new-db (concat path rel-path) value)
-           rest))))))
+           rest)
+          new-db)))))
 
 (defn charge-group-preset-choice [path key group charge-adjustments display-name]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:select-charge-group-preset path group charge-adjustments])}

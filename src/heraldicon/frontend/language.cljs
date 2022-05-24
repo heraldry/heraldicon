@@ -51,7 +51,9 @@
     (browser-preferred-language)
     (let [loaded-language (get-item local-storage local-storage-language-name ":en")
           loaded-language (cond-> loaded-language
-                            (s/starts-with? loaded-language ":") (-> (subs 1) keyword))]
+                            (s/starts-with? loaded-language ":") (->
+                                                                   (subs 1)
+                                                                   keyword))]
       (if loaded-language
         (set-language db loaded-language)
         (set-language db (browser-preferred-language))))))

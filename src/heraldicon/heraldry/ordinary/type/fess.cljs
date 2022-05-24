@@ -23,42 +23,42 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    (-> {:anchor {:point {:type :choice
-                          :choices [[:string.option.point-choice/fess :fess]
-                                    [:string.option.point-choice/chief :chief]
-                                    [:string.option.point-choice/base :base]
-                                    [:string.option.point-choice/honour :honour]
-                                    [:string.option.point-choice/nombril :nombril]
-                                    [:string.option.point-choice/top :top]
-                                    [:string.option.point-choice/bottom :bottom]]
-                          :default :fess
-                          :ui {:label :string.option/point}}
-                  :alignment {:type :choice
-                              :choices position/alignment-choices
-                              :default :middle
-                              :ui {:label :string.option/alignment
-                                   :form-type :radio-select}}
-                  :offset-y {:type :range
-                             :min -75
-                             :max 75
-                             :default 0
-                             :ui {:label :string.option/offset-y
-                                  :step 0.1}}
-                  :ui {:label :string.option/anchor
-                       :form-type :position}}
-         :line line-style
-         :opposite-line opposite-line-style
-         :geometry {:size {:type :range
-                           :min 0.1
-                           :max 90
-                           :default 25
-                           :ui {:label :string.option/size
-                                :step 0.1}}
-                    :ui {:label :string.option/geometry
-                         :form-type :geometry}}
-         :outline? options/plain-outline?-option
-         :cottising (cottising/add-cottising context 2)}
-        (ordinary.shared/add-humetty-and-voided context))))
+    (ordinary.shared/add-humetty-and-voided
+     {:anchor {:point {:type :choice
+                       :choices [[:string.option.point-choice/fess :fess]
+                                 [:string.option.point-choice/chief :chief]
+                                 [:string.option.point-choice/base :base]
+                                 [:string.option.point-choice/honour :honour]
+                                 [:string.option.point-choice/nombril :nombril]
+                                 [:string.option.point-choice/top :top]
+                                 [:string.option.point-choice/bottom :bottom]]
+                       :default :fess
+                       :ui {:label :string.option/point}}
+               :alignment {:type :choice
+                           :choices position/alignment-choices
+                           :default :middle
+                           :ui {:label :string.option/alignment
+                                :form-type :radio-select}}
+               :offset-y {:type :range
+                          :min -75
+                          :max 75
+                          :default 0
+                          :ui {:label :string.option/offset-y
+                               :step 0.1}}
+               :ui {:label :string.option/anchor
+                    :form-type :position}}
+      :line line-style
+      :opposite-line opposite-line-style
+      :geometry {:size {:type :range
+                        :min 0.1
+                        :max 90
+                        :default 25
+                        :ui {:label :string.option/size
+                             :step 0.1}}
+                 :ui {:label :string.option/geometry
+                      :form-type :geometry}}
+      :outline? options/plain-outline?-option
+      :cottising (cottising/add-cottising context 2)} context)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment
@@ -77,8 +77,7 @@
         right (assoc (:right points) :y (:y anchor-point))
         width (:width environment)
         height (:height environment)
-        band-height (-> size
-                        ((math/percent-of height)))
+        band-height ((math/percent-of height) size)
         row1 (case (:alignment anchor)
                :left (:y anchor-point)
                :right (- (:y anchor-point) band-height)

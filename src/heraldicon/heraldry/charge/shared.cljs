@@ -210,13 +210,11 @@
           ;; if not, then use nil; exception: if auto-resize? is false, then always use
           ;; the sanitized value
           ;; TODO: this probably needs a better mechanism and form representation
-          size (if (or (not auto-resize?)
-                       (interface/get-raw-data (c/++ context :geometry :size)))
-                 size
-                 nil)
-          target-arg-value (-> (or size
-                                   80)
-                               ((math/percent-of arg-value)))
+          size (when (or (not auto-resize?)
+                         (interface/get-raw-data (c/++ context :geometry :size)))
+                 size)
+          target-arg-value ((math/percent-of arg-value) (or size
+                                                            80))
           {:keys [shape
                   charge-width
                   charge-height
@@ -231,13 +229,11 @@
                              (min (- (:y anchor-point) (:y top))
                                   (- (:y bottom) (:y anchor-point))))
           target-width (if size
-                         (-> size
-                             ((math/percent-of width)))
-                         (* (* min-x-distance 2) 0.8))
+                         ((math/percent-of width) size)
+                         (* min-x-distance 2 0.8))
           target-height (/ (if size
-                             (-> size
-                                 ((math/percent-of height)))
-                             (* (* min-y-distance 2) 0.7))
+                             ((math/percent-of height) size)
+                             (* min-y-distance 2 0.7))
                            stretch)
           angle (if (and (-> orientation :point (= :angle))
                          slot-angle)
@@ -249,10 +245,11 @@
                      (min (/ target-width charge-width)
                           (/ target-height charge-height)))
           scale-y (* (if reversed? -1 1)
-                     (* (Math/abs scale-x) stretch))
+                     (Math/abs scale-x)
+                     stretch)
           charge-top-left (or charge-top-left
-                              (-> (v/Vector. charge-width charge-height)
-                                  (v/div -2)))
+                              (v/div (v/Vector. charge-width charge-height)
+                                     -2))
           charge-shape {:paths (into []
                                      (map #(-> %
                                                path/make-path
@@ -323,7 +320,7 @@
                 nil
                 (+ thickness outline/stroke-width)
                 (outline/color context) context
-                :corner (-> fimbriation :corner)])
+                :corner (:corner fimbriation)])
              [fimbriation/dilate-and-fill-path
               charge-shape
               nil
@@ -332,7 +329,7 @@
               (-> fimbriation
                   :tincture-2
                   (tincture/pick context)) context
-              :corner (-> fimbriation :corner)]]))
+              :corner (:corner fimbriation)]]))
         (when (-> fimbriation :mode #{:single :double})
           (let [thickness (-> fimbriation
                               :thickness-1
@@ -344,7 +341,7 @@
                 nil
                 (+ thickness outline/stroke-width)
                 (outline/color context) context
-                :corner (-> fimbriation :corner)])
+                :corner (:corner fimbriation)])
              [fimbriation/dilate-and-fill-path
               charge-shape
               nil
@@ -353,7 +350,7 @@
               (-> fimbriation
                   :tincture-1
                   (tincture/pick context)) context
-              :corner (-> fimbriation :corner)]]))
+              :corner (:corner fimbriation)]]))
         [:g {:id charge-id}
          [field.shared/make-subfield
           (c/++ context :field)

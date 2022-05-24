@@ -6,15 +6,15 @@
    [heraldicon.util.uid :as uid]))
 
 (defn split-style-value [value]
-  (-> value
-      (s/split #";")
-      (->>
-        (map (fn [chunk]
-               (-> chunk
-                   (s/split #":" 2)
-                   (as-> [key value]
-                         [(keyword (s/trim key)) (s/trim value)]))))
-        (into {}))))
+  (into {}
+        (keep (fn [chunk]
+                (let [[k v] (s/split chunk #":" 2)
+                      k (some-> k s/trim)
+                      v (some-> v s/trim)]
+                  (when (and (some-> k count pos?)
+                             (some-> v count pos?))
+                    [(keyword k) v]))))
+        (s/split value #";")))
 
 (defn fix-string-style-values [data]
   (walk/postwalk #(if (and (vector? %)
@@ -65,18 +65,16 @@
                                (-> % first (= :id))))
                  (map second)
                  set)
-        id-map (->> ids
-                    (map (fn [id]
-                           [id (uid/generate (str "unique-" id))]))
-                    (into {}))]
-    (-> data
-        (replace-id-references id-map))))
+        id-map (into {}
+                     (map (fn [id]
+                            [id (uid/generate (str "unique-" id))]))
+                     ids)]
+    (replace-id-references data id-map)))
 
 (defn strip-style-block [data]
   (walk/postwalk (fn [value]
-                   (if (and (vector? value)
-                            (-> value first (= :style)))
-                     nil
+                   (when-not (and (vector? value)
+                                  (-> value first (= :style)))
                      value))
                  data))
 

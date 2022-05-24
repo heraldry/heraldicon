@@ -11,8 +11,8 @@
 
 (defn entity-edit-page? [entity]
   (let [route-name (-> @route/current-match :data :name name)]
-    (or (-> route-name (s/starts-with? (str "view-" entity)))
-        (-> route-name (s/starts-with? (str "create-" entity))))))
+    (or (s/starts-with? route-name (str "view-" entity))
+        (s/starts-with? route-name (str "create-" entity)))))
 
 (defn key-down-handler [event]
   (let [shift? (.-shiftKey event)

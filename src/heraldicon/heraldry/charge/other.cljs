@@ -125,9 +125,8 @@
 
 (defn get-replacement [kind provided-placeholder-colours]
   (let [replacement (get provided-placeholder-colours kind)]
-    (if (or (nil? replacement)
-            (= replacement :none))
-      nil
+    (when-not (or (nil? replacement)
+                  (= replacement :none))
       replacement)))
 
 (defn -make-mask [data placeholder-colours provided-placeholder-colours
@@ -245,10 +244,9 @@
             ;; if not, then use nil; exception: if auto-resize? is false, then always use
             ;; the sanitized value
             ;; TODO: this probably needs a better mechanism and form representation
-            size (if (or (not auto-resize?)
-                         (interface/get-raw-data (c/++ context :geometry :size)))
-                   size
-                   nil)
+            size (when (or (not auto-resize?)
+                           (interface/get-raw-data (c/++ context :geometry :size)))
+                   size)
             points (:points environment)
             top (:top points)
             bottom (:bottom points)
@@ -282,13 +280,11 @@
                                (min (- (:y anchor-point) (:y top))
                                     (- (:y bottom) (:y anchor-point))))
             target-width (if size
-                           (-> size
-                               ((math/percent-of width)))
-                           (* (* min-x-distance 2) 0.8))
+                           ((math/percent-of width) size)
+                           (* min-x-distance 2 0.8))
             target-height (/ (if size
-                               (-> size
-                                   ((math/percent-of height)))
-                               (* (* min-y-distance 2) 0.7))
+                               ((math/percent-of height) size)
+                               (* min-y-distance 2 0.7))
                              stretch)
             angle (if (and (-> orientation :point (= :angle))
                            slot-angle)
@@ -300,7 +296,8 @@
                        (min (/ target-width positional-charge-width)
                             (/ target-height positional-charge-height)))
             scale-y (* (if reversed? -1 1)
-                       (* (Math/abs scale-x) stretch))
+                       (Math/abs scale-x)
+                       stretch)
             render-shadow? (and (not preview-original?)
                                 (->> placeholder-colours
                                      vals
@@ -330,22 +327,21 @@
             highlight-helper-mask-id (when render-highlight?
                                        (uid/generate "mask"))
             unadjusted-charge (:data charge-data)
-            adjusted-charge (-> unadjusted-charge
-                                (cond->
-                                  (not preview-original?) (set-layer-separator-opacity
-                                                           layer-separator-colours
-                                                           (if highlight-colours?
-                                                             0.5
-                                                             1))
+            adjusted-charge (cond-> unadjusted-charge
+                              (not preview-original?) (set-layer-separator-opacity
+                                                       layer-separator-colours
+                                                       (if highlight-colours?
+                                                         0.5
+                                                         1))
 
-                                  (and (not preview-original?)
-                                       (= outline-mode :remove)) (remove-outlines placeholder-colours)
+                              (and (not preview-original?)
+                                   (= outline-mode :remove)) (remove-outlines placeholder-colours)
 
-                                  (and (not preview-original?)
-                                       highlight-colours?) (replace-colours
-                                                            (fn [colour]
-                                                              (highlight-colour
-                                                               colour ui-show-colours)))))
+                              (and (not preview-original?)
+                                   highlight-colours?) (replace-colours
+                                                        (fn [colour]
+                                                          (highlight-colour
+                                                           colour ui-show-colours))))
             adjusted-charge-without-shading (cond-> adjusted-charge
                                               (and (not preview-original?)
                                                    (not highlight-colours?)) (remove-shading placeholder-colours))
@@ -393,7 +389,7 @@
                                    (v/dot shift (v/Vector. -1 -1))
                                    angle
                                    :scale (v/Vector. scale-x scale-y))
-            extra-margin (-> (case (-> fimbriation :mode)
+            extra-margin (-> (case (:mode fimbriation)
                                :double (+ (-> fimbriation
                                               :thickness-1
                                               ((math/percent-of positional-charge-width)))
@@ -573,7 +569,7 @@
                      (+ thickness outline/stroke-width)
                      (outline/color context) context
                      :transform reverse-transform
-                     :corner (-> fimbriation :corner)])
+                     :corner (:corner fimbriation)])
                   [fimbriation/dilate-and-fill
                    adjusted-charge-without-shading
                    (cond-> thickness
@@ -582,7 +578,7 @@
                        :tincture-2
                        (tincture/pick context)) context
                    :transform reverse-transform
-                   :corner (-> fimbriation :corner)]]))
+                   :corner (:corner fimbriation)]]))
              (when (-> fimbriation :mode #{:single :double})
                (let [thickness (-> fimbriation
                                    :thickness-1
@@ -594,7 +590,7 @@
                      (+ thickness outline/stroke-width)
                      (outline/color context) context
                      :transform reverse-transform
-                     :corner (-> fimbriation :corner)])
+                     :corner (:corner fimbriation)])
                   [fimbriation/dilate-and-fill
                    adjusted-charge-without-shading
                    (cond-> thickness
@@ -603,7 +599,7 @@
                        :tincture-1
                        (tincture/pick context)) context
                    :transform reverse-transform
-                   :corner (-> fimbriation :corner)]]))
+                   :corner (:corner fimbriation)]]))
 
              (cond
                (or preview-original?

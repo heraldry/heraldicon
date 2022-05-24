@@ -54,21 +54,18 @@
                               (bezier/split end-t)
                               :bezier2)))]
     (if (empty? ts)
-      [[(-> (concat (when first-leg [first-leg])
-                    (subvec full-curve (inc last-index) (inc index)))
-            vec)
+      [[(vec (concat (when first-leg [first-leg])
+                     (subvec full-curve (inc last-index) (inc index))))
         last-edge-vector
         edge-vector]]
       (let [[t1 t2] ts
             first-split (-> full-curve
                             (get index)
                             (bezier/split t1))]
-        (cond-> [[(-> (concat (when first-leg [first-leg])
-                              (when (> index
-                                       (inc last-index))
-                                (subvec full-curve (inc last-index) index))
-                              [(:bezier1 first-split)])
-                      vec)
+        (cond-> [[(vec (concat (when first-leg [first-leg])
+                               (when (> index (inc last-index))
+                                 (subvec full-curve (inc last-index) index))
+                               [(:bezier1 first-split)]))
                   last-edge-vector
                   edge-vector]]
           t2 (conj [[(-> (:bezier2 first-split)
@@ -101,28 +98,22 @@
                               ;; on the average x-value of the leg
                               (let [base-edge-vector (v/Vector. 0 1)
                                     leg-edge-angle (-> (* 2 edge-angle)
-                                                       (/ (max 1
-                                                               (dec num-legs)))
+                                                       (/ (max 1 (dec num-legs)))
                                                        (* idx)
                                                        (- edge-angle))
-                                    edge-vector (-> base-edge-vector
-                                                    (v/rotate (- leg-edge-angle)))
+                                    edge-vector (v/rotate base-edge-vector (- leg-edge-angle))
                                     ts (bezier/calculate-tangent-points leg edge-vector)]
                                 (when (seq ts)
                                   [idx ts edge-vector])))
                             curve))
         curves-and-edge-vectors (split-curve curve tangent-points
-                                             (-> (v/Vector. 0 1)
-                                                 (v/rotate edge-angle))
-                                             (-> (v/Vector. 0 1)
-                                                 (v/rotate (- edge-angle))))]
+                                             (v/rotate (v/Vector. 0 1)
+                                                       edge-angle)
+                                             (v/rotate (v/Vector. 0 1)
+                                                       (- edge-angle)))]
     {:curve curve
-     :curves (->> curves-and-edge-vectors
-                  (map first)
-                  vec)
-     :edge-vectors (->> curves-and-edge-vectors
-                        (map (comp vec (partial drop 1)))
-                        vec)}))
+     :curves (mapv first curves-and-edge-vectors)
+     :edge-vectors (mapv (comp vec (partial drop 1)) curves-and-edge-vectors)}))
 
 (def segment-type-choices
   [[:string.ribbon.segment-type-choice/foreground-with-text :heraldry.ribbon.segment.type/foreground-with-text]
@@ -232,10 +223,9 @@
 
 (defn split-end [kind curve percentage edge-vector]
   (let [curve (vec curve)
-        {:keys [curve1 curve2]} (curve/split curve (cond-> (/ percentage 100)
-                                                     (= kind :end) (->> (- 1))))
-        split-point (-> (ffirst curve2)
-                        (v/add (v/div edge-vector 2)))]
+        {:keys [curve1 curve2]} (curve/split curve (cond->> (/ percentage 100)
+                                                     (= kind :end) (- 1)))
+        split-point (v/add (ffirst curve2) (v/div edge-vector 2))]
     (case kind
       :start (let [start-point (ffirst curve)
                    end-point (v/add start-point edge-vector)]

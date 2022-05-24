@@ -14,15 +14,14 @@
   (let [field-type (-> (interface/get-raw-data (c/++ context :type))
                        name keyword)
         num-base-fields (interface/get-sanitized-data (c/++ context :num-base-fields))]
-    (if num-base-fields
-      num-base-fields
-      (case field-type
-        nil 0
-        :tierced-per-pale 3
-        :tierced-per-fess 3
-        :tierced-per-pall 3
-        :per-pile 3
-        2))))
+    (or num-base-fields
+        (case field-type
+          nil 0
+          :tierced-per-pale 3
+          :tierced-per-fess 3
+          :tierced-per-pall 3
+          :per-pile 3
+          2))))
 
 (defn raw-default-fields [type num-fields-x num-fields-y num-base-fields]
   (let [type (-> type name keyword)
@@ -147,8 +146,8 @@
 (defn title [context]
   (let [field-type (interface/get-sanitized-data (c/++ context :type))]
     (if (= field-type :heraldry.field.type/plain)
-      (-> (interface/get-sanitized-data (c/++ context :tincture))
-          tincture/translate-tincture)
+      (tincture/translate-tincture
+       (interface/get-sanitized-data (c/++ context :tincture)))
       (get field.options/field-map field-type))))
 
 (defmethod interface/blazon-component :heraldry/field [context]
@@ -189,9 +188,8 @@
                                        (interface/blazon (c/++ context :components index)))
                                      (range num-components)))
 
-        blazon (-> (string/combine ", " [field-description
-                                         components-description])
-                   string/upper-case-first)]
+        blazon (string/upper-case-first (string/combine ", " [field-description
+                                                              components-description]))]
     (if (or root?
             (and (= field-type :heraldry.field.type/plain)
                  (zero? num-components)))

@@ -8,15 +8,14 @@
 
 (macros/reg-event-db :set-charge-group-slot-number
   (fn [db [_ path num-slots]]
-    (-> db
-        (update-in path (fn [slots]
-                          (if (-> slots count (< num-slots))
-                            (-> slots
-                                (concat (repeat (- num-slots (count slots)) 0))
-                                vec)
-                            (->> slots
-                                 (take num-slots)
-                                 vec)))))))
+    (update-in db path (fn [slots]
+                         (if (-> slots count (< num-slots))
+                           (-> slots
+                               (concat (repeat (- num-slots (count slots)) 0))
+                               vec)
+                           (->> slots
+                                (take num-slots)
+                                vec))))))
 
 (defmethod ui.interface/form-element :charge-group-slot-number [{:keys [path] :as context}]
   (let [value (interface/get-list-size context)
