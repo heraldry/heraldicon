@@ -164,10 +164,10 @@
                                      :alignment alignment}
                             :orientation {:point :angle
                                           :angle angle}
-                            :outline? outline?})
-           (assoc :override-center-point new-center-point)
-           (assoc :override-middle-real-start (middle-real-start-fn point-offset))
-           (assoc :override-middle-real-end (middle-real-end-fn point-offset)))])))
+                            :outline? outline?}
+                  :override-center-point new-center-point
+                  :override-middle-real-start (middle-real-start-fn point-offset)
+                  :override-middle-real-end (middle-real-end-fn point-offset)))])))
 
 (defn render-chevron-cottise [{:keys [environment] :as context}
                               cottise-2-key next-cottise-key

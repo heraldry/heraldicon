@@ -75,8 +75,7 @@
             :offset-x 0
             :offset-y 20}
    :geometry {:size 100}
-   :field (-> field
-              (assoc :tincture :helmet-medium))
+   :field (assoc field :tincture :helmet-medium)
    :tincture {:shadow 1
               :highlight 1}})
 
@@ -89,8 +88,7 @@
             :offset-x 15
             :offset-y -1}
    :geometry {:size 60}
-   :field (-> field
-              (assoc :tincture :azure))
+   :field (assoc field :tincture :azure)
    :tincture {:shadow 1
               :highlight 1
               :secondary :or}})

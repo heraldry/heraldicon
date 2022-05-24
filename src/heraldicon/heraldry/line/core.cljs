@@ -421,8 +421,8 @@
   (let [pattern-data (get kinds-pattern-map type)
         line-function (:function pattern-data)
         line-options-values (cond-> line #_(options/sanitize line (options line))
-                              (= type :straight) (-> (assoc :width length)
-                                                     (assoc :offset 0)))
+                              (= type :straight) (assoc :width length
+                                                        :offset 0))
         base-end (v/Vector. length 0)
         line-data (if (:full? pattern-data)
                     (full-line
@@ -465,20 +465,19 @@
                                  (v/dot line-end (v/Vector. 1 -1))]
                                 [line-start line-end])
         squiggly? (interface/render-option :squiggly? context)]
-    (-> line-data
-        (assoc :line
-               (-> line-path
-                   (cond->
-                     squiggly? (squiggly/squiggly-path :seed seed))
-                   path/parse-path
-                   (cond->
-                     effective-flipped? (path/scale 1 -1))
-                   (path/rotate angle)
-                   path/to-svg))
-        (assoc :line-start (when line-start (v/rotate line-start angle)))
-        (assoc :line-end (when line-end (v/rotate (v/add base-end line-end) angle)))
-        (assoc :up (v/rotate (v/Vector. 0 -50) angle))
-        (assoc :down (v/rotate (v/Vector. 0 50) angle)))))
+    (assoc line-data
+           :line (-> line-path
+                     (cond->
+                       squiggly? (squiggly/squiggly-path :seed seed))
+                     path/parse-path
+                     (cond->
+                       effective-flipped? (path/scale 1 -1))
+                     (path/rotate angle)
+                     path/to-svg)
+           :line-start (when line-start (v/rotate line-start angle))
+           :line-end (when line-end (v/rotate (v/add base-end line-end) angle))
+           :up (v/rotate (v/Vector. 0 -50) angle)
+           :down (v/rotate (v/Vector. 0 50) angle))))
 
 (defn get-intersections-before-and-after [t intersections]
   (let [before (or (-> intersections
@@ -752,9 +751,9 @@
         {line-data :line
          line-start :line-start
          real-pattern-width :pattern-width} (pattern-line-with-offset
-                                             (-> line
-                                                 (assoc :width pattern-width)
-                                                 (assoc :offset 0))
+                                             (assoc line
+                                                    :width pattern-width
+                                                    :offset 0)
                                              pattern-width
                                              line-function
                                              {:num-repetitions 1})

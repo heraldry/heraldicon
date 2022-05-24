@@ -240,11 +240,10 @@
                      #{:left
                        :right
                        :top
-                       :bottom}) (->
-                                   (assoc :offset-x (or (:offset-x raw-origin)
-                                                        (:offset-x anchor)))
-                                   (assoc :offset-y (or (:offset-y raw-origin)
-                                                        (:offset-y anchor)))))
+                       :bottom}) (assoc :offset-x (or (:offset-x raw-origin)
+                                                      (:offset-x anchor))
+                                        :offset-y (or (:offset-y raw-origin)
+                                                      (:offset-y anchor))))
         points (:points environment)
         unadjusted-anchor-point (position/calculate anchor environment)
         {direction-anchor-point :real-anchor

@@ -41,16 +41,16 @@
                                       (< (count current) (count default)) (into current (subvec default (count current)))
                                       (> (count current) (count default)) (subvec current 0 (count default))
                                       :else current)]
-                         (-> prepared-field
-                             (assoc :fields (->> (map vector merged previous-default default)
-                                                 (map (fn [[cur old-def def]]
-                                                        (if (and (-> cur
-                                                                     :type
-                                                                     (not= :heraldry.field.type/ref))
-                                                                 (not= cur old-def))
-                                                          cur
-                                                          def)))
-                                                 vec))))))
+                         (assoc prepared-field
+                                :fields (->> (map vector merged previous-default default)
+                                             (map (fn [[cur old-def def]]
+                                                    (if (and (-> cur
+                                                                 :type
+                                                                 (not= :heraldry.field.type/ref))
+                                                             (not= cur old-def))
+                                                      cur
+                                                      def)))
+                                             vec)))))
           (update-in path #(merge %
                                   (options/sanitize-or-nil % (interface/options {:path [:context :dummy]
                                                                                  :dummy %}))))

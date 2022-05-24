@@ -193,11 +193,10 @@
         p2 (new Path path2)]
     (into []
           (map (fn [^js/Object location]
-                 (assoc
-                  (Vector. (.. location -point -x)
-                           (.. location -point -y))
-                  :t1 (/ (.. location -offset) (.-length p1))
-                  :t2 (/ (.. location -intersection -offset) (.-length p2)))))
+                 (assoc (Vector. (.. location -point -x)
+                                 (.. location -point -y))
+                        :t1 (/ (.. location -offset) (.-length p1))
+                        :t2 (/ (.. location -intersection -offset) (.-length p2)))))
           (.getIntersections p1 p2))))
 
 (def ^:private -path-intersection

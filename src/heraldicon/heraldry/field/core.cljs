@@ -27,28 +27,17 @@
 (defn raw-default-fields [type num-fields-x num-fields-y num-base-fields]
   (let [type (-> type name keyword)
         defaults [default/field
-                  (-> default/field
-                      (assoc :tincture :azure))
-                  (-> default/field
-                      (assoc :tincture :sable))
-                  (-> default/field
-                      (assoc :tincture :gules))
-                  (-> default/field
-                      (assoc :tincture :or))
-                  (-> default/field
-                      (assoc :tincture :vert))
-                  (-> default/field
-                      (assoc :tincture :purpure))
-                  (-> default/field
-                      (assoc :tincture :tenne))
-                  (-> default/field
-                      (assoc :tincture :sanguine))
-                  (-> default/field
-                      (assoc :tincture :rose))
-                  (-> default/field
-                      (assoc :tincture :murrey))
-                  (-> default/field
-                      (assoc :tincture :bleu-celeste))]]
+                  (assoc default/field :tincture :azure)
+                  (assoc default/field :tincture :sable)
+                  (assoc default/field :tincture :gules)
+                  (assoc default/field :tincture :or)
+                  (assoc default/field :tincture :vert)
+                  (assoc default/field :tincture :purpure)
+                  (assoc default/field :tincture :tenne)
+                  (assoc default/field :tincture :sanguine)
+                  (assoc default/field :tincture :rose)
+                  (assoc default/field :tincture :murrey)
+                  (assoc default/field :tincture :bleu-celeste)]]
     (cond
       (#{:plain :counterchanged} type) []
       (= :per-saltire type) (-> (subvec defaults 0 2)
@@ -127,10 +116,8 @@
       (#{:vairy
          :potenty
          :papellony
-         :masony} type) [(-> default/field
-                             (assoc :tincture :azure))
-                         (-> default/field
-                             (assoc :tincture :argent))]
+         :masony} type) [(assoc default/field :tincture :azure)
+                         (assoc default/field :tincture :argent)]
       (#{:bendy
          :bendy-sinister} type) (-> (subvec defaults 0 2)
                                     (into (map (fn [i]
