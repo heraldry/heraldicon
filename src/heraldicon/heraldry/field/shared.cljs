@@ -117,9 +117,9 @@
               :transform transform}
           [field.interface/render-field field-context]
           [render-components
-           (-> field-context
-               (assoc :parent-field-path path)
-               (assoc :parent-field-environment environment))]]
+           (assoc field-context
+                  :parent-field-path path
+                  :parent-field-environment environment)]]
          (when selected?
            [:path {:d (s/join "" (-> environment :shape :paths))
                    :fill-rule "evenodd"

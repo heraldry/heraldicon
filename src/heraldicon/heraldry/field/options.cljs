@@ -113,8 +113,9 @@
       (not (or counterchanged?
                plain?
                ref?)) (assoc :outline? options/plain-outline?-option)
-      (not ref?) (-> (merge (field.interface/options context))
-                     (assoc :type type-option))
+      (not ref?) (->
+                   (merge (field.interface/options context))
+                   (assoc :type type-option))
       (and (not ref?)
            (or subfield?
                root-field?

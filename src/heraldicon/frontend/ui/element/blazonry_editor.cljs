@@ -518,10 +518,9 @@
           [:div {:style {:width "15em"
                          :height "100%"}}
            [render/achievement
-            (assoc
-             context/default
-             :path hdn-path
-             :render-options-path (conj hdn-path :render-options))]]]
+            (assoc context/default
+                   :path hdn-path
+                   :render-options-path (conj hdn-path :render-options))]]]
          [:div {:style {:height "100%"
                         :margin-top "10px"
                         :overflow-y "scroll"}}

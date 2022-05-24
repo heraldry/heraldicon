@@ -13,8 +13,7 @@
   (fn [db [_ path charge-group-preset charge-adjustments]]
     (let [new-db (-> db
                      (update-in path (fn [charge-group]
-                                       (-> charge-group-preset
-                                           (assoc :charges (:charges charge-group)))))
+                                       (assoc charge-group-preset :charges (:charges charge-group))))
                      (assoc-in (conj path :charges 0 :orientation :point) :angle)
                      (assoc-in (conj path :charges 0 :orientation :angle) 0)
                      (assoc-in (conj path :charges 0 :geometry :size) nil))]

@@ -191,8 +191,8 @@
        [charge.interface/render-charge
         (-> context
             (c/++ :charges charge-index)
-            (assoc :anchor-override (v/add anchor-point point))
-            (assoc :charge-group {:charge-group-path path
+            (assoc :anchor-override (v/add anchor-point point)
+                   :charge-group {:charge-group-path path
                                   :slot-spacing slot-spacing
                                   :slot-angle (when rotate-charges?
                                                 angle)}))])]))

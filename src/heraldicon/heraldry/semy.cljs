@@ -125,8 +125,8 @@
                                      :bottom-right (v/Vector. part-width-half part-height-half)}}
         charge-context (-> context
                            (c/++ :charge)
-                           (assoc :size-default 50)
-                           (assoc :environment charge-environment))]
+                           (assoc :size-default 50
+                                  :environment charge-environment))]
     [:g
      [:defs
       [:pattern {:id pattern-id

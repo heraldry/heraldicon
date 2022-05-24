@@ -76,8 +76,8 @@
 (defmethod interface/options :heraldry/charge [context]
   (-> context
       charge.interface/options
-      (assoc :type type-option)
-      (assoc :manual-blazon options/manual-blazon)
+      (assoc :type type-option
+             :manual-blazon options/manual-blazon)
       (post-process-options context)))
 
 (defn title [context]

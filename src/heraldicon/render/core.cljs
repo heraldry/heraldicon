@@ -144,9 +144,9 @@
       [interface/render-component
        (-> context
            (c/++ :components idx)
-           (assoc :auto-resize? false)
-           (assoc :self-below-shield? self-below-shield?)
-           (assoc :render-pass-below-shield? below-shield?))]))])
+           (assoc :auto-resize? false
+                  :self-below-shield? self-below-shield?
+                  :render-pass-below-shield? below-shield?))]))])
 
 (defn helms [context width]
   (let [num-helms (interface/get-list-size (c/++ context :elements))]
@@ -459,9 +459,9 @@
     (for [[idx self-below-shield?] (interface/get-element-indices context)]
       (let [updated-context (-> context
                                 (c/++ idx)
-                                (assoc :auto-resize? false)
-                                (assoc :self-below-shield? self-below-shield?)
-                                (assoc :render-pass-below-shield? below-shield?))
+                                (assoc :auto-resize? false
+                                       :self-below-shield? self-below-shield?
+                                       :render-pass-below-shield? below-shield?))
             motto? (interface/motto? updated-context)]
         ^{:key idx}
         [:<>

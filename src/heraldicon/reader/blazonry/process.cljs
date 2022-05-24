@@ -152,14 +152,14 @@
                                                       initial-spacing
                                                       (* index spacing))]
                                         [parent-index
-                                         (-> component
-                                             (assoc :thickness (if (-> component
-                                                                       :line
-                                                                       (or :straight)
-                                                                       (not= :straight))
-                                                                 (/ size 2)
-                                                                 size))
-                                             (assoc :distance offset))]))]
+                                         (assoc component
+                                                :thickness (if (-> component
+                                                                   :line
+                                                                   (or :straight)
+                                                                   (not= :straight))
+                                                             (/ size 2)
+                                                             size)
+                                                :distance offset)]))]
     (replace-adjusted-components hdn adjusted-indexed-components)))
 
 (defn arrange-ordinaries [hdn indexed-components]
