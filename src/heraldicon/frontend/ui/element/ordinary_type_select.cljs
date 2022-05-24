@@ -12,7 +12,7 @@
    [heraldicon.static :as static]
    [heraldicon.util.core :as util]))
 
-(defn -default-line-style-of-ordinary-type [ordinary-type]
+(defn- default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type
     :heraldry.ordinary.type/gore :enarched
     :straight))
@@ -23,8 +23,8 @@
           has-default-line-style? (-> current
                                       :line
                                       :type
-                                      (= (-default-line-style-of-ordinary-type (:type current))))
-          new-default-line-style (-default-line-style-of-ordinary-type new-type)
+                                      (= (default-line-style-of-ordinary-type (:type current))))
+          new-default-line-style (default-line-style-of-ordinary-type new-type)
           new-flipped (case new-type
                         :heraldry.ordinary.type/gore true
                         false)]

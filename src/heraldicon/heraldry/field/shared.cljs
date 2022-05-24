@@ -124,7 +124,7 @@
                    :style {:opacity 0.25}
                    :fill "url(#selected)"}])]))))
 
-(defn -make-subfields [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
+(defn- make-subfields* [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
   [:<>
    (doall
     (for [[idx [part-context [shape bounding-box-points meta] overlap-paths]]
@@ -171,11 +171,11 @@
           [render (c/<< part-context :environment env)]]])))])
 
 (defn make-subfields [context parts mask-overlaps parent-environment]
-  (-make-subfields context
+  (make-subfields* context
                    (map (fn [idx]
                           (c/++ context :fields idx)) (-> parts count range))
                    parts mask-overlaps parent-environment))
 
 (defn make-subfield [context part mask-overlap]
-  (-make-subfields (c/-- context)
+  (make-subfields* (c/-- context)
                    [context] [part] [mask-overlap] (:environment context)))

@@ -58,31 +58,31 @@
 (defn placeholder-colour-qualifier [placeholder-colours colour]
   (attributes/tincture-modifier-qualifier (get placeholder-colours colour)))
 
-(defn -remove-outlines [data placeholder-colours]
-  (walk/postwalk #(if (and (vector? %)
-                           (->> % first (get #{:stroke :fill :stop-color}))
-                           (or (-> % second (s/starts-with? "url"))
-                               (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) (= :outline))))
-                    [(first %) "none"]
-                    %)
-                 data))
+(def ^:private remove-outlines
+  (memoize
+   (fn remove-outlines [data placeholder-colours]
+     (walk/postwalk #(if (and (vector? %)
+                              (->> % first (get #{:stroke :fill :stop-color}))
+                              (or (-> % second (s/starts-with? "url"))
+                                  (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) (= :outline))))
+                       [(first %) "none"]
+                       %)
+                    data))))
 
-(def remove-outlines (memoize -remove-outlines))
-
-(defn -remove-shading [data placeholder-colours]
-  (walk/postwalk #(if (and (vector? %)
-                           (->> % first (get #{:stroke :fill :stop-color}))
-                           (or (-> % second (s/starts-with? "url"))
-                               (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) #{:shadow :highlight})))
-                    [(first %) "none"]
-                    %)
-                 data))
-
-(def remove-shading (memoize -remove-shading))
+(def ^:private remove-shading
+  (memoize
+   (fn remove-shading [data placeholder-colours]
+     (walk/postwalk #(if (and (vector? %)
+                              (->> % first (get #{:stroke :fill :stop-color}))
+                              (or (-> % second (s/starts-with? "url"))
+                                  (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) #{:shadow :highlight})))
+                       [(first %) "none"]
+                       %)
+                    data))))
 
 ;; TODO: the function here prevents efficient memoization, because the calling
 ;; context uses anonymous functions that use closures
-(defn -replace-colours [data function]
+(defn- replace-colours [data function]
   (walk/postwalk #(if (and (vector? %)
                            (-> % second string?)
                            (->> % first (get #{:stroke :fill :stop-color}))
@@ -91,37 +91,35 @@
                     %)
                  data))
 
-(def replace-colours (memoize -replace-colours))
-
 (defn highlight-colour [colour highlight-colours]
   (if (-> colour colour/normalize highlight-colours)
     "#00ff00"
     (colour/desaturate colour)))
 
-(defn -set-layer-separator-opacity [data layer-separator-colours opacity]
-  (if (seq layer-separator-colours)
-    (let [layer-separator-colours (set layer-separator-colours)]
-      (walk/postwalk (fn [v]
-                       (if (map? v)
-                         (loop [v v
-                                [[attribute opacity-attribute] & rest] [[:stroke :stroke-opacity]
-                                                                        [:fill :fill-opacity]
-                                                                        [:stop-color :stop-opacity]]]
-                           (let [new-v (cond-> v
-                                         (some-> (get v attribute)
-                                                 colour/normalize
-                                                 layer-separator-colours) (->
-                                                                            (assoc opacity-attribute opacity)
-                                                                            (cond->
-                                                                              (:opacity v) (assoc :opacity opacity))))]
-                             (if (seq rest)
-                               (recur new-v rest)
-                               new-v)))
-                         v))
-                     data))
-    data))
-
-(def set-layer-separator-opacity (memoize -set-layer-separator-opacity))
+(def ^:private set-layer-separator-opacity
+  (memoize
+   (fn set-layer-separator-opacity [data layer-separator-colours opacity]
+     (if (seq layer-separator-colours)
+       (let [layer-separator-colours (set layer-separator-colours)]
+         (walk/postwalk (fn [v]
+                          (if (map? v)
+                            (loop [v v
+                                   [[attribute opacity-attribute] & rest] [[:stroke :stroke-opacity]
+                                                                           [:fill :fill-opacity]
+                                                                           [:stop-color :stop-opacity]]]
+                              (let [new-v (cond-> v
+                                            (some-> (get v attribute)
+                                                    colour/normalize
+                                                    layer-separator-colours) (->
+                                                                               (assoc opacity-attribute opacity)
+                                                                               (cond->
+                                                                                 (:opacity v) (assoc :opacity opacity))))]
+                                (if (seq rest)
+                                  (recur new-v rest)
+                                  new-v)))
+                            v))
+                        data))
+       data))))
 
 (defn get-replacement [kind provided-placeholder-colours]
   (let [replacement (get provided-placeholder-colours kind)]
@@ -129,49 +127,49 @@
                   (= replacement :none))
       replacement)))
 
-(defn -make-mask [data placeholder-colours provided-placeholder-colours
+(def ^:private make-mask
+  (memoize
+   (fn make-mask [data placeholder-colours provided-placeholder-colours
                   outline-mode preview-original? hide-lower-layer?]
-  (let [mask (replace-colours
-              data
-              (fn [colour]
-                (if (s/starts-with? colour "url")
-                  "none"
-                  (let [colour-lower (colour/normalize colour)
-                        kind (placeholder-colour-modifier placeholder-colours colour-lower)
-                        replacement (get-replacement kind provided-placeholder-colours)]
-                    (cond
-                      (or preview-original?
-                          (= kind :keep)
-                          (and (not (#{:transparent :primary} outline-mode))
-                               (= kind :outline))
-                          replacement) "#fff"
-                      (and (= kind :layer-separator)
-                           (not hide-lower-layer?)) "none"
-                      (and (= kind :layer-separator)
-                           hide-lower-layer?) "#000"
-                      :else "#000")))))
-        mask-inverted (replace-colours
-                       data
-                       (fn [colour]
-                         (if (s/starts-with? colour "url")
-                           "none"
-                           (let [colour-lower (colour/normalize colour)
-                                 kind (placeholder-colour-modifier placeholder-colours colour-lower)
-                                 replacement (get-replacement kind provided-placeholder-colours)]
-                             (cond
-                               (or preview-original?
-                                   (= kind :keep)
-                                   (and (not (#{:primary} outline-mode))
-                                        (= kind :outline))
-                                   replacement) "#000"
-                               (and (= kind :layer-separator)
-                                    (not hide-lower-layer?)) "none"
-                               (and (= kind :layer-separator)
-                                    hide-lower-layer?) "#000"
-                               :else "#fff")))))]
-    [mask mask-inverted]))
-
-(def make-mask (memoize -make-mask))
+     (let [mask (replace-colours
+                 data
+                 (fn [colour]
+                   (if (s/starts-with? colour "url")
+                     "none"
+                     (let [colour-lower (colour/normalize colour)
+                           kind (placeholder-colour-modifier placeholder-colours colour-lower)
+                           replacement (get-replacement kind provided-placeholder-colours)]
+                       (cond
+                         (or preview-original?
+                             (= kind :keep)
+                             (and (not (#{:transparent :primary} outline-mode))
+                                  (= kind :outline))
+                             replacement) "#fff"
+                         (and (= kind :layer-separator)
+                              (not hide-lower-layer?)) "none"
+                         (and (= kind :layer-separator)
+                              hide-lower-layer?) "#000"
+                         :else "#000")))))
+           mask-inverted (replace-colours
+                          data
+                          (fn [colour]
+                            (if (s/starts-with? colour "url")
+                              "none"
+                              (let [colour-lower (colour/normalize colour)
+                                    kind (placeholder-colour-modifier placeholder-colours colour-lower)
+                                    replacement (get-replacement kind provided-placeholder-colours)]
+                                (cond
+                                  (or preview-original?
+                                      (= kind :keep)
+                                      (and (not (#{:primary} outline-mode))
+                                           (= kind :outline))
+                                      replacement) "#000"
+                                  (and (= kind :layer-separator)
+                                       (not hide-lower-layer?)) "none"
+                                  (and (= kind :layer-separator)
+                                       hide-lower-layer?) "#000"
+                                  :else "#fff")))))]
+       [mask mask-inverted]))))
 
 (defn colours-for-modifier [placeholder-colours modifier]
   (->> placeholder-colours

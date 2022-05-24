@@ -86,28 +86,26 @@
 (defn length [path]
   (.-length path))
 
-(defn -sample-path [path & {:keys [start-offset
+(def sample-path
+  (memoize
+   (fn sample-path [path & {:keys [start-offset
                                    precision
                                    num-points]}]
-  (let [parsed-path (parse-path path)
-        full-length (length parsed-path)
-        n (or num-points
-              (-> full-length
-                  (/ precision)
-                  Math/floor))]
-    (points parsed-path n :start-offset start-offset)))
+     (let [parsed-path (parse-path path)
+           full-length (length parsed-path)
+           n (or num-points
+                 (-> full-length
+                     (/ precision)
+                     Math/floor))]
+       (points parsed-path n :start-offset start-offset)))))
 
-(def sample-path
-  (memoize -sample-path))
-
-(defn -simplify-path [path smoothing]
-  (-> path
-      (sample-path :precision smoothing)
-      catmullrom/catmullrom
-      curve-to-relative))
-
-(def simplify-path
-  (memoize -simplify-path))
+(def ^:private simplify-path
+  (memoize
+   (fn simplify-path [path smoothing]
+     (-> path
+         (sample-path :precision smoothing)
+         catmullrom/catmullrom
+         curve-to-relative))))
 
 (defn clockwise? [path]
   (let [points (sample-path path :num-points 20)]
