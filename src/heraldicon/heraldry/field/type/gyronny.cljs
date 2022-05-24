@@ -158,8 +158,7 @@
         point-top-right diagonal-top-right
         point-bottom-left diagonal-bottom-left
         point-bottom-right diagonal-bottom-right
-        line (-> line
-                 (dissoc :fimbriation))
+        line (dissoc line :fimbriation)
         {line-top :line
          line-top-start :line-start} (line/create opposite-line
                                                   anchor-point point-top

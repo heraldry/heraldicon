@@ -381,15 +381,15 @@
     (state/set-async-fetch-data
      form-db-path
      :new
-     (-> ribbon-data
-         (dissoc :id)
-         (dissoc :version)
-         (dissoc :latest-version)
-         (dissoc :username)
-         (dissoc :user-id)
-         (dissoc :created-at)
-         (dissoc :first-version-created-at)
-         (dissoc :name)))
+     (dissoc ribbon-data
+             :id
+             :version
+             :latest-version
+             :username
+             :user-id
+             :created-at
+             :first-version-created-at
+             :name))
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-ribbon)))
 

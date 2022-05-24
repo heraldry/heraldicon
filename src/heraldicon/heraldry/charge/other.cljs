@@ -206,10 +206,10 @@
                     (boolean render-pass-below-shield?))
                  (and (not ignore-layer-separator?)
                       (seq layer-separator-colours))))
-      (let [context (-> context
-                        (dissoc :anchor-override)
-                        (dissoc :size-default)
-                        (dissoc :charge-group))
+      (let [context (dissoc context
+                            :anchor-override
+                            :size-default
+                            :charge-group)
             highlight-colours? (seq ui-show-colours)
             ui-show-colours (set ui-show-colours)
             anchor (interface/get-sanitized-data (c/++ context :anchor))

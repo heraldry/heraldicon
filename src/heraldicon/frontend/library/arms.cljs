@@ -173,15 +173,15 @@
     (state/set-async-fetch-data
      form-db-path
      :new
-     (-> arms-data
-         (dissoc :id)
-         (dissoc :version)
-         (dissoc :latest-version)
-         (dissoc :username)
-         (dissoc :user-id)
-         (dissoc :created-at)
-         (dissoc :first-version-created-at)
-         (dissoc :name)))
+     (dissoc arms-data
+             :id
+             :version
+             :latest-version
+             :username
+             :user-id
+             :created-at
+             :first-version-created-at
+             :name))
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-arms)))
 
@@ -202,10 +202,10 @@
                    :public)
         user-data (user/data)
         logged-in? (:logged-in? user-data)
-        unsaved-changes? (not= (-> @(rf/subscribe [:get form-db-path])
-                                   (dissoc :render-options))
-                               (-> @(rf/subscribe [:get saved-data-db-path])
-                                   (dissoc :render-options)))
+        unsaved-changes? (not= (dissoc @(rf/subscribe [:get form-db-path])
+                                       :render-options)
+                               (dissoc @(rf/subscribe [:get saved-data-db-path])
+                                       :render-options))
         can-export? (and logged-in?
                          (not unsaved-changes?))
         saved? arms-id
