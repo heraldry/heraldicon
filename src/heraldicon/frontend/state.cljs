@@ -64,6 +64,10 @@
 
 ;; events
 
+(macros/reg-event-db :clear-db
+  (fn [_ _]
+    {}))
+
 (macros/reg-event-db :initialize-db
   (fn [db [_ crawler?]]
     (merge-with merge
