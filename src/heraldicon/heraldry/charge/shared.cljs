@@ -156,10 +156,10 @@
   ;; only render, if we are in the right render pass
   (if (= (boolean self-below-shield?)
          (boolean render-pass-below-shield?))
-    (let [context (-> context
-                      (dissoc :anchor-override)
-                      (dissoc :size-default)
-                      (dissoc :charge-group))
+    (let [context (dissoc context
+                          :anchor-override
+                          :size-default
+                          :charge-group)
           anchor (interface/get-sanitized-data (c/++ context :anchor))
           orientation (interface/get-sanitized-data (c/++ context :orientation))
           vertical-mask (interface/get-sanitized-data (c/++ context :vertical-mask))

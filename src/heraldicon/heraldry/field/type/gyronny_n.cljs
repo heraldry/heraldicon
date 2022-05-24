@@ -99,8 +99,7 @@
                                   v/abs))
                         (apply max))
         full-arm-length (+ arm-length 30)
-        line (-> line
-                 (dissoc :fimbriation))
+        line (dissoc line :fimbriation)
         arm-points (mapv (fn [angle]
                            (-> (v/Vector. 0 -1)
                                (v/rotate angle)

@@ -126,8 +126,7 @@
                                   (v/sub anchor-point)
                                   v/abs))
                         (apply max))
-        line (-> line
-                 (dissoc :fimbriation))
+        line (dissoc line :fimbriation)
         {line-top-left :line
          line-top-left-start :line-start} (line/create line
                                                        anchor-point diagonal-top-left
