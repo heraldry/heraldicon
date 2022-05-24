@@ -45,6 +45,10 @@
                    true (conj {:title :string.entity/crest-charge
                                :handler #(state/dispatch-on-event
                                           % [:add-element components-context default/crest-charge
+                                             shield-separator/add-element-options])})
+                   true (conj {:title :string.entity/crest-charge-group
+                               :handler #(state/dispatch-on-event
+                                          % [:add-element components-context default/crest-charge-group
                                              shield-separator/add-element-options])}))]
 
     {:title (string/str-tr (when (> num-helms 1)

@@ -7,6 +7,7 @@
 (s/def :heraldry.helm/type #{:heraldry/helm})
 
 (s/def :heraldry.helm/component (s/or :charge :heraldry/charge
+                                      :charge-group :heraldry/charge-group
                                       :shield-separator :heraldry/shield-separator))
 (s/def :heraldry.helm/components (s/coll-of :heraldry.helm/component :into []))
 
