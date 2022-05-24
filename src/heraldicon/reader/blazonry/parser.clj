@@ -14,20 +14,20 @@
                            :auto-whitespace :standard)
         pre-processed-grammar (:grammar macro-time-parser)
         grammar-producing-code
-        (->> pre-processed-grammar
-             (walk/postwalk
-              (fn [form]
-                (cond
-                  ;; Lists cannot be evaluated verbatim
-                  (seq? form)
-                  (list* 'list form)
+        (walk/postwalk
+         (fn [form]
+           (cond
+             ;; Lists cannot be evaluated verbatim
+             (seq? form)
+             (list* 'list form)
 
-                  ;; Regexp terminals are handled differently in cljs
-                  (= :regexp (:tag form))
-                  `(merge (c/regexp ~(str (:regexp form)))
-                          ~(dissoc form :tag :regexp))
+             ;; Regexp terminals are handled differently in cljs
+             (= :regexp (:tag form))
+             `(merge (c/regexp ~(str (:regexp form)))
+                     ~(dissoc form :tag :regexp))
 
-                  :else form))))]
+             :else form))
+         pre-processed-grammar)]
     `(parser ~grammar-producing-code
              :start :blazon
              :auto-whitespace :standard)))

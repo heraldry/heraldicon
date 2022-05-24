@@ -84,8 +84,7 @@
                            :green))))))
 
 (defn ^:dev/after-load reset-test-data! []
-  (-> (env/get-test-data)
-      (env/reset-test-data!)))
+  (env/reset-test-data! (env/get-test-data)))
 
 (defn main []
   (reset-test-data!)
