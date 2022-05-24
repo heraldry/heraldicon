@@ -106,7 +106,7 @@
                                                               (c/++ cottise-2-key)))}
                             :anchor {:point :fess
                                      :offset-x [:force (offset-x-fn
-                                                        (-> environment :points :fess :y)
+                                                        (-> environment :points :fess :x)
                                                         distance)]
                                      :alignment alignment}
                             :outline? outline?}))])))
