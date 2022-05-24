@@ -18,8 +18,7 @@
                    "adjusted")
                  (when (options/changed? :alignment position options)
                    "aligned")]]
-    (-> (string/combine ", " changes)
-        string/upper-case-first)))
+    (string/upper-case-first (string/combine ", " changes))))
 
 (defn position-submenu [context]
   (when-let [options (interface/get-relevant-options context)]

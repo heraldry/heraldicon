@@ -168,8 +168,8 @@
                                    (map (fn [c]
                                           [c :keep]) (find-colours
                                                       edn-data)))
-                     edn-data (-> edn-data
-                                  (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))
+                     edn-data (assoc-in edn-data
+                                        [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")"))
                      existing-colours @(rf/subscribe [:get (conj db-path :colours)])
                      new-colours (merge colours
                                         (select-keys existing-colours
@@ -205,8 +205,8 @@
                                    (c/<< :render-options-path
                                          (conj example-coa-db-path :render-options))
                                    (c/<< :coat-of-arms
-                                         (-> coat-of-arms
-                                             (assoc-in [:field :components 0 :data] prepared-charge-data))))
+                                         (assoc-in coat-of-arms
+                                                   [:field :components 0 :data] prepared-charge-data)))
                                100)
         {:keys [width height]} environment]
     [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))

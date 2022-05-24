@@ -140,8 +140,7 @@
                                   Math/ceil
                                   inc
                                   (* effective-width))
-        extra-dir (-> direction
-                      (v/mul required-extra-length))
+        extra-dir (v/mul direction required-extra-length)
         diagonal-start (v/sub real-diagonal-start extra-dir)
         diagonal-end (v/add real-diagonal-end extra-dir)
         {line-one :line

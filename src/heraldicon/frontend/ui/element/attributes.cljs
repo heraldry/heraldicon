@@ -56,7 +56,7 @@
                                              attributes/attribute-choices)]
            (if (and (-> group-choices count (= 1))
                     (-> group-choices first keyword?))
-             (let [key (-> group-choices first)]
+             (let [key (first group-choices)]
                ^{:key key}
                [:option {:value (util/keyword->str key)}
                 (tr group-name)])

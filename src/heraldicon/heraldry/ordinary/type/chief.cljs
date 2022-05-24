@@ -20,18 +20,18 @@
 (defmethod ordinary.interface/options ordinary-type [context]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
-    (-> {:line line-style
-         :geometry {:size {:type :range
-                           :min 0.1
-                           :max 75
-                           :default 25
-                           :ui {:label :string.option/size
-                                :step 0.1}}
-                    :ui {:label :string.option/geometry
-                         :form-type :geometry}}
-         :outline? options/plain-outline?-option
-         :cottising (cottising/add-cottising context 1)}
-        (ordinary.shared/add-humetty-and-voided context))))
+    (ordinary.shared/add-humetty-and-voided
+     {:line line-style
+      :geometry {:size {:type :range
+                        :min 0.1
+                        :max 75
+                        :default 25
+                        :ui {:label :string.option/size
+                             :step 0.1}}
+                 :ui {:label :string.option/geometry
+                      :form-type :geometry}}
+      :outline? options/plain-outline?-option
+      :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment
@@ -49,8 +49,7 @@
         right (:right points)
         width (:width environment)
         height (:height environment)
-        band-height (-> size
-                        ((math/percent-of height)))
+        band-height ((math/percent-of height) size)
         row (+ (:y top) band-height)
         row-left (v/Vector. (:x left) row)
         row-right (v/Vector. (:x right) row)

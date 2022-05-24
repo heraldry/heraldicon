@@ -515,27 +515,23 @@
   :wappenwiki)
 
 (def theme-choices
-  (->> themes
-       (map (fn [[group-name & items]]
-              (vec (concat [group-name] (->> items
-                                             (map (fn [[display-name key _]]
-                                                    [display-name key])))))))
-       vec))
+  (mapv (fn [[group-name & items]]
+          (into [group-name] (map (fn [[display-name key _]]
+                                    [display-name key])
+                                  items)))
+        themes))
 
 (def theme-map
   (options/choices->map theme-choices))
 
 (def theme-data-map
-  (->> themes
-       (map (fn [[_group-name & items]]
-              (->> items
-                   (map (fn [[_ key colours]]
-                          [key colours])))))
-       (apply concat)
-       (into {})))
+  (into {}
+        (mapcat (fn [[_group-name & items]]
+                  (map (fn [[_ key colours]]
+                         [key colours])
+                       items)))
+        themes))
 
 (defn lookup-colour [tincture theme]
-  (let [theme-colours (merge
-                       (get theme-data-map default)
-                       (get theme-data-map theme))]
-    (get theme-colours tincture)))
+  (get-in theme-data-map [theme tincture]
+          (get-in theme-data-map [default tincture])))

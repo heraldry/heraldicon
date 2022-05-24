@@ -89,58 +89,56 @@
     (compatible-licenses (or license :none))))
 
 (defn options [context]
-  (-> {:license {:type :choice
-                 :choices license-choices
-                 :default :none
-                 :ui {:label :string.attribution/license}}
-       :nature {:type :choice
-                :choices nature-choices
-                :default :own-work
-                :ui {:form-type :radio-select}}
+  (cond-> {:license {:type :choice
+                     :choices license-choices
+                     :default :none
+                     :ui {:label :string.attribution/license}}
+           :nature {:type :choice
+                    :choices nature-choices
+                    :default :own-work
+                    :ui {:form-type :radio-select}}
 
-       :ui {:label :string.attribution/title
-            :form-type :attribution}}
+           :ui {:label :string.attribution/title
+                :form-type :attribution}}
+    (-> context
+        (c/++ :license)
+        interface/get-raw-data
+        cc-license?) (assoc :license-version {:type :choice
+                                              :choices cc-license-version-choices
+                                              :default :v4
+                                              :ui {:label :string.attribution/license-version}})
 
-      (cond->
-        (-> context
-            (c/++ :license)
-            interface/get-raw-data
-            cc-license?) (assoc :license-version {:type :choice
-                                                  :choices cc-license-version-choices
-                                                  :default :v4
-                                                  :ui {:label :string.attribution/license-version}})
+    (-> context
+        (c/++ :nature)
+        interface/get-raw-data
+        (= :derivative)) (merge {:source-license {:type :choice
+                                                  :choices license-choices
+                                                  :default :none
+                                                  :ui {:label :string.attribution/source-license}}
 
-        (-> context
-            (c/++ :nature)
-            interface/get-raw-data
-            (= :derivative)) (merge {:source-license {:type :choice
-                                                      :choices license-choices
-                                                      :default :none
-                                                      :ui {:label :string.attribution/source-license}}
+                                 :source-name {:type :text
+                                               :default ""
+                                               :ui {:label :string.attribution/source-name}}
 
-                                     :source-name {:type :text
-                                                   :default ""
-                                                   :ui {:label :string.attribution/source-name}}
+                                 :source-link {:type :text
+                                               :default ""
+                                               :ui {:label :string.attribution/source-link}}
 
-                                     :source-link {:type :text
-                                                   :default ""
-                                                   :ui {:label :string.attribution/source-link}}
+                                 :source-creator-name {:type :text
+                                                       :default ""
+                                                       :ui {:label :string.attribution/creator-name}}
 
-                                     :source-creator-name {:type :text
-                                                           :default ""
-                                                           :ui {:label :string.attribution/creator-name}}
+                                 :source-creator-link {:type :text
+                                                       :default ""
+                                                       :ui {:label :string.attribution/creator-link}}})
 
-                                     :source-creator-link {:type :text
-                                                           :default ""
-                                                           :ui {:label :string.attribution/creator-link}}})
-
-        (-> context
-            (c/++ :source-license)
-            interface/get-raw-data
-            cc-license?) (assoc :source-license-version {:type :choice
-                                                         :choices cc-license-version-choices
-                                                         :default :v4
-                                                         :ui {:label :string.attribution/license-version}}))))
+    (-> context
+        (c/++ :source-license)
+        interface/get-raw-data
+        cc-license?) (assoc :source-license-version {:type :choice
+                                                     :choices cc-license-version-choices
+                                                     :default :v4
+                                                     :ui {:label :string.attribution/license-version}})))
 
 (defn full-url [context base]
   (when-let [object-id (interface/get-raw-data (c/++ context :id))]

@@ -15,17 +15,15 @@
    :ui {:label :string.charge.tincture-modifier.special/outline}})
 
 (defn choices->map [choices]
-  (->> choices
-       (map (fn [[group-name & items]]
-              (if (and (-> items count (= 1))
-                       (-> items first keyword?))
-                ;; in this case there is no group, treat the first element of "items" as key
-                ;; and "group-name" as display-name
-                [[(first items) group-name]]
-                (->> items
-                     (map (comp vec reverse))))))
-       (apply concat)
-       (into {})))
+  (into {}
+        (mapcat (fn [[group-name & items]]
+                  (if (and (-> items count (= 1))
+                           (-> items first keyword?))
+                    ;; in this case there is no group, treat the first element of "items" as key
+                    ;; and "group-name" as display-name
+                    [[(first items) group-name]]
+                    (map (comp vec reverse) items))))
+        choices))
 
 (defn filter-choices [choices pred]
   (let [pred (if (or (vector? pred)
@@ -72,16 +70,13 @@
         nil))))
 
 (defn get-sanitized-value-or-nil [value options]
-  (if (nil? value)
-    nil
+  (when-not (nil? value)
     (case (:type options)
       :boolean (boolean value)
       :choice (let [choices (choices->map (:choices options))]
-                (if (contains? choices value)
-                  value
-                  nil))
-      :range (if (nil? value)
-               nil
+                (when (contains? choices value)
+                  value))
+      :range (when-not (nil? value)
                (-> value
                    (max (:min options))
                    (min (:max options))))
@@ -90,12 +85,13 @@
 
 (defn sanitize [values given-options]
   (into {}
-        (for [[k v] given-options]
-          (cond
-            (and (map? v)
-                 (not (contains?
-                       option-types (:type v)))) [k (sanitize (get values k) v)]
-            :else [k (get-value (get values k) v)]))))
+        (map (fn [[k v]]
+               (cond
+                 (and (map? v)
+                      (not (contains?
+                            option-types (:type v)))) [k (sanitize (get values k) v)]
+                 :else [k (get-value (get values k) v)])))
+        given-options))
 
 (defn sanitize-value-or-data [data options]
   (when (map? options)
@@ -107,9 +103,12 @@
 
 (defn remove-nil-values-and-empty-maps [m]
   (walk/postwalk #(if (map? %)
-                    (into {} (filter (fn [[_ v]] (not (or (nil? v)
-                                                          (and (map? v)
-                                                               (empty? v))))) %))
+                    (into {}
+                          (filter (fn [[_ v]]
+                                    (not (or (nil? v)
+                                             (and (map? v)
+                                                  (empty? v))))))
+                          %)
                     %)
                  m))
 
@@ -127,8 +126,7 @@
   (let [values (first values)
         options (loop [options {}
                        [path & rest] paths]
-                  (let [next-options (-> options
-                                         (assoc-in path (get-in opts path)))]
+                  (let [next-options (assoc-in options path (get-in opts path))]
                     (if (nil? rest)
                       next-options
                       (recur next-options rest))))]

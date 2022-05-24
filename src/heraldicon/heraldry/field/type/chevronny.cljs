@@ -147,10 +147,10 @@
         left-x (:x top-left)
         right-x (:x bottom-right)
         start v/zero
-        end-left (-> (v/Vector. (* 2 height) 0)
-                     (v/rotate (+ 90 (/ joint-angle 2))))
-        end-right (-> (v/Vector. (* 2 height) 0)
-                      (v/rotate (- 90 (/ joint-angle 2))))
+        end-left (v/rotate (v/Vector. (* 2 height) 0)
+                           (+ 90 (/ joint-angle 2)))
+        end-right (v/rotate (v/Vector. (* 2 height) 0)
+                            (- 90 (/ joint-angle 2)))
         {line-left-upper :line
          line-left-upper-start :line-start} (line/create line
                                                          start end-left
@@ -241,8 +241,7 @@
                                              (path/stitch line-left-upper)
                                              (path/stitch line-right-upper)]))))
                    vec)
-        overlap (-> (mapv vector edges)
-                    (conj nil))
+        overlap (conj (mapv vector edges) nil)
         outlines (when outline?
                    [:g (outline/style context)
                     (for [i (range (dec num-fields-y))]

@@ -81,8 +81,7 @@
 
 (defn get-counterchange-tinctures [{:keys [path] :as context}]
   (if (-> path first (= :context))
-    (-> (get-raw-data context)
-        (counterchange/get-counterchange-tinctures context))
+    (counterchange/get-counterchange-tinctures (get-raw-data context) context)
     @(rf/subscribe [:get-counterchange-tinctures path context])))
 
 (defmulti fetch-charge-data (fn [kind _variant]

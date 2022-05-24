@@ -39,54 +39,54 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    (-> {:anchor {:point {:type :choice
-                          :choices [[:string.option.point-choice/fess :fess]
-                                    [:string.option.point-choice/chief :chief]
-                                    [:string.option.point-choice/base :base]]
-                          :default :fess
-                          :ui {:label :string.option/point}}
-                  :offset-x {:type :range
-                             :min -45
-                             :max 45
-                             :default 0
-                             :ui {:label :string.option/offset-x
-                                  :step 0.1}}
-                  :offset-y {:type :range
-                             :min -45
-                             :max 45
-                             :default 0
-                             :ui {:label :string.option/offset-y
-                                  :step 0.1}}
-                  :ui {:label :string.option/anchor
-                       :form-type :position}}
-         :orientation (cond-> {:point orientation-point-option
-                               :ui {:label :string.option/orientation
-                                    :form-type :position}}
+    (ordinary.shared/add-humetty-and-voided
+     {:anchor {:point {:type :choice
+                       :choices [[:string.option.point-choice/fess :fess]
+                                 [:string.option.point-choice/chief :chief]
+                                 [:string.option.point-choice/base :base]]
+                       :default :fess
+                       :ui {:label :string.option/point}}
+               :offset-x {:type :range
+                          :min -45
+                          :max 45
+                          :default 0
+                          :ui {:label :string.option/offset-x
+                               :step 0.1}}
+               :offset-y {:type :range
+                          :min -45
+                          :max 45
+                          :default 0
+                          :ui {:label :string.option/offset-y
+                               :step 0.1}}
+               :ui {:label :string.option/anchor
+                    :form-type :position}}
+      :orientation (cond-> {:point orientation-point-option
+                            :ui {:label :string.option/orientation
+                                 :form-type :position}}
 
-                        (= current-orientation-point
-                           :angle) (assoc :angle {:type :range
-                                                  :min -80
-                                                  :max 80
-                                                  :default -45
-                                                  :ui {:label :string.option/angle}})
+                     (= current-orientation-point
+                        :angle) (assoc :angle {:type :range
+                                               :min -80
+                                               :max 80
+                                               :default -45
+                                               :ui {:label :string.option/angle}})
 
-                        (not= current-orientation-point
-                              :angle) (assoc :offset-x {:type :range
-                                                        :min -45
-                                                        :max 45
-                                                        :default 0
-                                                        :ui {:label :string.option/offset-x
-                                                             :step 0.1}}
-                                             :offset-y {:type :range
-                                                        :min -45
-                                                        :max 45
-                                                        :default 0
-                                                        :ui {:label :string.option/offset-y
-                                                             :step 0.1}}))
-         :line line-style
-         :opposite-line opposite-line-style
-         :outline? options/plain-outline?-option}
-        (ordinary.shared/add-humetty-and-voided context))))
+                     (not= current-orientation-point
+                           :angle) (assoc :offset-x {:type :range
+                                                     :min -45
+                                                     :max 45
+                                                     :default 0
+                                                     :ui {:label :string.option/offset-x
+                                                          :step 0.1}}
+                                          :offset-y {:type :range
+                                                     :min -45
+                                                     :max 45
+                                                     :default 0
+                                                     :ui {:label :string.option/offset-y
+                                                          :step 0.1}}))
+      :line line-style
+      :opposite-line opposite-line-style
+      :outline? options/plain-outline?-option} context)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
@@ -101,7 +101,7 @@
         width (:width environment)
         top-left (:top-left points)
         top-right (:top-right points)
-        left? (case (-> orientation :point)
+        left? (case (:point orientation)
                 :top-left true
                 :angle (-> orientation :angle neg?)
                 false)
@@ -122,8 +122,7 @@
          :as line-diagonal-data} (line/create line
                                               anchor-point diagonal-top
                                               :real-start 0
-                                              :real-end (-> (v/sub intersection-top anchor-point)
-                                                            v/abs)
+                                              :real-end (v/abs (v/sub intersection-top anchor-point))
                                               :flipped? flipped?
                                               :reversed? true
                                               :context context
@@ -134,8 +133,7 @@
                                           anchor-point bottom
                                           :flipped? flipped?
                                           :real-start 0
-                                          :real-end (-> (v/sub bottom anchor-point)
-                                                        v/abs)
+                                          :real-end (v/abs (v/sub bottom anchor-point))
                                           :context context
                                           :environment environment)
         shape (ordinary.shared/adjust-shape

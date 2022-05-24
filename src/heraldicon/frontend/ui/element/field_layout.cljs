@@ -35,8 +35,7 @@
         changes (if (seq changes)
                   changes
                   [:string.submenu-summary/default])]
-    (-> (string/combine ", " changes)
-        string/upper-case-first)))
+    (string/upper-case-first (string/combine ", " changes))))
 
 (macros/reg-event-db :set-field-layout-num-fields-x
   (fn [db [_ path value]]

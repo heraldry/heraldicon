@@ -35,15 +35,15 @@
 
     :spiral-clockwise (let [mod2 (mod n 2)]
                         (cond
-                          (= mod2 1) (+ n 1)
+                          (= mod2 1) (inc n)
                           (and (zero? mod2)
-                               (not (zero? n))) (- n 1)
+                               (not (zero? n))) (dec n)
                           :else n))
 
     :spiral-counter-clockwise (let [mod2 (mod n 2)]
                                 (cond
-                                  (= mod2 1) (- n 1)
-                                  (zero? mod2) (+ n 1)))
+                                  (= mod2 1) (dec n)
+                                  (zero? mod2) (inc n)))
 
     :waves (let [mod4 (mod n 4)]
              (cond

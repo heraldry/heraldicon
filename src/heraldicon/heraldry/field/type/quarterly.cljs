@@ -111,7 +111,7 @@
                (- (/ required-height 2))
                (+ (* offset-y
                      part-height)))
-        parts (->> (for [j (range num-fields-y)
+        parts (vec (for [j (range num-fields-y)
                          i (range num-fields-x)]
                      (let [x1 (+ x0 (* i part-width))
                            x2 (+ x1 part-width)
@@ -208,9 +208,8 @@
                                  "L" [x2 y2]
                                  "L" [x1 y2]
                                  "z"]
-                                [(v/Vector. x1 y1) (v/Vector. x2 y2)]])))
-                   vec)
-        overlap (->> (for [j (range num-fields-y)
+                                [(v/Vector. x1 y1) (v/Vector. x2 y2)]]))))
+        overlap (vec (for [j (range num-fields-y)
                            i (range num-fields-x)]
                        (let [x1 (+ x0 (* i part-width))
                              x2 (+ x1 part-width)
@@ -218,8 +217,7 @@
                              y2 (+ y1 part-height)]
                          [(path/make-path ["M" [x2 y1]
                                            "L" [x2 y2]
-                                           "L" [x1 y2]])]))
-                     vec)
+                                           "L" [x1 y2]])])))
         outline-extra 50
         outlines (when outline?
                    [:g (outline/style context)

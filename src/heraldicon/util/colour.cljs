@@ -144,11 +144,10 @@
    :black "#000000"})
 
 (defn -expand-three-hex [colour]
-  (if (and (-> colour count (= 4))
-           (-> colour first (= "#")))
+  (when (and (-> colour count (= 4))
+             (-> colour first (= "#")))
     (let [[_ r g b] colour]
-      (str "#" r r g g b b))
-    nil))
+      (str "#" r r g g b b))))
 
 (defn -to-hex-2 [v]
   (let [s (.toString v 16)]
@@ -168,9 +167,8 @@
           rv (js/parseInt r)
           gv (js/parseInt g)
           bv (js/parseInt b)]
-      (if (and r g b)
-        (hex-colour rv gv bv)
-        nil))
+      (when (and r g b)
+        (hex-colour rv gv bv)))
     (catch :default _
       nil)))
 

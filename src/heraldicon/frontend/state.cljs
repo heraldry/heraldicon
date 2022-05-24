@@ -58,7 +58,7 @@
                         (seq? %)) seq)
          (filter #(and (map? %)
                        (some-> % :type (isa? :heraldry/motto))
-                       (-> % :ribbon-variant)))
+                       (:ribbon-variant %)))
          (map :ribbon-variant)
          set)))
 
@@ -197,7 +197,7 @@
                                     (when on-success
                                       (on-success (:data query)))
                                     [:done (:data query)])
-      (-> query :state) [:loading nil]
+      (:state query) [:loading nil]
       :else (do
               (go
                 (try

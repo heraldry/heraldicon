@@ -23,7 +23,7 @@
     (for [[group-name & group-choices] choices]
       (if (and (-> group-choices count (= 1))
                (-> group-choices first vector? not))
-        (let [key (-> group-choices first)]
+        (let [key (first group-choices)]
           ^{:key key}
           [:option {:value (if keywordize?
                              (util/keyword->str key)

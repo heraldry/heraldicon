@@ -190,10 +190,10 @@
                            (let [{:keys [name key]} (make-qualifier :highlight percentage)]
                              [name key]))))
                [[:string.charge.tincture-modifier/none :none]]
-               (->> qualifier-percentages
-                    (map (fn [percentage]
-                           (let [{:keys [name key]} (make-qualifier :shadow percentage)]
-                             [name key])))))))
+               (map (fn [percentage]
+                      (let [{:keys [name key]} (make-qualifier :shadow percentage)]
+                        [name key]))
+                    qualifier-percentages))))
 
 (def tincture-modifier-qualifier-for-charge-map
   (options/choices->map tincture-modifier-qualifier-choices))

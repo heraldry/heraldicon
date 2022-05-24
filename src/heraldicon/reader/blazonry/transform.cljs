@@ -204,18 +204,15 @@
 (def max-layout-amount 50)
 
 (defmethod ast->hdn :horizontal-layout [[_ & nodes]]
-  (let [amount (-> (get-child #{:amount} nodes)
-                   ast->hdn)]
+  (let [amount (ast->hdn (get-child #{:amount} nodes))]
     {:num-fields-x (min max-layout-amount amount)}))
 
 (defmethod ast->hdn :vertical-layout-implicit [[_ & nodes]]
-  (let [amount (-> (get-child #{:amount} nodes)
-                   ast->hdn)]
+  (let [amount (ast->hdn (get-child #{:amount} nodes))]
     {:num-fields-y (min max-layout-amount amount)}))
 
 (defmethod ast->hdn :vertical-layout-explicit [[_ & nodes]]
-  (let [amount (-> (get-child #{:amount} nodes)
-                   ast->hdn)]
+  (let [amount (ast->hdn (get-child #{:amount} nodes))]
     {:num-fields-y (min max-layout-amount amount)}))
 
 (defmethod ast->hdn :vertical-layout [[_ node]]
@@ -383,8 +380,7 @@
     (dec reference)))
 
 (defmethod ast->hdn :partition-field [[_ & nodes]]
-  (let [field (-> (get-child #{:field :plain} nodes)
-                  ast->hdn)
+  (let [field (ast->hdn (get-child #{:field :plain} nodes))
         references (->> nodes
                         (filter (type? #{:field-reference}))
                         (map ast->hdn))]
@@ -400,11 +396,11 @@
 (defn sanitize-referenced-fields [fields num-mandatory-fields]
   (let [fields (map-indexed
                 (fn [index {:keys [references field] :as field-data}]
-                  (-> (if (empty? references)
-                        {:references [index]
-                         :field field}
-                        field-data)
-                      (update :references #(->> % set (sort-by field-reference-sort-key))))) fields)]
+                  (update (if (empty? references)
+                            {:references [index]
+                             :field field}
+                            field-data)
+                          :references #(->> % set (sort-by field-reference-sort-key)))) fields)]
     (persistent!
      (reduce
       (fn [result {:keys [references field]}]
@@ -454,24 +450,20 @@
       fields)))
 
 (defn populate-field-references [default-fields reference-map]
-  (-> (loop [fields (vec default-fields)
-             [index & rest] (range (count default-fields))]
-        (if index
-          (let [new-field (-> reference-map
-                              (get index)
-                              first)
-                new-field (if (int? new-field)
-                            {:type :heraldry.field.type/ref
-                             :index new-field}
-                            new-field)]
-            (if new-field
-              (recur
-               (assoc fields index new-field)
-               rest)
-              ;; if the default field already is a reference, then we might have to
-              (recur fields rest)))
-          fields))
-      (resolve-reference-chains reference-map)))
+  (resolve-reference-chains
+   (loop [fields (vec default-fields)
+          [index & rest] (range (count default-fields))]
+     (if index
+       (let [new-field (first (get reference-map index))
+             new-field (if (int? new-field)
+                         {:type :heraldry.field.type/ref
+                          :index new-field}
+                         new-field)]
+         (if new-field
+           (recur (assoc fields index new-field) rest)
+           ;; if the default field already is a reference, then we might have to
+           (recur fields rest)))
+       fields)) reference-map))
 
 (defn reference-to-string [reference]
   (if (keyword? reference)
@@ -485,10 +477,10 @@
                                 (filter (fn [reference]
                                           (or (keyword? reference)
                                               (<= num-expected-field reference)))))
-        multi-references (->> reference-map
-                              (keep (fn [[k v]]
-                                      (when (-> v count (> 1))
-                                        k))))
+        multi-references (keep (fn [[k v]]
+                                 (when (-> v count (> 1))
+                                   k))
+                               reference-map)
         missing-mandatory-references (set/difference
                                       (set (range num-mandatory-fields))
                                       (set (keys reference-map)))
@@ -738,10 +730,8 @@
                                                                            (min max-label-points)))))))
 
 (defmethod ast->hdn :cottise [[_ & nodes]]
-  (let [field (-> (get-child #{:field} nodes)
-                  ast->hdn)]
-    (-> {:field field}
-        (add-lines nodes))))
+  (let [field (ast->hdn (get-child #{:field} nodes))]
+    (add-lines {:field field} nodes)))
 
 (defmethod ast->hdn :cottising [[_ & nodes]]
   (let [[cottise-1
@@ -921,12 +911,12 @@
            (keyword "heraldry.charge.type")))
 
 (defmethod ast->hdn :charge-other [[_ & nodes]]
-  (let [charge-type (-> (get-child #{:charge-other-type} nodes)
-                        ast->hdn)]
-    (-> {:type charge-type
-         :variant {:id "charge:N87wec"
-                   :version 0}}
-        (add-charge-options nodes))))
+  (let [charge-type (ast->hdn (get-child #{:charge-other-type} nodes))]
+    (add-charge-options
+     {:type charge-type
+      :variant {:id "charge:N87wec"
+                :version 0}}
+     nodes)))
 
 (defmethod ast->hdn :charge [[_ & nodes]]
   (-> (get-child #{:charge-standard
@@ -941,86 +931,85 @@
 (defn charge-group [charge amount nodes]
   (let [[arrangement-type
          & arrangement-nodes] (second (get-child #{:charge-arrangement} nodes))]
-    (-> {:charges [charge]}
-        (cond->
-          (nil? arrangement-type) (merge
-                                   {::default-charge-group-amount amount})
-          (= :arrangement/FESSWISE
-             arrangement-type) (merge
-                                {:type :heraldry.charge-group.type/rows
-                                 :spacing (/ 95 amount)
-                                 :strips [{:type :heraldry.charge-group.element.type/strip
-                                           :slots (vec (repeat amount 0))}]})
-          (= :arrangement/PALEWISE
-             arrangement-type) (merge
-                                {:type :heraldry.charge-group.type/columns
-                                 :spacing (/ 95 amount)
-                                 :strips [{:type :heraldry.charge-group.element.type/strip
-                                           :slots (vec (repeat amount 0))}]})
-          (= :arrangement/BENDWISE
-             arrangement-type) (merge
-                                {:type :heraldry.charge-group.type/rows
-                                 :strip-angle 45
-                                 :spacing (/ 120 amount)
-                                 :strips [{:type :heraldry.charge-group.element.type/strip
-                                           :slots (vec (repeat amount 0))}]})
-          (= :arrangement/BENDWISE-SINISTER
-             arrangement-type) (merge
-                                {:type :heraldry.charge-group.type/rows
-                                 :strip-angle -45
-                                 :spacing (/ 120 amount)
-                                 :strips [{:type :heraldry.charge-group.element.type/strip
-                                           :slots (vec (repeat amount 0))}]})
-          (= :arrangement/CHEVRONWISE
-             arrangement-type) (merge
-                                {:type :heraldry.charge-group.type/rows
-                                 :spacing (/ 90 amount)
-                                 :strips (->> (range (-> amount
-                                                         inc
-                                                         (/ 2)))
-                                              (map (fn [index]
-                                                     {:type :heraldry.charge-group.element.type/strip
-                                                      :stretch (if (and (zero? index)
-                                                                        (even? amount))
-                                                                 1
-                                                                 (if (and (pos? index)
-                                                                          (even? amount))
-                                                                   (+ 1 (/ (inc index)
-                                                                           index))
-                                                                   2))
-                                                      :slots (if (zero? index)
-                                                               (if (odd? amount)
-                                                                 [0]
-                                                                 [0 0])
-                                                               (-> (concat [0]
-                                                                           (repeat (dec index) nil)
-                                                                           [0])
-                                                                   vec))}))
-                                              vec)})
-          (= :arrangement/IN-ORLE
-             arrangement-type) (merge
-                                {:type :heraldry.charge-group.type/in-orle
-                                 :slots (vec (repeat amount 0))})
-          (= :arrangement/IN-ANNULLO
-             arrangement-type) (merge
-                                {:type :heraldry.charge-group.type/arc
-                                 :slots (vec (repeat amount 0))})
-          (= :charge-grid
-             arrangement-type) (merge
-                                (let [amounts (->> arrangement-nodes
-                                                   (filter (type? #{:amount}))
-                                                   (map #(-> %
-                                                             ast->hdn
-                                                             (min max-charge-group-columns)))
-                                                   (take max-charge-group-rows))
-                                      width (apply max amounts)
-                                      height (count amounts)]
-                                  {:type :heraldry.charge-group.type/rows
-                                   :spacing (/ 95 (max width height))
-                                   :strips (mapv (fn [amount]
-                                                   {:type :heraldry.charge-group.element.type/strip
-                                                    :slots (vec (repeat amount 0))})
-                                                 amounts)}))))))
+    (cond-> {:charges [charge]}
+      (nil? arrangement-type) (merge
+                               {::default-charge-group-amount amount})
+      (= :arrangement/FESSWISE
+         arrangement-type) (merge
+                            {:type :heraldry.charge-group.type/rows
+                             :spacing (/ 95 amount)
+                             :strips [{:type :heraldry.charge-group.element.type/strip
+                                       :slots (vec (repeat amount 0))}]})
+      (= :arrangement/PALEWISE
+         arrangement-type) (merge
+                            {:type :heraldry.charge-group.type/columns
+                             :spacing (/ 95 amount)
+                             :strips [{:type :heraldry.charge-group.element.type/strip
+                                       :slots (vec (repeat amount 0))}]})
+      (= :arrangement/BENDWISE
+         arrangement-type) (merge
+                            {:type :heraldry.charge-group.type/rows
+                             :strip-angle 45
+                             :spacing (/ 120 amount)
+                             :strips [{:type :heraldry.charge-group.element.type/strip
+                                       :slots (vec (repeat amount 0))}]})
+      (= :arrangement/BENDWISE-SINISTER
+         arrangement-type) (merge
+                            {:type :heraldry.charge-group.type/rows
+                             :strip-angle -45
+                             :spacing (/ 120 amount)
+                             :strips [{:type :heraldry.charge-group.element.type/strip
+                                       :slots (vec (repeat amount 0))}]})
+      (= :arrangement/CHEVRONWISE
+         arrangement-type) (merge
+                            {:type :heraldry.charge-group.type/rows
+                             :spacing (/ 90 amount)
+                             :strips (->> (range (-> amount
+                                                     inc
+                                                     (/ 2)))
+                                          (map (fn [index]
+                                                 {:type :heraldry.charge-group.element.type/strip
+                                                  :stretch (if (and (zero? index)
+                                                                    (even? amount))
+                                                             1
+                                                             (if (and (pos? index)
+                                                                      (even? amount))
+                                                               (+ 1 (/ (inc index)
+                                                                       index))
+                                                               2))
+                                                  :slots (if (zero? index)
+                                                           (if (odd? amount)
+                                                             [0]
+                                                             [0 0])
+                                                           (-> (concat [0]
+                                                                       (repeat (dec index) nil)
+                                                                       [0])
+                                                               vec))}))
+                                          vec)})
+      (= :arrangement/IN-ORLE
+         arrangement-type) (merge
+                            {:type :heraldry.charge-group.type/in-orle
+                             :slots (vec (repeat amount 0))})
+      (= :arrangement/IN-ANNULLO
+         arrangement-type) (merge
+                            {:type :heraldry.charge-group.type/arc
+                             :slots (vec (repeat amount 0))})
+      (= :charge-grid
+         arrangement-type) (merge
+                            (let [amounts (->> arrangement-nodes
+                                               (filter (type? #{:amount}))
+                                               (map #(-> %
+                                                         ast->hdn
+                                                         (min max-charge-group-columns)))
+                                               (take max-charge-group-rows))
+                                  width (apply max amounts)
+                                  height (count amounts)]
+                              {:type :heraldry.charge-group.type/rows
+                               :spacing (/ 95 (max width height))
+                               :strips (mapv (fn [amount]
+                                               {:type :heraldry.charge-group.element.type/strip
+                                                :slots (vec (repeat amount 0))})
+                                             amounts)})))))
 
 (def tincture-modifier-type-map
   (->> attributes/tincture-modifier-map
@@ -1033,19 +1022,15 @@
        (into {})))
 
 (defn get-tincture-modifier-type [nodes]
-  (let [node-type (->> nodes
-                       (get-child tincture-modifier-type-map)
-                       first)]
+  (let [node-type (first (get-child tincture-modifier-type-map nodes))]
     (get tincture-modifier-type-map node-type)))
 
 (defmethod ast->hdn :tincture-modifier-type [[_ & nodes]]
   (get-tincture-modifier-type nodes))
 
 (defmethod ast->hdn :tincture-modifier [[_ & nodes]]
-  (let [modifier-type (-> (get-child #{:tincture-modifier-type} nodes)
-                          ast->hdn)
-        tincture (-> (get-child #{:tincture} nodes)
-                     ast->hdn)]
+  (let [modifier-type (ast->hdn (get-child #{:tincture-modifier-type} nodes))
+        tincture (ast->hdn (get-child #{:tincture} nodes))]
     [modifier-type tincture]))
 
 (defn add-tincture-modifiers [hdn nodes]

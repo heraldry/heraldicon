@@ -14,10 +14,8 @@
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (assoc options
            key
-           {:line (-> line-style
-                      (assoc-in [:ui :label] :string.entity/line))
-            :opposite-line (-> opposite-line-style
-                               (assoc-in [:ui :label] :string.entity/opposite-line))
+           {:line (assoc-in line-style [:ui :label] :string.entity/line)
+            :opposite-line (assoc-in opposite-line-style [:ui :label] :string.entity/opposite-line)
             :distance {:type :range
                        :min -10
                        :max 20
@@ -38,12 +36,15 @@
 (defn add-cottising [context num]
   (let [cottising-context (c/++ context :cottising)]
     (cond-> {}
-      (>= num 1) (-> (add-cottise-options :cottise-1 (c/++ cottising-context :cottise-1))
-                     (add-cottise-options :cottise-2 (c/++ cottising-context :cottise-2)))
-      (>= num 2) (-> (add-cottise-options :cottise-opposite-1 (c/++ cottising-context :cottise-opposite-1))
-                     (add-cottise-options :cottise-opposite-2 (c/++ cottising-context :cottise-opposite-2)))
-      (>= num 3) (-> (add-cottise-options :cottise-extra-1 (c/++ cottising-context :cottise-extra-1))
-                     (add-cottise-options :cottise-extra-2 (c/++ cottising-context :cottise-extra-2))))))
+      (>= num 1) (->
+                   (add-cottise-options :cottise-1 (c/++ cottising-context :cottise-1))
+                   (add-cottise-options :cottise-2 (c/++ cottising-context :cottise-2)))
+      (>= num 2) (->
+                   (add-cottise-options :cottise-opposite-1 (c/++ cottising-context :cottise-opposite-1))
+                   (add-cottise-options :cottise-opposite-2 (c/++ cottising-context :cottise-opposite-2)))
+      (>= num 3) (->
+                   (add-cottise-options :cottise-extra-1 (c/++ cottising-context :cottise-extra-1))
+                   (add-cottise-options :cottise-extra-2 (c/++ cottising-context :cottise-extra-2))))))
 
 (defn render-fess-cottise [{:keys [environment] :as context}
                            cottise-2-key next-cottise-key

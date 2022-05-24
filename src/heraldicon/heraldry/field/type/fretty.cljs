@@ -198,19 +198,16 @@
         bottom-right (:bottom-right points)
         width (- (:x bottom-right)
                  (:x top-left))
-        unstretched-part-width (-> width
-                                   (/ num-fields-x))
-        part-width (-> unstretched-part-width
-                       (* stretch-x)
-                       (* 0.7071067811865476))
+        unstretched-part-width (/ width num-fields-x)
+        part-width (* unstretched-part-width
+                      stretch-x
+                      0.7071067811865476)
         height (- (:y bottom-right)
                   (:y top-left))
         unstretched-part-height (if raw-num-fields-y
-                                  (-> height
-                                      (/ num-fields-y))
+                                  (/ height num-fields-y)
                                   part-width)
-        part-height (-> unstretched-part-height
-                        (* stretch-y))
+        part-height (* unstretched-part-height stretch-y)
         middle-x (/ width 2)
         middle-y (/ height 2)
         shift-x (- middle-x

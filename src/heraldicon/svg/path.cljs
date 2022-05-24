@@ -62,7 +62,7 @@
   (str "c" (v/->str (v/sub cp1 p1)) "," (v/->str (v/sub cp2 p1)) "," (v/->str (v/sub p2 p1))))
 
 (defn curve-to-relative [curve]
-  (let [start (first (first curve))]
+  (let [start (ffirst curve)]
     (s/join "" (concat [(move-to start)]
                        (map bezier-to-relative curve)))))
 
@@ -214,8 +214,8 @@
                                            :start-offset 0
                                            :precision precision)
                   sample-total (count path-points)
-                  corners (-> (find-corners path-points precision 3)
-                              (add-max-radius-to-corners (count path-points)))
+                  corners (add-max-radius-to-corners (find-corners path-points precision 3)
+                                                     (count path-points))
                   diff-index (-> corner-radius
                                  (/ precision)
                                  Math/floor)]
@@ -239,20 +239,20 @@
                             end-p2 (get path-points (-> end-index
                                                         dec
                                                         (mod sample-total)))
-                            patch-path (-> [["M" start-p1]
-                                            ["L" start-p2]
-                                            ["C"
-                                             (-> corner-p
-                                                 (v/sub start-p2)
-                                                 (v/mul 0.5)
-                                                 (v/add start-p2))
-                                             (-> corner-p
-                                                 (v/sub end-p2)
-                                                 (v/mul 0.5)
-                                                 (v/add end-p2))
-                                             end-p2]
-                                            ["L" end-p1]]
-                                           make-path)
+                            patch-path (make-path
+                                        [["M" start-p1]
+                                         ["L" start-p2]
+                                         ["C"
+                                          (-> corner-p
+                                              (v/sub start-p2)
+                                              (v/mul 0.5)
+                                              (v/add start-p2))
+                                          (-> corner-p
+                                              (v/sub end-p2)
+                                              (v/mul 0.5)
+                                              (v/add end-p2))
+                                          end-p2]
+                                         ["L" end-p1]])
                             rounded-corner-points (sample-path patch-path
                                                                :precision precision)
                             new-last-index (inc end-index)

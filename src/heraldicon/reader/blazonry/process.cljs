@@ -176,11 +176,11 @@
                                                  :default-size 20)
       :pile (arrange-ordinaries-in-one-dimension
              hdn
-             (->> indexed-components
-                  (map (fn [[index component]]
-                         [index (-> component
-                                    (assoc-in [:orientation :point] :angle)
-                                    (assoc-in [:orientation :angle] 0))])))
+             (map (fn [[index component]]
+                    [index (-> component
+                               (assoc-in [:orientation :point] :angle)
+                               (assoc-in [:orientation :angle] 0))])
+                  indexed-components)
              :offset-keyword :offset-x
              :spacing 0
              :default-size 33.333333)
@@ -190,35 +190,35 @@
                                                  :default-size 15)
       :bend (arrange-ordinaries-in-one-dimension
              hdn
-             (->> indexed-components
-                  (map (fn [[index component]]
-                         [index (-> component
-                                    (assoc-in [:orientation :point] :angle)
-                                    (assoc-in [:orientation :angle] 45))])))
+             (map (fn [[index component]]
+                    [index (-> component
+                               (assoc-in [:orientation :point] :angle)
+                               (assoc-in [:orientation :angle] 45))])
+                  indexed-components)
 
              :offset-keyword :offset-y
              :spacing 15
              :default-size 15)
       :bend-sinister (arrange-ordinaries-in-one-dimension
                       hdn
-                      (->> indexed-components
-                           (map (fn [[index component]]
-                                  [index (-> component
-                                             (assoc-in [:orientation :point] :angle)
-                                             (assoc-in [:orientation :angle] 45))])))
+                      (map (fn [[index component]]
+                             [index (-> component
+                                        (assoc-in [:orientation :point] :angle)
+                                        (assoc-in [:orientation :angle] 45))])
+                           indexed-components)
 
                       :offset-keyword :offset-y
                       :spacing 15
                       :default-size 15)
       :chevron (arrange-ordinaries-in-one-dimension
                 hdn
-                (->> indexed-components
-                     (map (fn [[index component]]
-                            [index (-> component
-                                       (assoc-in [:orientation :point] :angle)
-                                       (assoc-in [:orientation :angle] 45)
-                                       (assoc-in [:origin :point] :angle)
-                                       (assoc-in [:origin :angle] 0))])))
+                (map (fn [[index component]]
+                       [index (-> component
+                                  (assoc-in [:orientation :point] :angle)
+                                  (assoc-in [:orientation :angle] 45)
+                                  (assoc-in [:origin :point] :angle)
+                                  (assoc-in [:origin :angle] 0))])
+                     indexed-components)
                 :offset-keyword :offset-y
                 :spacing 15
                 :default-size 15)
@@ -350,18 +350,19 @@
                            data)
                          data))
                      hdn)
-        root-field-without-components (-> (walk/prewalk
-                                           (fn [data]
-                                             (if (map? data)
-                                               (if (:heraldicon.reader.blazonry.transform/tincture-field-reference data)
-                                                  ;; if any of the subfields of the root field reference the field,
-                                                  ;; then that must be considered :void for this step, so we don't
-                                                  ;; get an infinite loop
-                                                 :void
-                                                 (dissoc data :components))
-                                               data))
-                                           first-phase)
-                                          (select-keys [:type :fields :tincture]))]
+        root-field-without-components (select-keys
+                                       (walk/prewalk
+                                        (fn [data]
+                                          (if (map? data)
+                                            (if (:heraldicon.reader.blazonry.transform/tincture-field-reference data)
+                                              ;; if any of the subfields of the root field reference the field,
+                                              ;; then that must be considered :void for this step, so we don't
+                                              ;; get an infinite loop
+                                              :void
+                                              (dissoc data :components))
+                                            data))
+                                        first-phase)
+                                       [:type :fields :tincture])]
     (walk/prewalk
      (fn [data]
        (if (map? data)

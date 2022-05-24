@@ -64,12 +64,12 @@
        :manual-blazon options/manual-blazon}))
 
 (defn shift-environment [environment point]
-  (-> environment
-      (update :points (fn [points]
-                        (->> points
-                             (map (fn [[k v]]
-                                    [k (v/add v point)]))
-                             (into {}))))))
+  (update environment
+          :points (fn [points]
+                    (into {}
+                          (map (fn [[k v]]
+                                 [k (v/add v point)]))
+                          points))))
 
 (defmethod interface/render-component :heraldry/semy [context]
   (let [environment (:environment context)
@@ -89,20 +89,16 @@
         stretch-x (or stretch-x 1)
         width (- (:x bottom-right)
                  (:x top-left))
-        unstretched-part-width (-> width
-                                   (/ num-fields-x))
-        part-width (-> unstretched-part-width
-                       (* stretch-x))
+        unstretched-part-width (/ width num-fields-x)
+        part-width (* unstretched-part-width stretch-x)
         offset-y (or offset-y 0)
         stretch-y (or stretch-y 1)
         height (- (:y bottom-right)
                   (:y top-left))
         unstretched-part-height (if raw-num-fields-y
-                                  (-> height
-                                      (/ num-fields-y))
+                                  (/ height num-fields-y)
                                   part-width)
-        part-height (-> unstretched-part-height
-                        (* stretch-y))
+        part-height (* unstretched-part-height stretch-y)
         middle-x (/ width 2)
         middle-y (/ height 2)
         shift-x (- middle-x

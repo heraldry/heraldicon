@@ -25,8 +25,7 @@
                  (when (and (-> line :fimbriation :mode)
                             (-> line :fimbriation :mode (not= :none)))
                    :string.submenu-summary/fimbriated)]]
-    (-> (string/combine ", " changes)
-        string/upper-case-first)))
+    (string/upper-case-first (string/combine ", " changes))))
 
 (defn line-submenu [context]
   (when-let [options (interface/get-relevant-options context)]

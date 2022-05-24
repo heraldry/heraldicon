@@ -28,9 +28,7 @@
                  (when (some #(options/changed? % fimbriation options)
                              [:alignment :thickness-1 :thickness-2])
                    :string.submenu-summary/adjusted)]]
-
-    (-> (string/combine ", " changes)
-        string/upper-case-first)))
+    (string/upper-case-first (string/combine ", " changes))))
 
 (defn fimbriation-submenu [context]
   (when-let [options (interface/get-relevant-options context)]

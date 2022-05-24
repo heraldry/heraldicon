@@ -16,8 +16,7 @@
                  (if (= license :none)
                    :string.attribution/no-license
                    (attribution/license-display-name license license-version))]]
-    (-> (string/combine ", " changes)
-        string/upper-case-first)))
+    (string/upper-case-first (string/combine ", " changes))))
 
 (macros/reg-event-db :merge-attribution
   (fn [db [_ path data]]

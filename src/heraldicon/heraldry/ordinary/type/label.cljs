@@ -150,16 +150,16 @@
         first-right (v/Vector. (+ (:x right) 20) row1)
         second-right (v/Vector. (+ (:x right) 20) row2)
         dynamic-points (relative-points
-                        (apply concat (-> [[(v/Vector. (- label-end extra) row2)
-                                            (v/Vector. (* 2 extra) point-height)
-                                            (v/Vector. (- (+ point-width (* 2 extra))) 0)
-                                            (v/Vector. (* 2 extra) (- point-height))]]
-                                          (into
-                                           (repeat (dec num-points)
-                                                   [(v/Vector. (- spacing) 0)
-                                                    (v/Vector. (* 2 extra) point-height)
-                                                    (v/Vector. (- (+ point-width (* 2 extra))) 0)
-                                                    (v/Vector. (* 2 extra) (- point-height))])))))
+                        (apply concat
+                               [(v/Vector. (- label-end extra) row2)
+                                (v/Vector. (* 2 extra) point-height)
+                                (v/Vector. (- (+ point-width (* 2 extra))) 0)
+                                (v/Vector. (* 2 extra) (- point-height))]
+                               (repeat (dec num-points)
+                                       [(v/Vector. (- spacing) 0)
+                                        (v/Vector. (* 2 extra) point-height)
+                                        (v/Vector. (- (+ point-width (* 2 extra))) 0)
+                                        (v/Vector. (* 2 extra) (- point-height))])))
         projected-extra (-> extra
                             (/ point-height)
                             (* 2)
@@ -216,14 +216,12 @@
         line {:type :straight
               :fimbriation fimbriation}
         anchor-point (position/calculate anchor environment :fess)
-        band-height (-> thickness
-                        ((math/percent-of (:width environment))))
+        band-height ((math/percent-of (:width environment)) thickness)
         anchor-point (case (:alignment anchor)
                        :left (v/add anchor-point (v/Vector. 0 (/ band-height 2)))
                        :right (v/sub anchor-point (v/Vector. 0 (/ band-height 2)))
                        anchor-point)
-        point-width (-> size
-                        ((math/percent-of (:width environment))))
+        point-width ((math/percent-of (:width environment)) size)
         point-height (* point-width stretch)
         width (:width environment)
         {:keys [lines

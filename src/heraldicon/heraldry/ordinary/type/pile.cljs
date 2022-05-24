@@ -91,87 +91,87 @@
         current-size-mode (options/get-value
                            (interface/get-raw-data (c/++ context :geometry :size-mode))
                            size-mode-option)]
-    (-> {:anchor {:point anchor-point-option
-                  :alignment {:type :choice
-                              :choices position/alignment-choices
-                              :default :middle
-                              :ui {:label :string.option/alignment
-                                   :form-type :radio-select}}
-                  :offset-x {:type :range
-                             :min -50
-                             :max 50
-                             :default 0
-                             :ui {:label :string.option/offset-x
-                                  :step 0.1}}
-                  :offset-y {:type :range
-                             :min -75
-                             :max 75
-                             :default 0
-                             :ui {:label :string.option/offset-y
-                                  :step 0.1}}
-                  :ui {:label :string.option/anchor
-                       :form-type :position}}
-         :orientation (cond-> {:point orientation-point-option
-                               :ui {:label :string.option/orientation
-                                    :form-type :position}}
+    (ordinary.shared/add-humetty-and-voided
+     {:anchor {:point anchor-point-option
+               :alignment {:type :choice
+                           :choices position/alignment-choices
+                           :default :middle
+                           :ui {:label :string.option/alignment
+                                :form-type :radio-select}}
+               :offset-x {:type :range
+                          :min -50
+                          :max 50
+                          :default 0
+                          :ui {:label :string.option/offset-x
+                               :step 0.1}}
+               :offset-y {:type :range
+                          :min -75
+                          :max 75
+                          :default 0
+                          :ui {:label :string.option/offset-y
+                               :step 0.1}}
+               :ui {:label :string.option/anchor
+                    :form-type :position}}
+      :orientation (cond-> {:point orientation-point-option
+                            :ui {:label :string.option/orientation
+                                 :form-type :position}}
 
-                        (= current-orientation-point
-                           :angle) (assoc :angle {:type :range
-                                                  :min (cond
-                                                         (#{:top-left
-                                                            :top-right
-                                                            :bottom-left
-                                                            :bottom-right} current-anchor-point) 0
-                                                         :else -90)
-                                                  :max 90
-                                                  :default (cond
-                                                             (#{:top-left
-                                                                :top-right
-                                                                :bottom-left
-                                                                :bottom-right} current-anchor-point) 45
-                                                             :else 0)
-                                                  :ui {:label :string.option/angle}})
+                     (= current-orientation-point
+                        :angle) (assoc :angle {:type :range
+                                               :min (cond
+                                                      (#{:top-left
+                                                         :top-right
+                                                         :bottom-left
+                                                         :bottom-right} current-anchor-point) 0
+                                                      :else -90)
+                                               :max 90
+                                               :default (cond
+                                                          (#{:top-left
+                                                             :top-right
+                                                             :bottom-left
+                                                             :bottom-right} current-anchor-point) 45
+                                                          :else 0)
+                                               :ui {:label :string.option/angle}})
 
-                        (not= current-orientation-point
-                              :angle) (assoc :offset-x {:type :range
-                                                        :min -50
-                                                        :max 50
-                                                        :default 0
-                                                        :ui {:label :string.option/offset-x
-                                                             :step 0.1}}
-                                             :offset-y {:type :range
-                                                        :min -75
-                                                        :max 75
-                                                        :default 0
-                                                        :ui {:label :string.option/offset-y
-                                                             :step 0.1}}
-                                             :type {:type :choice
-                                                    :choices orientation-type-choices
-                                                    :default :edge
-                                                    :ui {:label :string.render-options/mode
-                                                         :form-type :radio-select}}))
-         :line line-style
-         :opposite-line opposite-line-style
-         :geometry {:size-mode size-mode-option
-                    :size {:type :range
-                           :min 5
-                           :max 120
-                           :default (case current-size-mode
-                                      :thickness 75
-                                      30)
-                           :ui {:label :string.option/size
-                                :step 0.1}}
-                    :stretch {:type :range
-                              :min 0.33
-                              :max 2
-                              :default 0.85
-                              :ui {:label :string.option/stretch
-                                   :step 0.01}}
-                    :ui {:label :string.option/geometry
-                         :form-type :geometry}}
-         :outline? options/plain-outline?-option
-         :cottising (cottising/add-cottising context 1)}
-        (ordinary.shared/add-humetty-and-voided context))))
+                     (not= current-orientation-point
+                           :angle) (assoc :offset-x {:type :range
+                                                     :min -50
+                                                     :max 50
+                                                     :default 0
+                                                     :ui {:label :string.option/offset-x
+                                                          :step 0.1}}
+                                          :offset-y {:type :range
+                                                     :min -75
+                                                     :max 75
+                                                     :default 0
+                                                     :ui {:label :string.option/offset-y
+                                                          :step 0.1}}
+                                          :type {:type :choice
+                                                 :choices orientation-type-choices
+                                                 :default :edge
+                                                 :ui {:label :string.render-options/mode
+                                                      :form-type :radio-select}}))
+      :line line-style
+      :opposite-line opposite-line-style
+      :geometry {:size-mode size-mode-option
+                 :size {:type :range
+                        :min 5
+                        :max 120
+                        :default (case current-size-mode
+                                   :thickness 75
+                                   30)
+                        :ui {:label :string.option/size
+                             :step 0.1}}
+                 :stretch {:type :range
+                           :min 0.33
+                           :max 2
+                           :default 0.85
+                           :ui {:label :string.option/stretch
+                                :step 0.01}}
+                 :ui {:label :string.option/geometry
+                      :form-type :geometry}}
+      :outline? options/plain-outline?-option
+      :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]
@@ -217,10 +217,8 @@
         pile-angle (v/angle-to-point point anchor-point)
         {left-point :left
          right-point :right} (pile/diagonals anchor-point point thickness)
-        intersection-left (-> (v/environment-intersections point left-point environment)
-                              last)
-        intersection-right (-> (v/environment-intersections point right-point environment)
-                               last)
+        intersection-left (last (v/environment-intersections point left-point environment))
+        intersection-right (last (v/environment-intersections point right-point environment))
         joint-angle (v/angle-between-vectors (v/sub intersection-left point)
                                              (v/sub intersection-right point))
         end-left (-> intersection-left

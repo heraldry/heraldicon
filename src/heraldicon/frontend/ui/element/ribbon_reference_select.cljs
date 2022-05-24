@@ -38,9 +38,8 @@
                (rf/dispatch [:set-ribbon-data
                              (conj parent-path :ribbon)
                              (-> ribbon-data :data :ribbon)])))]
-      (-> db
-          (assoc-in path {:id ribbon-id
-                          :version ribbon-version})))))
+      (assoc-in db path {:id ribbon-id
+                         :version ribbon-version}))))
 
 (defn choice-preview [context]
   (let [ribbon (interface/get-raw-data context)

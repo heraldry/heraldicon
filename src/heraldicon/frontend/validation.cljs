@@ -109,20 +109,20 @@
                                                 tincture/kind)
             fimbriation-tincture-2-kind (some-> fimbriation-tincture-2
                                                 tincture/kind)
-            field-tincture-kinds (->> field-tinctures
-                                      (map tincture/kind)
-                                      (into #{}))]
+            field-tincture-kinds (into #{}
+                                       (map tincture/kind)
+                                       field-tinctures)]
         [{:fimbriated? fimbriation-tincture-1}
          (cond-> []
-           main-check (conj (-> main-check
-                                (update :message (fn [message]
-                                                   (string/str-tr
-                                                    (case which
-                                                      :line (string/str-tr :string.entity/main-line ": ")
-                                                      :opposite-line (string/str-tr :string.entity/opposite-line ": ")
-                                                      :extra-line (string/str-tr :string.entity/extra-line ": ")
-                                                      nil)
-                                                    message)))))
+           main-check (conj (update main-check
+                                    :message (fn [message]
+                                               (string/str-tr
+                                                (case which
+                                                  :line (string/str-tr :string.entity/main-line ": ")
+                                                  :opposite-line (string/str-tr :string.entity/opposite-line ": ")
+                                                  :extra-line (string/str-tr :string.entity/extra-line ": ")
+                                                  nil)
+                                                message))))
 
            (= fimbriation-tincture-1-kind
               fimbriation-tincture-2-kind
@@ -174,10 +174,9 @@
         ;; each need to be validated on their own then, the main one doesn't matter anymore;
         ;; if on other other hand none of the line ones had fimbriation, then only the main
         ;; check is relevant
-        validations (->> (if fimbriated?
-                           other-validations
-                           [main-validation])
-                         (map second))]
+        validations (map second (if fimbriated?
+                                  other-validations
+                                  [main-validation]))]
     (->> validations
          (apply concat)
          (filter identity)
@@ -211,10 +210,9 @@
         ;; each need to be validated on their own then, the main one doesn't matter anymore;
         ;; if on other other hand none of the line ones had fimbriation, then only the main
         ;; check is relevant
-        validations (->> (if fimbriated?
-                           other-validations
-                           [main-validation])
-                         (map second))]
+        validations (map second (if fimbriated?
+                                  other-validations
+                                  [main-validation]))]
     (->> validations
          (apply concat)
          (filter identity)

@@ -57,7 +57,7 @@
 
 (defn normal ^Vector [^Vector v]
   (let [d (abs v)]
-    (if (> d 0)
+    (if (pos? d)
       (div v d)
       v)))
 
@@ -94,18 +94,18 @@
       (-> end1
           (add start2)
           (div 2))
-      (div (Vector. (-> (* (- (* x1 y2)
-                              (* y1 x2))
-                           (- x3 x4))
-                        (- (* (- x1 x2)
-                              (- (* x3 y4)
-                                 (* y3 x4)))))
-                    (-> (* (- (* x1 y2)
-                              (* y1 x2))
-                           (- y3 y4))
-                        (- (* (- y1 y2)
-                              (- (* x3 y4)
-                                 (* y3 x4))))))
+      (div (Vector. (- (* (- (* x1 y2)
+                             (* y1 x2))
+                          (- x3 x4))
+                       (* (- x1 x2)
+                          (- (* x3 y4)
+                             (* y3 x4))))
+                    (- (* (- (* x1 y2)
+                             (* y1 x2))
+                          (- y3 y4))
+                       (* (- y1 y2)
+                          (- (* x3 y4)
+                             (* y3 x4)))))
            D))))
 
 (defn tangent-point ^Vector [^Vector {cx :x cy :y}
@@ -121,10 +121,12 @@
         dir-factor 1]
     (when (>= D 0)
       (let [sqrtD (Math/sqrt D)]
-        (Vector. (-> (+ (* r2 dx) (* dir-factor r dy sqrtD))
+        (Vector. (-> (+ (* r2 dx)
+                        (* dir-factor r dy sqrtD))
                      (/ sum-d2)
                      (+ cx))
-                 (-> (- (* r2 dy) (* dir-factor r dx sqrtD))
+                 (-> (- (* r2 dy)
+                        (* dir-factor r dx sqrtD))
                      (/ sum-d2)
                      (+ cy)))))))
 
@@ -184,9 +186,10 @@
        (map (comp first second))))
 
 (defn- prune-point [intersections point]
-  (->> intersections
-       (filter #(not= (select-keys % [:x :y])
-                      (select-keys point [:x :y])))))
+  (let [check (select-keys point [:x :y])]
+    (filter #(not= (select-keys % [:x :y])
+                   check)
+            intersections)))
 
 (defn- -path-intersection [path1 path2]
   (let [p1 (new Path path1)
@@ -257,8 +260,8 @@
                            (map-indexed (fn [parent-idx shape]
                                           (into []
                                                 (mapcat (fn [path]
-                                                          (->> (path-intersection line-path path)
-                                                               (map #(assoc % :parent-index parent-idx)))))
+                                                          (map #(assoc % :parent-index parent-idx)
+                                                               (path-intersection line-path path))))
                                                 (:paths shape))))
                            (apply concat)
                            (filter #(inside-environment? % environment))
@@ -278,8 +281,7 @@
         select-fn (if anchor-inside?
                     first
                     second)]
-    (-> intersections
-        (->> (filter (comp pos? :t1)))
+    (-> (filter (comp pos? :t1) intersections)
         select-fn
         (select-keys [:x :y :t1 :t2]))))
 
@@ -291,8 +293,7 @@
 (defn angle-between-vectors ^js/Number [^Vector v1 ^Vector v2]
   (let [a1 (angle-to-point zero v1)
         a2 (angle-to-point zero v2)
-        angle (-> (- a1 a2)
-                  angle/normalize)]
+        angle (angle/normalize (- a1 a2))]
     (if (> angle 180)
       (- angle 180)
       angle)))

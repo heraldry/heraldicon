@@ -51,8 +51,7 @@
                                                        @(rf/subscribe [:get (vec (concat path relative-path))])]))
                                                (into {}))})
              interface/options)
-         (-> @(rf/subscribe [::options (pop path)])
-             (get (last path))))))))
+         (get @(rf/subscribe [::options (pop path)]) (last path)))))))
 
 (rf/reg-sub ::sanitized-data
   (fn [[_ path] _]

@@ -46,12 +46,11 @@
         flag-tail-tongue (interface/render-option :flag-tail-tongue context)
         shield (escutcheon/field escutcheon flag-width flag-height flag-swallow-tail
                                  flag-tail-point-height flag-tail-tongue)
-        environment (-> (environment/transform-to-width shield width)
-                        (cond->
-                          squiggly? (update-in [:shape :paths]
-                                               #(into []
-                                                      (map squiggly/squiggly-path)
-                                                      %))))
+        environment (cond-> (environment/transform-to-width shield width)
+                      squiggly? (update-in [:shape :paths]
+                                           #(into []
+                                                  (map squiggly/squiggly-path)
+                                                  %)))
         mask-id (uid/generate "mask")
         texture-id (uid/generate "texture")
         shiny-id (uid/generate "shiny")
@@ -154,12 +153,11 @@
       {:width 0
        :height 0
        :result nil}
-      (let [gap-part-fn (fn [n] (+ 2 (* 2 (- n 1))))
+      (let [gap-part-fn (fn [n] (+ 2 (* 2 (dec n))))
             gap-part (gap-part-fn num-helms)
             helm-width (/ (* gap-part width)
-                          (+ (* (+ gap-part 1)
-                                num-helms)
-                             1))
+                          (inc (* (inc gap-part)
+                                  num-helms)))
             helm-height (* 2 helm-width)
             total-height helm-height
             gap (/ helm-width gap-part)
@@ -413,9 +411,9 @@
             offset-y (interface/get-sanitized-data (c/++ context :anchor :offset-y))
             size (interface/get-sanitized-data (c/++ context :geometry :size))
             thickness (interface/get-sanitized-data (c/++ context :ribbon :thickness))
-            position (-> (-> environment :points (get anchor-point))
-                         (v/add (v/Vector. ((math/percent-of width) offset-x)
-                                           (- ((math/percent-of height) offset-y)))))
+            position (v/add (-> environment :points (get anchor-point))
+                            (v/Vector. ((math/percent-of width) offset-x)
+                                       (- ((math/percent-of height) offset-y))))
             ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
             ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
             ;; height; could perhaps be a subscription or the ribbon function can provide it?
@@ -639,10 +637,12 @@
                                             :max-aspect-ratio 1.5)
         margin 10
         font-size 20
-        result-width (-> achievement-width (+ (* 2 margin)))
-        result-height (-> achievement-height (+ (* 2 margin)) (+ 20)
-                          (cond-> short-url
-                            (+ font-size margin)))
+        result-width (+ achievement-width (* 2 margin))
+        result-height (-> (+ achievement-height
+                             (* 2 margin)
+                             20)
+                          (cond->
+                            short-url (+ font-size margin)))
 
         [document-width
          document-height
