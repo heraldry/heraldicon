@@ -6,7 +6,7 @@
    [heraldicon.svg.path :as path]
    [heraldicon.util.random :as random]))
 
-(defn jiggle [[previous current _]]
+(defn- jiggle [[previous current _]]
   (let [dist (-> current
                  (v/sub previous)
                  (v/abs))
@@ -17,22 +17,21 @@
               jiggle-radius)]
     (v/add current (v/Vector. dx dy))))
 
-(defn -squiggly-path [path & {:keys [seed]}]
-  (random/seed (if seed
-                 [seed path]
-                 path))
-  (let [points (-> path
-                   path/parse-path
-                   (path/points :length))
-        points (vec (concat [(first points)]
-                            (map jiggle (partition 3 1 points))
-                            [(last points)]))
-        curve (catmullrom/catmullrom points)
-        new-path (path/curve-to-relative curve)]
-    new-path))
-
-(def squiggly-path
-  (memoize -squiggly-path))
+(def ^:private squiggly-path
+  (memoize
+   (fn squiggly-path [path & {:keys [seed]}]
+     (random/seed (if seed
+                    [seed path]
+                    path))
+     (let [points (-> path
+                      path/parse-path
+                      (path/points :length))
+           points (vec (concat [(first points)]
+                               (map jiggle (partition 3 1 points))
+                               [(last points)]))
+           curve (catmullrom/catmullrom points)
+           new-path (path/curve-to-relative curve)]
+       new-path))))
 
 (defn squiggly-paths [data]
   (walk/postwalk #(cond-> %

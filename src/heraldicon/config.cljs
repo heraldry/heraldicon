@@ -2,20 +2,20 @@
   (:require
    [clojure.string :as s]))
 
-(defn -js->clj+
+(defn- js->clj+
   "For cases when built-in js->clj doesn't work. Source: https://stackoverflow.com/a/32583549/4839573"
   [x]
   (into {} (for [k (js-keys x)]
              [(keyword k) (aget x k)])))
 
-(def env
+(def ^:private env
   "Returns current env vars as a Clojure map."
-  (-js->clj+ (.-env js/process)))
+  (js->clj+ (.-env js/process)))
 
 (goog-define stage "dev")
 (goog-define commit "unknown")
 
-(def config-data
+(def ^:private config-data
   (case stage
     "dev" {:heraldicon-api-endpoint "http://localhost:4000/api"
            :heraldicon-url "http://localhost:8081"

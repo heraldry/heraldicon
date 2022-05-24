@@ -665,22 +665,21 @@
        [:g (outline/style context)
         [:path {:d line-path}]])]))
 
-(defn -add-normals [points]
-  (->> (concat [(last points)]
-               points
-               [(first points)])
-       (partition 3 1)
-       (mapv (fn [[p1 p2 p3]]
+(def ^:private add-normals
+  (memoize
+   (fn add-normals [points]
+     (->> (concat [(last points)]
+                  points
+                  [(first points)])
+          (partition 3 1)
+          (mapv (fn [[p1 p2 p3]]
                ;; this adds the normal to the LEFT in vector direction p1 -> p3,
                ;; which for a clockwise closed path means the normals are pointing
                ;; outwards
-               (assoc p2 :normal (-> p3
-                                     (v/sub p1)
-                                     v/orthogonal
-                                     v/normal))))))
-
-(def add-normals
-  (memoize -add-normals))
+                  (assoc p2 :normal (-> p3
+                                        (v/sub p1)
+                                        v/orthogonal
+                                        v/normal))))))))
 
 (defn get-point-on-curve [points x-steps x]
   (let [index (-> x
@@ -728,96 +727,95 @@
         (process-fn y dist)
         y))))
 
-(defn -modify-path [path {:keys [type
+(def modify-path
+  (memoize
+   (fn modify-path [path {:keys [type
                                  width
                                  corner-dampening-radius
                                  corner-dampening-mode]
                           :as line} environment & {:keys [outer-shape?]}]
-  (let [pattern-data (get kinds-pattern-map type)
-        guiding-path (cond-> path
-                       (not (path/clockwise? path)) (->
-                                                      path/parse-path
-                                                      path/reverse
-                                                      path/to-svg))
-        full-length (-> guiding-path
-                        path/parse-path
-                        path/length)
-        repetitions (-> (/ full-length width)
-                        Math/floor
-                        inc)
-        pattern-width (/ full-length repetitions)
-        precision 0.05
-        line-function (:function pattern-data)
-        {line-data :line
-         line-start :line-start
-         real-pattern-width :pattern-width} (pattern-line-with-offset
-                                             (assoc line
-                                                    :width pattern-width
-                                                    :offset 0)
-                                             pattern-width
-                                             line-function
-                                             {:num-repetitions 1})
-        offset (-> line
-                   :offset
-                   (or 0)
-                   (* pattern-width))
-        fess (-> environment :points :fess)
-        top (-> environment :points :top)
-        intersection (v/find-first-intersection-of-ray
-                      fess top
-                      {:shape {:paths [guiding-path]}})
-        start-offset (-> intersection
-                         :t2
-                         (* full-length)
-                         (+ offset))
-        path-points (-> guiding-path
-                        (path/sample-path :precision precision
-                                          :start-offset start-offset)
-                        add-normals)
-        sample-total (count path-points)
-        path-x-steps (/ full-length sample-total)
-        line-pattern-path (-> line-data
-                              path/make-path
-                              (->> (str "M0,0")))
-        line-pattern-parsed-path (path/parse-path line-pattern-path)
-        sample-per-pattern (-> line-pattern-parsed-path
-                               path/length
-                               (/ precision)
-                               Math/floor)
-        line-pattern-points (path/points line-pattern-parsed-path sample-per-pattern)
-        corners (mapv (fn [{:keys [index]
-                            :as corner}]
-                        (assoc corner :x (* index path-x-steps)))
-                      (path/find-corners path-points precision 3))]
-    (-> (for [pattern-i (range repetitions)
-              pattern-point line-pattern-points]
-          (let [real-point (-> (v/add pattern-point line-start)
-                               (v/mul pattern-width)
-                               (v/div real-pattern-width))
-                x-in-pattern (:x real-point)
-                x-on-path (-> pattern-i
-                              (* full-length)
-                              (/ repetitions)
-                              (+ x-in-pattern)
-                              (+ offset))
-                point-on-curve (get-point-on-curve path-points path-x-steps x-on-path)
-                y-dir (:normal point-on-curve)
-                y-value (process-y-value x-on-path (:y real-point) full-length corners
-                                         corner-dampening-radius corner-dampening-mode)]
+     (let [pattern-data (get kinds-pattern-map type)
+           guiding-path (cond-> path
+                          (not (path/clockwise? path)) (->
+                                                         path/parse-path
+                                                         path/reverse
+                                                         path/to-svg))
+           full-length (-> guiding-path
+                           path/parse-path
+                           path/length)
+           repetitions (-> (/ full-length width)
+                           Math/floor
+                           inc)
+           pattern-width (/ full-length repetitions)
+           precision 0.05
+           line-function (:function pattern-data)
+           {line-data :line
+            line-start :line-start
+            real-pattern-width :pattern-width} (pattern-line-with-offset
+                                                (assoc line
+                                                       :width pattern-width
+                                                       :offset 0)
+                                                pattern-width
+                                                line-function
+                                                {:num-repetitions 1})
+           offset (-> line
+                      :offset
+                      (or 0)
+                      (* pattern-width))
+           fess (-> environment :points :fess)
+           top (-> environment :points :top)
+           intersection (v/find-first-intersection-of-ray
+                         fess top
+                         {:shape {:paths [guiding-path]}})
+           start-offset (-> intersection
+                            :t2
+                            (* full-length)
+                            (+ offset))
+           path-points (-> guiding-path
+                           (path/sample-path :precision precision
+                                             :start-offset start-offset)
+                           add-normals)
+           sample-total (count path-points)
+           path-x-steps (/ full-length sample-total)
+           line-pattern-path (-> line-data
+                                 path/make-path
+                                 (->> (str "M0,0")))
+           line-pattern-parsed-path (path/parse-path line-pattern-path)
+           sample-per-pattern (-> line-pattern-parsed-path
+                                  path/length
+                                  (/ precision)
+                                  Math/floor)
+           line-pattern-points (path/points line-pattern-parsed-path sample-per-pattern)
+           corners (mapv (fn [{:keys [index]
+                               :as corner}]
+                           (assoc corner :x (* index path-x-steps)))
+                         (path/find-corners path-points precision 3))]
+       (-> (for [pattern-i (range repetitions)
+                 pattern-point line-pattern-points]
+             (let [real-point (-> (v/add pattern-point line-start)
+                                  (v/mul pattern-width)
+                                  (v/div real-pattern-width))
+                   x-in-pattern (:x real-point)
+                   x-on-path (-> pattern-i
+                                 (* full-length)
+                                 (/ repetitions)
+                                 (+ x-in-pattern)
+                                 (+ offset))
+                   point-on-curve (get-point-on-curve path-points path-x-steps x-on-path)
+                   y-dir (:normal point-on-curve)
+                   y-value (process-y-value x-on-path (:y real-point) full-length corners
+                                            corner-dampening-radius corner-dampening-mode)]
             ;; the y-value will usually be negative, but the normals
             ;; will also point outwards from the shape, so this will
             ;; build a path on the inside of the shape
             ;; however, if outer-shape? is true, then flip the normal
-            (-> y-dir
-                (cond->
-                  outer-shape? (v/mul -1))
-                (v/mul y-value)
-                (v/add point-on-curve))))
-        (->> (map-indexed (fn [idx p]
-                            [(if (zero? idx)
-                               "M" "L") p])))
-        path/make-path
-        (str "z"))))
-
-(def modify-path
-  (memoize -modify-path))
+               (-> y-dir
+                   (cond->
+                     outer-shape? (v/mul -1))
+                   (v/mul y-value)
+                   (v/add point-on-curve))))
+           (->> (map-indexed (fn [idx p]
+                               [(if (zero? idx)
+                                  "M" "L") p])))
+           path/make-path
+           (str "z"))))))

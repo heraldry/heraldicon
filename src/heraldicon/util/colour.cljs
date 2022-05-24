@@ -1,6 +1,6 @@
 (ns heraldicon.util.colour)
 
-(def html-names
+(def ^:private html-names
   {:indianred "#cd5c5c"
    :lightcoral "#f08080"
    :salmon "#fa8072"
@@ -143,25 +143,25 @@
    :darkslategray "#2f4f4f"
    :black "#000000"})
 
-(defn -expand-three-hex [colour]
+(defn- expand-three-hex [colour]
   (when (and (-> colour count (= 4))
              (-> colour first (= "#")))
     (let [[_ r g b] colour]
       (str "#" r r g g b b))))
 
-(defn -to-hex-2 [v]
+(defn- to-hex-2 [v]
   (let [s (.toString v 16)]
     (if (-> s count (= 1))
       (str "0" s)
       s)))
 
-(defn hex-colour [r g b]
+(defn- hex-colour [r g b]
   (str "#"
-       (-to-hex-2 r)
-       (-to-hex-2 g)
-       (-to-hex-2 b)))
+       (to-hex-2 r)
+       (to-hex-2 g)
+       (to-hex-2 b)))
 
-(defn -convert-rgb [colour]
+(defn- convert-rgb [colour]
   (try
     (let [[_ r g b] (re-matches #"(?i)rgb\( *([0-9]*) *, *([0-9]*) *, *([0-9]*) *\)" colour)
           rv (js/parseInt r)
@@ -174,8 +174,8 @@
 
 (defn normalize [colour]
   (or (get html-names (keyword colour))
-      (-expand-three-hex colour)
-      (-convert-rgb colour)
+      (expand-three-hex colour)
+      (convert-rgb colour)
       colour))
 
 (defn darken [colour]

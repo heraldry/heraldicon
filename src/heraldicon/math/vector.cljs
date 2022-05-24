@@ -191,19 +191,18 @@
                    check)
             intersections)))
 
-(defn- -path-intersection [path1 path2]
-  (let [p1 (new Path path1)
-        p2 (new Path path2)]
-    (into []
-          (map (fn [^js/Object location]
-                 (assoc (Vector. (.. location -point -x)
-                                 (.. location -point -y))
-                        :t1 (/ (.. location -offset) (.-length p1))
-                        :t2 (/ (.. location -intersection -offset) (.-length p2)))))
-          (.getIntersections p1 p2))))
-
 (def ^:private path-intersection
-  (memoize -path-intersection))
+  (memoize
+   (fn path-intersection [path1 path2]
+     (let [p1 (new Path path1)
+           p2 (new Path path2)]
+       (into []
+             (map (fn [^js/Object location]
+                    (assoc (Vector. (.. location -point -x)
+                                    (.. location -point -y))
+                           :t1 (/ (.. location -offset) (.-length p1))
+                           :t2 (/ (.. location -intersection -offset) (.-length p2)))))
+             (.getIntersections p1 p2))))))
 
 (defn- inside-shape? [point shape]
   (let [ray (str "M" (->str point) "l" 10000 "," 9000)
