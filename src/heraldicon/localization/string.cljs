@@ -71,13 +71,13 @@
   (let [chunks (s/split s "%s")]
     (apply str-tr (interleave-all chunks args))))
 
-(defn- -upper-case-first-str [s]
+(defn- upper-case-first-str [s]
   (str (s/upper-case (or (first s) "")) (subs s 1)))
 
 (defn upper-case-first [s]
   (if (map? s)
     (->> s
          (map (fn [[k v]]
-                [k (-upper-case-first-str v)]))
+                [k (upper-case-first-str v)]))
          (into {}))
-    (-upper-case-first-str s)))
+    (upper-case-first-str s)))
