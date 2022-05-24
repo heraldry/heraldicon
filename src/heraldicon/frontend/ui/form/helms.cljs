@@ -1,7 +1,6 @@
 (ns heraldicon.frontend.ui.form.helms
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.default :as default]
@@ -12,12 +11,6 @@
         num-helms (interface/get-list-size elements-context)]
     {:title :string.entity/helms-and-crests
      :selectable? false
-     :annotation [:div.tooltip.info {:style {:display "inline-block"
-                                             :margin-left "0.2em"}}
-                  [:sup {:style {:color "#d40"}}
-                   "alpha"]
-                  [:div.bottom
-                   [:p [tr :string.tooltip/alpha-feature-warning]]]]
      :buttons [{:icon "fas fa-plus"
                 :handler #(state/dispatch-on-event % [:add-element elements-context default/helm])}]
      :nodes (->> (range num-helms)
