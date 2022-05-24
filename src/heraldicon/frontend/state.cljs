@@ -66,39 +66,40 @@
 
 (macros/reg-event-db :initialize-db
   (fn [db [_ crawler?]]
-    (merge {:example-coa {:render-options (assoc default/render-options
-                                                 :escutcheon :rectangle)
-                          :coat-of-arms {:field {:type :heraldry.field.type/plain
-                                                 :tincture :argent
-                                                 :components [{:type :heraldry.charge.type/preview
-                                                               :preview? true
-                                                               :ignore-layer-separator? true
-                                                               :field {:type :heraldry.field.type/plain
-                                                                       :tincture :azure}
-                                                               :geometry {:size 95}
-                                                               :tincture (merge (->> attributes/tincture-modifier-map
-                                                                                     (map (fn [[k _]]
-                                                                                            [k :or]))
-                                                                                     (into {}))
-                                                                                {:orbed :argent
-                                                                                 :eyed :argent
-                                                                                 :toothed :argent
-                                                                                 :secondary :gules
-                                                                                 :tertiary :vert
-                                                                                 :armed :or
-                                                                                 :langued :gules
-                                                                                 :attired :argent
-                                                                                 :unguled :vert
-                                                                                 :beaked :or
-                                                                                 :winged :purpure
-                                                                                 :pommeled :gules
-                                                                                 :shadow 1.0
-                                                                                 :highlight 1.0})}]}}}
-            :ui {:charge-tree {:show-public? true
-                               :show-own? true}
-                 :component-tree {}
-                 :list-all? crawler?}}
-           db)))
+    (merge-with merge
+                {:example-coa {:render-options (assoc default/render-options
+                                                      :escutcheon :rectangle)
+                               :coat-of-arms {:field {:type :heraldry.field.type/plain
+                                                      :tincture :argent
+                                                      :components [{:type :heraldry.charge.type/preview
+                                                                    :preview? true
+                                                                    :ignore-layer-separator? true
+                                                                    :field {:type :heraldry.field.type/plain
+                                                                            :tincture :azure}
+                                                                    :geometry {:size 95}
+                                                                    :tincture (merge (->> attributes/tincture-modifier-map
+                                                                                          (map (fn [[k _]]
+                                                                                                 [k :or]))
+                                                                                          (into {}))
+                                                                                     {:orbed :argent
+                                                                                      :eyed :argent
+                                                                                      :toothed :argent
+                                                                                      :secondary :gules
+                                                                                      :tertiary :vert
+                                                                                      :armed :or
+                                                                                      :langued :gules
+                                                                                      :attired :argent
+                                                                                      :unguled :vert
+                                                                                      :beaked :or
+                                                                                      :winged :purpure
+                                                                                      :pommeled :gules
+                                                                                      :shadow 1.0
+                                                                                      :highlight 1.0})}]}}}
+                 :ui {:charge-tree {:show-public? true
+                                    :show-own? true}
+                      :component-tree {}
+                      :list-all? crawler?}}
+                db)))
 
 (macros/reg-event-db :set
   (fn [db [_ context value]]
