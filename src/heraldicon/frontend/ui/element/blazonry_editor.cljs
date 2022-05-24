@@ -451,8 +451,8 @@
                                                        (c/++ :render-options :escutcheon)))
                      :rectangle)]
     (rf/dispatch-sync [:set hdn-path (update default/achievement :render-options
-                                             merge) {:escutcheon escutcheon
-                                                     :outline? true}]))
+                                             merge {:escutcheon escutcheon
+                                                    :outline? true})]))
   (modal/create
    [:div
     [tr :string.button/from-blazon]
