@@ -251,17 +251,15 @@
           (-> match :parameters :path not-empty))))
 
 (defn- url-matches?
-  [url match]
-  (= (-> url (s/split #"\?") first)
-     (:path match)))
+  [to match]
+  (s/starts-with? (:path match) (str "/" (name to) "/")))
 
 (defn nav-link
   [{:keys [to path-params] :as props} content]
   (let [active (or (name-matches? to path-params @current-match)
                    (url-matches? to @current-match))]
     [:li.nav-menu-item {:class (when active "selected")}
-     [link (-> props
-               (assoc :active active)) content]]))
+     [link props content]]))
 
 (defn view []
   (when @current-match
