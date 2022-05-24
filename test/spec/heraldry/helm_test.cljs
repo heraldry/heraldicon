@@ -30,6 +30,8 @@
   (are [form] (tu/valid? :heraldry.helm/component form)
     (tu/example :heraldry/charge)
 
+    (tu/example :heraldry/charge-group)
+
     (tu/example :heraldry/shield-separator)))
 
 (deftest invalid-helm-component

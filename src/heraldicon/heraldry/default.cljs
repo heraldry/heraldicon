@@ -102,6 +102,17 @@
    :tincture {:shadow 1
               :highlight 1}})
 
+(def crest-charge-group
+  {:type :heraldry.charge-group.type/rows
+   :strip-angle 0
+   :spacing 40
+   :stretch 0.866
+   :charges [crest-charge]
+   :strips [{:type :heraldry.charge-group.element.type/strip
+             :slots [0 0]}
+            {:type :heraldry.charge-group.element.type/strip
+             :slots [0]}]})
+
 (def shield-separator
   {:type :heraldry/shield-separator})
 
