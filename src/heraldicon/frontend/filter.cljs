@@ -310,7 +310,9 @@
         filter-string @(rf/subscribe [:get filter-string-path])
         filter-tags @(rf/subscribe [:get filter-tags-path])
         filter-access @(rf/subscribe [:get filter-access-path])
-        filter-ownership @(rf/subscribe [:get filter-ownership-path])
+        filter-ownership (if @(rf/subscribe [:get filter-ownership-path])
+                           :mine
+                           :all)
         filtered-items (filter-items user-data
                                      all-items
                                      filter-keys
