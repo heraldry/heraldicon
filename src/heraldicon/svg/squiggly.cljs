@@ -17,7 +17,7 @@
               jiggle-radius)]
     (v/add current (v/Vector. dx dy))))
 
-(def ^:private squiggly-path
+(def squiggly-path
   (memoize
    (fn squiggly-path [path & {:keys [seed]}]
      (random/seed (if seed
