@@ -252,7 +252,9 @@
 
 (defn- url-matches?
   [to match]
-  (s/starts-with? (:path match) (str "/" (name to) "/")))
+  (let [path (or (:path match) "")
+        partial-path (str "/" (name to) "/")]
+    (s/starts-with? path partial-path)))
 
 (defn nav-link
   [{:keys [to path-params] :as props} content]
