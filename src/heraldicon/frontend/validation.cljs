@@ -57,12 +57,12 @@
         ", ")))
 
 (defn verify-rule-of-tincture [parent-tinctures own-tinctures fimbriated?]
-  (let [parent-kinds (->> parent-tinctures
-                          (map tincture/kind)
-                          (into #{}))
-        own-kinds (->> own-tinctures
-                       (map tincture/kind)
-                       (into #{}))]
+  (let [parent-kinds (into #{}
+                           (map tincture/kind)
+                           parent-tinctures)
+        own-kinds (into #{}
+                        (map tincture/kind)
+                        own-tinctures)]
     (cond
       (= #{:metal}
          parent-kinds

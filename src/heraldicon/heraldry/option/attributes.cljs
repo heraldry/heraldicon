@@ -170,18 +170,18 @@
   (range 5 100 5))
 
 (def shadow-qualifiers
-  (->> qualifier-percentages
-       (map (fn [percentage]
-              (let [{:keys [key colour]} (make-qualifier :shadow percentage)]
-                [key colour])))
-       (into {})))
+  (into {}
+        (map (fn [percentage]
+               (let [{:keys [key colour]} (make-qualifier :shadow percentage)]
+                 [key colour])))
+        qualifier-percentages))
 
 (def highlight-qualifiers
-  (->> qualifier-percentages
-       (map (fn [percentage]
-              (let [{:keys [key colour]} (make-qualifier :highlight percentage)]
-                [key colour])))
-       (into {})))
+  (into {}
+        (map (fn [percentage]
+               (let [{:keys [key colour]} (make-qualifier :highlight percentage)]
+                 [key colour])))
+        qualifier-percentages))
 
 (def tincture-modifier-qualifier-choices
   (vec (concat (->> qualifier-percentages

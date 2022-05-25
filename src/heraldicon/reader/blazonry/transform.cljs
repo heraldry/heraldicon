@@ -26,14 +26,11 @@
        first))
 
 (def tincture-map
-  (->> tincture/tincture-map
-       (map (fn [[key _]]
-              [(->> key
-                    name
-                    s/upper-case
-                    (keyword "tincture"))
-               key]))
-       (into {:tincture/PROPER :void})))
+  (into {:tincture/PROPER :void}
+        (map (fn [[key _]]
+               [(keyword "tincture" (-> key name s/upper-case))
+                key]))
+        tincture/tincture-map))
 
 (def roman-ordinal-strings
   {"i." 1
@@ -228,14 +225,11 @@
     (apply merge layouts)))
 
 (def field-type-map
-  (->> field.options/fields
-       (map (fn [key]
-              [(->> key
-                    name
-                    s/upper-case
-                    (keyword "partition"))
-               key]))
-       (into {})))
+  (into {}
+        (map (fn [key]
+               [(keyword "partition" (-> key name s/upper-case))
+                key]))
+        field.options/fields))
 
 (defn get-field-type [nodes]
   (some->> nodes
@@ -775,18 +769,15 @@
                                                        :cottise-2 :cottise-extra-2})))))
 
 (def ordinary-type-map
-  (->> ordinary.options/ordinaries
-       (map (fn [key]
-              [(->> key
-                    name
-                    s/upper-case
-                    (keyword "ordinary"))
-               key]))
-       (into {:ordinary/PALLET :heraldry.ordinary.type/pale
-              :ordinary/BARRULET :heraldry.ordinary.type/fess
-              :ordinary/CHEVRONNEL :heraldry.ordinary.type/chevron
-              :ordinary/BENDLET :heraldry.ordinary.type/bend
-              :ordinary/BENDLET-SINISTER :heraldry.ordinary.type/bend-sinister})))
+  (into {:ordinary/PALLET :heraldry.ordinary.type/pale
+         :ordinary/BARRULET :heraldry.ordinary.type/fess
+         :ordinary/CHEVRONNEL :heraldry.ordinary.type/chevron
+         :ordinary/BENDLET :heraldry.ordinary.type/bend
+         :ordinary/BENDLET-SINISTER :heraldry.ordinary.type/bend-sinister}
+        (map (fn [key]
+               [(keyword "ordinary" (-> key name s/upper-case))
+                key]))
+        ordinary.options/ordinaries))
 
 (defn get-ordinary-type [nodes]
   (let [node-type (->> nodes
@@ -843,14 +834,11 @@
            (get attitude-map)))
 
 (def facing-map
-  (->> attributes/facing-map
-       (map (fn [[key _]]
-              [(->> key
-                    name
-                    s/upper-case
-                    (keyword "facing"))
-               key]))
-       (into {})))
+  (into {}
+        (map (fn [[key _]]
+               [(keyword "facing" (-> key name s/upper-case))
+                key]))
+        attributes/facing-map))
 
 (defmethod ast->hdn :facing [[_ & nodes]]
   (some->> nodes
@@ -887,14 +875,11 @@
       facing (assoc :facing facing))))
 
 (def charge-type-map
-  (->> charge.options/charges
-       (map (fn [key]
-              [(->> key
-                    name
-                    s/upper-case
-                    (keyword "charge"))
-               key]))
-       (into {:charge/ESTOILE :heraldry.charge.type/star})))
+  (into {:charge/ESTOILE :heraldry.charge.type/star}
+        (map (fn [key]
+               [(keyword "charge" (-> key name s/upper-case))
+                key]))
+        charge.options/charges))
 
 (defmethod ast->hdn :charge-standard [[_ & nodes]]
   (let [charge-type-node-kind (first (get-child charge-type-map nodes))
@@ -1036,10 +1021,10 @@
     [modifier-type tincture]))
 
 (defn add-tincture-modifiers [hdn nodes]
-  (let [modifiers (->> nodes
-                       (filter (type? #{:tincture-modifier}))
-                       (map ast->hdn)
-                       (into {}))]
+  (let [modifiers (into {}
+                        (comp (filter (type? #{:tincture-modifier}))
+                              (map ast->hdn))
+                        nodes)]
     (cond-> hdn
       (seq modifiers) (assoc :tincture modifiers))))
 

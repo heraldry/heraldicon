@@ -113,14 +113,15 @@
                  m))
 
 (defn sanitize-or-nil [values given-options]
-  (-> {}
-      (into (for [[k v] given-options]
-              (cond
-                (and (map? v)
-                     (not (contains?
-                           option-types (:type v)))) [k (sanitize-or-nil (get values k) v)]
-                :else [k (get-sanitized-value-or-nil (get values k) v)])))
-      remove-nil-values-and-empty-maps))
+  (remove-nil-values-and-empty-maps
+   (into {}
+         (map (fn [[k v]]
+                (cond
+                  (and (map? v)
+                       (not (contains?
+                             option-types (:type v)))) [k (sanitize-or-nil (get values k) v)]
+                  :else [k (get-sanitized-value-or-nil (get values k) v)])))
+         given-options)))
 
 (defn pick [opts paths & values]
   (let [values (first values)
@@ -145,14 +146,13 @@
     options))
 
 (defn populate-inheritance [options inherited-values]
-  (->> options
-       (map (fn [[k v]]
-              [k
-               (if (and (-> v :type #{:choice :range :boolean :text})
-                        (get inherited-values k))
-                 (assoc v :inherited (get inherited-values k))
-                 v)]))
-       (into {})))
+  (into {}
+        (map (fn [[k v]]
+               [k (if (and (-> v :type #{:choice :range :boolean :text})
+                           (get inherited-values k))
+                    (assoc v :inherited (get inherited-values k))
+                    v)]))
+        options))
 
 (defn changed? [key sanitized-data options]
   (and (get options key)

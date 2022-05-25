@@ -11,27 +11,27 @@
 
 (defn build-keyword-keys [data & {:keys [prefix
                                          source-file]}]
-  (->> data
-       (mapcat (fn [[k v]]
-                 (if-not (re-matches required-key-pattern k)
-                   (do
-                     (warnings/print-warning {:msg (str "Warning: key '" k "' doesn't match pattern: " required-key-pattern)
-                                              :line 1
-                                              :column 1
-                                              :file source-file
-                                              :soure-name source-file
-                                              :resource-name source-file
-                                              :source-excerpt {:start-idx 0
-                                                               :before ["<unknown>"]
-                                                               :after ["<unknown>"]
-                                                               :line (str "\"" k "\"")}})
-                     [])
-                   (if (map? v)
-                     (build-keyword-keys v
-                                         :prefix (str prefix "." k)
-                                         :source-file source-file)
-                     [[(keyword prefix k) v]]))))
-       (into {})))
+  (into {}
+        (mapcat (fn [[k v]]
+                  (if-not (re-matches required-key-pattern k)
+                    (do
+                      (warnings/print-warning {:msg (str "Warning: key '" k "' doesn't match pattern: " required-key-pattern)
+                                               :line 1
+                                               :column 1
+                                               :file source-file
+                                               :soure-name source-file
+                                               :resource-name source-file
+                                               :source-excerpt {:start-idx 0
+                                                                :before ["<unknown>"]
+                                                                :after ["<unknown>"]
+                                                                :line (str "\"" k "\"")}})
+                      [])
+                    (if (map? v)
+                      (build-keyword-keys v
+                                          :prefix (str prefix "." k)
+                                          :source-file source-file)
+                      [[(keyword prefix k) v]]))))
+        data))
 
 (defmacro load-locale [filename]
   (let [data (json/read-str (res/slurp-resource &env filename))]

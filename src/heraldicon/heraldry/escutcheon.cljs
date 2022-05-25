@@ -370,16 +370,16 @@
    #'rectangle])
 
 (def kinds-map
-  (->> escutcheons
-       (map (fn [v]
-              [(-> v meta :name keyword) (deref v)]))
-       (into {})))
+  (into {}
+        (map (fn [v]
+               [(-> v meta :name keyword) @v]))
+        escutcheons))
 
 (def choices
-  (->> escutcheons
-       (map (fn [v]
-              [(-> v deref :display-name) (-> v meta :name keyword)]))
-       (into [[:string.escutcheon.type/none :none]])))
+  (into [[:string.escutcheon.type/none :none]]
+        (map (fn [v]
+               [(:display-name @v) (-> v meta :name keyword)]))
+        escutcheons))
 
 (def choice-map
   (options/choices->map choices))

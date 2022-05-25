@@ -22,25 +22,24 @@
    [:string.render-options.texture-choice/wood :wood "/textures/wood.jpg" 1]])
 
 (def choices
-  (->> textures
-       (map (fn [[display-name key _path _displacement]]
-              [display-name key]))
-       vec))
+  (map (fn [[display-name key _path _displacement]]
+         [display-name key])
+       textures))
 
 (def texture-map
   (options/choices->map choices))
 
 (def relative-paths
-  (->> textures
-       (map (fn [[_display-name key path _displacement]]
-              [key path]))
-       (into {})))
+  (into {}
+        (map (fn [[_display-name key path _displacement]]
+               [key path]))
+        textures))
 
 (def displacements
-  (->> textures
-       (map (fn [[_display-name key _path displacement]]
-              [key displacement]))
-       (into {})))
+  (into {}
+        (map (fn [[_display-name key _path displacement]]
+               [key displacement]))
+        textures))
 
 (defn displacement [texture]
   (some->> texture

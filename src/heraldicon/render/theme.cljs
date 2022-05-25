@@ -516,9 +516,10 @@
 
 (def theme-choices
   (mapv (fn [[group-name & items]]
-          (into [group-name] (map (fn [[display-name key _]]
-                                    [display-name key])
-                                  items)))
+          (into [group-name]
+                (map (fn [[display-name key _]]
+                       [display-name key]))
+                items))
         themes))
 
 (def theme-map

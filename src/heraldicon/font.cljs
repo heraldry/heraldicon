@@ -23,19 +23,18 @@
    ["Trajan Pro" :trajan-pro "/trajan-pro/Trajan Pro Regular.ttf"]])
 
 (def choices
-  (->> font-data
-       (mapcat (fn [[font-name key _path]]
-                 [[font-name key]]))
-       vec))
+  (map (fn [[font-name key _path]]
+         [font-name key])
+       font-data))
 
 (def choice-map
   (options/choices->map choices))
 
 (def path-map
-  (->> font-data
-       (mapcat (fn [[_font-name key path]]
-                 [[key path]]))
-       (into {})))
+  (into {}
+        (map (fn [[_font-name key path]]
+               [key path]))
+        font-data))
 
 (defn css-string [font]
   (get choice-map (or font default)))

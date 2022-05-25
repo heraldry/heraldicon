@@ -57,19 +57,19 @@
              first-point (v/Vector. 0 (- radius))
              first-valley (v/rotate (v/Vector. 0 (- small-radius))
                                     (/ angle-step 2))]
-         {:shape (-> (into ["M" first-point]
-                           (mapcat (fn [i]
-                                     (let [point (v/rotate first-point (* angle-step i))
-                                           next-point (v/rotate first-point (* angle-step (inc i)))
-                                           valley (v/rotate first-valley (* angle-step i))]
-                                       (if wavy-rays?
-                                         [(rayonny-flaming/curvy-line
-                                           (v/sub valley point) rayonny-eccentricity false)
-                                          (rayonny-flaming/curvy-line
-                                           (v/sub next-point valley) rayonny-eccentricity true)]
-                                         ["L" valley
-                                          "L" next-point]))))
-                           (range num-points))
-                     (conj "z"))
+         {:shape (conj (into ["M" first-point]
+                             (mapcat (fn [i]
+                                       (let [point (v/rotate first-point (* angle-step i))
+                                             next-point (v/rotate first-point (* angle-step (inc i)))
+                                             valley (v/rotate first-valley (* angle-step i))]
+                                         (if wavy-rays?
+                                           [(rayonny-flaming/curvy-line
+                                             (v/sub valley point) rayonny-eccentricity false)
+                                            (rayonny-flaming/curvy-line
+                                             (v/sub next-point valley) rayonny-eccentricity true)]
+                                           ["L" valley
+                                            "L" next-point]))))
+                             (range num-points))
+                       "z")
           :charge-width width
           :charge-height width})))))

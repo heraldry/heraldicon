@@ -88,7 +88,8 @@
                                     (map (fn [[key value]]
                                            [key (-> value
                                                     (v/add offset)
-                                                    (v/mul scale-factor))]) (:points environment)))))))
+                                                    (v/mul scale-factor))]))
+                                    (:points environment))))))
 
 (def ^:private shrink-step
   (memoize

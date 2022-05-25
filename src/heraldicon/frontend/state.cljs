@@ -81,10 +81,10 @@
                                                                     :field {:type :heraldry.field.type/plain
                                                                             :tincture :azure}
                                                                     :geometry {:size 95}
-                                                                    :tincture (merge (->> attributes/tincture-modifier-map
-                                                                                          (map (fn [[k _]]
-                                                                                                 [k :or]))
-                                                                                          (into {}))
+                                                                    :tincture (merge (into {}
+                                                                                           (map (fn [[k _]]
+                                                                                                  [k :or]))
+                                                                                           attributes/tincture-modifier-map)
                                                                                      {:orbed :argent
                                                                                       :eyed :argent
                                                                                       :toothed :argent
@@ -228,12 +228,12 @@
 (defn invalidate-cache-all-but-new []
   (rf/dispatch-sync [:update [:async-fetch-data]
                      (fn [async-data]
-                       (->> async-data
-                            (map (fn [[k v]]
-                                   [k (-> v
-                                          (update :queries select-keys [:new])
-                                          (update :current #(when (= % :new) :new)))]))
-                            (into {})))]))
+                       (into {}
+                             (map (fn [[k v]]
+                                    [k (-> v
+                                           (update :queries select-keys [:new])
+                                           (update :current #(when (= % :new) :new)))]))
+                             async-data))]))
 
 (def node-flag-db-path [:ui :component-tree :nodes])
 (def ui-submenu-open?-path [:ui :submenu-open?])
@@ -274,23 +274,23 @@
 
 (defn ui-component-node-open [db path]
   (let [path (vec path)]
-    (->> (range (count path))
-         (map (fn [idx]
-                [(subvec path 0 (inc idx)) true]))
-         (into {})
-         (update-in db node-flag-db-path merge))))
+    (update-in db node-flag-db-path
+               merge (into {}
+                           (map (fn [idx]
+                                  [(subvec path 0 (inc idx)) true]))
+                           (range (count path))))))
 
 (defn ui-component-node-close [db path]
   (update-in
    db node-flag-db-path
    (fn [flags]
-     (->> (assoc flags path false)
-          (map (fn [[other-path v]]
-                 (if (= (take (count path) other-path)
-                        path)
-                   [other-path false]
-                   [other-path v])))
-          (into {})))))
+     (into {}
+           (map (fn [[other-path v]]
+                  (if (= (take (count path) other-path)
+                         path)
+                    [other-path false]
+                    [other-path v])))
+           (assoc flags path false)))))
 
 (macros/reg-event-db :ui-component-node-toggle
   (fn [db [_ path]]
@@ -371,17 +371,17 @@
                  adjust-component-path-after-order-change elements-path index new-index)
       (update-in ui-submenu-open?-path
                  (fn [flags]
-                   (->> flags
-                        (map (fn [[k v]]
-                               [(adjust-component-path-after-order-change
-                                 k elements-path index new-index) v]))
-                        (filter first)
-                        (into {}))))
+                   (into {}
+                         (comp (filter first)
+                               (map (fn [[k v]]
+                                      [(adjust-component-path-after-order-change
+                                        k elements-path index new-index) v])))
+                         flags)))
       (update-in node-flag-db-path (fn [flags]
-                                     (->> flags
-                                          (keep (fn [[path flag]]
-                                                  (let [new-path (adjust-component-path-after-order-change
-                                                                  path elements-path index new-index)]
-                                                    (when new-path
-                                                      [new-path flag]))))
-                                          (into {}))))))
+                                     (into {}
+                                           (keep (fn [[path flag]]
+                                                   (let [new-path (adjust-component-path-after-order-change
+                                                                   path elements-path index new-index)]
+                                                     (when new-path
+                                                       [new-path flag]))))
+                                           flags)))))

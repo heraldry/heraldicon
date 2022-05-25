@@ -104,12 +104,11 @@
                 :r size}]]]))
 
 (defn defs [theme]
-  (into
-   [:<>
-    void
-    selected]
-   (for [[id background foreground] (vals tincture/furs)]
-     (ermine-base
-      id
-      (theme/lookup-colour background theme)
-      (theme/lookup-colour foreground theme)))))
+  (into [:<>
+         void
+         selected]
+        (map (fn [[id background foreground]]
+               (ermine-base id
+                            (theme/lookup-colour background theme)
+                            (theme/lookup-colour foreground theme))))
+        (vals tincture/furs)))

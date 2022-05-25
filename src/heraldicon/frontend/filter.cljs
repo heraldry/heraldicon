@@ -199,11 +199,7 @@
                                      filter-tags
                                      filter-access
                                      filter-ownership)
-        tags-to-display (->> filtered-items
-                             (map (comp keys :tags))
-                             (apply concat)
-                             frequencies
-                             (into {}))
+        tags-to-display (frequencies (mapcat (comp keys :tags) filtered-items))
         sorted-items (sort-by (fn [item]
                                 ;; put heraldicon items in front
                                 [(if (-> item :username (= "heraldicon"))
@@ -320,11 +316,7 @@
                                      filter-tags
                                      filter-access
                                      filter-ownership)
-        tags-to-display (->> filtered-items
-                             (map (comp keys :tags))
-                             (apply concat)
-                             frequencies
-                             (into {}))
+        tags-to-display (frequencies (mapcat (comp keys :tags) filtered-items))
         filtered? (or (-> filter-string count pos?)
                       (-> filter-tags count pos?))
         sorted-items (cond->> filtered-items

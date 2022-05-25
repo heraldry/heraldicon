@@ -194,11 +194,9 @@
     [:<>
      [shared/make-subfields
       context parts
-      (conj (->> arm-outlines
-                 (drop 1)
-                 drop-last
-                 (map vector)
-                 (into [:all]))
+      (conj (into [:all]
+                  (map vector)
+                  (drop-last (drop 1 arm-outlines)))
             nil)
       environment]
      (when outline?

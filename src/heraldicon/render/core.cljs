@@ -374,10 +374,10 @@
                            [result-width
                             result-height
                             1])
-        used-fonts (->> (for [j (range (interface/get-list-size (c/++ context :segments)))]
-                          (interface/get-sanitized-data (c/++ context :segments j :font)))
-                        (filter identity)
-                        (into #{}))]
+        used-fonts (into #{}
+                         (keep (fn [j]
+                                 (interface/get-sanitized-data (c/++ context :segments j :font))))
+                         (range (interface/get-list-size (c/++ context :segments))))]
     [:svg (merge
            {:viewBox (str "0 0 " document-width " " document-height)}
            (if svg-export?
@@ -528,25 +528,25 @@
   (let [num-ornaments (interface/get-list-size (c/++ context :ornaments :elements))]
     ;; TODO: might have to be smarter here to only look into mottos,
     ;; but it should work if there's no :ribbon :segments
-    (->> (for [i (range num-ornaments)
-               j (range (interface/get-list-size (update context :path
-                                                         conj
-                                                         :ornaments
-                                                         :elements
-                                                         i
-                                                         :ribbon
-                                                         :segments)))]
-           (interface/get-sanitized-data (update context :path
-                                                 conj
-                                                 :ornaments
-                                                 :elements
-                                                 i
-                                                 :ribbon
-                                                 :segments
-                                                 j
-                                                 :font)))
-         (filter identity)
-         (into #{}))))
+    (into #{}
+          (filter identity)
+          (for [i (range num-ornaments)
+                j (range (interface/get-list-size (update context :path
+                                                          conj
+                                                          :ornaments
+                                                          :elements
+                                                          i
+                                                          :ribbon
+                                                          :segments)))]
+            (interface/get-sanitized-data (update context :path
+                                                  conj
+                                                  :ornaments
+                                                  :elements
+                                                  i
+                                                  :ribbon
+                                                  :segments
+                                                  j
+                                                  :font))))))
 
 (defn achievement [{:keys [short-url
                            svg-export?
@@ -745,10 +745,10 @@
                            [result-width
                             result-height
                             1])
-        used-fonts (->> (for [j (range (interface/get-list-size (c/++ context :segments)))]
-                          (interface/get-sanitized-data (c/++ context :segments j :font)))
-                        (filter identity)
-                        (into #{}))]
+        used-fonts (into #{}
+                         (filter identity)
+                         (for [j (range (interface/get-list-size (c/++ context :segments)))]
+                           (interface/get-sanitized-data (c/++ context :segments j :font))))]
     [:svg (merge
            {:viewBox (str "0 0 " document-width " " document-height)}
            (if svg-export?

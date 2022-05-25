@@ -41,13 +41,12 @@
    data))
 
 (defn replace-id-references [data id-map]
-  (let [prepared-id-map (->> id-map
-                             (map (fn [[k v]]
-                                    [[k v]
-                                     [(str "#" k) (str "#" v)]
-                                     [(str "url(#" k ")") (str "url(#" v ")")]]))
-                             (apply concat)
-                             (into {}))]
+  (let [prepared-id-map (into {}
+                              (mapcat (fn [[k v]]
+                                        [[k v]
+                                         [(str "#" k) (str "#" v)]
+                                         [(str "url(#" k ")") (str "url(#" v ")")]]))
+                              id-map)]
     (walk/postwalk
      #(if (and (vector? %)
                (-> % second string?)

@@ -45,11 +45,11 @@
        (if-let [context @(rf/subscribe [::options-subscriptions-data path])]
          (-> context
              (assoc :subscriptions {:base-path path
-                                    :data (->> (:required-subscriptions context)
-                                               (map (fn [relative-path]
-                                                      [relative-path
-                                                       @(rf/subscribe [:get (vec (concat path relative-path))])]))
-                                               (into {}))})
+                                    :data (into {}
+                                                (map (fn [relative-path]
+                                                       [relative-path
+                                                        @(rf/subscribe [:get (vec (concat path relative-path))])]))
+                                                (:required-subscriptions context))})
              interface/options)
          (get @(rf/subscribe [::options (pop path)]) (last path)))))))
 
