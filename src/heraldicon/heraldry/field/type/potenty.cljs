@@ -360,40 +360,42 @@
                    :pattern-units "userSpaceOnUse"}
          [:g (outline/style context)
           potent-outline]])
-      (doall
-       (for [idx (range 2)]
-         ^{:key idx}
-         [:pattern {:id (str pattern-id "-" idx)
-                    :width pattern-width
-                    :height pattern-height
-                    :x (+ (:x top-left)
-                          (* part-width offset-x)
-                          shift-x)
-                    :y (+ (:y top-left)
-                          (* part-height offset-y)
-                          shift-y)
-                    :pattern-units "userSpaceOnUse"}
-          [:rect {:x 0
-                  :y 0
-                  :width pattern-width
-                  :height pattern-height
-                  :fill (get ["#000000" "#ffffff"] idx)}]
-          [:g {:fill (get ["#ffffff" "#000000"] idx)}
-           potent-pattern]]))]
-     (doall
-      (for [idx (range 2)]
-        (let [mask-id (uid/generate "mask")]
-          ^{:key idx}
-          [:<>
-           [:mask {:id mask-id}
-            [:rect {:x -500
-                    :y -500
-                    :width 1100
-                    :height 1100
-                    :fill (str "url(#" pattern-id "-" idx ")")}]]
-           [tincture/tinctured-field
-            (c/++ context :fields idx)
-            :mask-id mask-id]])))
+      (into [:<>]
+            (map (fn [idx]
+                   ^{:key idx}
+                   [:pattern {:id (str pattern-id "-" idx)
+                              :width pattern-width
+                              :height pattern-height
+                              :x (+ (:x top-left)
+                                    (* part-width offset-x)
+                                    shift-x)
+                              :y (+ (:y top-left)
+                                    (* part-height offset-y)
+                                    shift-y)
+                              :pattern-units "userSpaceOnUse"}
+                    [:rect {:x 0
+                            :y 0
+                            :width pattern-width
+                            :height pattern-height
+                            :fill (get ["#000000" "#ffffff"] idx)}]
+                    [:g {:fill (get ["#ffffff" "#000000"] idx)}
+                     potent-pattern]]))
+            (range 2))]
+     (into [:<>]
+           (map (fn [idx]
+                  (let [mask-id (uid/generate "mask")]
+                    ^{:key idx}
+                    [:<>
+                     [:mask {:id mask-id}
+                      [:rect {:x -500
+                              :y -500
+                              :width 1100
+                              :height 1100
+                              :fill (str "url(#" pattern-id "-" idx ")")}]]
+                     [tincture/tinctured-field
+                      (c/++ context :fields idx)
+                      :mask-id mask-id]])))
+           (range 2))
      (when outline?
        [:rect {:x -500
                :y -500

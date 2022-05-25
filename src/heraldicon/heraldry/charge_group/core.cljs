@@ -183,19 +183,19 @@
                 slot-spacing]} (calculate-points context)
         num-charges (interface/get-list-size (c/++ context :charges))]
 
-    [:g
-     (for [[idx {:keys [point charge-index angle]}] (map-indexed vector slot-positions)
-           :when (and charge-index
-                      (< charge-index num-charges))]
-       ^{:key idx}
-       [charge.interface/render-charge
-        (-> context
-            (c/++ :charges charge-index)
-            (assoc :anchor-override (v/add anchor-point point)
-                   :charge-group {:charge-group-path path
-                                  :slot-spacing slot-spacing
-                                  :slot-angle (when rotate-charges?
-                                                angle)}))])]))
+    (into [:g]
+          (for [[idx {:keys [point charge-index angle]}] (map-indexed vector slot-positions)
+                :when (and charge-index
+                           (< charge-index num-charges))]
+            ^{:key idx}
+            [charge.interface/render-charge
+             (-> context
+                 (c/++ :charges charge-index)
+                 (assoc :anchor-override (v/add anchor-point point)
+                        :charge-group {:charge-group-path path
+                                       :slot-spacing slot-spacing
+                                       :slot-angle (when rotate-charges?
+                                                     angle)}))]))))
 
 (defmethod interface/blazon-component :heraldry/charge-group [context]
   ;; TODO: no need to calculate all positions here

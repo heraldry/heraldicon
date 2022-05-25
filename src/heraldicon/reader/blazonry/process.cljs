@@ -110,26 +110,27 @@
                        (* spacing)
                        (+ size-without-spacing)
                        (* stretch-factor))
-        adjusted-indexed-components (for [[index [parent-index component]] (map-indexed vector indexed-components)]
-                                      (let [size (-> component :geometry :size (or default-size))
-                                            size-so-far (->> indexed-components
-                                                             (take index)
-                                                             (map second)
-                                                             (map (fn [component]
-                                                                    (-> component
-                                                                        :geometry
-                                                                        :size
-                                                                        (or default-size))))
-                                                             (reduce +))
-                                            offset (-> size-so-far
-                                                       (+ (* index spacing))
-                                                       (+ (/ size 2))
-                                                       (* stretch-factor)
-                                                       (- (/ total-size 2)))]
-                                        [parent-index
-                                         (-> component
-                                             (assoc-in [:geometry :size] (* size stretch-factor))
-                                             (assoc-in [:anchor offset-keyword] offset))]))]
+        adjusted-indexed-components (map-indexed (fn [index [parent-index component]]
+                                                   (let [size (-> component :geometry :size (or default-size))
+                                                         size-so-far (->> indexed-components
+                                                                          (take index)
+                                                                          (map second)
+                                                                          (map (fn [component]
+                                                                                 (-> component
+                                                                                     :geometry
+                                                                                     :size
+                                                                                     (or default-size))))
+                                                                          (reduce +))
+                                                         offset (-> size-so-far
+                                                                    (+ (* index spacing))
+                                                                    (+ (/ size 2))
+                                                                    (* stretch-factor)
+                                                                    (- (/ total-size 2)))]
+                                                     [parent-index
+                                                      (-> component
+                                                          (assoc-in [:geometry :size] (* size stretch-factor))
+                                                          (assoc-in [:anchor offset-keyword] offset))]))
+                                                 indexed-components)]
     (replace-adjusted-components hdn adjusted-indexed-components)))
 
 (defn arrange-orles [hdn indexed-components]
@@ -137,29 +138,30 @@
         default-size 3
         spacing 2
         initial-spacing 3
-        adjusted-indexed-components (for [[real-index [parent-index component]] (map-indexed vector indexed-components)]
-                                      (let [index (min real-index 5)
-                                            size (-> component :geometry :size (or default-size))
-                                            size-so-far (->> indexed-components
-                                                             (take index)
-                                                             (map second)
-                                                             (map (fn [component]
-                                                                    (-> component
-                                                                        :thickness
-                                                                        (or default-size))))
-                                                             (reduce +))
-                                            offset (+ size-so-far
-                                                      initial-spacing
-                                                      (* index spacing))]
-                                        [parent-index
-                                         (assoc component
-                                                :thickness (if (-> component
-                                                                   :line
-                                                                   (or :straight)
-                                                                   (not= :straight))
-                                                             (/ size 2)
-                                                             size)
-                                                :distance offset)]))]
+        adjusted-indexed-components (map-indexed (fn [real-index [parent-index component]]
+                                                   (let [index (min real-index 5)
+                                                         size (-> component :geometry :size (or default-size))
+                                                         size-so-far (->> indexed-components
+                                                                          (take index)
+                                                                          (map second)
+                                                                          (map (fn [component]
+                                                                                 (-> component
+                                                                                     :thickness
+                                                                                     (or default-size))))
+                                                                          (reduce +))
+                                                         offset (+ size-so-far
+                                                                   initial-spacing
+                                                                   (* index spacing))]
+                                                     [parent-index
+                                                      (assoc component
+                                                             :thickness (if (-> component
+                                                                                :line
+                                                                                (or :straight)
+                                                                                (not= :straight))
+                                                                          (/ size 2)
+                                                                          size)
+                                                             :distance offset)]))
+                                                 indexed-components)]
     (replace-adjusted-components hdn adjusted-indexed-components)))
 
 (defn arrange-ordinaries [hdn indexed-components]

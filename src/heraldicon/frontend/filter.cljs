@@ -280,10 +280,11 @@
             (when display-selected-item?
               [result-card all-items-path (:id selected-item) kind nil selected-item-path
                :selection-placeholder? true])
-            (doall
-             (for [item display-items]
-               ^{:key (:id item)}
-               [result-card all-items-path (:id item) kind on-select selected-item-path]))
+            (into [:<>]
+                  (map (fn [item]
+                         ^{:key (:id item)}
+                         [result-card all-items-path (:id item) kind on-select selected-item-path]))
+                  display-items)
             (when-not (= (count filtered-items)
                          (count display-items))
               [:li.filter-result-card-wrapper.filter-component-show-more

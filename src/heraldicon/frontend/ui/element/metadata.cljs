@@ -97,24 +97,25 @@
                 :type "button"}
                [tr :string.button/add]]]]
             [:hr]
-            (doall
-             (for [[n v] (sort metadata)]
-               ^{:key n}
-               [:div.ui-setting {:style {:margin-top "10px"
-                                         :white-space "nowrap"}}
-                [:label
-                 n]
-                [:div.option
-                 [:input {:value v
-                          :on-change #(rf/dispatch-sync [::add-metadata context
-                                                         n
-                                                         (-> % .-target .-value)])
-                          :type "text"
-                          :style {:margin-right "0.5em"}}]
-                 [:button
-                  {:on-click #(rf/dispatch [::remove-metadata context n])
-                   :type "button"}
-                  [tr :string.option.outline-mode-choice/remove]]]]))])]]])))
+            (into [:<>]
+                  (map (fn [[n v]]
+                         ^{:key n}
+                         [:div.ui-setting {:style {:margin-top "10px"
+                                                   :white-space "nowrap"}}
+                          [:label
+                           n]
+                          [:div.option
+                           [:input {:value v
+                                    :on-change #(rf/dispatch-sync [::add-metadata context
+                                                                   n
+                                                                   (-> % .-target .-value)])
+                                    :type "text"
+                                    :style {:margin-right "0.5em"}}]
+                           [:button
+                            {:on-click #(rf/dispatch [::remove-metadata context n])
+                             :type "button"}
+                            [tr :string.option.outline-mode-choice/remove]]]]))
+                  (sort metadata))])]]])))
 
 (defmethod ui.interface/form-element :metadata [context]
   [metadata-submenu context])

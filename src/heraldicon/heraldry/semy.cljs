@@ -125,30 +125,28 @@
                                   :environment charge-environment))]
     [:g
      [:defs
-      [:pattern {:id pattern-id
-                 :width part-width
-                 :height part-height
-                 :x (+ (:x top-left)
-                       (* part-width offset-x)
-                       shift-x)
-                 :y (+ (:y top-left)
-                       (* part-height offset-y)
-                       shift-y)
-                 :pattern-units "userSpaceOnUse"}
-       (doall
-        (for [[idx shift] (map-indexed
-                           vector
-                           (cond->
-                             [v/zero
-                              (v/Vector. part-width 0)
-                              (v/Vector. 0 part-height)
-                              (v/Vector. part-width part-height)]
-                             (not rectangular?) (conj (v/Vector. part-width-half part-height-half))))]
-          ^{:key idx}
-          [charge.interface/render-charge
-           (-> charge-context
-               (assoc :anchor-override shift)
-               (update :environment shift-environment shift))]))]]
+      (into [:pattern {:id pattern-id
+                       :width part-width
+                       :height part-height
+                       :x (+ (:x top-left)
+                             (* part-width offset-x)
+                             shift-x)
+                       :y (+ (:y top-left)
+                             (* part-height offset-y)
+                             shift-y)
+                       :pattern-units "userSpaceOnUse"}]
+            (map-indexed (fn [idx shift]
+                           ^{:key idx}
+                           [charge.interface/render-charge
+                            (-> charge-context
+                                (assoc :anchor-override shift)
+                                (update :environment shift-environment shift))]))
+            (cond->
+              [v/zero
+               (v/Vector. part-width 0)
+               (v/Vector. 0 part-height)
+               (v/Vector. part-width part-height)]
+              (not rectangular?) (conj (v/Vector. part-width-half part-height-half))))]
      [:g {:transform (str "rotate(" (- rotation) ")")}
       [:rect {:x -500
               :y -500

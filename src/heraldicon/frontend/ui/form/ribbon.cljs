@@ -55,11 +55,11 @@
          [:div.bottom {:style {:width "20em"}}
           [tr tooltip]]])]
 
-     [:ul
-      (doall
-       (for [idx (range num-segments)]
-         ^{:key idx}
-         [segment-form (c/++ context :segments idx)]))]
+     (into [:ul]
+           (map (fn [idx]
+                  ^{:key idx}
+                  [segment-form (c/++ context :segments idx)]))
+           (range num-segments))
 
      [:p {:style {:color "#f86"}}
       [tr :string.ribbon.text/svg-font-rendering-warning]]]))

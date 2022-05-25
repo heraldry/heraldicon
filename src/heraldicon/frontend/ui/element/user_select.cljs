@@ -40,12 +40,12 @@
      user-list
      [:username]
      (fn [& {:keys [items]}]
-       [:ul.user-list
-        (doall
-         (for [user (sort-by (comp s/lower-case :username) items)]
-           ^{:key (:id user)}
-           [:li.user
-            [link-fn user]]))])
+       (into [:ul.user-list]
+             (map (fn [user]
+                    ^{:key (:id user)}
+                    [:li.user
+                     [link-fn user]]))
+             (sort-by (comp s/lower-case :username) items)))
      refresh-fn
      :hide-access-filter? true
      :hide-ownership-filter? true]))

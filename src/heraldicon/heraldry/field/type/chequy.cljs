@@ -113,47 +113,50 @@
           [:path {:d (str "M 0,0 v " part-height)}]
           [:path {:d (str "M 0," part-height " h " part-width)}]
           [:path {:d (str "M " part-width ",0 v " part-height)}]]])
-      (doall
-       (for [idx (range num-base-fields)]
-         ^{:key idx}
-         [:pattern {:id (str pattern-id "-" idx)
-                    :width (* part-width num-base-fields)
-                    :height (* part-height num-base-fields)
-                    :x (+ (:x top-left)
-                          (* part-width offset-x)
-                          shift-x)
-                    :y (+ (:y top-left)
-                          (* part-height offset-y)
-                          shift-y)
-                    :pattern-units "userSpaceOnUse"}
-          [:rect {:x 0
-                  :y 0
-                  :width (* part-width num-base-fields)
-                  :height (* part-height num-base-fields)
-                  :fill "#000000"}]
-          (for [j (range num-base-fields)
-                i (range num-base-fields)]
-            (when (-> i (+ j) (mod num-base-fields) (= idx))
-              ^{:key [i j]}
-              [:rect {:x (* i part-width)
-                      :y (* j part-height)
-                      :width part-width
-                      :height part-height
-                      :fill "#ffffff"}]))]))]
-     (doall
-      (for [idx (range num-base-fields)]
-        (let [mask-id (uid/generate "mask")]
-          ^{:key idx}
-          [:<>
-           [:mask {:id mask-id}
-            [:rect {:x -500
-                    :y -500
-                    :width 1100
-                    :height 1100
-                    :fill (str "url(#" pattern-id "-" idx ")")}]]
-           [tincture/tinctured-field
-            (c/++ context :fields idx)
-            :mask-id mask-id]])))
+      (into [:<>]
+            (map (fn [idx]
+                   ^{:key idx}
+                   [:pattern {:id (str pattern-id "-" idx)
+                              :width (* part-width num-base-fields)
+                              :height (* part-height num-base-fields)
+                              :x (+ (:x top-left)
+                                    (* part-width offset-x)
+                                    shift-x)
+                              :y (+ (:y top-left)
+                                    (* part-height offset-y)
+                                    shift-y)
+                              :pattern-units "userSpaceOnUse"}
+                    [:rect {:x 0
+                            :y 0
+                            :width (* part-width num-base-fields)
+                            :height (* part-height num-base-fields)
+                            :fill "#000000"}]
+                    (into [:<>]
+                          (for [j (range num-base-fields)
+                                i (range num-base-fields)]
+                            (when (-> i (+ j) (mod num-base-fields) (= idx))
+                              ^{:key [i j]}
+                              [:rect {:x (* i part-width)
+                                      :y (* j part-height)
+                                      :width part-width
+                                      :height part-height
+                                      :fill "#ffffff"}])))]))
+            (range num-base-fields))]
+     (into [:<>]
+           (map (fn [idx]
+                  (let [mask-id (uid/generate "mask")]
+                    ^{:key idx}
+                    [:<>
+                     [:mask {:id mask-id}
+                      [:rect {:x -500
+                              :y -500
+                              :width 1100
+                              :height 1100
+                              :fill (str "url(#" pattern-id "-" idx ")")}]]
+                     [tincture/tinctured-field
+                      (c/++ context :fields idx)
+                      :mask-id mask-id]])))
+           (range num-base-fields))
      (when outline?
        [:rect {:x -500
                :y -500

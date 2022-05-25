@@ -47,9 +47,11 @@
            [escutcheon-choice context value choice-name :on-click? false]]]
          {:style {:width "17.5em"
                   :vertical-align "top"}}
-         (for [[display-name key] choices]
-           ^{:key key}
-           [escutcheon-choice context key display-name :selected? (= key value)])]]])))
+         (into [:<>]
+               (map (fn [[display-name key]]
+                      ^{:key key}
+                      [escutcheon-choice context key display-name :selected? (= key value)]))
+               choices)]]])))
 
 (defmethod ui.interface/form-element :escutcheon-select [context]
   [escutcheon-select context])

@@ -50,14 +50,11 @@
     context))
 
 (defn render-components [context]
-  [:<>
-   (doall
-    (for [idx (range (interface/get-list-size (c/++ context :components)))
-          :while (field-path-allowed?
-                  (c/++ context :components idx))]
-      ^{:key idx}
-      [interface/render-component
-       (c/++ context :components idx)]))])
+  (into [:<>]
+        (for [idx (range (interface/get-list-size (c/++ context :components)))
+              :while (field-path-allowed? (c/++ context :components idx))]
+          ^{:key idx}
+          [interface/render-component (c/++ context :components idx)])))
 
 (declare render)
 
@@ -125,50 +122,49 @@
                    :fill "url(#selected)"}])]))))
 
 (defn- make-subfields* [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
-  [:<>
-   (doall
-    (for [[idx [part-context [shape bounding-box-points meta] overlap-paths]]
-          (map-indexed vector (map vector paths parts mask-overlaps))]
-      (let [clip-path-id (uid/generate (str "clip-" idx))
-            env (environment/create
-                 (if (map? shape)
-                   (update shape :paths #(into []
-                                               (map path/make-path)
-                                               %))
-                   {:paths [(path/make-path shape)]})
-                 (merge meta
-                        {:parent context
-                         :parent-environment parent-environment
-                         :bounding-box (bb/from-points bounding-box-points)}))
-            environment-shape-paths (-> env :shape :paths)]
-        ^{:key idx}
-        [:<>
-         [:defs
-          [(if svg-export?
-             :mask
-             :clipPath) {:id clip-path-id}
-           [:path {:d (s/join "" environment-shape-paths)
-                   :clip-rule "evenodd"
-                   :fill-rule "evenodd"
-                   :fill "#fff"}]
-           (when svg-export?
-             (cond
-               (= overlap-paths :all) [:path {:d (s/join "" environment-shape-paths)
-                                              :fill "none"
-                                              :stroke-width overlap-stroke-width
-                                              :stroke "#fff"}]
-               overlap-paths (doall
-                              (for [[idx shape] (map-indexed vector overlap-paths)]
-                                ^{:key idx}
-                                [:path {:d shape
-                                        :fill "none"
-                                        :stroke-width overlap-stroke-width
-                                        :stroke "#fff"}]))))]]
+  (into [:<>]
+        (map-indexed (fn [idx [part-context [shape bounding-box-points meta] overlap-paths]]
+                       (let [clip-path-id (uid/generate (str "clip-" idx))
+                             env (environment/create
+                                  (if (map? shape)
+                                    (update shape :paths #(into []
+                                                                (map path/make-path)
+                                                                %))
+                                    {:paths [(path/make-path shape)]})
+                                  (merge meta
+                                         {:parent context
+                                          :parent-environment parent-environment
+                                          :bounding-box (bb/from-points bounding-box-points)}))
+                             environment-shape-paths (-> env :shape :paths)]
+                         ^{:key idx}
+                         [:<>
+                          [:defs
+                           [(if svg-export?
+                              :mask
+                              :clipPath) {:id clip-path-id}
+                            [:path {:d (s/join "" environment-shape-paths)
+                                    :clip-rule "evenodd"
+                                    :fill-rule "evenodd"
+                                    :fill "#fff"}]
+                            (when svg-export?
+                              (cond
+                                (= overlap-paths :all) [:path {:d (s/join "" environment-shape-paths)
+                                                               :fill "none"
+                                                               :stroke-width overlap-stroke-width
+                                                               :stroke "#fff"}]
+                                overlap-paths (map-indexed (fn [idx shape]
+                                                             ^{:key idx}
+                                                             [:path {:d shape
+                                                                     :fill "none"
+                                                                     :stroke-width overlap-stroke-width
+                                                                     :stroke "#fff"}])
+                                                           overlap-paths)))]]
 
-         [:g {(if svg-export?
-                :mask
-                :clip-path) (str "url(#" clip-path-id ")")}
-          [render (c/<< part-context :environment env)]]])))])
+                          [:g {(if svg-export?
+                                 :mask
+                                 :clip-path) (str "url(#" clip-path-id ")")}
+                           [render (c/<< part-context :environment env)]]])))
+        (map vector paths parts mask-overlaps)))
 
 (defn make-subfields [context parts mask-overlaps parent-environment]
   (make-subfields* context

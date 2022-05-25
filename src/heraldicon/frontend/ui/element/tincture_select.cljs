@@ -47,15 +47,17 @@
           [:div {:style {:transform "translate(-0.4em,0)"}}
            [tincture-choice context value choice-name :on-click? false]]]
          {:style {:width "22em"}}
-         (doall
-          (for [[group-name & group] choices]
-            ^{:key group-name}
-            [:<>
-             [:h4 [tr group-name]]
-             (doall
-              (for [[display-name key] group]
-                ^{:key display-name}
-                [tincture-choice context key display-name :selected? (= key value)]))]))]]])))
+         (into [:<>]
+               (map (fn [[group-name & group]]
+                      (into
+                       ^{:key group-name}
+                       [:<>
+                        [:h4 [tr group-name]]]
+                       (map (fn [[display-name key]]
+                              ^{:key display-name}
+                              [tincture-choice context key display-name :selected? (= key value)]))
+                       group)))
+               choices)]]])))
 
 (defmethod ui.interface/form-element :tincture-select [context]
   [tincture-select context])

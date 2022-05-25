@@ -273,13 +273,13 @@
                                   :margin-left "0.2em"}}
        [render-icon (:level first-message)]
        [:div.bottom {:style {:width "25em"}}
-        [:ul {:style {:position "relative"
-                      :padding-left "1.8em"}}
-         (doall
-          (for [[idx {:keys [level message]}] (map-indexed vector validation)]
-            ^{:key idx}
-            [:li [:div {:style {:position "absolute"
-                                :left "0em"}}
-                  [render-icon level]]
-             [tr message]]))]]])
+        (into [:ul {:style {:position "relative"
+                            :padding-left "1.8em"}}]
+              (map-indexed (fn [idx {:keys [level message]}]
+                             ^{:key idx}
+                             [:li [:div {:style {:position "absolute"
+                                                 :left "0em"}}
+                                   [render-icon level]]
+                              [tr message]]))
+              validation)]])
     [:<>]))

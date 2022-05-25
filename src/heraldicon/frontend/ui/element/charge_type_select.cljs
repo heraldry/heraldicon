@@ -93,10 +93,12 @@
                   :top "10vh"
                   :height "80vh"}}
          [:div
-          (for [[display-name key] choices]
-            ^{:key key}
-            [charge-type-choice (:path charge-context) key display-name :selected? (and (= key value)
-                                                                                        (not variant))])
+          (into [:<>]
+                (map (fn [[display-name key]]
+                       ^{:key key}
+                       [charge-type-choice (:path charge-context) key display-name :selected? (and (= key value)
+                                                                                                   (not variant))]))
+                choices)
           [charge-select/list-charges
            (fn [{:keys [id latest-version data]}]
              {:href (reife/href :view-charge-by-id {:id (id/for-url id)})

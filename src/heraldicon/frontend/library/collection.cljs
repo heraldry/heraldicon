@@ -189,25 +189,26 @@
                       :font-size 50}}
        name]]
      [:g {:transform "translate(0,60)"}
-      (doall
-       (for [idx (range num-elements)]
-         (let [x (mod idx num-columns)
-               y (quot idx num-columns)]
-           ^{:key idx}
-           [:g {:on-click #(on-arms-click % idx)
-                :style {:cursor "pointer"}}
-            [render-arms
-             (+ margin
-                (* x (+ arms-width
-                        margin))
-                (+ (/ arms-width 2)))
-             (+ margin
-                (* y (+ arms-height
-                        margin))
-                (+ (/ arms-height 2)))
-             arms-width
-             (conj form-db-path :data :elements idx)
-             :font font]])))
+      (into [:<>]
+            (map (fn [idx]
+                   (let [x (mod idx num-columns)
+                         y (quot idx num-columns)]
+                     ^{:key idx}
+                     [:g {:on-click #(on-arms-click % idx)
+                          :style {:cursor "pointer"}}
+                      [render-arms
+                       (+ margin
+                          (* x (+ arms-width
+                                  margin))
+                          (+ (/ arms-width 2)))
+                       (+ margin
+                          (* y (+ arms-height
+                                  margin))
+                          (+ (/ arms-height 2)))
+                       arms-width
+                       (conj form-db-path :data :elements idx)
+                       :font font]])))
+            (range num-elements))
 
       (when allow-adding?
         (let [x (mod num-elements num-columns)

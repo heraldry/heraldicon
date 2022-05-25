@@ -88,14 +88,14 @@
                                       language-menu-open?-path])}
      [selected-language-option]
      " "]
-    [:ul.nav-menu.nav-menu-children
-     {:style {:display (if @(rf/subscribe [:heraldicon.frontend.header/menu-open?
-                                           language-menu-open?-path])
-                         "block"
-                         "none")}}
-     (doall
-      (for [language-code (keys locale/all)]
-        ^{:key language-code}
-        [:li.nav-menu-item
-         [language-option language-code
-          :on-click #(rf/dispatch [::set-language language-code])]]))]]])
+    (into [:ul.nav-menu.nav-menu-children
+           {:style {:display (if @(rf/subscribe [:heraldicon.frontend.header/menu-open?
+                                                 language-menu-open?-path])
+                               "block"
+                               "none")}}]
+          (map (fn [language-code]
+                 ^{:key language-code}
+                 [:li.nav-menu-item
+                  [language-option language-code
+                   :on-click #(rf/dispatch [::set-language language-code])]]))
+          (keys locale/all))]])

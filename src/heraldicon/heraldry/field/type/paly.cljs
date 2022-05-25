@@ -199,10 +199,11 @@
                     vec
                     (conj nil))
         outlines (when outline?
-                   [:g (outline/style context)
-                    (for [i (range (dec num-fields-x))]
-                      ^{:key i}
-                      [:path {:d (nth edges i)}])])]
+                   (into [:g (outline/style context)]
+                         (map (fn [i]
+                                ^{:key i}
+                                [:path {:d (nth edges i)}]))
+                         (range (dec num-fields-x))))]
     [:<>
      [shared/make-subfields
       context parts

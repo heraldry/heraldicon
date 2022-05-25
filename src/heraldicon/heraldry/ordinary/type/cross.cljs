@@ -270,28 +270,28 @@
                           line-pale-bottom-right-data] fess-bottom-right outline? context]
        [line/render line [line-pale-bottom-left-data
                           line-fess-bottom-left-data] pale-bottom-left outline? context]])
-     [:<>
-      (for [[chevron-angle
-             corner-point] [[225 corner-top-left]
-                            [315 corner-top-right]
-                            [135 corner-bottom-left]
-                            [45 corner-bottom-right]]]
-        ^{:key chevron-angle}
-        [cottising/render-chevron-cottise
-         (c/++ context :cottising :cottise-1)
-         :cottise-2 :cottise-opposite-1
-         :distance-fn (fn [distance half-joint-angle-rad]
-                        (-> (+ distance)
-                            (/ 100)
-                            (* width)
-                            (- line-pale-top-left-min)
-                            (/ (if (zero? half-joint-angle-rad)
-                                 0.00001
-                                 (Math/sin half-joint-angle-rad)))))
-         :alignment :right
-         :width width
-         :height height
-         :chevron-angle chevron-angle
-         :joint-angle 90
-         :corner-point corner-point
-         :swap-lines? true])]]))
+     (into [:<>]
+           (map (fn [[chevron-angle corner-point]]
+                  ^{:key chevron-angle}
+                  [cottising/render-chevron-cottise
+                   (c/++ context :cottising :cottise-1)
+                   :cottise-2 :cottise-opposite-1
+                   :distance-fn (fn [distance half-joint-angle-rad]
+                                  (-> (+ distance)
+                                      (/ 100)
+                                      (* width)
+                                      (- line-pale-top-left-min)
+                                      (/ (if (zero? half-joint-angle-rad)
+                                           0.00001
+                                           (Math/sin half-joint-angle-rad)))))
+                   :alignment :right
+                   :width width
+                   :height height
+                   :chevron-angle chevron-angle
+                   :joint-angle 90
+                   :corner-point corner-point
+                   :swap-lines? true]))
+           [[225 corner-top-left]
+            [315 corner-top-right]
+            [135 corner-bottom-left]
+            [45 corner-bottom-right]])]))

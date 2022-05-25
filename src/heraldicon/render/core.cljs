@@ -135,17 +135,16 @@
                  [:path {:d (s/join "" (-> environment :shape :paths))}]])]}))
 
 (defn helm [context & {:keys [below-shield?]}]
-  [:<>
-   (doall
-    (for [[idx self-below-shield?] (interface/get-element-indices
-                                    (c/++ context :components))]
-      ^{:key idx}
-      [interface/render-component
-       (-> context
-           (c/++ :components idx)
-           (assoc :auto-resize? false
-                  :self-below-shield? self-below-shield?
-                  :render-pass-below-shield? below-shield?))]))])
+  (into [:<>]
+        (map (fn [[idx self-below-shield?]]
+               ^{:key idx}
+               [interface/render-component
+                (-> context
+                    (c/++ :components idx)
+                    (assoc :auto-resize? false
+                           :self-below-shield? self-below-shield?
+                           :render-pass-below-shield? below-shield?))])
+             (interface/get-element-indices (c/++ context :components)))))
 
 (defn helms [context width]
   (let [num-helms (interface/get-list-size (c/++ context :elements))]
@@ -165,41 +164,41 @@
         {:width (- width
                    (* 2 gap))
          :height total-height
-         :result-below-shield [:g
-                               (doall
-                                (for [idx (range num-helms)]
-                                  (let [helm-environment (environment/create
-                                                          nil
-                                                          {:bounding-box (bb/BoundingBox.
-                                                                          (+ (* idx helm-width-with-gap)
-                                                                             gap)
-                                                                          (+ (* idx helm-width-with-gap)
-                                                                             gap
-                                                                             helm-width)
-                                                                          (- helm-height)
-                                                                          0)})]
-                                    ^{:key idx}
-                                    [helm (-> context
-                                              (c/++ :elements idx)
-                                              (assoc :environment helm-environment))
-                                     :below-shield? true])))]
-         :result-above-shield [:g
-                               (doall
-                                (for [idx (range num-helms)]
-                                  (let [helm-environment (environment/create
-                                                          nil
-                                                          {:bounding-box (bb/BoundingBox.
-                                                                          (+ (* idx helm-width-with-gap)
-                                                                             gap)
-                                                                          (+ (* idx helm-width-with-gap)
-                                                                             gap
-                                                                             helm-width)
-                                                                          (- helm-height)
-                                                                          0)})]
-                                    ^{:key idx}
-                                    [helm (-> context
-                                              (c/++ :elements idx)
-                                              (assoc :environment helm-environment))])))]}))))
+         :result-below-shield (into [:g]
+                                    (map (fn [idx]
+                                           (let [helm-environment (environment/create
+                                                                   nil
+                                                                   {:bounding-box (bb/BoundingBox.
+                                                                                   (+ (* idx helm-width-with-gap)
+                                                                                      gap)
+                                                                                   (+ (* idx helm-width-with-gap)
+                                                                                      gap
+                                                                                      helm-width)
+                                                                                   (- helm-height)
+                                                                                   0)})]
+                                             ^{:key idx}
+                                             [helm (-> context
+                                                       (c/++ :elements idx)
+                                                       (assoc :environment helm-environment))
+                                              :below-shield? true])))
+                                    (range num-helms))
+         :result-above-shield (into [:g]
+                                    (map (fn [idx]
+                                           (let [helm-environment (environment/create
+                                                                   nil
+                                                                   {:bounding-box (bb/BoundingBox.
+                                                                                   (+ (* idx helm-width-with-gap)
+                                                                                      gap)
+                                                                                   (+ (* idx helm-width-with-gap)
+                                                                                      gap
+                                                                                      helm-width)
+                                                                                   (- helm-height)
+                                                                                   0)})]
+                                             ^{:key idx}
+                                             [helm (-> context
+                                                       (c/++ :elements idx)
+                                                       (assoc :environment helm-environment))])))
+                                    (range num-helms))}))))
 
 (defn ribbon [{:keys [select-component-fn
                       svg-export?] :as context}
@@ -222,119 +221,116 @@
                             (colour/darken foreground-colour)
                             (tincture/pick tincture-background context))
         text-colour (tincture/pick tincture-text context)]
-    [:g (when-not svg-export?
-          {:on-click (when select-component-fn
-                       #(select-component-fn % (c/-- context)))
-           :style {:cursor "pointer"}})
-     (doall
-      (for [[idx partial-curve] (->> curves
-                                     (map-indexed vector)
-                                     (sort-by (fn [[idx _]]
-                                                [(-> segments
-                                                     (get idx)
-                                                     :z-index
-                                                     (or 1000))
-                                                 idx])))]
-        (let [top-edge (path/curve-to-relative partial-curve)
-              [first-edge-vector second-edge-vector] (get edge-vectors idx)
-              first-edge-vector (v/mul first-edge-vector thickness)
-              second-edge-vector (v/mul second-edge-vector thickness)
-              full-path (cond
-                          (or (zero? end-split)
-                              (< 0 idx (dec num-curves))) (str top-edge
-                                                               (path/line-to second-edge-vector)
-                                                               (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                               (path/line-to (v/mul first-edge-vector -1)))
-                          ;; special case of only one segment with end-split > 0
-                          (and (pos? end-split)
-                               (zero? idx)
-                               (= idx (dec num-curves))) (str top-edge
-                                                              (string/combine " "
-                                                                              (ribbon/split-end
-                                                                               :end
-                                                                               partial-curve
-                                                                               (/ end-split 2)
-                                                                               second-edge-vector))
-                                                              (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                              (string/combine " "
-                                                                              (ribbon/split-end
-                                                                               :start
-                                                                               partial-curve
-                                                                               (/ end-split 2)
-                                                                               first-edge-vector)))
-                          (and (pos? end-split)
-                               (zero? idx)) (str top-edge
-                                                 (path/line-to second-edge-vector)
-                                                 (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                 (string/combine " "
-                                                                 (ribbon/split-end
-                                                                  :start
-                                                                  partial-curve
-                                                                  end-split
-                                                                  first-edge-vector)))
-                          (and (pos? end-split)
-                               (= idx (dec num-curves))) (str top-edge
-                                                              (string/combine " "
-                                                                              (ribbon/split-end
-                                                                               :end
-                                                                               partial-curve
-                                                                               end-split
-                                                                               second-edge-vector))
-                                                              (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
-                                                              (path/line-to (v/mul first-edge-vector -1))))
-              segment-context (c/++ context :segments idx)
-              segment-type (interface/get-raw-data (c/++ segment-context :type))
-              foreground? (#{:heraldry.ribbon.segment.type/foreground
-                             :heraldry.ribbon.segment.type/foreground-with-text} segment-type)
-              text (some-> (interface/get-sanitized-data (c/++ segment-context :text))
-                           (s/replace #"[*]" "⬪"))
-              text? (and (= segment-type :heraldry.ribbon.segment.type/foreground-with-text)
-                         (some-> text
-                                 s/trim
-                                 count
-                                 pos?))]
-          ^{:key idx}
-          [:g
-           [:path {:d full-path
-                   :style (merge (when outline?
-                                   (outline/style context))
-                                 (when outline?
-                                   {:stroke-width outline-thickness})
-                                 {:fill (if foreground?
-                                          foreground-colour
-                                          background-colour)})}]
-           (when text?
-             (let [path-id (uid/generate "path")
-                   spacing (interface/get-sanitized-data (c/++ segment-context :spacing))
-                   offset-x (interface/get-sanitized-data (c/++ segment-context :offset-x))
-                   offset-y (interface/get-sanitized-data (c/++ segment-context :offset-y))
-                   font (some-> (interface/get-sanitized-data (c/++ segment-context :font))
-                                font/css-string)
-                   font-scale (interface/get-sanitized-data (c/++ segment-context :font-scale))
-                   font-size (* font-scale thickness)
-                   spacing (* spacing font-size)
-                   text-path-start (v/add (ffirst partial-curve)
-                                          (v/mul first-edge-vector (- 0.6 offset-y)))
-                   text-path-end (v/add (last (last partial-curve))
-                                        (v/mul second-edge-vector (- 0.6 offset-y)))
-                   text-path (ribbon/project-path-to
-                              partial-curve
-                              text-path-start
-                              text-path-end)]
-               [:text.no-select {:fill text-colour
-                                 :text-anchor "middle"
-                                 :style {:font-family font
-                                         :font-size font-size}}
-                [:defs
-                 [:path {:id path-id
-                         :d (str "M " (v/->str text-path-start) " " text-path)}]]
-                [:textPath {:href (str "#" path-id)
-                            :alignment-baseline "middle"
-                            :method "align"
-                            :lengthAdjust "spacing"
-                            :letter-spacing spacing
-                            :startOffset (str (+ 50 (* offset-x 100)) "%")}
-                 text]]))])))]))
+    (into [:g (when-not svg-export?
+                {:on-click (when select-component-fn
+                             #(select-component-fn % (c/-- context)))
+                 :style {:cursor "pointer"}})]
+          (map (fn [[idx partial-curve]]
+                 (let [top-edge (path/curve-to-relative partial-curve)
+                       [first-edge-vector second-edge-vector] (get edge-vectors idx)
+                       first-edge-vector (v/mul first-edge-vector thickness)
+                       second-edge-vector (v/mul second-edge-vector thickness)
+                       full-path (cond
+                                   (or (zero? end-split)
+                                       (< 0 idx (dec num-curves))) (str top-edge
+                                                                        (path/line-to second-edge-vector)
+                                                                        (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                                        (path/line-to (v/mul first-edge-vector -1)))
+                               ;; special case of only one segment with end-split > 0
+                                   (and (pos? end-split)
+                                        (zero? idx)
+                                        (= idx (dec num-curves))) (str top-edge
+                                                                       (string/combine " "
+                                                                                       (ribbon/split-end
+                                                                                        :end
+                                                                                        partial-curve
+                                                                                        (/ end-split 2)
+                                                                                        second-edge-vector))
+                                                                       (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                                       (string/combine " "
+                                                                                       (ribbon/split-end
+                                                                                        :start
+                                                                                        partial-curve
+                                                                                        (/ end-split 2)
+                                                                                        first-edge-vector)))
+                                   (and (pos? end-split)
+                                        (zero? idx)) (str top-edge
+                                                          (path/line-to second-edge-vector)
+                                                          (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                          (string/combine " "
+                                                                          (ribbon/split-end
+                                                                           :start
+                                                                           partial-curve
+                                                                           end-split
+                                                                           first-edge-vector)))
+                                   (and (pos? end-split)
+                                        (= idx (dec num-curves))) (str top-edge
+                                                                       (string/combine " "
+                                                                                       (ribbon/split-end
+                                                                                        :end
+                                                                                        partial-curve
+                                                                                        end-split
+                                                                                        second-edge-vector))
+                                                                       (ribbon/project-bottom-edge partial-curve first-edge-vector second-edge-vector)
+                                                                       (path/line-to (v/mul first-edge-vector -1))))
+                       segment-context (c/++ context :segments idx)
+                       segment-type (interface/get-raw-data (c/++ segment-context :type))
+                       foreground? (#{:heraldry.ribbon.segment.type/foreground
+                                      :heraldry.ribbon.segment.type/foreground-with-text} segment-type)
+                       text (some-> (interface/get-sanitized-data (c/++ segment-context :text))
+                                    (s/replace #"[*]" "⬪"))
+                       text? (and (= segment-type :heraldry.ribbon.segment.type/foreground-with-text)
+                                  (some-> text
+                                          s/trim
+                                          count
+                                          pos?))]
+                   ^{:key idx}
+                   [:g
+                    [:path {:d full-path
+                            :style (merge (when outline?
+                                            (outline/style context))
+                                          (when outline?
+                                            {:stroke-width outline-thickness})
+                                          {:fill (if foreground?
+                                                   foreground-colour
+                                                   background-colour)})}]
+                    (when text?
+                      (let [path-id (uid/generate "path")
+                            spacing (interface/get-sanitized-data (c/++ segment-context :spacing))
+                            offset-x (interface/get-sanitized-data (c/++ segment-context :offset-x))
+                            offset-y (interface/get-sanitized-data (c/++ segment-context :offset-y))
+                            font (some-> (interface/get-sanitized-data (c/++ segment-context :font))
+                                         font/css-string)
+                            font-scale (interface/get-sanitized-data (c/++ segment-context :font-scale))
+                            font-size (* font-scale thickness)
+                            spacing (* spacing font-size)
+                            text-path-start (v/add (ffirst partial-curve)
+                                                   (v/mul first-edge-vector (- 0.6 offset-y)))
+                            text-path-end (v/add (last (last partial-curve))
+                                                 (v/mul second-edge-vector (- 0.6 offset-y)))
+                            text-path (ribbon/project-path-to
+                                       partial-curve
+                                       text-path-start
+                                       text-path-end)]
+                        [:text.no-select {:fill text-colour
+                                          :text-anchor "middle"
+                                          :style {:font-family font
+                                                  :font-size font-size}}
+                         [:defs
+                          [:path {:id path-id
+                                  :d (str "M " (v/->str text-path-start) " " text-path)}]]
+                         [:textPath {:href (str "#" path-id)
+                                     :alignment-baseline "middle"
+                                     :method "align"
+                                     :lengthAdjust "spacing"
+                                     :letter-spacing spacing
+                                     :startOffset (str (+ 50 (* offset-x 100)) "%")}
+                          text]]))])))
+          (sort-by (fn [[idx _]]
+                     [(or (:z-index (get segments idx))
+                          1000)
+                      idx])
+                   (map-indexed vector curves)))))
 
 (defn ribbon-standalone [{:keys [svg-export?
                                  target-width
@@ -452,20 +448,20 @@
        :bounding-box nil})))
 
 (defn ornaments-elements [context & {:keys [below-shield?]}]
-  [:<>
-   (doall
-    (for [[idx self-below-shield?] (interface/get-element-indices context)]
-      (let [updated-context (-> context
-                                (c/++ idx)
-                                (assoc :auto-resize? false
-                                       :self-below-shield? self-below-shield?
-                                       :render-pass-below-shield? below-shield?))
-            motto? (interface/motto? updated-context)]
-        ^{:key idx}
-        [:<>
-         (if motto?
-           (:result (motto updated-context))
-           [interface/render-component updated-context])])))])
+  (into [:<>]
+        (map (fn [[idx self-below-shield?]]
+               (let [updated-context (-> context
+                                         (c/++ idx)
+                                         (assoc :auto-resize? false
+                                                :self-below-shield? self-below-shield?
+                                                :render-pass-below-shield? below-shield?))
+                     motto? (interface/motto? updated-context)]
+                 ^{:key idx}
+                 [:<>
+                  (if motto?
+                    (:result (motto updated-context))
+                    [interface/render-component updated-context])])))
+        (interface/get-element-indices context)))
 
 (defn ornaments [context coa-bounding-box]
   (let [{bb-min-x :min-x
@@ -746,9 +742,9 @@
                             result-height
                             1])
         used-fonts (into #{}
-                         (filter identity)
-                         (for [j (range (interface/get-list-size (c/++ context :segments)))]
-                           (interface/get-sanitized-data (c/++ context :segments j :font))))]
+                         (keep (fn [j]
+                                 (interface/get-sanitized-data (c/++ context :segments j :font))))
+                         (range (interface/get-list-size (c/++ context :segments))))]
     [:svg (merge
            {:viewBox (str "0 0 " document-width " " document-height)}
            (if svg-export?

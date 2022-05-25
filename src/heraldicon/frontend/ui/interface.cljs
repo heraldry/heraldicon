@@ -4,23 +4,16 @@
    [heraldicon.interface :as interface]
    [taoensso.timbre :as log]))
 
-;; component-node-data
-
 (defmulti component-node-data interface/effective-component-type)
 
 (defmethod component-node-data nil [context]
   (log/warn :not-implemented "component-node-data" context)
   {:title (str "unknown")})
 
-;; component-form-data
-
 (defmulti component-form-data interface/effective-component-type)
 
 (defmethod component-form-data nil [_context]
-  {:form (fn [_context]
-           [:<>])})
-
-;; form-element
+  {:form (constantly [:<>])})
 
 (defn default-element [type]
   (case type
@@ -41,7 +34,7 @@
     [:div (str "not implemented: " context options)]))
 
 (defn form-elements [context options]
-  [:<>
-   (doall
-    (for [option options]
-      ^{:key option} [form-element (c/++ context option)]))])
+  (into [:<>]
+        (map (fn [option]
+               ^{:key option} [form-element (c/++ context option)]))
+        options))

@@ -235,12 +235,11 @@
             buttons)]
 
      (when open?
-       [:ul
-        (for [{node-context :context
-               title :title
-               buttons :buttons} nodes]
-          ^{:key node-context} [:li [component-node node-context
-                                     :title title :parent-buttons buttons]])])]))
+       (into [:ul]
+             (map (fn [{:keys [context title buttons]}]
+                    ^{:key context}
+                    [:li [component-node context :title title :parent-buttons buttons]]))
+             nodes))]))
 
 (def node-render-options
   {:render-options {:theme :wappenwiki
@@ -251,13 +250,15 @@
 
 (defn component-tree [paths]
   [:div.ui-tree
-   [:ul
-    (for [[idx node-path] (map-indexed vector paths)]
-      ^{:key idx} [:li
-                   (if (= node-path :spacer)
-                     [:div {:style {:height "1em"}}]
-                     [component-node (merge node-render-options
-                                            {:path node-path})])])]])
+   (into [:ul]
+         (map-indexed (fn [idx node-path]
+                        ^{:key idx}
+                        [:li
+                         (if (= node-path :spacer)
+                           [:div {:style {:height "1em"}}]
+                           [component-node (merge node-render-options
+                                                  {:path node-path})])]))
+         paths)])
 
 (defn raw-component-form [context]
   (let [node-data (raw-component-node context)]

@@ -68,16 +68,17 @@
      :manual-blazon])
 
    (when (show-tinctures-only? (interface/get-raw-data (c/++ context :type)))
-     [:<>
-      [:div {:style {:margin-bottom "1em"}}]
-      (for [idx (range (interface/get-list-size (c/++ context :fields)))]
-        ^{:key idx}
-        [:<>
-         [tincture-select/tincture-select (c/++ context :fields idx :tincture)]
-         [ui.interface/form-element (c/++ context :fields idx :pattern-scaling)]
-         [ui.interface/form-element (c/++ context :fields idx :pattern-rotation)]
-         [ui.interface/form-element (c/++ context :fields idx :pattern-offset-x)]
-         [ui.interface/form-element (c/++ context :fields idx :pattern-offset-y)]])])])
+     (into [:<>
+            [:div {:style {:margin-bottom "1em"}}]]
+           (map (fn [idx]
+                  ^{:key idx}
+                  [:<>
+                   [tincture-select/tincture-select (c/++ context :fields idx :tincture)]
+                   [ui.interface/form-element (c/++ context :fields idx :pattern-scaling)]
+                   [ui.interface/form-element (c/++ context :fields idx :pattern-rotation)]
+                   [ui.interface/form-element (c/++ context :fields idx :pattern-offset-x)]
+                   [ui.interface/form-element (c/++ context :fields idx :pattern-offset-y)]]))
+           (range (interface/get-list-size (c/++ context :fields)))))])
 
 (defn parent-context [{:keys [path] :as context}]
   (let [index (last path)

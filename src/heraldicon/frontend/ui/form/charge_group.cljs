@@ -185,28 +185,28 @@
                :height 200
                :style {:stroke "#000"
                        :fill "none"}}]
-       [:g {:transform "translate(100,100)"}
-        (doall
-         (for [[idx {:keys [point charge-index slot-path]}] (map-indexed vector slot-positions)]
-           (let [color (if (nil? charge-index)
-                         "#fff"
-                         (-> charge-index
-                             (mod (count preview-tinctures))
-                             (->> (get preview-tinctures))
-                             (tincture/pick context)))]
-             ^{:key idx}
-             [:g {:transform (str "translate(" (v/->str point) ")")
-                  :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])
-                  :style {:cursor "pointer"}}
-              [:circle {:r dot-size
-                        :style {:stroke "#000"
-                                :stroke-width 0.5
-                                :fill color}}]
-              (when (>= charge-index (count preview-tinctures))
-                [:circle {:r (* 2 (quot charge-index (count preview-tinctures)))
-                          :style {:stroke "#000"
-                                  :stroke-width 0.5
-                                  :fill "#fff"}}])])))]]]
+       (into [:g {:transform "translate(100,100)"}]
+             (map-indexed (fn [idx {:keys [point charge-index slot-path]}]
+                            (let [color (if (nil? charge-index)
+                                          "#fff"
+                                          (-> charge-index
+                                              (mod (count preview-tinctures))
+                                              (->> (get preview-tinctures))
+                                              (tincture/pick context)))]
+                              ^{:key idx}
+                              [:g {:transform (str "translate(" (v/->str point) ")")
+                                   :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])
+                                   :style {:cursor "pointer"}}
+                               [:circle {:r dot-size
+                                         :style {:stroke "#000"
+                                                 :stroke-width 0.5
+                                                 :fill color}}]
+                               (when (>= charge-index (count preview-tinctures))
+                                 [:circle {:r (* 2 (quot charge-index (count preview-tinctures)))
+                                           :style {:stroke "#000"
+                                                   :stroke-width 0.5
+                                                   :fill "#fff"}}])])))
+             slot-positions)]]
      [:div.tooltip.info {:style {:display "inline-block"
                                  :margin-left "0.2em"
                                  :vertical-align "top"}}
@@ -285,30 +285,30 @@
             [:i.fas.fa-plus] " " [tr :string.button/add]]]
 
           [:div.option.charge-group-strips
-           [:ul
-            (doall
-             (for [idx (range num-strips)]
-               (let [strip-context (c/++ strips-context idx)]
-                 ^{:key idx}
-                 [:li
-                  [:div.no-select {:style {:padding-right "10px"
-                                           :white-space "nowrap"}}
-                   [:a (if (zero? idx)
-                         {:class "disabled"}
-                         {:on-click #(state/dispatch-on-event % [:move-element strip-context (dec idx)])})
-                    [:i.fas.fa-chevron-up]]
-                   " "
-                   [:a (if (= idx (dec num-strips))
-                         {:class "disabled"}
-                         {:on-click #(state/dispatch-on-event % [:move-element strip-context (inc idx)])})
-                    [:i.fas.fa-chevron-down]]]
-                  [:div
-                   [strip-form strip-context type-str]]
-                  [:div {:style {:padding-left "10px"}}
-                   [:a (if (< num-strips 2)
-                         {:class "disabled"}
-                         {:on-click #(state/dispatch-on-event % [:remove-element strip-context])})
-                    [:i.far.fa-trash-alt]]]])))]]]))
+           (into [:ul]
+                 (map (fn [idx]
+                        (let [strip-context (c/++ strips-context idx)]
+                          ^{:key idx}
+                          [:li
+                           [:div.no-select {:style {:padding-right "10px"
+                                                    :white-space "nowrap"}}
+                            [:a (if (zero? idx)
+                                  {:class "disabled"}
+                                  {:on-click #(state/dispatch-on-event % [:move-element strip-context (dec idx)])})
+                             [:i.fas.fa-chevron-up]]
+                            " "
+                            [:a (if (= idx (dec num-strips))
+                                  {:class "disabled"}
+                                  {:on-click #(state/dispatch-on-event % [:move-element strip-context (inc idx)])})
+                             [:i.fas.fa-chevron-down]]]
+                           [:div
+                            [strip-form strip-context type-str]]
+                           [:div {:style {:padding-left "10px"}}
+                            [:a (if (< num-strips 2)
+                                  {:class "disabled"}
+                                  {:on-click #(state/dispatch-on-event % [:remove-element strip-context])})
+                             [:i.far.fa-trash-alt]]]])))
+                 (range num-strips))]]))
 
      [ui.interface/form-element (c/++ context :manual-blazon)]]))
 

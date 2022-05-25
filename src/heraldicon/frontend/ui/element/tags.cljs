@@ -77,17 +77,18 @@
                                   (get tags tag)])
                                #(compare %2 %1)
                                (keys tags)))]
-    [:div.tags {:style style}
-     (for [tag sorted-tags]
-       ^{:key tag}
-       [tag-view (if (seq? tags)
-                   tag
-                   (str (name tag) ": " (get tags tag)))
-        :on-delete (when on-delete
-                     #(on-delete tag))
-        :on-click (when on-click
-                    #(on-click tag))
-        :selected? (get selected tag)])]))
+    (into [:div.tags {:style style}]
+          (map (fn [tag]
+                 ^{:key tag}
+                 [tag-view (if (seq? tags)
+                             tag
+                             (str (name tag) ": " (get tags tag)))
+                  :on-delete (when on-delete
+                               #(on-delete tag))
+                  :on-click (when on-click
+                              #(on-click tag))
+                  :selected? (get selected tag)]))
+          sorted-tags)))
 
 (defn form [{:keys [path] :as context}]
   (let [value (interface/get-raw-data (c/<< context :path value-path))
