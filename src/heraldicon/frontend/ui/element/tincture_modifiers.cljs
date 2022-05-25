@@ -105,15 +105,17 @@
                 (when (get supported-tinctures :highlight)
                   [range/range-input
                    (c/++ context :highlight)])
-                (for [t sorted-supported-tinctures]
-                  ^{:key t}
-                  [tincture-select/tincture-select
-                   (c/++ context t)
-                   ;; TODO: this could probably be generated dynamically in charge/options
-                   :default-option {:type :choice
-                                    :choices tincture/choices
-                                    :default :none
-                                    :ui {:label (blazonry/translate-cap-first t)}}])]])]])))))
+                (into [:<>]
+                      (map (fn [t]
+                             ^{:key t}
+                             [tincture-select/tincture-select
+                              (c/++ context t)
+                              ;; TODO: this could probably be generated dynamically in charge/options
+                              :default-option {:type :choice
+                                               :choices tincture/choices
+                                               :default :none
+                                               :ui {:label (blazonry/translate-cap-first t)}}]))
+                      sorted-supported-tinctures)]])]])))))
 
 (defmethod ui.interface/form-element :tincture-modifiers [context]
   [tincture-modifiers-submenu context])

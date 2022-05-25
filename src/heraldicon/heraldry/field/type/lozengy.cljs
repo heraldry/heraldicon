@@ -149,21 +149,22 @@
        [:path {:d lozenge-shape
                :fill "#000000"}]]]
      [:g {:transform (str "rotate(" (- rotation) ")")}
-      (doall
-       (for [idx (range 2)]
-         (let [mask-id (uid/generate "mask")]
-           ^{:key idx}
-           [:<>
-            [:mask {:id mask-id}
-             [:rect {:x -500
-                     :y -500
-                     :width 1100
-                     :height 1100
-                     :fill (str "url(#" pattern-id "-" idx ")")}]]
-            [tincture/tinctured-field
-             (c/++ context :fields idx)
-             :mask-id mask-id
-             :transform (str "rotate(" rotation ")")]])))
+      (into [:<>]
+            (map (fn [idx]
+                   (let [mask-id (uid/generate "mask")]
+                     ^{:key idx}
+                     [:<>
+                      [:mask {:id mask-id}
+                       [:rect {:x -500
+                               :y -500
+                               :width 1100
+                               :height 1100
+                               :fill (str "url(#" pattern-id "-" idx ")")}]]
+                      [tincture/tinctured-field
+                       (c/++ context :fields idx)
+                       :mask-id mask-id
+                       :transform (str "rotate(" rotation ")")]])))
+            (range 2))
       (when outline?
         [:rect {:x -500
                 :y -500

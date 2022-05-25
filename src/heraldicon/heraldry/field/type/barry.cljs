@@ -189,10 +189,11 @@
                     vec
                     (conj nil))
         outlines (when outline?
-                   [:g (outline/style context)
-                    (for [i (range (dec num-fields-y))]
-                      ^{:key i}
-                      [:path {:d (nth edges i)}])])]
+                   (into [:g (outline/style context)]
+                         (map (fn [i]
+                                ^{:key i}
+                                [:path {:d (nth edges i)}]))
+                         (range (dec num-fields-y))))]
     [parts overlap outlines]))
 
 (defmethod field.interface/render-field field-type

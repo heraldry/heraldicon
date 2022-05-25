@@ -78,9 +78,11 @@
           [:div {:style {:transform "translate(-0.42em,0)"}}
            [ordinary-type-choice path value choice-name :on-click? false]]]
          {:style {:width "21.5em"}}
-         (for [[display-name key] choices]
-           ^{:key key}
-           [ordinary-type-choice path key display-name :selected? (= key value)])]]])))
+         (into [:<>]
+               (map (fn [[display-name key]]
+                      ^{:key key}
+                      [ordinary-type-choice path key display-name :selected? (= key value)]))
+               choices)]]])))
 
 (defmethod ui.interface/form-element :ordinary-type-select [context]
   [ordinary-type-select context])

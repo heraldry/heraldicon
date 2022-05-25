@@ -221,16 +221,20 @@
         outline-extra 50
         outlines (when outline?
                    [:g (outline/style context)
-                    (for [i (range 1 num-fields-x)]
-                      (let [x1 (+ x0 (* i part-width))]
-                        ^{:key [:x i]}
-                        [:path {:d (path/make-path ["M" [x1 (- y0 outline-extra)]
-                                                    "L" [x1 (+ y0 required-height outline-extra)]])}]))
-                    (for [j (range 1 num-fields-y)]
-                      (let [y1 (+ y0 (* j part-height))]
-                        ^{:key [:y j]}
-                        [:path {:d (path/make-path ["M" [(- x0 outline-extra) y1]
-                                                    "L" [(+ x0 required-width outline-extra) y1]])}]))])]
+                    (into [:<>]
+                          (map (fn [i]
+                                 (let [x1 (+ x0 (* i part-width))]
+                                   ^{:key [:x i]}
+                                   [:path {:d (path/make-path ["M" [x1 (- y0 outline-extra)]
+                                                               "L" [x1 (+ y0 required-height outline-extra)]])}])))
+                          (range 1 num-fields-x))
+                    (into [:<>]
+                          (map (fn [j]
+                                 (let [y1 (+ y0 (* j part-height))]
+                                   ^{:key [:y j]}
+                                   [:path {:d (path/make-path ["M" [(- x0 outline-extra) y1]
+                                                               "L" [(+ x0 required-width outline-extra) y1]])}])))
+                          (range 1 num-fields-y))])]
     [:<>
      [shared/make-subfields
       context parts

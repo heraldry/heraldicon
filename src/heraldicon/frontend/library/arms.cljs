@@ -43,14 +43,14 @@
     (when (-> charges-data first :id)
       [:<>
        [:h3 [tr :string.entity/charges]]
-       [:ul
-        (doall
-         (for [charge charges-data]
-           (when (:id charge)
-             ^{:key charge}
-             [attribution/for-charge
-              {:path [:context :charge-data]
-               :charge-data charge}])))]])))
+       (into [:ul]
+             (keep (fn [charge]
+                     (when (:id charge)
+                       ^{:key charge}
+                       [attribution/for-charge
+                        {:path [:context :charge-data]
+                         :charge-data charge}])))
+             charges-data)])))
 
 (defn ribbon-attribution []
   (let [used-ribbons @(rf/subscribe [:used-ribbons (conj form-db-path :data :achievement)])
@@ -58,14 +58,14 @@
     (when (-> ribbons-data first :id)
       [:<>
        [:h3 [tr :string.menu/ribbon-library]]
-       [:ul
-        (doall
-         (for [ribbon ribbons-data]
-           (when (:id ribbon)
-             ^{:key ribbon}
-             [attribution/for-ribbon
-              {:path [:context :ribbon-data]
-               :ribbon-data ribbon}])))]])))
+       (into [:ul]
+             (keep (fn [ribbon]
+                     (when (:id ribbon)
+                       ^{:key ribbon}
+                       [attribution/for-ribbon
+                        {:path [:context :ribbon-data]
+                         :ribbon-data ribbon}])))
+             ribbons-data)])))
 
 (defn attribution []
   (let [attribution-data (attribution/for-arms {:path form-db-path})]

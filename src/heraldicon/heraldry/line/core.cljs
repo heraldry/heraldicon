@@ -545,9 +545,10 @@
 (defn render [line line-datas start outline? context]
   (let [{:keys [fimbriation]} line
         line-start (-> line-datas first :line-start)
-        base-path ["M" (v/add start line-start)
-                   (for [{line-path-snippet :line} line-datas]
-                     (path/stitch line-path-snippet))]
+        base-path (into ["M" (v/add start line-start)]
+                        (map (fn [{line-path-snippet :line}]
+                               (path/stitch line-path-snippet)))
+                        line-datas)
         line-path (path/make-path base-path)
         {:keys [mode
                 alignment
@@ -568,16 +569,18 @@
                                                  (mask-intersection-points start line-datas :up))]
                            (path/make-path [base-path
                                             "l" (-> line-datas last :up)
-                                            (for [mask-point (reverse mask-points)]
-                                              ["L" mask-point])
+                                            (map (fn [mask-point]
+                                                   ["L" mask-point])
+                                                 (reverse mask-points))
                                             "z"])))
         mask-shape-bottom (when (#{:even :inside} alignment)
                             (let [mask-points (into [(v/add start line-start (-> line-datas first :down))]
                                                     (mask-intersection-points start line-datas :down))]
                               (path/make-path [base-path
                                                "l" (-> line-datas last :down)
-                                               (for [mask-point (reverse mask-points)]
-                                                 ["L" mask-point])
+                                               (map (fn [mask-point]
+                                                      ["L" mask-point])
+                                                    (reverse mask-points))
                                                "z"])))
         combined-thickness (+ thickness-1 thickness-2)
         mask-id-top (when mask-shape-top

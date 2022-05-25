@@ -39,19 +39,21 @@
                                       "none")
                            :min-width "7em"}}
       [:li.ui-menu-header [tr title]]
-      (for [{:keys [icon title handler]} menu]
-        (let [handler (when handler
-                        #(do
-                           (rf/dispatch [:ui-hover-menu-close path])
-                           (handler %)))]
-          ^{:key title}
-          [:li.ui-menu-item
-           {:style {:color "#000"}
-            :on-click (when-not disabled? handler)}
-           (when icon
-             [:i.ui-icon {:class icon
-                          :style {:margin-right "5px"
-                                  :color (if disabled?
-                                           "#ccc"
-                                           "#777")}}])
-           [tr title]]))]]))
+      (into [:<>]
+            (map (fn [{:keys [icon title handler]}]
+                   (let [handler (when handler
+                                   #(do
+                                      (rf/dispatch [:ui-hover-menu-close path])
+                                      (handler %)))]
+                     ^{:key title}
+                     [:li.ui-menu-item
+                      {:style {:color "#000"}
+                       :on-click (when-not disabled? handler)}
+                      (when icon
+                        [:i.ui-icon {:class icon
+                                     :style {:margin-right "5px"
+                                             :color (if disabled?
+                                                      "#ccc"
+                                                      "#777")}}])
+                      [tr title]])))
+            menu)]]))

@@ -51,13 +51,17 @@
           [:div {:style {:transform "translate(-0.4em,0)"}}
            [theme-choice context value choice-name :on-click? false]]]
          {:style {:width "22em"}}
-         (for [[group-name & group] choices]
-           ^{:key group-name}
-           [:<>
-            [:h4 [tr group-name]]
-            (for [[display-name key] group]
-              ^{:key display-name}
-              [theme-choice context key display-name :selected? (= key value)])])]]])))
+         (into [:<>]
+               (map (fn [[group-name & group]]
+                      (into
+                       ^{:key group-name}
+                       [:<>
+                        [:h4 [tr group-name]]]
+                       (map (fn [[display-name key]]
+                              ^{:key display-name}
+                              [theme-choice context key display-name :selected? (= key value)]))
+                       group)))
+               choices)]]])))
 
 (defmethod ui.interface/form-element :theme-select [context]
   [theme-select context])

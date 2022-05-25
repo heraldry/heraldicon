@@ -27,18 +27,18 @@
 (defn attributes-view [attributes & {:keys [on-delete
                                             on-click
                                             selected]}]
-  [:div.attributes
-   (doall
-    (for [attribute (sort attributes)]
-      ^{:key attribute}
-      [:<>
-       [attribute-view attribute
-        :on-delete (when on-delete
-                     #(on-delete attribute))
-        :on-click (when on-click
-                    #(on-click attribute))
-        :selected? (get selected attribute)]
-       " "]))])
+  (into [:div.attributes]
+        (map (fn [attribute]
+               ^{:key attribute}
+               [:<>
+                [attribute-view attribute
+                 :on-delete (when on-delete
+                              #(on-delete attribute))
+                 :on-click (when on-click
+                             #(on-click attribute))
+                 :selected? (get selected attribute)]
+                " "]))
+        (sort attributes)))
 
 (defn form [{:keys [path] :as context}]
   (let [attributes (interface/get-raw-data context)]
@@ -47,26 +47,26 @@
                                :white-space "nowrap"}}
       [:label [tr :string.entity/attributes]]
       [:div.option
-       [:select {:on-change #(let [selected (keyword (-> % .-target .-value))]
-                               (rf/dispatch [:add-attribute path selected]))
-                 :value :none}
-        (doall
-         (for [[group-name & group-choices] (concat
-                                             [[(string/str-tr "--- " :string.charge.attribute.ui/add " ---") :none]]
-                                             attributes/attribute-choices)]
-           (if (and (-> group-choices count (= 1))
-                    (-> group-choices first keyword?))
-             (let [key (first group-choices)]
-               ^{:key key}
-               [:option {:value (util/keyword->str key)}
-                (tr group-name)])
-             ^{:key group-name}
-             [:optgroup {:label (tr group-name)}
-              (doall
-               (for [[display-name key] group-choices]
-                 ^{:key key}
-                 [:option {:value (util/keyword->str key)}
-                  (tr display-name)]))])))]
+       (into [:select {:on-change #(let [selected (keyword (-> % .-target .-value))]
+                                     (rf/dispatch [:add-attribute path selected]))
+                       :value :none}]
+             (map (fn [[group-name & group-choices]]
+                    (if (and (-> group-choices count (= 1))
+                             (-> group-choices first keyword?))
+                      (let [key (first group-choices)]
+                        ^{:key key}
+                        [:option {:value (util/keyword->str key)}
+                         (tr group-name)])
+                      (into
+                       ^{:key group-name}
+                       [:optgroup {:label (tr group-name)}]
+                       (map (fn [[display-name key]]
+                              ^{:key key}
+                              [:option {:value (util/keyword->str key)}
+                               (tr display-name)]))
+                       group-choices))))
+             (concat [[(string/str-tr "--- " :string.charge.attribute.ui/add " ---") :none]]
+                     attributes/attribute-choices))
        [:div {:style {:padding-top "10px"}}
         [attributes-view (keys attributes)
          :on-delete #(rf/dispatch [:remove-attribute path %])]]]]]))

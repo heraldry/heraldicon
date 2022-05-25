@@ -10,34 +10,35 @@
 
 (defn raw-select-inline [context value choices & {:keys [on-change component-id keywordize?]
                                                   :or {keywordize? true}}]
-  [:select {:id component-id
-            :value (if keywordize?
-                     (util/keyword->str value)
-                     value)
-            :on-change #(let [selected (cond-> (-> % .-target .-value)
-                                         keywordize? keyword)]
-                          (if on-change
-                            (on-change selected)
-                            (rf/dispatch [:set context selected])))}
-   (doall
-    (for [[group-name & group-choices] choices]
-      (if (and (-> group-choices count (= 1))
-               (-> group-choices first vector? not))
-        (let [key (first group-choices)]
-          ^{:key key}
-          [:option {:value (if keywordize?
-                             (util/keyword->str key)
-                             key)}
-           (tr group-name)])
-        ^{:key group-name}
-        [:optgroup {:label (tr group-name)}
-         (doall
-          (for [[display-name key] group-choices]
-            ^{:key key}
-            [:option {:value (if keywordize?
-                               (util/keyword->str key)
-                               key)}
-             (tr display-name)]))])))])
+  (into [:select {:id component-id
+                  :value (if keywordize?
+                           (util/keyword->str value)
+                           value)
+                  :on-change #(let [selected (cond-> (-> % .-target .-value)
+                                               keywordize? keyword)]
+                                (if on-change
+                                  (on-change selected)
+                                  (rf/dispatch [:set context selected])))}]
+        (map (fn [[group-name & group-choices]]
+               (if (and (-> group-choices count (= 1))
+                        (-> group-choices first vector? not))
+                 (let [key (first group-choices)]
+                   ^{:key key}
+                   [:option {:value (if keywordize?
+                                      (util/keyword->str key)
+                                      key)}
+                    (tr group-name)])
+                 (into
+                  ^{:key group-name}
+                  [:optgroup {:label (tr group-name)}]
+                  (map (fn [[display-name key]]
+                         ^{:key key}
+                         [:option {:value (if keywordize?
+                                            (util/keyword->str key)
+                                            key)}
+                          (tr display-name)]))
+                  group-choices))))
+        choices))
 
 (defn raw-select [context value label choices & {:keys [on-change]}]
   (let [component-id (uid/generate "select")]

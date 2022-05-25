@@ -41,10 +41,14 @@
    [:div.option
     [submenu/submenu context :string.charge-group/select-charge-group-preset
      [tr :string.charge-group.presets/select] {:style {:width "21.5em"}}
-     (for [[group-name & group] charge-group-preset-select-presets/presets]
-       ^{:key group-name}
-       [:<>
-        [:h4 [tr group-name]]
-        (for [[display-name key charge-group charge-adjustments] group]
-          ^{:key display-name}
-          [charge-group-preset-choice path key charge-group charge-adjustments display-name])])]]])
+     (into [:<>]
+           (map (fn [[group-name & group]]
+                  (into
+                   ^{:key group-name}
+                   [:<>
+                    [:h4 [tr group-name]]]
+                   (map (fn [[display-name key charge-group charge-adjustments]]
+                          ^{:key display-name}
+                          [charge-group-preset-choice path key charge-group charge-adjustments display-name]))
+                   group)))
+           charge-group-preset-select-presets/presets)]]])

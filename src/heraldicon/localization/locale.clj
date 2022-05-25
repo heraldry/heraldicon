@@ -44,17 +44,16 @@
         files (into []
                     (filter #(re-matches #".*\.cljs" (.getName %)))
                     (file-seq (io/file "src")))]
-    (doall
-     (for [file files]
-       (->> file
-            .getAbsolutePath
-            slurp
-            (re-seq #":(string[.][a-z0-9.?-]+/[a-z0-9.?-]+)")
-            (map (fn [[_ s]]
-                   (let [k (keyword s)]
-                     (when-not (contains? json-data k)
-                       (log/warn (str "Unknown key '" k "'"))))))
-            doall)))
+    (doseq [file files]
+      (let [string-keys (->> file
+                             .getAbsolutePath
+                             slurp
+                             (re-seq #":(string[.][a-z0-9.?-]+/[a-z0-9.?-]+)")
+                             (map second))]
+        (doseq [s string-keys]
+          (let [k (keyword s)]
+            (when-not (contains? json-data k)
+              (log/warn (str "Unknown key '" k "'")))))))
     nil))
 
 (comment

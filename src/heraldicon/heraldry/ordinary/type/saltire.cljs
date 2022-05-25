@@ -312,29 +312,28 @@
                           line-bottom-left-lower-data] bottom-right-lower outline? context]
        [line/render line [line-bottom-left-upper-data
                           line-top-left-lower-data] bottom-left-upper outline? context]])
-     [:<>
-      (for [[chevron-angle
-             corner-point
-             half-joint-angle] [[270 corner-top (- 90 angle-bottom-right)]
-                                [180 corner-left angle-bottom-right]
-                                [0 corner-right angle-bottom-right]
-                                [90 corner-bottom (- 90 angle-bottom-right)]]]
-        ^{:key chevron-angle}
-        [cottising/render-chevron-cottise
-         (c/++ context :cottising :cottise-1)
-         :cottise-2 :cottise-opposite-1
-         :distance-fn (fn [distance half-joint-angle-rad]
-                        (-> (+ distance)
-                            (/ 100)
-                            (* width)
-                            (- line-top-left-lower-min)
-                            (/ (if (zero? half-joint-angle-rad)
-                                 0.00001
-                                 (Math/sin half-joint-angle-rad)))))
-         :alignment :right
-         :width width
-         :height height
-         :chevron-angle chevron-angle
-         :joint-angle (* 2 half-joint-angle)
-         :corner-point corner-point
-         :swap-lines? true])]]))
+     (into [:<>]
+           (map (fn [[chevron-angle corner-point half-joint-angle]]
+                  ^{:key chevron-angle}
+                  [cottising/render-chevron-cottise
+                   (c/++ context :cottising :cottise-1)
+                   :cottise-2 :cottise-opposite-1
+                   :distance-fn (fn [distance half-joint-angle-rad]
+                                  (-> (+ distance)
+                                      (/ 100)
+                                      (* width)
+                                      (- line-top-left-lower-min)
+                                      (/ (if (zero? half-joint-angle-rad)
+                                           0.00001
+                                           (Math/sin half-joint-angle-rad)))))
+                   :alignment :right
+                   :width width
+                   :height height
+                   :chevron-angle chevron-angle
+                   :joint-angle (* 2 half-joint-angle)
+                   :corner-point corner-point
+                   :swap-lines? true]))
+           [[270 corner-top (- 90 angle-bottom-right)]
+            [180 corner-left angle-bottom-right]
+            [0 corner-right angle-bottom-right]
+            [90 corner-bottom (- 90 angle-bottom-right)]])]))

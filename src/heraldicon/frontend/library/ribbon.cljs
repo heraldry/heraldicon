@@ -94,10 +94,9 @@
     (concat [[-1 (clamp-point (v/sub (first points)
                                      (v/Vector. 50 10)))]]
 
-            (-> points
-                catmullrom/catmullrom
-                (->> (map-indexed (fn [idx leg]
-                                    [idx (bezier/interpolate-point leg 0.5)]))))
+            (map-indexed (fn [idx leg]
+                           [idx (bezier/interpolate-point leg 0.5)])
+                         (catmullrom/catmullrom points))
             [[(dec (count points)) (clamp-point (v/add (last points)
                                                        (v/Vector. 50 10)))]])))
 
@@ -281,15 +280,17 @@
                        :fill "none"}}])]))
 
 (defn grid-lines [width height dx dy]
-  [:g {:style {:stroke "#bbbbbb"
-               :stroke-width 0.2
-               :fill "none"}}
-   (for [x (range 0 (inc width) dx)]
-     ^{:key x}
-     [:path {:d (str "M " x ",0 v" height)}])
-   (for [y (range 0 (inc height) dy)]
-     ^{:key y}
-     [:path {:d (str "M 0," y " h" width)}])])
+  (-> [:g {:style {:stroke "#bbbbbb"
+                   :stroke-width 0.2
+                   :fill "none"}}]
+      (into (map (fn [x]
+                   ^{:key [:vertical x]}
+                   [:path {:d (str "M " x ",0 v" height)}]))
+            (range 0 (inc width) dx))
+      (into (map (fn [y]
+                   ^{:key [:horizontal y]}
+                   [:path {:d (str "M 0," y " h" width)}]))
+            (range 0 (inc height) dy))))
 
 (defn preview []
   (let [[width height] [preview-width preview-height]
@@ -330,13 +331,19 @@
        [render/ribbon (assoc render-context
                              :path ribbon-path) :argent :none :helmet-dark]
        [render-edit-overlay ribbon-path]
-       (doall
-        (for [idx (range num-points)]
-          ^{:key idx} [path-point (conj points-path idx)]))
+
+       (into [:<>]
+             (map (fn [idx]
+                    ^{:key [:point idx]}
+                    [path-point (conj points-path idx)])
+                  (range num-points)))
+
        (when (= edit-mode :add-or-remove)
-         (doall
-          (for [[idx point] @(rf/subscribe [::edit-addable-points points-path])]
-            ^{:key idx} [add-point points-path idx point])))]]]))
+         (into [:<>]
+               (map (fn [[idx point]]
+                      ^{:key [:add-or-remove idx]}
+                      [add-point points-path idx point]))
+               @(rf/subscribe [::edit-addable-points points-path])))]]]))
 
 (defn invalidate-ribbons-cache []
   (let [user-data (user/data)

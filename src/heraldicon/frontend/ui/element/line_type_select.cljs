@@ -44,9 +44,11 @@
           [:div {:style {:transform "translate(-0.6em,0)"}}
            [line-type-choice context value choice-name :on-click? false]]]
          {:style {:width "24em"}}
-         (for [[display-name key] choices]
-           ^{:key display-name}
-           [line-type-choice context key display-name :selected? (= key value)])]]])))
+         (into [:<>]
+               (map (fn [[display-name key]]
+                      ^{:key display-name}
+                      [line-type-choice context key display-name :selected? (= key value)]))
+               choices)]]])))
 
 (defmethod ui.interface/form-element :line-type-select [context]
   [line-type-select context])

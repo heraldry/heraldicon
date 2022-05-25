@@ -36,11 +36,13 @@
        (when label
          [:label [tr label]])
        [:div.option
-        (for [[display-name key] choices]
-          ^{:key key}
-          [radio-choice context key display-name
-           :selected? (= key value)
-           :on-change on-change])
+        (into [:<>]
+              (map (fn [[display-name key]]
+                     ^{:key key}
+                     [radio-choice context key display-name
+                      :selected? (= key value)
+                      :on-change on-change]))
+              choices)
         [value-mode-select/value-mode-select context]]])))
 
 (defmethod ui.interface/form-element :radio-select [context]
