@@ -39,25 +39,21 @@
                   (assoc default/field :tincture :bleu-celeste)]]
     (cond
       (#{:plain :counterchanged} type) []
-      (= :per-saltire type) (into (subvec defaults 0 2)
-                                  [{:type :heraldry.field.type/ref
-                                    :index 1}
-                                   {:type :heraldry.field.type/ref
-                                    :index 0}])
-      (= :quartered type) (into (subvec defaults 0 2)
-                                [{:type :heraldry.field.type/ref
-                                  :index 1}
-                                 {:type :heraldry.field.type/ref
-                                  :index 0}])
-      (= :quarterly type) (-> (subvec defaults 0 2)
-                              (into (map (fn [i]
-                                           (nth defaults (mod (+ i 2) (count defaults)))))
-                                    (range (- num-base-fields 2)))
-                              (into (drop num-base-fields
-                                          (for [j (range num-fields-y)
-                                                i (range num-fields-x)]
-                                            {:type :heraldry.field.type/ref
-                                             :index (mod (+ i j) num-base-fields)}))))
+      (#{:per-saltire
+         :quartered} type) (into (subvec defaults 0 2)
+                                 [{:type :heraldry.field.type/ref
+                                   :index 1}
+                                  {:type :heraldry.field.type/ref
+                                   :index 0}])
+      (= :quarterly type) (let [effective-num-base-fields (min num-fields-x num-base-fields)]
+                            (into []
+                                  (for [j (range num-fields-y)
+                                        i (range num-fields-x)]
+                                    (let [idx (+ (* j num-fields-x) i)]
+                                      (if (< idx effective-num-base-fields)
+                                        (nth defaults idx)
+                                        {:type :heraldry.field.type/ref
+                                         :index (mod (+ i j) effective-num-base-fields)})))))
       (= :gyronny type) (into (subvec defaults 0 2)
                               [{:type :heraldry.field.type/ref
                                 :index 1}
@@ -71,66 +67,34 @@
                                 :index 1}
                                {:type :heraldry.field.type/ref
                                 :index 0}])
-      (= :gyronny-n type) (into (subvec defaults 0 num-base-fields)
-                                (drop num-base-fields
-                                      (for [i (range num-fields-x)]
-                                        {:type :heraldry.field.type/ref
-                                         :index (mod i num-base-fields)})))
-      (= :paly type) (if (= num-fields-y 1)
-                       (subvec defaults 0 1)
-                       (-> (subvec defaults 0 2)
-                           (into (map (fn [i]
-                                        (nth defaults (mod (+ i 2) (count defaults)))))
-                                 (range (- num-base-fields 2)))
-                           (into (map (fn [i]
-                                        {:type :heraldry.field.type/ref
-                                         :index (mod i num-base-fields)}))
-                                 (range (- num-fields-x num-base-fields)))))
-      (= :barry type) (if (= num-fields-y 1)
-                        (subvec defaults 0 1)
-                        (-> (subvec defaults 0 2)
-                            (into (map (fn [i]
-                                         (nth defaults (mod (+ i 2) (count defaults)))))
-                                  (range (- num-base-fields 2)))
-                            (into (map (fn [i]
-                                         {:type :heraldry.field.type/ref
-                                          :index (mod i num-base-fields)}))
-                                  (range (- num-fields-y num-base-fields)))))
-      (= :chevronny type) (if (= num-fields-y 1)
-                            (subvec defaults 0 1)
-                            (-> (subvec defaults 0 2)
-                                (into (map (fn [i]
-                                             (nth defaults (mod (+ i 2) (count defaults)))))
-                                      (range (- num-base-fields 2)))
-                                (into (map (fn [i]
-                                             {:type :heraldry.field.type/ref
-                                              :index (mod i num-base-fields)}))
-                                      (range (- num-fields-y num-base-fields)))))
-      (= :chequy type) (if (= [num-fields-x num-fields-y] [1 1])
-                         (subvec defaults 0 1)
-                         (into (subvec defaults 0 2)
-                               (map (fn [i]
-                                      (nth defaults (mod (+ i 2) (count defaults)))))
-                               (range (- num-base-fields 2))))
+      (#{:gyronny-n
+         :paly} type) (into []
+                            (map (fn [i]
+                                   (if (< i num-base-fields)
+                                     (nth defaults i)
+                                     {:type :heraldry.field.type/ref
+                                      :index (mod i num-base-fields)})))
+                            (range num-fields-x))
+      (#{:barry
+         :chevronny
+         :bendy
+         :bendy-sinister} type) (into []
+                                      (map (fn [i]
+                                             (if (< i num-base-fields)
+                                               (nth defaults i)
+                                               {:type :heraldry.field.type/ref
+                                                :index (mod i num-base-fields)})))
+                                      (range num-fields-y))
+      (= :chequy type) (subvec defaults 0 num-base-fields)
       (#{:vairy
          :potenty
          :papellony
          :masony} type) [(assoc default/field :tincture :azure)
                          (assoc default/field :tincture :argent)]
-      (#{:bendy
-         :bendy-sinister} type) (-> (subvec defaults 0 2)
-                                    (into (map (fn [i]
-                                                 (nth defaults (mod (+ i 2) (count defaults)))))
-                                          (range (- num-base-fields 2)))
-                                    (into (map (fn [i]
-                                                 {:type :heraldry.field.type/ref
-                                                  :index (mod i num-base-fields)}))
-                                          (range (- num-fields-y num-base-fields))))
       (#{:tierced-per-pale
          :tierced-per-fess
          :tierced-per-pall
-         :per-pile} type) (conj (subvec defaults 0 2)
-                                (nth defaults 2))
+         :per-pile} type) (subvec defaults 0 3)
       :else (subvec defaults 0 2))))
 
 (defn default-fields [context]
