@@ -5,8 +5,8 @@
     [:string.charge-group.presets/fesswise :fesswise
      {:type :heraldry.charge-group.type/rows
       :strip-angle 0
-      :spacing 25
-      :stretch 0.866
+      :spacing 30
+      :stretch 1
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
@@ -26,8 +26,8 @@
     [:string.charge-group.presets/bendwise :bendwise
      {:type :heraldry.charge-group.type/rows
       :strip-angle 45
-      :spacing 25
-      :stretch 0.866
+      :spacing 35
+      :stretch 1
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
@@ -36,8 +36,8 @@
     [:string.charge-group.presets/bendwise-sinister :bendwise-sinister
      {:type :heraldry.charge-group.type/rows
       :strip-angle -45
-      :spacing 25
-      :stretch 0.866
+      :spacing 35
+      :stretch 1
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
