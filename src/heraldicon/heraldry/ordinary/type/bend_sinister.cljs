@@ -29,6 +29,7 @@
                                        [:string.option.point-choice/honour :honour]
                                        [:string.option.point-choice/nombril :nombril]
                                        [:string.option.point-choice/top-right :top-right]
+                                       [:string.option.point-choice/center :center]
                                        [:string.option.point-choice/bottom-left :bottom-left]]
                              :default :top-right
                              :ui {:label :string.option/point}}
@@ -38,11 +39,13 @@
         orientation-point-option {:type :choice
                                   :choices (case current-anchor-point
                                              :top-right [[:string.option.point-choice/fess :fess]
+                                                         [:string.option.point-choice/center :center]
                                                          [:string.option.point-choice/chief :chief]
                                                          [:string.option.point-choice/base :base]
                                                          [:string.option.point-choice/honour :honour]
                                                          [:string.option.point-choice/nombril :nombril]
                                                          [:string.option.point-choice/bottom-left :bottom-left]
+                                                         [:string.option.point-choice/center :center]
                                                          [:string.option.orientation-point-choice/angle :angle]]
                                              :bottom-left [[:string.option.point-choice/fess :fess]
                                                            [:string.option.point-choice/chief :chief]
@@ -50,6 +53,7 @@
                                                            [:string.option.point-choice/honour :honour]
                                                            [:string.option.point-choice/nombril :nombril]
                                                            [:string.option.point-choice/top-right :top-right]
+                                                           [:string.option.point-choice/center :center]
                                                            [:string.option.orientation-point-choice/angle :angle]]
                                              [[:string.option.point-choice/top-right :top-right]
                                               [:string.option.point-choice/bottom-left :bottom-left]

@@ -117,6 +117,7 @@
                                 [:string.option.point-choice/top :top]
                                 [:string.option.point-choice/top-right :top-right]
                                 [:string.option.point-choice/left :left]
+                                [:string.option.point-choice/center :center]
                                 [:string.option.point-choice/right :right]
                                 [:string.option.point-choice/bottom-left :bottom-left]
                                 [:string.option.point-choice/bottom :bottom]

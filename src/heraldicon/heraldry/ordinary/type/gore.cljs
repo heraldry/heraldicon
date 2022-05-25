@@ -43,7 +43,8 @@
      {:anchor {:point {:type :choice
                        :choices [[:string.option.point-choice/fess :fess]
                                  [:string.option.point-choice/chief :chief]
-                                 [:string.option.point-choice/base :base]]
+                                 [:string.option.point-choice/base :base]
+                                 [:string.option.point-choice/center :center]]
                        :default :fess
                        :ui {:label :string.option/point}}
                :offset-x {:type :range

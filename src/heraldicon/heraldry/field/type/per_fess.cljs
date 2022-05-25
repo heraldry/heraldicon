@@ -24,6 +24,7 @@
                               [:string.option.point-choice/honour :honour]
                               [:string.option.point-choice/nombril :nombril]
                               [:string.option.point-choice/top :top]
+                              [:string.option.point-choice/center :center]
                               [:string.option.point-choice/bottom :bottom]]
                     :default :fess
                     :ui {:label :string.option/point}}

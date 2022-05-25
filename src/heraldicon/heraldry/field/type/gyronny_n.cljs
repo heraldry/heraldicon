@@ -30,6 +30,7 @@
                                 [:string.option.point-choice/sinister :sinister]
                                 [:string.option.point-choice/honour :honour]
                                 [:string.option.point-choice/nombril :nombril]
+                                [:string.option.point-choice/center :center]
                                 [:string.option.point-choice/angle :angle]]
                       :default :fess
                       :ui {:label :string.option/point}}
