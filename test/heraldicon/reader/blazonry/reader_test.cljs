@@ -458,6 +458,7 @@
                               :field {:type :heraldry.field.type/plain
                                       :tincture :purpure}}]
                    :type :heraldry.charge-group.type/rows
+                   :anchor {:point :center}
                    :spacing 23.75
                    :strips [{:type :heraldry.charge-group.element.type/strip
                              :slots [0 0 0 0]}

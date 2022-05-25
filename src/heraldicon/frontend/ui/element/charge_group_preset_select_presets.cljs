@@ -14,9 +14,10 @@
                 :slots [0 0 0]}]}]
     [:string.charge-group.presets/palewise :palewise
      {:type :heraldry.charge-group.type/columns
+      :anchor {:point :center}
       :strip-angle 0
-      :spacing 20
-      :stretch 0.866
+      :spacing 30
+      :stretch 1
       :charges [{:type :heraldry.charge.type/roundel
                  :field {:type :heraldry.field.type/plain
                          :tincture :azure}}]
@@ -190,6 +191,7 @@
                 :slots [0 0]}]}]
     [:string.charge-group.presets/six :six
      {:type :heraldry.charge-group.type/rows
+      :anchor {:point :center}
       :strip-angle 0
       :spacing 30
       :stretch 0.866

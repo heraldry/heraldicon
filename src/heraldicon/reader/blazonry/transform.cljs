@@ -943,6 +943,7 @@
       (= :arrangement/PALEWISE
          arrangement-type) (merge
                             {:type :heraldry.charge-group.type/columns
+                             :anchor {:point :center}
                              :spacing (/ 95 amount)
                              :strips [{:type :heraldry.charge-group.element.type/strip
                                        :slots (vec (repeat amount 0))}]})
@@ -1005,6 +1006,7 @@
                                   width (apply max amounts)
                                   height (count amounts)]
                               {:type :heraldry.charge-group.type/rows
+                               :anchor {:point :center}
                                :spacing (/ 95 (max width height))
                                :strips (mapv (fn [amount]
                                                {:type :heraldry.charge-group.element.type/strip
