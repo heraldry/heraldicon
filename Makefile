@@ -8,14 +8,19 @@ copy-fonts-to-backend:
 	make remove-backend-fonts
 	cp -r assets/font backend/assets
 
-# PROD
-
 PROD_FRONTEND_RELEASE_DIR = build/prod
 PROD_BACKEND_RELEASE_DIR = backend/build/prod
 PROD_CONFIG = {:closure-defines {heraldicon.config/stage "prod" heraldicon.config/commit "$(COMMIT)"}}}
 
+STAGING_FRONTEND_RELEASE_DIR = build/staging
+STAGING_BACKEND_RELEASE_DIR = backend/build/staging
+STAGING_CONFIG = {:closure-defines {heraldicon.config/stage "staging" heraldicon.config/commit "$(COMMIT)"}}
+
+# PROD
+
 prod-backend-release:
 	rm -rf $(PROD_BACKEND_RELEASE_DIR) 2> /dev/null || true
+	rm -rf $(STAGING_BACKEND_RELEASE_DIR) 2> /dev/null || true
 	npx shadow-cljs release backend --config-merge '$(PROD_CONFIG)'
 
 dirty-prod-backend-deploy: actual-prod-backend-deploy
@@ -56,11 +61,8 @@ actual-prod-frontend-deploy: prod-frontend-release
 
 # STAGING
 
-STAGING_FRONTEND_RELEASE_DIR = build/staging
-STAGING_BACKEND_RELEASE_DIR = backend/build/staging
-STAGING_CONFIG = {:closure-defines {heraldicon.config/stage "staging" heraldicon.config/commit "$(COMMIT)"}}
-
 staging-backend-release:
+	rm -rf $(PROD_BACKEND_RELEASE_DIR) 2> /dev/null || true
 	rm -rf $(STAGING_BACKEND_RELEASE_DIR) 2> /dev/null || true
 	npx shadow-cljs release backend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-to "./backend/build/staging/backend.js"}'
 
