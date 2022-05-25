@@ -242,7 +242,8 @@
              nodes))]))
 
 (def node-render-options
-  {:render-options {:theme :wappenwiki
+  {:render-options {:type :heraldry/render-options
+                    :theme :wappenwiki
                     :outline? true
                     :escutcheon :rectangle
                     :escutcheon-shadow? true}
