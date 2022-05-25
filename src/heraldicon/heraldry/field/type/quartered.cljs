@@ -35,7 +35,8 @@
                                 [:string.option.point-choice/dexter :dexter]
                                 [:string.option.point-choice/sinister :sinister]
                                 [:string.option.point-choice/honour :honour]
-                                [:string.option.point-choice/nombril :nombril]]
+                                [:string.option.point-choice/nombril :nombril]
+                                [:string.option.point-choice/center :center]]
                       :default :fess
                       :ui {:label :string.option/point}}
               :offset-x {:type :range

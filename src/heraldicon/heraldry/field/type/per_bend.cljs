@@ -26,6 +26,7 @@
                                        [:string.option.point-choice/honour :honour]
                                        [:string.option.point-choice/nombril :nombril]
                                        [:string.option.point-choice/top-left :top-left]
+                                       [:string.option.point-choice/center :center]
                                        [:string.option.point-choice/bottom-right :bottom-right]]
                              :default :top-left
                              :ui {:label :string.option/point}}
@@ -40,6 +41,7 @@
                                                         [:string.option.point-choice/honour :honour]
                                                         [:string.option.point-choice/nombril :nombril]
                                                         [:string.option.point-choice/bottom-right :bottom-right]
+                                                        [:string.option.point-choice/center :center]
                                                         [:string.option.orientation-point-choice/angle :angle]]
                                              :bottom-right [[:string.option.point-choice/fess :fess]
                                                             [:string.option.point-choice/chief :chief]
@@ -47,6 +49,7 @@
                                                             [:string.option.point-choice/honour :honour]
                                                             [:string.option.point-choice/nombril :nombril]
                                                             [:string.option.point-choice/top-left :top-left]
+                                                            [:string.option.point-choice/center :center]
                                                             [:string.option.orientation-point-choice/angle :angle]]
                                              [[:string.option.point-choice/top-left :top-left]
                                               [:string.option.point-choice/bottom-right :bottom-right]

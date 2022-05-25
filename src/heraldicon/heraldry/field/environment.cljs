@@ -37,6 +37,8 @@
                    (v/Vector. (:x top) (+ min-y (/ (- max-x min-x) 2)))
                    (v/avg top-left bottom-right)))
         left (v/Vector. min-x (:y fess))
+        center (v/Vector. (/ (+ min-x max-x) 2)
+                          (/ (+ min-y max-y) 2))
         right (v/Vector. max-x (:y fess))
         honour (v/avg top fess)
         nombril (v/avg honour bottom)
@@ -56,6 +58,7 @@
               :bottom bottom
               :fess fess
               :left left
+              :center center
               :right right
               :honour honour
               :nombril nombril
