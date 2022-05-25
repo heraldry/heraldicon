@@ -37,7 +37,9 @@
                      :canary_handler heraldicon.backend.canary/handler}
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es6
-                              :warnings {:redef false}}
+                              :warnings {:redef false}
+                              :source-map true
+                              :source-map-detail-level :all}
 
            :dev {:output-to "./backend/build/dev/backend.js"}
 
