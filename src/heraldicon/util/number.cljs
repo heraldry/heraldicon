@@ -1,5 +1,6 @@
 (ns heraldicon.util.number
-  (:require [clojure.string :as s]))
+  (:require
+   [clojure.string :as s]))
 
 ;; https://gist.github.com/jimweirich/1388782
 (def -roman-reductions
