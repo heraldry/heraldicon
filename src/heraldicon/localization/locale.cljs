@@ -8,11 +8,10 @@
    :ru (load-locale "ru-RU.json")})
 
 (defn string [s]
-  (->> JSON-DICT
-       keys
-       (map (fn [k]
-              [k (get-in JSON-DICT [k s])]))
-       (into {})))
+  (into {}
+        (map (fn [[k strings]]
+               [k (get strings s)]))
+        JSON-DICT))
 
 (def all
   {:en :string.language/english

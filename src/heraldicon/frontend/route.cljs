@@ -238,11 +238,10 @@
 (defn link
   [{:keys [to path-params query-params class style]} & children]
   (let [href (resolve-href to path-params query-params)]
-    (into
-     [:a {:href href
-          :class class
-          :style style}]
-     children)))
+    (into [:a {:href href
+               :class class
+               :style style}]
+          children)))
 
 (defn- name-matches?
   [name path-params match]

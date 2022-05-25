@@ -166,8 +166,8 @@
                                       [100 100])
                      colours (into {}
                                    (map (fn [c]
-                                          [c :keep]) (find-colours
-                                                      edn-data)))
+                                          [c :keep]))
+                                   (find-colours edn-data))
                      edn-data (assoc-in edn-data
                                         [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")"))
                      existing-colours @(rf/subscribe [:get (conj db-path :colours)])

@@ -13,22 +13,21 @@
     :else (str data)))
 
 (defn combine [separator words]
-  (let [translated (->> locale/all
-                        keys
-                        (map (fn [language]
-                               [language
-                                (->> words
-                                     (map (fn [s]
-                                            (if (or (string? s)
-                                                    (keyword? s)
-                                                    (map? s))
-                                              s
-                                              (str s))))
-                                     (map (fn [s]
-                                            (tr-raw s language)))
-                                     (filter (comp pos? count))
-                                     (s/join (tr-raw separator language)))]))
-                        (into {}))]
+  (let [translated (into {}
+                         (map (fn [language]
+                                [language
+                                 (->> words
+                                      (map (fn [s]
+                                             (if (or (string? s)
+                                                     (keyword? s)
+                                                     (map? s))
+                                               s
+                                               (str s))))
+                                      (map (fn [s]
+                                             (tr-raw s language)))
+                                      (filter (comp pos? count))
+                                      (s/join (tr-raw separator language)))]))
+                         (keys locale/all))]
     (if (-> translated
             vals
             set
@@ -38,16 +37,15 @@
       translated)))
 
 (defn str-tr [& strs]
-  (let [translated (->> locale/all
-                        keys
-                        (map (fn [language]
-                               [language
-                                (->> strs
-                                     (map (fn [s]
-                                            (tr-raw s language)))
-                                     (filter (comp pos? count))
-                                     s/join)]))
-                        (into {}))]
+  (let [translated (into {}
+                         (map (fn [language]
+                                [language
+                                 (->> strs
+                                      (map (fn [s]
+                                             (tr-raw s language)))
+                                      (filter (comp pos? count))
+                                      s/join)]))
+                         (keys locale/all))]
     (if (-> translated
             vals
             set
@@ -76,8 +74,8 @@
 
 (defn upper-case-first [s]
   (if (map? s)
-    (->> s
-         (map (fn [[k v]]
-                [k (upper-case-first-str v)]))
-         (into {}))
+    (into {}
+          (map (fn [[k v]]
+                 [k (upper-case-first-str v)]))
+          s)
     (upper-case-first-str s)))

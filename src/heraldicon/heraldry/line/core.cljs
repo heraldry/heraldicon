@@ -68,8 +68,8 @@
                                              effective-mirrored? (->>
                                                                    (concat ["h" real-spacing]))))
         line-pattern (if effective-mirrored?
-                       [(-> line-pattern
-                            (->> (into ["M" 0 0]))
+                       [(-> (into ["M" 0 0]
+                                  line-pattern)
                             path/make-path
                             path/parse-path
                             path/reverse
@@ -90,12 +90,11 @@
                             int
                             inc))
         line-start (v/Vector. (min 0 offset-length) line-base)]
-    {:line (-> []
-               (cond->
-                 (pos? offset-length) (into [["h" offset-length]]))
-               (into (repeat repetitions line-pattern))
-               (->> (apply merge))
-               vec)
+    {:line (-> (if (pos? offset-length)
+                 [["h" offset-length]]
+                 [])
+               (concat (repeat repetitions line-pattern))
+               flatten)
      :line-min line-min
      :line-max line-max
      :line-start line-start
@@ -141,14 +140,14 @@
   (-> pattern meta :ns name (s/split ".") last keyword))
 
 (def kinds-pattern-map
-  (->> lines
-       (map (fn [pattern]
-              [(get-line-identifier pattern) (deref pattern)]))
-       (into {})))
+  (into {}
+        (map (fn [pattern]
+               [(get-line-identifier pattern) @pattern]))
+        lines))
 
 (def choices
   (map (fn [pattern]
-         [(-> pattern deref :display-name) (get-line-identifier pattern)])
+         [(:display-name @pattern) (get-line-identifier pattern)])
        lines))
 
 (def line-map
@@ -435,10 +434,7 @@
                      length
                      line-function
                      line-options))
-        line-path (-> line-data
-                      :line
-                      (->> (into ["M" 0 0]))
-                      path/make-path)
+        line-path (path/make-path (into ["M" 0 0] (:line line-data)))
         reversed-path (-> line-path
                           path/parse-path
                           path/reverse)
@@ -519,11 +515,11 @@
         [real-start real-end] (find-real-start-and-end from to line-options)
         angle (v/angle-to-point from to)]
     (apply create-raw (into [line length]
-                            (mapcat identity (merge
-                                              {:real-start real-start
-                                               :real-end real-end
-                                               :angle angle}
-                                              line-options))))))
+                            (mapcat identity)
+                            (merge {:real-start real-start
+                                    :real-end real-end
+                                    :angle angle}
+                                   line-options)))))
 
 (defn mask-intersection-points [start line-datas direction]
   (->> line-datas

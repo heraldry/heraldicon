@@ -195,11 +195,11 @@
                              (conj (v/Vector. label-start row1))
                              (conj (v/Vector. label-end row1)))
      :lines lines
-     :shape (-> ["M" (-> points
-                         first
-                         (v/add (-> lines first :line-start)))]
-                (into (map (comp path/stitch :line) lines))
-                (conj "z"))}))
+     :shape (conj (into ["M" (v/add (first points)
+                                    (-> lines first :line-start))]
+                        (map (comp path/stitch :line))
+                        lines)
+                  "z")}))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type
   [{:keys [environment] :as context}]

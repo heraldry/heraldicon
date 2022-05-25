@@ -80,7 +80,8 @@
      (when (seq warnings)
        (into [:ul.parser-warnings]
              (map (fn [warning]
-                    [:li [tr :string.blazonry-editor/warning] ": " warning]) warnings)))]))
+                    [:li [tr :string.blazonry-editor/warning] ": " warning]))
+             warnings))]))
 
 (defn parser-status []
   @(rf/subscribe [::parser-status]))
@@ -121,23 +122,23 @@
                    :left (.-left rect)}))))))
 
 (def suggestion-hint-order
-  (->> ["layout"
-        "cottising"
-        "line"
-        "fimbriation"
-        "extra tincture"
-        "tincture"
-        "ordinary"
-        "ordinary option"
-        "charge"
-        "charge option"
-        "partition"
-        "attitude"
-        "facing"
-        "number"]
-       (map-indexed (fn [index hint]
-                      [hint index]))
-       (into {})))
+  (into {}
+        (map-indexed (fn [index hint]
+                       [hint index]))
+        ["layout"
+         "cottising"
+         "line"
+         "fimbriation"
+         "extra tincture"
+         "tincture"
+         "ordinary"
+         "ordinary option"
+         "charge"
+         "charge option"
+         "partition"
+         "attitude"
+         "facing"
+         "number"]))
 
 (defn parse-blazonry [value cursor-index parser]
   (try
@@ -481,16 +482,16 @@
          [:ul
           [:li "English blazonry"]
           [:li "TAB auto completes first suggestion"]
-          (into
-           [:<>]
-           (for [[group-name blazons] blazonry-examples]
-             [:li group-name
-              (into
-               [:ul]
-               (for [blazon blazons]
-                 [:li [:span.blazon-example
-                       {:on-click #(set-blazon blazon)}
-                       blazon]]))]))]
+          (into [:<>]
+                (map (fn [[group-name blazons]]
+                       [:li group-name
+                        (into [:ul]
+                              (map (fn [blazon]
+                                     [:li [:span.blazon-example
+                                           {:on-click #(set-blazon blazon)}
+                                           blazon]]))
+                              blazons)]))
+                blazonry-examples)]
          [:p "Some things that still need work or have known issues:"]
          [:ul
           [:li "blazonry in other languages"]

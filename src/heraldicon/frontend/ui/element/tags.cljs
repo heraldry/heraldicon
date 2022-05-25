@@ -14,23 +14,19 @@
 (macros/reg-event-db :add-tags
   (fn [db [_ db-path tags]]
     (update-in db db-path (fn [current-tags]
-                            (-> current-tags
-                                keys
-                                set
-                                (concat tags)
-                                (->> (keep tag/clean)
-                                     set
-                                     (map (fn [tag]
-                                            [tag true]))
-                                     (into {})))))))
+                            (into {}
+                                  (map (fn [tag]
+                                         [tag true]))
+                                  (->> current-tags
+                                       keys
+                                       (concat tags)
+                                       (keep tag/clean)))))))
 
 (macros/reg-event-db :remove-tags
   (fn [db [_ db-path tags]]
     (update-in db db-path (fn [current-tags]
                             (loop [current-tags current-tags
-                                   [tag & remaining] (->> tags
-                                                          (keep tag/clean)
-                                                          set)]
+                                   [tag & remaining] (set (keep tag/clean tags))]
                               (if tag
                                 (recur (dissoc current-tags tag)
                                        remaining)

@@ -249,10 +249,9 @@
    :white argent})
 
 (def defs
-  (->> (merge metals colours)
-       vals
-       (map second)
-       (into [:<>])))
+  (into [:<>]
+        (map second)
+        (vals (merge metals colours))))
 
 (defn get-for [tincture]
   (let [[id _] (clojure.core/or (get metals tincture)

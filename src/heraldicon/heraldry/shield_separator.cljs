@@ -25,7 +25,8 @@
 
 (def add-element-insert-at-bottom-options
   {:post-fn (fn [elements]
-              (let [elements (into [(last elements)] (concat (drop-last elements)))]
+              (let [elements (into [(last elements)]
+                                   (drop-last elements))]
                 (if (-> elements count (= 1))
                   (into elements
                         [default/shield-separator])

@@ -20,12 +20,12 @@
   (-> db
       (update-in state/ui-submenu-open?-path
                  (fn [open-flags]
-                   (->> open-flags
-                        (keep (fn [[key value]]
-                                (when (= key
-                                         (take (count key) path))
-                                  [key value])))
-                        (into {}))))
+                   (into {}
+                         (keep (fn [[key value]]
+                                 (when (= key
+                                          (take (count key) path))
+                                   [key value])))
+                         open-flags)))
       (assoc-in (conj state/ui-submenu-open?-path path) true)))
 
 (macros/reg-event-db :ui-submenu-open
