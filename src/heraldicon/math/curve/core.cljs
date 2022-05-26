@@ -3,9 +3,7 @@
    [heraldicon.math.curve.bezier :as bezier]))
 
 (defn length ^js/Number [curve]
-  (->> curve
-       (map bezier/length)
-       (apply +)))
+  (transduce (map bezier/length) + 0 curve))
 
 (defn split [curve t]
   (let [total-length (length curve)
