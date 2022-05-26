@@ -4,11 +4,11 @@
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.interface :as interface]))
 
-(defn actual-attribution [title creator creator-url url
-                          {:keys [license license-version nature
-                                  source-name source-link
-                                  source-license source-license-version
-                                  source-creator-name source-creator-link]}]
+(defn- actual-attribution [title creator creator-url url
+                           {:keys [license license-version nature
+                                   source-name source-link
+                                   source-license source-license-version
+                                   source-creator-name source-creator-link]}]
   (let [license-url (attribution/license-url license license-version)]
     [:metadata {:xmlns:rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                 :xmlns:cc "http://creativecommons.org/ns#"

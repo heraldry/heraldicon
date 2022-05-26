@@ -1,6 +1,5 @@
 (ns heraldicon.svg.squiggly
   (:require
-   [clojure.walk :as walk]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]
@@ -32,11 +31,3 @@
            curve (catmullrom/catmullrom points)
            new-path (path/curve-to-relative curve)]
        new-path))))
-
-(defn squiggly-paths [data]
-  (walk/postwalk #(cond-> %
-                    (vector? %) ((fn [v]
-                                   (if (= (first v) :d)
-                                     [:d (squiggly-path (second v))]
-                                     v))))
-                 data))

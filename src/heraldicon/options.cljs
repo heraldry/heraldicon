@@ -2,7 +2,7 @@
   (:require
    [clojure.walk :as walk]))
 
-(def option-types #{:range :choice :boolean :text})
+(def ^:private option-types #{:range :choice :boolean :text})
 
 (def manual-blazon
   {:type :text
@@ -69,7 +69,7 @@
         :text (or value (:default options))
         nil))))
 
-(defn get-sanitized-value-or-nil [value options]
+(defn- get-sanitized-value-or-nil [value options]
   (when-not (nil? value)
     (case (:type options)
       :boolean (boolean value)
@@ -101,7 +101,7 @@
       (sanitize data options)
       (get-value data options))))
 
-(defn remove-nil-values-and-empty-maps [m]
+(defn- remove-nil-values-and-empty-maps [m]
   (walk/postwalk #(if (map? %)
                     (into {}
                           (filter (fn [[_ v]]

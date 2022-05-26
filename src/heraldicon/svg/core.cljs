@@ -5,7 +5,7 @@
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.util.uid :as uid]))
 
-(defn split-style-value [value]
+(defn- split-style-value [value]
   (into {}
         (keep (fn [chunk]
                 (let [[k v] (s/split chunk #":" 2)
@@ -40,7 +40,7 @@
        :else v))
    data))
 
-(defn replace-id-references [data id-map]
+(defn- replace-id-references [data id-map]
   (let [prepared-id-map (into {}
                               (mapcat (fn [[k v]]
                                         [[k v]

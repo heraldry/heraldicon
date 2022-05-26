@@ -2,7 +2,7 @@
   (:require
    [heraldicon.math.vector :as v]))
 
-(defn top [& [point]]
+(defn- top [& [point]]
   (-> point
       (or v/zero)
       (assoc :y -1000)))
@@ -35,22 +35,23 @@
   (v/Vector. 1000 1000))
 
 (defn function [type]
-  (get {:top top
-        :bottom bottom
-        :left left
-        :right right
-        :top-left top-left
-        :top-right top-right
-        :bottom-left bottom-left
-        :bottom-right bottom-right} type))
+  (case type
+    :top top
+    :bottom bottom
+    :left left
+    :right right
+    :top-left top-left
+    :top-right top-right
+    :bottom-left bottom-left
+    :bottom-right bottom-right))
 
-(def clockwise-points
+(def ^:private clockwise-points
   [:top-left :top :top-right :right :bottom-right :bottom :bottom-left :left])
 
-(def counter-clockwise-points
+(def ^:private counter-clockwise-points
   [:top-left :left :bottom-left :bottom :bottom-right :right :top-right :top])
 
-(defn relevant-points [points from to]
+(defn- relevant-points [points from to]
   (let [points-before-from (vec (take-while #(not= % from) points))
         rest (subvec points (count points-before-from))
         shifted-points (vec (concat rest points-before-from))
