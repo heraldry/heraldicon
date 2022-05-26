@@ -3,10 +3,10 @@
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
 
-(defrecord BoundingBox [^js/Number min-x
-                        ^js/Number max-x
-                        ^js/Number min-y
-                        ^js/Number max-y])
+(defrecord ^:export BoundingBox [^js/Number min-x
+                                 ^js/Number max-x
+                                 ^js/Number min-y
+                                 ^js/Number max-y])
 
 (defn combine
   (^BoundingBox [^BoundingBox {min-x1 :min-x max-x1 :max-x

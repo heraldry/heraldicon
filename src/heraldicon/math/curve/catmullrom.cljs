@@ -2,7 +2,11 @@
   (:require
    [heraldicon.math.vector :as v]))
 
-(defn smooth-point ^v/Vector [main-fn ^v/Vector p0 ^v/Vector p1 ^v/Vector p2 ^js/Number tension]
+(defn- smooth-point ^v/Vector [main-fn
+                               ^v/Vector p0
+                               ^v/Vector p1
+                               ^v/Vector p2
+                               ^js/Number tension]
   (main-fn p1
            (v/mul (v/sub p2 p0)
                   (/ tension 6))))
