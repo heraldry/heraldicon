@@ -6,7 +6,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
 
-(def license-choices
+(def ^:private license-choices
   [[:string.attribution.license-choice/none :none]
    [:string.attribution.license-choice/cc-attribution :cc-attribution]
    [:string.attribution.license-choice/cc-attribution-share-alike :cc-attribution-share-alike]
@@ -38,7 +38,7 @@
      :cc-attribution-share-alike
      :cc-attribution-non-commercial-share-alike} license))
 
-(defn cc-version-string [version]
+(defn- cc-version-string [version]
   (case version
     :v4 "4.0"
     :v3 "3.0"
@@ -140,7 +140,7 @@
                                                      :default :v4
                                                      :ui {:label :string.attribution/license-version}})))
 
-(defn full-url [context base]
+(defn- full-url [context base]
   (when-let [object-id (interface/get-raw-data (c/++ context :id))]
     (let [version (interface/get-raw-data (c/++ context :version))
           version (if (zero? version)
