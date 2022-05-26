@@ -3,7 +3,7 @@
    ["paper" :refer [Path]]
    [heraldicon.math.angle :as angle]))
 
-(defrecord Vector [^js/Number x ^js/Number y])
+(defrecord ^:export Vector [^js/Number x ^js/Number y])
 
 (def zero
   (Vector. 0 0))
@@ -108,9 +108,9 @@
                              (* y3 x4)))))
            D))))
 
-(defn tangent-point ^Vector [^Vector {cx :x cy :y}
-                             ^js/Number r
-                             ^Vector {px :x py :y}]
+(defn ^:export tangent-point ^Vector [^Vector {cx :x cy :y}
+                                      ^js/Number r
+                                      ^Vector {px :x py :y}]
   (let [dx (- px cx)
         dy (- py cy)
         r2 (* r r)

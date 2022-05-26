@@ -3,7 +3,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]))
 
-(defn square ^js/Number [^js/Number x]
+(defn- square ^js/Number [^js/Number x]
   (* x x))
 
 (defn length ^js/Number [[^v/Vector p1 _ _ ^v/Vector p2]]
