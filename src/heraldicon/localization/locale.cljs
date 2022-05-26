@@ -1,7 +1,7 @@
 (ns heraldicon.localization.locale
   (:require-macros [heraldicon.localization.locale :refer [load-locale]]))
 
-(def JSON-DICT
+(def ^:private JSON-DICT
   {:en (load-locale "en-UK.json")
    :de (load-locale "de-DE.json")
    :pt (load-locale "pt-PT.json")
