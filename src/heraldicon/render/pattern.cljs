@@ -3,7 +3,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.render.theme :as theme]))
 
-(def ermine-shape
+(def ^:private ermine-shape
   [100 160
    "M 47.757634,0 C 60.324696,15.689314 25.136924,21.898666 44.167046,36.607392
     52.24587,41.673746 71.273896,30.723464 54.57765,17.322176
@@ -24,7 +24,7 @@
     14.72282,10.29262 22.083522,12.74406 C 72.710832,110.15215
     57.989412,84.493648 50.808232,47.231516 Z"])
 
-(defn ermine-base [id background foreground]
+(defn- ermine-base [id background foreground]
   (let [width (/ 100 8)
         [shape-width
          shape-height
@@ -50,7 +50,7 @@
       [:path {:d shape
               :transform (str "translate(" spot-width "," spot-height ") scale(" scale "," scale ")")}]]]))
 
-(def void
+(def ^:private void
   (let [width 20
         height width
         dx (/ width 2)
@@ -74,7 +74,7 @@
              :height dy
              :fill "#ddd"}]]))
 
-(def selected
+(def ^:private selected
   (let [spacing 2
         width (* spacing 2)
         size 0.3]

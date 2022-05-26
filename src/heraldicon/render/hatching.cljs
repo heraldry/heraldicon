@@ -3,7 +3,7 @@
 (def spacing 2.5)
 (def line-thickness 0.2)
 
-(def argent
+(def ^:private argent
   (let [id "hatching-argent"]
     [id
      (let [width 10]
@@ -18,7 +18,7 @@
                 :fill "#f5f5f5"}]])]))
 
 #_{:clj-kondo/ignore [:redefined-var]}
-(def or
+(def ^:private or
   (let [id "hatching-or"]
     [id
      (let [width (* spacing 2)
@@ -49,7 +49,7 @@
                    :cy spacing
                    :r size}]]])]))
 
-(def azure
+(def ^:private azure
   (let [id "hatching-azure"]
     [id
      [:pattern {:id id
@@ -66,7 +66,7 @@
        [:path {:d (str "M" 0 "," 0 " L" spacing "," 0)}]
        [:path {:d (str "M" 0 "," spacing " L" spacing "," spacing)}]]]]))
 
-(def vert
+(def ^:private vert
   (let [id "hatching-vert"]
     [id
      (let [width (* (Math/sqrt 2) spacing)]
@@ -85,7 +85,7 @@
          [:path {:d (str "M" 0 "," (- width) " l" (* width 3) "," (* width 3))}]
          [:path {:d (str "M" (- width) "," 0 " l" (* width 3) "," (* width 3))}]]])]))
 
-(def gules
+(def ^:private gules
   (let [id "hatching-gules"]
     [id
      [:pattern {:id id
@@ -102,7 +102,7 @@
        [:path {:d (str "M" 0 "," 0 " L" 0 "," spacing)}]
        [:path {:d (str "M" spacing "," 0 " L" spacing "," spacing)}]]]]))
 
-(def purpure
+(def ^:private purpure
   (let [id "hatching-purpure"]
     [id
      (let [width (* (Math/sqrt 2) spacing)]
@@ -121,7 +121,7 @@
          [:path {:d (str "M" width "," (- width) " l" (* width -3) "," (* width 3))}]
          [:path {:d (str "M" (* width 2) "," 0 " l" (* width -3) "," (* width 3))}]]])]))
 
-(def sable
+(def ^:private sable
   (let [id "hatching-sable"]
     [id
      [:pattern {:id id
@@ -140,7 +140,7 @@
        [:path {:d (str "M" 0 "," 0 " L" 0 "," spacing)}]
        [:path {:d (str "M" spacing "," 0 " L" spacing "," spacing)}]]]]))
 
-(def murrey
+(def ^:private murrey
   (let [id "hatching-murrey"]
     [id
      (let [width (* (Math/sqrt 2) spacing)]
@@ -162,7 +162,7 @@
          [:path {:d (str "M" width "," (- width) " l" (* width -3) "," (* width 3))}]
          [:path {:d (str "M" (* width 2) "," 0 " l" (* width -3) "," (* width 3))}]]])]))
 
-(def sanguine
+(def ^:private sanguine
   (let [id "hatching-sanguine"]
     [id
      [:<>
@@ -196,7 +196,7 @@
                  :height 1000
                  :fill "url(#hatching-sanguine-secondary)"}]])]]))
 
-(def tenne
+(def ^:private tenne
   (let [id "hatching-tenne"]
     [id
      [:<>
@@ -230,11 +230,11 @@
                  :height 1000
                  :fill "url(#hatching-tenne-secondary)"}]])]]))
 
-(def metals
+(def ^:private metals
   {:argent argent
    :or or})
 
-(def colours
+(def ^:private colours
   {;; tincture
    :azure azure
    :vert vert

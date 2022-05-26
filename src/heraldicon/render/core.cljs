@@ -447,7 +447,7 @@
       {:result nil
        :bounding-box nil})))
 
-(defn ornaments-elements [context & {:keys [below-shield?]}]
+(defn- ornaments-elements [context & {:keys [below-shield?]}]
   (into [:<>]
         (map (fn [[idx self-below-shield?]]
                (let [updated-context (-> context
@@ -498,8 +498,8 @@
                       (+ ornaments-top ornaments-height))}
       {:bounding-box (bb/BoundingBox. 0 0 0 0)})))
 
-(defn transform-bounding-box [^BoundingBox {:keys [min-x max-x min-y max-y]}
-                              ^js/Number target-width & {:keys [^js/Number max-aspect-ratio]}]
+(defn- transform-bounding-box [^BoundingBox {:keys [min-x max-x min-y max-y]}
+                               ^js/Number target-width & {:keys [^js/Number max-aspect-ratio]}]
   (let [total-width (- max-x min-x)
         total-height (- max-y min-y)
         target-height (-> target-width
@@ -520,7 +520,7 @@
                  (- 0 (/ total-width 2) min-x) ","
                  (- 0 (/ total-height 2) min-y) ")")}))
 
-(defn get-used-fonts [context]
+(defn- get-used-fonts [context]
   (let [num-ornaments (interface/get-list-size (c/++ context :ornaments :elements))]
     ;; TODO: might have to be smarter here to only look into mottos,
     ;; but it should work if there's no :ribbon :segments

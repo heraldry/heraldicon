@@ -2,11 +2,11 @@
   (:require
    [heraldicon.options :as options]))
 
-(def theme-all
+(def ^:private theme-all
   {:all true})
 
 ;; colours taken from ;; https://github.com/drawshield/Drawshield-Code/blob/0d7ecc865e5ccd2ae8b17c11511c6afebb2ff6c9/svg/schemes/wappenwiki.txt
-(def theme-wappenwiki
+(def ^:private theme-wappenwiki
   {;; metals
    :argent "#f6f6f6"
    :argent-dark "#e5e5e5"
@@ -32,7 +32,7 @@
    :buff "#ddc595"
    :white "#ffffff"})
 
-(def theme-web
+(def ^:private theme-web
   {;; metals
    :argent "#ffffff"
    :or "#ffd700"
@@ -49,7 +49,7 @@
 
 ;; Wikipedia themes: https://commons.wikimedia.org/wiki/Template:Tincture
 
-(def theme-wikipedia-default
+(def ^:private theme-wikipedia-default
   {;; metals
    :argent "#ffffff"
    :argent-dark "#e7e7e7"
@@ -70,7 +70,7 @@
    :cendree "#999999"
    :orange "#eb7711"})
 
-(def theme-wikipedia-web
+(def ^:private theme-wikipedia-web
   {;; metals
    :argent "#ffffff"
    :argent-dark "#eeeeee"
@@ -91,7 +91,7 @@
    :cendree "#779988"
    :orange "#ff6600"})
 
-(def theme-wikipedia-bajuvarian
+(def ^:private theme-wikipedia-bajuvarian
   {;; metals
    :argent "#ffffff"
    :argent-dark "#dddde6"
@@ -112,7 +112,7 @@
    :cendree "#778899"
    :orange "#eb7711"})
 
-(def theme-wikipedia-brandenburg
+(def ^:private theme-wikipedia-brandenburg
   {;; metals
    :argent "#ffffff"
    :or "#f5d306"
@@ -127,7 +127,7 @@
    ;; nontraditional
    :bleu-celeste "#89c5e3"})
 
-(def theme-wikipedia-wuerttemberg
+(def ^:private theme-wikipedia-wuerttemberg
   {;; metals
    :argent "#ffffff"
    :or "#fcdb00"
@@ -143,7 +143,7 @@
    :bleu-celeste "#0081c9"
    :carnation "#f2b398"})
 
-(def theme-wikipedia-switzerland
+(def ^:private theme-wikipedia-switzerland
   {;; metals
    :argent "#ffffff"
    :or "#ffd72e"
@@ -156,7 +156,7 @@
    :sanguine "#b61916" ;; 30% darkened gules
    })
 
-(def theme-wikipedia-spain
+(def ^:private theme-wikipedia-spain
   {;; metals
    :argent "#ffffff"
    :argent-dark "#e7e7e7"
@@ -174,7 +174,7 @@
    :carnation "#fcd3bc"
    :orange "#ff6600"})
 
-(def theme-wikipedia-hungary
+(def ^:private theme-wikipedia-hungary
   {;; metals
    :argent "#ffffff"
    :argent-dark "#ececec"
@@ -190,7 +190,7 @@
    :sanguine "#9a1c15" ;; 30% darkened gules
    })
 
-(def theme-wikipedia-sweden
+(def ^:private theme-wikipedia-sweden
   {;; metals
    :argent "#eeeeee"
    :argent-dark "#dddddd"
@@ -208,7 +208,7 @@
    :bleu-celeste "#3291d7"
    :carnation "#eebb99"})
 
-(def theme-ral-traffic
+(def ^:private theme-ral-traffic
   {;; metals
    :argent "#f6f6f6" ;; RAL 9016
    :argent-dark "#929899" ;; RAL 7042
@@ -232,7 +232,7 @@
 
 ;; https://fr.wikipedia.org/wiki/Projet:Blasons/Cr%C3%A9ation#Unification_des_couleurs
 
-(def theme-wikipedia-france
+(def ^:private theme-wikipedia-france
   {;; metals
    :argent "#ffffff"
    :or "#fcef3c"
@@ -247,7 +247,7 @@
    :sanguine "#a41619"
    :tenne "#9d5324"})
 
-(def theme-community-pastell-puffs
+(def ^:private theme-community-pastell-puffs
   {;; metals
    :argent "#fefefe"
    :or "#ffe9c0"
@@ -263,7 +263,7 @@
    :tenne "#b27400" ;; 60% darkened or
    })
 
-(def theme-community-jewelicious
+(def ^:private theme-community-jewelicious
   {;; metals
    :argent "#f8f7ec"
    :or "#fcdc90"
@@ -279,7 +279,7 @@
    :tenne "#9a6d04" ;; 60% darkened or
    })
 
-(def theme-community-main-seven
+(def ^:private theme-community-main-seven
   {;; metals
    :argent "#fefefe"
    :or "#fcf7b2"
@@ -295,7 +295,7 @@
    :tenne "#a59a06" ;; 60% darkened or
    })
 
-(def theme-community-cmwhyk
+(def ^:private theme-community-cmwhyk
   {;; metals
    :argent "#fefefe"
    :or "#fff05a"
@@ -311,7 +311,7 @@
    :tenne "#8a7d00" ;; 60% darkened or
    })
 
-(def theme-community-mother-earth
+(def ^:private theme-community-mother-earth
   {;; metals
    :argent "#fef8ed"
    :or "#f8d689"
@@ -327,7 +327,7 @@
    :tenne "#916708" ;; 60% darkened or
    })
 
-(def theme-community-home-world
+(def ^:private theme-community-home-world
   {;; metals
    :argent "#fffff9"
    :or "#f5e73e"
@@ -343,7 +343,7 @@
    :tenne "#746c06" ;; 60% darkened or
    })
 
-(def theme-community-crystal-gems
+(def ^:private theme-community-crystal-gems
   {;; metals
    :argent "#fefefe"
    :or "#ffdd63"
@@ -359,7 +359,7 @@
    :tenne "#8d6e00" ;; 60% darkened or
    })
 
-(def theme-community-pretty-soldier
+(def ^:private theme-community-pretty-soldier
   {;; metals
    :argent "#fefefe"
    :or "#fff44b"
@@ -375,7 +375,7 @@
    :tenne "#847b00" ;; 60% darkened or
    })
 
-(def theme-community-the-monet-maker
+(def ^:private theme-community-the-monet-maker
   {;; metals
    :argent "#f2efec"
    :or "#f7d2a5"
@@ -391,7 +391,7 @@
    :tenne "#97590d" ;; 60% darkened or
    })
 
-(def theme-community-van-goes-vroem
+(def ^:private theme-community-van-goes-vroem
   {;; metals
    :argent "#eae8e3"
    :or "#f7d2a5"
@@ -407,7 +407,7 @@
    :tenne "#97590d" ;; 60% darkened or
    })
 
-(def theme-community-cotton-candy
+(def ^:private theme-community-cotton-candy
   {;; metals
    :argent "#ffffff"
    :or "#fcf9d1"
@@ -423,7 +423,7 @@
    :tenne "#ada10b" ;; 60% darkened or
    })
 
-(def theme-community-rainbow-groom
+(def ^:private theme-community-rainbow-groom
   {;; metals
    :argent "#f8f4db"
    :or "#ffd71b"
@@ -439,7 +439,7 @@
    :tenne "#705d00" ;; 60% darkened or
    })
 
-(def theme-community-content-cranium
+(def ^:private theme-community-content-cranium
   {;; metals
    :argent "#ffffff"
    :or "#fffa00"
@@ -455,7 +455,7 @@
    :tenne "#666400" ;; 60% darkened or
    })
 
-(def theme-community-sodacan
+(def ^:private theme-community-sodacan
   {;; metals
    :argent "#ececec"
    :or "#e7cd54"
@@ -478,7 +478,7 @@
    :orange "#e35d03"
    :rose "#df2ddf"})
 
-(def themes
+(def ^:private themes
   [[:string.theme.group/general
     [:string.theme/wappenwiki :wappenwiki theme-wappenwiki]
     [:string.theme/web :web theme-web]
