@@ -13,7 +13,7 @@
 (defmethod ct/report [::reporter :pass] [m]
   ((get-method ct/report [:cljs.test/default :pass]) m))
 
-(def diff-printer
+(def ^:private diff-printer
   (ddiff/printer
    {:sort-keys false
     :width 25
@@ -86,6 +86,6 @@
 (defn ^:dev/after-load reset-test-data! []
   (env/reset-test-data! (env/get-test-data)))
 
-(defn main []
+(defn ^:export main []
   (reset-test-data!)
   (st/run-all-tests (ct/empty-env ::reporter) nil))
