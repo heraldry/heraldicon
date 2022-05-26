@@ -3,7 +3,7 @@
    [heraldicon.config :as config]
    [heraldicon.options :as options]))
 
-(def textures
+(def ^:private textures
   [[:string.render-options.texture-choice/none :none nil 0]
    [:string.render-options.texture-choice/cloth-rough :cloth-rough "/textures/cloth-rough.jpg" 1]
    [:string.render-options.texture-choice/cloth-smooth1 :cloth-smooth "/textures/cloth-smooth.jpg" 1]
@@ -35,17 +35,15 @@
                [key path]))
         textures))
 
-(def displacements
+(def ^:private displacements
   (into {}
         (map (fn [[_display-name key _path displacement]]
                [key displacement]))
         textures))
 
 (defn displacement [texture]
-  (some->> texture
-           (get displacements)))
+  (get displacements texture))
 
 (defn full-path [texture]
-  (some->> texture
-           (get relative-paths)
+  (some->> (get relative-paths texture)
            (str (config/get :heraldicon-url))))
