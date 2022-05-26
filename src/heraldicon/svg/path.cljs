@@ -52,7 +52,7 @@
         [_ x y] (re-matches regex path-data)]
     (v/Vector. (js/parseFloat x) (js/parseFloat y))))
 
-(defn move-to [p]
+(defn- move-to [p]
   (str "M" (v/->str p)))
 
 (defn line-to [p]
@@ -79,9 +79,6 @@
                       (-> length (* i) (/ (dec n)) (min length)))
                   p (.getPointAt path x)]
               (v/Vector. (.-x p) (.-y p)))) (range n))))
-
-(defn clean-path [d]
-  (s/replace d #"l *0 *[, ] *0" ""))
 
 (defn length [path]
   (.-length path))
@@ -178,7 +175,7 @@
              vec))
       raw-corners)))
 
-(defn add-max-radius-to-corners [corners num-points]
+(defn- add-max-radius-to-corners [corners num-points]
   (case (count corners)
     0 []
     1 (let [corner (first corners)]
