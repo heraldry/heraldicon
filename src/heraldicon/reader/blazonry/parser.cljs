@@ -7,12 +7,12 @@
   (:require-macros
    [heraldicon.reader.blazonry.parser :refer [default-parser]]))
 
-(defn pluralize [charge-type]
+(defn- pluralize [charge-type]
   (if (s/ends-with? charge-type "s")
     (str charge-type "es")
     (str charge-type "s")))
 
-(defn generate-strings-for-rule [parser rule]
+(defn- generate-strings-for-rule [parser rule]
   (let [result (insta/parse parser "±" :start rule)]
     (into #{}
           (comp (mapcat (fn [{:keys [tag expecting]}]
@@ -26,7 +26,7 @@
                 (map s/trim))
           (:reason result))))
 
-(defn suggestion-classifications [parser]
+(defn- suggestion-classifications [parser]
   (->> [[:layout-words "layout"]
         [:cottising-word "cottising"]
         [:tincture "tincture"]
@@ -57,7 +57,7 @@
      :suggestion-classifications (suggestion-classifications parser)
      :charge-map {}}))
 
-(defn make-rule [[rule terminals]]
+(defn- make-rule [[rule terminals]]
   [rule
    {:tag :alt
     :parsers (mapcat
@@ -81,7 +81,7 @@
     :red {:reduction-type :hiccup
           :key rule}}])
 
-(defn inject-charge-type-rules [parser charge-type-rules]
+(defn- inject-charge-type-rules [parser charge-type-rules]
   (let [charge-type-rule-definitions (into {}
                                            (map make-rule)
                                            charge-type-rules)
@@ -150,22 +150,22 @@
      :suggestion-classifications (suggestion-classifications new-parser)
      :charge-map charge-map}))
 
-(def ast-node-normalization
+(def ^:private ast-node-normalization
   {:root-field :field
    :root-variation :variation
    :root-plain :plain
    :partition-field-plain :partition-field
    :ordinal-including-dot :ordinal})
 
-(defn rename-root-node [ast]
+(defn- rename-root-node [ast]
   (if (keyword? ast)
     (get ast-node-normalization ast ast)
     ast))
 
-(defn normalize-nodes [ast]
+(defn- normalize-nodes [ast]
   (walk/postwalk rename-root-node ast))
 
-(defn enumerate-same-tincture-references [ast]
+(defn- enumerate-same-tincture-references [ast]
   (let [counter (atom 0)]
     (walk/prewalk
      (fn [ast]
@@ -177,7 +177,7 @@
          ast))
      ast)))
 
-(defn clean-ast [ast]
+(defn- clean-ast [ast]
   (->> ast
        normalize-nodes
        enumerate-same-tincture-references))

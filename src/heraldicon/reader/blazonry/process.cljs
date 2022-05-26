@@ -4,9 +4,9 @@
    [clojure.walk :as walk]
    [heraldicon.heraldry.charge.options :as charge.options]))
 
-(defn add-charge-group-defaults [{:heraldicon.reader.blazonry.transform/keys [default-charge-group-amount]
-                                  :keys [type]
-                                  :as hdn} & {:keys [parent-ordinary-type]}]
+(defn- add-charge-group-defaults [{:heraldicon.reader.blazonry.transform/keys [default-charge-group-amount]
+                                   :keys [type]
+                                   :as hdn} & {:keys [parent-ordinary-type]}]
   (let [type-namespace (some-> type namespace)]
     (cond-> hdn
       default-charge-group-amount (->
@@ -73,7 +73,7 @@
 (defn process-charge-groups [hdn]
   (walk/prewalk add-charge-group-defaults hdn))
 
-(defn replace-adjusted-components [hdn indexed-components]
+(defn- replace-adjusted-components [hdn indexed-components]
   (update
    hdn
    :components
@@ -87,9 +87,9 @@
            rest)
           components))))))
 
-(defn arrange-ordinaries-in-one-dimension [hdn indexed-components & {:keys [offset-keyword
-                                                                            spacing
-                                                                            default-size]}]
+(defn- arrange-ordinaries-in-one-dimension [hdn indexed-components & {:keys [offset-keyword
+                                                                             spacing
+                                                                             default-size]}]
   (let [num-elements (count indexed-components)
         size-without-spacing (->> indexed-components
                                   (map second)
@@ -133,7 +133,7 @@
                                                  indexed-components)]
     (replace-adjusted-components hdn adjusted-indexed-components)))
 
-(defn arrange-orles [hdn indexed-components]
+(defn- arrange-orles [hdn indexed-components]
   (let [indexed-components indexed-components
         default-size 3
         spacing 2
@@ -164,7 +164,7 @@
                                                  indexed-components)]
     (replace-adjusted-components hdn adjusted-indexed-components)))
 
-(defn arrange-ordinaries [hdn indexed-components]
+(defn- arrange-ordinaries [hdn indexed-components]
   (let [ordinary-type (-> indexed-components
                           first
                           second
@@ -227,7 +227,7 @@
       :orle (arrange-orles hdn indexed-components)
       hdn)))
 
-(defn add-ordinary-defaults [hdn]
+(defn- add-ordinary-defaults [hdn]
   (if (and (map? hdn)
            (some-> hdn :type namespace (= "heraldry.field.type")))
     (let [components-by-type (->> hdn
@@ -249,7 +249,7 @@
 (defn process-ordinary-groups [hdn]
   (walk/postwalk add-ordinary-defaults hdn))
 
-(defn find-best-variant [{:keys [type attitude facing]} charge-map]
+(defn- find-best-variant [{:keys [type attitude facing]} charge-map]
   (let [short-charge-type (-> type name keyword)
         candidates (get charge-map short-charge-type)
         candidates-with-attitude (cond->> candidates
@@ -309,10 +309,10 @@
         (cond->
           (seq warnings) (assoc ::warnings warnings)))))
 
-(defn is-charge-type? [charge-type]
+(defn- is-charge-type? [charge-type]
   (some-> charge-type namespace (= "heraldry.charge.type")))
 
-(defn populate-charge-variants [{:keys [charge-map]} hdn]
+(defn- populate-charge-variants [{:keys [charge-map]} hdn]
   (if (map? hdn)
     (let [charge-type (:type hdn)]
       (if (and (is-charge-type? charge-type)
@@ -326,7 +326,7 @@
 (defn process-charge-references [hdn parser]
   (walk/postwalk (partial populate-charge-variants parser) hdn))
 
-(defn last-tincture [tinctures tincture-same-reference]
+(defn- last-tincture [tinctures tincture-same-reference]
   (->> tinctures
        (take-while #(not= % tincture-same-reference))
        (remove map?)

@@ -17,22 +17,22 @@
   (log/debug :ast->hdn-error ast)
   ast)
 
-(defn type? [type-fn]
+(defn- type? [type-fn]
   #(-> % first type-fn))
 
-(defn get-child [type-fn nodes]
+(defn- get-child [type-fn nodes]
   (->> nodes
        (filter (type? type-fn))
        first))
 
-(def tincture-map
+(def ^:private tincture-map
   (into {:tincture/PROPER :void}
         (map (fn [[key _]]
                [(keyword "tincture" (-> key name s/upper-case))
                 key]))
         tincture/tincture-map))
 
-(def roman-ordinal-strings
+(def ^:private roman-ordinal-strings
   {"i." 1
    "ii." 2
    "iii." 3
@@ -55,10 +55,10 @@
    "xix." 19
    "xx." 20})
 
-(def roman-ordinal-strings-by-number
+(def ^:private roman-ordinal-strings-by-number
   (set/map-invert roman-ordinal-strings))
 
-(def ordinal-strings
+(def ^:private ordinal-strings
   (merge {"1st" 1
           "2nd" 2
           "3rd" 3
@@ -174,7 +174,7 @@
        :tincture-1 tincture-1
        :tincture-2 tincture-2})))
 
-(defn add-fimbriation [hdn nodes]
+(defn- add-fimbriation [hdn nodes]
   (let [fimbriation (some-> (get-child #{:fimbriation} nodes)
                             ast->hdn)]
     (cond-> hdn
@@ -187,7 +187,7 @@
           line-type (assoc :type (ast->hdn line-type)))
         (add-fimbriation nodes))))
 
-(defn add-lines [hdn nodes]
+(defn- add-lines [hdn nodes]
   (let [[line
          opposite-line
          extra-line] (->> nodes
@@ -198,7 +198,7 @@
       opposite-line (assoc :opposite-line opposite-line)
       extra-line (assoc :extra-line extra-line))))
 
-(def max-layout-amount 50)
+(def ^:private max-layout-amount 50)
 
 (defmethod ast->hdn :horizontal-layout [[_ & nodes]]
   (let [amount (ast->hdn (get-child #{:amount} nodes))]
@@ -224,20 +224,20 @@
                      (map ast->hdn))]
     (apply merge layouts)))
 
-(def field-type-map
+(def ^:private field-type-map
   (into {}
         (map (fn [key]
                [(keyword "partition" (-> key name s/upper-case))
                 key]))
         field.options/fields))
 
-(defn get-field-type [nodes]
+(defn- get-field-type [nodes]
   (some->> nodes
            (get-child field-type-map)
            first
            (get field-type-map)))
 
-(defn add-partition-options [hdn nodes]
+(defn- add-partition-options [hdn nodes]
   (let [partition-options (some->> nodes
                                    (filter (type? #{:ENHANCED
                                                     :DEHANCED
@@ -291,7 +291,7 @@
                                           (= :per-pile
                                              partition-type) (assoc-in [:anchor :point] :top)))))
 
-(def field-locations
+(def ^:private field-locations
   {:point/DEXTER :dexter
    :point/SINISTER :sinister
    :point/CHIEF :chief
@@ -319,7 +319,7 @@
     (or number
         location)))
 
-(def field-reference-map
+(def ^:private field-reference-map
   {:barry {}
    :bendy {}
    :bendy-sinister {}
@@ -368,7 +368,7 @@
                       :sinister 2}
    :vairy {}})
 
-(defn translate-field-reference [reference field-type]
+(defn- translate-field-reference [reference field-type]
   (if (keyword? reference)
     (get-in field-reference-map [(some-> field-type name keyword) reference] reference)
     (dec reference)))
@@ -381,13 +381,13 @@
     {:references references
      :field field}))
 
-(defn field-reference-sort-key [reference]
+(defn- field-reference-sort-key [reference]
   (if (int? reference)
     [0 reference]
     ;; keyword references
     [1 reference]))
 
-(defn sanitize-referenced-fields [fields num-mandatory-fields]
+(defn- sanitize-referenced-fields [fields num-mandatory-fields]
   (let [fields (map-indexed
                 (fn [index {:keys [references field] :as field-data}]
                   (update (if (empty? references)
@@ -429,7 +429,7 @@
       (transient {})
       fields))))
 
-(defn resolve-reference-chains [fields reference-map]
+(defn- resolve-reference-chains [fields reference-map]
   (loop [fields (vec fields)
          [index & rest] (range (count fields))]
     (if index
@@ -443,7 +443,7 @@
         (recur fields rest))
       fields)))
 
-(defn populate-field-references [default-fields reference-map]
+(defn- populate-field-references [default-fields reference-map]
   (resolve-reference-chains
    (loop [fields (vec default-fields)
           [index & rest] (range (count default-fields))]
@@ -459,13 +459,13 @@
            (recur fields rest)))
        fields)) reference-map))
 
-(defn reference-to-string [reference]
+(defn- reference-to-string [reference]
   (if (keyword? reference)
     (name reference)
     (let [field-number (inc reference)]
       (get roman-ordinal-strings-by-number field-number (str field-number)))))
 
-(defn add-field-reference-warnings [hdn reference-map num-expected-field num-mandatory-fields]
+(defn- add-field-reference-warnings [hdn reference-map num-expected-field num-mandatory-fields]
   (let [unknown-references (->> reference-map
                                 keys
                                 (filter (fn [reference]
@@ -569,7 +569,7 @@
 (defmethod ast->hdn :number/NUMBER [[_ number-string]]
   (js/parseInt number-string))
 
-(def number-strings
+(def ^:private number-strings
   {"one" 1
    "two" 2
    "double" 2
@@ -619,9 +619,9 @@
 (defmethod ast->hdn :component [[_ node]]
   (ast->hdn node))
 
-(def max-label-points 20)
+(def ^:private max-label-points 20)
 
-(defn add-ordinary-options [hdn nodes]
+(defn- add-ordinary-options [hdn nodes]
   (let [ordinary-options (some->> nodes
                                   (filter (type? #{:HUMETTY
                                                    :VOIDED
@@ -741,7 +741,7 @@
           cottise-2 (assoc :cottise-2 cottise-2))
         (add-lines nodes))))
 
-(defn add-cottising [hdn nodes]
+(defn- add-cottising [hdn nodes]
   (let [[main
          opposite
          extra] (->> nodes
@@ -768,7 +768,7 @@
                                                       {:cottise-1 :cottise-extra-1
                                                        :cottise-2 :cottise-extra-2})))))
 
-(def ordinary-type-map
+(def ^:private ordinary-type-map
   (into {:ordinary/PALLET :heraldry.ordinary.type/pale
          :ordinary/BARRULET :heraldry.ordinary.type/fess
          :ordinary/CHEVRONNEL :heraldry.ordinary.type/chevron
@@ -779,7 +779,7 @@
                 key]))
         ordinary.options/ordinaries))
 
-(defn get-ordinary-type [nodes]
+(defn- get-ordinary-type [nodes]
   (let [node-type (->> nodes
                        (get-child ordinary-type-map)
                        first)]
@@ -805,7 +805,7 @@
         (add-cottising nodes)
         (add-fimbriation nodes))))
 
-(def max-ordinary-group-amount 20)
+(def ^:private max-ordinary-group-amount 20)
 
 (defmethod ast->hdn :ordinary-group [[_ & nodes]]
   (let [amount-node (get-child #{:amount} nodes)
@@ -817,7 +817,7 @@
                      (max 1)
                      (min max-ordinary-group-amount)) ordinary))))
 
-(def attitude-map
+(def ^:private attitude-map
   (->> attributes/attitude-map
        (map (fn [[key _]]
               [(->> key
@@ -833,7 +833,7 @@
            first
            (get attitude-map)))
 
-(def facing-map
+(def ^:private facing-map
   (into {}
         (map (fn [[key _]]
                [(keyword "facing" (-> key name s/upper-case))
@@ -846,9 +846,9 @@
            first
            (get facing-map)))
 
-(def max-star-points 100)
+(def ^:private max-star-points 100)
 
-(defn add-charge-options [hdn nodes]
+(defn- add-charge-options [hdn nodes]
   (let [charge-options (some->> nodes
                                 (filter (type? #{:MIRRORED
                                                  :REVERSED
@@ -874,7 +874,7 @@
       attitude (assoc :attitude attitude)
       facing (assoc :facing facing))))
 
-(def charge-type-map
+(def ^:private charge-type-map
   (into {:charge/ESTOILE :heraldry.charge.type/star}
         (map (fn [key]
                [(keyword "charge" (-> key name s/upper-case))
@@ -909,11 +909,11 @@
       ast->hdn
       (add-fimbriation nodes)))
 
-(def max-charge-group-columns 20)
+(def ^:private max-charge-group-columns 20)
 
-(def max-charge-group-rows 20)
+(def ^:private max-charge-group-rows 20)
 
-(defn charge-group [charge amount nodes]
+(defn- charge-group [charge amount nodes]
   (let [[arrangement-type
          & arrangement-nodes] (second (get-child #{:charge-arrangement} nodes))]
     (cond-> {:charges [charge]}
@@ -998,7 +998,7 @@
                                                 :slots (vec (repeat amount 0))})
                                              amounts)})))))
 
-(def tincture-modifier-type-map
+(def ^:private tincture-modifier-type-map
   (->> attributes/tincture-modifier-map
        (map (fn [[key _]]
               [(->> key
@@ -1008,7 +1008,7 @@
                key]))
        (into {})))
 
-(defn get-tincture-modifier-type [nodes]
+(defn- get-tincture-modifier-type [nodes]
   (let [node-type (first (get-child tincture-modifier-type-map nodes))]
     (get tincture-modifier-type-map node-type)))
 
@@ -1020,7 +1020,7 @@
         tincture (ast->hdn (get-child #{:tincture} nodes))]
     [modifier-type tincture]))
 
-(defn add-tincture-modifiers [hdn nodes]
+(defn- add-tincture-modifiers [hdn nodes]
   (let [modifiers (into {}
                         (comp (filter (type? #{:tincture-modifier}))
                               (map ast->hdn))
@@ -1028,7 +1028,7 @@
     (cond-> hdn
       (seq modifiers) (assoc :tincture modifiers))))
 
-(def charge-locations
+(def ^:private charge-locations
   {:point/DEXTER :dexter
    :point/SINISTER :sinister
    :point/CHIEF :chief
@@ -1042,7 +1042,7 @@
           first
           charge-locations))
 
-(def max-charge-group-amount 64)
+(def ^:private max-charge-group-amount 64)
 
 (defmethod ast->hdn :charge-group [[_ & nodes]]
   (let [amount-node (get-child #{:amount} nodes)
@@ -1065,7 +1065,7 @@
                (charge-group charge amount nodes))
        anchor-point (assoc-in [:anchor :point] anchor-point))]))
 
-(defn semy [charge nodes]
+(defn- semy [charge nodes]
   (let [layout (some-> (get-child #{:layout
                                     :horizontal-layout
                                     :vertical-layout} nodes)
