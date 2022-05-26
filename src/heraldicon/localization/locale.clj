@@ -6,11 +6,11 @@
    [shadow.resource :as res]
    [taoensso.timbre :as log]))
 
-(def required-key-pattern
+(def ^:private required-key-pattern
   #"^[a-z0-9.?-]+$")
 
-(defn build-keyword-keys [data & {:keys [prefix
-                                         source-file]}]
+(defn- build-keyword-keys [data & {:keys [prefix
+                                          source-file]}]
   (into {}
         (mapcat (fn [[k v]]
                   (if-not (re-matches required-key-pattern k)
@@ -33,13 +33,13 @@
                       [[(keyword prefix k) v]]))))
         data))
 
-(defmacro load-locale [filename]
+(defmacro ^:private load-locale [filename]
   (let [data (json/read-str (res/slurp-resource &env filename))]
     (build-keyword-keys data
                         :prefix "string"
                         :source-file filename)))
 
-(defn check-translation-string-usage []
+(defn- check-translation-string-usage []
   (let [json-data (load-locale "en-UK.json")
         files (into []
                     (filter #(re-matches #".*\.cljs" (.getName %)))

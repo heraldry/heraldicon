@@ -54,7 +54,7 @@
       (-> translated vals first)
       translated)))
 
-(defn interleave-all
+(defn- interleave-all
   "Returns a lazy seq of the first item in each coll, then the second etc.,
    unlike the clojure.core version this includes all elements."
   [c1 c2]
