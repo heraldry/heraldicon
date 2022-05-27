@@ -1,4 +1,3 @@
-
 (ns heraldicon.heraldry.default
   (:require
    [heraldicon.config :as config]

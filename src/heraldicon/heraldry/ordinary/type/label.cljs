@@ -17,7 +17,7 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/label)
 
-(def variant-choices
+(def ^:private variant-choices
   [[:string.option.variant-label-choice/full :full]
    [:string.option.variant-label-choice/truncated :truncated]])
 
@@ -124,12 +124,12 @@
         (ordinary.shared/add-humetty-and-voided context)
         (options/override-if-exists [:voided :thickness :default] 25))))
 
-(defn relative-points [points]
+(defn- relative-points [points]
   (reduce (fn [result point]
             (conj result (v/add (last result) point))) [(first points)] (rest points)))
 
-(defn draw-label [variant anchor-point num-points width band-height point-width point-height eccentricity
-                  line environment context]
+(defn- draw-label [variant anchor-point num-points width band-height point-width point-height eccentricity
+                   line environment context]
   (let [points (:points environment)
         left (:left points)
         right (:right points)

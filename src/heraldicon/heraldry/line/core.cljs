@@ -36,8 +36,8 @@
    [heraldicon.util.core :as util]
    [heraldicon.util.uid :as uid]))
 
-(defn line-base [{:keys [base-line]} {line-min :min
-                                      line-max :max}]
+(defn- line-base [{:keys [base-line]} {line-min :min
+                                       line-max :max}]
   (let [line-height (- line-max line-min)
         line-base (case base-line
                     :bottom (- line-max)
@@ -49,13 +49,13 @@
      :line-min (+ line-base line-min)
      :line-max (+ line-base line-max)}))
 
-(defn pattern-line-with-offset [{pattern-width :width
-                                 line-offset :offset
-                                 line-mirrored? :mirrored?
-                                 spacing :spacing
-                                 :as line}
-                                length line-function {:keys [reversed? mirrored?
-                                                             num-repetitions] :as line-options}]
+(defn- pattern-line-with-offset [{pattern-width :width
+                                  line-offset :offset
+                                  line-mirrored? :mirrored?
+                                  spacing :spacing
+                                  :as line}
+                                 length line-function {:keys [reversed? mirrored?
+                                                              num-repetitions] :as line-options}]
   (let [{line-pattern :pattern
          :as pattern-data} (line-function line line-options)
         effective-mirrored? (-> line-mirrored?
@@ -100,7 +100,7 @@
      :line-start line-start
      :pattern-width pattern-width}))
 
-(defn full-line [line length line-function line-options]
+(defn- full-line [line length line-function line-options]
   (let [{line-pattern :pattern
          :as pattern-data} (line-function line length line-options)
         {:keys [line-base
@@ -111,7 +111,7 @@
      :line-max line-max
      :line-start (v/Vector. 0 line-base)}))
 
-(def lines
+(def ^:private lines
   [#'straight/pattern
    #'invected/pattern
    #'engrailed/pattern
@@ -136,7 +136,7 @@
    #'bevilled/pattern
    #'enarched/pattern])
 
-(defn get-line-identifier [pattern]
+(defn- get-line-identifier [pattern]
   (-> pattern meta :ns name (s/split ".") last keyword))
 
 (def kinds-pattern-map
@@ -145,7 +145,7 @@
                [(get-line-identifier pattern) @pattern]))
         lines))
 
-(def choices
+(def ^:private choices
   (map (fn [pattern]
          [(:display-name @pattern) (get-line-identifier pattern)])
        lines))
@@ -153,14 +153,14 @@
 (def line-map
   (options/choices->map choices))
 
-(def type-option
+(def ^:private type-option
   {:type :choice
    :choices choices
    :default :straight
    :ui {:label :string.option/type
         :form-type :line-type-select}})
 
-(def base-line-choices
+(def ^:private base-line-choices
   [[:string.option.point-choice/bottom :bottom]
    [:string.option.alignment-choice/middle :middle]
    [:string.option.point-choice/top :top]])
@@ -168,7 +168,7 @@
 (def base-line-map
   (options/choices->map base-line-choices))
 
-(def corner-dampening-mode-choices
+(def ^:private corner-dampening-mode-choices
   [[:string.option.dampening-mode-choice/clamp-to-zero :clamp-to-zero]
    [:string.option.dampening-mode-choice/linear-dampening :linear-dampening]
    [:string.option.dampening-mode-choice/square-root-dampening :square-root-dampening]])
@@ -176,7 +176,7 @@
 (def corner-dampening-mode-map
   (options/choices->map corner-dampening-mode-choices))
 
-(def default-options
+(def ^:private default-options
   {:eccentricity {:type :range
                   :min 0
                   :max 1
@@ -415,8 +415,8 @@
                                :string.entity/line)
                       :form-type :line})))))
 
-(defn create-raw [{:keys [type] :or {type :straight} :as line} length
-                  & {:keys [angle flipped? context seed reversed?] :as line-options}]
+(defn- create-raw [{:keys [type] :or {type :straight} :as line} length
+                   & {:keys [angle flipped? context seed reversed?] :as line-options}]
   (let [pattern-data (get kinds-pattern-map type)
         line-function (:function pattern-data)
         line-options-values (cond-> line #_(options/sanitize line (options line))
@@ -475,7 +475,7 @@
            :up (v/rotate (v/Vector. 0 -50) angle)
            :down (v/rotate (v/Vector. 0 50) angle))))
 
-(defn get-intersections-before-and-after [t intersections]
+(defn- get-intersections-before-and-after [t intersections]
   (let [before (or (-> intersections
                        (->> (filter #(<= (:t1 %) t)))
                        last
@@ -488,8 +488,8 @@
                   1)]
     [before after]))
 
-(defn find-real-start-and-end [from to {:keys [environment reversed?
-                                               real-start real-end]}]
+(defn- find-real-start-and-end [from to {:keys [environment reversed?
+                                                real-start real-end]}]
   (if (and real-start real-end)
     [real-start real-end]
     (let [[from to] (if reversed?
@@ -521,7 +521,7 @@
                                     :angle angle}
                                    line-options)))))
 
-(defn mask-intersection-points [start line-datas direction]
+(defn- mask-intersection-points [start line-datas direction]
   (->> line-datas
        (map (fn [{:keys [line-end up down]}]
               (let [dv (case direction
@@ -680,7 +680,7 @@
                                         v/orthogonal
                                         v/normal))))))))
 
-(defn get-point-on-curve [points x-steps x]
+(defn- get-point-on-curve [points x-steps x]
   (let [index (-> x
                   (/ x-steps)
                   Math/floor
@@ -697,12 +697,12 @@
                            (v/add (v/mul (:normal p2) (- 1 t)))
                            v/normal)))))
 
-(defn dist-to-corner [x {corner-x :x} full-length]
+(defn- dist-to-corner [x {corner-x :x} full-length]
   (min (-> x (- corner-x) Math/abs)
        (-> x (+ full-length) (- corner-x) Math/abs)
        (-> x (- corner-x) (- full-length) Math/abs)))
 
-(defn process-y-value [x y full-length corners dampening-radius dampening-mode]
+(defn- process-y-value [x y full-length corners dampening-radius dampening-mode]
   (let [process-fn (case dampening-mode
                      :clamp-to-zero (constantly 0)
                      :linear-dampening (fn [y dist]

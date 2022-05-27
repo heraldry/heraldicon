@@ -24,7 +24,7 @@
                 (v/mul 200)
                 (v/add point-point))}))
 
-(defn calculate-angle [target-beta edge-length stretch]
+(defn- calculate-angle [target-beta edge-length stretch]
   (let [tan-beta (-> target-beta
                      (* Math/PI)
                      (/ 180)
@@ -44,9 +44,9 @@
      :part-length (* f stretch)
      :x rx}))
 
-(defn calculate-properties-for-angle [environment anchor orientation
-                                      {:keys [size stretch]}
-                                      _thickness-base base-angle]
+(defn- calculate-properties-for-angle [environment anchor orientation
+                                       {:keys [size stretch]}
+                                       _thickness-base base-angle]
   (let [orientation-type (or (:type orientation)
                              :edge)
         alignment (-> anchor :alignment (or :middle))
@@ -93,9 +93,9 @@
      :point calculated-point
      :thickness (* x 2)}))
 
-(defn calculate-properties-for-thickness [environment anchor orientation
-                                          {:keys [size stretch]}
-                                          thickness-base base-angle]
+(defn- calculate-properties-for-thickness [environment anchor orientation
+                                           {:keys [size stretch]}
+                                           thickness-base base-angle]
   (let [thickness ((math/percent-of thickness-base) size)
         orientation-type (or (:type orientation)
                              :edge)

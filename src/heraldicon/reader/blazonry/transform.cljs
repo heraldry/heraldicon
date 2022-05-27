@@ -226,10 +226,10 @@
 
 (def ^:private field-type-map
   (into {}
-        (map (fn [key]
+        (map (fn [[key _]]
                [(keyword "partition" (-> key name s/upper-case))
                 key]))
-        field.options/fields))
+        field.options/field-map))
 
 (defn- get-field-type [nodes]
   (some->> nodes
@@ -774,10 +774,10 @@
          :ordinary/CHEVRONNEL :heraldry.ordinary.type/chevron
          :ordinary/BENDLET :heraldry.ordinary.type/bend
          :ordinary/BENDLET-SINISTER :heraldry.ordinary.type/bend-sinister}
-        (map (fn [key]
+        (map (fn [[key _]]
                [(keyword "ordinary" (-> key name s/upper-case))
                 key]))
-        ordinary.options/ordinaries))
+        ordinary.options/ordinary-map))
 
 (defn- get-ordinary-type [nodes]
   (let [node-type (->> nodes
@@ -876,10 +876,10 @@
 
 (def ^:private charge-type-map
   (into {:charge/ESTOILE :heraldry.charge.type/star}
-        (map (fn [key]
+        (map (fn [[key _]]
                [(keyword "charge" (-> key name s/upper-case))
                 key]))
-        charge.options/charges))
+        charge.options/choice-map))
 
 (defmethod ast->hdn :charge-standard [[_ & nodes]]
   (let [charge-type-node-kind (first (get-child charge-type-map nodes))

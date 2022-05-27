@@ -10,7 +10,7 @@
    [heraldicon.render.outline :as outline]
    [heraldicon.util.uid :as uid]))
 
-(def mode-choices
+(def ^:private mode-choices
   [[:string.option.type-fimbriation-choice/none :none]
    [:string.option.type-fimbriation-choice/single :single]
    [:string.option.type-fimbriation-choice/double :double]])
@@ -18,7 +18,7 @@
 (def mode-map
   (options/choices->map mode-choices))
 
-(def alignment-choices
+(def ^:private alignment-choices
   [[:string.option.alignment-fimbriation-choice/even :even]
    [:string.option.alignment-fimbriation-choice/outside :outside]
    [:string.option.alignment-fimbriation-choice/inside :inside]])
@@ -26,7 +26,7 @@
 (def alignment-map
   (options/choices->map alignment-choices))
 
-(def corner-choices
+(def ^:private corner-choices
   [[:string.option.corner-choice/round :round]
    [:string.option.corner-choice/sharp :sharp]
    [:string.option.corner-choice/bevel :bevel]])
@@ -34,7 +34,7 @@
 (def corner-map
   (options/choices->map corner-choices))
 
-(def mode-option
+(def ^:private mode-option
   {:type :choice
    :choices mode-choices
    :default :none
@@ -85,7 +85,7 @@
                                                     :form-type :tincture-select}}))
         (options/populate-inheritance inherited))))
 
-(defn linejoin [corner]
+(defn- linejoin [corner]
   (case corner
     :round "round"
     :sharp "miter"
@@ -125,7 +125,7 @@
              :style (when (not svg-export?)
                       {:pointer-events "none"})}]]))
 
-(defn dilate-recursively [data stroke-width color linejoin]
+(defn- dilate-recursively [data stroke-width color linejoin]
   (walk/postwalk #(cond
                     (and (vector? %)
                          (-> % first (= :stroke-width))) [(first %) stroke-width]

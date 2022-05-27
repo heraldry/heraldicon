@@ -67,16 +67,16 @@
 (def fixed-tincture-map
   (options/choices->map fixed-tincture-choices))
 
-(def ermine
+(def ^:private ermine
   ["ermine" :argent :sable])
 
-(def ermines
+(def ^:private ermines
   ["ermines" :sable :argent])
 
-(def erminois
+(def ^:private erminois
   ["erminois" :or :sable])
 
-(def pean
+(def ^:private pean
   ["pean" :sable :or])
 
 (def furs
@@ -85,7 +85,7 @@
    :erminois erminois
    :pean pean})
 
-(def special
+(def ^:private special
   {:helmet-light "#d8d8d8"
    :helmet-medium "#989898"
    :helmet-dark "#585858"})

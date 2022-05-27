@@ -52,10 +52,10 @@
               :ui {:label :string.option/ignore-layer-separator?
                    :tooltip :string.tooltip/ignore-layer-separator?}})))
 
-(defn placeholder-colour-modifier [placeholder-colours colour]
+(defn- placeholder-colour-modifier [placeholder-colours colour]
   (attributes/tincture-modifier (get placeholder-colours colour)))
 
-(defn placeholder-colour-qualifier [placeholder-colours colour]
+(defn- placeholder-colour-qualifier [placeholder-colours colour]
   (attributes/tincture-modifier-qualifier (get placeholder-colours colour)))
 
 (def ^:private remove-outlines
@@ -91,7 +91,7 @@
                     %)
                  data))
 
-(defn highlight-colour [colour highlight-colours]
+(defn- highlight-colour [colour highlight-colours]
   (if (-> colour colour/normalize highlight-colours)
     "#00ff00"
     (colour/desaturate colour)))
@@ -121,7 +121,7 @@
                         data))
        data))))
 
-(defn get-replacement [kind provided-placeholder-colours]
+(defn- get-replacement [kind provided-placeholder-colours]
   (let [replacement (get provided-placeholder-colours kind)]
     (when-not (or (nil? replacement)
                   (= replacement :none))
@@ -171,7 +171,7 @@
                                   :else "#fff")))))]
        [mask mask-inverted]))))
 
-(defn colours-for-modifier [placeholder-colours modifier]
+(defn- colours-for-modifier [placeholder-colours modifier]
   (->> placeholder-colours
        (keep (fn [[colour placeholder]]
                (when (= placeholder modifier)

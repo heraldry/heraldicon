@@ -155,7 +155,7 @@
     (second value)
     :none))
 
-(defn make-qualifier [kind percentage]
+(defn- make-qualifier [kind percentage]
   (let [qualifier-name (str percentage "%")
         keyword-suffix (gstring/format "%02d" percentage)
         colour (colour/percent-grey percentage)]
@@ -166,7 +166,7 @@
                                                :string.option/highlight))
      :colour colour}))
 
-(def qualifier-percentages
+(def ^:private qualifier-percentages
   (range 5 100 5))
 
 (def shadow-qualifiers

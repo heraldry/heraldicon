@@ -6,7 +6,6 @@
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
-
    [heraldicon.util.uid :as uid]))
 
 (def field-type :heraldry.field.type/vairy)
@@ -16,7 +15,7 @@
 (defmethod field.interface/part-names field-type [_] nil)
 
 ;; TODO: needs translation
-(def variant-choices
+(def ^:private variant-choices
   [["Default" :default]
    ["Counter" :counter]
    ["In pale" :in-pale]
@@ -72,9 +71,9 @@
             :ui {:label :string.option/layout
                  :form-type :field-layout}}})
 
-(def sqr2 1.4142135623730951)
+(def ^:private sqr2 1.4142135623730951)
 
-(defn vair-default [part-width part-height]
+(defn- vair-default [part-width part-height]
   (let [width part-width
         height (* 2 part-height)
         middle-x (/ width 2)
@@ -127,7 +126,7 @@
                                "L" middle-x "," height
                                "L " width "," height)}]]}))
 
-(defn vair-counter [part-width part-height]
+(defn- vair-counter [part-width part-height]
   (let [width part-width
         height (* 2 part-height)
         middle-x (/ width 2)
@@ -165,7 +164,7 @@
                                "v" (* sqr2 (- h))
                                "z")}]]}))
 
-(defn vair-in-pale [part-width part-height]
+(defn- vair-in-pale [part-width part-height]
   (let [width part-width
         height part-height
         middle-x (/ width 2)
@@ -195,7 +194,7 @@
                [:path {:d (str "M 0," height
                                "h" width)}]]}))
 
-(defn vair-en-point [part-width part-height]
+(defn- vair-en-point [part-width part-height]
   (let [width part-width
         height (* 2 part-height)
         middle-x (/ width 2)
@@ -237,7 +236,7 @@
                                "v" (* sqr2 h)
                                "L 0," height)}]]}))
 
-(defn vair-ancien [part-width part-height]
+(defn- vair-ancien [part-width part-height]
   (let [width part-width
         height part-height
         dy 0.333

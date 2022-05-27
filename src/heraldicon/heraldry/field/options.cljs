@@ -36,7 +36,7 @@
 (derive :heraldry.field.type/ref :heraldry.field/type)
 (derive :heraldry.field/type :heraldry/field)
 
-(def fields
+(def ^:private fields
   [plain/field-type
    counterchanged/field-type
    per-pale/field-type
@@ -76,7 +76,7 @@
 (def field-map
   (options/choices->map choices))
 
-(def type-option
+(def ^:private type-option
   {:type :choice
    :choices choices
    :ui {:label :string.option/partition

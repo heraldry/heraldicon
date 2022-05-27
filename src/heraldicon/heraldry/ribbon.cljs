@@ -43,9 +43,9 @@
 (defmethod interface/options :heraldry/ribbon [context]
   (options context))
 
-(defn curve-segments [full-curve
-                      last-index end-t last-edge-vector
-                      index ts edge-vector]
+(defn- curve-segments [full-curve
+                       last-index end-t last-edge-vector
+                       index ts edge-vector]
   (assert (-> ts count (<= 2)) "curve-segments only supports 2 tangent points per segment")
   (let [full-curve (vec full-curve)
         first-leg (when-not (= last-index index 0)
@@ -75,7 +75,7 @@
                     edge-vector
                     edge-vector]))))))
 
-(defn split-curve [full-curve tangent-points min-edge-vector max-edge-vector]
+(defn- split-curve [full-curve tangent-points min-edge-vector max-edge-vector]
   (if (empty? tangent-points)
     [[full-curve min-edge-vector max-edge-vector]]
     (->> (concat [[0 nil min-edge-vector]]
@@ -115,7 +115,7 @@
      :curves (mapv first curves-and-edge-vectors)
      :edge-vectors (mapv (comp vec (partial drop 1)) curves-and-edge-vectors)}))
 
-(def segment-type-choices
+(def ^:private segment-type-choices
   [[:string.ribbon.segment-type-choice/foreground-with-text :heraldry.ribbon.segment.type/foreground-with-text]
    [:string.ribbon.segment-type-choice/foreground :heraldry.ribbon.segment.type/foreground]
    [:string.ribbon.segment-type-choice/background :heraldry.ribbon.segment.type/background]])
@@ -128,7 +128,7 @@
 (def segment-type-map
   (options/choices->map segment-type-choices))
 
-(def type-option
+(def ^:private type-option
   {:type :choice
    :choices segment-type-choices
    :ui {:label :string.option/type

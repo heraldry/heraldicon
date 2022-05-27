@@ -15,7 +15,7 @@
 (defmethod field.interface/part-names field-type [_] nil)
 
 ;; TODO: needs translation
-(def variant-choices
+(def ^:private variant-choices
   [["Default" :default]
    ["Counter" :counter]
    ["In pale" :in-pale]
@@ -70,12 +70,10 @@
             :ui {:label :string.option/layout
                  :form-type :field-layout}}})
 
-(defn units [n]
-  (-> n
-      (* 4)
-      (- 1)))
+(defn- units [n]
+  (dec (* n 4)))
 
-(defn potent-default [part-width part-height]
+(defn- potent-default [part-width part-height]
   (let [width part-width
         height (* 2 part-height)
         middle-x (/ width 2)
@@ -134,7 +132,7 @@
                [:path {:d (str "M" width "," middle-y
                                "h" (- w))}]]}))
 
-(defn potent-counter [part-width part-height]
+(defn- potent-counter [part-width part-height]
   (let [width part-width
         height (* 2 part-height)
         middle-y (/ height 2)
@@ -189,7 +187,7 @@
                [:path {:d (str "M" width "," middle-y
                                "h" (- w))}]]}))
 
-(defn potent-in-pale [part-width part-height]
+(defn- potent-in-pale [part-width part-height]
   (let [width part-width
         height (* 2 part-height)
         middle-y (/ height 2)
@@ -246,7 +244,7 @@
                [:path {:d (str "M" width "," height
                                "v" (- h))}]]}))
 
-(defn potent-en-point [part-width part-height]
+(defn- potent-en-point [part-width part-height]
   (let [width part-width
         height (* 2 part-height)
         middle-x (/ width 2)

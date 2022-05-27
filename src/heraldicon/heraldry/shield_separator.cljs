@@ -37,12 +37,12 @@
                                    vec
                                    (conj 0)))})
 
-(defn shield-separator-exists? [elements]
+(defn- shield-separator-exists? [elements]
   (->> elements
        (filter shield-separator?)
        seq))
 
-(defn element-indices-below-shield [elements]
+(defn- element-indices-below-shield [elements]
   (if (shield-separator-exists? elements)
     (->> elements
          (map-indexed vector)
@@ -51,7 +51,7 @@
          vec)
     []))
 
-(defn element-indices-above-shield [elements]
+(defn- element-indices-above-shield [elements]
   (if (shield-separator-exists? elements)
     (->> elements
          (map-indexed vector)

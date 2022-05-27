@@ -17,7 +17,7 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/quarter)
 
-(def variant-choices
+(def ^:private variant-choices
   [[:string.option.variant-quarter-choice/dexter-chief :dexter-chief]
    [:string.option.variant-quarter-choice/sinister-chief :sinister-chief]
    [:string.option.variant-quarter-choice/dexter-base :dexter-base]

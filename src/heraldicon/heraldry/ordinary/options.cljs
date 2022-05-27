@@ -23,7 +23,7 @@
 
 (derive :heraldry.ordinary/type :heraldry/ordinary)
 
-(def ordinaries
+(def ^:private ordinaries
   [pale/ordinary-type
    fess/ordinary-type
    chief/ordinary-type
@@ -52,7 +52,7 @@
 (def ordinary-map
   (options/choices->map choices))
 
-(def type-option
+(def ^:private type-option
   {:type :choice
    :choices choices
    :ui {:label :string.option/type

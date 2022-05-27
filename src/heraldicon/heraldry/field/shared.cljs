@@ -9,9 +9,9 @@
    [heraldicon.svg.path :as path]
    [heraldicon.util.uid :as uid]))
 
-(def overlap-stroke-width 0.1)
+(def ^:private overlap-stroke-width 0.1)
 
-(defn field-path-allowed? [{:keys [path counterchanged-paths]}]
+(defn ^:private field-path-allowed? [{:keys [path counterchanged-paths]}]
   (let [component-path (->> path
                             reverse
                             (drop-while (comp not int?)))
@@ -32,7 +32,7 @@
             false
             (recur rest)))))))
 
-(defn add-tinctures-to-mapping [context counterchange-tinctures]
+(defn ^:private add-tinctures-to-mapping [context counterchange-tinctures]
   (if (-> counterchange-tinctures count (= 2))
     (let [[t1 t2] counterchange-tinctures
           tincture-replacer {t1 t2
@@ -49,7 +49,7 @@
                     (not (contains? new-mapping t2)) (assoc t2 t1))))))
     context))
 
-(defn render-components [context]
+(defn ^:private render-components [context]
   (into [:<>]
         (for [idx (range (interface/get-list-size (c/++ context :components)))
               :while (field-path-allowed? (c/++ context :components idx))]
@@ -58,7 +58,7 @@
 
 (declare render)
 
-(defn effective-field-context [context]
+(defn- effective-field-context [context]
   (let [;; TODO: for refs the look-up still has to be raw, maybe this can be improved, but
         ;; adding it to the choices in the option would affect the UI
         field-type (interface/get-raw-data (c/++ context :type))]
@@ -69,9 +69,9 @@
                                      (c/++ (interface/get-raw-data
                                             (c/++ context :index)))))))
 
-(defn render-counterchanged-field [{:keys [path
-                                           parent-field-path
-                                           parent-field-environment] :as context}]
+(defn- render-counterchanged-field [{:keys [path
+                                            parent-field-path
+                                            parent-field-environment] :as context}]
   (if parent-field-path
     (let [parent-field-context (-> context
                                    (c/<< :path parent-field-path)

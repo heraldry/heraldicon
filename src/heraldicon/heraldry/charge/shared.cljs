@@ -16,7 +16,7 @@
    [heraldicon.svg.squiggly :as squiggly]
    [heraldicon.util.uid :as uid]))
 
-(def outline-mode-choices
+(def ^:private outline-mode-choices
   [[:string.option.outline-mode-choice/keep :keep]
    [:string.option.outline-mode-choice/transparent :transparent]
    [:string.option.outline-mode-choice/primary :primary]

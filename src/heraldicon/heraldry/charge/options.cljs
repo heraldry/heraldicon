@@ -31,7 +31,7 @@
    star/charge-type
    crescent/charge-type])
 
-(def choices
+(def ^:private choices
   (map (fn [key]
          [(charge.interface/display-name key) key])
        charges))
@@ -39,7 +39,7 @@
 (def choice-map
   (options/choices->map choices))
 
-(def type-option
+(def ^:private type-option
   {:type :choice
    :choices choices
    :ui {:label :string.option/type
@@ -47,8 +47,8 @@
 
 ;; TODO: part-of-semy? and part-of-charge-group? got lost somewhere along the way,
 ;; need to be considered again
-(defn post-process-options [options context & {:keys [part-of-semy?
-                                                      part-of-charge-group?]}]
+(defn- post-process-options [options context & {:keys [part-of-semy?
+                                                       part-of-charge-group?]}]
   (let [ornament? (some #(= % :ornaments) (:path context))
         without-anchor? (or part-of-semy?
                             part-of-charge-group?)]
