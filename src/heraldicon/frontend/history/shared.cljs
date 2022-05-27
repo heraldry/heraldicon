@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.history.shared)
 
-(def undo-path
+(def ^:private undo-path
   [:ui :undo])
 
 (def undoable-paths

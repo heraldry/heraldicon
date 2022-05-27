@@ -7,7 +7,7 @@
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.interface :as interface]))
 
-(defn form [context]
+(defn- form [context]
   [:<>
    (when-not (interface/get-raw-data (c/++ context :preview?))
      [ui.interface/form-element (c/++ context :type)])

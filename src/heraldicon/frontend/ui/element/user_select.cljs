@@ -10,7 +10,7 @@
    [heraldicon.frontend.user :as user]
    [taoensso.timbre :as log]))
 
-(def list-db-path
+(def ^:private list-db-path
   [:user-list])
 
 (defn fetch-user [username]
@@ -20,7 +20,7 @@
       (catch :default e
         (log/error "fetch user error:" e)))))
 
-(defn fetch-user-list []
+(defn- fetch-user-list []
   (go
     (try
       (-> (api.request/call :fetch-users-all {} (user/data))
@@ -29,10 +29,10 @@
       (catch :default e
         (log/error "fetch users list error:" e)))))
 
-(defn invalidate-user-cache [key]
+(defn- invalidate-user-cache [key]
   (state/invalidate-cache list-db-path key))
 
-(defn component [user-list link-fn refresh-fn]
+(defn- component [user-list link-fn refresh-fn]
   (let [user-data (user/data)]
     [filter/legacy-component
      :user-list
@@ -51,13 +51,7 @@
      :hide-ownership-filter? true]))
 
 (defn list-users [link-to-user]
-  (let [[status user-list] (state/async-fetch-data
-                            list-db-path
-                            :all
-                            fetch-user-list)]
+  (let [[status user-list] (state/async-fetch-data list-db-path :all fetch-user-list)]
     (if (= status :done)
-      [component
-       user-list
-       link-to-user
-       #(invalidate-user-cache :all)]
+      [component user-list link-to-user #(invalidate-user-cache :all)]
       [:div [tr :string.miscellaneous/loading]])))

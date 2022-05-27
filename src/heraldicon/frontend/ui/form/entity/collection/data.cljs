@@ -6,7 +6,7 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]))
 
-(defn form [context]
+(defn- form [context]
   (ui.interface/form-elements
    context
    [:num-columns

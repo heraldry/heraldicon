@@ -5,7 +5,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]))
 
-(defn general [context attribution-type]
+(defn- general [context attribution-type]
   [:div.credit
    (if (interface/get-raw-data (c/++ context :id))
      (let [{:keys [nature

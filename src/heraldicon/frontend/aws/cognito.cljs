@@ -4,7 +4,7 @@
     :refer [AuthenticationDetails CognitoUser CognitoUserPool]]
    [heraldicon.config :as config]))
 
-(def user-pool
+(def ^:private user-pool
   (new CognitoUserPool (clj->js (select-keys (config/get :cognito-pool-config)
                                              [:UserPoolId :ClientId]))))
 

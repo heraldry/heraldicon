@@ -31,7 +31,7 @@
                      :string.submenu-summary/rotated)]]
       (string/upper-case-first (string/combine ", " changes)))))
 
-(defn layout-submenu [context]
+(defmethod ui.interface/form-element :semy-layout [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -51,6 +51,3 @@
            :stretch-x
            :stretch-y
            :rotation])]]])))
-
-(defmethod ui.interface/form-element :semy-layout [context]
-  [layout-submenu context])

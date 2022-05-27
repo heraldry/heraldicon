@@ -5,7 +5,7 @@
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]))
 
-(defn form [context]
+(defn- form [context]
   [:<>
    (ui.interface/form-elements
     context

@@ -6,7 +6,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
 
-(defn form [context]
+(defn- form [context]
   (ui.interface/form-elements
    context
    [:line

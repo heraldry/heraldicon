@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]))
 
-(defn form [context]
+(defn- form [context]
   (ui.interface/form-elements
    context
    [:escutcheon

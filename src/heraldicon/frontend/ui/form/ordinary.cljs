@@ -40,7 +40,7 @@
             (= cottise :cottise-extra-2) (update-in path dissoc :cottise-extra-2))
           (state/change-selected-component-if-removed (-> path drop-last vec))))))
 
-(defn form [context]
+(defn- form [context]
   (ui.interface/form-elements
    context
    [:type

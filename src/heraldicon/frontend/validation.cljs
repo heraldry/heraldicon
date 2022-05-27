@@ -7,24 +7,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
 
-(def level-order
-  {:error 0
-   :warning 1
-   :note 2})
-
-(def which-order
-  {:line 0
-   :opposite-line 1
-   :extra-line 2})
-
-(defn validation-color [level]
-  (case level
-    :note "#ffd24d"
-    :warning "#ffb366"
-    :error "#b30000"
-    "#ccc"))
-
-(defn field-tinctures-for-validation [context]
+(defn- field-tinctures-for-validation [context]
   (let [field-type (interface/get-sanitized-data (c/++ context :type))
         tincture (interface/get-sanitized-data (c/++ context :tincture))
         subfield-1-type (interface/get-sanitized-data (c/++ context :fields 0 :type))
@@ -49,14 +32,14 @@
              (or (not= subfield-1-type :plain)
                  (not= subfield-2-type :plain))) (conj :mixed)))))
 
-(defn list-tinctures [tinctures]
+(defn- list-tinctures [tinctures]
   (->> tinctures
        sort
        (map tincture/translate-tincture)
        (string/combine
         ", ")))
 
-(defn verify-rule-of-tincture [parent-tinctures own-tinctures fimbriated?]
+(defn- verify-rule-of-tincture [parent-tinctures own-tinctures fimbriated?]
   (let [parent-kinds (into #{}
                            (map tincture/kind)
                            parent-tinctures)
@@ -83,7 +66,7 @@
                                                 (list-tinctures own-tinctures)
                                                 (list-tinctures parent-tinctures))})))
 
-(defn validate-tinctures [field-context parent-field-context fimbriation-context]
+(defn- validate-tinctures [field-context parent-field-context fimbriation-context]
   (let [field-tinctures (field-tinctures-for-validation field-context)
         parent-field-tinctures (field-tinctures-for-validation parent-field-context)
         fimbriation-tincture-1 (interface/get-sanitized-data (c/++ fimbriation-context :tincture-1))
@@ -156,10 +139,19 @@
                                                             (tincture/translate-tincture fimbriation-tincture-1)
                                                             (list-tinctures field-tinctures))}))]))))
 
-(defn sort-validations [validations]
-  (sort-by (fn [validation]
-             [(-> validation :level level-order)
-              (-> validation :which which-order)])
+(def ^:private level-order
+  {:error 0
+   :warning 1
+   :note 2})
+
+(def ^:private which-order
+  {:line 0
+   :opposite-line 1
+   :extra-line 2})
+
+(defn- sort-validations [validations]
+  (sort-by (juxt (comp level-order :level)
+                 (comp which-order :which))
            validations))
 
 (defn validate-ordinary [context]
@@ -233,7 +225,7 @@
            (odd? num-fields-y)) (conj {:level :warning
                                        :message :string.validation.partition/bendy-should-have-even-number-of-fields}))))
 
-(defn validate-attribution [context]
+(defn- validate-attribution [context]
   (let [nature (interface/get-sanitized-data (c/++ context :nature))
         source-fields [(interface/get-sanitized-data (c/++ context :source-license))
                        (interface/get-sanitized-data (c/++ context :source-name))
@@ -248,7 +240,7 @@
       [{:level :error
         :message :string.validation.attribution/all-source-fields-required}])))
 
-(defn validate-access [context]
+(defn- validate-access [context]
   (let [public? (= (interface/get-sanitized-data (c/++ context :access))
                    :public)
         license (interface/get-sanitized-data (c/++ context :attribution :license))]
@@ -263,7 +255,14 @@
      access
      attribution)))
 
-(defn render-icon [level]
+(defn- validation-color [level]
+  (case level
+    :note "#ffd24d"
+    :warning "#ffb366"
+    :error "#b30000"
+    "#ccc"))
+
+(defn- render-icon [level]
   [:i.fas.fa-exclamation-triangle {:style {:color (validation-color level)}}])
 
 (defn render [validation]

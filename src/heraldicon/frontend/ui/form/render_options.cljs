@@ -2,7 +2,7 @@
   (:require
    [heraldicon.frontend.ui.interface :as ui.interface]))
 
-(defn form [context]
+(defn- form [context]
   (ui.interface/form-elements
    context
    [:scope

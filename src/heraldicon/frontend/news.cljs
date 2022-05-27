@@ -4,7 +4,7 @@
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
-(defn release-image [img-src]
+(defn- release-image [img-src]
   (let [src (static/static-url img-src)]
     [:a {:href src
          :target "_blank"}

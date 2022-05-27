@@ -25,7 +25,7 @@
 (defn highlight-element [path]
   (rf/dispatch-sync [:set ui-highlighted-element-path path]))
 
-(defn form [context]
+(defn- form [context]
   (ui.interface/form-elements
    context
    [:name

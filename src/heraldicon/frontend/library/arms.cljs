@@ -32,12 +32,10 @@
 (def form-db-path
   [:arms-form])
 
-(def saved-data-db-path
+(def ^:private saved-data-db-path
   [:saved-arms-data])
 
-;; views
-
-(defn charge-attribution []
+(defn- charge-attribution []
   (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :data :achievement)])
         charges-data (map charge/fetch-charge-data used-charges)]
     (when (-> charges-data first :id)
@@ -52,7 +50,7 @@
                          :charge-data charge}])))
              charges-data)])))
 
-(defn ribbon-attribution []
+(defn- ribbon-attribution []
   (let [used-ribbons @(rf/subscribe [:used-ribbons (conj form-db-path :data :achievement)])
         ribbons-data (map ribbon/fetch-ribbon-data used-ribbons)]
     (when (-> ribbons-data first :id)
@@ -67,7 +65,7 @@
                          :ribbon-data ribbon}])))
              ribbons-data)])))
 
-(defn attribution []
+(defn- attribution []
   (let [attribution-data (attribution/for-arms {:path form-db-path})]
     [:div.attribution
      [:h3 [tr :string.attribution/title]]
@@ -76,7 +74,7 @@
      [charge-attribution]
      [ribbon-attribution]]))
 
-(defn base-context []
+(defn- base-context []
   (assoc
    context/default
    :path form-db-path
@@ -84,10 +82,10 @@
    :select-component-fn (fn [event context]
                           (state/dispatch-on-event event [:ui-component-node-select (:path context)]))))
 
-(defn render-achievement []
+(defn- render-achievement []
   [render/achievement (c/++ (base-context) :data :achievement)])
 
-(defn blazonry []
+(defn- blazonry []
   [:div.blazonry
    [:h3
     [tr :string.entity/blazon]
@@ -96,7 +94,7 @@
    [:div.blazon
     (string/tr-raw (interface/blazon {:path (conj form-db-path :data :achievement :coat-of-arms)}) :en)]])
 
-(defn generate-svg-clicked [event]
+(defn- generate-svg-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
   (modal/start-loading)
@@ -113,7 +111,7 @@
         (log/error "generate svg arms error:" e)
         (modal/stop-loading)))))
 
-(defn generate-png-clicked [event]
+(defn- generate-png-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
   (modal/start-loading)
@@ -130,10 +128,10 @@
         (log/error "generate png arms error:" e)
         (modal/stop-loading)))))
 
-(defn invalidate-arms-cache [user-id]
+(defn- invalidate-arms-cache [user-id]
   (state/invalidate-cache arms-select/list-db-path user-id))
 
-(defn save-arms-clicked [event]
+(defn- save-arms-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
   (go
@@ -162,7 +160,7 @@
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
         (modal/stop-loading)))))
 
-(defn copy-to-new-clicked [event]
+(defn- copy-to-new-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
   (let [arms-data @(rf/subscribe [:get form-db-path])]
@@ -183,7 +181,7 @@
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-arms)))
 
-(defn share-button-clicked [_event]
+(defn- share-button-clicked [_event]
   (let [short-url (entity.arms/short-url @(rf/subscribe [:get form-db-path]))]
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (rf/dispatch-sync [:clear-form-errors form-db-path])
@@ -191,7 +189,7 @@
       (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])
       (rf/dispatch [:set-form-error form-db-path :string.user.message/copy-to-clipboard-failed]))))
 
-(defn button-row []
+(defn- button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         arms-id @(rf/subscribe [:get (conj form-db-path :id)])
@@ -272,7 +270,7 @@
                                        :margin-left "10px"}}
        [tr :string.button/save]]]]))
 
-(defn arms-form []
+(defn- arms-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-arms])
@@ -307,7 +305,7 @@
                         :spacer
                         (conj form-db-path :data :achievement :ornaments)]]]])
 
-(defn arms-display [arms-id version]
+(defn- arms-display [arms-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path arms-id])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path arms-id]))
   (let [[status arms-data] (state/async-fetch-data
@@ -325,7 +323,7 @@
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
 
-(defn list-all-arms []
+(defn- list-all-arms []
   [arms-select/list-arms on-select])
 
 (defn view-list-arms []

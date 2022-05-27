@@ -10,7 +10,7 @@
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 
-(defn submenu-link-name [{:keys [nature license license-version]}]
+(defn- submenu-link-name [{:keys [nature license license-version]}]
   (let [main-name (attribution/nature-map nature)
         changes [main-name
                  (if (= license :none)
@@ -22,9 +22,11 @@
   (fn [db [_ path data]]
     (update-in db path merge data)))
 
-(defn attribution-submenu [{:keys [path] :as context} & {:keys [charge-presets?]}]
+(defmethod ui.interface/form-element :attribution [{:keys [path] :as context}]
   (when-let [options (interface/get-relevant-options context)]
-    (let [{:keys [ui]} options
+    (let [charge-presets? (-> context :path drop-last last #{:charge-form
+                                                             :charge-data})
+          {:keys [ui]} options
           label (:label ui)
           link-name (submenu-link-name (interface/get-sanitized-data context))]
       [:div.ui-setting
@@ -99,8 +101,3 @@
             :source-link
             :source-creator-name
             :source-creator-link])]]]])))
-
-(defmethod ui.interface/form-element :attribution [context]
-  [attribution-submenu context
-   :charge-presets? (-> context :path drop-last last #{:charge-form
-                                                       :charge-data})])

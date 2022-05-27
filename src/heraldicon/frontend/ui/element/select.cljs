@@ -51,7 +51,7 @@
        :component-id component-id]
       [value-mode-select/value-mode-select context]]]))
 
-(defn select [context & {:keys [on-change]}]
+(defn- select [context & {:keys [on-change]}]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui default inherited choices]} option

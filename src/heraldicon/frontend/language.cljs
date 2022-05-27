@@ -8,16 +8,16 @@
    [hodgepodge.core :refer [get-item local-storage set-item]]
    [re-frame.core :as rf]))
 
-(def language-path
+(def ^:private language-path
   [:ui :language])
 
-(def language-menu-open?-path
+(def ^:private language-menu-open?-path
   [:ui :menu :language-menu :open?])
 
-(def local-storage-language-name
+(def ^:private local-storage-language-name
   "hd-language")
 
-(defn browser-preferred-language []
+(defn- browser-preferred-language []
   (when-let [language (or (first js/navigator.languages)
                           js/navigator.language
                           js/navigator.userLanguage)]
@@ -27,7 +27,7 @@
       (or (get known-language-keys (keyword language))
           (get known-language-keys (-> language (s/split #"-") first keyword))))))
 
-(defn store-language-setting [language]
+(defn- store-language-setting [language]
   (set-item local-storage local-storage-language-name language))
 
 (rf/reg-sub ::selected-language
@@ -35,7 +35,7 @@
     (or (get-in db language-path)
         :en)))
 
-(defn set-language [db language]
+(defn- set-language [db language]
   (if (locale/all language)
     (do
       (store-language-setting language)
@@ -61,12 +61,12 @@
 (defn tr [data]
   (string/tr-raw data @(rf/subscribe [::selected-language])))
 
-(defn selected-language-option []
+(defn- selected-language-option []
   (let [selected-language-code @(rf/subscribe [::selected-language])
         title (get locale/all selected-language-code)]
     [tr title]))
 
-(defn language-option [language-code & {:keys [on-click]}]
+(defn- language-option [language-code & {:keys [on-click]}]
   (let [title (get locale/all language-code)]
     [:a.nav-menu-link {:href "#"
                        :on-click (fn [event]

@@ -14,7 +14,7 @@
     (or (s/starts-with? route-name (str "view-" entity))
         (s/starts-with? route-name (str "create-" entity)))))
 
-(defn key-down-handler [event]
+(defn- key-down-handler [event]
   (let [shift? (.-shiftKey event)
         ctrl? (.-ctrlKey event)
         meta? (.-metaKey event)
@@ -40,7 +40,7 @@
                                     [:heraldicon.frontend.library.ribbon/edit-set-key-modifiers
                                      {:shift? shift?}]))))
 
-(defn key-up-handler [event]
+(defn- key-up-handler [event]
   (let [shift? (.-shiftKey event)]
     (when (entity-edit-page? "ribbon")
       (rf/dispatch

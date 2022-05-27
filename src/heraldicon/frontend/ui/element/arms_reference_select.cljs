@@ -10,7 +10,7 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defn arms-reference-select [context]
+(defmethod ui.interface/form-element :arms-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{arms-id :id
            version :version} (interface/get-raw-data context)
@@ -46,6 +46,3 @@
                                                                            :version 0}]))})
           :selected-arms arms-data
           :display-selected-item? true]]]])))
-
-(defmethod ui.interface/form-element :arms-reference-select [context]
-  [arms-reference-select context])

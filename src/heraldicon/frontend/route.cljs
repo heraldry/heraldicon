@@ -19,7 +19,7 @@
 
 (defonce current-match (rc/atom nil))
 
-(def routes
+(def ^:private routes
   [["/"
     {:name :home
      :view home/view}]
@@ -220,7 +220,7 @@
     {:name :account-without-slash
      :view account/view}]])
 
-(def router
+(def ^:private router
   (reif/router routes))
 
 (defn- resolve-href
@@ -267,7 +267,7 @@
     (let [view (:view (:data @current-match))]
       [view @current-match])))
 
-(defn blocked-by-maintenance-mode? [route-name]
+(defn- blocked-by-maintenance-mode? [route-name]
   (-> route-name
       name
       (s/split #"-+")

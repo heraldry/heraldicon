@@ -9,7 +9,7 @@
    [heraldicon.interface :as interface]
    [taoensso.timbre :as log]))
 
-(defn fetch-charge-for-rendering [charge-id version]
+(defn- fetch-charge-for-rendering [charge-id version]
   (go
     (try
       (let [user-data (user/data)

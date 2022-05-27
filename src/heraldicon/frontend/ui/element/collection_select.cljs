@@ -10,24 +10,12 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user :as user]
-   [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
 (def list-db-path
   [:collection-list])
 
-(defn fetch-collection [collection-id version target-path]
-  (go
-    (try
-      (let [collection-data (<? (api.request/call :fetch-collection {:id collection-id
-                                                                     :version version} (user/data)))]
-        (when target-path
-          (rf/dispatch [:set target-path collection-data]))
-        collection-data)
-      (catch :default e
-        (log/error "fetch collection error:" e)))))
-
-(defn fetch-collection-list []
+(defn- fetch-collection-list []
   (go
     (try
       (-> (api.request/call :fetch-collections-list {} (user/data))
@@ -45,7 +33,7 @@
       (catch :default e
         (log/error "fetch collection list by user error:" e)))))
 
-(defn invalidate-collection-cache [user-id]
+(defn- invalidate-collection-cache [user-id]
   (state/invalidate-cache list-db-path user-id))
 
 (defn component [collection-list link-fn refresh-fn & {:keys [hide-ownership-filter?]}]
@@ -79,13 +67,7 @@
      :hide-ownership-filter? hide-ownership-filter?]))
 
 (defn list-collections [link-to-collection]
-  (let [[status collection-list] (state/async-fetch-data
-                                  list-db-path
-                                  :all
-                                  fetch-collection-list)]
+  (let [[status collection-list] (state/async-fetch-data list-db-path :all fetch-collection-list)]
     (if (= status :done)
-      [component
-       collection-list
-       link-to-collection
-       #(invalidate-collection-cache :all)]
+      [component collection-list link-to-collection #(invalidate-collection-cache :all)]
       [:div [tr :string.miscellaneous/loading]])))

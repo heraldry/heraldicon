@@ -9,7 +9,7 @@
    [heraldicon.options :as options]))
 
 ;; TODO: probably can be improved with better subscriptions
-(defn submenu-link-name [options position]
+(defn- submenu-link-name [options position]
   (let [changes [(-> position
                      :point
                      position/orientation-point-map)
@@ -20,7 +20,7 @@
                    "aligned")]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(defn position-submenu [context]
+(defmethod ui.interface/form-element :position [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -39,6 +39,3 @@
            :offset-x
            :offset-y
            :type])]]])))
-
-(defmethod ui.interface/form-element :position [context]
-  [position-submenu context])

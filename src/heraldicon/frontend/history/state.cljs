@@ -2,7 +2,7 @@
   (:require
    [heraldicon.frontend.history.shared :as shared]))
 
-(defn add-new-state [path db new-db]
+(defn- add-new-state [path db new-db]
   (let [previous-state (get-in db path)
         new-state (get-in new-db path)]
     (if (or (= previous-state new-state)
@@ -23,7 +23,7 @@
             (assoc-in history-path new-history)
             (assoc-in index-path new-index))))))
 
-(defn add-new-states [db new-db]
+(defn ^:export add-new-states [db new-db]
   (loop [new-db new-db
          [path & rest] shared/undoable-paths]
     (if path

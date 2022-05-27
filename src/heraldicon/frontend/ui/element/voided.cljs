@@ -8,7 +8,7 @@
    [heraldicon.options :as options]))
 
 ;; TODO: probably can be improved with better subscriptions
-(defn submenu-link-name [options voided]
+(defn- submenu-link-name [options voided]
   (let [changes (concat
                  (when (:voided? voided)
                    [:string.charge.attribute/voided])
@@ -20,7 +20,7 @@
       (string/upper-case-first (string/combine ", " changes))
       :string.submenu-summary/no)))
 
-(defn voided-submenu [context]
+(defmethod ui.interface/form-element :voided [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -44,6 +44,3 @@
           [:voided?
            :corner
            :thickness])]]])))
-
-(defmethod ui.interface/form-element :voided [context]
-  [voided-submenu context])

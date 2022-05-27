@@ -41,9 +41,9 @@
                                                  %
                                                  (options/sanitize-or-nil % (interface/options {:path %}))))))))
 
-(defn ordinary-type-choice [path key display-name & {:keys [selected?
-                                                            on-click?]
-                                                     :or {on-click? true}}]
+(defn- ordinary-type-choice [path key display-name & {:keys [selected?
+                                                             on-click?]
+                                                      :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
                                     #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key]))}
    [:img.clickable {:style {:width "5em"
@@ -55,7 +55,7 @@
       [:h3 {:style {:text-align "center"}} [tr display-name]]
       [:i]])])
 
-(defn ordinary-type-select [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :ordinary-type-select [{:keys [path] :as context}]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
@@ -83,6 +83,3 @@
                       ^{:key key}
                       [ordinary-type-choice path key display-name :selected? (= key value)]))
                choices)]]])))
-
-(defmethod ui.interface/form-element :ordinary-type-select [context]
-  [ordinary-type-select context])

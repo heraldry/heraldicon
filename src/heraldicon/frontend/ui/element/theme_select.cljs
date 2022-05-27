@@ -9,9 +9,9 @@
    [heraldicon.options :as options]
    [heraldicon.static :as static]))
 
-(defn theme-choice [context key display-name & {:keys [selected?
-                                                       on-click?]
-                                                :or {on-click? true}}]
+(defn- theme-choice [context key display-name & {:keys [selected?
+                                                        on-click?]
+                                                 :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
                                     #(state/dispatch-on-event % [:set context key]))
                         :style {:border (if selected?
@@ -29,7 +29,7 @@
        [tr display-name]]
       [:i]])])
 
-(defn theme-select [context]
+(defmethod ui.interface/form-element :theme-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{:keys [ui inherited default choices]} option
           current-value (interface/get-raw-data context)
@@ -62,6 +62,3 @@
                               [theme-choice context key display-name :selected? (= key value)]))
                        group)))
                choices)]]])))
-
-(defmethod ui.interface/form-element :theme-select [context]
-  [theme-select context])

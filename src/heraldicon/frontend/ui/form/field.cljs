@@ -32,7 +32,7 @@
           default-fields (field/default-fields parent-context)]
       (assoc-in db path (get default-fields index)))))
 
-(defn show-tinctures-only? [field-type]
+(defn- show-tinctures-only? [field-type]
   (-> field-type name keyword
       #{:chequy
         :lozengy
@@ -42,7 +42,7 @@
         :papellony
         :fretty}))
 
-(defn form [context]
+(defn- form [context]
   [:<>
    (ui.interface/form-elements
     context
@@ -80,7 +80,7 @@
                    [ui.interface/form-element (c/++ context :fields idx :pattern-offset-y)]]))
            (range (interface/get-list-size (c/++ context :fields)))))])
 
-(defn parent-context [{:keys [path] :as context}]
+(defn- parent-context [{:keys [path] :as context}]
   (let [index (last path)
         parent-context (c/-- context 2)
         parent-type (interface/get-raw-data (c/++ parent-context :type))]
@@ -88,12 +88,12 @@
                (-> parent-type (or :dummy) namespace (= "heraldry.field.type")))
       parent-context)))
 
-(defn name-prefix-for-part [{:keys [path] :as context}]
+(defn- name-prefix-for-part [{:keys [path] :as context}]
   (when-let [parent-context (parent-context context)]
     (let [parent-type (interface/get-raw-data (c/++ parent-context :type))]
       (string/upper-case-first (field/part-name parent-type (last path))))))
 
-(defn non-mandatory-part-of-parent? [{:keys [path] :as context}]
+(defn- non-mandatory-part-of-parent? [{:keys [path] :as context}]
   (let [index (last path)]
     (when (int? index)
       (when-let [parent-context (parent-context context)]

@@ -155,10 +155,10 @@
                                         slots)))
           (state/element-order-changed elements-path index (dec index))))))
 
-(def preview-tinctures
+(def ^:private preview-tinctures
   [:azure :or :vert :gules :purpure :sable])
 
-(defn preview-form [path]
+(defn- preview-form [path]
   (let [context {:path path
                  :render-options-path [:example-coa :render-options]
                  :environment {:width 200
@@ -215,7 +215,7 @@
        [:h3 {:style {:text-align "center"}} "Click the slots to disable them or cycle through the available charges (added below)."]
        [:i]]]]))
 
-(defn strip-form [context type-str]
+(defn- strip-form [context type-str]
   (let [num-slots (interface/get-list-size (c/++ context :slots))
         stretch (interface/get-sanitized-data (c/++ context :stretch))
         offset (interface/get-sanitized-data (c/++ context :offset))
@@ -238,7 +238,7 @@
         :stretch
         :offset])]]))
 
-(defn form [{:keys [path] :as context}]
+(defn- form [{:keys [path] :as context}]
   (let [charge-group-type (interface/get-raw-data (c/++ context :type))
         strip-type? (#{:heraldry.charge-group.type/rows
                        :heraldry.charge-group.type/columns}

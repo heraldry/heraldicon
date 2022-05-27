@@ -12,7 +12,7 @@
    [re-frame.core :as rf]))
 
 ;; TODO: probably can be improved with better subscriptions
-(defn submenu-link-name [options layout]
+(defn- submenu-link-name [options layout]
   (let [main-name (when (or (:num-fields-x options)
                             (:num-fields-y options))
                     (string/str-tr (string/combine "x"
@@ -73,7 +73,7 @@
        (-> field :layout :num-fields-y)
        value))))
 
-(defn layout-submenu [context]
+(defmethod ui.interface/form-element :field-layout [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -94,9 +94,6 @@
            :stretch-x
            :stretch-y
            :rotation])]]])))
-
-(defmethod ui.interface/form-element :field-layout [context]
-  [layout-submenu context])
 
 (defmethod ui.interface/form-element :field-layout-num-fields-x [{:keys [path] :as context}]
   [range/range-input context

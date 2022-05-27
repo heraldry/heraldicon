@@ -7,17 +7,6 @@
    [heraldicon.frontend.user :as user]
    [taoensso.timbre :as log]))
 
-(defn fetch-ribbons-for-user [user-id]
-  (go
-    (try
-      (let [user-data (user/data)]
-        (-> (api.request/call :fetch-ribbons-for-user {:user-id user-id}
-                              user-data)
-            <?
-            :ribbons))
-      (catch :default e
-        (log/error "fetch ribbons for user error:" e)))))
-
 (defn fetch-ribbons []
   (go
     (try

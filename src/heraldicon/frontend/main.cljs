@@ -23,18 +23,18 @@
     [modal/render]
     [auto-complete/render]]])
 
-(defn title []
+(defn- title []
   (string/combine
    " - "
    [@(rf/subscribe [:get-title])
     "Heraldicon"]))
 
-(defonce stats-accumulator (tufte/add-accumulating-handler! {:ns-pattern "*"}))
+(defonce ^:private stats-accumulator (tufte/add-accumulating-handler! {:ns-pattern "*"}))
 
-(defn start-stats-timer [f]
+(defn- start-stats-timer [f]
   (rf/dispatch-sync [:set [:ui :timer] (js/setTimeout f 5000)]))
 
-(defn print-stats []
+(defn ^:export print-stats []
   (log/debug :print-stats)
   (when-let [timer @(rf/subscribe [:get [:ui :timer]])]
     (js/clearTimeout timer))

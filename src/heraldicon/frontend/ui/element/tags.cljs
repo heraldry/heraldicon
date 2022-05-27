@@ -9,7 +9,7 @@
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
-(def value-path [:ui :tag-input-value])
+(def ^:private value-path [:ui :tag-input-value])
 
 (macros/reg-event-db :add-tags
   (fn [db [_ db-path tags]]
@@ -32,11 +32,11 @@
                                        remaining)
                                 current-tags))))))
 
-(defn on-change [event]
+(defn- on-change [event]
   (let [new-value (-> event .-target .-value)]
     (rf/dispatch-sync [:set value-path new-value])))
 
-(defn add-tag-clicked [path value]
+(defn- add-tag-clicked [path value]
   (let [tags (-> value
                  (or "")
                  s/trim
@@ -46,12 +46,12 @@
     (rf/dispatch [:add-tags path tags])
     (rf/dispatch [:set value-path nil])))
 
-(defn delete-tag-clicked [path tag]
+(defn- delete-tag-clicked [path tag]
   (rf/dispatch [:remove-tags path [tag]]))
 
-(defn tag-view [tag & {:keys [on-delete
-                              on-click
-                              selected?]}]
+(defn- tag-view [tag & {:keys [on-delete
+                               on-click
+                               selected?]}]
   [:span.tag {:style {:background (if selected?
                                     "#f2bc51"
                                     "#0c6793")
@@ -90,7 +90,7 @@
                   :selected? (get selected tag)]))
           sorted-tags)))
 
-(defn form [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :tags [{:keys [path] :as context}]
   (let [value (interface/get-raw-data (c/<< context :path value-path))
         tags (interface/get-raw-data context)
         on-click (fn [event]
@@ -117,6 +117,3 @@
        [:div {:style {:padding-top "10px"}}
         [tags-view (keys tags)
          :on-delete #(delete-tag-clicked path %)]]]]]))
-
-(defmethod ui.interface/form-element :tags [context]
-  [form context])

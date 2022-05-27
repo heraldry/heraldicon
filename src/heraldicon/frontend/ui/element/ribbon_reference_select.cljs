@@ -41,7 +41,7 @@
       (assoc-in db path {:id ribbon-id
                          :version ribbon-version}))))
 
-(defn choice-preview [context]
+(defn- choice-preview [context]
   (let [ribbon (interface/get-raw-data context)
         img-url (preview/preview-url
                  :ribbon ribbon
@@ -53,7 +53,7 @@
      (when ribbon
        [:img.clickable {:src img-url}])]))
 
-(defn ribbon-reference-select [context]
+(defmethod ui.interface/form-element :ribbon-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{ribbon-id :id
            version :version} (interface/get-raw-data context)
@@ -91,6 +91,3 @@
                          (rf/dispatch [:set-ribbon-reference (:path context) ribbon]))})
           :selected-ribbon ribbon-data
           :display-selected-item? true]]]])))
-
-(defmethod ui.interface/form-element :ribbon-reference-select [context]
-  [ribbon-reference-select context])

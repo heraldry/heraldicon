@@ -29,13 +29,13 @@
 (def form-db-path
   [:collection-form])
 
-(def saved-data-db-path
+(def ^:private saved-data-db-path
   [:saved-collection-data])
 
-(def list-db-path
+(def ^:private list-db-path
   [:collection-list])
 
-(defn fetch-collection [collection-id version]
+(defn- fetch-collection [collection-id version]
   (go
     (try
       (let [user-data (user/data)
@@ -46,9 +46,7 @@
       (catch :default e
         (log/error "fetch collection error:" e)))))
 
-;; views
-
-(defn save-collection-clicked []
+(defn- save-collection-clicked []
   (go
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
@@ -70,7 +68,7 @@
         (log/error "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
 
-(defn render-add-arms [x y size]
+(defn- render-add-arms [x y size]
   (let [r (* size 0.4)
         bar-width (* size 0.5)
         bar-height (* size 0.1)]
@@ -93,7 +91,7 @@
        :height bar-width
        :style {:fill "#fff"}}]]))
 
-(defn selected-element-index []
+(defn- selected-element-index []
   (let [selected-node-path @(rf/subscribe [:collection-library-highlighted-element])
         index (last selected-node-path)]
     (when (int? index)
@@ -104,7 +102,7 @@
           (collection.element/highlight-element nil)
           nil)))))
 
-(defn arms-highlight [path x y width height]
+(defn- arms-highlight [path x y width height]
   (if @(rf/subscribe [:collection-library-highlighted? path])
     [:rect {:x (- x (/ width 2) 7)
             :y (- y (/ height 2) 7)
@@ -114,8 +112,8 @@
             :fill "#33f8"}]
     [:<>]))
 
-(defn render-arms [x y size path & {:keys [font font-size]
-                                    :or {font-size 12}}]
+(defn- render-arms [x y size path & {:keys [font font-size]
+                                     :or {font-size 12}}]
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
@@ -154,10 +152,10 @@
                       :font-size font-size}}
        (:name data)]]]))
 
-(defn on-arms-click [event index]
+(defn- on-arms-click [event index]
   (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :data :elements index)]))
 
-(defn render-collection [& {:keys [allow-adding?]}]
+(defn- render-collection [& {:keys [allow-adding?]}]
   (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
                      font/css-string)
         num-columns (interface/get-sanitized-data {:path (conj form-db-path :data :num-columns)})
@@ -229,7 +227,7 @@
                (+ (/ arms-height 2)))
             arms-width]]))]]))
 
-(defn render-arms-preview []
+(defn- render-arms-preview []
   (when-let [selected-element-index (selected-element-index)]
     (let [arms-reference @(rf/subscribe [:get (conj form-db-path :data :elements selected-element-index :reference)])
           {arms-id :id
@@ -272,7 +270,7 @@
             [:g {:transform "translate(10,10) scale(5,5)"}
              result]]])))))
 
-(defn button-row []
+(defn- button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         collection-id @(rf/subscribe [:get (conj form-db-path :id)])
@@ -301,7 +299,7 @@
                                        :margin-left "10px"}}
        [tr :string.button/save]]]]))
 
-(defn collection-form []
+(defn- collection-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-collection])
@@ -330,7 +328,7 @@
                         (conj form-db-path :data :render-options)
                         (conj form-db-path :data)]]]])
 
-(defn collection-display [collection-id version]
+(defn- collection-display [collection-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path collection-id])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path collection-id]))
   (let [[status _collection-data] (state/async-fetch-data
@@ -350,11 +348,8 @@
                       (rf/dispatch-sync [:clear-form-message form-db-path]))}
      (:name collection)]))
 
-(defn list-collections []
+(defn- list-collections []
   [collection-select/list-collections link-to-collection])
-
-(defn invalidate-collection-cache [user-id]
-  (state/invalidate-cache list-db-path user-id))
 
 (defn view-list-collection []
   (rf/dispatch [:set-title :string.entity/collections])

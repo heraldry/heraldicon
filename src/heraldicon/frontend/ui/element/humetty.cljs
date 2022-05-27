@@ -20,7 +20,7 @@
       (string/upper-case-first (string/combine ", " changes))
       :string.submenu-summary/no)))
 
-(defn humetty-submenu [context]
+(defmethod ui.interface/form-element :humetty [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -44,6 +44,3 @@
           [:humetty?
            :corner
            :distance])]]])))
-
-(defmethod ui.interface/form-element :humetty [context]
-  [humetty-submenu context])
