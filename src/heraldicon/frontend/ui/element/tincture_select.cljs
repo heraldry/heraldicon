@@ -9,9 +9,9 @@
    [heraldicon.options :as options]
    [heraldicon.static :as static]))
 
-(defn tincture-choice [context key display-name & {:keys [selected?
-                                                          on-click?]
-                                                   :or {on-click? true}}]
+(defn- tincture-choice [context key display-name & {:keys [selected?
+                                                           on-click?]
+                                                    :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
                                     #(state/dispatch-on-event % [:set context key]))
                         :style {:border (if selected?

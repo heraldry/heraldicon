@@ -10,7 +10,7 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
-(def list-db-path
+(def ^:private list-db-path
   [:ribbon-list])
 
 (defn fetch-ribbon [ribbon-id version target-path]
@@ -33,25 +33,16 @@
       (catch :default e
         (log/error "fetch ribbon list error:" e)))))
 
-(defn fetch-ribbon-list-by-user [user-id]
-  (go
-    (try
-      (-> (api.request/call :fetch-ribbon-for-user {:user-id user-id} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch ribbon list by user error:" e)))))
-
-(defn invalidate-ribbons-cache []
+(defn- invalidate-ribbons-cache []
   (let [user-data (user/data)
         user-id (:user-id user-data)]
     (rf/dispatch-sync [:set list-db-path nil])
     (state/invalidate-cache list-db-path user-id)
     (state/invalidate-cache [:all-ribbons] :all-ribbons)))
 
-(defn component [ribbon-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
-                                                                 selected-ribbon
-                                                                 display-selected-item?]}]
+(defn- component [ribbon-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
+                                                                  selected-ribbon
+                                                                  display-selected-item?]}]
   (let [user-data (user/data)]
     [filter/component
      :ribbon-list

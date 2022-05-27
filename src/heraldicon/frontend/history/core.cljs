@@ -29,7 +29,7 @@
   (fn [known-identifier [_ _ identifier]]
     (not= known-identifier identifier)))
 
-(defn restore-state [db path index-fn]
+(defn- restore-state [db path index-fn]
   (let [index-path (shared/index-path path)
         history (get-in db (shared/history-path path))
         index (get-in db index-path)

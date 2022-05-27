@@ -20,25 +20,25 @@
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
-(def blazon-editor-path
+(def ^:private blazon-editor-path
   [:ui :blazon-editor])
 
-(def hdn-path
+(def ^:private hdn-path
   (conj blazon-editor-path :hdn))
 
-(def editor-state-path
+(def ^:private editor-state-path
   (conj blazon-editor-path :editor-state))
 
-(def parser-path
+(def ^:private parser-path
   (conj blazon-editor-path :parser))
 
-(def status-path
+(def ^:private status-path
   (conj blazon-editor-path :status))
 
-(def last-parsed-path
+(def ^:private last-parsed-path
   (conj blazon-editor-path :last-parsed))
 
-(def timer-path
+(def ^:private timer-path
   (conj blazon-editor-path :timer))
 
 (rf/reg-event-db ::clear-parser
@@ -83,10 +83,10 @@
                     [:li [tr :string.blazonry-editor/warning] ": " warning]))
              warnings))]))
 
-(defn parser-status []
+(defn- parser-status []
   @(rf/subscribe [::parser-status]))
 
-(defn caret-position [index]
+(defn- caret-position [index]
   (let [selection (js/document.getSelection)
         range-count (.-rangeCount selection)]
     (when (pos? range-count)
@@ -121,7 +121,7 @@
                             (+ delta))
                    :left (.-left rect)}))))))
 
-(def suggestion-hint-order
+(def ^:private suggestion-hint-order
   (into {}
         (map-indexed (fn [index hint]
                        [hint index]))
@@ -140,7 +140,7 @@
          "facing"
          "number"]))
 
-(defn parse-blazonry [value cursor-index parser]
+(defn- parse-blazonry [value cursor-index parser]
   (try
     (let [hdn (reader/read value parser)]
       {:value value
@@ -186,8 +186,8 @@
                           position (assoc :position position))
          :index index}))))
 
-(defn get-block-key-and-offset [^draft-js/ContentState content
-                                index]
+(defn- get-block-key-and-offset [^draft-js/ContentState content
+                                 index]
   (loop [[^draft-js/ContentBlock block & rest] (.getBlocksAsArray content)
          index index]
     (when block
@@ -198,7 +198,7 @@
           (recur rest
                  (- index block-length)))))))
 
-(defn block-start-index [^draft-js/ContentState content block]
+(defn- block-start-index [^draft-js/ContentState content block]
   (->> content
        .getBlocksAsArray
        (take-while #(not= (.-key %) (.-key block)))
@@ -206,7 +206,7 @@
               (.getLength block)))
        (reduce +)))
 
-(defn unknown-string-decorator [index]
+(defn- unknown-string-decorator [index]
   (draft-js/CompositeDecorator.
    (clj->js
     [{:strategy (fn [^draft-js/ContentBlock block
@@ -224,7 +224,7 @@
       :component (fn [props]
                    (r/as-element [:span {:style {:color "red"}} (.-children props)]))}])))
 
-(defn cursor-index [^draft-js/EditorState editor-state]
+(defn- cursor-index [^draft-js/EditorState editor-state]
   (let [selection ^draft-js/Selection (.getSelection editor-state)
         content ^draft-js/ContentState (.getCurrentContent editor-state)
         block (->> selection
@@ -234,7 +234,7 @@
         offset (.getFocusOffset selection)]
     (+ block-start offset)))
 
-(defn build-parse-status [hdn error]
+(defn- build-parse-status [hdn error]
   {:status (if hdn
              :success
              (when error
@@ -253,7 +253,7 @@
                                 warnings)))))
                   (apply concat))})
 
-(def change-dedupe-time
+(def ^:private change-dedupe-time
   250)
 
 (rf/reg-event-db ::set-change-timer
@@ -263,10 +263,10 @@
         (js/clearTimeout timer))
       (assoc-in db timer-path (js/setTimeout f change-dedupe-time)))))
 
-(defn complete-parsing [text {:keys [hdn
-                                     error
-                                     auto-complete
-                                     index]}]
+(defn- complete-parsing [text {:keys [hdn
+                                      error
+                                      auto-complete
+                                      index]}]
   (let [editor-state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
         content ^draft-js/ContentState (.getCurrentContent editor-state)
         current-text (.getPlainText content)]
@@ -283,7 +283,7 @@
       (when hdn
         (rf/dispatch [:set (conj hdn-path :coat-of-arms) {:field hdn}])))))
 
-(defn attempt-parsing []
+(defn- attempt-parsing []
   (let [editor-state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
         content ^draft-js/ContentState (.getCurrentContent editor-state)
         last-parsed @(rf/subscribe [:get last-parsed-path])
@@ -294,15 +294,15 @@
             parse-result (parse-blazonry text cursor-index parser)]
         (complete-parsing text parse-result)))))
 
-(defn on-editor-change [new-editor-state]
+(defn- on-editor-change [new-editor-state]
   (rf/dispatch [:set editor-state-path new-editor-state])
   (rf/dispatch [::set-change-timer attempt-parsing]))
 
-(defn on-editor-change-sync [new-editor-state]
+(defn- on-editor-change-sync [new-editor-state]
   (rf/dispatch-sync [:set editor-state-path new-editor-state])
   (rf/dispatch [::set-change-timer attempt-parsing]))
 
-(defn put-cursor-at [^draft-js/EditorState state index]
+(defn- put-cursor-at [^draft-js/EditorState state index]
   (let [content (.getCurrentContent state)
         {:keys [key offset]} (get-block-key-and-offset content index)
         selection (-> state
@@ -315,7 +315,7 @@
      state
      selection)))
 
-(defn set-blazon [blazon]
+(defn- set-blazon [blazon]
   (let [state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
         new-content (draft-js/ContentState.createFromText blazon)]
     (-> state
@@ -360,7 +360,7 @@
       (auto-complete/clear-data)
       db)))
 
-(defn blazonry-editor [attributes]
+(defn- blazonry-editor [attributes]
   [:div attributes
    [(r/create-class
      {:display-name "core"
@@ -383,7 +383,7 @@
                                                     "handled")
                                                   "not-handled"))}]))})]])
 
-(defn clean-field-data [data]
+(defn- clean-field-data [data]
   (walk/postwalk
    (fn [data]
      (if (map? data)

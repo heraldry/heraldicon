@@ -15,7 +15,7 @@
 (defmethod component-form-data nil [_context]
   {:form (constantly [:<>])})
 
-(defn default-element [type]
+(defn- default-element [type]
   (case type
     :choice :select
     :boolean :checkbox

@@ -32,7 +32,7 @@
           normalize-string
           s/lower-case))
 
-(defn normalize-string-for-match [s]
+(defn- normalize-string-for-match [s]
   (some-> s
           normalize-string
           (s/replace #"[\u0300-\u036f]" "")
@@ -53,7 +53,7 @@
                                  v)
                             (matches-word v word))) data)))
 
-(defn filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-ownership]
+(defn- filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-ownership]
   (let [words (-> filter-string
                   normalize-string-for-match
                   (s/split #" +"))
@@ -107,17 +107,17 @@
   (fn [selected-item [_ _path item-id]]
     (-> selected-item :id (= item-id))))
 
-(defn heraldicon-tag []
+(defn- heraldicon-tag []
   [:span.tag {:style {:background "#3e933f"
                       :color "#f6f6f6"}}
    "heraldicon"])
 
-(defn community-tag []
+(defn- community-tag []
   [:span.tag {:style {:background "#bf7433"
                       :color "#f6f6f6"}}
    "community"])
 
-(defn result-card [items-path item-id kind on-select selected-item-path & {:keys [selection-placeholder?]}]
+(defn- result-card [items-path item-id kind on-select selected-item-path & {:keys [selection-placeholder?]}]
   (let [item @(rf/subscribe [::filtered-item items-path item-id])
         selected? @(rf/subscribe [::filtered-item-selected? selected-item-path item-id])
         username (:username item)

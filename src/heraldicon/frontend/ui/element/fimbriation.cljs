@@ -9,7 +9,7 @@
    [heraldicon.options :as options]))
 
 ;; TODO: can probably be improved with better subscriptions
-(defn submenu-link-name [options fimbriation]
+(defn- submenu-link-name [options fimbriation]
   (let [main-name (case (:mode fimbriation)
                     :none :string.option.type-fimbriation-choice/none
                     :single (string/str-tr (-> fimbriation
@@ -30,7 +30,7 @@
                    :string.submenu-summary/adjusted)]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(defn fimbriation-submenu [context]
+(defmethod ui.interface/form-element :fimbriation [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -50,6 +50,3 @@
            :tincture-1
            :thickness-2
            :tincture-2])]]])))
-
-(defmethod ui.interface/form-element :fimbriation [context]
-  [fimbriation-submenu context])

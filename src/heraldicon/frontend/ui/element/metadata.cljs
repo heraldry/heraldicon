@@ -13,18 +13,18 @@
    [heraldicon.util.sanitize :as sanitize]
    [re-frame.core :as rf]))
 
-(def name-path [:ui :metadata :new-name])
-(def value-path [:ui :metadata :new-value])
+(def ^:private name-path [:ui :metadata :new-name])
+(def ^:private value-path [:ui :metadata :new-value])
 
-(defn on-name-change [event]
+(defn- on-name-change [event]
   (let [new-value (-> event .-target .-value)]
     (rf/dispatch-sync [:set name-path new-value])))
 
-(defn on-value-change [event]
+(defn- on-value-change [event]
   (let [new-value (-> event .-target .-value)]
     (rf/dispatch-sync [:set value-path new-value])))
 
-(defn remove-metadata-name [metadata name]
+(defn- remove-metadata-name [metadata name]
   (into []
         (remove (fn [[n _]]
                   (= n name)))
@@ -38,7 +38,7 @@
                                           (remove-metadata-name name)
                                           (conj [name value])))))))
 
-(defn on-add [context]
+(defn- on-add [context]
   (let [name (interface/get-raw-data {:path name-path})
         value (interface/get-raw-data {:path value-path})]
     (rf/dispatch-sync [::add-metadata context name value])
@@ -49,7 +49,7 @@
   (fn [db [_ context name]]
     (update-in db (:path context) remove-metadata-name name)))
 
-(defn metadata-submenu [context]
+(defmethod ui.interface/form-element :metadata [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -116,6 +116,3 @@
                              :type "button"}
                             [tr :string.option.outline-mode-choice/remove]]]]))
                   (sort metadata))])]]])))
-
-(defmethod ui.interface/form-element :metadata [context]
-  [metadata-submenu context])

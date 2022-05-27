@@ -19,7 +19,7 @@
   (fn [db [_ path changes]]
     (update-in db path merge changes)))
 
-(defn charge-type-choice [path key display-name & {:keys [selected?]}]
+(defn- charge-type-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event
                                     %
                                     [:update-charge path {:type key
@@ -55,7 +55,7 @@
         (static/static-url
          (str "/svg/charge-type-" (name value) "-unselected.svg"))))))
 
-(defn choice-preview [context]
+(defn- choice-preview [context]
   (let [variant-context (c/++ context :variant)
         variant (interface/get-raw-data variant-context)
         img-url (choice-preview-url context)]
@@ -67,7 +67,7 @@
                               :border (when variant
                                         "1.5px solid #ddd")}}]]))
 
-(defn charge-type-select [context]
+(defmethod ui.interface/form-element :charge-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [charge-context (c/-- context)
           variant-context (c/++ charge-context :variant)
@@ -119,6 +119,3 @@
                                                (select-keys data [:attitude :facing]))]))})
            :selected-charge variant
            :display-selected-item? true]]]]])))
-
-(defmethod ui.interface/form-element :charge-type-select [context]
-  [charge-type-select context])

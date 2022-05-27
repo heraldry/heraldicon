@@ -3,7 +3,7 @@
    [heraldicon.frontend.macros :as macros]
    [re-frame.core :as rf]))
 
-(def db-path
+(def ^:private db-path
   [:ui :auto-complete])
 
 (macros/reg-event-db :set-auto-complete-data

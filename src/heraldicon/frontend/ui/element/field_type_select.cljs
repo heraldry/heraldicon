@@ -60,9 +60,9 @@
   (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
     (set-field-type db path new-type num-fields-x num-fields-y num-base-fields)))
 
-(defn field-type-choice [path key display-name & {:keys [selected?
-                                                         on-click?]
-                                                  :or {on-click? true}}]
+(defn- field-type-choice [path key display-name & {:keys [selected?
+                                                          on-click?]
+                                                   :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
                                     #(let [;; TODO: this should move into the event handler
                                            field-path (vec (drop-last path))
@@ -84,7 +84,7 @@
       [:h3 {:style {:text-align "center"}} [tr display-name]]
       [:i]])])
 
-(defn field-type-select [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :field-type-select [{:keys [path] :as context}]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
@@ -112,6 +112,3 @@
                       ^{:key key}
                       [field-type-choice path key display-name :selected? (= key value)]))
                choices)]]])))
-
-(defmethod ui.interface/form-element :field-type-select [context]
-  [field-type-select context])

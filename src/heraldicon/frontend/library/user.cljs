@@ -15,13 +15,13 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(def user-info-db-path
+(def ^:private user-info-db-path
   [:user-info])
 
-(defn invalidate-charges-cache-for-user [user-id]
+(defn- invalidate-charges-cache-for-user [user-id]
   (state/invalidate-cache [:user-charges] user-id))
 
-(defn view-charges-for-user [user-id]
+(defn- view-charges-for-user [user-id]
   (let [[status _charges] (state/async-fetch-data
                            [:user-charges]
                            user-id
@@ -35,10 +35,10 @@
        :hide-ownership-filter? true]
       [:div [tr :string.miscellaneous/loading]])))
 
-(defn invalidate-arms-cache-for-user [user-id]
+(defn- invalidate-arms-cache-for-user [user-id]
   (state/invalidate-cache [:user-arms] user-id))
 
-(defn view-arms-for-user [user-id]
+(defn- view-arms-for-user [user-id]
   (let [[status _arms-list] (state/async-fetch-data
                              [:user-arms]
                              user-id
@@ -51,10 +51,10 @@
        :hide-ownership-filter? true]
       [:div [tr :string.miscellaneous/loading]])))
 
-(defn invalidate-collection-cache-for-user [user-id]
+(defn- invalidate-collection-cache-for-user [user-id]
   (state/invalidate-cache [:user-collections] user-id))
 
-(defn view-collections-for-user [user-id]
+(defn- view-collections-for-user [user-id]
   (let [[status collection-list] (state/async-fetch-data
                                   [:user-collections]
                                   user-id
@@ -67,7 +67,7 @@
        :hide-ownership-filter? true]
       [:div [tr :string.miscellaneous/loading]])))
 
-(defn user-display []
+(defn- user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
         user-id (:id user-info-data)]
     (rf/dispatch [:set-title (:username user-info-data)])
@@ -112,19 +112,15 @@
     (when (= status :done)
       [user-display])))
 
-(defn not-logged-in []
-  [:div {:style {:padding "15px"}}
-   [tr :string.user.message/need-to-be-logged-in]])
-
 (defn view-user-by-username [{:keys [parameters]}]
   (let [username (-> parameters :path :username)]
     [view-user username]))
 
-(defn link-to-user [{:keys [username]}]
+(defn- link-to-user [{:keys [username]}]
   [:a {:href (reife/href :view-user {:username username})}
    username])
 
-(defn list-all-users []
+(defn- list-all-users []
   (when (-> (user/data) :username ((config/get :admins)))
     [user-select/list-users link-to-user]))
 

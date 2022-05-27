@@ -16,7 +16,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]))
 
-(defn tincture-modifiers-submenu [context]
+(defmethod ui.interface/form-element :tincture-modifiers [context]
   (let [preview? (interface/get-raw-data (-> context c/-- (c/++ :preview?)))
         variant (interface/get-raw-data (-> context c/-- (c/++ :variant)))]
     (when (or preview?
@@ -116,6 +116,3 @@
                                                :default :none
                                                :ui {:label (blazonry/translate-cap-first t)}}]))
                       sorted-supported-tinctures)]])]])))))
-
-(defmethod ui.interface/form-element :tincture-modifiers [context]
-  [tincture-modifiers-submenu context])

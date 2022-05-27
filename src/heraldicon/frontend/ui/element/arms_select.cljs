@@ -42,7 +42,7 @@
       (catch :default e
         (log/error "fetch arms list by user error:" e)))))
 
-(defn invalidate-arms-cache [key]
+(defn- invalidate-arms-cache [key]
   (state/invalidate-cache list-db-path key))
 
 (defn component [arms-list-path on-select refresh-fn & {:keys [hide-ownership-filter?

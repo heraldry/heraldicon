@@ -8,7 +8,7 @@
    [heraldicon.options :as options]))
 
 ;; TODO: probably can be improved with better subscriptions
-(defn submenu-link-name [options geometry]
+(defn- submenu-link-name [options geometry]
   (let [changes (concat
                  (when (some #(options/changed? % geometry options)
                              [:size :width :height :thickness])
@@ -27,7 +27,7 @@
       (string/upper-case-first (string/combine ", " changes))
       "Default")))
 
-(defn geometry-submenu [context]
+(defmethod ui.interface/form-element :geometry [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -49,6 +49,3 @@
            :stretch
            :mirrored?
            :reversed?])]]])))
-
-(defmethod ui.interface/form-element :geometry [context]
-  [geometry-submenu context])

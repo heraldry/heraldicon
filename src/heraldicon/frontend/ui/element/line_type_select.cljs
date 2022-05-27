@@ -9,9 +9,9 @@
    [heraldicon.options :as options]
    [heraldicon.static :as static]))
 
-(defn line-type-choice [context key display-name & {:keys [selected?
-                                                           on-click?]
-                                                    :or {on-click? true}}]
+(defn- line-type-choice [context key display-name & {:keys [selected?
+                                                            on-click?]
+                                                     :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
                                     #(state/dispatch-on-event % [:set context key]))}
    [:img.clickable {:style {:width "7.5em"}
@@ -22,7 +22,7 @@
       [:h3 {:style {:text-align "center"}} [tr display-name]]
       [:i]])])
 
-(defn line-type-select [context]
+(defmethod ui.interface/form-element :line-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option
@@ -49,6 +49,3 @@
                       ^{:key display-name}
                       [line-type-choice context key display-name :selected? (= key value)]))
                choices)]]])))
-
-(defmethod ui.interface/form-element :line-type-select [context]
-  [line-type-select context])

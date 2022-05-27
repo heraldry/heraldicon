@@ -4,7 +4,7 @@
    [heraldicon.config :as config]
    [re-frame.core :as rf]))
 
-(defn effective-version [data]
+(defn- effective-version [data]
   (let [version (:version data)]
     (if (zero? version)
       (or (:latest-version data) 0)

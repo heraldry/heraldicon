@@ -11,7 +11,7 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
-(def title-path [:ui :title])
+(def ^:private title-path [:ui :title])
 
 ;; subs
 
@@ -235,20 +235,23 @@
                                            (update :current #(when (= % :new) :new)))]))
                              async-data))]))
 
-(def node-flag-db-path [:ui :component-tree :nodes])
+(def ^:private node-flag-db-path [:ui :component-tree :nodes])
 (def ui-submenu-open?-path [:ui :submenu-open?])
-(def ui-component-node-selected-path [:ui :component-tree :selected-node])
-(def ui-component-node-selected-default-path [:ui :component-tree :selected-node-default])
+(def ^:private ui-component-node-selected-path [:ui :component-tree :selected-node])
+(def ^:private ui-component-node-selected-default-path [:ui :component-tree :selected-node-default])
 
-(defn component-node-open-by-default? [path]
-  (or (->> path (take-last 1) #{[:coat-of-arms]
-                                [:helms]
-                                [:ornaments]})
-      (->> path (take-last 2) #{[:coat-of-arms :field]
-                                [:collection-form :collection]})
-      (->> path (take-last 5) #{[:example-coa :coat-of-arms :field :components 0]})))
+(defn- component-node-open-by-default? [path]
+  (or (#{[:coat-of-arms]
+         [:helms]
+         [:ornaments]}
+       (take-last 1 path))
+      (#{[:coat-of-arms :field]
+         [:collection-form :collection]}
+       (take-last 2 path))
+      (#{[:example-coa :coat-of-arms :field :components 0]}
+       (take-last 5 path))))
 
-(defn component-node-open? [flag path]
+(defn- component-node-open? [flag path]
   (if (nil? flag)
     (component-node-open-by-default? path)
     flag))
@@ -272,7 +275,7 @@
       selected-node-path
       default)))
 
-(defn ui-component-node-open [db path]
+(defn- ui-component-node-open [db path]
   (let [path (vec path)]
     (update-in db node-flag-db-path
                merge (into {}
@@ -280,7 +283,7 @@
                                   [(subvec path 0 (inc idx)) true]))
                            (range (count path))))))
 
-(defn ui-component-node-close [db path]
+(defn- ui-component-node-close [db path]
   (update-in
    db node-flag-db-path
    (fn [flags]
@@ -327,7 +330,7 @@
           (cond->
             (not valid-path?) (assoc-in ui-component-node-selected-path nil))))))
 
-(defn adjust-component-path-after-order-change [path elements-path index new-index]
+(defn- adjust-component-path-after-order-change [path elements-path index new-index]
   (let [elements-path-size (count elements-path)
         path-base (when (-> path count (>= elements-path-size))
                     (subvec path 0 elements-path-size))

@@ -8,7 +8,7 @@
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
-(defn radio-choice [context key display-name & {:keys [selected? on-change]}]
+(defn- radio-choice [context key display-name & {:keys [selected? on-change]}]
   (let [component-id (uid/generate "radio")]
     [:<>
      [:input {:id component-id

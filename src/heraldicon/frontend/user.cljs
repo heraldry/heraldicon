@@ -13,15 +13,15 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
-(def user-db-path [:user-data])
+(def ^:private user-db-path [:user-data])
 
-(def local-storage-session-id-name
+(def ^:private local-storage-session-id-name
   "cl-session-id")
 
-(def local-storage-user-id-name
+(def ^:private local-storage-user-id-name
   "cl-user-id")
 
-(def local-storage-username-name
+(def ^:private local-storage-username-name
   "cl-username")
 
 (declare login-modal)
@@ -29,7 +29,7 @@
 (declare change-temporary-password-modal)
 (declare password-reset-confirmation-modal)
 
-(defn text-field [db-path function]
+(defn- text-field [db-path function]
   (let [value @(rf/subscribe [:get db-path])
         error @(rf/subscribe [:get-form-error db-path])]
     [:div {:class (when error "error")}
@@ -41,7 +41,7 @@
 (defn data []
   @(rf/subscribe [:get user-db-path]))
 
-(defn extract-domain [url]
+(defn- extract-domain [url]
   (-> url
       (s/split #"//" 2)
       last
@@ -50,7 +50,7 @@
       (s/split #":" 2)
       first))
 
-(defn read-session-data []
+(defn- read-session-data []
   (let [session-id (get-item local-storage local-storage-session-id-name)
         user-id (get-item local-storage local-storage-user-id-name)
         username (get-item local-storage local-storage-username-name)]
@@ -71,7 +71,7 @@
                           :user-id user-id
                           :logged-in? true})])))
 
-(defn complete-login [db-path jwt-token]
+(defn- complete-login [db-path jwt-token]
   (go
     (try
       (let [response (<? (api.request/call :login {:jwt-token jwt-token} nil))
@@ -91,7 +91,7 @@
         (rf/dispatch [:set-form-error db-path (:message e)])
         (modal/stop-loading)))))
 
-(defn login-clicked [db-path]
+(defn- login-clicked [db-path]
   (let [{:keys [username password]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (cond
@@ -120,7 +120,7 @@
                                                          (rf/dispatch [:set (conj user-db-path :user-attributes) user-attributes])
                                                          (change-temporary-password-modal)
                                                          (modal/stop-loading)))))))
-(defn forgotten-password-clicked [db-path]
+(defn- forgotten-password-clicked [db-path]
   (let [{:keys [username]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [:clear-form-errors db-path])
     (if (-> username
@@ -141,7 +141,7 @@
                        (rf/dispatch [:set-form-error db-path (.-message error)])
                        (modal/stop-loading)))))))
 
-(defn login-form [db-path]
+(defn- login-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
         on-submit (fn [event]
                     (.preventDefault event)
@@ -192,7 +192,7 @@
       [:button.button.primary {:type "submit"}
        [tr :string.menu/login]]]]))
 
-(defn sign-up-clicked [db-path]
+(defn- sign-up-clicked [db-path]
   (let [{:keys [username email password password-again]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [:clear-form-errors])
     (cond
@@ -217,7 +217,7 @@
                                              (rf/dispatch [:set-form-error db-path (.-message error)])
                                              (modal/stop-loading)))))))
 
-(defn sign-up-form [db-path]
+(defn- sign-up-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
         on-submit (fn [event]
                     (.preventDefault event)
@@ -287,7 +287,7 @@
       [:button.button.primary {:type "submit"}
        [tr :string.menu/register]]]]))
 
-(defn confirm-clicked [db-path]
+(defn- confirm-clicked [db-path]
   (let [{:keys [code]} @(rf/subscribe [:get db-path])
         user-data (data)
         user (:user user-data)]
@@ -303,7 +303,7 @@
                                    (rf/dispatch [:set-form-error db-path (.-message error)])
                                    (modal/stop-loading)))))
 
-(defn resend-code-clicked [db-path]
+(defn- resend-code-clicked [db-path]
   (let [user-data (data)
         user (:user user-data)]
     (modal/start-loading)
@@ -316,7 +316,7 @@
                                        (rf/dispatch [:set-form-error db-path (.-message error)])
                                        (modal/stop-loading)))))
 
-(defn confirmation-form [db-path]
+(defn- confirmation-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
         on-submit (fn [event]
                     (.preventDefault event)
@@ -350,7 +350,7 @@
        [tr :string.user.button/resend-code]]
       [:button.button.primary {:type "submit"} [tr :string.user.button/confirm]]]]))
 
-(defn change-temporary-password-clicked [db-path]
+(defn- change-temporary-password-clicked [db-path]
   (let [user-data (data)
         user (:user user-data)
         user-attributes (:user-attributes user-data)
@@ -376,7 +376,7 @@
                              (rf/dispatch [:set-form-error db-path (.-message error)])
                              (modal/stop-loading)))))))
 
-(defn change-temporary-password-form [db-path]
+(defn- change-temporary-password-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
         on-submit (fn [event]
                     (.preventDefault event)
@@ -424,7 +424,7 @@
       [:button.button.primary {:type "submit"}
        [tr :string.user.button/change]]]]))
 
-(defn reset-password-clicked [db-path]
+(defn- reset-password-clicked [db-path]
   (let [{:keys [code
                 new-password
                 new-password-again]} @(rf/subscribe [:get db-path])
@@ -449,7 +449,7 @@
                              (rf/dispatch [:set-form-error db-path (.-message error)])
                              (modal/stop-loading)))))))
 
-(defn password-reset-confirmation-form [db-path]
+(defn- password-reset-confirmation-form [db-path]
   (let [error-message @(rf/subscribe [:get-form-error db-path])
         on-submit (fn [event]
                     (.preventDefault event)
@@ -532,17 +532,17 @@
     (modal/create :string.menu/register [sign-up-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
 
-(defn confirmation-modal []
+(defn- confirmation-modal []
   (let [db-path [:confirmation-form]]
     (modal/create :string.user/register-confirmation [confirmation-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
 
-(defn change-temporary-password-modal []
+(defn- change-temporary-password-modal []
   (let [db-path [:change-temporary-password-form]]
     (modal/create :string.user/change-temporary-password [change-temporary-password-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))
 
-(defn password-reset-confirmation-modal []
+(defn- password-reset-confirmation-modal []
   (let [db-path [:password-reset-confirmation-form]]
     (modal/create :string.user/reset-forgotten-password [password-reset-confirmation-form db-path]
                   :on-cancel #(rf/dispatch [:clear-form db-path]))))

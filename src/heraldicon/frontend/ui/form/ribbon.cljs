@@ -17,7 +17,7 @@
     :end-split
     :outline?]))
 
-(defn segment-form [context]
+(defn- segment-form [context]
   (let [segment-type (interface/get-raw-data (c/++ context :type))
         idx (-> context :path last)
         z-index (interface/get-sanitized-data (c/++ context :z-index))

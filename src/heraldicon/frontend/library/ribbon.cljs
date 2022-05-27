@@ -33,28 +33,28 @@
 (def form-db-path
   [:ribbon-form])
 
-(def list-db-path
+(def ^:private list-db-path
   [:ribbon-list])
 
-(def preview-width
+(def ^:private preview-width
   500)
 
-(def preview-height
+(def ^:private preview-height
   600)
 
-(def ribbon-min-x
+(def ^:private ribbon-min-x
   (- (/ preview-width 2)))
 
-(def ribbon-max-x
+(def ^:private ribbon-max-x
   (/ preview-width 2))
 
-(def ribbon-min-y
+(def ^:private ribbon-min-y
   (- (/ preview-height 2)))
 
-(def ribbon-max-y
+(def ^:private ribbon-max-y
   (/ preview-height 2))
 
-(def render-context
+(def ^:private render-context
   {:render-options default/render-options
    :render-options-path [:context :render-options]})
 
@@ -79,7 +79,7 @@
                               [new-point]
                               (drop (inc idx) points)))))))
 
-(defn clamp-point [p]
+(defn- clamp-point [p]
   (-> p
       (update :x max ribbon-min-x)
       (update :x min ribbon-max-x)
@@ -169,12 +169,10 @@
                            (v/sub pos (v/Vector. dx dy))))
         db))))
 
-;; views
-
-(def preview-svg-id
+(def ^:private preview-svg-id
   "ribbon-preview")
 
-(defn map-to-svg-space [x y]
+(defn- map-to-svg-space [x y]
   (let [svg (js/document.getElementById preview-svg-id)
         ctm (.getScreenCTM svg)]
     [(-> x
@@ -184,10 +182,10 @@
          (- (.-f ctm))
          (/ (.-d ctm)))]))
 
-(def path-point-size
+(def ^:private path-point-size
   5)
 
-(defn path-point [path]
+(defn- path-point [path]
   (let [edit-mode @(rf/subscribe [::edit-mode])]
     (if (= edit-mode :none)
       [:<>]
@@ -227,7 +225,7 @@
                                          :height height
                                          :style {:fill "#000"}}]])]))))
 
-(defn add-point [path idx {:keys [x y] :as point}]
+(defn- add-point [path idx {:keys [x y] :as point}]
   (let [size path-point-size
         width (* size 1.1)
         height (* size 0.2)]
@@ -251,7 +249,7 @@
               :height width
               :style {:fill "#000"}}]]]))
 
-(defn render-edit-overlay [path]
+(defn- render-edit-overlay [path]
   (let [edit-mode @(rf/subscribe [::edit-mode])
         edge-angle (interface/get-sanitized-data {:path (conj path :edge-angle)})
         points-path (conj path :points)
@@ -279,7 +277,7 @@
                        :stroke-linecap "round"
                        :fill "none"}}])]))
 
-(defn grid-lines [width height dx dy]
+(defn- grid-lines [width height dx dy]
   (-> [:g {:style {:stroke "#bbbbbb"
                    :stroke-width 0.2
                    :fill "none"}}]
@@ -292,7 +290,7 @@
                    [:path {:d (str "M 0," y " h" width)}]))
             (range 0 (inc height) dy))))
 
-(defn preview []
+(defn- preview []
   (let [[width height] [preview-width preview-height]
         ribbon-path (conj form-db-path :data :ribbon)
         points-path (conj ribbon-path :points)
@@ -345,14 +343,14 @@
                       [add-point points-path idx point]))
                @(rf/subscribe [::edit-addable-points points-path])))]]]))
 
-(defn invalidate-ribbons-cache []
+(defn- invalidate-ribbons-cache []
   (let [user-data (user/data)
         user-id (:user-id user-data)]
     (rf/dispatch-sync [:set list-db-path nil])
     (state/invalidate-cache list-db-path user-id)
     (state/invalidate-cache [:all-ribbons] :all-ribbons)))
 
-(defn save-ribbon-clicked [event]
+(defn- save-ribbon-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
   (let [payload @(rf/subscribe [:get form-db-path])
@@ -377,7 +375,7 @@
           (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
           (modal/stop-loading))))))
 
-(defn copy-to-new-clicked [event]
+(defn- copy-to-new-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
   (let [ribbon-data @(rf/subscribe [:get form-db-path])]
@@ -397,7 +395,7 @@
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-ribbon)))
 
-(defn button-row []
+(defn- button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         ribbon-id @(rf/subscribe [:get (conj form-db-path :id)])
@@ -439,14 +437,14 @@
                 :margin-left "10px"}}
        [tr :string.button/save]]]]))
 
-(defn attribution []
+(defn- attribution []
   (let [attribution-data (attribution/for-ribbon {:path form-db-path})]
     [:div.attribution
      [:h3 [tr :string.attribution/title]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
-(defn edit-controls []
+(defn- edit-controls []
   (let [edit-mode @(rf/subscribe [::edit-mode])]
     [:div.no-select {:style {:position "absolute"
                              :left "20px"
@@ -460,7 +458,7 @@
      (when-not (= edit-mode :none)
        [tr :string.ribbon.editor/shift-info])]))
 
-(defn ribbon-form []
+(defn- ribbon-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-ribbon])
@@ -489,7 +487,7 @@
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path]]]])
 
-(defn ribbon-display [ribbon-id version]
+(defn- ribbon-display [ribbon-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path ribbon-id])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path ribbon-id]))
   (let [[status ribbon-data] (state/async-fetch-data
@@ -511,7 +509,7 @@
     (when (= status :done)
       [ribbon-form])))
 
-(defn on-select [{:keys [id]}]
+(defn- on-select [{:keys [id]}]
   {:href (reife/href :view-ribbon-by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])

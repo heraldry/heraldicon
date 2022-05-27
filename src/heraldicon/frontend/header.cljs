@@ -8,7 +8,7 @@
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
-(def user-menu-open?-path
+(def ^:private user-menu-open?-path
   [:ui :menu :user-menu :open?])
 
 (rf/reg-sub ::menu-open?

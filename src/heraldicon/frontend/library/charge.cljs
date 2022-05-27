@@ -35,13 +35,13 @@
 (def form-db-path
   [:charge-form])
 
-(def list-db-path
+(def ^:private list-db-path
   [:charge-list])
 
-(def example-coa-db-path
+(def ^:private example-coa-db-path
   [:example-coa])
 
-(defn find-colours [data]
+(defn- find-colours [data]
   (->> data
        (tree-seq #(or (map? %)
                       (vector? %)
@@ -58,9 +58,7 @@
        (map s/lower-case)
        set))
 
-;; views
-
-(defn parse-number-with-unit [s]
+(defn- parse-number-with-unit [s]
   (when s
     (let [[_ num unit] (re-matches #"(?i)^ *([0-9e.]*) *([a-z]*)$" s)
           value (if (-> num count (= 0))
@@ -76,7 +74,7 @@
                    1)]
       (* value factor))))
 
-(defn parse-width-height-from-viewbox [s]
+(defn- parse-width-height-from-viewbox [s]
   (when s
     (let [[_ x0 y0 x1 y1] (re-matches #"(?i)^ *(-?[0-9e.]*) *(-?[0-9e.]*) *(-?[0-9e.]*) *(-?[0-9e.]*)$" s)
           x0 (if (-> x0 count (= 0))
@@ -95,7 +93,7 @@
         [x0 y0 x1 y1]
         [nil nil nil nil]))))
 
-(defn load-svg-file [db-path data]
+(defn- load-svg-file [db-path data]
   (go-catch
    (try
      (-> data
@@ -188,7 +186,7 @@
      (catch :default e
        (log/error "load svg file error:" e)))))
 
-(defn preview []
+(defn- preview []
   (let [form-data @(rf/subscribe [:get form-db-path])
         prepared-charge-data (update form-data :username #(or % (:username (user/data))))
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
@@ -216,7 +214,7 @@
       [:g {:transform "scale(5,5)"}
        result]]]))
 
-(defn upload-file [event]
+(defn- upload-file [event]
   (modal/start-loading)
   (let [file (-> event .-target .-files (.item 0))]
     (when file
@@ -228,14 +226,14 @@
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
 
-(defn invalidate-charges-cache []
+(defn- invalidate-charges-cache []
   (let [user-data (user/data)
         user-id (:user-id user-data)]
     (rf/dispatch-sync [:set list-db-path nil])
     (state/invalidate-cache list-db-path user-id)
     (state/invalidate-cache [:all-charges] :all-charges)))
 
-(defn save-charge-clicked [event]
+(defn- save-charge-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
   (let [payload @(rf/subscribe [:get form-db-path])
@@ -260,7 +258,7 @@
           (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
           (modal/stop-loading))))))
 
-(defn copy-to-new-clicked [event]
+(defn- copy-to-new-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
   (let [charge-data @(rf/subscribe [:get form-db-path])]
@@ -280,7 +278,7 @@
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-charge)))
 
-(defn button-row []
+(defn- button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         charge-id @(rf/subscribe [:get (conj form-db-path :id)])
@@ -345,14 +343,14 @@
                 :margin-left "10px"}}
        [tr :string.button/save]]]]))
 
-(defn attribution []
+(defn- attribution []
   (let [attribution-data (attribution/for-charge {:path form-db-path})]
     [:div.attribution
      [:h3 [tr :string.attribution/title]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
-(defn charge-form []
+(defn- charge-form []
   (rf/dispatch [:set-title-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-charge])
@@ -383,7 +381,7 @@
                         :spacer
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
 
-(defn charge-display [charge-id version]
+(defn- charge-display [charge-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path charge-id])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path charge-id]))
   (let [[status charge-data] (state/async-fetch-data
@@ -411,7 +409,7 @@
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
 
-(defn list-all-charges []
+(defn- list-all-charges []
   [charge-select/list-charges on-select])
 
 (defn view-list-charges []

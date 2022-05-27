@@ -25,7 +25,7 @@
            rest)
           new-db)))))
 
-(defn charge-group-preset-choice [path key group charge-adjustments display-name]
+(defn- charge-group-preset-choice [path key group charge-adjustments display-name]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:select-charge-group-preset path group charge-adjustments])}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}

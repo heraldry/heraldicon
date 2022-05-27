@@ -3,10 +3,10 @@
    [heraldicon.frontend.language :refer [tr]]
    [re-frame.core :as rf]))
 
-(def dialog-db-path
+(def ^:private dialog-db-path
   [:modal :dialog])
 
-(def loader-db-path
+(def ^:private loader-db-path
   [:modal :loader])
 
 (defn create [title content & {:keys [on-cancel]}]

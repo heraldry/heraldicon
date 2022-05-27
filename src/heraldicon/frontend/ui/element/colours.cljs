@@ -10,7 +10,7 @@
    [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
-(defn choice-keywords [choices]
+(defn- choice-keywords [choices]
   (->> choices
        (tree-seq vector? seq)
        (keep (fn [value]
@@ -21,7 +21,7 @@
                  (second value))))
        vec))
 
-(defn form [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :colours [{:keys [path] :as context}]
   (let [colours (interface/get-raw-data context)
         sort-column (or (interface/get-raw-data (c/<< context :path [:ui :colours :sort path]))
                         :colour)
@@ -159,6 +159,3 @@
                             :option {:type :boolean}]]])))
                 (sort-by sort-fn colours))]
          [tr :string.miscellaneous/none])]]]))
-
-(defmethod ui.interface/form-element :colours [context]
-  [form context])

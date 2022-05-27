@@ -11,25 +11,25 @@
    [heraldicon.math.curve.core :as curve]
    [re-frame.core :as rf]))
 
-(def layers-path
+(def ^:private layers-path
   [:ui :ribbon-presets :layers])
 
-(def flow-path
+(def ^:private flow-path
   [:ui :ribbon-presets :flow])
 
-(def start-path
+(def ^:private start-path
   [:ui :ribbon-presets :start])
 
-(def layer-mode-default
+(def ^:private layer-mode-default
   :middle-outwards)
 
-(def flow-mode-default
+(def ^:private flow-mode-default
   :stacked)
 
-(def start-mode-default
+(def ^:private start-mode-default
   :foreground)
 
-(defn flow-fn [mode n]
+(defn- flow-fn [mode n]
   (case mode
     :stacked n
 
@@ -52,7 +52,7 @@
                     (not (zero? n))) (- n 2)
                :else n))))
 
-(defn type-fn [mode n segment-length]
+(defn- type-fn [mode n segment-length]
   (if (case mode
         :foreground (even? n)
         :background (odd? n))
@@ -182,7 +182,7 @@
                            (update :z-index #(- max-z-index %)))))
                 vec)))))))
 
-(defn form [context]
+(defn- form [context]
   [:<>
    [form.ribbon/form (c/++ context :ribbon)]
 

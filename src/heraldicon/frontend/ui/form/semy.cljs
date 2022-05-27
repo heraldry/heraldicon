@@ -5,7 +5,7 @@
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.localization.string :as string]))
 
-(defn form [context]
+(defn- form [context]
   (ui.interface/form-elements
    context
    [:anchor

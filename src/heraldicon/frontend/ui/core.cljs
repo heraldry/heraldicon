@@ -134,13 +134,13 @@
   (fn [element-type _context]
     (not (shield-separator/shield-separator? {:type element-type}))))
 
-(defn raw-component-node [{:keys [path] :as context}]
+(defn- raw-component-node [{:keys [path] :as context}]
   (merge {:open? @(rf/subscribe [:ui-component-node-open? path])
           :selected? (= path @(rf/subscribe [:ui-component-node-selected-path]))
           :selectable? true}
          (ui.interface/component-node-data context)))
 
-(defn component-node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
+(defn- component-node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
   (let [node-data (raw-component-node context)
         node-title (:title node-data)
         {:keys [open?
@@ -241,7 +241,7 @@
                     [:li [component-node context :title title :parent-buttons buttons]]))
              nodes))]))
 
-(def node-render-options
+(def ^:private node-render-options
   {:render-options {:type :heraldry/render-options
                     :theme :wappenwiki
                     :outline? true
@@ -261,14 +261,14 @@
                                                   {:path node-path})])]))
          paths)])
 
-(defn raw-component-form [context]
+(defn- raw-component-form [context]
   (let [node-data (raw-component-node context)]
     (merge
      {:title (:title node-data)
       :context context}
      (ui.interface/component-form-data context))))
 
-(defn component-form [context]
+(defn- component-form [context]
   (let [{:keys [title context form]} (when context
                                        (raw-component-form context))]
     [:div.ui-component

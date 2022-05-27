@@ -17,16 +17,16 @@
   (fn [db [_ db-path attribute]]
     (update-in db db-path dissoc attribute)))
 
-(defn attribute-view [attribute & {:keys [on-delete]}]
+(defn- attribute-view [attribute & {:keys [on-delete]}]
   [:span.tag.attribute
    (name attribute)
    (when on-delete
      [:span.delete {:on-click on-delete}
       "x"])])
 
-(defn attributes-view [attributes & {:keys [on-delete
-                                            on-click
-                                            selected]}]
+(defn- attributes-view [attributes & {:keys [on-delete
+                                             on-click
+                                             selected]}]
   (into [:div.attributes]
         (map (fn [attribute]
                ^{:key attribute}
@@ -40,7 +40,7 @@
                 " "]))
         (sort attributes)))
 
-(defn form [{:keys [path] :as context}]
+(defmethod ui.interface/form-element :attributes [{:keys [path] :as context}]
   (let [attributes (interface/get-raw-data context)]
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
@@ -70,6 +70,3 @@
        [:div {:style {:padding-top "10px"}}
         [attributes-view (keys attributes)
          :on-delete #(rf/dispatch [:remove-attribute path %])]]]]]))
-
-(defmethod ui.interface/form-element :attributes [context]
-  [form context])
