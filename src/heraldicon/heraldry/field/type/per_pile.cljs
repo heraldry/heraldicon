@@ -19,14 +19,14 @@
 
 (defmethod field.interface/part-names field-type [_] nil)
 
-(def size-mode-choices
+(def ^:private size-mode-choices
   [[:string.option.size-mode-choice/thickness :thickness]
    [:string.option.size-mode-choice/angle :angle]])
 
 (def size-mode-map
   (options/choices->map size-mode-choices))
 
-(def orientation-type-choices
+(def ^:private orientation-type-choices
   [[:string.option.orientation-type-choice/edge :edge]
    [:string.option.orientation-type-choice/orientation-point :point]])
 

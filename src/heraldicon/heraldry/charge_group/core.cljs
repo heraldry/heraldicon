@@ -10,7 +10,7 @@
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
 
-(defn calculate-strip-slot-positions [context spacing]
+(defn- calculate-strip-slot-positions [context spacing]
   (let [stretch (interface/get-sanitized-data (c/++ context :stretch))
         offset (interface/get-sanitized-data (c/++ context :offset))
         slots (interface/get-raw-data (c/++ context :slots))

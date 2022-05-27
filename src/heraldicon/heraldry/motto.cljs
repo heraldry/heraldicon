@@ -22,14 +22,14 @@
 (derive :heraldry.motto.type/slogan :heraldry.motto/type)
 (derive :heraldry.motto/type :heraldry/motto)
 
-(def type-choices
+(def ^:private type-choices
   [[:string.entity/motto :heraldry.motto.type/motto]
    [:string.entity/slogan :heraldry.motto.type/slogan]])
 
 (def type-map
   (options/choices->map type-choices))
 
-(def type-option
+(def ^:private type-option
   {:type :choice
    :choices type-choices
    :ui {:label :string.option/type}})

@@ -62,7 +62,7 @@
             :ui {:label :string.option/layout
                  :form-type :field-layout}}})
 
-(defn masony-default [part-width part-height thickness]
+(defn- masony-default [part-width part-height thickness]
   (let [width part-width
         height (* 2 part-height)
         middle-x (/ width 2)

@@ -74,7 +74,7 @@
             :ui {:label :string.option/layout
                  :form-type :field-layout}}})
 
-(defn fretty-default [part-width part-height thickness gap]
+(defn- fretty-default [part-width part-height thickness gap]
   (let [width (* 2 part-width)
         height (* 2 part-height)
         middle-x (/ width 2)

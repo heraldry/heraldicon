@@ -6,7 +6,7 @@
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
 
-(def heater
+(def ^:private heater
   {:display-name :string.escutcheon.type/heater
    ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
    :environment (environment/create
@@ -20,7 +20,7 @@
                  {:context :root
                   :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))})})
 
-(def square-french
+(def ^:private square-french
   {:display-name :string.escutcheon.type/square-french
    :environment (environment/create
                  (str "m 0,0"
@@ -32,7 +32,7 @@
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 (* 2 12) 0 (+ 15.7 13))})})
 
-(def square-iberian
+(def ^:private square-iberian
   {:display-name :string.escutcheon.type/square-iberian
    :environment (environment/create
                  (str "m 0,0"
@@ -44,7 +44,7 @@
                  {:context :root
                   :bounding-box (bb/BoundingBox. -5 5 0 (+ 7 5))})})
 
-(def square-czech
+(def ^:private square-czech
   {:display-name :string.escutcheon.type/square-czech
    :environment (environment/create
                  ;; diff(sqrt(r*r - x*x))
@@ -57,7 +57,7 @@
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 56 0 56.5)})})
 
-(def french-modern
+(def ^:private french-modern
   {:display-name :string.escutcheon.type/french-modern
    :environment (environment/create
                  (str "m 0,0"
@@ -78,7 +78,7 @@
                   :height 17
                   :points {:fess (v/Vector. 0 8)}})})
 
-(def lozenge
+(def ^:private lozenge
   {:display-name :string.escutcheon.type/lozenge
    :environment (environment/create
                  (str "m 0,0"
@@ -90,7 +90,7 @@
                   :bounding-box (bb/BoundingBox. -5 5 0 13)
                   :points {:fess (v/Vector. 0 6.5)}})})
 
-(def oval
+(def ^:private oval
   {:display-name :string.escutcheon.type/oval
    :environment (environment/create
                  (str "m 0,0"
@@ -103,7 +103,7 @@
                   :bounding-box (bb/BoundingBox. -5 5 0 13)
                   :points {:fess (v/Vector. 0 6.5)}})})
 
-(def roundel
+(def ^:private roundel
   {:display-name :string.escutcheon.type/roundel
    :environment (environment/create
                  (str "m 0,0"
@@ -114,7 +114,7 @@
                   :bounding-box (bb/BoundingBox. -5 5 0 10)
                   :points {:fess (v/Vector. 0 5)}})})
 
-(def swiss
+(def ^:private swiss
   {:display-name :string.escutcheon.type/swiss
    ;; sqrt(3) / 2 * 6 ~ 5.196152422706632
    :environment (environment/create
@@ -129,7 +129,7 @@
                  {:context :root
                   :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))})})
 
-(def english
+(def ^:private english
   {:display-name :string.escutcheon.type/english
    :environment (environment/create
                  (str "m 0,0"
@@ -153,7 +153,7 @@
                   :offset (v/Vector. -1 0)
                   :points {:fess (v/Vector. 0 8)}})})
 
-(def polish
+(def ^:private polish
   {:display-name :string.escutcheon.type/polish
    :environment (environment/create
                  (str "m 43.402145,5e-7 "
@@ -176,7 +176,7 @@
                   :bounding-box (bb/BoundingBox. 0 100 0 130)
                   :points {:fess (v/Vector. 50 60)}})})
 
-(def polish-19th-century
+(def ^:private polish-19th-century
   {:display-name :string.escutcheon.type/polish-19th-century
    :environment (environment/create
                  (str
@@ -193,7 +193,7 @@
                   :bounding-box (bb/BoundingBox. 0 100 0 120)
                   :points {:fess (v/Vector. 50 60)}})})
 
-(def renaissance
+(def ^:private renaissance
   {:display-name :string.escutcheon.type/renaissance
    :environment (environment/create
                  (str
@@ -212,7 +212,7 @@
                   :bounding-box (bb/BoundingBox. 0 100 0 117)
                   :points {:fess (v/Vector. 50 55)}})})
 
-(def rectangle
+(def ^:private rectangle
   {:display-name :string.escutcheon.type/rectangle
    :environment (environment/create
                  (str
@@ -225,7 +225,7 @@
                   :bounding-box (bb/BoundingBox. 0 10 0 12)
                   :points {:fess (v/Vector. 5 6)}})})
 
-(def flag
+(def ^:private flag
   {:display-name :string.escutcheon.type/flag
    :function (fn [width height swallow-tail tail-point-height tail-tongue]
                (let [swallow-tail-point-dx (-> width (* swallow-tail) (/ 100))
@@ -260,7 +260,7 @@
                   :bounding-box (bb/BoundingBox. 0 5 0 3)
                   :points {:fess (v/Vector. 2.5 1.5)}})})
 
-(def wedge
+(def ^:private wedge
   {:display-name :string.escutcheon.type/wedge
    ;; sqrt(3) / 2 * 6 + 2 ~ 7.196152422706632
    :environment (let [height 7.196152422706632
@@ -277,7 +277,7 @@
                    {:context :root
                     :bounding-box (bb/BoundingBox. -3 3 0 7.196152422706632)}))})
 
-(def kite
+(def ^:private kite
   {:display-name :string.escutcheon.type/kite
    :environment (let [width 1
                       height 2
@@ -305,7 +305,7 @@
                     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
                     :points {:fess (v/Vector. 0 half-width)}}))})
 
-(def norman
+(def ^:private norman
   {:display-name :string.escutcheon.type/norman-late
    :environment (let [width 5
                       height 8
@@ -324,7 +324,7 @@
                     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
                     :points {:fess (v/Vector. 0 half-width)}}))})
 
-(def norman-rounded
+(def ^:private norman-rounded
   {:display-name :string.escutcheon.type/rounded-norman-late
    :environment (let [width 5
                       height 8
@@ -348,7 +348,7 @@
                     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
                     :points {:fess (v/Vector. 0 half-width)}}))})
 
-(def escutcheons
+(def ^:private escutcheons
   [#'heater
    #'square-french
    #'square-iberian
@@ -369,7 +369,7 @@
    #'flag
    #'rectangle])
 
-(def kinds-map
+(def ^:private kinds-map
   (into {}
         (map (fn [v]
                [(-> v meta :name keyword) @v]))

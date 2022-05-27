@@ -17,7 +17,7 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/point)
 
-(def variant-choices
+(def ^:private variant-choices
   [[:string.option.point-choice/dexter :dexter]
    [:string.option.point-choice/sinister :sinister]])
 

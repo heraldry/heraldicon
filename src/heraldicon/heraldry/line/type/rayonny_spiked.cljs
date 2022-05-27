@@ -3,7 +3,7 @@
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
 
-(defn curvy-line [direction eccentricity flipped?]
+(defn- curvy-line [direction eccentricity flipped?]
   (let [length (-> direction
                    v/abs
                    (/ 2))

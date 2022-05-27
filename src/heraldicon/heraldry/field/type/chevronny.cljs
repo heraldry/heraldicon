@@ -108,7 +108,7 @@
      :line line-style
      :opposite-line opposite-line-style}))
 
-(defn chevronny-parts [top-left bottom-right line opposite-line outline? context]
+(defn- chevronny-parts [top-left bottom-right line opposite-line outline? context]
   (let [environment (:environment context)
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
         offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))

@@ -12,7 +12,7 @@
    [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
-(defn arm-diagonal [anchor-point orientation-point]
+(defn- arm-diagonal [anchor-point orientation-point]
   (-> (v/sub orientation-point anchor-point)
       v/normal
       (v/mul 200)))

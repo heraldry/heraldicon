@@ -2,7 +2,7 @@
   (:require
    [re-frame.core :as rf]))
 
-(defn collect-tinctures [field {:keys [tincture-mapping]}]
+(defn- collect-tinctures [field {:keys [tincture-mapping]}]
   (->> field
        (tree-seq #(or (map? %)
                       (vector? %)

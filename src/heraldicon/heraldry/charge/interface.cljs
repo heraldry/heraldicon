@@ -6,7 +6,7 @@
 
 (defmulti display-name identity)
 
-(defn effective-type [context]
+(defn- effective-type [context]
   (let [data (interface/get-raw-data (c/++ context :data))
         variant (interface/get-raw-data (c/++ context :variant))
         charge-type (interface/get-raw-data (c/++ context :type))]
