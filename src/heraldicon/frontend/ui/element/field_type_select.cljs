@@ -19,7 +19,8 @@
     (if (= new-type :heraldry.field.type/plain)
       (-> db
           (assoc-in (conj path :type) new-type)
-          (update-in (conj path :tincture) #(or % :none)))
+          (update-in (conj path :tincture) #(or % :none))
+          (update-in path dissoc :fields))
       (-> db
           (assoc-in (conj path :type) new-type)
           (update-in (conj path :line :type) #(or % :straight))
