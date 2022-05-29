@@ -27,7 +27,7 @@
          [font-name key])
        font-data))
 
-(def choice-map
+(def font-map
   (options/choices->map choices))
 
 (def path-map
@@ -37,7 +37,7 @@
         font-data))
 
 (defn css-string [font]
-  (get choice-map (or font default)))
+  (get font-map (or font default)))
 
 (def default-options
   {:type :choice
