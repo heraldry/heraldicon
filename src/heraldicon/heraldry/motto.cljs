@@ -1,6 +1,7 @@
 (ns heraldicon.heraldry.motto
   (:require
    [heraldicon.context :as c]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
@@ -44,8 +45,9 @@
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
         motto-type (interface/get-raw-data (c/++ context :type))]
     (-> {:anchor {:point {:type :choice
-                          :choices [[:string.option.point-choice/top :top]
-                                    [:string.option.point-choice/bottom :bottom]]
+                          :choices (position/anchor-choices
+                                    [:top
+                                     :bottom])
                           :default (case motto-type
                                      :heraldry.motto.type/slogan :top
                                      :bottom)

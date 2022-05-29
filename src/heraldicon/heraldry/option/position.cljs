@@ -4,27 +4,55 @@
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
 
-(def ^:private orientation-point-choices
-  [[:string.option.point-choice/top-left :top-left]
-   [:string.option.point-choice/top :top]
-   [:string.option.point-choice/top-right :top-right]
-   [:string.option.point-choice/left :left]
-   [:string.option.point-choice/center :center]
-   [:string.option.point-choice/right :right]
-   [:string.option.point-choice/bottom-left :bottom-left]
-   [:string.option.point-choice/bottom :bottom]
-   [:string.option.point-choice/bottom-right :bottom-right]
-   [:string.option.point-choice/fess :fess]
-   [:string.option.point-choice/chief :chief]
-   [:string.option.point-choice/base :base]
-   [:string.option.point-choice/dexter :dexter]
-   [:string.option.point-choice/sinister :sinister]
-   [:string.option.point-choice/honour :honour]
-   [:string.option.point-choice/nombril :nombril]
-   [:string.option.orientation-point-choice/angle :angle]])
+(def ^:private all-anchor-choices
+  [[:string.option.point-choice-group/heraldic
+    [:string.option.point-choice/fess :fess]
+    [:string.option.point-choice/chief :chief]
+    [:string.option.point-choice/base :base]
+    [:string.option.point-choice/dexter :dexter]
+    [:string.option.point-choice/sinister :sinister]
+    [:string.option.point-choice/honour :honour]
+    [:string.option.point-choice/nombril :nombril]]
+   [:string.option.point-choice-group/technical
+    [:string.option.point-choice/top-left :top-left]
+    [:string.option.point-choice/top :top]
+    [:string.option.point-choice/top-right :top-right]
+    [:string.option.point-choice/left :left]
+    [:string.option.point-choice/center :center]
+    [:string.option.point-choice/right :right]
+    [:string.option.point-choice/bottom-left :bottom-left]
+    [:string.option.point-choice/bottom :bottom]
+    [:string.option.point-choice/bottom-right :bottom-right]]])
+
+(def ^:private all-orientation-choices
+  [[:string.option.orientation-point-choice/angle :angle]
+   [:string.option.point-choice-group/technical
+    [:string.option.point-choice/top-left :top-left]
+    [:string.option.point-choice/top :top]
+    [:string.option.point-choice/top-right :top-right]
+    [:string.option.point-choice/left :left]
+    [:string.option.point-choice/center :center]
+    [:string.option.point-choice/right :right]
+    [:string.option.point-choice/bottom-left :bottom-left]
+    [:string.option.point-choice/bottom :bottom]
+    [:string.option.point-choice/bottom-right :bottom-right]]
+   [:string.option.point-choice-group/heraldic
+    [:string.option.point-choice/fess :fess]
+    [:string.option.point-choice/chief :chief]
+    [:string.option.point-choice/base :base]
+    [:string.option.point-choice/dexter :dexter]
+    [:string.option.point-choice/sinister :sinister]
+    [:string.option.point-choice/honour :honour]
+    [:string.option.point-choice/nombril :nombril]]])
+
+(defn anchor-choices [choices]
+  (options/select-choices all-anchor-choices choices))
+
+(defn orientation-choices [choices]
+  (options/select-choices all-orientation-choices choices))
 
 (def orientation-point-map
-  (options/choices->map orientation-point-choices))
+  (options/choices->map all-orientation-choices))
 
 (def alignment-choices
   [[:string.option.alignment-choice/left :left]

@@ -30,25 +30,27 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
         orientation-point-option {:type :choice
-                                  :choices [[:string.option.point-choice/top-left :top-left]
-                                            [:string.option.point-choice/top-right :top-right]
-                                            [:string.option.point-choice/bottom-left :bottom-left]
-                                            [:string.option.point-choice/bottom-right :bottom-right]
-                                            [:string.option.orientation-point-choice/angle :angle]]
+                                  :choices (position/orientation-choices
+                                            [:top-left
+                                             :top-right
+                                             :bottom-left
+                                             :bottom-right
+                                             :angle])
                                   :default :top-left
                                   :ui {:label :string.option/point}}
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     {:anchor {:point {:type :choice
-                      :choices [[:string.option.point-choice/chief :chief]
-                                [:string.option.point-choice/base :base]
-                                [:string.option.point-choice/fess :fess]
-                                [:string.option.point-choice/dexter :dexter]
-                                [:string.option.point-choice/sinister :sinister]
-                                [:string.option.point-choice/honour :honour]
-                                [:string.option.point-choice/nombril :nombril]
-                                [:string.option.point-choice/center :center]]
+                      :choices (position/anchor-choices
+                                [:chief
+                                 :base
+                                 :fess
+                                 :dexter
+                                 :sinister
+                                 :honour
+                                 :nombril
+                                 :center])
                       :default :fess
                       :ui {:label :string.option/point}}
               :offset-x {:type :range

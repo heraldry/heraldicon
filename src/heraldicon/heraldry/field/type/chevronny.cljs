@@ -31,23 +31,24 @@
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
         orientation-point-option {:type :choice
-                                  :choices [[:string.option.point-choice/top-left :top-left]
-                                            [:string.option.point-choice/top :top]
-                                            [:string.option.point-choice/top-right :top-right]
-                                            [:string.option.point-choice/left :left]
-                                            [:string.option.point-choice/center :center]
-                                            [:string.option.point-choice/right :right]
-                                            [:string.option.point-choice/bottom-left :bottom-left]
-                                            [:string.option.point-choice/bottom :bottom]
-                                            [:string.option.point-choice/bottom-right :bottom-right]
-                                            [:string.option.point-choice/fess :fess]
-                                            [:string.option.point-choice/chief :chief]
-                                            [:string.option.point-choice/base :base]
-                                            [:string.option.point-choice/dexter :dexter]
-                                            [:string.option.point-choice/sinister :sinister]
-                                            [:string.option.point-choice/honour :honour]
-                                            [:string.option.point-choice/nombril :nombril]
-                                            [:string.option.orientation-point-choice/angle :angle]]
+                                  :choices (position/orientation-choices
+                                            [:top-left
+                                             :top
+                                             :top-right
+                                             :left
+                                             :center
+                                             :right
+                                             :bottom-left
+                                             :bottom
+                                             :bottom-right
+                                             :fess
+                                             :chief
+                                             :base
+                                             :dexter
+                                             :sinister
+                                             :honour
+                                             :nombril
+                                             :angle])
                                   :default :angle
                                   :ui {:label :string.option/point}}
         current-orientation-point (options/get-value

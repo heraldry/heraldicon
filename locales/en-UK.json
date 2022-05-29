@@ -462,6 +462,10 @@
     "pattern-offset-x": "Pattern offset x",
     "pattern-offset-y": "Pattern offset y",
     "point": "Point",
+    "point-choice-group": {
+      "heraldic": "Heraldic",
+      "technical": "Technical"
+    },
     "point-choice": {
       "base": "Base",
       "bottom": "Bottom",

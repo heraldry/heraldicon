@@ -20,40 +20,42 @@
 (defmethod field.interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line))
         anchor-point-option {:type :choice
-                             :choices [[:string.option.point-choice/fess :fess]
-                                       [:string.option.point-choice/chief :chief]
-                                       [:string.option.point-choice/base :base]
-                                       [:string.option.point-choice/honour :honour]
-                                       [:string.option.point-choice/nombril :nombril]
-                                       [:string.option.point-choice/top-left :top-left]
-                                       [:string.option.point-choice/center :center]
-                                       [:string.option.point-choice/bottom-right :bottom-right]]
+                             :choices (position/anchor-choices
+                                       [:fess
+                                        :chief
+                                        :base
+                                        :honour
+                                        :nombril
+                                        :top-left
+                                        :center
+                                        :bottom-right])
                              :default :top-left
                              :ui {:label :string.option/point}}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)
         orientation-point-option {:type :choice
-                                  :choices (case current-anchor-point
-                                             :top-left [[:string.option.point-choice/fess :fess]
-                                                        [:string.option.point-choice/chief :chief]
-                                                        [:string.option.point-choice/base :base]
-                                                        [:string.option.point-choice/honour :honour]
-                                                        [:string.option.point-choice/nombril :nombril]
-                                                        [:string.option.point-choice/bottom-right :bottom-right]
-                                                        [:string.option.point-choice/center :center]
-                                                        [:string.option.orientation-point-choice/angle :angle]]
-                                             :bottom-right [[:string.option.point-choice/fess :fess]
-                                                            [:string.option.point-choice/chief :chief]
-                                                            [:string.option.point-choice/base :base]
-                                                            [:string.option.point-choice/honour :honour]
-                                                            [:string.option.point-choice/nombril :nombril]
-                                                            [:string.option.point-choice/top-left :top-left]
-                                                            [:string.option.point-choice/center :center]
-                                                            [:string.option.orientation-point-choice/angle :angle]]
-                                             [[:string.option.point-choice/top-left :top-left]
-                                              [:string.option.point-choice/bottom-right :bottom-right]
-                                              [:string.option.orientation-point-choice/angle :angle]])
+                                  :choices (position/orientation-choices
+                                            (case current-anchor-point
+                                              :top-left [:fess
+                                                         :chief
+                                                         :base
+                                                         :honour
+                                                         :nombril
+                                                         :bottom-right
+                                                         :center
+                                                         :angle]
+                                              :bottom-right [:fess
+                                                             :chief
+                                                             :base
+                                                             :honour
+                                                             :nombril
+                                                             :top-left
+                                                             :center
+                                                             :angle]
+                                              [:top-left
+                                               :bottom-right
+                                               :angle]))
                                   :default (case current-anchor-point
                                              :top-left :fess
                                              :bottom-right :fess

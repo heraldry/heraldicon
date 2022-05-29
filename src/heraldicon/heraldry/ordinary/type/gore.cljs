@@ -31,9 +31,10 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))
         orientation-point-option {:type :choice
-                                  :choices [[:string.option.point-choice/top-left :top-left]
-                                            [:string.option.point-choice/top-right :top-right]
-                                            [:string.option.orientation-point-choice/angle :angle]]
+                                  :choices (position/orientation-choices
+                                            [:top-left
+                                             :top-right
+                                             :angle])
                                   :default :top-left
                                   :ui {:label :string.option/point}}
         current-orientation-point (options/get-value
@@ -41,10 +42,11 @@
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
      {:anchor {:point {:type :choice
-                       :choices [[:string.option.point-choice/fess :fess]
-                                 [:string.option.point-choice/chief :chief]
-                                 [:string.option.point-choice/base :base]
-                                 [:string.option.point-choice/center :center]]
+                       :choices (position/anchor-choices
+                                 [:fess
+                                  :chief
+                                  :base
+                                  :center])
                        :default :fess
                        :ui {:label :string.option/point}}
                :offset-x {:type :range

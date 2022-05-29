@@ -25,14 +25,15 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
      {:anchor {:point {:type :choice
-                       :choices [[:string.option.point-choice/chief :chief]
-                                 [:string.option.point-choice/base :base]
-                                 [:string.option.point-choice/fess :fess]
-                                 [:string.option.point-choice/dexter :dexter]
-                                 [:string.option.point-choice/sinister :sinister]
-                                 [:string.option.point-choice/honour :honour]
-                                 [:string.option.point-choice/nombril :nombril]
-                                 [:string.option.point-choice/center :center]]
+                       :choices (position/anchor-choices
+                                 [:chief
+                                  :base
+                                  :fess
+                                  :dexter
+                                  :sinister
+                                  :honour
+                                  :nombril
+                                  :center])
                        :default :fess
                        :ui {:label :string.option/point}}
                :offset-x {:type :range
