@@ -29,7 +29,7 @@
 (s/def :heraldry.charge/vertical-mask number?)
 
 (s/def :heraldry.charge/escutcheon (s/or :none #{:none}
-                                         :escutcheon (su/key-in? escutcheon/choice-map)))
+                                         :escutcheon (su/key-in? escutcheon/escutcheon-map)))
 
 (s/def :heraldry.charge/num-points number?)
 (s/def :heraldry.charge/eccentricity number?)

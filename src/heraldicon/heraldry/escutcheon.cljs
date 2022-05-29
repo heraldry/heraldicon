@@ -381,7 +381,7 @@
                [(:display-name @v) (-> v meta :name keyword)]))
         escutcheons))
 
-(def choice-map
+(def escutcheon-map
   (options/choices->map choices))
 
 (defn field [escutcheon-type flag-width flag-height swallow-tail tail-point-height tail-tongue]
