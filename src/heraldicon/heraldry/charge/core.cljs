@@ -26,9 +26,7 @@
                     (update :blazonry dissoc :part-of-charge-group?)
                     (update :blazonry dissoc :pluralize?))
         charge-data (when variant
-                      (if load-charge-data
-                        (load-charge-data variant)
-                        (interface/fetch-charge-data :frontend variant context)))
+                      (load-charge-data variant))
         fixed-tincture (-> charge-data
                            :fixed-tincture
                            (or :none)

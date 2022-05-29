@@ -93,7 +93,8 @@
     [:span {:style {:font-size "0.75em"}}
      " " [tr :string.miscellaneous/beta-blazon]]]
    [:div.blazon
-    (string/tr-raw (interface/blazon {:path (conj form-db-path :data :achievement :coat-of-arms)}) :en)]])
+    (string/tr-raw (interface/blazon (assoc context/default
+                                            :path (conj form-db-path :data :achievement :coat-of-arms))) :en)]])
 
 (defn- generate-svg-clicked [event]
   (.preventDefault event)
