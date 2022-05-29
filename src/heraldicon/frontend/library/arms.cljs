@@ -6,6 +6,7 @@
    [heraldicon.context :as c]
    [heraldicon.entity.arms :as entity.arms]
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
@@ -311,7 +312,7 @@
   (let [[status arms-data] (state/async-fetch-data
                             form-db-path
                             [arms-id version]
-                            #(arms-select/fetch-arms arms-id version saved-data-db-path))]
+                            #(api/fetch-arms arms-id version saved-data-db-path))]
     (when (= status :done)
       (if arms-data
         [arms-form]

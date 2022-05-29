@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.ui.element.arms-reference-select
   (:require
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
@@ -20,7 +21,7 @@
                                 (state/async-fetch-data
                                  [:arms-references arms-id version]
                                  [arms-id version]
-                                 #(arms-select/fetch-arms arms-id version nil)))
+                                 #(api/fetch-arms arms-id version nil)))
           arms-title (-> arms-data
                          :name
                          (or :string.miscellaneous/none))]

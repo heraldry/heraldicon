@@ -111,7 +111,7 @@
                               (state/async-fetch-data
                                [:arms-references arms-id version]
                                [arms-id version]
-                               #(arms-select/fetch-arms arms-id version nil)))
+                               #(api/fetch-arms arms-id version nil)))
         collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
         {:keys [result
                 environment]} (render/coat-of-arms
@@ -226,7 +226,7 @@
                                (state/async-fetch-data
                                 [:arms-references arms-id version]
                                 [arms-id version]
-                                #(arms-select/fetch-arms arms-id version nil)))
+                                #(api/fetch-arms arms-id version nil)))
           collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})]
       (when (or (not arms-id)
                 (= status :done))
