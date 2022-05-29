@@ -1,40 +1,14 @@
 (ns heraldicon.frontend.ribbon
-  (:require
-   [cljs.core.async :refer [go]]
-   [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.api.request :as api.request]
-   [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.user :as user]
-   [taoensso.timbre :as log]))
-
-(defn fetch-ribbons []
-  (go
-    (try
-      (let [user-data (user/data)]
-        (-> (api.request/call :fetch-ribbons-list {}
-                              user-data)
-            <?
-            :ribbons))
-      (catch :default e
-        (log/error "fetch ribbons error:" e)))))
-
-(defn fetch-ribbon [ribbon-id version]
-  (go
-    (try
-      (let [user-data (user/data)
-            ribbon-data (<? (api.request/call :fetch-ribbon {:id ribbon-id
-                                                             :version version} user-data))]
-        ribbon-data)
-      (catch :default e
-        (log/error "fetch ribbon for rendering error:" e)))))
+  (:require [heraldicon.frontend.api :as api]
+            [heraldicon.frontend.state :as state]
+            [taoensso.timbre :as log]))
 
 (defn fetch-ribbon-data [{:keys [id version] :as variant}]
   (if (and id version)
-    (let [db-path [:ribbon-data variant]
-          [status ribbon-data] (state/async-fetch-data
-                                db-path
+    (let [[status ribbon-data] (state/async-fetch-data
+                                [:ribbon-data variant]
                                 variant
-                                #(fetch-ribbon id version))]
+                                #(api/fetch-ribbon id version nil))]
       (when (= status :done)
         ribbon-data))
     (log/error "error fetching ribbon data, invalid variant:" variant)))
