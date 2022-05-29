@@ -9,6 +9,7 @@
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.context :as c]
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
@@ -226,13 +227,6 @@
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
 
-(defn- invalidate-charges-cache []
-  (let [user-data (user/data)
-        user-id (:user-id user-data)]
-    (rf/dispatch-sync [:set list-db-path nil])
-    (state/invalidate-cache list-db-path user-id)
-    (state/invalidate-cache [:all-charges] :all-charges)))
-
 (defn- save-charge-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
@@ -248,7 +242,7 @@
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
           (state/invalidate-cache-without-current form-db-path [charge-id nil])
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
-          (invalidate-charges-cache)
+          (charge-select/invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
                              (string/str-tr :string.user.message/charge-saved (:version response))])
           (reife/push-state :view-charge-by-id {:id (id/for-url charge-id)}))
@@ -387,7 +381,7 @@
   (let [[status charge-data] (state/async-fetch-data
                               form-db-path
                               [charge-id version]
-                              #(charge/fetch-charge-for-editing charge-id version))]
+                              #(api/fetch-charge-for-editing charge-id version))]
     (when (= status :done)
       (if charge-data
         [charge-form]

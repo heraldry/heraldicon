@@ -5,6 +5,7 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldicon.context :as c]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.language :refer [tr]]
@@ -466,7 +467,7 @@
             [status charges] (state/async-fetch-data
                               charge-select/list-db-path
                               :all
-                              charge-select/fetch-charge-list
+                              api/fetch-charges-list
                               :on-success update-parser)]
         (when (= status :done)
           (update-parser charges)))
