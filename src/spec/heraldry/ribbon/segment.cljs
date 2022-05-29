@@ -13,7 +13,7 @@
 (s/def :heraldry.ribbon.segment/font-scale number?)
 (s/def :heraldry.ribbon.segment/spacing number?)
 (s/def :heraldry.ribbon.segment/text string?)
-(s/def :heraldry.ribbon.segment/font (su/key-in? font/choice-map))
+(s/def :heraldry.ribbon.segment/font (su/key-in? font/font-map))
 
 (s/def :heraldry.ribbon/segment (s/keys :req-un [:heraldry.ribbon.segment/type]
                                         :opt-un [:heraldry.ribbon.segment/offset-x
