@@ -363,7 +363,9 @@
     "alignment-choice": {
       "left": "Links",
       "middle": "Mitte",
-      "right": "Rechts"
+      "right": "Rechts",
+      "bottom": "Unten",
+      "top": "Oben"
     },
     "alignment-fimbriation-choice": {
       "even": "Gleichmäßig",
