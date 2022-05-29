@@ -36,7 +36,7 @@
          [(charge.interface/display-name key) key])
        charges))
 
-(def choice-map
+(def charge-map
   (options/choices->map choices))
 
 (def ^:private type-option
@@ -85,7 +85,7 @@
                      :none)
         facing (or (interface/get-raw-data (c/++ context :facing))
                    :none)
-        charge-name (or (choice-map charge-type)
+        charge-name (or (charge-map charge-type)
                         (blazonry/translate-cap-first charge-type))]
     (string/combine " " [charge-name
                          (when-not (= attitude :none)
