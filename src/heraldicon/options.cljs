@@ -1,6 +1,7 @@
 (ns heraldicon.options
   (:require
-   [clojure.walk :as walk]))
+   [clojure.walk :as walk]
+   [heraldicon.util.sanitize :as sanitize]))
 
 (def ^:private option-types #{:range :choice :boolean :text})
 
@@ -101,19 +102,8 @@
       (sanitize data options)
       (get-value data options))))
 
-(defn- remove-nil-values-and-empty-maps [m]
-  (walk/postwalk #(if (map? %)
-                    (into {}
-                          (filter (fn [[_ v]]
-                                    (not (or (nil? v)
-                                             (and (map? v)
-                                                  (empty? v))))))
-                          %)
-                    %)
-                 m))
-
 (defn sanitize-or-nil [values given-options]
-  (remove-nil-values-and-empty-maps
+  (sanitize/remove-nil-values-and-empty-maps
    (into {}
          (map (fn [[k v]]
                 (cond

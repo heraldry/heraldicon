@@ -23,12 +23,13 @@
       (s/replace #"--*$" "")
       keyword))
 
-(defn remove-nil-values [data]
-  (walk/postwalk (fn [data]
-                   (if (map? data)
-                     (into {}
-                           (keep (fn [[k v]]
-                                   (when-not (nil? v)
-                                     [k v])))
-                           data)
-                     data)) data))
+(defn remove-nil-values-and-empty-maps [m]
+  (walk/postwalk #(if (map? %)
+                    (into {}
+                          (remove (fn [[_ v]]
+                                    (or (nil? v)
+                                        (and (map? v)
+                                             (empty? v)))))
+                          %)
+                    %)
+                 m))
