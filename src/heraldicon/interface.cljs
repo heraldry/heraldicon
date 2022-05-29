@@ -84,9 +84,6 @@
     (counterchange/get-counterchange-tinctures (get-raw-data context) context)
     @(rf/subscribe [:get-counterchange-tinctures path context])))
 
-(defmulti fetch-charge-data (fn [kind _variant]
-                              kind))
-
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (c/<< context :path (conj render-options-path key))))
 

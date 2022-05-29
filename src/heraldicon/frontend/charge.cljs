@@ -2,7 +2,6 @@
   (:require
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.state :as state]
-   [heraldicon.interface :as interface]
    [taoensso.timbre :as log]))
 
 (defn fetch-charge-data [{:keys [id version] :as variant}]
@@ -12,6 +11,3 @@
       (when (= status :done)
         charge-data))
     (log/error "error fetching charge data, invalid variant:" variant)))
-
-(defmethod interface/fetch-charge-data :frontend [_kind variant]
-  (fetch-charge-data variant))
