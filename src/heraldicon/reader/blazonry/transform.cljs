@@ -879,7 +879,7 @@
         (map (fn [[key _]]
                [(keyword "charge" (-> key name s/upper-case))
                 key]))
-        charge.options/choice-map))
+        charge.options/charge-map))
 
 (defmethod ast->hdn :charge-standard [[_ & nodes]]
   (let [charge-type-node-kind (first (get-child charge-type-map nodes))

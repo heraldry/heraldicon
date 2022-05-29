@@ -316,7 +316,7 @@
   (if (map? hdn)
     (let [charge-type (:type hdn)]
       (if (and (is-charge-type? charge-type)
-               (not (get charge.options/choice-map (:type hdn))))
+               (not (get charge.options/charge-map (:type hdn))))
         (let [variant (find-best-variant hdn charge-map)]
           (cond-> hdn
             variant (assoc :variant variant)))
