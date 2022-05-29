@@ -11,7 +11,7 @@
 (s/def :heraldry.render-options/type #{:heraldry/render-options})
 
 (s/def :heraldry.render-options/escutcheon (s/or :none #{:none}
-                                                 :escutcheon (su/key-in? escutcheon/choice-map)))
+                                                 :escutcheon (su/key-in? escutcheon/escutcheon-map)))
 (s/def :heraldry.render-options/mode (su/key-in? mode/mode-map))
 (s/def :heraldry.render-options/theme (su/key-in? theme/theme-map))
 (s/def :heraldry.render-options/texture (s/or :none #{:none}
