@@ -44,6 +44,8 @@
                                         :base
                                         :dexter
                                         :sinister
+                                        :hoist
+                                        :fly
                                         :top-left
                                         :top
                                         :top-right
@@ -78,6 +80,8 @@
                                               :sinister
                                               :honour
                                               :nombril
+                                              :hoist
+                                              :fly
                                               :angle]))
                                   :default :fess
                                   :ui {:label :string.option/point}}

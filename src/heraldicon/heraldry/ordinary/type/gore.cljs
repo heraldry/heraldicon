@@ -46,6 +46,8 @@
                                  [:fess
                                   :chief
                                   :base
+                                  :hoist
+                                  :fly
                                   :center])
                        :default :fess
                        :ui {:label :string.option/point}}

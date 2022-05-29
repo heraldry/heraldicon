@@ -13,6 +13,9 @@
     [:string.option.point-choice/sinister :sinister]
     [:string.option.point-choice/honour :honour]
     [:string.option.point-choice/nombril :nombril]]
+   [:string.option.point-choice-group/vexillological
+    [:string.option.point-choice/hoist :hoist]
+    [:string.option.point-choice/fly :fly]]
    [:string.option.point-choice-group/technical
     [:string.option.point-choice/top-left :top-left]
     [:string.option.point-choice/top :top]
@@ -43,7 +46,10 @@
     [:string.option.point-choice/dexter :dexter]
     [:string.option.point-choice/sinister :sinister]
     [:string.option.point-choice/honour :honour]
-    [:string.option.point-choice/nombril :nombril]]])
+    [:string.option.point-choice/nombril :nombril]]
+   [:string.option.point-choice-group/vexillological
+    [:string.option.point-choice/hoist :hoist]
+    [:string.option.point-choice/fly :fly]]])
 
 (defn anchor-choices [choices]
   (options/select-choices all-anchor-choices choices))

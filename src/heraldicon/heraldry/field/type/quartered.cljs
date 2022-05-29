@@ -37,6 +37,8 @@
                                  :sinister
                                  :honour
                                  :nombril
+                                 :hoist
+                                 :fly
                                  :center])
                       :default :fess
                       :ui {:label :string.option/point}}

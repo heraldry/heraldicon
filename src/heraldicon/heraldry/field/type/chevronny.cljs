@@ -48,6 +48,8 @@
                                              :sinister
                                              :honour
                                              :nombril
+                                             :hoist
+                                             :fly
                                              :angle])
                                   :default :angle
                                   :ui {:label :string.option/point}}

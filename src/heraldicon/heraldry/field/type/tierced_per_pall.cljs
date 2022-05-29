@@ -41,6 +41,8 @@
                                         :base
                                         :dexter
                                         :sinister
+                                        :hoist
+                                        :fly
                                         :top-left
                                         :top
                                         :top-right
@@ -139,6 +141,8 @@
                                  :sinister
                                  :honour
                                  :nombril
+                                 :hoist
+                                 :fly
                                  :top-left
                                  :top
                                  :top-right

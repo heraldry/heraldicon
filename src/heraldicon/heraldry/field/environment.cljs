@@ -45,7 +45,11 @@
         chief (v/avg top honour)
         base (v/avg bottom nombril)
         dexter (v/avg left (v/avg left fess))
-        sinister (v/avg right (v/avg right fess))]
+        sinister (v/avg right (v/avg right fess))
+        hoist (v/Vector. (min (+ min-x (/ (- max-y min-y) 2))
+                              (:x center)) (:y center))
+        fly (v/Vector. (max (- max-x (/ (- max-y min-y) 2))
+                            (:x center)) (:y center))]
     {:shape shape
      :width width
      :height height
@@ -65,7 +69,9 @@
               :chief chief
               :base base
               :dexter dexter
-              :sinister sinister}}))
+              :sinister sinister
+              :hoist hoist
+              :fly fly}}))
 
 (defn transform-to-width [environment target-width]
   (let [width (:width environment)

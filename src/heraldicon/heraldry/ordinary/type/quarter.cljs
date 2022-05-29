@@ -43,6 +43,8 @@
                                   :base
                                   :honour
                                   :nombril
+                                  :hoist
+                                  :fly
                                   :top
                                   :center
                                   :bottom])

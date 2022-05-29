@@ -25,6 +25,8 @@
                                 [:fess
                                  :dexter
                                  :sinister
+                                 :hoist
+                                 :fly
                                  :left
                                  :center
                                  :right])

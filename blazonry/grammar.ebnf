@@ -379,6 +379,10 @@ point/NOMBRIL
     = #"\bnombril\b"
 point/HONOUR
     = #"\bhonour\b"
+point/HOIST
+    = #"\bhoist\b"
+point/FLY
+    = #"\bfly\b"
 
 attitude/CADENT = #"\bcadent\b"
 attitude/COUCHANT = #"\bcouchant\b"
@@ -973,6 +977,8 @@ fimbriation
     | point/FESS
     | point/HONOUR
     | point/NOMBRIL
+    | point/HOIST
+    | point/FLY
 
 charge-location
     = (IN | AT) charge-location-point POINT?

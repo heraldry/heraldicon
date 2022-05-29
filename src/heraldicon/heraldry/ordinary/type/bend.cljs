@@ -29,6 +29,8 @@
                                         :base
                                         :honour
                                         :nombril
+                                        :hoist
+                                        :fly
                                         :top-left
                                         :bottom-right])
                              :default :top-left
@@ -45,6 +47,8 @@
                                                          :honour
                                                          :nombril
                                                          :bottom-right
+                                                         :hoist
+                                                         :fly
                                                          :center
                                                          :angle]
                                               :bottom-right [:fess
@@ -52,6 +56,8 @@
                                                              :base
                                                              :honour
                                                              :nombril
+                                                             :hoist
+                                                             :fly
                                                              :top-left
                                                              :center
                                                              :angle]
