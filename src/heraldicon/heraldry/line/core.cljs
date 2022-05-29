@@ -161,9 +161,9 @@
         :form-type :line-type-select}})
 
 (def ^:private base-line-choices
-  [[:string.option.point-choice/bottom :bottom]
+  [[:string.option.alignment-choice/bottom :bottom]
    [:string.option.alignment-choice/middle :middle]
-   [:string.option.point-choice/top :top]])
+   [:string.option.alignment-choice/top :top]])
 
 (def base-line-map
   (options/choices->map base-line-choices))
