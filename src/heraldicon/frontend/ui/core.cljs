@@ -242,11 +242,7 @@
              nodes))]))
 
 (def ^:private node-render-options
-  {:render-options {:type :heraldry/render-options
-                    :theme :wappenwiki
-                    :outline? true
-                    :escutcheon :rectangle
-                    :escutcheon-shadow? true}
+  {:render-options {:type :heraldry/render-options}
    :render-options-path [:context :render-options]})
 
 (defn component-tree [paths]
