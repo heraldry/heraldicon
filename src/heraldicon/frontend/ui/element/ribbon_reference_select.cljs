@@ -2,6 +2,7 @@
   (:require
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
@@ -34,7 +35,7 @@
           ;; TODO: this is a hacky way to do it, and it also means the API call is done twice,
           ;; here and again via the unrelated the async + cache mechanism when the reference is used
           _ (go-catch
-             (let [ribbon-data (<? (ribbon-select/fetch-ribbon ribbon-id ribbon-version nil))]
+             (let [ribbon-data (<? (api/fetch-ribbon ribbon-id ribbon-version nil))]
                (rf/dispatch [:set-ribbon-data
                              (conj parent-path :ribbon)
                              (-> ribbon-data :data :ribbon)])))]
@@ -63,7 +64,7 @@
                                   (state/async-fetch-data
                                    [:ribbon-references ribbon-id version]
                                    [ribbon-id version]
-                                   #(ribbon-select/fetch-ribbon ribbon-id version nil)))
+                                   #(api/fetch-ribbon ribbon-id version nil)))
           ribbon-title (-> ribbon-data
                            :name
                            (or :string.miscellaneous/none))]

@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.history.core :as history]
@@ -10,7 +11,6 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
-   [heraldicon.frontend.ribbon :as frontend.ribbon]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
@@ -32,9 +32,6 @@
 
 (def form-db-path
   [:ribbon-form])
-
-(def ^:private list-db-path
-  [:ribbon-list])
 
 (def ^:private preview-width
   500)
@@ -343,13 +340,6 @@
                       [add-point points-path idx point]))
                @(rf/subscribe [::edit-addable-points points-path])))]]]))
 
-(defn- invalidate-ribbons-cache []
-  (let [user-data (user/data)
-        user-id (:user-id user-data)]
-    (rf/dispatch-sync [:set list-db-path nil])
-    (state/invalidate-cache list-db-path user-id)
-    (state/invalidate-cache [:all-ribbons] :all-ribbons)))
-
 (defn- save-ribbon-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
@@ -365,7 +355,7 @@
           (rf/dispatch-sync [:set (conj form-db-path :id) ribbon-id])
           (state/invalidate-cache-without-current form-db-path [ribbon-id nil])
           (state/invalidate-cache-without-current form-db-path [ribbon-id 0])
-          (invalidate-ribbons-cache)
+          (ribbon-select/invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
                              (string/str-tr :string.user.message/ribbon-saved (:version response))])
           (reife/push-state :view-ribbon-by-id {:id (id/for-url ribbon-id)}))
@@ -493,7 +483,7 @@
   (let [[status ribbon-data] (state/async-fetch-data
                               form-db-path
                               [ribbon-id version]
-                              #(frontend.ribbon/fetch-ribbon ribbon-id version))]
+                              #(api/fetch-ribbon ribbon-id version nil))]
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]
@@ -517,24 +507,18 @@
 
 (defn view-list-ribbons []
   (rf/dispatch [:set-title :string.menu/ribbon-library])
-  (let [[status _ribbons] (state/async-fetch-data
-                           [:all-ribbons]
-                           :all-ribbons
-                           frontend.ribbon/fetch-ribbons)]
-    [:div {:style {:padding "15px"}}
-     [:div {:style {:text-align "justify"
-                    :max-width "40em"}}
-      [tr :string.text.ribbon-library/create-and-view-ribbons]]
-     [:button.button.primary
-      {:on-click #(do
-                    (rf/dispatch-sync [:clear-form-errors form-db-path])
-                    (rf/dispatch-sync [:clear-form-message form-db-path])
-                    (reife/push-state :create-ribbon))}
-      [tr :string.button/create]]
-     [:div {:style {:padding-top "0.5em"}}
-      (if (= status :done)
-        [ribbon-select/list-ribbons on-select]
-        [:div [tr :string.miscellaneous/loading]])]]))
+  [:div {:style {:padding "15px"}}
+   [:div {:style {:text-align "justify"
+                  :max-width "40em"}}
+    [tr :string.text.ribbon-library/create-and-view-ribbons]]
+   [:button.button.primary
+    {:on-click #(do
+                  (rf/dispatch-sync [:clear-form-errors form-db-path])
+                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (reife/push-state :create-ribbon))}
+    [tr :string.button/create]]
+   [:div {:style {:padding-top "0.5em"}}
+    [ribbon-select/list-ribbons on-select]]])
 
 (defn view-ribbon-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
