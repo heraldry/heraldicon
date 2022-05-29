@@ -31,10 +31,10 @@
       (-> db
           (assoc-in (conj path :type) new-type)
           (cond->
-            has-default-line-style? (update (conj path :line)
-                                            assoc
-                                            :line new-default-line-style
-                                            :flipped? new-flipped))
+            has-default-line-style? (update-in (conj path :line)
+                                               assoc
+                                               :type new-default-line-style
+                                               :flipped? new-flipped))
           ;; TODO: the switch to context here is problematic
           (update-in path #(util/deep-merge-with (fn [_current-value new-value]
                                                    new-value)
