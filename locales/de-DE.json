@@ -533,6 +533,10 @@
       "full": "Voll",
       "truncated": "Abgeschnitten"
     },
+    "variant-point-choice": {
+      "dexter": "Heraldisch rechts",
+      "sinister": "Heraldisch links"
+    },
     "variant-quarter-choice": {
       "dexter-base": "Heraldisch rechts-unten",
       "dexter-chief": "Heraldisch rechts-oben",
