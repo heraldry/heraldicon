@@ -88,7 +88,7 @@
                                    :ui {:label :string.render-options/simulate-surface}})
 
       (= mode :colours) (assoc :theme {:type :choice
-                                       :choices theme/theme-choices
+                                       :choices theme/choices
                                        :default theme/default
                                        :ui {:label :string.render-options/theme
                                             :form-type :theme-select}}))))

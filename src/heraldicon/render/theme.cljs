@@ -514,7 +514,7 @@
 (def default
   :wappenwiki)
 
-(def theme-choices
+(def choices
   (mapv (fn [[group-name & items]]
           (into [group-name]
                 (map (fn [[display-name key _]]
@@ -523,7 +523,7 @@
         themes))
 
 (def theme-map
-  (options/choices->map theme-choices))
+  (options/choices->map choices))
 
 (def theme-data-map
   (into {}
