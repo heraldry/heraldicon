@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.charge-group.options
   (:require
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
 
@@ -18,22 +19,23 @@
           :ui {:label :string.option/type
                :form-type :charge-group-type-select}}
    :anchor {:point {:type :choice
-                    :choices [[:string.option.point-choice/fess :fess]
-                              [:string.option.point-choice/chief :chief]
-                              [:string.option.point-choice/base :base]
-                              [:string.option.point-choice/dexter :dexter]
-                              [:string.option.point-choice/sinister :sinister]
-                              [:string.option.point-choice/honour :honour]
-                              [:string.option.point-choice/nombril :nombril]
-                              [:string.option.point-choice/top-left :top-left]
-                              [:string.option.point-choice/top :top]
-                              [:string.option.point-choice/top-right :top-right]
-                              [:string.option.point-choice/left :left]
-                              [:string.option.point-choice/center :center]
-                              [:string.option.point-choice/right :right]
-                              [:string.option.point-choice/bottom-left :bottom-left]
-                              [:string.option.point-choice/bottom :bottom]
-                              [:string.option.point-choice/bottom-right :bottom-right]]
+                    :choices (position/anchor-choices
+                              [:fess
+                               :chief
+                               :base
+                               :dexter
+                               :sinister
+                               :honour
+                               :nombril
+                               :top-left
+                               :top
+                               :top-right
+                               :left
+                               :center
+                               :right
+                               :bottom-left
+                               :bottom
+                               :bottom-right])
                     :default :fess
                     :ui {:label :string.option/point}}
             :offset-x {:type :range

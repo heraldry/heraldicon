@@ -29,71 +29,73 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))
         origin-point-option {:type :choice
-                             :choices [[:string.option.point-choice/chief :chief]
-                                       [:string.option.point-choice/base :base]
-                                       [:string.option.point-choice/dexter :dexter]
-                                       [:string.option.point-choice/sinister :sinister]
-                                       [:string.option.point-choice/top-left :top-left]
-                                       [:string.option.point-choice/top-right :top-right]
-                                       [:string.option.point-choice/bottom-left :bottom-left]
-                                       [:string.option.point-choice/bottom-right :bottom-right]
-                                       [:string.option.orientation-point-choice/angle :angle]]
+                             :choices (position/orientation-choices
+                                       [:chief
+                                        :base
+                                        :dexter
+                                        :sinister
+                                        :top-left
+                                        :top-right
+                                        :bottom-left
+                                        :bottom-right
+                                        :angle])
                              :default :base
                              :ui {:label :string.option/point}}
         current-origin-point (options/get-value
                               (interface/get-raw-data (c/++ context :origin :point))
                               origin-point-option)
         orientation-point-option {:type :choice
-                                  :choices (case current-origin-point
-                                             :base [[:string.option.point-choice/bottom-left :bottom-left]
-                                                    [:string.option.point-choice/bottom-right :bottom-right]
-                                                    [:string.option.point-choice/left :left]
-                                                    [:string.option.point-choice/right :right]
-                                                    [:string.option.orientation-point-choice/angle :angle]]
-                                             :chief [[:string.option.point-choice/top-left :top-left]
-                                                     [:string.option.point-choice/top-right :top-right]
-                                                     [:string.option.point-choice/left :left]
-                                                     [:string.option.point-choice/right :right]
-                                                     [:string.option.orientation-point-choice/angle :angle]]
-                                             :dexter [[:string.option.point-choice/top-left :top-left]
-                                                      [:string.option.point-choice/bottom-left :bottom-left]
-                                                      [:string.option.point-choice/top :top]
-                                                      [:string.option.point-choice/bottom :bottom]
-                                                      [:string.option.orientation-point-choice/angle :angle]]
-                                             :sinister [[:string.option.point-choice/top-right :top-right]
-                                                        [:string.option.point-choice/bottom-right :bottom-right]
-                                                        [:string.option.point-choice/top :top]
-                                                        [:string.option.point-choice/bottom :bottom]
-                                                        [:string.option.orientation-point-choice/angle :angle]]
-                                             :bottom-left [[:string.option.point-choice/bottom :bottom]
-                                                           [:string.option.point-choice/bottom-right :bottom-right]
-                                                           [:string.option.point-choice/top-left :top-left]
-                                                           [:string.option.point-choice/left :left]
-                                                           [:string.option.orientation-point-choice/angle :angle]]
-                                             :bottom-right [[:string.option.point-choice/bottom-left :bottom-left]
-                                                            [:string.option.point-choice/bottom :bottom]
-                                                            [:string.option.point-choice/right :right]
-                                                            [:string.option.point-choice/top-right :top-right]
-                                                            [:string.option.orientation-point-choice/angle :angle]]
-                                             :top-left [[:string.option.point-choice/top :top]
-                                                        [:string.option.point-choice/top-right :top-right]
-                                                        [:string.option.point-choice/left :left]
-                                                        [:string.option.point-choice/bottom-left :bottom-left]
-                                                        [:string.option.orientation-point-choice/angle :angle]]
-                                             :top-right [[:string.option.point-choice/top-left :top-left]
-                                                         [:string.option.point-choice/top :top]
-                                                         [:string.option.point-choice/left :right]
-                                                         [:string.option.point-choice/bottom-right :bottom-right]
-                                                         [:string.option.orientation-point-choice/angle :angle]]
-                                             [[:string.option.point-choice/top-left :top-left]
-                                              [:string.option.point-choice/top :top]
-                                              [:string.option.point-choice/top-right :top-right]
-                                              [:string.option.point-choice/left :left]
-                                              [:string.option.point-choice/right :right]
-                                              [:string.option.point-choice/bottom-left :bottom-left]
-                                              [:string.option.point-choice/bottom :bottom]
-                                              [:string.option.point-choice/bottom-right :bottom-right]
-                                              [:string.option.orientation-point-choice/angle :angle]])
+                                  :choices (position/orientation-choices
+                                            (case current-origin-point
+                                              :base [:bottom-left
+                                                     :bottom-right
+                                                     :left
+                                                     :right
+                                                     :angle]
+                                              :chief [:top-left
+                                                      :top-right
+                                                      :left
+                                                      :right
+                                                      :angle]
+                                              :dexter [:top-left
+                                                       :bottom-left
+                                                       :top
+                                                       :bottom
+                                                       :angle]
+                                              :sinister [:top-right
+                                                         :bottom-right
+                                                         :top
+                                                         :bottom
+                                                         :angle]
+                                              :bottom-left [:bottom
+                                                            :bottom-right
+                                                            :top-left
+                                                            :left
+                                                            :angle]
+                                              :bottom-right [:bottom-left
+                                                             :bottom
+                                                             :right
+                                                             :top-right
+                                                             :angle]
+                                              :top-left [:top
+                                                         :top-right
+                                                         :left
+                                                         :bottom-left
+                                                         :angle]
+                                              :top-right [:top-left
+                                                          :top
+                                                          :right
+                                                          :bottom-right
+                                                          :angle]
+                                              [:top-left
+                                               :top
+                                               :top-right
+                                               :left
+                                               :right
+                                               :bottom-left
+                                               :bottom
+                                               :bottom-right
+                                               :angle]))
                                   :default (case current-origin-point
                                              :base :bottom-left
                                              :chief :top-right
@@ -111,20 +113,21 @@
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
      {:anchor {:point {:type :choice
-                       :choices [[:string.option.point-choice/fess :fess]
-                                 [:string.option.point-choice/chief :chief]
-                                 [:string.option.point-choice/base :base]
-                                 [:string.option.point-choice/honour :honour]
-                                 [:string.option.point-choice/nombril :nombril]
-                                 [:string.option.point-choice/top-left :top-left]
-                                 [:string.option.point-choice/top :top]
-                                 [:string.option.point-choice/top-right :top-right]
-                                 [:string.option.point-choice/left :left]
-                                 [:string.option.point-choice/center :center]
-                                 [:string.option.point-choice/right :right]
-                                 [:string.option.point-choice/bottom-left :bottom-left]
-                                 [:string.option.point-choice/bottom :bottom]
-                                 [:string.option.point-choice/bottom-right :bottom-right]]
+                       :choices (position/anchor-choices
+                                 [:fess
+                                  :chief
+                                  :base
+                                  :honour
+                                  :nombril
+                                  :top-left
+                                  :top
+                                  :top-right
+                                  :left
+                                  :center
+                                  :right
+                                  :bottom-left
+                                  :bottom
+                                  :bottom-right])
                        :default :fess
                        :ui {:label :string.option/point}}
                :alignment {:type :choice

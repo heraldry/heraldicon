@@ -462,6 +462,10 @@
     "pattern-offset-x": "Muster-Versatz x",
     "pattern-offset-y": "Muster-Versatz y",
     "point": "Punkt",
+    "point-choice-group": {
+      "heraldic": "Heraldisch",
+      "technical": "Technisch"
+    },
     "point-choice": {
       "base": "Unterstelle",
       "bottom": "Unten",

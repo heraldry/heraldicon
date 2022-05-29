@@ -28,14 +28,15 @@
   (let [num-points (or (interface/get-raw-data (c/++ context :num-points))
                        3)]
     (-> {:anchor {:point {:type :choice
-                          :choices [[:string.option.point-choice/fess :fess]
-                                    [:string.option.point-choice/chief :chief]
-                                    [:string.option.point-choice/base :base]
-                                    [:string.option.point-choice/honour :honour]
-                                    [:string.option.point-choice/nombril :nombril]
-                                    [:string.option.point-choice/top :top]
-                                    [:string.option.point-choice/center :center]
-                                    [:string.option.point-choice/bottom :bottom]]
+                          :choices (position/anchor-choices
+                                    [:fess
+                                     :chief
+                                     :base
+                                     :honour
+                                     :nombril
+                                     :top
+                                     :center
+                                     :bottom])
                           :default :chief
                           :ui {:label :string.option/point}}
                   :alignment {:type :choice

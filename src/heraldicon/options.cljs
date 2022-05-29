@@ -26,24 +26,6 @@
                     (map (comp vec reverse) items))))
         choices))
 
-(defn filter-choices [choices pred]
-  (let [pred (if (or (vector? pred)
-                     (seq? pred))
-               (set pred)
-               pred)]
-    (walk/postwalk (fn [v]
-                     (cond
-                       (and (vector? v)
-                            (-> v count (= 2))
-                            (-> v second keyword?)
-                            (-> v second pred not)) nil
-                       (and (vector? v)
-                            (-> v count (= 2))
-                            (-> v second vector?)
-                            (-> v second count zero?)) nil
-                       (vector? v) (filterv identity v)
-                       :else v)) choices)))
-
 (defn get-value [value options]
   (if (and (vector? value)
            (-> value first (= :force)))
@@ -157,3 +139,29 @@
     (-> (- to from)
         (* value)
         (+ from))))
+
+(def ^:private not-vector? (complement vector?))
+
+(defn- populated-group? [v]
+  (or (> (count v) 2)
+      (and (vector? v)
+           (-> v second vector?))))
+
+(defn- desired-choice? [v keep-choice?]
+  (let [choice (second v)]
+    (and (keyword? choice)
+         (keep-choice? choice))))
+
+(defn select-choices [choices select]
+  (let [keep-choice? (set select)]
+    (walk/postwalk (fn [data]
+                     (if (vector? data)
+                       (into []
+                             (keep (fn [element]
+                                     (when (or (not-vector? element)
+                                               (populated-group? element)
+                                               (desired-choice? element keep-choice?))
+                                       element)))
+                             data)
+                       data))
+                   choices)))

@@ -21,12 +21,13 @@
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]
     {:anchor {:point {:type :choice
-                      :choices [[:string.option.point-choice/fess :fess]
-                                [:string.option.point-choice/dexter :dexter]
-                                [:string.option.point-choice/sinister :sinister]
-                                [:string.option.point-choice/left :left]
-                                [:string.option.point-choice/center :center]
-                                [:string.option.point-choice/right :right]]
+                      :choices (position/anchor-choices
+                                [:fess
+                                 :dexter
+                                 :sinister
+                                 :left
+                                 :center
+                                 :right])
                       :default :fess
                       :ui {:label :string.option/point}}
               :offset-x {:type :range
