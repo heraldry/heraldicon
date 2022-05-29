@@ -5,6 +5,7 @@
    [heraldicon.context :as c]
    [heraldicon.entity.id :as id]
    [heraldicon.font :as font]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.history.core :as history]
@@ -34,17 +35,6 @@
 
 (def ^:private list-db-path
   [:collection-list])
-
-(defn- fetch-collection [collection-id version]
-  (go
-    (try
-      (let [user-data (user/data)
-            full-data (<? (api.request/call :fetch-collection {:id collection-id
-                                                               :version version} user-data))]
-        (rf/dispatch [:set saved-data-db-path full-data])
-        full-data)
-      (catch :default e
-        (log/error "fetch collection error:" e)))))
 
 (defn- save-collection-clicked []
   (go
@@ -334,7 +324,7 @@
   (let [[status _collection-data] (state/async-fetch-data
                                    form-db-path
                                    [collection-id version]
-                                   #(fetch-collection collection-id version))]
+                                   #(api/fetch-collection collection-id version saved-data-db-path))]
     (when (= status :done)
       [collection-form])))
 

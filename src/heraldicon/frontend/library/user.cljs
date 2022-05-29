@@ -2,6 +2,7 @@
   (:require
    [heraldicon.avatar :as avatar]
    [heraldicon.config :as config]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.arms :as library.arms]
    [heraldicon.frontend.library.charge :as library.charge]
@@ -58,7 +59,7 @@
   (let [[status collection-list] (state/async-fetch-data
                                   [:user-collections]
                                   user-id
-                                  #(collection-select/fetch-collection-list-by-user user-id))]
+                                  #(api/fetch-collections-for-user user-id))]
     (if (= status :done)
       [collection-select/component
        collection-list
