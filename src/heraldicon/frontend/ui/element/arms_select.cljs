@@ -1,49 +1,16 @@
 (ns heraldicon.frontend.ui.element.arms-select
   (:require
-   [cljs.core.async :refer [go]]
-   [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.api.request :as api.request]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.user :as user]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+   [heraldicon.frontend.user :as user]))
 
 (def list-db-path
   [:arms-list])
 
-(defn fetch-arms [arms-id version target-path]
-  (go
-    (try
-      (let [arms-data (<? (api.request/call :fetch-arms {:id arms-id
-                                                         :version version} (user/data)))]
-        (when target-path
-          (rf/dispatch [:set target-path arms-data]))
-        arms-data)
-      (catch :default e
-        (log/error "fetch arms error:" e)))))
-
-(defn fetch-arms-list []
-  (go
-    (try
-      (-> (api.request/call :fetch-arms-list {} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch arms list error:" e)))))
-
-(defn fetch-arms-list-by-user [user-id]
-  (go
-    (try
-      (-> (api.request/call :fetch-arms-for-user {:user-id user-id} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch arms list by user error:" e)))))
-
-(defn- invalidate-arms-cache [key]
-  (state/invalidate-cache list-db-path key))
+(defn- invalidate-arms-cache []
+  (state/invalidate-cache list-db-path :all))
 
 (defn component [arms-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                selected-arms
@@ -71,15 +38,12 @@
 
 (defn list-arms [on-select & {:keys [selected-arms
                                      display-selected-item?]}]
-  (let [[status _arms-list] (state/async-fetch-data
-                             list-db-path
-                             :all
-                             fetch-arms-list)]
+  (let [[status _arms-list] (state/async-fetch-data list-db-path :all api/fetch-arms-list)]
     (if (= status :done)
       [component
        list-db-path
        on-select
-       #(invalidate-arms-cache :all)
+       invalidate-arms-cache
        :selected-arms selected-arms
        :display-selected-item? display-selected-item?]
       [:div [tr :string.miscellaneous/loading]])))
