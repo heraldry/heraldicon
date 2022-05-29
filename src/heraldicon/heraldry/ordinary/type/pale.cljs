@@ -29,6 +29,8 @@
                                  [:fess
                                   :dexter
                                   :sinister
+                                  :hoist
+                                  :fly
                                   :left
                                   :right])
                        :default :fess

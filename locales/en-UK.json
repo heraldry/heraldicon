@@ -464,6 +464,7 @@
     "point": "Point",
     "point-choice-group": {
       "heraldic": "Heraldic",
+      "vexillological": "Vexillological",
       "technical": "Technical"
     },
     "point-choice": {
@@ -483,7 +484,9 @@
       "sinister": "Sinister",
       "top": "Top",
       "top-left": "Top-left",
-      "top-right": "Top-right"
+      "top-right": "Top-right",
+      "hoist": "Hoist",
+      "fly": "Fly"
     },
     "position": "Position",
     "radius": "Radius",

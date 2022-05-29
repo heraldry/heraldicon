@@ -31,6 +31,8 @@
                                   :fess
                                   :dexter
                                   :sinister
+                                  :hoist
+                                  :fly
                                   :honour
                                   :nombril
                                   :center])

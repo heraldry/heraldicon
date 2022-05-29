@@ -1035,7 +1035,9 @@
    :point/BASE :base
    :point/FESS :fess
    :point/HONOUR :honour
-   :point/NOMBRIL :nombril})
+   :point/NOMBRIL :nombril
+   :point/HOIST :hoist
+   :point/FLY :fly})
 
 (defmethod ast->hdn :charge-location [[_ & nodes]]
   (some-> (get-child charge-locations nodes)

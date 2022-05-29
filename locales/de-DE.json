@@ -464,6 +464,7 @@
     "point": "Punkt",
     "point-choice-group": {
       "heraldic": "Heraldisch",
+      "vexillological": "Vexillologisch",
       "technical": "Technisch"
     },
     "point-choice": {
@@ -482,7 +483,9 @@
       "sinister": "Linke Hüftstelle",
       "top": "Oben",
       "top-left": "Open-links",
-      "top-right": "Oben-rechts"
+      "top-right": "Oben-rechts",
+      "hoist": "Liekseite",
+      "fly": "Flugseite"
     },
     "position": "Position",
     "radius": "Radius",

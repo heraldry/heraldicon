@@ -26,6 +26,8 @@
                                         :base
                                         :honour
                                         :nombril
+                                        :hoist
+                                        :fly
                                         :top-right
                                         :center
                                         :bottom-left])
@@ -42,6 +44,8 @@
                                                           :base
                                                           :honour
                                                           :nombril
+                                                          :hoist
+                                                          :fly
                                                           :bottom-left
                                                           :center
                                                           :angle]
@@ -50,6 +54,8 @@
                                                             :base
                                                             :honour
                                                             :nombril
+                                                            :hoist
+                                                            :fly
                                                             :top-right
                                                             :center
                                                             :angle]
