@@ -26,7 +26,7 @@
   (let [[status _charges] (state/async-fetch-data
                            [:user-charges]
                            user-id
-                           #(charge-select/fetch-charges-for-user user-id))]
+                           #(api/fetch-charges-for-user user-id))]
     (if (= status :done)
       [charge-select/component
        [:user-charges]

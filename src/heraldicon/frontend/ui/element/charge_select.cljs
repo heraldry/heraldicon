@@ -1,49 +1,17 @@
 (ns heraldicon.frontend.ui.element.charge-select
   (:require
-   [cljs.core.async :refer [go]]
-   [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.api.request :as api.request]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.user :as user]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+   [re-frame.core :as rf]))
 
 (def list-db-path
   [:charge-list])
 
-(defn fetch-charge [charge-id version target-path]
-  (go
-    (try
-      (let [charge-data (<? (api.request/call :fetch-charge {:id charge-id
-                                                             :version version} (user/data)))]
-        (when target-path
-          (rf/dispatch [:set target-path charge-data]))
-        charge-data)
-      (catch :default e
-        (log/error "fetch charge error:" e)))))
-
-(defn fetch-charge-list []
-  (go
-    (try
-      (-> (api.request/call :fetch-charges-list {} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch charge list error:" e)))))
-
-(defn fetch-charges-for-user [user-id]
-  (go
-    (try
-      (-> (api.request/call :fetch-charges-for-user {:user-id user-id} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch charge list by user error:" e)))))
-
-(defn invalidate-charge-cache [key]
-  (state/invalidate-cache list-db-path key))
+(defn invalidate-charges-cache []
+  (state/invalidate-cache list-db-path :all))
 
 (defn component [charge-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                  selected-charge
@@ -73,16 +41,14 @@
 (defn list-charges [on-select & {:keys [selected-charge
                                         display-selected-item?]}]
   (let [[status _charges-list] (state/async-fetch-data
-                                list-db-path
-                                :all
-                                fetch-charge-list
+                                list-db-path :all api/fetch-charges-list
                                 :on-success #(rf/dispatch
                                               [:heraldicon.frontend.ui.element.blazonry-editor/update-parser %]))]
     (if (= status :done)
       [component
        list-db-path
        on-select
-       #(invalidate-charge-cache :all)
+       invalidate-charges-cache
        :selected-charge selected-charge
        :display-selected-item? display-selected-item?]
       [:div [tr :string.miscellaneous/loading]])))
