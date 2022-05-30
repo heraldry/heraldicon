@@ -99,6 +99,7 @@
                                                                                       :pommeled :gules
                                                                                       :shadow 1.0
                                                                                       :highlight 1.0})}]}}}
+                 :arms-form default/arms-entity
                  :ui {:charge-tree {:show-public? true
                                     :show-own? true}
                       :component-tree {}

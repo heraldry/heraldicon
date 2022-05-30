@@ -141,7 +141,7 @@
          "facing"
          "number"]))
 
-(defn- parse-blazonry [value cursor-index parser]
+(defn parse-blazonry [value cursor-index parser & {:keys [api?]}]
   (try
     (let [hdn (reader/read value parser)]
       {:value value
@@ -163,10 +163,12 @@
                                                                .generate
                                                                js->clj))))
                                        (map s/trim)
+                                       (remove s/blank?)
                                        (filter (fn [choice]
-                                                 (if choice
-                                                   (s/starts-with? choice typed-string)
-                                                   true)))
+                                                 (or api?
+                                                     (if choice
+                                                       (s/starts-with? choice typed-string)
+                                                       true))))
                                        sort
                                        dedupe
                                        (map (fn [choice]
@@ -177,13 +179,15 @@
                                                   [(get suggestion-hint-order hint 1000)
                                                    choice]))
                                        vec)
-            position (caret-position index)]
+            position (when-not api?
+                       (caret-position index))]
         {:value value
-         :error (when (and (not reason) (not reason))
+         :error (when (not reason)
                   (ex-message e))
-         :auto-complete (cond-> {:choices auto-complete-choices
-                                 :on-click (fn [choice]
-                                             (rf/dispatch [:auto-completion-clicked index cursor-index choice]))}
+         :auto-complete (cond-> {:choices auto-complete-choices}
+                          (not api?) (assoc :on-click
+                                            (fn [choice]
+                                              (rf/dispatch [:auto-completion-clicked index cursor-index choice])))
                           position (assoc :position position))
          :index index}))))
 

@@ -3,6 +3,7 @@
    ["copy-to-clipboard" :as copy-to-clipboard]
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.config :as config]
    [heraldicon.context :as c]
    [heraldicon.entity.arms :as entity.arms]
    [heraldicon.entity.id :as id]
@@ -12,6 +13,7 @@
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.history.core :as history]
+   [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
@@ -354,13 +356,27 @@
    [:div {:style {:padding-top "0.5em"}}
     [list-all-arms]]])
 
-(defn create-arms [_match]
+(defn- load-hdn [hdn-hash]
+  (go
+    (if hdn-hash
+      (try
+        (let [s3-hdn-key (str "blazonry-api/hdn/" hdn-hash ".edn")
+              hdn-url (if (= (config/get :stage) "prod")
+                        (str "https://data.heraldicon.org/" s3-hdn-key)
+                        (str "https://local-heraldry-data.s3.amazonaws.com/" s3-hdn-key))
+              data (<? (http/fetch hdn-url))]
+          data)
+        (catch :default _
+          default/arms-entity))
+      default/arms-entity)))
+
+(defn create-arms [{:keys [query-params]}]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
   (let [[status _arms-form-data] (state/async-fetch-data
                                   form-db-path
                                   :new
-                                  #(go default/arms-entity))]
+                                  #(go (<? (load-hdn (:base query-params)))))]
     (when (= status :done)
       [arms-form])))
 
