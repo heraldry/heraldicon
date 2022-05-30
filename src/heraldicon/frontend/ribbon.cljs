@@ -1,7 +1,8 @@
 (ns heraldicon.frontend.ribbon
-  (:require [heraldicon.frontend.api :as api]
-            [heraldicon.frontend.state :as state]
-            [taoensso.timbre :as log]))
+  (:require
+   [heraldicon.frontend.api :as api]
+   [heraldicon.frontend.state :as state]
+   [taoensso.timbre :as log]))
 
 (defn fetch-ribbon-data [{:keys [id version] :as variant}]
   (if (and id version)

@@ -12,7 +12,6 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
-   [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
@@ -35,9 +34,6 @@
 
 (def form-db-path
   [:charge-form])
-
-(def ^:private list-db-path
-  [:charge-list])
 
 (def ^:private example-coa-db-path
   [:example-coa])

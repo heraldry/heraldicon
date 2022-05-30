@@ -13,7 +13,6 @@
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.core :as ui]
-   [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.collection-select :as collection-select]
    [heraldicon.frontend.ui.form.entity.collection.element :as collection.element]
    [heraldicon.frontend.ui.shared :as shared]
