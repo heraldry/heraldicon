@@ -102,9 +102,10 @@
   (modal/start-loading)
   (go
     (try
-      (let [payload (select-keys @(rf/subscribe [:get form-db-path]) [:id
-                                                                      :version
-                                                                      :render-options])
+      (let [full-data @(rf/subscribe [:get form-db-path])
+            payload (-> full-data
+                        (select-keys [:id :version])
+                        (assoc :render-options (get-in full-data [:data :achievement :render-options])))
             user-data (user/data)
             response (<? (api.request/call :generate-svg-arms payload user-data))]
         (js/window.open (:svg-url response))
@@ -119,9 +120,10 @@
   (modal/start-loading)
   (go
     (try
-      (let [payload (select-keys @(rf/subscribe [:get form-db-path]) [:id
-                                                                      :version
-                                                                      :render-options])
+      (let [full-data @(rf/subscribe [:get form-db-path])
+            payload (-> full-data
+                        (select-keys [:id :version])
+                        (assoc :render-options (get-in full-data [:data :achievement :render-options])))
             user-data (user/data)
             response (<? (api.request/call :generate-png-arms payload user-data))]
         (js/window.open (:png-url response))
@@ -200,10 +202,10 @@
                    :public)
         user-data (user/data)
         logged-in? (:logged-in? user-data)
-        unsaved-changes? (not= (dissoc @(rf/subscribe [:get form-db-path])
-                                       :render-options)
-                               (dissoc @(rf/subscribe [:get saved-data-db-path])
-                                       :render-options))
+        unsaved-changes? (not= (update-in @(rf/subscribe [:get form-db-path]) [:data :achievement]
+                                          dissoc :render-options)
+                               (update-in @(rf/subscribe [:get saved-data-db-path]) [:data :achievement]
+                                          dissoc :render-options))
         can-export? (and logged-in?
                          (not unsaved-changes?))
         saved? arms-id
