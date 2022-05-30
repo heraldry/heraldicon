@@ -790,12 +790,12 @@
     (-> {:type ordinary-type
          :field (ast->hdn (get-child #{:field} nodes))}
         (cond->
-          (#{:PALLET}
+          (#{:ordinary/PALLET}
            node-type) (assoc-in [:geometry :size] 15)
-          (#{:BARRULET
-             :CHEVRONNEL
-             :BENDLET
-             :BENDLET-SINISTER}
+          (#{:ordinary/BARRULET
+             :ordinary/CHEVRONNEL
+             :ordinary/BENDLET
+             :ordinary/BENDLET-SINISTER}
            node-type) (assoc-in [:geometry :size] 10)
           (= :heraldry.ordinary.type/gore
              ordinary-type) (assoc :line {:type :enarched
