@@ -141,18 +141,18 @@
          "facing"
          "number"]))
 
-(defn parse-blazonry [value cursor-index parser & {:keys [api?]}]
+(defn parse-blazonry [blazon cursor-index parser & {:keys [api?]}]
   (try
-    (let [hdn (reader/read value parser)]
-      {:value value
+    (let [hdn (reader/read blazon parser)]
+      {:blazon blazon
        :hdn hdn})
     (catch :default e
       (let [{:keys [reason
                     index]} (ex-data e)
             cursor-index (-> cursor-index
                              (max index)
-                             (min (count value)))
-            typed-string (s/trim (subs value index cursor-index))
+                             (min (count blazon)))
+            typed-string (s/trim (subs blazon index cursor-index))
             auto-complete-choices (->> reason
                                        (mapcat (fn [{:keys [tag expecting]}]
                                                  (case tag
@@ -181,7 +181,7 @@
                                        vec)
             position (when-not api?
                        (caret-position index))]
-        {:value value
+        {:blazon blazon
          :error (when (not reason)
                   (ex-message e))
          :auto-complete (cond-> {:choices auto-complete-choices}
