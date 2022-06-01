@@ -241,7 +241,7 @@
       "group": {
         "fauna": "Fauna",
         "flora": "Flora",
-        "helmet": "Helmet",
+        "helmet": "Шолом",
         "other": "Other",
         "technical": "Technical"
       },
@@ -521,7 +521,7 @@
     "subfields": "Subfields",
     "subfields-x": "Subfields x",
     "subfields-y": "Subfields y",
-    "thickness": "Thickness",
+    "thickness": "Товщина",
     "tincture": "Тинктура",
     "tincture-background-group": {
       "other-or-metal": "Метали та інше"
@@ -537,7 +537,7 @@
     },
     "variant": "Variant",
     "variant-label-choice": {
-      "full": "Full",
+      "full": "Повний",
       "truncated": "Truncated"
     },
     "variant-point-choice": {
@@ -750,7 +750,7 @@
     "cottise": "Cottise",
     "extra-line": "Extra line",
     "helm": "Helm",
-    "helmet": "Helmet",
+    "helmet": "Шолом",
     "helms-and-crests": "Helms and crests",
     "heraldry": "Heraldry",
     "line": "Line",
@@ -764,7 +764,7 @@
     "slogan": "Slogan",
     "tag": "Tag",
     "tags": "Tags",
-    "tincture": "Tincture",
+    "tincture": "Тинктура",
     "tinctures": "Tinctures",
     "torse": "Torse",
     "user": "User"
