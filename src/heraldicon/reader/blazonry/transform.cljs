@@ -633,7 +633,7 @@
                                                    :DOVETAILED
                                                    ;; nothing to do there, just here for reference
                                                    #_:DEXTER
-                                                   :SINISTER
+                                                   :point/SINISTER
                                                    :label-points}))
                                   (map (fn [[key & nodes]]
                                          [key nodes]))
@@ -708,13 +708,13 @@
       (get ordinary-options :DOVETAILED) (cond->
                                            (= :label
                                               ordinary-type) (assoc-in [:geometry :eccentricity] 0.4))
-      (get ordinary-options :SINISTER) (cond->
-                                         (= :gore
-                                            ordinary-type) (assoc-in [:orientation :point] :top-right)
-                                         (= :point
-                                            ordinary-type) (assoc :variant :sinister)
-                                         (= :quarter
-                                            ordinary-type) (assoc :variant :sinister-chief))
+      (get ordinary-options :point/SINISTER) (cond->
+                                               (= :gore
+                                                  ordinary-type) (assoc-in [:orientation :point] :top-right)
+                                               (= :point
+                                                  ordinary-type) (assoc :variant :sinister)
+                                               (= :quarter
+                                                  ordinary-type) (assoc :variant :sinister-chief))
       (get ordinary-options :label-points) (cond->
                                              (= :label
                                                 ordinary-type) (assoc :num-points
