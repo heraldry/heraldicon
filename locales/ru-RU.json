@@ -1,379 +1,936 @@
 {
-  "ordinary" : {
-    "type" : {
-      "chevron" : "Стропило",
-      "label" : "Титло",
-      "cross" : "Крест",
-      "bordure" : "Кайма",
-      "pale" : "Столп",
-      "base" : "Основание",
-      "fess" : "Пояс",
-      "bend-sinister" : "Левая перевязь",
-      "bend" : "Перевязь",
-      "quarter" : "Четверть, вольная часть",
-      "chief" : "Глава"
+  "menu": {
+    "news": "Новости",
+    "about": "О программе",
+    "collection-library": "Коллекции",
+    "arms-library": "Гербы",
+    "charge-library": "Гербовые фигуры",
+    "ribbon-library": "Ленты",
+    "users": "Пользователи",
+    "contact": "Связаться с нами",
+    "account": "Учётная запись",
+    "login": "Ввойти",
+    "logout": "Выйти",
+    "register": "Зарегистрироваться"
+  },
+  "language": {
+    "english": "Английский",
+    "german": "Немецкий",
+    "russian": "Русский"
+  },
+  "ordinary": {
+    "type": {
+      "base": "Основание",
+      "bend-sinister": "Левая перевязь",
+      "bend": "Перевязь",
+      "bordure": "Кайма",
+      "chevron": "Стропило",
+      "chief": "Глава",
+      "cross": "Крест",
+      "fess": "Пояс",
+      "gore": "Дважды вогнутый край",
+      "label": "Титло",
+      "orle": "Внутренняя кайма",
+      "pale": "Столп",
+      "pall": "Вилообразный крест",
+      "pile": "Остриё",
+      "point": "Point",
+      "quarter": "Четверть, вольная часть",
+      "saltire": "Косой крест"
     }
   },
-  "menu" : {
-    "news" : "Новости",
-    "users" : "Пользователи",
-    "ribbon-library" : "Ленты",
-    "register" : "Зарегистрироваться",
-    "arms-library" : "Гербы",
-    "charge-library" : "Гербовые фигуры",
-    "login" : "Ввойти",
-    "collection-library" : "Коллекции"
-  },
-  "miscellaneous" : {
-    "beta-blazon" : "(бета-версия, не завершено)",
-    "original" : "Оригинал",
-    "loading" : "Загрузка...",
-    "unsaved-data" : "несохраненные данные",
-    "not-found" : "Не найдено",
-    "unnamed" : "нет имени"
-  },
-  "tooltip" : {
-    "move-up" : "переместить выше",
-    "remove" : "удалить",
-    "alpha-feature-warning" : "Работу над этой функцией не завершено. Возможны изменения, поэтому используйте с осторожностью)",
-    "move-down" : "переместить ниже"
-  },
-  "user" : {
-    "message" : {
-      "password-reset-completed" : "Пароль сменён",
-      "save-changes-first" : "Сначала сохраните изменения.",
-      "arms-saved" : "Герб сохранен. Новая версия:",
-      "need-to-be-logged-in-and-arms-must-be-saved" : "Вы должны ввойти и сохранить герб.",
-      "arms-need-to-be-public-and-saved-for-exporting" : "Чтобы сохранить и экспортировать герб, откройте публичный доступ к нему.",
-      "need-to-be-logged-in-and-own-the-arms" : "Вы должны ввойти и быть владельцем герба.",
-      "confirmation-code-sent" : "Код подтверждения отправлен на ваш адресс электронной почты.",
-      "arms-need-to-be-public-and-saved-for-sharing" : "Нужно сохранить герб и открыть публичный доступ, прежде чем делиться.",
-      "need-to-be-logged-in" : "Вы должны ввойти.",
-      "copied-url-for-sharing" : "Ссылку скопировано. Теперь можно делиться.",
-      "registration-completed" : "Регистрацию завершено",
-      "charge-saved" : "Изменения сохранены. Новая версия:",
-      "new-confirmation-code-sent" : "Новый код отправлен на ваш адресс электронной почты.",
-      "passwords-do-not-match" : "Пароли не совпадают",
-      "username-required-for-password-reset" : "Для сброса пароля нужно имя пользователя"
-    },
-    "forgotten-password" : "Вы забыли пароль?",
-    "confirmation-code" : "Код подтверждения",
-    "username" : "Имя пользователя",
-    "email" : "Адресс электронной почты",
-    "reset-forgotten-password" : "Скинуть забытый пароль",
-    "password-again" : "Повторите пароль",
-    "register-confirmation" : "Подтверждение регистрации",
-    "change-temporary-password" : "Сменить временный пароль",
-    "password" : "Пароль",
-    "new-password" : "Новый пароль",
-    "new-password-again" : "Повторите новый пароль",
-    "button" : {
-      "change" : "Сменить",
-      "confirm" : "Подтвердить",
-      "resend-code" : "Отправить код еще раз",
-      "reset-password" : "Сменить пароль"
+  "field": {
+    "type": {
+      "barry": "Пересечение",
+      "bendy-sinister": "Скошение слева",
+      "bendy": "Скошение",
+      "chequy": "Шахматный",
+      "chevronny": "Стропильное пересечение",
+      "counterchanged": "Переменные цвета",
+      "fretty": "Плетение",
+      "gyronny": "Клинчатое",
+      "gyronny-n": "Gyronny N",
+      "lozengy": "Ромбовидное",
+      "masony": "Мурованое",
+      "paly": "Рассечение",
+      "papellony": "Чешуйчатое",
+      "per-bend-sinister": "скошен слева",
+      "per-bend": "скошен справа",
+      "per-chevron": "разделён стропиловидно",
+      "per-fess": "пересечён",
+      "per-pale": "рассечён",
+      "per-pile": "расделён остриём",
+      "per-saltire": "скошен справа и слева",
+      "plain": "не раздёлен",
+      "potenty": "Крюковидное",
+      "quartered": "четверочастный",
+      "quarterly": "Четверочастное N на M",
+      "tierced-per-fess": "Дважды пересечённое",
+      "tierced-per-pale": "Дважды рассечённое",
+      "tierced-per-pall": "Вилообразно-разделённое",
+      "vairy": "Vairy"
     }
   },
-  "validation" : {
-    "attribution" : { },
-    "partition" : { },
-    "rule-of-tincture" : { }
-  },
-  "tincture" : {
-    "gules" : "Червлень",
-    "argent" : "Серебро",
-    "helmet-medium" : "Средний",
-    "group" : {
-      "metal" : "Металл",
-      "colour" : "Цвет",
-      "fur" : "Мех"
-    },
-    "vert" : "Зелень",
-    "purpure" : "Пурпур",
-    "helmet-dark" : "Темный",
-    "azure" : "Лазурь",
-    "tenne" : "Коричневый",
-    "or" : "Золото",
-    "special" : { },
-    "sable" : "Чернь",
-    "helmet-light" : "Светлый",
-    "sanguine" : "Кровяной"
-  },
-  "option" : {
-    "orientation-point-choice" : { },
-    "alignment-choice" : { },
-    "width" : "Ширина",
-    "manual-blazon" : "Ввести блазон вручную",
-    "charge-type" : "Тип фигуры",
-    "select-arms" : "Выбрать герб",
-    "height" : "Высота",
-    "point-choice" : { },
-    "orientation-type-choice" : { },
-    "dampening-mode-choice" : { },
-    "radius" : "Радиус",
-    "partition" : "Деление",
-    "variant-quarter-choice" : { },
-    "is-public" : "Опубликовать",
-    "tincture-background-choice" : { },
-    "name" : "Имя",
-    "tincture-background-group" : {
-      "other-or-metal" : "Другие / металл"
-    },
-    "number" : "Число",
-    "distance" : "Расстояние",
-    "access-filter-choice" : { },
-    "outline-mode-choice" : { },
-    "rotate-charges?" : "Повернуть фигуры",
-    "alignment-fimbriation-choice" : { },
-    "corner-choice" : { },
-    "size" : "Размер",
-    "number-of-points" : "Количество концов",
-    "arms" : "Гербы",
-    "variant-label-choice" : { },
-    "size-mode-choice" : { },
-    "type-fimbriation-choice" : { }
-  },
-  "charge" : {
-    "attribute" : {
-      "mantling" : "Намет",
-      "ui" : {
-        "add" : "Добавить ссылку на источник"
-      },
-      "supporter" : "щитодержатель",
-      "group" : {
-        "tail" : "хвост"
-      },
-      "supporter-right" : "Щитодержатель справа",
-      "supporter-left" : "Щитодержатель слева"
-    },
-    "attitude" : {
-      "displayed" : "с распростёртыми крыльями",
-      "group" : {
-        "beasts" : "Звери",
-        "sea-creatures" : "морские твари",
-        "serpents" : "змеи",
-        "two-beasts" : "два зверя",
-        "winged-creatures" : "Крылатые твари"
-      },
-      "respectant" : "обращённые",
-      "addorsed" : "противостоящий",
-      "salient" : "прыгающий",
-      "dormant" : "спящий",
-      "combatant" : "сообращённые",
-      "passant" : "идущий",
-      "urinant" : "ныряющий",
-      "rampant" : "восстающий",
-      "couchant" : "лежащий",
-      "volant" : "летящий",
-      "statant" : "стоящий",
-      "cadent" : "падающий",
-      "close" : "Закрыть",
-      "segreant" : "восстающий",
-      "pascuant" : "пасущийся",
-      "sejant-erect" : "восстающе-сидящий",
-      "sejant" : "сидящий",
-      "courant" : "бегущий"
-    },
-    "facing" : {
-      "salient" : "прыгающий",
-      "affronte" : "впрям",
-      "guardant" : "настороже",
-      "en-arriere" : "спиной",
-      "to-sinister" : "обращённый (влево)",
-      "to-dexter" : "вправо (по умолчанию)",
-      "reguardant" : "настороже"
-    },
-    "tincture-modifier" : {
-      "group" : {
-        "fauna" : "фауна",
-        "flora" : "флора",
-        "other" : "другое"
-      },
-      "armed" : "вооружённый",
-      "special" : {
-        "keep" : "Не заменять",
-        "secondary" : "Вторичный"
-      }
-    },
-    "type" : { }
-  },
-  "field" : {
-    "type" : {
-      "quartered" : "четверочастный",
-      "per-pile" : "расделён остриём",
-      "per-bend-sinister" : "скошен слева",
-      "plain" : "не раздёлен",
-      "per-pale" : "рассечён",
-      "per-chevron" : "разделён стропиловидно",
-      "per-fess" : "пересечён",
-      "per-bend" : "скошен справа",
-      "per-saltire" : "скошен справа и слева"
+  "line": {
+    "type": {
+      "angled": "С прямым углом",
+      "bevilled": "С острым углом",
+      "dancetty": "Зазубренная",
+      "dovetailed": "Ласточкин хвост",
+      "embattled": "Зубчатая",
+      "embattled-grady": "Embattled grady",
+      "embattled-in-crosses": "Embattled in crosses",
+      "enarched": "Enarched / Embowed",
+      "engrailed": "Engrailed",
+      "fir-tree-topped": "Fir-tree topped",
+      "fir-twigged": "Fir-twigged",
+      "indented": "Выщербленная",
+      "invected": "Чешуевидная",
+      "nebuly": "Облаковидная",
+      "potenty": "Крюковидное",
+      "raguly": "Скошено-зубчатая",
+      "rayonny-flaming": "Пламевидная",
+      "rayonny-spiked": "Шиповидная",
+      "straight": "Прямая",
+      "thorny": "Шиповидная",
+      "urdy": "Заострённо-зубчатая",
+      "wavy": "Волнистая",
+      "wolf-toothed": "Вольчьи зубы"
     }
   },
-  "text" : {
-    "title" : {
-      "create-arms" : "Создать герб",
-      "create-ribbon" : "Создать ленту"
+  "tincture": {
+    "group": {
+      "metal": "Металл",
+      "colour": "Цвет",
+      "fur": "Мех",
+      "stain": "Stain",
+      "helmet": "Helmet",
+      "nontraditional": "Nontraditional"
     },
-    "about" : {
-      "what-is-this-about?" : "Что это?",
-      "welcome-to-heraldicon" : "Добро пожаловать на сайт «Heraldicon»"
+    "special": {
+      "none": "None (can be changed)",
+      "proper": "Proper"
     },
-    "arms-library" : {
-      "create-and-view-arms" : "Здесь можно создавать и просматривать гербы. Если Вы хотите поделиться ссылкой для просмотра герба другими людьми, сохраните свой герб и добавьте лицензию.",
-      "svg-png-access-info" : "Однако все могут просматривать ссылки на файлы форматов SVG и PNG."
-    },
-    "charge-library" : { },
-    "collection-library" : { },
-    "ribbon-library" : { },
-    "contact" : {
-      "developer-info" : "Меня можно найти здесь:",
-      "my-username-is" : "Мое имя пользователя:"
-    },
-    "home" : { }
+    "argent": "Серебро",
+    "azure": "Лазурь",
+    "ermine": "Ermine",
+    "ermines": "Ermines",
+    "erminois": "Erminois",
+    "gules": "Червлень",
+    "helmet-dark": "Темный",
+    "helmet-light": "Светлый",
+    "helmet-medium": "Средний",
+    "murrey": "Murrey",
+    "none": "Void",
+    "or": "Золото",
+    "pean": "Pean",
+    "purpure": "Пурпур",
+    "sable": "Чернь",
+    "sanguine": "Кровяной",
+    "tenne": "Коричневый",
+    "vert": "Зелень",
+    "bleu-celeste": "Bleu celeste",
+    "brunatre": "Brunâtre",
+    "buff": "Buff",
+    "carnation": "Carnation",
+    "cendree": "Cendrée",
+    "copper": "Copper",
+    "orange": "Orange",
+    "rose": "Rose",
+    "white": "White"
   },
-  "render-options" : {
-    "scope-choice" : {
-      "achievement" : "Все (шлемы и др.)",
-      "coat-of-arms-and-helm" : "Герб со шлемом",
-      "coat-of-arms" : "Герб"
+  "theme": {
+    "group": {
+      "general": "General",
+      "community": "От сообщества"
     },
-    "texture" : "Текстура",
-    "shiny?" : "Сияющий",
-    "texture-choice" : {
-      "satin" : "Атлас",
-      "stone-rough" : "Камень (жесткий)",
-      "cloth-smooth1" : "Ткань (гладкая)",
-      "stone" : "Камень",
-      "glass-frosted" : "Стекло (матовое)",
-      "mosaic" : "Мозаика",
-      "felt" : "Войлок",
-      "marble" : "Мрамор",
-      "cloth-rough" : "Ткань (жесткая)",
-      "wood" : "Дерево"
-    },
-    "escutcheon" : "Щит",
-    "title" : "Настройки отрисовки",
-    "theme" : "Тема",
-    "coat-of-arms-angle-presets" : { },
-    "mode-choice" : {
-      "colours" : "Эмали"
-    }
+    "all": "All of them!",
+    "ral-traffic": "RAL Traffic",
+    "wappenwiki": "«Ваппен-Вики» (по умолчанию)",
+    "web": "Вэб",
+    "wikipedia-bajuvarian": "Wikipedia Bajuvarian",
+    "wikipedia-brandenburg": "Википедия — Бранденбург",
+    "wikipedia-default": "Википедия — стандарт",
+    "wikipedia-france": "Википедия — Франция",
+    "wikipedia-hungary": "Википедия — Венгрия",
+    "wikipedia-spain": "Википедия — Испания",
+    "wikipedia-sweden": "Википедия — Швеция",
+    "wikipedia-switzerland": "Википедия — Швейцария",
+    "wikipedia-web": "Википедия — вэб",
+    "wikipedia-wurttemberg": "Википедия — Вюрттемберг"
   },
-  "ribbon" : {
-    "start-presets-choice" : { },
-    "topology" : "Топология",
-    "text" : { },
-    "segments" : "Сегменты",
-    "layering-presets-choice" : {
-      "left-to-right" : "Слева направо",
-      "right-to-left" : "Справа налево"
-    },
-    "flow-presets-choice" : { },
-    "button" : { },
-    "segment-type-choice" : { }
-  },
-  "line" : {
-    "type" : { }
-  },
-  "escutcheon" : {
-    "type" : {
-      "square-czech" : "Немецкий с округленным основанием",
-      "rounded-norman-late" : "Скруглённый варяжский щит",
-      "roundel" : "Круглый щит",
-      "french-modern" : "Французский щит",
-      "oval" : "Овальный щит",
-      "renaissance" : "Барочный щит",
-      "lozenge" : "Дамский щит",
-      "square-iberian" : "Испанский щит",
-      "polish-19th-century" : "Польский щит XIX-го века",
-      "polish" : "Польский щит",
-      "kite" : "Миндалевидный щит",
-      "square-french" : "Старофранцузский щит",
-      "heater" : "Варяжский щит",
-      "wedge" : "Щит с вызубрениями во главе",
-      "rectangle" : "Вертикальный прямоугольник",
-      "english" : "Четырехугольный английский щит",
-      "norman-late" : "Варяжский щит (поздний)",
-      "swiss" : "Швейцарский щит"
-    }
-  },
-  "theme" : {
-    "wikipedia-switzerland" : "Википедия — Швейцария",
-    "web" : "Вэб",
-    "group" : {
-      "community" : "От сообщества"
-    },
-    "wappenwiki" : "«Ваппен-Вики» (по умолчанию)",
-    "wikipedia-france" : "Википедия — Франция",
-    "wikipedia-default" : "Википедия — стандарт",
-    "wikipedia-sweden" : "Википедия — Швеция",
-    "wikipedia-hungary" : "Википедия — Венгрия",
-    "wikipedia-wurttemberg" : "Википедия — Вюрттемберг",
-    "wikipedia-brandenburg" : "Википедия — Бранденбург",
-    "wikipedia-web" : "Википедия — вэб",
-    "wikipedia-spain" : "Википедия — Испания"
-  },
-  "language" : { },
-  "entity" : {
-    "user" : "Пользователь",
-    "charge" : "Фигура",
-    "charges" : "Гербовые фигуры",
-    "collections" : "Коллекции",
-    "blazon" : "Блазон",
-    "slogan" : "Слоган",
-    "ribbon" : "Лента",
-    "attributes" : "Ссылки на источник",
-    "motto" : "Девиз",
-    "heraldry" : "Геральдика",
-    "arms" : "Гербы",
-    "charge-group" : "Группа фигур"
-  },
-  "submenu-summary" : { },
-  "charge-group" : {
-    "type" : { },
-    "presets" : {
-      "group" : {
-        "ordinaries" : "Почётные фигуры"
+  "charge": {
+    "attribute": {
+      "group": {
+        "general": "General",
+        "ornaments": "Ornaments",
+        "tail": "хвост"
       },
-      "select" : "Выбрать",
-      "presets" : "Шаблоны"
+      "ui": {
+        "add": "Добавить ссылку на источник"
+      },
+      "compartment": "Compartment",
+      "coward": "Coward",
+      "defamed": "Defamed",
+      "double-queued": "Double queued",
+      "erased": "Erased",
+      "mantling": "Намет",
+      "pierced": "Pierced",
+      "queue-fourche": "Queue fourché",
+      "queue-fourche-saltire": "Queue fourché saltire",
+      "queue-fourche-saltire-reverse": "Queue fourché saltire reverse",
+      "supporter": "щитодержатель",
+      "supporter-left": "Щитодержатель слева",
+      "supporter-right": "Щитодержатель справа",
+      "tail-nowed": "Tail nowed",
+      "voided": "Voided"
     },
-    "select-charge-group-preset" : "Выбрать шаблон фигур"
+    "attitude": {
+      "group": {
+        "none": "None",
+        "beasts": "Звери",
+        "sea-creatures": "морские твари",
+        "serpents": "змеи",
+        "two-beasts": "два зверя",
+        "winged-creatures": "Крылатые твари"
+      },
+      "addorsed": "противостоящий",
+      "cadent": "падающий",
+      "close": "Закрыть",
+      "combatant": "сообращённые",
+      "couchant": "лежащий",
+      "courant": "бегущий",
+      "displayed": "с распростёртыми крыльями",
+      "dormant": "спящий",
+      "glissant": "Glissant",
+      "hauriant": "Hauriant",
+      "in-her-piety": "In her piety",
+      "issuant": "Issuant",
+      "naiant": "Naiant",
+      "none": "None",
+      "nowed": "Nowed",
+      "overt": "Overt",
+      "pascuant": "пасущийся",
+      "passant": "идущий",
+      "rampant": "восстающий",
+      "recursant": "Recursant",
+      "respectant": "обращённые",
+      "rising": "Rising",
+      "salient": "прыгающий",
+      "segreant": "восстающий",
+      "sejant": "сидящий",
+      "sejant-erect": "восстающе-сидящий",
+      "statant": "стоящий",
+      "urinant": "ныряющий",
+      "vigilant": "Vigilant",
+      "volant": "летящий",
+      "vulning": "Vulning herself"
+    },
+    "facing": {
+      "affronte": "впрям",
+      "en-arriere": "спиной",
+      "guardant": "настороже",
+      "in-trian-aspect": "In trian aspect",
+      "none": "None",
+      "reguardant": "настороже",
+      "salient": "прыгающий",
+      "to-dexter": "вправо (по умолчанию)",
+      "to-sinister": "обращённый (влево)"
+    },
+    "tincture-modifier": {
+      "group": {
+        "fauna": "фауна",
+        "flora": "флора",
+        "helmet": "Helmet",
+        "other": "другое",
+        "technical": "Technical"
+      },
+      "special": {
+        "highlight": "Highlight (alpha)",
+        "keep": "Не заменять",
+        "layer-separator": "Layer separator",
+        "outline": "Outline",
+        "primary": "Primary",
+        "secondary": "Вторичный",
+        "shadow": "Shadow (alpha)",
+        "tertiary": "Tertiary"
+      },
+      "armed": "вооружённый",
+      "attired": "Attired",
+      "barbed": "Barbed",
+      "barred": "Barred",
+      "beaked": "Beaked",
+      "bladed": "Bladed",
+      "caparisoned": "Caparisoned",
+      "collared": "Collared",
+      "combed": "Combed",
+      "erased": "Erased",
+      "eyed": "Eyed",
+      "eyed-peacock": "Eyed (peacock)",
+      "finned": "Finned",
+      "fructed": "Fructed",
+      "garnished": "Garnished",
+      "handled": "Handled",
+      "hilted": "Hilted",
+      "hooded": "Hooded",
+      "illuminated": "Illuminated",
+      "incensed": "Incensed",
+      "langued": "Langued",
+      "leaved": "Leaved",
+      "legged": "Legged",
+      "maned": "Maned",
+      "masoned": "Masoned",
+      "none": "None",
+      "orbed": "Orbed",
+      "pommeled": "Pommeled",
+      "seeded": "Seeded",
+      "slipped": "Slipped",
+      "stringed": "Stringed",
+      "tailed": "Tailed",
+      "toothed": "Toothed",
+      "trimmed": "Trimmed",
+      "unguled": "Unguled",
+      "wattled": "Wattled",
+      "winged": "Winged"
+    },
+    "type": {
+      "annulet": "Annulet",
+      "billet": "Billet",
+      "crescent": "Crescent",
+      "fusil": "Fusil",
+      "lozenge": "Lozenge",
+      "mascle": "Mascle",
+      "roundel": "Roundel",
+      "rustre": "Rustre",
+      "star": "Star"
+    }
   },
-  "button" : {
-    "add" : "Добавить",
-    "cancel" : "Отменить",
-    "create" : "Создать",
-    "edit" : "редактировать",
-    "save" : "сохранить",
-    "upload-svg" : "Загрузить файл SVG"
+  "render-options": {
+    "coat-of-arms-angle": "Shield angle",
+    "coat-of-arms-angle-presets": {
+      "two-thirds": "2/3",
+      "full": "Full",
+      "half": "Half"
+    },
+    "escutcheon": "Щит",
+    "escutcheon-outline?": "Escutcheon outline",
+    "escutcheon-shadow?": "Escutcheon shadow (ignored for export)",
+    "mode": "Mode",
+    "mode-choice": {
+      "colours": "Эмали",
+      "catching": "Hatching"
+    },
+    "outline?": "Draw outline",
+    "preview-original?": "Preview original (don't replace colours)",
+    "scope": "Scope",
+    "scope-choice": {
+      "achievement": "Все (шлемы и др.)",
+      "coat-of-arms-and-helm": "Герб со шлемом",
+      "coat-of-arms": "Герб"
+    },
+    "shiny?": "Сияющий",
+    "simulate-surface": "Simulate surface",
+    "squiggly?": "Squiggly lines (can be slow)",
+    "texture": "Текстура",
+    "texture-choice": {
+      "cloth-rough": "Ткань (жесткая)",
+      "cloth-smooth1": "Ткань (гладкая)",
+      "felt": "Войлок",
+      "glass-frosted": "Стекло (матовое)",
+      "marble": "Мрамор",
+      "metal-brushed-1": "Metal (brushed 1)",
+      "metal-brushed-2": "Metal (brushed 2)",
+      "metal-rough": "Metal (rough)",
+      "metal-scraped": "Metal (scraped)",
+      "metal-smooth": "Metal (smooth)",
+      "mosaic": "Мозаика",
+      "none": "None",
+      "satin": "Атлас",
+      "stone": "Камень",
+      "stone-rough": "Камень (жесткий)",
+      "wood": "Дерево"
+    },
+    "theme": "Тема",
+    "title": "Настройки отрисовки"
   },
-  "attribution" : {
-    "license-display" : {
-      "none" : "нет",
-      "public-domain" : "общественное достояние"
+  "option": {
+    "access-filter-choice": {
+      "all": "All",
+      "private": "Private",
+      "public": "Public"
     },
-    "license-choice" : {
-      "public-domain" : "Общественное достояние"
+    "alignment": "Alignment",
+    "alignment-choice": {
+      "left": "Left",
+      "middle": "Middle",
+      "right": "Right",
+      "bottom": "Bottom",
+      "top": "Top"
     },
-    "autofill" : "Заполнить автоматически",
-    "creator-name" : "Имя автора",
-    "license" : "Лицензия",
-    "is-in-the-public-domain" : "является общественным достоянием",
-    "creator-link" : "Ссылка к автору",
-    "source-link" : "Ссылка на источник",
-    "source-name" : "Имя источника",
-    "is-licensed-under" : "имеет лицензию:",
-    "nature-choice" : {
-      "derivative" : "Производная работа",
-      "own-work" : "Собственное произведение"
+    "alignment-fimbriation-choice": {
+      "even": "Even",
+      "inside": "Inside",
+      "outside": "Outside"
     },
-    "is-private" : "является личным",
-    "license-version" : "Версия лицензии",
-    "source-license" : "Источник лицензии",
-    "title" : "Ссылка на источник",
-    "source" : "источник",
-    "no-license" : "нет лицензии"
+    "orientation": "Orientation",
+    "orientation-point-choice": {
+      "angle": "Angle"
+    },
+    "orientation-type-choice": {
+      "edge": "Edge",
+      "orientation-point": "Point"
+    },
+    "angle": "Angle",
+    "arc-angle": "Arc angle",
+    "arms": "Гербы",
+    "aspect-ratio-preset": "Aspect ratio preset",
+    "attitude": "Attitude",
+    "bar-thickness": "Bar thickness",
+    "base-fields": "Base fields",
+    "base-line": "Base line",
+    "charge-type": "Тип фигуры",
+    "column": "Column",
+    "corner": "Corners",
+    "corner-choice": {
+      "bevel": "Bevel",
+      "round": "Round",
+      "sharp": "Sharp"
+    },
+    "corner-radius": "Corner radius",
+    "dampening-mode": "Dampening mode",
+    "dampening-mode-choice": {
+      "clamp-to-zero": "Clamp to zero",
+      "linear-dampening": "Linear dampening",
+      "square-root-dampening": "Square root dampening"
+    },
+    "dampening-radius": "Dampening radius",
+    "distance": "Расстояние",
+    "eccentricity": "Eccentricity",
+    "edge-angle": "Edge angle",
+    "end-split": "End split",
+    "wavy-rays?": "Wavy",
+    "facing": "Facing",
+    "gap": "Gap",
+    "fimbriation": "Fimbriation",
+    "fixed-tincture": "Fixed tincture",
+    "flag-height": "Flag height",
+    "flag-swallow-tail": "Flag swallow tail",
+    "flag-tail-point-height": "Flag tail point height",
+    "flag-tongue": "Flag tongue",
+    "flag-width": "Flag width",
+    "flipped?": "Flipped",
+    "font": "Font",
+    "font-scale": "Font scale",
+    "function": "Function",
+    "geometry": "Geometry",
+    "height": "Высота",
+    "highlight": "Highlight",
+    "humetty": "Humetty / Couped",
+    "ignore-layer-separator?": "Ignore layer separator",
+    "inherit-environment?": "Inherit environment (e.g. for dimidiation)",
+    "is-public": "Опубликовать",
+    "landscape?": "Landscape",
+    "layer": "Layer",
+    "layout": "Layout",
+    "manual-blazon": "Ввести блазон вручную",
+    "mirrored?": "Mirrored",
+    "name": "Имя",
+    "number": "Число",
+    "number-of-columns": "Number of columns",
+    "number-of-points": "Количество концов",
+    "number-of-rows": "Number of rows",
+    "offset": "Offset",
+    "offset-x": "Offset x",
+    "offset-y": "Offset y",
+    "anchor": "Anchor",
+    "outline-mode": "Outline",
+    "outline-mode-choice": {
+      "keep": "Keep",
+      "transparent": "Transparent",
+      "primary": "Primary",
+      "remove": "Remove"
+    },
+    "ownership-filter-choice": {
+      "all": "All",
+      "mine": "Mine",
+      "heraldicon": "Heraldicon",
+      "community": "От сообщества"
+    },
+    "partition": "Деление",
+    "pattern-scaling": "Pattern scaling",
+    "pattern-rotation": "Pattern rotation",
+    "pattern-offset-x": "Pattern offset x",
+    "pattern-offset-y": "Pattern offset y",
+    "point": "Point",
+    "point-choice-group": {
+      "heraldic": "Heraldic",
+      "vexillological": "Vexillological",
+      "technical": "Technical"
+    },
+    "point-choice": {
+      "base": "Основание",
+      "bottom": "Bottom",
+      "bottom-left": "Bottom-left",
+      "bottom-right": "Bottom-right",
+      "center": "Center",
+      "chief": "Глава",
+      "dexter": "Dexter",
+      "fess": "Пояс",
+      "honour": "Honour",
+      "left": "Left",
+      "nombril": "Nombril",
+      "right": "Right",
+      "sinister": "Sinister",
+      "top": "Top",
+      "top-left": "Top-left",
+      "top-right": "Top-right",
+      "hoist": "Hoist",
+      "fly": "Fly"
+    },
+    "position": "Position",
+    "radius": "Радиус",
+    "rectangular?": "Rectangular grid",
+    "reversed?": "Reversed",
+    "rotate-charges?": "Повернуть фигуры",
+    "rotation": "Rotation",
+    "row": "Row",
+    "select-arms": "Выбрать герб",
+    "select-charge": "Select Charge",
+    "select-colour-theme": "Select Colour Theme",
+    "select-line-type": "Select Line Type",
+    "select-ordinary": "Select Ordinary",
+    "select-partition": "Select Partition",
+    "select-preset": "Select Preset",
+    "select-ribbon": "Select Ribbon",
+    "select-tincture": "Select Tincture",
+    "shading": "Shading",
+    "size": "Размер",
+    "size-mode": "Size mode",
+    "size-mode-choice": {
+      "angle": "Angle",
+      "thickness": "Thickness"
+    },
+    "shadow": "Shadow",
+    "smoothing": "Smoothing",
+    "spacing": "Spacing",
+    "start-angle": "Start angle",
+    "stretch": "Stretch",
+    "stretch-x": "Stretch x",
+    "stretch-y": "Stretch y",
+    "strip-angle": "Strip angle",
+    "subfields": "Subfields",
+    "subfields-x": "Subfields x",
+    "subfields-y": "Subfields y",
+    "thickness": "Thickness",
+    "tincture": "Tincture",
+    "tincture-background-group": {
+      "other-or-metal": "Другие / металл"
+    },
+    "tincture-background-choice": {
+      "none": "Darkened foreground"
+    },
+    "type": "Type",
+    "type-fimbriation-choice": {
+      "none": "None",
+      "double": "Double",
+      "single": "Single"
+    },
+    "variant": "Variant",
+    "variant-label-choice": {
+      "full": "Full",
+      "truncated": "Truncated"
+    },
+    "variant-point-choice": {
+      "dexter": "Dexter",
+      "sinister": "Sinister"
+    },
+    "variant-quarter-choice": {
+      "dexter-base": "Dexter-base",
+      "dexter-chief": "Dexter-chief",
+      "sinister-base": "Sinister-base",
+      "sinister-chief": "Sinister-chief"
+    },
+    "vertical-mask": "Vertical mask",
+    "width": "Ширина"
+  },
+  "tooltip": {
+    "alpha-feature-warning": "Работу над этой функцией не завершено. Возможны изменения, поэтому используйте с осторожностью)",
+    "dampening-mode": "The way the line is adjusted near corners. Different styles work better with different modes.",
+    "dampening-radius": "How far around corners the dampening mode is applied.",
+    "edge-angle": "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully.",
+    "humetty-warning": "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.",
+    "ignore-layer-separator?": "If the charge contains a layer separator for the shield, then this can disable it.",
+    "move-up": "переместить выше",
+    "move-down": "переместить ниже",
+    "redo": "redo",
+    "remove": "удалить",
+    "smoothing": "This might smooth out some remaining corners, best used together with corner radius.",
+    "undo": "undo"
+  },
+  "miscellaneous": {
+    "and": "and",
+    "auto": "Auto",
+    "beta-blazon": "(бета-версия, не завершено)",
+    "bottom": "bottom",
+    "by": "by",
+    "extra": "extra",
+    "fields": "fields",
+    "general": "General",
+    "inherited": "Inherited",
+    "left": "Left",
+    "loading": "Загрузка...",
+    "show-more": "Show more",
+    "not-found": "Не найдено",
+    "manual": "Manual",
+    "mine-only": "Mine only",
+    "no-name": "<no name>",
+    "none": "None",
+    "no-item-selected": "No item selected",
+    "opposite": "opposite",
+    "svg-file": "SVG file",
+    "private": "private",
+    "public": "public",
+    "right": "Right",
+    "semy-of": "Semy of",
+    "shield-layer": "Shield layer",
+    "top": "top",
+    "unnamed": "нет имени",
+    "unsaved-data": "несохраненные данные"
+  },
+  "button": {
+    "add": "Добавить",
+    "apply": "Apply",
+    "cancel": "Отменить",
+    "copy-to-new": "Copy to new",
+    "create": "Создать",
+    "create-from-blazon": "Create from blazon",
+    "edit": "редактировать",
+    "from-blazon": "From blazon",
+    "save": "сохранить",
+    "upload-svg": "Загрузить файл SVG"
+  },
+  "user": {
+    "message": {
+      "arms-need-to-be-public-and-saved-for-exporting": "Чтобы сохранить и экспортировать герб, откройте публичный доступ к нему.",
+      "arms-need-to-be-public-and-saved-for-sharing": "Нужно сохранить герб и открыть публичный доступ, прежде чем делиться.",
+      "arms-saved": "Герб сохранен. Новая версия:",
+      "charge-saved": "Изменения сохранены. Новая версия:",
+      "collection-saved": "Collection saved, new version:",
+      "confirmation-code-sent": "Код подтверждения отправлен на ваш адресс электронной почты.",
+      "copied-url-for-sharing": "Ссылку скопировано. Теперь можно делиться.",
+      "copy-to-clipboard-failed": "Copying the URL failed.",
+      "created-unsaved-copy": "Created an unsaved copy.",
+      "email-required": "Email required.",
+      "need-to-be-logged-in": "Вы должны ввойти.",
+      "need-to-be-logged-in-and-arms-must-be-saved": "Вы должны ввойти и сохранить герб.",
+      "need-to-be-logged-in-and-charge-must-be-saved": "Need to be logged in and charge must be saved.",
+      "need-to-be-logged-in-and-own-the-arms": "Вы должны ввойти и быть владельцем герба.",
+      "need-to-be-logged-in-and-own-the-charge.": "Need to be logged in and own the charge.",
+      "need-to-be-logged-in-and-own-the-collection.": "Need to be logged in and own the collection.",
+      "new-confirmation-code-sent": "Новый код отправлен на ваш адресс электронной почты.",
+      "password-reset-completed": "Пароль сменён",
+      "password-reset-confirmation-code-sent": "A password reset confirmation code was sent to your email address.",
+      "passwords-do-not-match": "Пароли не совпадают",
+      "password-required": "Password required.",
+      "registration-completed": "Регистрацию завершено",
+      "ribbon-saved": "Ribbon saved, new version:",
+      "save-changes-first": "Сначала сохраните изменения.",
+      "username-required": "Username required.",
+      "username-required-for-password-reset": "Для сброса пароля нужно имя пользователя"
+    },
+    "button": {
+      "change": "Сменить",
+      "confirm": "Подтвердить",
+      "resend-code": "Отправить код еще раз",
+      "reset-password": "Сменить пароль"
+    },
+    "change-temporary-password": "Сменить временный пароль",
+    "confirmation-code": "Код подтверждения",
+    "email": "Адресс электронной почты",
+    "forgotten-password": "Вы забыли пароль?",
+    "new-password": "Новый пароль",
+    "new-password-again": "Повторите новый пароль",
+    "password": "Пароль",
+    "password-again": "Повторите пароль",
+    "register-confirmation": "Подтверждение регистрации",
+    "reset-forgotten-password": "Скинуть забытый пароль",
+    "username": "Имя пользователя"
+  },
+  "attribution": {
+    "title": "Ссылка на источник",
+    "nature-choice": {
+      "derivative": "Производная работа",
+      "own-work": "Собственное произведение"
+    },
+    "license-choice": {
+      "none": "None",
+      "cc-attribution": "CC Attribution",
+      "cc-attribution-non-commercial-share-alike": "CC Attribution-NonCommercial-ShareAlike",
+      "cc-attribution-share-alike": "CC Attribution-ShareAlike",
+      "public-domain": "Общественное достояние"
+    },
+    "license-display": {
+      "none": "нет",
+      "public-domain": "общественное достояние"
+    },
+    "autofill": "Заполнить автоматически",
+    "creator-link": "Ссылка к автору",
+    "creator-name": "Имя автора",
+    "is-in-the-public-domain": "является общественным достоянием",
+    "is-licensed-under": "имеет лицензию:",
+    "is-private": "является личным",
+    "license": "Лицензия",
+    "license-version": "Версия лицензии",
+    "no-license": "нет лицензии",
+    "source": "источник",
+    "source-license": "Источник лицензии",
+    "source-link": "Ссылка на источник",
+    "source-name": "Имя источника"
+  },
+  "charge-group": {
+    "type": {
+      "arc": "Arc",
+      "columns": "Columns",
+      "in-orle": "In orle",
+      "rows": "Rows"
+    },
+    "presets": {
+      "group": {
+        "arc": "Arc",
+        "grid": "Grid",
+        "ordinaries": "Почётные фигуры",
+        "others": "Others",
+        "triangular": "Triangular"
+      },
+      "arc": "Arc",
+      "bendwise": "Bendwise",
+      "bendwise-sinister": "Bendwise (sinister)",
+      "chevronwise": "Chevronwise",
+      "diamond": "Diamond",
+      "fesswise": "Fesswise",
+      "frame": "Frame",
+      "in-annullo": "In annullo",
+      "in-annullo-follow": "In annullo (follow)",
+      "in-annullo-point-to-center": "In annullo (point to center)",
+      "in-cross": "In cross",
+      "in-orle": "In orle",
+      "in-pall": "In pall",
+      "in-saltire": "In saltire",
+      "palewise": "Palewise",
+      "presets": "Шаблоны",
+      "select": "Выбрать",
+      "semy-columns": "Semy columns",
+      "semy-rows": "Semy rows",
+      "sheaf-of": "Sheaf of",
+      "six": "Six",
+      "square": "Square",
+      "three": "Three",
+      "three-above-bend": "Three above bend",
+      "three-below-bend": "Three below bend",
+      "three-columns": "Three (columns)",
+      "three-columns-inverted": "Three (columns, inverted)",
+      "three-inverted": "Three (inverted)"
+    },
+    "charge-group-of": "Charge group of",
+    "select-charge-group-preset": "Выбрать шаблон фигур",
+    "various": "various"
+  },
+  "entity": {
+    "attributes": "Ссылки на источник",
+    "arms": "Гербы",
+    "blazon": "Блазон",
+    "charge": "Фигура",
+    "charges": "Гербовые фигуры",
+    "charge-group": "Группа фигур",
+    "crest-charge": "Crest charge",
+    "crest-charge-group": "Crest charge group",
+    "collection": "Collection",
+    "collections": "Коллекции",
+    "cottising": "Cottising",
+    "cottise": "Cottise",
+    "extra-line": "Extra line",
+    "helm": "Helm",
+    "helmet": "Helmet",
+    "helms-and-crests": "Helms and crests",
+    "heraldry": "Геральдика",
+    "line": "Line",
+    "main-line": "Main line",
+    "metadata": "Metadata",
+    "motto": "Девиз",
+    "opposite-line": "Opposite line",
+    "ordinary": "Ordinary",
+    "ribbon": "Лента",
+    "semy": "Semy",
+    "slogan": "Слоган",
+    "tag": "Tag",
+    "tags": "Tags",
+    "tincture": "Tincture",
+    "tinctures": "Tinctures",
+    "torse": "Torse",
+    "user": "Пользователь"
+  },
+  "submenu-summary": {
+    "adjusted": "adjusted",
+    "base-fields": "base fields",
+    "default": "Default",
+    "fimbriated": "fimbriated",
+    "flipped": "flipped",
+    "mirrored": "mirrored",
+    "no": "No",
+    "resized": "resized",
+    "reversed": "reversed",
+    "rotated": "rotated",
+    "shifted": "shifted",
+    "slot": "slot",
+    "slots": "slots",
+    "stretched": "stretched"
+  },
+  "ribbon": {
+    "button": {
+      "invert": "Invert"
+    },
+    "text": {
+      "apply-preset-after-change": "Apply a preset after you edited the ribbon curve and changed the number of segments.",
+      "segment-explanation": "Segments can be background, foreground, or foreground with text and their rendering order is determined by the layer number. Note: apply a preset after introducing new segments or removing segments in the curve. This will overwrite changes here, but right now there's no good way to preserve this.",
+      "svg-font-rendering-warning": "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it.",
+      "topology-explanation-1": "The ribbon curve can be interpreted in many ways, depending on what is fore-/background and which segments overlap which.",
+      "topology-explanation-2": "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned."
+    },
+    "apply-presets": "Apply presets",
+    "flow-presets": "Flow presets",
+    "flow-presets-choice": {
+      "spiral-clockwise": "Spiral clockwise",
+      "spiral-counter-clockwise": "Spiral counter-clockwise",
+      "stacked": "Stacked",
+      "waves": "Waves"
+    },
+    "segment-type-choice": {
+      "background": "Background",
+      "foreground": "Foreground",
+      "foreground-with-text": "Text"
+    },
+    "start-presets": "Start presets",
+    "start-presets-choice": {
+      "background": "Background",
+      "foreground": "Foreground"
+    },
+    "layering-presets": "Layering presets",
+    "layering-presets-choice": {
+      "left-to-right": "Слева направо",
+      "middle-outwards": "Middle outwards",
+      "right-to-left": "Справа налево"
+    },
+    "segments": "Сегменты",
+    "topology": "Топология",
+    "editor": {
+      "shift-info": "Shift - add or remove points"
+    }
+  },
+  "escutcheon": {
+    "type": {
+      "english": "Английский",
+      "flag": "Flag",
+      "french-modern": "Французский щит",
+      "heater": "Варяжский щит",
+      "kite": "Миндалевидный щит",
+      "lozenge": "Lozenge",
+      "none": "None",
+      "norman-late": "Варяжский щит (поздний)",
+      "oval": "Овальный щит",
+      "polish-19th-century": "Польский щит XIX-го века",
+      "polish": "Польский щит",
+      "rectangle": "Вертикальный прямоугольник",
+      "renaissance": "Барочный щит",
+      "root": "Root",
+      "rounded-norman-late": "Скруглённый варяжский щит",
+      "roundel": "Roundel",
+      "select-escutcheon": "Select Escutcheon",
+      "select-ratio": "Select ratio",
+      "square-czech": "Немецкий с округленным основанием",
+      "square-french": "Старофранцузский щит",
+      "square-iberian": "Испанский щит",
+      "swiss": "Швейцарский щит",
+      "wedge": "Щит с вызубрениями во главе"
+    }
+  },
+  "validation": {
+    "attribution": {
+      "all-source-fields-required": "All source fields required for derivative work.",
+      "license-required-for-public-objects": "License required for public objects."
+    },
+    "partition": {
+      "barry-should-have-even-number-of-fields": "Barry should have an even number of fields, for an odd number use bars.",
+      "bendy-should-have-even-number-of-fields": "Bendy should have an even number of fields, for an odd number use bends.",
+      "paly-should-have-even-number-of-fields": "Paly should have an even number of fields, for an odd number use pales."
+    },
+    "rule-of-tincture": {
+      "colour-field-on-colour-field": "Colour field (%s) on colour field (%s) breaks rule of tincture.",
+      "colour-fimbriation-on-colour-field": "Colour fimbriation (%s) on colour field (%s) breaks rule of tincture.",
+      "colour-fimbriation-touches-colour-field": "Colour fimbriation (%s) touching colour field (%s) breaks rule of tincture.",
+      "fimbriation-tinctures-both-colour": "Fimbriation tinctures are both colours (%s and %s), breaks rule of tincture.",
+      "fimbriation-tinctures-both-metal": "Fimbriation tinctures are both metals (%s and %s), breaks rule of tincture.",
+      "metal-field-on-metal-field": "Metal field (%s) on metal field (%s) breaks rule of tincture.",
+      "metal-fimbriation-on-metal-field": "Metal fimbriation (%s) on metal field (%s) breaks rule of tincture.",
+      "metal-fimbriation-touches-metal-field": "Metal fimbriation (%s) touching metal field (%s) breaks rule of tincture."
+    }
+  },
+  "text": {
+    "title": {
+      "home": "Home",
+      "create-arms": "Создать герб",
+      "create-charge": "Create Charge",
+      "create-collection": "Create Collection",
+      "create-ribbon": "Создать ленту"
+    },
+    "about": {
+      "welcome-to-heraldicon": "Добро пожаловать на сайт «Heraldicon»",
+      "what-is-this-about?": "Что это?",
+      "heraldry-intro": "is interesting and fun, but it has a myriad of conventions and rules, as it's been around for almost a millennium.",
+      "arms-creation-1-effort": "Creating a coat of arms is a time-consuming process and requires knowledge of various design tools. But even if you put in that time, the result usually is somewhat static, it can't easily be adjusted without more manual work, for instance to change the style, the tinctures, or the shape of the escutcheon.",
+      "arms-creation-2-with-heraldicon": "That is what Heraldicon wants to improve. You can describe a coat of arms, and let the rendering figure out the rest. After that it can be themed, the escutcheon can be changed, it can be used for impalement in other coats, charges can be swapped for other variants of a different style, etc..",
+      "arms-creation-3-heraldicon-no-replacement-for-art": "Obviously it won't replace human skills and artistry, but it might provide a starting point to try out some concepts and generate a base of things that can be automated, e.g. divisions, ordinaries, and line styles.",
+      "goals": "Goals",
+      "goal-1-open-charge-library": "Provide an open charge library, which anyone can add to",
+      "goal-2-open-arms-library": "Provide means to create online armories for reference or research",
+      "goal-3-support-heraldic-concepts": "Support as many heraldic concepts and elements as possible",
+      "status": "Status",
+      "status-site-still-beta": "This entire website is pretty beta still, so please be patient if you run into bugs or missing features. See my contact details below to report anything weird.",
+      "licensing": "Licensing",
+      "licensing-1-and-attribution-for-public-objects": "Charges and arms made public on this site require a Creative Commons license or be declared in the public domain. Derivative work requires attribution of the source, and the source license must be compatible with the chosen CC license.",
+      "licensing-2-how-to-specify-and-responsibility": "You can specify this while editing a charge or arms, and viewing or exporting work will include the license and attribution. It's your responsibility to provide this information, if you make the work public.",
+      "licensing-3-contact-if-you-see-your-work-unattributed": "If you see your work WITHOUT proper attribution or have other concerns or feedback regarding the implementation of these features, then please contact me.",
+      "licensing-4-technical-info-on-attribution": "Note: SVGs get the proper metadata of license/attribution for the coat of arms and all used charges, PNGs are a work in progress."
+    },
+    "arms-library": {
+      "create-and-view-arms": "Здесь можно создавать и просматривать гербы. Если Вы хотите поделиться ссылкой для просмотра герба другими людьми, сохраните свой герб и добавьте лицензию.",
+      "svg-png-access-info": "Однако все могут просматривать ссылки на файлы форматов SVG и PNG."
+    },
+    "charge-library": {
+      "create-and-view-charges": "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
+    },
+    "collection-library": {
+      "create-and-view-collections": "Here you can view and create collections of coats of arms. You explicitly have to save your collection as public and add a license, if you want to share the link and allow others to view it."
+    },
+    "ribbon-library": {
+      "create-and-view-ribbons": "Here you can view and create ribbons to be used in coats of arms. By default your ribbons are private, so only you can see and use them. If you want to make them public, then you must provide a license."
+    },
+    "contact": {
+      "feel-free-to-contact-me": "You can email me at oliver [at] heraldry.digital for feedback, questions, complaints, feature requests, or deep and meaningful friendship.",
+      "project-info": "The project can be found here, if you want to get involved",
+      "developer-info": "Меня можно найти здесь:",
+      "my-username-is": "Мое имя пользователя:",
+      "translation": "Translation",
+      "translation-not-yet-complete": "Not all strings have been translated yet. If you want to help out or correct something, or want to add your own language, then reach out on Discord or the",
+      "crowdin-project": "Crowdin project"
+    },
+    "home": {
+      "release-news-info-1": "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed.",
+      "release-news-info-2": "These updates are not translated, because that'd be a lot of work. Maybe someday... :)"
+    }
+  },
+  "blazonry-editor": {
+    "success": "Understood",
+    "warning": "Warning",
+    "error": "Error"
   }
 }
