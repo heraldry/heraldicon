@@ -40,7 +40,7 @@
                         :source-file filename)))
 
 (defn- check-translation-string-usage []
-  (let [json-data (load-locale "en-UK.json")
+  (let [json-data (load-locale "en/strings.json")
         files (into []
                     (filter #(re-matches #".*\.cljs" (.getName %)))
                     (file-seq (io/file "src")))]

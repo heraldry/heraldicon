@@ -2,11 +2,11 @@
   (:require-macros [heraldicon.localization.locale :refer [load-locale]]))
 
 (def ^:private JSON-DICT
-  {:en (load-locale "en-UK.json")
-   :de (load-locale "de-DE.json")
-   :pt (load-locale "pt-PT.json")
-   :ru (load-locale "ru-RU.json")
-   :uk (load-locale "uk-UA.json")})
+  {:en (load-locale "en/strings.json")
+   :de (load-locale "de/strings.json")
+   :pt (load-locale "pt-PT/strings.json")
+   :ru (load-locale "ru/strings.json")
+   :uk (load-locale "uk/strings.json")})
 
 (defn string [s]
   (into {}
