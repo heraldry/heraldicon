@@ -5,7 +5,8 @@
   {:en (load-locale "en-UK.json")
    :de (load-locale "de-DE.json")
    :pt (load-locale "pt-PT.json")
-   :ru (load-locale "ru-RU.json")})
+   :ru (load-locale "ru-RU.json")
+   :uk (load-locale "uk-UA.json")})
 
 (defn string [s]
   (into {}
@@ -16,4 +17,5 @@
 (def all
   {:en :string.language/english
    :de :string.language/german
-   :ru :string.language/russian})
+   :ru :string.language/russian
+   :uk :string.language/ukrainian})
