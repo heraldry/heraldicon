@@ -154,6 +154,7 @@
   {:root-field :field
    :root-variation :variation
    :root-plain :plain
+   :root-tincture :tincture
    :partition-field-plain :partition-field
    :ordinal-including-dot :ordinal})
 

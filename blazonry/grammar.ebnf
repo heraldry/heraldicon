@@ -534,7 +534,7 @@ variation
     | partition
 
 root-plain
-    = tincture
+    = root-tincture
 
 plain
     = tincture
@@ -544,6 +544,30 @@ of-the
     = OF? THE
     | IN? THE
     | LIKE? THE
+
+root-tincture
+    = tincture/OR
+    | tincture/ARGENT
+    | tincture/SABLE
+    | tincture/AZURE
+    | tincture/GULES
+    | tincture/PURPURE
+    | tincture/VERT
+    | tincture/TENNE
+    | tincture/ORANGE
+    | tincture/SANGUINE
+    | tincture/MURREY
+    | tincture/BLEU-CELESTE
+    | tincture/ROSE
+    | tincture/COPPER
+    | tincture/PROPER
+    | tincture/WHITE
+    | tincture/BRUNATRE
+    | tincture/BUFF
+    | tincture/ERMINE
+    | tincture/ERMINES
+    | tincture/ERMINOIS
+    | tincture/PEAN
 
 tincture
     = tincture/OR
