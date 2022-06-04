@@ -9,3 +9,5 @@ backend
 build
 
 gettext/*.mo
+
+.clj-kondo/babashka
