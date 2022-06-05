@@ -174,11 +174,14 @@
        :tincture-1 tincture-1
        :tincture-2 tincture-2})))
 
-(defn- add-fimbriation [hdn nodes]
+(defn- add-fimbriation [hdn nodes & {:keys [line-fimbriation?]}]
   (let [fimbriation (some-> (get-child #{:fimbriation} nodes)
-                            ast->hdn)]
+                            ast->hdn)
+        path (if line-fimbriation?
+               [:line :fimbriation]
+               [:fimbriation])]
     (cond-> hdn
-      fimbriation (assoc :fimbriation fimbriation))))
+      fimbriation (assoc-in path fimbriation))))
 
 (defmethod ast->hdn :line [[_ & nodes]]
   (let [line-type (get-child #{:line-type} nodes)]
@@ -803,7 +806,7 @@
         (add-ordinary-options nodes)
         (add-lines nodes)
         (add-cottising nodes)
-        (add-fimbriation nodes))))
+        (add-fimbriation nodes :line-fimbriation? (not= node-type :ordinary/LABEL)))))
 
 (def ^:private max-ordinary-group-amount 20)
 
@@ -903,9 +906,13 @@
                 :version 0}}
      nodes)))
 
-(defmethod ast->hdn :charge [[_ & nodes]]
+(defmethod ast->hdn :charge-without-fimbriation [[_ & nodes]]
   (-> (get-child #{:charge-standard
                    :charge-other} nodes)
+      ast->hdn))
+
+(defmethod ast->hdn :charge [[_ & nodes]]
+  (-> (get-child #{:charge-without-fimbriation} nodes)
       ast->hdn
       (add-fimbriation nodes)))
 
@@ -1057,11 +1064,12 @@
         anchor-point (some-> (get-child #{:charge-location} nodes)
                              ast->hdn)
         field (ast->hdn (get-child #{:field} nodes))
-        charge (-> #{:charge}
+        charge (-> #{:charge-without-fimbriation}
                    (get-child nodes)
                    ast->hdn
                    (assoc :field field)
-                   (add-tincture-modifiers nodes))]
+                   (add-tincture-modifiers nodes)
+                   (add-fimbriation nodes))]
     [(cond-> (if (= amount 1)
                charge
                (charge-group charge amount nodes))
@@ -1078,11 +1086,12 @@
 
 (defmethod ast->hdn :semy [[_ & nodes]]
   (let [field (ast->hdn (get-child #{:field} nodes))
-        charge (-> #{:charge}
+        charge (-> #{:charge-without-fimbriation}
                    (get-child nodes)
                    ast->hdn
                    (assoc :field field)
-                   (add-tincture-modifiers nodes))]
+                   (add-tincture-modifiers nodes)
+                   (add-fimbriation nodes))]
     [(semy charge nodes)]))
 
 (defmethod ast->hdn :field [[_ & nodes]]

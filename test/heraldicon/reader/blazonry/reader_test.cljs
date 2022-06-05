@@ -617,5 +617,85 @@
      ["Fields for partition missing: i., ii."
       "Fields not found in partition: base, chief"]}
 
+    "or a bend fimbriated or and vert gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/bend
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :line {:fimbriation {:mode :double
+                                        :tincture-1 :or
+                                        :tincture-2 :vert}}}]}
+
+    "or a bend gules fimbriated or and vert"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/bend
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :line {:fimbriation {:mode :double
+                                        :tincture-1 :or
+                                        :tincture-2 :vert}}}]}
+
+    "or a label gules fimbriated or and vert"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/label
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :fimbriation {:mode :double
+                                 :tincture-1 :or
+                                 :tincture-2 :vert}}]}
+
+    "or a roundel gules fimbriated or and vert"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :fimbriation {:mode :double
+                                 :tincture-1 :or
+                                 :tincture-2 :vert}}]}
+
+    "or a roundel fimbriated or and vert gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :fimbriation {:mode :double
+                                 :tincture-1 :or
+                                 :tincture-2 :vert}}]}
+
+    "azure a roundel fimbriated or sable armed gules"
+    {:type :heraldry.field.type/plain
+     :tincture :azure
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :tincture {:armed :gules}
+                   :fimbriation {:mode :single
+                                 :tincture-1 :or}}]}
+
+    "azure a roundel sable fimbriated or armed gules"
+    {:type :heraldry.field.type/plain
+     :tincture :azure
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :tincture {:armed :gules}
+                   :fimbriation {:mode :single
+                                 :tincture-1 :or}}]}
+
+    "azure a roundel sable armed gules fimbriated or"
+    {:type :heraldry.field.type/plain
+     :tincture :azure
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :tincture {:armed :gules}
+                   :fimbriation {:mode :single
+                                 :tincture-1 :or}}]}
+
 ;;
     ))
