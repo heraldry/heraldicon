@@ -697,5 +697,34 @@
                    :fimbriation {:mode :single
                                  :tincture-1 :or}}]}
 
+    "or a roundel (sable a chief vert)"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable
+                           :components [{:type :heraldry.ordinary.type/chief
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture :vert}}]}}]}
+
+    "or a roundel sable charged with a chief vert"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable
+                           :components [{:type :heraldry.ordinary.type/chief
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture :vert}}]}}]}
+
+    "or a roundel sable a chief vert"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}
+                  {:type :heraldry.ordinary.type/chief
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :vert}}]}
 ;;
     ))

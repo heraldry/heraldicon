@@ -729,7 +729,7 @@ partition
       partition-field AND+ partition-field
 
 components
-    = component (AND+ component)*
+    = component (AND* component)*
 
 component
     = ordinary-group
