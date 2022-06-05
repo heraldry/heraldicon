@@ -863,59 +863,59 @@ ordinary
     = ordinary/LABEL
       (humetty-voided-truncated-dovetailed* label-points?
        | label-points? humetty-voided-truncated-dovetailed*)
-      fimbriation?
-      field
+      (fimbriation? field
+       | field? fimbriation)
 
     | ordinary/BORDURE
       line?
-      field
+      field fimbriation?
 
     | ordinary/GORE
       dexter-sinister?
       line?
-      field
+      field fimbriation?
 
     | (ordinary/CHIEF
        | ordinary/BASE)
       (humetty-voided-enhanced-dehanced* line?
        | line? humetty-voided-enhanced-dehanced*)
-      field
+      field fimbriation?
       cottising?
 
     | ordinary/POINT
       (humetty-voided-enhanced-dehanced-dexter-sinister* line?
        | line? humetty-voided-enhanced-dehanced-dexter-sinister*)
-      field
+      field fimbriation?
       cottising?
 
     | ordinary/ORLE
       (line (AND+ line)?)?
-      field
+      field fimbriation?
 
     | (ordinary/CROSS
        | ordinary/SALTIRE)
       (humetty-voided-enhanced-dehanced* (line (AND+ line)?)?
        | (line (AND+ line)?)? humetty-voided-enhanced-dehanced*)
-      field
+      field fimbriation?
       cottising?
 
     | ordinary/QUARTER
       (humetty-voided-enhanced-dehanced-dexter-sinister* (line (AND+ line)?)?
        | (line (AND+ line)?)? humetty-voided-enhanced-dehanced-dexter-sinister*)
-      field
+      field fimbriation?
       cottising?
 
     | ordinary/PILE
       (humetty-voided-reversed-throughout* (line (AND+ line)?)?
        | (line (AND+ line)?)? humetty-voided-reversed-throughout*)
-      field
+      field fimbriation?
       cottising?
 
     | (ordinary/PALE
        | ordinary/PALLET)
       (humetty-voided* (line (AND+ line)?)?
        | (line (AND+ line)?)? humetty-voided*)
-      field
+      field fimbriation?
       (cottising (AND? cottising)?)?
 
     | (ordinary/FESS
@@ -926,7 +926,7 @@ ordinary
        | ordinary/BENDLET-SINISTER)
       (humetty-voided-enhanced-dehanced* (line (AND+ line)?)?
        | (line (AND+ line)?)? humetty-voided-enhanced-dehanced*)
-      field
+      field fimbriation?
       (cottising (AND? cottising)?)?
 
     | (ordinary/PALL
@@ -934,7 +934,7 @@ ordinary
        | ordinary/CHEVRONNEL)
       (humetty-voided-enhanced-dehanced-reversed* (line (AND+ line (AND+ line)?)?)?
        | (line (AND+ line (AND+ line)?)?)? humetty-voided-enhanced-dehanced-reversed*)
-      field
+      field fimbriation?
       (cottising (AND? cottising (AND? cottising)?)?)?
 
 line
@@ -984,21 +984,46 @@ charge-location
     = (IN | AT) charge-location-point POINT?
 
 charge-group
-    = charge-location? amount? charge
-      (charge-arrangement? field tincture-modifier*
-       | charge-arrangement? tincture-modifier* field
-       | field tincture-modifier* charge-arrangement?
-       | field charge-arrangement? tincture-modifier*
-       | tincture-modifier* field charge-arrangement?
-       | tincture-modifier* charge-arrangement? field)
+    = charge-location? amount? charge-without-fimbriation
+      (charge-arrangement? fimbriation? field tincture-modifier*
+       | charge-arrangement? field fimbriation? tincture-modifier*
+       | charge-arrangement? field tincture-modifier* fimbriation?
+
+       | charge-arrangement? tincture-modifier* fimbriation? field
+       | charge-arrangement? tincture-modifier* field fimbriation?
+
+       | fimbriation? field tincture-modifier* charge-arrangement?
+       | field fimbriation? tincture-modifier* charge-arrangement?
+       | field tincture-modifier* fimbriation? charge-arrangement?
+
+       | fimbriation? field charge-arrangement? tincture-modifier*
+       | field fimbriation? charge-arrangement? tincture-modifier*
+       | field charge-arrangement? fimbriation? tincture-modifier*
+       | field charge-arrangement? tincture-modifier* fimbriation?
+
+       | fimbriation? tincture-modifier* field charge-arrangement?
+       | tincture-modifier* fimbriation? field charge-arrangement?
+       | tincture-modifier* field fimbriation? charge-arrangement?
+
+       | fimbriation? tincture-modifier* charge-arrangement? field
+       | tincture-modifier* fimbriation? charge-arrangement? field
+       | tincture-modifier* charge-arrangement? fimbriation? field
+       | tincture-modifier* charge-arrangement? field fimbriation?)
 
 semy
-    = <A>? <SEMY> <of-or-with>? layout? charge field tincture-modifier*
-    | <A>? <SEMY> <of-or-with>? layout? charge tincture-modifier* field
+    = <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation fimbriation? field tincture-modifier*
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation field fimbriation? tincture-modifier*
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation field tincture-modifier* fimbriation?
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation fimbriation? tincture-modifier* field
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation tincture-modifier* fimbriation? field
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation tincture-modifier* field fimbriation?
+
+charge-without-fimbriation
+    = charge-standard
+    | charge-other
 
 charge
-    = charge-standard fimbriation?
-    | charge-other fimbriation?
+    = charge-without-fimbriation fimbriation?
 
 charge-arrangement
     = arrangement/PALEWISE
