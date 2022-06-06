@@ -596,7 +596,8 @@
     "shield-layer": "Schildebene",
     "top": "oben",
     "unnamed": "unbenannt",
-    "unsaved-data": "ungespeicherte Daten"
+    "unsaved-data": "ungespeicherte Daten",
+    "field-reference": "wie"
   },
   "button": {
     "add": "Hinzufügen",
