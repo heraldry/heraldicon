@@ -5,7 +5,7 @@
     "collection-library": "Колекції",
     "arms-library": "Герби",
     "charge-library": "Фігури",
-    "ribbon-library": "Девізні стрічки",
+    "ribbon-library": "Стрічки",
     "users": "Користувачі",
     "contact": "Контакти",
     "account": "Обліковий запис",
@@ -105,11 +105,11 @@
       "colour": "Емаль",
       "fur": "Хутро",
       "stain": "Відтінок",
-      "helmet": "Шолом",
+      "helmet": "Колір шолома",
       "nontraditional": "Нетрадиційний колір"
     },
     "special": {
-      "none": "Немає (не змінюється)",
+      "none": "Немає (можливо змінити)",
       "proper": "Природний колір"
     },
     "argent": "Срібний",
@@ -147,7 +147,7 @@
     },
     "all": "Всі одразу!",
     "ral-traffic": "RAL — дорожні знаки",
-    "wappenwiki": "WappenWiki (стандартна)",
+    "wappenwiki": "WappenWiki (типова)",
     "web": "Веб",
     "wikipedia-bajuvarian": "Вікіпедія — Баварія",
     "wikipedia-brandenburg": "Вікіпедія — Бранденбург",
@@ -172,14 +172,14 @@
       },
       "compartment": "Підніжжя",
       "coward": "Опущений між ногами",
-      "defamed": "Defamed",
+      "defamed": "Без хвоста",
       "double-queued": "Два хвости",
-      "erased": "Фігура відірвана",
+      "erased": "Erased",
       "mantling": "Намет",
       "pierced": "Pierced",
       "queue-fourche": "Роздвоєний",
       "queue-fourche-saltire": "Роздвоєний і схрещений",
-      "queue-fourche-saltire-reverse": "Queue fourché saltire reverse",
+      "queue-fourche-saltire-reverse": "Роздвоєний і двічі схрещений",
       "supporter": "Щитотримач",
       "supporter-left": "Лівий щитотримач",
       "supporter-right": "Правий щитотримач",
@@ -189,10 +189,10 @@
     "attitude": {
       "group": {
         "none": "Немає",
-        "beasts": "Тварини",
+        "beasts": "Звірі",
         "sea-creatures": "Морські істоти",
         "serpents": "Змієподібні істоти",
-        "two-beasts": "Дві тварини",
+        "two-beasts": "Два звірі",
         "winged-creatures": "Крилаті істоти"
       },
       "addorsed": "Обернені спинами",
@@ -242,7 +242,7 @@
       "group": {
         "fauna": "Фауна",
         "flora": "Флора",
-        "helmet": "Шолом",
+        "helmet": "Колір шолома",
         "other": "Інше",
         "technical": "Технічне"
       },
@@ -265,7 +265,7 @@
       "caparisoned": "Caparisoned",
       "collared": "Collared",
       "combed": "Combed",
-      "erased": "Фігура відірвана",
+      "erased": "Колір лінії відриву",
       "eyed": "Колір очей",
       "eyed-peacock": "Eyed (peacock)",
       "finned": "Колір плавців",
@@ -275,7 +275,7 @@
       "hilted": "Hilted",
       "hooded": "Hooded",
       "illuminated": "Колір вікон",
-      "incensed": "Incensed",
+      "incensed": "Колір пахощів пантери",
       "langued": "Колір язика",
       "leaved": "Колір листя",
       "legged": "Колір ніг",
@@ -596,7 +596,8 @@
     "shield-layer": "Шар щита",
     "top": "top",
     "unnamed": "без назви",
-    "unsaved-data": "незбережені дані"
+    "unsaved-data": "незбережені дані",
+    "field-reference": "like"
   },
   "button": {
     "add": "Додати",
@@ -686,7 +687,9 @@
     "source": "джерело",
     "source-license": "Ліцензія джерела",
     "source-link": "Посилання на джерело",
-    "source-name": "Назва джерела"
+    "source-name": "Назва джерела",
+    "source-modification": "Source modifications (optional)",
+    "modifications": "modifications"
   },
   "charge-group": {
     "type": {
@@ -751,14 +754,14 @@
     "cottise": "Cottise",
     "extra-line": "Extra line",
     "helm": "Helm",
-    "helmet": "Шолом",
+    "helmet": "Колір шолома",
     "helms-and-crests": "Шоломи та нашоломники",
     "heraldry": "Геральдика",
-    "line": "Line",
-    "main-line": "Main line",
+    "line": "Лінія",
+    "main-line": "Головна лінія",
     "metadata": "Метадані",
     "motto": "Гасло",
-    "opposite-line": "Opposite line",
+    "opposite-line": "Лінія з іншого боку",
     "ordinary": "Ordinary",
     "ribbon": "Ribbon",
     "semy": "Semy",
