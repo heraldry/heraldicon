@@ -4,6 +4,7 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldicon.heraldry.charge.options :as charge.options]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.heraldry.option.attributes :as attributes]
@@ -728,7 +729,9 @@
 
 (defmethod ast->hdn :cottise [[_ & nodes]]
   (let [field (ast->hdn (get-child #{:field} nodes))]
-    (add-lines {:field field} nodes)))
+    (-> default/cottise
+        (assoc :field field)
+        (add-lines nodes))))
 
 (defmethod ast->hdn :cottising [[_ & nodes]]
   (let [[cottise-1
