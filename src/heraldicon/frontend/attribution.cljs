@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.attribution
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.language :refer [tr]]
@@ -16,7 +17,8 @@
                    source-creator-link
                    source-link
                    source-license
-                   source-license-version]} (interface/get-sanitized-data (c/++ context :attribution))
+                   source-license-version
+                   source-modification]} (interface/get-sanitized-data (c/++ context :attribution))
            title (interface/get-raw-data (c/++ context :name))
            username (interface/get-raw-data (c/++ context :username))
            url (case attribution-type
@@ -27,7 +29,8 @@
            license-url (attribution/license-url license license-version)
            license-display-name (attribution/license-display-name license license-version)
            source-license-url (attribution/license-url source-license source-license-version)
-           source-license-display-name (attribution/license-display-name source-license source-license-version)]
+           source-license-display-name (attribution/license-display-name source-license source-license-version)
+           source-modification (s/trim (or source-modification ""))]
        [:<>
         [:a {:href url
              :target "_blank"} title]
@@ -62,7 +65,11 @@
              :none [tr :string.attribution/is-private]
              :public-domain [tr :string.attribution/is-in-the-public-domain]
              [:<> [tr :string.attribution/is-licensed-under] " "
-              [:a {:href source-license-url :target "_blank"} source-license-display-name]])])])
+              [:a {:href source-license-url :target "_blank"} source-license-display-name]])
+           (when (-> source-modification count pos?)
+             [:<>
+              " " [tr :string.attribution/modifications] ": " source-modification])])])
+
      [tr :string.miscellaneous/unsaved-data])])
 
 (defn for-charge [context]

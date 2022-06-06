@@ -130,7 +130,10 @@
 
                                  :source-creator-link {:type :text
                                                        :default ""
-                                                       :ui {:label :string.attribution/creator-link}}})
+                                                       :ui {:label :string.attribution/creator-link}}
+                                 :source-modification {:type :text
+                                                       :default ""
+                                                       :ui {:label :string.attribution/source-modification}}})
 
     (-> context
         (c/++ :source-license)
