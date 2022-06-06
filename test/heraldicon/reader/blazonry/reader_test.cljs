@@ -35,15 +35,19 @@
      :components [{:type :heraldry.ordinary.type/pale
                    :field {:type :heraldry.field.type/plain
                            :tincture :sable}
-                   :cottising {:cottise-1 {:field {:type :heraldry.field.type/plain
+                   :cottising {:cottise-1 {:type :heraldry/cottise
+                                           :field {:type :heraldry.field.type/plain
                                                    :tincture :azure}
                                            :line {:type :wavy}}
-                               :cottise-2 {:field {:type :heraldry.field.type/plain
+                               :cottise-2 {:type :heraldry/cottise
+                                           :field {:type :heraldry.field.type/plain
                                                    :tincture :gules}}
-                               :cottise-opposite-1 {:field {:type :heraldry.field.type/plain
+                               :cottise-opposite-1 {:type :heraldry/cottise
+                                                    :field {:type :heraldry.field.type/plain
                                                             :tincture :azure}
                                                     :line {:type :wavy}}
-                               :cottise-opposite-2 {:field {:type :heraldry.field.type/plain
+                               :cottise-opposite-2 {:type :heraldry/cottise
+                                                    :field {:type :heraldry.field.type/plain
                                                             :tincture :gules}}}}]}
 
     "or a pall sable cottised wavy azure and gules, cottices straight and indented argent, with doubly cottising urdy vert"
@@ -52,20 +56,25 @@
      :components [{:type :heraldry.ordinary.type/pall
                    :field {:type :heraldry.field.type/plain
                            :tincture :sable}
-                   :cottising {:cottise-1 {:field {:type :heraldry.field.type/plain
+                   :cottising {:cottise-1 {:type :heraldry/cottise
+                                           :field {:type :heraldry.field.type/plain
                                                    :tincture :azure}
                                            :line {:type :wavy}}
-                               :cottise-2 {:field {:type :heraldry.field.type/plain
+                               :cottise-2 {:type :heraldry/cottise
+                                           :field {:type :heraldry.field.type/plain
                                                    :tincture :gules}}
-                               :cottise-opposite-1 {:field {:type :heraldry.field.type/plain
+                               :cottise-opposite-1 {:type :heraldry/cottise
+                                                    :field {:type :heraldry.field.type/plain
                                                             :tincture :argent}
                                                     :line {:type :straight}
                                                     :opposite-line {:type :indented}}
 
-                               :cottise-extra-1 {:field {:type :heraldry.field.type/plain
+                               :cottise-extra-1 {:type :heraldry/cottise
+                                                 :field {:type :heraldry.field.type/plain
                                                          :tincture :vert}
                                                  :line {:type :urdy}}
-                               :cottise-extra-2 {:field {:type :heraldry.field.type/plain
+                               :cottise-extra-2 {:type :heraldry/cottise
+                                                 :field {:type :heraldry.field.type/plain
                                                          :tincture :vert}
                                                  :line {:type :urdy}}}}]}
 
