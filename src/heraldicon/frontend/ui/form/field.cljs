@@ -108,11 +108,13 @@
     {:title (string/combine ": "
                             [(name-prefix-for-part context)
                              (if ref?
-                               (str "like " (name-prefix-for-part
-                                             (-> context
-                                                 c/--
-                                                 (c/++ (interface/get-raw-data
-                                                        (c/++ context :index))))))
+                               (string/str-tr :string.miscellaneous/field-reference
+                                              " "
+                                              (name-prefix-for-part
+                                               (-> context
+                                                   c/--
+                                                   (c/++ (interface/get-raw-data
+                                                          (c/++ context :index))))))
                                (field/title context))])
      :icon (case field-type
              :heraldry.field.type/plain (let [[scale-x
