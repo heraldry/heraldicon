@@ -28,6 +28,15 @@
      :source-name "foo"
      :source-link "foo"
      :source-license :cc-attribution
+     :source-license-version :v4
+     :source-creator-name "foo"
+     :source-creator-link "foo"
+     :source-modification "foo"}
+
+    {:nature :derivative
+     :source-name "foo"
+     :source-link "foo"
+     :source-license :cc-attribution
      ;; :source-license-version missing
      :source-creator-name "foo"
      :source-creator-link "foo"}))
@@ -129,4 +138,13 @@
      :source-license-version :v4
      :source-creator-name "foo"
      ;; :source-creator-link missing
-     }))
+     }
+
+    {:nature :derivative
+     :source-name "foo"
+     :source-link "foo"
+     :source-license :cc-attribution
+     :source-license-version :v4
+     :source-creator-name "foo"
+     :source-creator-link "foo"
+     :source-modification :wrong}))

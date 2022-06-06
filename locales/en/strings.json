@@ -687,7 +687,9 @@
     "source": "source",
     "source-license": "Source license",
     "source-link": "Source link",
-    "source-name": "Source name"
+    "source-name": "Source name",
+    "source-modification": "Source modifications (optional)",
+    "modifications": "modifications"
   },
   "charge-group": {
     "type": {

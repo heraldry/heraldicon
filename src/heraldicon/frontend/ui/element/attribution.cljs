@@ -100,4 +100,5 @@
             :source-name
             :source-link
             :source-creator-name
-            :source-creator-link])]]]])))
+            :source-creator-link
+            :source-modification])]]]])))
