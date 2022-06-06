@@ -762,7 +762,7 @@ amount
     = BETWEEN
     | WITH
 cottise
-    = (line (AND+ line)?)? field
+    = (line (AND+ line)?)? field fimbriation?
 cottising
     = between-or-with? COTTISED WITH? cottise
     | between-or-with? COTTISED WITH? cottise AND+ cottise

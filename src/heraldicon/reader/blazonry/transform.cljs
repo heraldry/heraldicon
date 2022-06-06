@@ -731,7 +731,8 @@
   (let [field (ast->hdn (get-child #{:field} nodes))]
     (-> default/cottise
         (assoc :field field)
-        (add-lines nodes))))
+        (add-lines nodes)
+        (add-fimbriation nodes :line-fimbriation? true))))
 
 (defmethod ast->hdn :cottising [[_ & nodes]]
   (let [[cottise-1
