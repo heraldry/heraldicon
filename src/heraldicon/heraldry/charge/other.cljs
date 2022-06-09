@@ -597,8 +597,12 @@
                    :corner (:corner fimbriation)]]))
 
              (cond
-               (or preview-original?
-                   landscape?) unadjusted-charge
+               preview-original? (cond-> unadjusted-charge
+                                   highlight-colours? (replace-colours
+                                                       (fn [colour]
+                                                         (highlight-colour
+                                                          colour ui-show-colours))))
+               landscape? unadjusted-charge
                highlight-colours? adjusted-charge
                :else [:g
                       [svg.metadata/attribution
