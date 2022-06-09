@@ -104,7 +104,8 @@
         ref? (= field-type :heraldry.field.type/ref)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
         components-context (c/++ context :components)
-        num-components (interface/get-list-size components-context)]
+        num-components (interface/get-list-size components-context)
+        charge-preview? (-> context :path (= [:example-coa :coat-of-arms :field :components 0 :field]))]
     {:title (string/combine ": "
                             [(name-prefix-for-part context)
                              (if ref?
@@ -161,27 +162,28 @@
               :selected (static/static-url
                          (str "/svg/field-type-" (name field-type) "-selected.svg"))})
      :validation (validation/validate-field context)
-     :buttons (if ref?
-                [{:icon "fas fa-sliders-h"
-                  :title :string.user.button/change
-                  :handler #(state/dispatch-on-event % [:override-field-part-reference path])}]
-                (cond-> [{:icon "fas fa-plus"
-                          :title :string.button/add
-                          :menu [{:title :string.entity/ordinary
-                                  :handler #(state/dispatch-on-event % [:add-element components-context default/ordinary])}
-                                 {:title :string.entity/charge
-                                  :handler #(state/dispatch-on-event % [:add-element components-context default/charge])}
-                                 {:title :string.entity/charge-group
-                                  :handler #(state/dispatch-on-event % [:add-element components-context default/charge-group])}
-                                 {:title :string.entity/semy
-                                  :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}
-                         {:icon "fas fa-pen-nib"
-                          :title :string.button/from-blazon
-                          :handler #(blazonry-editor/open context)}]
-                  (non-mandatory-part-of-parent? context)
-                  (conj {:icon "fas fa-undo"
-                         :title "Reset"
-                         :handler #(state/dispatch-on-event % [:reset-field-part-reference context])})))
+     :buttons (when-not charge-preview?
+                (if ref?
+                  [{:icon "fas fa-sliders-h"
+                    :title :string.user.button/change
+                    :handler #(state/dispatch-on-event % [:override-field-part-reference path])}]
+                  (cond-> [{:icon "fas fa-plus"
+                            :title :string.button/add
+                            :menu [{:title :string.entity/ordinary
+                                    :handler #(state/dispatch-on-event % [:add-element components-context default/ordinary])}
+                                   {:title :string.entity/charge
+                                    :handler #(state/dispatch-on-event % [:add-element components-context default/charge])}
+                                   {:title :string.entity/charge-group
+                                    :handler #(state/dispatch-on-event % [:add-element components-context default/charge-group])}
+                                   {:title :string.entity/semy
+                                    :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}
+                           {:icon "fas fa-pen-nib"
+                            :title :string.button/from-blazon
+                            :handler #(blazonry-editor/open context)}]
+                    (non-mandatory-part-of-parent? context)
+                    (conj {:icon "fas fa-undo"
+                           :title "Reset"
+                           :handler #(state/dispatch-on-event % [:reset-field-part-reference context])}))))
      :nodes (concat (when (and (not (show-tinctures-only? field-type))
                                (-> field-type name keyword (not= :plain)))
                       (let [fields-context (c/++ context :fields)
