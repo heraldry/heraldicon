@@ -79,10 +79,10 @@
                      value))
                  data))
 
-(defn strip-classes [data]
+(defn strip-classes-and-ids [data]
   (walk/postwalk (fn [value]
                    (if (map? value)
-                     (dissoc value :class)
+                     (dissoc value :class :id)
                      value))
                  data))
 
