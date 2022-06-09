@@ -130,7 +130,7 @@
 (def ^:private make-mask
   (memoize
    (fn make-mask [data placeholder-colours provided-placeholder-colours
-                  outline-mode preview-original? hide-lower-layer?]
+                  outline-mode hide-lower-layer?]
      (let [mask (replace-colours
                  data
                  (fn [colour]
@@ -140,8 +140,7 @@
                            kind (placeholder-colour-modifier placeholder-colours colour-lower)
                            replacement (get-replacement kind provided-placeholder-colours)]
                        (cond
-                         (or preview-original?
-                             (= kind :keep)
+                         (or (= kind :keep)
                              (and (not (#{:transparent :primary} outline-mode))
                                   (= kind :outline))
                              replacement) "#fff"
@@ -159,8 +158,7 @@
                                     kind (placeholder-colour-modifier placeholder-colours colour-lower)
                                     replacement (get-replacement kind provided-placeholder-colours)]
                                 (cond
-                                  (or preview-original?
-                                      (= kind :keep)
+                                  (or (= kind :keep)
                                       (and (not (#{:primary} outline-mode))
                                            (= kind :outline))
                                       replacement) "#000"
@@ -325,35 +323,34 @@
             highlight-helper-mask-id (when render-highlight?
                                        (uid/generate "mask"))
             unadjusted-charge (:data charge-data)
-            adjusted-charge (cond-> unadjusted-charge
-                              (not preview-original?) (set-layer-separator-opacity
-                                                       layer-separator-colours
-                                                       (if highlight-colours?
-                                                         0.5
-                                                         1))
+            adjusted-charge (when-not preview-original?
+                              (-> unadjusted-charge
+                                  (set-layer-separator-opacity
+                                   layer-separator-colours
+                                   (if highlight-colours?
+                                     0.5
+                                     1))
+                                  (cond->
+                                    (= outline-mode :remove) (remove-outlines placeholder-colours)
 
-                              (and (not preview-original?)
-                                   (= outline-mode :remove)) (remove-outlines placeholder-colours)
-
-                              (and (not preview-original?)
-                                   highlight-colours?) (replace-colours
+                                    highlight-colours? (replace-colours
                                                         (fn [colour]
                                                           (highlight-colour
-                                                           colour ui-show-colours))))
-            adjusted-charge-without-shading (cond-> adjusted-charge
-                                              (and (not preview-original?)
-                                                   (not highlight-colours?)) (remove-shading placeholder-colours))
+                                                           colour ui-show-colours))))))
+            adjusted-charge-without-shading (when-not preview-original?
+                                              (cond-> adjusted-charge
+                                                (not highlight-colours?) (remove-shading placeholder-colours)))
             hide-lower-layer? (and (seq layer-separator-colours)
                                    (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
             mask-id (uid/generate "mask")
             mask-inverted-id (uid/generate "mask")
-            [mask mask-inverted] (when-not landscape?
+            [mask mask-inverted] (when-not (or preview-original?
+                                               landscape?)
                                    (make-mask adjusted-charge-without-shading
                                               placeholder-colours
                                               tincture
                                               outline-mode
-                                              preview-original?
                                               hide-lower-layer?))
             ;; this is the one drawn on top of the masked field version, for the tincture replacements
             ;; and outline; the primary colour has no replacement here, which might make it shine through
