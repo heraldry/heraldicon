@@ -70,20 +70,6 @@
                      ids)]
     (replace-id-references data id-map)))
 
-(defn strip-style-block [data]
-  (walk/postwalk (fn [value]
-                   (when-not (and (vector? value)
-                                  (-> value first (= :style)))
-                     value))
-                 data))
-
-(defn strip-classes-and-ids [data]
-  (walk/postwalk (fn [value]
-                   (if (map? value)
-                     (dissoc value :class :id)
-                     value))
-                 data))
-
 (defn optimize [data svgo-optimize-fn]
   (go-catch
    (-> {:removeUnknownsAndDefaults false}
@@ -153,3 +139,30 @@
   (let [css-rules (read-css-rules svg-data)
         ordered-css-rules (reverse css-rules)]
     (walk/postwalk #(apply-css-rules % ordered-css-rules) svg-data)))
+
+(defn- strip-elements [data tags]
+  (walk/postwalk (fn [value]
+                   (when-not (and (vector? value)
+                                  (contains? tags (first value)))
+                     value))
+                 data))
+
+(defn- strip-classes-and-ids [data]
+  (walk/postwalk (fn [value]
+                   (if (map? value)
+                     (dissoc value :class :id)
+                     value))
+                 data))
+
+(defn- strip-switch-elements [data]
+  (walk/postwalk (fn [value]
+                   (cond-> value
+                     (and (vector? value)
+                          (= (first value) :switch)) last))
+                 data))
+
+(defn strip-unnecessary-parts [svg-data]
+  (-> svg-data
+      (strip-elements #{:style :foreignObject :foreign-object})
+      strip-switch-elements
+      strip-classes-and-ids))

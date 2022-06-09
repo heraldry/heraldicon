@@ -105,8 +105,7 @@
          first
          hickory/as-hiccup
          svg/process-style-blocks
-         svg/strip-style-block
-         svg/strip-classes-and-ids
+         svg/strip-unnecessary-parts
          svg/fix-string-style-values
          svg/fix-attribute-and-tag-names
          (as-> parsed
