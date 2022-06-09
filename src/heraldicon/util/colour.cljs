@@ -205,3 +205,6 @@
               (* 255)
               int)]
     (hex-colour v v v)))
+
+(defn random []
+  (hex-colour (rand-int 256) (rand-int 256) (rand-int 256)))

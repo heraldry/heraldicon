@@ -304,6 +304,9 @@
       "roundel": "Kugel",
       "rustre": "Durchbohrte Raute",
       "star": "Stern"
+    },
+    "editor": {
+      "colourize-info": "Klick auf SVG Elemente, um ihnen eine eindeutige Farbe zu geben"
     }
   },
   "render-options": {
@@ -609,7 +612,8 @@
     "edit": "Bearbeiten",
     "from-blazon": "Von Blasonierung",
     "save": "Speichern",
-    "upload-svg": "SVG hochladen"
+    "upload-svg": "SVG hochladen",
+    "colourize": "Einfärben"
   },
   "user": {
     "message": {

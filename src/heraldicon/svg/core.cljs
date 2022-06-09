@@ -166,3 +166,11 @@
       (strip-elements #{:style :foreignObject :foreign-object})
       strip-switch-elements
       strip-classes-and-ids))
+
+(defn add-ids [data]
+  (walk/postwalk (fn [value]
+                   (cond-> value
+                     (and (vector? value)
+                          (-> value second map?)
+                          (-> value second :fill)) (assoc-in [1 :id] (uid/generate "id"))))
+                 data))

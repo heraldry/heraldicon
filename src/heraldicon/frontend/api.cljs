@@ -5,6 +5,7 @@
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.user :as user]
+   [heraldicon.svg.core :as svg]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -78,7 +79,7 @@
         ;; currently need to fetch both, so saving a new version will send them again
         (update charge-data
                 :data assoc
-                :edn-data edn-data
+                :edn-data (svg/add-ids edn-data)
                 :svg-data svg-data))
       (catch :default e
         (log/error "fetch charge for editing error:" e)))))

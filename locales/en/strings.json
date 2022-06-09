@@ -304,6 +304,9 @@
       "roundel": "Roundel",
       "rustre": "Rustre",
       "star": "Star"
+    },
+    "editor": {
+      "colourize-info": "Give SVG elements a unique colour by clicking on them"
     }
   },
   "render-options": {
@@ -610,7 +613,8 @@
     "edit": "Edit",
     "from-blazon": "From blazon",
     "save": "Save",
-    "upload-svg": "Upload SVG"
+    "upload-svg": "Upload SVG",
+    "colourize": "Colourize"
   },
   "user": {
     "message": {
