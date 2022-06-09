@@ -14,6 +14,7 @@
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
@@ -90,6 +91,24 @@
         [x0 y0 x1 y1]
         [nil nil nil nil]))))
 
+(defn- update-colours-map [charge-data]
+  (let [existing-colours (:colours charge-data)
+        colours (into {}
+                      (map (fn [c]
+                             [c :keep]))
+                      (find-colours (-> charge-data :edn-data :data)))]
+    (assoc charge-data
+           :colours
+           (merge colours
+                  (select-keys existing-colours
+                               (set/intersection
+                                (-> colours
+                                    keys
+                                    set)
+                                (-> existing-colours
+                                    keys
+                                    set)))))))
+
 (defn- load-svg-file [db-path data]
   (go-catch
    (try
@@ -138,7 +157,8 @@
                                                    (contains? data :stroke-width)
                                                    (not (contains? data :stroke)))
                                             (assoc data :stroke "none")
-                                            data)))))
+                                            data))))
+                                  svg/add-ids)
                      width (-> parsed
                                (get-in [1 :width])
                                parse-number-with-unit)
@@ -159,33 +179,98 @@
                      [width height] (if (and width height)
                                       [width height]
                                       [100 100])
-                     colours (into {}
-                                   (map (fn [c]
-                                          [c :keep]))
-                                   (find-colours edn-data))
                      edn-data (assoc-in edn-data
                                         [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")"))
-                     existing-colours @(rf/subscribe [:get (conj db-path :colours)])
-                     new-colours (merge colours
-                                        (select-keys existing-colours
-                                                     (set/intersection
-                                                      (-> colours
-                                                          keys
-                                                          set)
-                                                      (-> existing-colours
-                                                          keys
-                                                          set))))]
-                 (rf/dispatch [:merge db-path {:colours new-colours
-                                               :edn-data {:data edn-data
-                                                          :width width
-                                                          :height height}
-                                               :svg-data data}]))))
+                     existing-colours @(rf/subscribe [:get (conj db-path :colours)])]
+                 (rf/dispatch [:merge db-path (update-colours-map
+                                               {:colours existing-colours
+                                                :edn-data {:data edn-data
+                                                           :width width
+                                                           :height height}
+                                                :svg-data data})]))))
      (catch :default e
        (log/error "load svg file error:" e)))))
 
+(macros/reg-event-db ::toggle-select-colour
+  (fn [db [_ colour]]
+    (update-in db [:ui :colours :show colour] not)))
+
+(defn- generate-new-colour [colours]
+  (loop [new-colour (colour/random)]
+    (if (contains? colours new-colour)
+      (recur (colour/random))
+      new-colour)))
+
+(defn- colourize-element [element-id colour data]
+  (walk/postwalk (fn [element]
+                   (if (and (vector? element)
+                            (-> element second map?)
+                            (-> element second :id (= element-id)))
+                     (assoc-in element [1 :fill] colour)
+                     element))
+                 data))
+
+(macros/reg-event-db ::colourize-element
+  (fn [db [_ element-id]]
+    (let [colours (set (keys (get-in db (conj form-db-path :data :colours))))
+          new-colour (generate-new-colour colours)]
+      (-> db
+          (update-in (conj form-db-path :data :edn-data :data) (partial colourize-element element-id new-colour))
+          (update-in (conj form-db-path :data) update-colours-map)))))
+
+(defn- svg-fill-clicked [element event]
+  (doto event
+    .preventDefault
+    .stopPropagation)
+  (if @(rf/subscribe [::colourize-mode?])
+    (rf/dispatch [::colourize-element (-> element second :id)])
+    (rf/dispatch [::toggle-select-colour (-> element second :fill)])))
+
+(def ^:private colourize-mode-path
+  [:ui :charge-edit :colourize-mode?])
+
+(rf/reg-sub ::colourize-mode?
+  (fn [_ _]
+    (rf/subscribe [:get colourize-mode-path]))
+
+  (fn [value _]
+    value))
+
+(macros/reg-event-db ::toggle-colourize-mode
+  (fn [db _]
+    (update-in db colourize-mode-path not)))
+
+(defn- edit-controls []
+  (let [colourize-mode? @(rf/subscribe [::colourize-mode?])]
+    [:div.no-select {:style {:position "absolute"
+                             :left "20px"
+                             :top "20px"}}
+     [:button {:on-click #(rf/dispatch [::toggle-colourize-mode])
+               :style (when colourize-mode?
+                        {:color "#ffffff"
+                         :background-color "#ff8020"})}
+      [tr :string.button/colourize]]
+     " "
+     (when colourize-mode?
+       [tr :string.charge.editor/colourize-info])]))
+
+(defn- prepare-for-preview [data]
+  (update-in data
+             [:data :edn-data :data]
+             (fn [charge-data]
+               (walk/postwalk (fn [element]
+                                (if (and (vector? element)
+                                         (-> element second map?)
+                                         (-> element second :fill))
+                                  (assoc-in element [1 :on-click] (partial svg-fill-clicked element))
+                                  element))
+                              charge-data))))
+
 (defn- preview []
   (let [form-data @(rf/subscribe [:get form-db-path])
-        prepared-charge-data (update form-data :username #(or % (:username (user/data))))
+        prepared-charge-data (-> form-data
+                                 (update :username #(or % (:username (user/data))))
+                                 prepare-for-preview)
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
         {:keys [result
                 environment]} (render/coat-of-arms
@@ -226,7 +311,9 @@
 (defn- save-charge-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [payload @(rf/subscribe [:get form-db-path])
+  (let [payload (update-in @(rf/subscribe [:get form-db-path])
+                           [:data :edn-data :data]
+                           svg/strip-unnecessary-parts)
         user-data (user/data)]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:clear-form-message form-db-path])
@@ -354,8 +441,10 @@
                  :padding-right "10px"
                  :height "100%"}
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
-   [:div.no-scrollbar {:style {:grid-area "left"}}
-    [preview]]
+   [:div.no-scrollbar {:style {:grid-area "left"
+                               :position "relative"}}
+    [preview]
+    [edit-controls]]
    [:div.no-scrollbar {:style {:grid-area "middle"
                                :padding-top "10px"}}
     [ui/selected-component]
