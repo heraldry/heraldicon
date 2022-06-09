@@ -64,8 +64,6 @@
                          :default false
                          :ui {:label :string.render-options/squiggly?}}
 
-             :preview-original? {:type :boolean
-                                 :ui {:label :string.render-options/preview-original?}}
              :coat-of-arms-angle {:type :range
                                   :default 0
                                   :min -45

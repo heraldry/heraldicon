@@ -107,7 +107,8 @@
 
 (defn tinctured-field [{:keys [tincture-mapping
                                svg-export?
-                               select-component-fn] :as context}
+                               select-component-fn
+                               charge-preview?] :as context}
 
                        & {:keys [mask-id
                                  transform]}]
@@ -147,6 +148,7 @@
                                        select-component-fn)
                               #(select-component-fn % context))
                   :style (merge
-                          {:cursor "pointer"}
+                          (when-not charge-preview?
+                            {:cursor "pointer"})
                           (when animation
                             {:animation (str animation " linear 20s infinite")}))}])))

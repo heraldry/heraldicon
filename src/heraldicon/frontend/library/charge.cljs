@@ -188,12 +188,20 @@
                                                            :width width
                                                            :height height}
                                                 :svg-data data})]))))
+     (rf/dispatch [::clear-selected-colours])
      (catch :default e
        (log/error "load svg file error:" e)))))
 
+(def ^:private show-colours-path
+  [:ui :colours :show])
+
 (macros/reg-event-db ::toggle-select-colour
   (fn [db [_ colour]]
-    (update-in db [:ui :colours :show colour] not)))
+    (update-in db (conj show-colours-path colour) not)))
+
+(macros/reg-event-db ::clear-selected-colours
+  (fn [db _]
+    (assoc-in db show-colours-path nil)))
 
 (defn- generate-new-colour [colours]
   (loop [new-colour (colour/random)]
@@ -262,22 +270,25 @@
                                 (if (and (vector? element)
                                          (-> element second map?)
                                          (-> element second :fill))
-                                  (assoc-in element [1 :on-click] (partial svg-fill-clicked element))
+                                  (-> element
+                                      (assoc-in [1 :on-click] (partial svg-fill-clicked element))
+                                      (assoc-in [1 :style :cursor] "pointer"))
                                   element))
                               charge-data))))
 
-(defn- preview []
+(defn- preview [& {:keys [original?]}]
   (let [form-data @(rf/subscribe [:get form-db-path])
         prepared-charge-data (-> form-data
                                  (update :username #(or % (:username (user/data))))
-                                 prepare-for-preview)
+                                 (cond->
+                                   original? prepare-for-preview))
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
         {:keys [result
                 environment]} (render/coat-of-arms
                                (-> shared/coa-select-option-context
                                    (c/<< :path [:context :coat-of-arms])
                                    (c/<< :ui-show-colours
-                                         (->> @(rf/subscribe [:get [:ui :colours :show]])
+                                         (->> @(rf/subscribe [:get show-colours-path])
                                               (keep (fn [value]
                                                       (when (second value)
                                                         (first value))))
@@ -286,7 +297,9 @@
                                          (conj example-coa-db-path :render-options))
                                    (c/<< :coat-of-arms
                                          (assoc-in coat-of-arms
-                                                   [:field :components 0 :data] prepared-charge-data)))
+                                                   [:field :components 0 :data] prepared-charge-data))
+                                   (c/<< :charge-preview? true)
+                                   (c/<< :preview-original? original?))
                                100)
         {:keys [width height]} environment]
     [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
@@ -443,7 +456,7 @@
          :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
    [:div.no-scrollbar {:style {:grid-area "left"
                                :position "relative"}}
-    [preview]
+    [preview :original? true]
     [edit-controls]]
    [:div.no-scrollbar {:style {:grid-area "middle"
                                :padding-top "10px"}}
@@ -458,7 +471,8 @@
                         :spacer
                         (conj example-coa-db-path :render-options)
                         :spacer
-                        (conj example-coa-db-path :coat-of-arms :field :components 0)]]]])
+                        (conj example-coa-db-path :coat-of-arms :field :components 0)]]
+    [preview]]])
 
 (defn- charge-display [charge-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path charge-id])

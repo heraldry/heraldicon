@@ -184,7 +184,9 @@
            auto-resize?
            ui-show-colours
            select-component-fn
-           svg-export?] :as context
+           svg-export?
+           preview-original?
+           charge-preview?] :as context
     :or {auto-resize? true}}]
   (let [data (interface/get-raw-data (c/++ context :data))
         variant (interface/get-raw-data (c/++ context :variant))
@@ -205,7 +207,8 @@
                             :anchor-override
                             :size-default
                             :charge-group)
-            highlight-colours? (seq ui-show-colours)
+            highlight-colours? (and preview-original?
+                                    (seq ui-show-colours))
             ui-show-colours (set ui-show-colours)
             anchor (interface/get-sanitized-data (c/++ context :anchor))
             orientation (interface/get-sanitized-data (c/++ context :orientation))
@@ -223,7 +226,6 @@
             tincture (merge
                       (interface/get-raw-data (c/++ context :tincture))
                       (interface/get-sanitized-data (c/++ context :tincture)))
-            preview-original? (interface/render-option :preview-original? context)
             outline-mode (if (or (interface/render-option :outline? context)
                                  (= (interface/render-option :mode context)
                                     :hatching)) :keep
@@ -457,7 +459,8 @@
                         :height (+ mask-height 10)
                         :style {:fill "#000000"}}]]]]))
          [:g (merge
-              (when-not svg-export?
+              (when-not (or svg-export?
+                            charge-preview?)
                 {:on-click (when select-component-fn
                              #(select-component-fn % context))
                  :style {:cursor "pointer"}

@@ -92,6 +92,7 @@
 (defn render [{:keys [path
                       environment
                       svg-export?
+                      charge-preview?
                       transform] :as context}]
   (let [field-context (effective-field-context context)
         inherit-environment? (interface/get-sanitized-data
@@ -106,7 +107,8 @@
       (render-counterchanged-field field-context)
       (let [selected? false]
         [:<>
-         [:g {:style (when (not svg-export?)
+         [:g {:style (when-not (or svg-export?
+                                   charge-preview?)
                        {:pointer-events "visiblePainted"
                         :cursor "pointer"})
               :transform transform}
