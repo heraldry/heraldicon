@@ -15,8 +15,7 @@
        (tree-seq vector? seq)
        (keep (fn [value]
                (when (and (vector? value)
-                          (or (-> value first string?)
-                              (-> value first map?))
+                          (= (count value) 2)
                           (-> value second keyword?))
                  (second value))))
        vec))
