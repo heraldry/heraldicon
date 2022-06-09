@@ -9,6 +9,7 @@
     "amazon-cognito-identity-js": "^5.2.8",
     "copy-to-clipboard": "^3.3.1",
     "crypto-browserify": "^3.12.0",
+    "css": "^3.0.0",
     "draft-js": "^0.11.7",
     "genex": "^1.1.0",
     "paper-jsdom": "^0.12.15",
