@@ -104,6 +104,7 @@
          hickory/parse-fragment
          first
          hickory/as-hiccup
+         svg/process-style-blocks
          svg/strip-style-block
          svg/strip-classes
          svg/fix-string-style-values
