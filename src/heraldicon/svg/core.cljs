@@ -30,16 +30,14 @@
 (defn fix-attribute-and-tag-names [data]
   (walk/postwalk
    (fn [v]
-     (cond
-       (keyword? v) (get {:pattern-units :patternUnits
-                          :gradientunits :gradientUnits
-                          :xlink:href :href
-                          :gradienttransform :gradientTransform
-                          :lineargradient :linearGradient
-                          :radialgradient :radialGradient
-                          :preserveaspectratio :preserveAspectRatio
-                          :xml:space :xmlSpace} v v)
-       :else v))
+     (get {:pattern-units :patternUnits
+           :gradientunits :gradientUnits
+           :xlink:href :href
+           :gradienttransform :gradientTransform
+           :lineargradient :linearGradient
+           :radialgradient :radialGradient
+           :preserveaspectratio :preserveAspectRatio
+           :xml:space :xmlSpace} v v))
    data))
 
 (defn- replace-id-references [data id-map]
