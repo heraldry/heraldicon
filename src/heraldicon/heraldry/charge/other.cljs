@@ -154,7 +154,14 @@
                       (fn [colour]
                         (if (s/starts-with? colour "url")
                           "none"
-                          "#fff")))
+                          (let [colour-lower (colour/normalize colour)
+                                kind (placeholder-colour-modifier placeholder-colours colour-lower)]
+                            (cond
+                              (and (= kind :layer-separator)
+                                   (not hide-lower-layer?)) "none"
+                              (and (= kind :layer-separator)
+                                   hide-lower-layer?) "#000"
+                              :else "#fff")))))
            mask-inverted (replace-colours
                           data
                           (fn [colour]
