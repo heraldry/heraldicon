@@ -18,6 +18,7 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.svgo-setup] ;; needed for side effects
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
    [heraldicon.frontend.ui.shared :as shared]
