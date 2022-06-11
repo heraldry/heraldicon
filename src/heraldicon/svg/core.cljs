@@ -163,7 +163,7 @@
 
 (defn strip-unnecessary-parts [svg-data]
   (-> svg-data
-      (strip-elements #{:style :foreignObject :foreign-object})
+      (strip-elements #{:style :foreignObject :foreign-object :foreignobject})
       strip-switch-elements
       strip-classes-and-ids))
 
