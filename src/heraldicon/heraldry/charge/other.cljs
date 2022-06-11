@@ -141,7 +141,7 @@
                            replacement (get-replacement kind provided-placeholder-colours)]
                        (cond
                          (or (= kind :keep)
-                             (and (not (#{:transparent :primary} outline-mode))
+                             (and (= outline-mode :remove)
                                   (= kind :outline))
                              replacement) "#fff"
                          (and (= kind :layer-separator)
@@ -149,6 +149,12 @@
                          (and (= kind :layer-separator)
                               hide-lower-layer?) "#000"
                          :else "#000")))))
+           mask-base (replace-colours
+                      data
+                      (fn [colour]
+                        (if (s/starts-with? colour "url")
+                          "none"
+                          "#fff")))
            mask-inverted (replace-colours
                           data
                           (fn [colour]
@@ -167,7 +173,7 @@
                                   (and (= kind :layer-separator)
                                        hide-lower-layer?) "#000"
                                   :else "#fff")))))]
-       [mask mask-inverted]))))
+       [mask mask-inverted mask-base]))))
 
 (defn- colours-for-modifier [placeholder-colours modifier]
   (->> placeholder-colours
@@ -347,13 +353,14 @@
                                    (not render-pass-below-shield?))
             mask-id (uid/generate "mask")
             mask-inverted-id (uid/generate "mask")
-            [mask mask-inverted] (when-not (or preview-original?
-                                               landscape?)
-                                   (make-mask adjusted-charge-without-shading
-                                              placeholder-colours
-                                              tincture
-                                              outline-mode
-                                              hide-lower-layer?))
+            mask-base-id (uid/generate "mask")
+            [mask mask-inverted mask-base] (when-not (or preview-original?
+                                                         landscape?)
+                                             (make-mask adjusted-charge-without-shading
+                                                        placeholder-colours
+                                                        tincture
+                                                        outline-mode
+                                                        hide-lower-layer?))
             ;; this is the one drawn on top of the masked field version, for the tincture replacements
             ;; and outline; the primary colour has no replacement here, which might make it shine through
             ;; around the edges, to prevent that, it is specifically replaced with black
@@ -543,7 +550,10 @@
               [:mask {:id mask-id}
                (svg/make-unique-ids mask)]
               [:mask {:id mask-inverted-id}
-               (svg/make-unique-ids mask-inverted)]])]
+               (svg/make-unique-ids mask-inverted)]
+              (when (= outline-mode :keep)
+                [:mask {:id mask-base-id}
+                 (svg/make-unique-ids mask-base)])])]
           (let [transform (str "translate(" (v/->str anchor-point) ")"
                                "rotate(" angle ")"
                                "scale(" scale-x "," scale-y ")"
@@ -612,6 +622,15 @@
                        {:path [:context :charge-data]
                         :charge-data full-entity-data}
                        :charge]
+                      (when (= outline-mode :keep)
+                        [:g {:mask (str "url(#" mask-base-id ")")}
+                         [:rect {:transform reverse-transform
+                                 :x -500
+                                 :y -500
+                                 :width 1100
+                                 :height 1100
+                                 :fill (outline/color context)}]])
+
                       (when render-field?
                         [:g {:mask (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}
