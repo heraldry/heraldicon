@@ -62,13 +62,17 @@
 (s/def :heraldry.field/manual-blazon string?)
 
 (defmulti field-type (fn [field]
-                       (if (= ((some-fn :heraldry.field/type :type) field)
-                              :heraldry.field.type/plain)
-                         :plain
-                         :division)))
+                       (let [type ((some-fn :heraldry.field/type :type) field)]
+                         (case type
+                           :heraldry.field.type/plain :plain
+                           :heraldry.field.type/counterchanged :counterchanged
+                           :division))))
 
 (defmethod field-type :plain [_]
   (s/keys :req-un [:heraldry.field/tincture]))
+
+(defmethod field-type :counterchanged [_]
+  (s/keys))
 
 (defmethod field-type :division [_]
   (s/keys :req-un [:heraldry.field/fields]))
