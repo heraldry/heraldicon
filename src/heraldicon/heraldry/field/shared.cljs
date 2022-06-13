@@ -78,23 +78,30 @@
                                    effective-field-context)
           counterchange-tinctures (interface/get-counterchange-tinctures
                                    parent-field-context)
-          context (-> context
-                      (update :counterchanged-paths conj path)
-                      (add-tinctures-to-mapping counterchange-tinctures))]
+          counterchanged-context (-> context
+                                     (update :counterchanged-paths conj path)
+                                     (add-tinctures-to-mapping counterchange-tinctures))]
       [:<>
-       [render (-> context
+       [render (-> counterchanged-context
                    (c/<< :path parent-field-path)
                    (c/<< :environment parent-field-environment)
                    effective-field-context)]
-       [render-components context]])
+       [render-components (assoc counterchanged-context
+                                 :component-of-counterchanged-field? true
+                                 :previous-tincture-mapping (:tincture-mapping context))]])
     [:<>]))
 
 (defn render [{:keys [path
                       environment
                       svg-export?
                       charge-preview?
-                      transform] :as context}]
-  (let [field-context (effective-field-context context)
+                      transform
+                      component-of-counterchanged-field?
+                      previous-tincture-mapping] :as context}]
+  (let [field-context (-> (effective-field-context context)
+                          (dissoc :component-of-counterchanged-field?
+                                  :previous-tincture-map
+                                  :previous-counterchanged-paths))
         inherit-environment? (interface/get-sanitized-data
                               (c/++ field-context :inherit-environment?))
         counterchanged? (= (interface/get-raw-data (c/++ field-context :type))
@@ -105,7 +112,9 @@
                                                     (-> environment :meta :parent-environment)))]
     (if counterchanged?
       (render-counterchanged-field field-context)
-      (let [selected? false]
+      (let [selected? false
+            field-context (cond-> field-context
+                            component-of-counterchanged-field? (assoc :tincture-mapping previous-tincture-mapping))]
         [:<>
          [:g {:style (when-not (or svg-export?
                                    charge-preview?)
