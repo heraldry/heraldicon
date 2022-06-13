@@ -106,6 +106,11 @@
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
+        points (:points environment)
+        top (:top points)
+        left (:left points)
+        right (:right points)
+        bottom (:bottom points)
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
@@ -182,7 +187,8 @@
                  "z"]
                 [intersection-top-left
                  intersection-top-right
-                 anchor-point]]
+                 anchor-point
+                 top]]
 
                [["M" (v/add diagonal-top-left
                             line-top-left-start)
@@ -198,7 +204,8 @@
                  "z"]
                 [intersection-top-left
                  intersection-bottom-left
-                 anchor-point]]
+                 anchor-point
+                 left]]
 
                [["M" (v/add diagonal-bottom-right
                             line-bottom-right-start)
@@ -214,7 +221,8 @@
                  "z"]
                 [intersection-top-right
                  intersection-bottom-right
-                 anchor-point]]
+                 anchor-point
+                 right]]
 
                [["M" (v/add diagonal-bottom-right
                             line-bottom-right-start)
@@ -230,7 +238,8 @@
                  "z"]
                 [intersection-bottom-left
                  intersection-bottom-right
-                 anchor-point]]]]
+                 anchor-point
+                 bottom]]]]
 
     [:<>
      [shared/make-subfields
