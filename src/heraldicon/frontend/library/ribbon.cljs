@@ -1,7 +1,9 @@
 (ns heraldicon.frontend.library.ribbon
   (:require
+   ["copy-to-clipboard" :as copy-to-clipboard]
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.entity.attribution :as entity.attribution]
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
@@ -33,6 +35,9 @@
 
 (def form-db-path
   [:ribbon-form])
+
+(def ^:private saved-data-db-path
+  [:saved-ribbon-data])
 
 (def ^:private preview-width
   500)
@@ -354,6 +359,7 @@
         (let [response (<? (api.request/call :save-ribbon payload user-data))
               ribbon-id (:id response)]
           (rf/dispatch-sync [:set (conj form-db-path :id) ribbon-id])
+          (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
           (state/invalidate-cache-without-current form-db-path [ribbon-id nil])
           (state/invalidate-cache-without-current form-db-path [ribbon-id 0])
           (ribbon-select/invalidate-ribbons-cache)
@@ -384,13 +390,25 @@
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-ribbon)))
 
+(defn- share-button-clicked []
+  (let [url (entity.attribution/full-url-for-ribbon {:path form-db-path})]
+    (rf/dispatch-sync [:clear-form-message form-db-path])
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (if (copy-to-clipboard url)
+      (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])
+      (rf/dispatch [:set-form-error form-db-path :string.user.message/copy-to-clipboard-failed]))))
+
 (defn- button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         ribbon-id @(rf/subscribe [:get (conj form-db-path :id)])
         ribbon-username @(rf/subscribe [:get (conj form-db-path :username)])
+        public? (= @(rf/subscribe [:get (conj form-db-path :access)])
+                   :public)
         user-data (user/data)
         logged-in? (:logged-in? user-data)
+        unsaved-changes? (not= @(rf/subscribe [:get form-db-path])
+                               @(rf/subscribe [:get saved-data-db-path]))
         saved? ribbon-id
         owned-by-me? (= (:username user-data) ribbon-username)
         can-copy? (and logged-in?
@@ -398,7 +416,10 @@
                        owned-by-me?)
         can-save? (and logged-in?
                        (or (not saved?)
-                           owned-by-me?))]
+                           owned-by-me?))
+        can-share? (and public?
+                        saved?
+                        (not unsaved-changes?))]
     [:<>
      (when form-message
        [:div.success-message [tr form-message]])
@@ -407,6 +428,13 @@
 
      [:div.buttons {:style {:display "flex"}}
       [:div {:style {:flex "auto"}}]
+      [:button.button {:style {:flex "initial"
+                               :color "#777"}
+                       :class (when-not can-share? "disabled")
+                       :title (when-not can-share? (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))
+                       :on-click (when can-share?
+                                   share-button-clicked)}
+       [:i.fas.fa-share-alt]]
       [hover-menu/hover-menu
        {:path [:arms-form-action-menu]}
        :string.button/actions
@@ -415,7 +443,13 @@
          :handler copy-to-new-clicked
          :disabled? (not can-copy?)
          :tooltip (when-not can-copy?
-                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}]
+                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}
+        {:title :string.button/share
+         :icon "fas fa-share-alt"
+         :handler share-button-clicked
+         :disabled? (not can-share?)
+         :tooltip (when-not can-share?
+                    (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))}]
        [:button.button {:style {:flex "initial"
                                 :color "#777"
                                 :margin-left "10px"}}
@@ -487,7 +521,7 @@
   (let [[status ribbon-data] (state/async-fetch-data
                               form-db-path
                               [ribbon-id version]
-                              #(api/fetch-ribbon ribbon-id version nil))]
+                              #(api/fetch-ribbon ribbon-id version saved-data-db-path))]
     (when (= status :done)
       (if ribbon-data
         [ribbon-form]
