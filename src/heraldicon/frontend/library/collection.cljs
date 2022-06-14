@@ -14,6 +14,7 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.collection-select :as collection-select]
+   [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.frontend.ui.form.entity.collection.element :as collection.element]
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user :as user]
@@ -259,6 +260,24 @@
             [:g {:transform "translate(10,10) scale(5,5)"}
              result]]])))))
 
+(defn- copy-to-new-clicked []
+  (let [collection-data @(rf/subscribe [:get form-db-path])]
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (state/set-async-fetch-data
+     form-db-path
+     :new
+     (dissoc collection-data
+             :id
+             :version
+             :latest-version
+             :username
+             :user-id
+             :created-at
+             :first-version-created-at
+             :name))
+    (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
+    (reife/push-state :create-collection)))
+
 (defn- button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
@@ -268,6 +287,9 @@
         logged-in? (:logged-in? user-data)
         saved? collection-id
         owned-by-me? (= (:username user-data) collection-username)
+        can-copy? (and logged-in?
+                       saved?
+                       owned-by-me?)
         can-save? (and logged-in?
                        (or (not saved?)
                            owned-by-me?))]
@@ -279,6 +301,20 @@
 
      [:div.buttons {:style {:display "flex"}}
       [:div {:style {:flex "auto"}}]
+      [hover-menu/hover-menu
+       {:path [:arms-form-action-menu]}
+       :string.button/actions
+       [{:title :string.button/copy-to-new
+         :icon "fas fa-clone"
+         :handler copy-to-new-clicked
+         :disabled? (not can-copy?)
+         :tooltip (when-not can-copy?
+                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}]
+       [:button.button {:style {:flex "initial"
+                                :color "#777"
+                                :margin-left "10px"}}
+        [:i.fas.fa-ellipsis-h]]
+       :require-click? true]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
