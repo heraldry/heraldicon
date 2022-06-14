@@ -113,7 +113,7 @@
     (when (= status :done)
       [user-display])))
 
-(defn view-user-by-username [{:keys [parameters]}]
+(defn view-by-username [{:keys [parameters]}]
   (let [username (-> parameters :path :username)]
     [view-user username]))
 
@@ -121,11 +121,8 @@
   [:a {:href (reife/href :view-user {:username username})}
    username])
 
-(defn- list-all-users []
-  (when (-> (user/data) :username ((config/get :admins)))
-    [user-select/list-users link-to-user]))
-
-(defn view-list-users []
+(defn view-list []
   (rf/dispatch [:set-title :string.menu/users])
   [:div {:style {:padding "15px"}}
-   [list-all-users]])
+   (when (-> (user/data) :username ((config/get :admins)))
+     [user-select/list-users link-to-user])])

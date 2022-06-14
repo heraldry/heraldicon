@@ -527,7 +527,7 @@
         [ribbon-form]
         [not-found/not-found]))))
 
-(defn create-ribbon [_match]
+(defn create [_match]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
   (let [[status _ribbon-form-data] (state/async-fetch-data
@@ -543,7 +543,7 @@
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
 
-(defn view-list-ribbons []
+(defn view-list []
   (rf/dispatch [:set-title :string.menu/ribbon-library])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
@@ -558,7 +558,7 @@
    [:div {:style {:padding-top "0.5em"}}
     [ribbon-select/list-ribbons on-select]]])
 
-(defn view-ribbon-by-id [{:keys [parameters]}]
+(defn view-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         ribbon-id (str "ribbon:" id)]

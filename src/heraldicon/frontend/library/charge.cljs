@@ -525,7 +525,7 @@
         [charge-form]
         [not-found/not-found]))))
 
-(defn create-charge [_match]
+(defn create [_match]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
   (let [[status _charge-form-data] (state/async-fetch-data
@@ -541,10 +541,7 @@
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
 
-(defn- list-all-charges []
-  [charge-select/list-charges on-select])
-
-(defn view-list-charges []
+(defn view-list []
   (rf/dispatch [:set-title :string.entity/charges])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
@@ -558,9 +555,9 @@
                   (reife/push-state :create-charge))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
-    [list-all-charges]]])
+    [charge-select/list-charges on-select]]])
 
-(defn view-charge-by-id [{:keys [parameters]}]
+(defn view-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         charge-id (str "charge:" id)]
