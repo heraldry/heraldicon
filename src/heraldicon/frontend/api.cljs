@@ -68,19 +68,22 @@
       (catch :default e
         (log/error "fetch charge for rendering error:" e)))))
 
-(defn fetch-charge-for-editing [charge-id version]
+(defn fetch-charge-for-editing [charge-id version target-path]
   (go
     (try
       (let [user-data (user/data)
             charge-data (<? (api.request/call :fetch-charge {:id charge-id
                                                              :version version} user-data))
             edn-data (<? (http/fetch (-> charge-data :data :edn-data-url)))
-            svg-data (<? (http/fetch (-> charge-data :data :svg-data-url)))]
-        ;; currently need to fetch both, so saving a new version will send them again
-        (update charge-data
-                :data assoc
-                :edn-data (svg/add-ids edn-data)
-                :svg-data svg-data))
+            svg-data (<? (http/fetch (-> charge-data :data :svg-data-url)))
+            ;; currently need to fetch both, so saving a new version will send them again
+            charge-data (update charge-data
+                                :data assoc
+                                :edn-data (svg/add-ids edn-data)
+                                :svg-data svg-data)]
+        (when target-path
+          (rf/dispatch [:set target-path charge-data]))
+        charge-data)
       (catch :default e
         (log/error "fetch charge for editing error:" e)))))
 
