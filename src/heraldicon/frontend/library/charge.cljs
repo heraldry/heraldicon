@@ -21,6 +21,7 @@
    [heraldicon.frontend.svgo-setup] ;; needed for side effects
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
+   [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.default :as default]
@@ -349,9 +350,7 @@
           (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
           (modal/stop-loading))))))
 
-(defn- copy-to-new-clicked [event]
-  (.preventDefault event)
-  (.stopPropagation event)
+(defn- copy-to-new-clicked []
   (let [charge-data @(rf/subscribe [:get form-db-path])]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (state/set-async-fetch-data
@@ -415,15 +414,20 @@
                      :white-space "nowrap"}}
          [tr :string.miscellaneous/svg-file]])
       [:div {:style {:flex "auto"}}]
-      [:button.button
-       {:type "button"
-        :class (when-not can-copy? "disabled")
-        :style {:flex "initial"
-                :margin-left "10px"}
-        :on-click (if can-copy?
-                    copy-to-new-clicked
-                    #(js/alert (tr :string.user.message/need-to-be-logged-in-and-charge-must-be-saved)))}
-       [tr :string.button/copy-to-new]]
+      [hover-menu/hover-menu
+       {:path [:arms-form-action-menu]}
+       :string.button/actions
+       [{:title :string.button/copy-to-new
+         :icon "fas fa-clone"
+         :handler copy-to-new-clicked
+         :disabled? (not can-copy?)
+         :tooltip (when-not can-copy?
+                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}]
+       [:button.button {:style {:flex "initial"
+                                :color "#777"
+                                :margin-left "10px"}}
+        [:i.fas.fa-ellipsis-h]]
+       :require-click? true]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")

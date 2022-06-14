@@ -13,6 +13,7 @@
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.core :as ui]
+   [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.default :as default]
@@ -365,9 +366,7 @@
           (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
           (modal/stop-loading))))))
 
-(defn- copy-to-new-clicked [event]
-  (.preventDefault event)
-  (.stopPropagation event)
+(defn- copy-to-new-clicked []
   (let [ribbon-data @(rf/subscribe [:get form-db-path])]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (state/set-async-fetch-data
@@ -408,15 +407,20 @@
 
      [:div.buttons {:style {:display "flex"}}
       [:div {:style {:flex "auto"}}]
-      [:button.button
-       {:type "button"
-        :class (when-not can-copy? "disabled")
-        :style {:flex "initial"
-                :margin-left "10px"}
-        :on-click (if can-copy?
-                    copy-to-new-clicked
-                    #(js/alert "Need to be logged in and arms must be saved."))}
-       [tr :string.button/copy-to-new]]
+      [hover-menu/hover-menu
+       {:path [:arms-form-action-menu]}
+       :string.button/actions
+       [{:title :string.button/copy-to-new
+         :icon "fas fa-clone"
+         :handler copy-to-new-clicked
+         :disabled? (not can-copy?)
+         :tooltip (when-not can-copy?
+                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}]
+       [:button.button {:style {:flex "initial"
+                                :color "#777"
+                                :margin-left "10px"}}
+        [:i.fas.fa-ellipsis-h]]
+       :require-click? true]
       [:button.button.primary
        {:type "submit"
         :class (when-not can-save? "disabled")

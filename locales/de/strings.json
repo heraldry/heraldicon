@@ -612,7 +612,10 @@
     "from-blazon": "Von Blasonierung",
     "save": "Speichern",
     "upload-svg": "SVG hochladen",
-    "colourize": "Einfärben"
+    "colourize": "Einfärben",
+    "actions": "Aktionen",
+    "export": "Export",
+    "share": "Teilen"
   },
   "user": {
     "message": {
