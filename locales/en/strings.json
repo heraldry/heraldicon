@@ -613,7 +613,10 @@
     "from-blazon": "From blazon",
     "save": "Save",
     "upload-svg": "Upload SVG",
-    "colourize": "Colourize"
+    "colourize": "Colourize",
+    "actions": "Actions",
+    "export": "Export",
+    "share": "Share"
   },
   "user": {
     "message": {

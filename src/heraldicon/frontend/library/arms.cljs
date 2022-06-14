@@ -22,6 +22,7 @@
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.blazonry-editor :as blazonry-editor]
+   [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
@@ -98,9 +99,7 @@
     (string/tr-raw (interface/blazon (assoc context/default
                                             :path (conj form-db-path :data :achievement :coat-of-arms))) :en)]])
 
-(defn- generate-svg-clicked [event]
-  (.preventDefault event)
-  (.stopPropagation event)
+(defn- generate-svg-clicked []
   (modal/start-loading)
   (go
     (try
@@ -116,9 +115,7 @@
         (log/error "generate svg arms error:" e)
         (modal/stop-loading)))))
 
-(defn- generate-png-clicked [event]
-  (.preventDefault event)
-  (.stopPropagation event)
+(defn- generate-png-clicked []
   (modal/start-loading)
   (go
     (try
@@ -166,9 +163,7 @@
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
         (modal/stop-loading)))))
 
-(defn- copy-to-new-clicked [event]
-  (.preventDefault event)
-  (.stopPropagation event)
+(defn- copy-to-new-clicked []
   (let [arms-data @(rf/subscribe [:get form-db-path])]
     (rf/dispatch-sync [:clear-form-errors form-db-path])
     (rf/dispatch-sync [:set saved-data-db-path nil])
@@ -187,7 +182,7 @@
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-arms)))
 
-(defn- share-button-clicked [_event]
+(defn- share-button-clicked []
   (let [short-url (entity.arms/short-url @(rf/subscribe [:get form-db-path]))]
     (rf/dispatch-sync [:clear-form-message form-db-path])
     (rf/dispatch-sync [:clear-form-errors form-db-path])
@@ -228,45 +223,50 @@
        [:div.error-message [tr error-message]])
 
      [:div.buttons {:style {:display "flex"}}
-      [:button.button {:type "button"
-                       :class (when-not can-export? "disabled")
-                       :title (when-not can-export? (tr :string.user.message/arms-need-to-be-public-and-saved-for-exporting))
-                       :on-click (if can-export?
-                                   generate-svg-clicked
-                                   (if (not logged-in?)
-                                     #(js/alert (tr :string.user.message/need-to-be-logged-in))
-                                     #(js/alert (tr :string.user.message/save-changes-first))))
-                       :style {:flex "initial"
-                               :margin-right "10px"}}
-       "SVG"]
-      [:button.button {:type "button"
-                       :class (when-not can-export? "disabled")
-                       :title (when-not can-export? (tr :string.user.message/arms-need-to-be-public-and-saved-for-exporting))
-                       :on-click (if can-export?
-                                   generate-png-clicked
-                                   (if (not logged-in?)
-                                     #(js/alert (tr :string.user.message/need-to-be-logged-in))
-                                     #(js/alert (tr :string.user.message/save-changes-first))))
-                       :style {:flex "initial"
-                               :margin-right "10px"}}
-       "PNG"]
-      (when arms-id
-        [:button.button {:style {:flex "initial"
-                                 :color "#777"}
-                         :class (when-not can-share? "disabled")
-                         :title (when-not can-share? (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))
-                         :on-click share-button-clicked}
-         [:i.fas.fa-share-alt]])
       [:div {:style {:flex "auto"}}]
-      [:button.button
-       {:type "button"
-        :class (when-not can-copy? "disabled")
-        :style {:flex "initial"
-                :margin-left "10px"}
-        :on-click (if can-copy?
-                    copy-to-new-clicked
-                    #(js/alert (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved)))}
-       [tr :string.button/copy-to-new]]
+      [:button.button {:style {:flex "initial"
+                               :color "#777"}
+                       :class (when-not can-share? "disabled")
+                       :title (when-not can-share? (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))
+                       :on-click (when can-share?
+                                   share-button-clicked)}
+       [:i.fas.fa-share-alt]]
+      [hover-menu/hover-menu
+       {:path [:arms-form-action-menu]}
+       :string.button/actions
+       [{:title (string/str-tr :string.button/export " (SVG)")
+         :icon "fas fa-file-export"
+         :handler generate-svg-clicked
+         :disabled? (not can-export?)
+         :tooltip (when-not can-export?
+                    (if (not logged-in?)
+                      (tr :string.user.message/need-to-be-logged-in)
+                      (tr :string.user.message/save-changes-first)))}
+        {:title (string/str-tr :string.button/export " (PNG)")
+         :icon "fas fa-file-export"
+         :handler generate-png-clicked
+         :disabled? (not can-export?)
+         :tooltip (when-not can-export?
+                    (if (not logged-in?)
+                      (tr :string.user.message/need-to-be-logged-in)
+                      (tr :string.user.message/save-changes-first)))}
+        {:title :string.button/share
+         :icon "fas fa-share-alt"
+         :handler share-button-clicked
+         :disabled? (not can-share?)
+         :tooltip (when-not can-share?
+                    (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))}
+        {:title :string.button/copy-to-new
+         :icon "fas fa-clone"
+         :handler copy-to-new-clicked
+         :disabled? (not can-copy?)
+         :tooltip (when-not can-copy?
+                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}]
+       [:button.button {:style {:flex "initial"
+                                :color "#777"
+                                :margin-left "10px"}}
+        [:i.fas.fa-ellipsis-h]]
+       :require-click? true]
       [:button.button.primary {:type "submit"
                                :class (when-not can-save? "disabled")
                                :on-click (if can-save?
