@@ -329,10 +329,7 @@
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
 
-(defn- list-all-arms []
-  [arms-select/list-arms on-select])
-
-(defn view-list-arms []
+(defn view-list []
   (rf/dispatch [:set-title :string.entity/arms])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
@@ -354,7 +351,7 @@
                   (blazonry-editor/open (c/++ (base-context) :data :achievement :coat-of-arms :field)))}
     [tr :string.button/create-from-blazon]]
    [:div {:style {:padding-top "0.5em"}}
-    [list-all-arms]]])
+    [arms-select/list-arms on-select]]])
 
 (defn- load-hdn [hdn-hash]
   (go
@@ -370,7 +367,7 @@
           default/arms-entity))
       default/arms-entity)))
 
-(defn create-arms [{:keys [query-params]}]
+(defn create [{:keys [query-params]}]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
   (let [[status _arms-form-data] (state/async-fetch-data
@@ -380,7 +377,7 @@
     (when (= status :done)
       [arms-form])))
 
-(defn view-arms-by-id [{:keys [parameters]}]
+(defn view-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         arms-id (str "arms:" id)]

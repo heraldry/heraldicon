@@ -42,174 +42,174 @@
 
    ["/collections/"
     {:name :collections
-     :view library.collection/view-list-collection}]
+     :view library.collection/view-list}]
 
    ["/collections"
     {:name :collections-without-slash
-     :view library.collection/view-list-collection}]
+     :view library.collection/view-list}]
 
    ["/collections/new"
     {:name :create-collection
-     :view library.collection/create-collection
+     :view library.collection/create
      :conflicting true}]
 
    ["/collections/new/"
     {:name :create-collection-with-slash
-     :view library.collection/create-collection
+     :view library.collection/create
      :conflicting true}]
 
    ["/collections/:id"
     {:name :view-collection-by-id
-     :view library.collection/view-collection-by-id
+     :view library.collection/view-by-id
      :conflicting true}]
 
    ["/collections/:id/"
     {:name :view-collection-by-id-with-slash
-     :view library.collection/view-collection-by-id
+     :view library.collection/view-by-id
      :conflicting true}]
 
    ["/collections/:id/:version"
     {:name :view-collection-by-id-and-version
-     :view library.collection/view-collection-by-id
+     :view library.collection/view-by-id
      :conflicting true}]
 
    ["/collections/:id/:version/"
     {:name :view-collection-by-id-and-version-with-slash
-     :view library.collection/view-collection-by-id
+     :view library.collection/view-by-id
      :conflicting true}]
 
    ["/arms/"
     {:name :arms
-     :view library.arms/view-list-arms}]
+     :view library.arms/view-list}]
 
    ["/arms"
     {:name :arms-without-slash
-     :view library.arms/view-list-arms}]
+     :view library.arms/view-list}]
 
    ["/arms/new"
     {:name :create-arms
-     :view library.arms/create-arms
+     :view library.arms/create
      :conflicting true}]
 
    ["/arms/new/"
     {:name :create-arms-with-slash
-     :view library.arms/create-arms
+     :view library.arms/create
      :conflicting true}]
 
    ["/arms/:id"
     {:name :view-arms-by-id
-     :view library.arms/view-arms-by-id
+     :view library.arms/view-by-id
      :conflicting true}]
 
    ["/arms/:id/"
     {:name :view-arms-by-id-with-slash
-     :view library.arms/view-arms-by-id
+     :view library.arms/view-by-id
      :conflicting true}]
 
    ["/arms/:id/:version"
     {:name :view-arms-by-id-and-version
-     :view library.arms/view-arms-by-id
+     :view library.arms/view-by-id
      :conflicting true}]
 
    ["/arms/:id/:version/"
     {:name :view-arms-by-id-and-version-with-slash
-     :view library.arms/view-arms-by-id
+     :view library.arms/view-by-id
      :conflicting true}]
 
    ["/charges/"
     {:name :charges
-     :view library.charge/view-list-charges}]
+     :view library.charge/view-list}]
 
    ["/charges"
     {:name :charges-without-slash
-     :view library.charge/view-list-charges}]
+     :view library.charge/view-list}]
 
    ["/charges/new"
     {:name :create-charge
-     :view library.charge/create-charge
+     :view library.charge/create
      :conflicting true}]
 
    ["/charges/new/"
     {:name :create-charge-with-slash
-     :view library.charge/create-charge
+     :view library.charge/create
      :conflicting true}]
 
    ["/charges/:id"
     {:name :view-charge-by-id
-     :view library.charge/view-charge-by-id
+     :view library.charge/view-by-id
      :conflicting true}]
 
    ["/charges/:id/"
     {:name :view-charge-by-id-with-slash
-     :view library.charge/view-charge-by-id
+     :view library.charge/view-by-id
      :conflicting true}]
 
    ["/charges/:id/:version"
     {:name :view-charge-by-id-and-version
-     :view library.charge/view-charge-by-id
+     :view library.charge/view-by-id
      :conflicting true}]
 
    ["/charges/:id/:version/"
     {:name :view-charge-by-id-and-version-with-slash
-     :view library.charge/view-charge-by-id
+     :view library.charge/view-by-id
      :conflicting true}]
 
    ["/ribbons/"
     {:name :ribbons
-     :view library.ribbon/view-list-ribbons}]
+     :view library.ribbon/view-list}]
 
    ["/ribbons"
     {:name :ribbons-without-slash
-     :view library.ribbon/view-list-ribbons}]
+     :view library.ribbon/view-list}]
 
    ["/ribbons/new"
     {:name :create-ribbon
-     :view library.ribbon/create-ribbon
+     :view library.ribbon/create
      :conflicting true}]
 
    ["/ribbons/new/"
     {:name :create-ribbon-with-slash
-     :view library.ribbon/create-ribbon
+     :view library.ribbon/create
      :conflicting true}]
 
    ["/ribbons/:id"
     {:name :view-ribbon-by-id
-     :view library.ribbon/view-ribbon-by-id
+     :view library.ribbon/view-by-id
      :conflicting true}]
 
    ["/ribbons/:id/"
     {:name :view-ribbon-by-id-with-slash
-     :view library.ribbon/view-ribbon-by-id
+     :view library.ribbon/view-by-id
      :conflicting true}]
 
    ["/ribbons/:id/:version"
     {:name :view-ribbon-by-id-and-version
-     :view library.ribbon/view-ribbon-by-id
+     :view library.ribbon/view-by-id
      :conflicting true}]
 
    ["/ribbons/:id/:version/"
     {:name :view-ribbon-by-id-and-version-with-slash
-     :view library.ribbon/view-ribbon-by-id
+     :view library.ribbon/view-by-id
      :conflicting true}]
 
    ["/users/"
     {:name :users
-     :view library.user/view-list-users
+     :view library.user/view-list
      :conflicting true}]
 
    ["/users"
     {:name :users-without-slash
-     :view library.user/view-list-users
+     :view library.user/view-list
      :conflicting true}]
 
    ["/users/:username"
     {:name :view-user
-     :view library.user/view-user-by-username
+     :view library.user/view-by-username
      :conflicting true}]
 
    ["/users/:username/"
     {:name :view-user-with-slash
-     :view library.user/view-user-by-username
+     :view library.user/view-by-username
      :conflicting true}]
 
    ["/account/"

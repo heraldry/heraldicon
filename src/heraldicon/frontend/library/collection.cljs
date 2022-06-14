@@ -405,10 +405,7 @@
                       (rf/dispatch-sync [:clear-form-message form-db-path]))}
      (:name collection)]))
 
-(defn- list-collections []
-  [collection-select/list-collections link-to-collection])
-
-(defn view-list-collection []
+(defn view-list []
   (rf/dispatch [:set-title :string.entity/collections])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
@@ -421,9 +418,9 @@
                   (reife/push-state :create-collection))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
-    [list-collections]]])
+    [collection-select/list-collections link-to-collection]]])
 
-(defn create-collection [_match]
+(defn create [_match]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
   (let [[status collection-data] (state/async-fetch-data
@@ -435,7 +432,7 @@
         [collection-form]
         [not-found/not-found]))))
 
-(defn view-collection-by-id [{:keys [parameters]}]
+(defn view-by-id [{:keys [parameters]}]
   (let [id (-> parameters :path :id)
         version (-> parameters :path :version)
         collection-id (str "collection:" id)]
