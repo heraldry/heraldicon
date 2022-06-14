@@ -1,8 +1,10 @@
 (ns heraldicon.frontend.library.collection
   (:require
+   ["copy-to-clipboard" :as copy-to-clipboard]
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.context :as c]
+   [heraldicon.entity.attribution :as entity.attribution]
    [heraldicon.entity.id :as id]
    [heraldicon.font :as font]
    [heraldicon.frontend.api :as api]
@@ -278,13 +280,27 @@
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-collection)))
 
+(defn- share-button-clicked []
+  (let [url (entity.attribution/full-url-for-collection {:path form-db-path})]
+    (rf/dispatch-sync [:clear-form-message form-db-path])
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (if (copy-to-clipboard url)
+      (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])
+      (rf/dispatch [:set-form-error form-db-path :string.user.message/copy-to-clipboard-failed]))))
+
 (defn- button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         collection-id @(rf/subscribe [:get (conj form-db-path :id)])
         collection-username @(rf/subscribe [:get (conj form-db-path :username)])
+        public? (= @(rf/subscribe [:get (conj form-db-path :access)])
+                   :public)
         user-data (user/data)
         logged-in? (:logged-in? user-data)
+        unsaved-changes? (not= (update-in @(rf/subscribe [:get form-db-path]) [:data :achievement]
+                                          dissoc :render-options)
+                               (update-in @(rf/subscribe [:get saved-data-db-path]) [:data :achievement]
+                                          dissoc :render-options))
         saved? collection-id
         owned-by-me? (= (:username user-data) collection-username)
         can-copy? (and logged-in?
@@ -292,7 +308,10 @@
                        owned-by-me?)
         can-save? (and logged-in?
                        (or (not saved?)
-                           owned-by-me?))]
+                           owned-by-me?))
+        can-share? (and public?
+                        saved?
+                        (not unsaved-changes?))]
     [:<>
      (when form-message
        [:div.success-message [tr form-message]])
@@ -301,6 +320,13 @@
 
      [:div.buttons {:style {:display "flex"}}
       [:div {:style {:flex "auto"}}]
+      [:button.button {:style {:flex "initial"
+                               :color "#777"}
+                       :class (when-not can-share? "disabled")
+                       :title (when-not can-share? (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))
+                       :on-click (when can-share?
+                                   share-button-clicked)}
+       [:i.fas.fa-share-alt]]
       [hover-menu/hover-menu
        {:path [:arms-form-action-menu]}
        :string.button/actions
@@ -309,7 +335,13 @@
          :handler copy-to-new-clicked
          :disabled? (not can-copy?)
          :tooltip (when-not can-copy?
-                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}]
+                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}
+        {:title :string.button/share
+         :icon "fas fa-share-alt"
+         :handler share-button-clicked
+         :disabled? (not can-share?)
+         :tooltip (when-not can-share?
+                    (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))}]
        [:button.button {:style {:flex "initial"
                                 :color "#777"
                                 :margin-left "10px"}}
