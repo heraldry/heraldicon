@@ -155,7 +155,7 @@
   (full-url context "/arms/"))
 
 (defn full-url-for-collection [context]
-  (full-url context "/collection/"))
+  (full-url context "/collections/"))
 
 (defn full-url-for-charge [context]
   (full-url context "/charges/"))
