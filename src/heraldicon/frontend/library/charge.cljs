@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.library.charge
   (:require
+   ["copy-to-clipboard" :as copy-to-clipboard]
    ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
    [cljs.core.async :refer [go]]
    [cljs.core.async.interop :refer-macros [<p!]]
@@ -8,6 +9,7 @@
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.context :as c]
+   [heraldicon.entity.attribution :as entity.attribution]
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
@@ -37,6 +39,9 @@
 
 (def form-db-path
   [:charge-form])
+
+(def ^:private saved-data-db-path
+  [:saved-charge-data])
 
 (def ^:private example-coa-db-path
   [:example-coa])
@@ -338,6 +343,7 @@
         (let [response (<? (api.request/call :save-charge payload user-data))
               charge-id (:id response)]
           (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
+          (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
           (state/invalidate-cache-without-current form-db-path [charge-id nil])
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (charge-select/invalidate-charges-cache)
@@ -368,14 +374,26 @@
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
     (reife/push-state :create-charge)))
 
+(defn- share-button-clicked []
+  (let [url (entity.attribution/full-url-for-charge {:path form-db-path})]
+    (rf/dispatch-sync [:clear-form-message form-db-path])
+    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (if (copy-to-clipboard url)
+      (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])
+      (rf/dispatch [:set-form-error form-db-path :string.user.message/copy-to-clipboard-failed]))))
+
 (defn- button-row []
   (let [error-message @(rf/subscribe [:get-form-error form-db-path])
         form-message @(rf/subscribe [:get-form-message form-db-path])
         charge-id @(rf/subscribe [:get (conj form-db-path :id)])
         charge-username @(rf/subscribe [:get (conj form-db-path :username)])
         charge-svg-url @(rf/subscribe [:get (conj form-db-path :data :svg-data-url)])
+        public? (= @(rf/subscribe [:get (conj form-db-path :access)])
+                   :public)
         user-data (user/data)
         logged-in? (:logged-in? user-data)
+        unsaved-changes? (not= @(rf/subscribe [:get form-db-path])
+                               @(rf/subscribe [:get saved-data-db-path]))
         saved? charge-id
         owned-by-me? (= (:username user-data) charge-username)
         can-copy? (and logged-in?
@@ -384,7 +402,10 @@
         can-save? (and logged-in?
                        (or (not saved?)
                            owned-by-me?))
-        can-upload? can-save?]
+        can-upload? can-save?
+        can-share? (and public?
+                        saved?
+                        (not unsaved-changes?))]
     [:<>
      (when form-message
        [:div.success-message [tr form-message]])
@@ -414,6 +435,13 @@
                      :white-space "nowrap"}}
          [tr :string.miscellaneous/svg-file]])
       [:div {:style {:flex "auto"}}]
+      [:button.button {:style {:flex "initial"
+                               :color "#777"}
+                       :class (when-not can-share? "disabled")
+                       :title (when-not can-share? (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))
+                       :on-click (when can-share?
+                                   share-button-clicked)}
+       [:i.fas.fa-share-alt]]
       [hover-menu/hover-menu
        {:path [:arms-form-action-menu]}
        :string.button/actions
@@ -422,7 +450,13 @@
          :handler copy-to-new-clicked
          :disabled? (not can-copy?)
          :tooltip (when-not can-copy?
-                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}]
+                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}
+        {:title :string.button/share
+         :icon "fas fa-share-alt"
+         :handler share-button-clicked
+         :disabled? (not can-share?)
+         :tooltip (when-not can-share?
+                    (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))}]
        [:button.button {:style {:flex "initial"
                                 :color "#777"
                                 :margin-left "10px"}}
@@ -485,7 +519,7 @@
   (let [[status charge-data] (state/async-fetch-data
                               form-db-path
                               [charge-id version]
-                              #(api/fetch-charge-for-editing charge-id version))]
+                              #(api/fetch-charge-for-editing charge-id version saved-data-db-path))]
     (when (= status :done)
       (if charge-data
         [charge-form]
