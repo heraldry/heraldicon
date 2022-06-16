@@ -201,11 +201,17 @@
         "create"
         "view"}))
 
+(defn- fix-path-in-address-bar [{:keys [path]}]
+  (let [real-path (.. js/window -location -pathname)]
+    (when-not (= path real-path)
+      (some-> js/window.history (.replaceState nil nil path)))))
+
 (defn start-router []
   (reife/start!
    router
    (fn [m]
      (when m
+       (fix-path-in-address-bar m)
        (reset! current-match (cond-> m
                                (and (config/get :maintenance-mode?)
                                     (-> (user/data) :username ((config/get :admins)) not)
