@@ -14,6 +14,7 @@
    [heraldicon.frontend.news :as news]
    [heraldicon.frontend.user :as user]
    [reagent.core :as rc]
+   [reitit.core :as r]
    [reitit.frontend :as reif]
    [reitit.frontend.easy :as reife]))
 
@@ -28,33 +29,16 @@
     {:name :news
      :view news/view}]
 
-   ["/news"
-    {:name :news-without-slash
-     :view news/view}]
-
    ["/contact/"
     {:name :contact
-     :view contact/view}]
-
-   ["/contact"
-    {:name :contact-without-slash
      :view contact/view}]
 
    ["/collections/"
     {:name :collections
      :view library.collection/view-list}]
 
-   ["/collections"
-    {:name :collections-without-slash
-     :view library.collection/view-list}]
-
    ["/collections/new"
     {:name :create-collection
-     :view library.collection/create
-     :conflicting true}]
-
-   ["/collections/new/"
-    {:name :create-collection-with-slash
      :view library.collection/create
      :conflicting true}]
 
@@ -63,36 +47,16 @@
      :view library.collection/view-by-id
      :conflicting true}]
 
-   ["/collections/:id/"
-    {:name :view-collection-by-id-with-slash
-     :view library.collection/view-by-id
-     :conflicting true}]
-
    ["/collections/:id/:version"
     {:name :view-collection-by-id-and-version
-     :view library.collection/view-by-id
-     :conflicting true}]
-
-   ["/collections/:id/:version/"
-    {:name :view-collection-by-id-and-version-with-slash
-     :view library.collection/view-by-id
-     :conflicting true}]
+     :view library.collection/view-by-id}]
 
    ["/arms/"
     {:name :arms
      :view library.arms/view-list}]
 
-   ["/arms"
-    {:name :arms-without-slash
-     :view library.arms/view-list}]
-
    ["/arms/new"
     {:name :create-arms
-     :view library.arms/create
-     :conflicting true}]
-
-   ["/arms/new/"
-    {:name :create-arms-with-slash
      :view library.arms/create
      :conflicting true}]
 
@@ -101,36 +65,16 @@
      :view library.arms/view-by-id
      :conflicting true}]
 
-   ["/arms/:id/"
-    {:name :view-arms-by-id-with-slash
-     :view library.arms/view-by-id
-     :conflicting true}]
-
    ["/arms/:id/:version"
     {:name :view-arms-by-id-and-version
-     :view library.arms/view-by-id
-     :conflicting true}]
-
-   ["/arms/:id/:version/"
-    {:name :view-arms-by-id-and-version-with-slash
-     :view library.arms/view-by-id
-     :conflicting true}]
+     :view library.arms/view-by-id}]
 
    ["/charges/"
     {:name :charges
      :view library.charge/view-list}]
 
-   ["/charges"
-    {:name :charges-without-slash
-     :view library.charge/view-list}]
-
    ["/charges/new"
     {:name :create-charge
-     :view library.charge/create
-     :conflicting true}]
-
-   ["/charges/new/"
-    {:name :create-charge-with-slash
      :view library.charge/create
      :conflicting true}]
 
@@ -139,36 +83,16 @@
      :view library.charge/view-by-id
      :conflicting true}]
 
-   ["/charges/:id/"
-    {:name :view-charge-by-id-with-slash
-     :view library.charge/view-by-id
-     :conflicting true}]
-
    ["/charges/:id/:version"
     {:name :view-charge-by-id-and-version
-     :view library.charge/view-by-id
-     :conflicting true}]
-
-   ["/charges/:id/:version/"
-    {:name :view-charge-by-id-and-version-with-slash
-     :view library.charge/view-by-id
-     :conflicting true}]
+     :view library.charge/view-by-id}]
 
    ["/ribbons/"
     {:name :ribbons
      :view library.ribbon/view-list}]
 
-   ["/ribbons"
-    {:name :ribbons-without-slash
-     :view library.ribbon/view-list}]
-
    ["/ribbons/new"
     {:name :create-ribbon
-     :view library.ribbon/create
-     :conflicting true}]
-
-   ["/ribbons/new/"
-    {:name :create-ribbon-with-slash
      :view library.ribbon/create
      :conflicting true}]
 
@@ -177,51 +101,47 @@
      :view library.ribbon/view-by-id
      :conflicting true}]
 
-   ["/ribbons/:id/"
-    {:name :view-ribbon-by-id-with-slash
-     :view library.ribbon/view-by-id
-     :conflicting true}]
-
    ["/ribbons/:id/:version"
     {:name :view-ribbon-by-id-and-version
-     :view library.ribbon/view-by-id
-     :conflicting true}]
-
-   ["/ribbons/:id/:version/"
-    {:name :view-ribbon-by-id-and-version-with-slash
-     :view library.ribbon/view-by-id
-     :conflicting true}]
+     :view library.ribbon/view-by-id}]
 
    ["/users/"
     {:name :users
-     :view library.user/view-list
-     :conflicting true}]
-
-   ["/users"
-    {:name :users-without-slash
-     :view library.user/view-list
-     :conflicting true}]
+     :view library.user/view-list}]
 
    ["/users/:username"
     {:name :view-user
-     :view library.user/view-by-username
-     :conflicting true}]
-
-   ["/users/:username/"
-    {:name :view-user-with-slash
-     :view library.user/view-by-username
-     :conflicting true}]
+     :view library.user/view-by-username}]
 
    ["/account/"
     {:name :account
-     :view account/view}]
-
-   ["/account"
-    {:name :account-without-slash
      :view account/view}]])
 
+(defn trailing-slash-router [parent]
+  ^{:type ::r/router}
+  (reify r/Router
+    (router-name [_]
+      :trailing-slash-handler)
+    (routes [_]
+      (r/routes parent))
+    (compiled-routes [_]
+      (r/compiled-routes parent))
+    (options [_]
+      (r/options parent))
+    (route-names [_]
+      (r/route-names parent))
+    (match-by-path [_ path]
+      (or (r/match-by-path parent path)
+          (if (s/ends-with? path "/")
+            (r/match-by-path parent (subs path 0 (dec (count path))))
+            (r/match-by-path parent (str path "/")))))
+    (match-by-name [_ name]
+      (r/match-by-name parent name))
+    (match-by-name [_ name params]
+      (r/match-by-name parent name params))))
+
 (def ^:private router
-  (reif/router routes))
+  (trailing-slash-router (reif/router routes)))
 
 (defn- resolve-href
   [to path-params query-params]
