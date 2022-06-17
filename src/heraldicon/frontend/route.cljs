@@ -174,10 +174,11 @@
                :class class
                :style style}]
           children)))
+(defn- section [route]
+  (some-> route namespace (s/split #"[.]") second))
 
-(defn active-section? [where]
-  (= (namespace where)
-     (some-> @current-route :data :name namespace)))
+(defn active-section? [route]
+  (= (section route) (section (current))))
 
 (defn view []
   (if-let [page-view (-> @current-route :data :view)]
