@@ -4,8 +4,8 @@
    [clojure.set :as set]
    [clojure.string :as s]
    [heraldicon.avatar :as avatar]
-   [heraldicon.config :as config]
    [heraldicon.entity.attribution :as attribution]
+   [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
@@ -187,7 +187,7 @@
                            :all)
         consider-filter-access? (and (not hide-access-filter?)
                                      (or (= filter-ownership :mine)
-                                         (-> user-data :username ((config/get :admins)))))
+                                         (entity.user/admin? user-data)))
         filter-access (if consider-filter-access?
                         @(rf/subscribe [:get filter-access-path])
                         :all)

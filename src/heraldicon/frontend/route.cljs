@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.config :as config]
+   [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.account :as account]
    [heraldicon.frontend.contact :as contact]
    [heraldicon.frontend.home :as home]
@@ -197,7 +198,7 @@
        (fix-path-in-address-bar m)
        (reset! current-match (cond-> m
                                (and (config/get :maintenance-mode?)
-                                    (-> (user/data) :username ((config/get :admins)) not)
+                                    (not (entity.user/admin? (user/data)))
                                     (-> m :data :name blocked-by-maintenance-mode?))
                                (assoc-in [:data :view] maintenance/view)))))
    ;; set to false to enable HistoryAPI
