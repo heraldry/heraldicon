@@ -1,8 +1,6 @@
 (ns heraldicon.frontend.router
   (:require
    [clojure.string :as s]
-   [heraldicon.config :as config]
-   [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.account :as account]
    [heraldicon.frontend.contact :as contact]
    [heraldicon.frontend.home :as home]
@@ -14,7 +12,6 @@
    [heraldicon.frontend.maintenance :as maintenance]
    [heraldicon.frontend.news :as news]
    [heraldicon.frontend.not-found :as not-found]
-   [heraldicon.frontend.user :as user]
    [reagent.core :as rc]
    [reitit.core :as r]
    [reitit.frontend :as reif]
@@ -161,25 +158,21 @@
 (defn- section [route]
   (some-> route namespace (s/split #"[.]") second))
 
-(defn active-section? [route]
-  (= (section route) (section (current-state))))
+(defn- current-section []
+  (section (current-route)))
 
-(defn view []
+(defn active-section? [route]
+  (= (section route) (current-section)))
+
+(defn- route-view []
   (if-let [page-view (-> @current-state :data :view)]
     [page-view @current-state]
     [not-found/not-found]))
 
-(defn- blocked-by-maintenance-mode? [route]
-  (-> route
-      namespace
-      (s/split #"[.]")
-      second
-      #{"arms"
-        "collection"
-        "ribbon"
-        "charge"
-        "user"
-        "account"}))
+(defn view []
+  (if (maintenance/in-effect? (current-section))
+    [maintenance/view]
+    [route-view]))
 
 (defn- fix-path-in-address-bar [{:keys [path]}]
   (let [real-path (.. js/window -location -pathname)]
@@ -192,10 +185,6 @@
    (fn [match _history]
      (when match
        (fix-path-in-address-bar match)
-       (reset! current-state (cond-> match
-                               (and (config/get :maintenance-mode?)
-                                    (not (entity.user/admin? (user/data)))
-                                    (-> match :data :name blocked-by-maintenance-mode?))
-                               (assoc-in [:data :view] maintenance/view)))))
+       (reset! current-state match)))
    ;; set to false to enable HistoryAPI
    {:use-fragment false}))
