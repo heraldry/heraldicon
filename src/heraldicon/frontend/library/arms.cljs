@@ -156,7 +156,7 @@
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path
                            (string/str-tr :string.user.message/arms-saved " " (:version response))])
-        (reife/push-state :route.arms/details-by-id {:id (id/for-url arms-id)}))
+        (reife/push-state :route.arms.details/by-id {:id (id/for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
         (log/error "save form error:" e)
@@ -312,7 +312,7 @@
         [not-found/not-found]))))
 
 (defn on-select [{:keys [id]}]
-  {:href (reife/href :route.arms/details-by-id {:id (id/for-url id)})
+  {:href (reife/href :route.arms.details/by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})

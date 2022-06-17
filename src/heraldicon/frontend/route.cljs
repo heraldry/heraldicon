@@ -44,12 +44,12 @@
      :conflicting true}]
 
    ["/collections/:id"
-    {:name :route.collection/details-by-id
+    {:name :route.collection.details/by-id
      :view library.collection/details-view
      :conflicting true}]
 
    ["/collections/:id/:version"
-    {:name :route.collection/details-by-id-and-version
+    {:name :route.collection.details/by-id-and-version
      :view library.collection/details-view}]
 
    ["/arms/"
@@ -62,12 +62,12 @@
      :conflicting true}]
 
    ["/arms/:id"
-    {:name :route.arms/details-by-id
+    {:name :route.arms.details/by-id
      :view library.arms/details-view
      :conflicting true}]
 
    ["/arms/:id/:version"
-    {:name :route.arms/details-by-id-and-version
+    {:name :route.arms.details/by-id-and-version
      :view library.arms/details-view}]
 
    ["/charges/"
@@ -80,12 +80,12 @@
      :conflicting true}]
 
    ["/charges/:id"
-    {:name :route.charge/details-by-id
+    {:name :route.charge.details/by-id
      :view library.charge/details-view
      :conflicting true}]
 
    ["/charges/:id/:version"
-    {:name :route.charge/details-by-id-and-version
+    {:name :route.charge.details/by-id-and-version
      :view library.charge/details-view}]
 
    ["/ribbons/"
@@ -98,12 +98,12 @@
      :conflicting true}]
 
    ["/ribbons/:id"
-    {:name :route.ribbon/details-by-id
+    {:name :route.ribbon.details/by-id
      :view library.ribbon/details-view
      :conflicting true}]
 
    ["/ribbons/:id/:version"
-    {:name :route.ribbon/details-by-id-and-version
+    {:name :route.ribbon.details/by-id-and-version
      :view library.ribbon/details-view}]
 
    ["/users/"
