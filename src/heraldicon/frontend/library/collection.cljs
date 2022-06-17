@@ -12,6 +12,7 @@
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.core :as ui]
@@ -361,29 +362,17 @@
                 (conj form-db-path :name)
                 :string.text.title/create-collection])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
-  [:div {:style {:display "grid"
-                 :grid-gap "10px"
-                 :grid-template-columns "[start] auto [first] minmax(25em, 33%) [second] minmax(10em, 25%) [end]"
-                 :grid-template-rows "[top] 100% [bottom]"
-                 :grid-template-areas "'left middle right'"
-                 :padding-right "10px"
-                 :height "100%"}
-         :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
-   [:div.no-scrollbar {:style {:grid-area "left"
-                               :padding-left "5px"}}
-    [render-collection :allow-adding? true]]
-   [:div.no-scrollbar {:style {:grid-area "middle"
-                               :padding-top "10px"}}
+  (layout/three-columns
+   [render-collection :allow-adding? true]
+   [:<>
     [ui/selected-component]
     [button-row]
     [render-arms-preview]]
-   [:div.no-scrollbar {:style {:grid-area "right"
-                               :padding-top "5px"
-                               :position "relative"}}
+   [:<>
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path
                         (conj form-db-path :data :render-options)
-                        (conj form-db-path :data)]]]])
+                        (conj form-db-path :data)]]]))
 
 (defn- collection-display [collection-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path collection-id])

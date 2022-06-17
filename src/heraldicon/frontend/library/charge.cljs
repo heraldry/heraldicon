@@ -16,6 +16,7 @@
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
@@ -485,33 +486,22 @@
                 :string.text.title/create-charge])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
                                                                      example-coa-db-path]])
-  [:div {:style {:display "grid"
-                 :grid-gap "10px"
-                 :grid-template-columns "[start] auto [first] minmax(26em, 33%) [second] minmax(10em, 25%) [end]"
-                 :grid-template-rows "[top] 100% [bottom]"
-                 :grid-template-areas "'left middle right'"
-                 :padding-right "10px"
-                 :height "100%"}
-         :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
-   [:div.no-scrollbar {:style {:grid-area "left"
-                               :position "relative"}}
+  (layout/three-columns
+   [:<>
     [preview :original? true]
     [edit-controls]]
-   [:div.no-scrollbar {:style {:grid-area "middle"
-                               :padding-top "10px"}}
+   [:<>
     [ui/selected-component]
     [button-row]
     [attribution]]
-   [:div.no-scrollbar {:style {:grid-area "right"
-                               :padding-top "5px"
-                               :position "relative"}}
+   [:<>
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path
                         :spacer
                         (conj example-coa-db-path :render-options)
                         :spacer
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]
-    [preview]]])
+    [preview]]))
 
 (defn- charge-display [charge-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path charge-id])
