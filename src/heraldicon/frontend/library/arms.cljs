@@ -15,6 +15,7 @@
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.ribbon :as ribbon]
@@ -281,26 +282,14 @@
                 (conj form-db-path :name)
                 :string.text.title/create-arms])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
-  [:div {:style {:display "grid"
-                 :grid-gap "10px"
-                 :grid-template-columns "[start] auto [first] minmax(27em, 33%) [second] minmax(10em, 25%) [end]"
-                 :grid-template-rows "[top] 100% [bottom]"
-                 :grid-template-areas "'left middle right'"
-                 :padding-right "10px"
-                 :height "100%"}
-         :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
-   [:div.no-scrollbar {:style {:grid-area "left"}}
-    [render-achievement]]
-   [:div.no-scrollbar {:style {:grid-area "middle"
-                               :padding-top "10px"
-                               :position "relative"}}
+  (layout/three-columns
+   [render-achievement]
+   [:<>
     [ui/selected-component]
     [button-row]
     [blazonry]
     [attribution]]
-   [:div.no-scrollbar {:style {:grid-area "right"
-                               :padding-top "5px"
-                               :position :relative}}
+   [:<>
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path
                         (conj form-db-path :data :achievement :render-options)
@@ -309,7 +298,7 @@
                         :spacer
                         (conj form-db-path :data :achievement :coat-of-arms)
                         :spacer
-                        (conj form-db-path :data :achievement :ornaments)]]]])
+                        (conj form-db-path :data :achievement :ornaments)]]]))
 
 (defn- arms-display [arms-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path arms-id])
