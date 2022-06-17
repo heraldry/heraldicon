@@ -26,6 +26,11 @@
   (fn [db [_ path]]
     (assoc-in db path nil)))
 
+(defn- menu-item [route name]
+  [:li.nav-menu-item {:class (when (route/active-section? route)
+                               "selected")}
+   [route/link {:to route} [tr name]]])
+
 (defn view []
   (let [user-data (user/data)]
     [:div.header
@@ -43,15 +48,15 @@
                     :style {:padding-right "5px"}} "Heraldicon"]]
       [:sup {:style {:color "#d82"}} "beta"]]
      [:ul.nav-menu {:style {:flex 1}}
-      [route/nav-link {:to :route.home/main} [tr :string.menu/about]]
-      [route/nav-link {:to :route.news/main} [tr :string.menu/news]]
-      [route/nav-link {:to :route.collection/list} [tr :string.menu/collection-library]]
-      [route/nav-link {:to :route.arms/list} [tr :string.menu/arms-library]]
-      [route/nav-link {:to :route.charge/list} [tr :string.menu/charge-library]]
-      [route/nav-link {:to :route.ribbon/list} [tr :string.menu/ribbon-library]]
+      [menu-item :route.home/main :string.menu/about]
+      [menu-item :route.news/main :string.menu/news]
+      [menu-item :route.collection/list :string.menu/collection-library]
+      [menu-item :route.arms/list :string.menu/arms-library]
+      [menu-item :route.charge/list :string.menu/charge-library]
+      [menu-item :route.ribbon/list :string.menu/ribbon-library]
       (when (-> user-data :username ((config/get :admins)))
-        [route/nav-link {:to :route.user/list} [tr :string.menu/users]])
-      [route/nav-link {:to :route.contact/main} [tr :string.menu/contact]]
+        [menu-item :route.user/list :string.menu/users])
+      [menu-item :route.contact/main :string.menu/contact]
       [:span {:style {:width "5em"}}]
       [language/selector]
       [:span {:style {:width "1em"}}]
@@ -71,7 +76,7 @@
                                                  user-menu-open?-path])
                                "block"
                                "none")}}
-           [route/nav-link {:to :route.account/main} [tr :string.menu/account]]
+           [menu-item :route.account/main :string.menu/account]
            [:li.nav-menu-item
             [:a.nav-menu-link {:href "#"
                                :on-click #(user/logout)} [tr :string.menu/logout]]]]]]
