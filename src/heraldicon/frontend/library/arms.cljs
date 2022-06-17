@@ -317,7 +317,7 @@
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
 
-(defn view-list []
+(defn list-view []
   (rf/dispatch [:set-title :string.entity/arms])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
@@ -355,7 +355,7 @@
           default/arms-entity))
       default/arms-entity)))
 
-(defn create [{:keys [query-params]}]
+(defn create-view [{:keys [query-params]}]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
   (let [[status _arms-form-data] (state/async-fetch-data
@@ -365,5 +365,5 @@
     (when (= status :done)
       [arms-form])))
 
-(defn view-by-id [{{{:keys [id version]} :path} :parameters}]
+(defn details-view [{{{:keys [id version]} :path} :parameters}]
   [load-arms (str "arms:" id) version])

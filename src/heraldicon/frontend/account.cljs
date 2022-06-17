@@ -11,5 +11,5 @@
 (defn view []
   (let [user-data (user/data)]
     (if (:logged-in? user-data)
-      [library.user/view-user (:username user-data)]
+      [library.user/details-view {:parameters {:path {:username (:username user-data)}}}]
       [not-logged-in])))
