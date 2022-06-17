@@ -19,7 +19,19 @@
    [reitit.frontend :as reif]
    [reitit.frontend.easy :as reife]))
 
-(defonce current-match (rc/atom nil))
+(defonce ^:private current-route (rc/atom nil))
+
+(defn current []
+  (-> @current-route :data :name))
+
+(derive :route.arms.details/by-id :route.arms/details)
+(derive :route.arms.details/by-id-and-version :route.arms/details)
+(derive :route.charge.details/by-id :route.charge/details)
+(derive :route.charge.details/by-id-and-version :route.charge/details)
+(derive :route.collection.details/by-id :route.collection/details)
+(derive :route.collection.details/by-id-and-version :route.collection/details)
+(derive :route.ribbon.details/by-id :route.ribbon/details)
+(derive :route.ribbon.details/by-id-and-version :route.ribbon/details)
 
 (def ^:private routes
   [["/"
@@ -164,12 +176,12 @@
 
 (defn active-section? [where]
   (= (namespace where)
-     (some-> @current-match :data :name namespace)))
+     (some-> @current-route :data :name namespace)))
 
 (defn view []
-  (when @current-match
-    (let [view (:view (:data @current-match))]
-      [view @current-match])))
+  (when @current-route
+    (let [view (:view (:data @current-route))]
+      [view @current-route])))
 
 (defn- blocked-by-maintenance-mode? [route-name]
   (-> route-name
