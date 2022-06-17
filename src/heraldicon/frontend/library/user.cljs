@@ -105,7 +105,7 @@
       [:h4 [tr :string.entity/charges]]
       [view-charges-for-user user-id]]]))
 
-(defn view-user [username]
+(defn- load-user [username]
   (let [[status _userform-data] (state/async-fetch-data
                                  user-info-db-path
                                  username
@@ -113,9 +113,8 @@
     (when (= status :done)
       [user-display])))
 
-(defn view-by-username [{:keys [parameters]}]
-  (let [username (-> parameters :path :username)]
-    [view-user username]))
+(defn view-by-username [{{{:keys [username]} :path} :parameters}]
+  [load-user username])
 
 (defn- link-to-user [{:keys [username]}]
   [:a {:href (reife/href :view-user {:username username})}
