@@ -536,7 +536,7 @@
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [tr :string.text.ribbon-library/create-and-view-ribbons]]
+    [:p [tr :string.text.ribbon-library/create-and-view-ribbons]]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
