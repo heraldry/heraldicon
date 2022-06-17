@@ -13,6 +13,7 @@
    [heraldicon.frontend.library.user :as library.user]
    [heraldicon.frontend.maintenance :as maintenance]
    [heraldicon.frontend.news :as news]
+   [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.user :as user]
    [reagent.core :as rc]
    [reitit.core :as r]
@@ -179,23 +180,21 @@
      (some-> @current-route :data :name namespace)))
 
 (defn view []
-  (when @current-route
-    (let [view (:view (:data @current-route))]
-      [view @current-route])))
+  (if-let [page-view (-> @current-route :data :view)]
+    [page-view @current-route]
+    [not-found/not-found]))
 
-(defn- blocked-by-maintenance-mode? [route-name]
-  (-> route-name
-      name
-      (s/split #"-+")
-      first
+(defn- blocked-by-maintenance-mode? [route]
+  (-> route
+      namespace
+      (s/split #"[.]")
+      second
       #{"arms"
-        "collections"
-        "ribbons"
-        "charges"
-        "users"
-        "account"
-        "create"
-        "view"}))
+        "collection"
+        "ribbon"
+        "charge"
+        "user"
+        "account"}))
 
 (defn- fix-path-in-address-bar [{:keys [path]}]
   (let [real-path (.. js/window -location -pathname)]

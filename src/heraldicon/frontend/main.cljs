@@ -4,7 +4,6 @@
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.route :as route]
    [heraldicon.frontend.user :as user]
    [heraldicon.localization.string :as string]
@@ -17,9 +16,7 @@
   [:<>
    [header/view]
    [:div.main-content.no-scrollbar
-    (if-let [view (route/view)]
-      view
-      [not-found/not-found])
+    [route/view]
     [modal/render]
     [auto-complete/render]]])
 
