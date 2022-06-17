@@ -101,7 +101,7 @@
                 choices)
           [charge-select/list-charges
            (fn [{:keys [id latest-version data]}]
-             {:href (reife/href :view-charge-by-id {:id (id/for-url id)})
+             {:href (reife/href :route.charge/details-by-id {:id (id/for-url id)})
               :on-click (fn [event]
                           (doto event
                             .preventDefault

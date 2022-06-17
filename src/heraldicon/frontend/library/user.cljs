@@ -117,7 +117,7 @@
   [load-user username])
 
 (defn- link-to-user [{:keys [username]}]
-  [:a {:href (reife/href :view-user {:username username})}
+  [:a {:href (reife/href :route.user/details {:username username})}
    username])
 
 (defn list-view []

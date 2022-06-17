@@ -349,7 +349,7 @@
           (charge-select/invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
                              (string/str-tr :string.user.message/charge-saved (:version response))])
-          (reife/push-state :view-charge-by-id {:id (id/for-url charge-id)}))
+          (reife/push-state :route.charge/details-by-id {:id (id/for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
@@ -372,7 +372,7 @@
              :first-version-created-at
              :name))
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
-    (reife/push-state :create-charge)))
+    (reife/push-state :route.charge/create)))
 
 (defn- share-button-clicked []
   (let [url (entity.attribution/full-url-for-charge {:path form-db-path})]
@@ -525,7 +525,7 @@
       [charge-form])))
 
 (defn on-select [{:keys [id]}]
-  {:href (reife/href :view-charge-by-id {:id (id/for-url id)})
+  {:href (reife/href :route.charge/details-by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
@@ -540,7 +540,7 @@
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
-                  (reife/push-state :create-charge))}
+                  (reife/push-state :route.charge/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
     [charge-select/list-charges on-select]]])

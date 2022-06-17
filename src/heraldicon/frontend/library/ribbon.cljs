@@ -365,7 +365,7 @@
           (ribbon-select/invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
                              (string/str-tr :string.user.message/ribbon-saved (:version response))])
-          (reife/push-state :view-ribbon-by-id {:id (id/for-url ribbon-id)}))
+          (reife/push-state :route.ribbon/details-by-id {:id (id/for-url ribbon-id)}))
         (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
@@ -388,7 +388,7 @@
              :first-version-created-at
              :name))
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
-    (reife/push-state :create-ribbon)))
+    (reife/push-state :route.ribbon/create)))
 
 (defn- share-button-clicked []
   (let [url (entity.attribution/full-url-for-ribbon {:path form-db-path})]
@@ -526,7 +526,7 @@
       [ribbon-form])))
 
 (defn- on-select [{:keys [id]}]
-  {:href (reife/href :view-ribbon-by-id {:id (id/for-url id)})
+  {:href (reife/href :route.ribbon/details-by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
@@ -541,7 +541,7 @@
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
-                  (reife/push-state :create-ribbon))}
+                  (reife/push-state :route.ribbon/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
     [ribbon-select/list-ribbons on-select]]])
