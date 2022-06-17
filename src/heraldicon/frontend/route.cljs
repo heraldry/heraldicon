@@ -193,13 +193,13 @@
 (defn start-router []
   (reife/start!
    router
-   (fn [m]
-     (when m
-       (fix-path-in-address-bar m)
-       (reset! current-match (cond-> m
+   (fn [match _history]
+     (when match
+       (fix-path-in-address-bar match)
+       (reset! current-route (cond-> match
                                (and (config/get :maintenance-mode?)
                                     (not (entity.user/admin? (user/data)))
-                                    (-> m :data :name blocked-by-maintenance-mode?))
+                                    (-> match :data :name blocked-by-maintenance-mode?))
                                (assoc-in [:data :view] maintenance/view)))))
    ;; set to false to enable HistoryAPI
    {:use-fragment false}))
