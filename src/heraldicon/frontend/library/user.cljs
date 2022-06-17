@@ -74,7 +74,7 @@
     (rf/dispatch [:set-title (:username user-info-data)])
     [:div {:style {:display "grid"
                    :grid-gap "10px"
-                   :grid-template-columns "[start] 33% [first] auto [second] 25% [end]"
+                   :grid-template-columns "[start] 20% [first] auto [second] auto [end]"
                    :grid-template-rows "[top] 100px [middle] auto [bottom]"
                    :grid-template-areas "'user-info user-info user-info'
                                        'collections arms charges'"
