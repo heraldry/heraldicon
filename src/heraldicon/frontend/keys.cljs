@@ -4,7 +4,7 @@
    [heraldicon.frontend.library.charge :as library.charge]
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.library.ribbon :as library.ribbon]
-   [heraldicon.frontend.route :as route]
+   [heraldicon.frontend.router :as router]
    [heraldicon.frontend.state :as state]
    [re-frame.core :as rf]))
 
@@ -18,7 +18,7 @@
         meta? (.-metaKey event)
         code (.-code event)
         z-pressed? (= code "KeyZ")
-        current-route (route/current)
+        current-route (router/current-route)
         undo-path (condp (flip isa?) current-route
                     :route.arms/details library.arms/form-db-path
                     :route.charge/details library.charge/form-db-path
@@ -41,7 +41,7 @@
 
 (defn- key-up-handler [event]
   (let [shift? (.-shiftKey event)]
-    (when (isa? (route/current) :route.ribbon/details)
+    (when (isa? (router/current-route) :route.ribbon/details)
       (rf/dispatch
        [:heraldicon.frontend.library.ribbon/edit-set-key-modifiers
         {:shift? shift?}]))))
