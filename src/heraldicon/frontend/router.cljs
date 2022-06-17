@@ -17,12 +17,6 @@
    [reitit.frontend :as reif]
    [reitit.frontend.easy :as reife]))
 
-(defonce ^:private current-state
-  (rc/atom nil))
-
-(defn current-route []
-  (-> @current-state :data :name))
-
 (derive :route.arms.details/by-id :route.arms/details)
 (derive :route.arms.details/by-id-and-version :route.arms/details)
 (derive :route.charge.details/by-id :route.charge/details)
@@ -154,6 +148,12 @@
 
 (def ^:private router
   (trailing-slash-router (reif/router routes)))
+
+(defonce ^:private current-state
+  (rc/atom nil))
+
+(defn current-route []
+  (-> @current-state :data :name))
 
 (defn- section [route]
   (some-> route namespace (s/split #"[.]") second))
