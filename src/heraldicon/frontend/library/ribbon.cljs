@@ -29,7 +29,6 @@
    [heraldicon.render.core :as render]
    [heraldicon.svg.filter :as filter]
    [heraldicon.svg.path :as path]
-   [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
@@ -504,7 +503,7 @@
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path]]]))
 
-(defn- ribbon-display [ribbon-id version]
+(defn- load-ribbon [ribbon-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path ribbon-id])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path ribbon-id]))
   (let [[status ribbon-data] (state/async-fetch-data
@@ -547,11 +546,5 @@
    [:div {:style {:padding-top "0.5em"}}
     [ribbon-select/list-ribbons on-select]]])
 
-(defn view-by-id [{:keys [parameters]}]
-  (let [id (-> parameters :path :id)
-        version (-> parameters :path :version)
-        ribbon-id (str "ribbon:" id)]
-    (if (or (nil? version)
-            (util/integer-string? version))
-      [ribbon-display ribbon-id version]
-      [not-found/not-found])))
+(defn view-by-id [{{{:keys [id version]} :path} :parameters}]
+  [load-ribbon (str "ribbon:" id) version])

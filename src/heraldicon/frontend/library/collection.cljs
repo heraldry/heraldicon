@@ -25,7 +25,6 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
-   [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
@@ -374,7 +373,7 @@
                         (conj form-db-path :data :render-options)
                         (conj form-db-path :data)]]]))
 
-(defn- collection-display [collection-id version]
+(defn- load-collection [collection-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path collection-id])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path collection-id]))
   (let [[status _collection-data] (state/async-fetch-data
@@ -421,11 +420,5 @@
         [collection-form]
         [not-found/not-found]))))
 
-(defn view-by-id [{:keys [parameters]}]
-  (let [id (-> parameters :path :id)
-        version (-> parameters :path :version)
-        collection-id (str "collection:" id)]
-    (if (or (nil? version)
-            (util/integer-string? version))
-      [collection-display collection-id version]
-      [not-found/not-found])))
+(defn view-by-id [{{{:keys [id version]} :path} :parameters}]
+  [load-collection (str "collection:" id) version])

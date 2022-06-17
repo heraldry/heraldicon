@@ -32,7 +32,6 @@
    [heraldicon.render.core :as render]
    [heraldicon.svg.core :as svg]
    [heraldicon.util.colour :as colour]
-   [heraldicon.util.core :as util]
    [hickory.core :as hickory]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
@@ -503,7 +502,7 @@
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]
     [preview]]))
 
-(defn- charge-display [charge-id version]
+(defn- load-charge [charge-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path charge-id])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path charge-id]))
   (let [[status charge-data] (state/async-fetch-data
@@ -547,11 +546,5 @@
    [:div {:style {:padding-top "0.5em"}}
     [charge-select/list-charges on-select]]])
 
-(defn view-by-id [{:keys [parameters]}]
-  (let [id (-> parameters :path :id)
-        version (-> parameters :path :version)
-        charge-id (str "charge:" id)]
-    (if (or (nil? version)
-            (util/integer-string? version))
-      [charge-display charge-id version]
-      [not-found/not-found])))
+(defn view-by-id [{{{:keys [id version]} :path} :parameters}]
+  [load-charge (str "charge:" id) version])

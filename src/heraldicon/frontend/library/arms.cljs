@@ -29,7 +29,6 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
-   [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
@@ -300,7 +299,7 @@
                         :spacer
                         (conj form-db-path :data :achievement :ornaments)]]]))
 
-(defn- arms-display [arms-id version]
+(defn- load-arms [arms-id version]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path arms-id])
     (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path arms-id]))
   (let [[status arms-data] (state/async-fetch-data
@@ -366,11 +365,5 @@
     (when (= status :done)
       [arms-form])))
 
-(defn view-by-id [{:keys [parameters]}]
-  (let [id (-> parameters :path :id)
-        version (-> parameters :path :version)
-        arms-id (str "arms:" id)]
-    (if (or (nil? version)
-            (util/integer-string? version))
-      [arms-display arms-id version]
-      [not-found/not-found])))
+(defn view-by-id [{{{:keys [id version]} :path} :parameters}]
+  [load-arms (str "arms:" id) version])
