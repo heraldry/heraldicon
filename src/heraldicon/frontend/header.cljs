@@ -6,7 +6,8 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.user :as user]
    [heraldicon.static :as static]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as reife]))
 
 (def ^:private user-menu-open?-path
   [:ui :menu :user-menu :open?])
@@ -29,7 +30,7 @@
 (defn- menu-item [route name]
   [:li.nav-menu-item {:class (when (route/active-section? route)
                                "selected")}
-   [route/link {:to route} [tr name]]])
+   [:a {:href (reife/href route nil nil)} [tr name]]])
 
 (defn view []
   (let [user-data (user/data)]
@@ -44,8 +45,8 @@
                      :transform "translate(0,0.4em)"}}]
       [:span {:style {:font-family "\"Trajan Pro\", sans-serif"
                       :font-size "1.2em"}}
-       [route/link {:to :route.home/main
-                    :style {:padding-right "5px"}} "Heraldicon"]]
+       [:a {:href (reife/href :route.home/main nil nil)
+            :style {:padding-right "5px"}} "Heraldicon"]]
       [:sup {:style {:color "#d82"}} "beta"]]
      [:ul.nav-menu {:style {:flex 1}}
       [menu-item :route.home/main :string.menu/about]

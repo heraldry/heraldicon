@@ -157,23 +157,6 @@
 (def ^:private router
   (trailing-slash-router (reif/router routes)))
 
-(defn- resolve-href [to path-params query-params]
-  (if (keyword? to)
-    (reife/href to path-params query-params)
-    (let [match (reif/match-by-path router to)
-          route (-> match :data :name)
-          params (or path-params (:path-params match))
-          query (or query-params (:query-params match))]
-      (if match
-        (reife/href route params query)
-        to))))
-
-(defn link [{:keys [to path-params query-params class style]} & children]
-  (let [href (resolve-href to path-params query-params)]
-    (into [:a {:href href
-               :class class
-               :style style}]
-          children)))
 (defn- section [route]
   (some-> route namespace (s/split #"[.]") second))
 
