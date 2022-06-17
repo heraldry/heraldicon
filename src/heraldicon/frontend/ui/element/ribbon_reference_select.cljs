@@ -84,7 +84,7 @@
                   :height "80vh"}}
          [ribbon-select/list-ribbons
           (fn [ribbon]
-            {:href (reife/href :route.ribbon/details-by-id {:id (id/for-url (:id ribbon))})
+            {:href (reife/href :route.ribbon.details/by-id {:id (id/for-url (:id ribbon))})
              :on-click (fn [event]
                          (doto event
                            .preventDefault

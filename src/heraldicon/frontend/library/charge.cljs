@@ -349,7 +349,7 @@
           (charge-select/invalidate-charges-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
                              (string/str-tr :string.user.message/charge-saved (:version response))])
-          (reife/push-state :route.charge/details-by-id {:id (id/for-url charge-id)}))
+          (reife/push-state :route.charge.details/by-id {:id (id/for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
@@ -525,7 +525,7 @@
       [charge-form])))
 
 (defn on-select [{:keys [id]}]
-  {:href (reife/href :route.charge/details-by-id {:id (id/for-url id)})
+  {:href (reife/href :route.charge.details/by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})

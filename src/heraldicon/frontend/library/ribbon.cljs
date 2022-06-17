@@ -365,7 +365,7 @@
           (ribbon-select/invalidate-ribbons-cache)
           (rf/dispatch-sync [:set-form-message form-db-path
                              (string/str-tr :string.user.message/ribbon-saved (:version response))])
-          (reife/push-state :route.ribbon/details-by-id {:id (id/for-url ribbon-id)}))
+          (reife/push-state :route.ribbon.details/by-id {:id (id/for-url ribbon-id)}))
         (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
@@ -526,7 +526,7 @@
       [ribbon-form])))
 
 (defn- on-select [{:keys [id]}]
-  {:href (reife/href :route.ribbon/details-by-id {:id (id/for-url id)})
+  {:href (reife/href :route.ribbon.details/by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})

@@ -38,7 +38,7 @@
                   :top "10vh"
                   :height "80vh"}}
          [arms-select/list-arms (fn [{:keys [id]}]
-                                  {:href (reife/href :route.arms/details-by-id {:id (id/for-url id)})
+                                  {:href (reife/href :route.arms.details/by-id {:id (id/for-url id)})
                                    :on-click (fn [event]
                                                (doto event
                                                  .preventDefault
