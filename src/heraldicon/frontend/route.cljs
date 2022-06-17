@@ -143,8 +143,7 @@
 (def ^:private router
   (trailing-slash-router (reif/router routes)))
 
-(defn- resolve-href
-  [to path-params query-params]
+(defn- resolve-href [to path-params query-params]
   (if (keyword? to)
     (reife/href to path-params query-params)
     (let [match (reif/match-by-path router to)
@@ -155,32 +154,16 @@
         (reife/href route params query)
         to))))
 
-(defn link
-  [{:keys [to path-params query-params class style]} & children]
+(defn link [{:keys [to path-params query-params class style]} & children]
   (let [href (resolve-href to path-params query-params)]
     (into [:a {:href href
                :class class
                :style style}]
           children)))
 
-(defn- name-matches?
-  [name path-params match]
-  (and (= name (-> match :data :name))
-       (= (not-empty path-params)
-          (-> match :parameters :path not-empty))))
-
-(defn- url-matches?
-  [to match]
-  (let [path (or (:path match) "")
-        partial-path (str "/" (name to) "/")]
-    (s/starts-with? path partial-path)))
-
-(defn nav-link
-  [{:keys [to path-params] :as props} content]
-  (let [active (or (name-matches? to path-params @current-match)
-                   (url-matches? to @current-match))]
-    [:li.nav-menu-item {:class (when active "selected")}
-     [link props content]]))
+(defn active-section? [where]
+  (= (namespace where)
+     (some-> @current-match :data :name namespace)))
 
 (defn view []
   (when @current-match
