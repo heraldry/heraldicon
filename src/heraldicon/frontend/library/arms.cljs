@@ -156,7 +156,7 @@
         (invalidate-arms-cache :all)
         (rf/dispatch-sync [:set-form-message form-db-path
                            (string/str-tr :string.user.message/arms-saved " " (:version response))])
-        (reife/push-state :view-arms-by-id {:id (id/for-url arms-id)}))
+        (reife/push-state :route.arms/details-by-id {:id (id/for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
         (log/error "save form error:" e)
@@ -180,7 +180,7 @@
              :first-version-created-at
              :name))
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
-    (reife/push-state :create-arms)))
+    (reife/push-state :route.arms/create)))
 
 (defn- share-button-clicked []
   (let [short-url (entity.arms/short-url @(rf/subscribe [:get form-db-path]))]
@@ -312,7 +312,7 @@
         [not-found/not-found]))))
 
 (defn on-select [{:keys [id]}]
-  {:href (reife/href :view-arms-by-id {:id (id/for-url id)})
+  {:href (reife/href :route.arms/details-by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [:clear-form-errors form-db-path])
                (rf/dispatch-sync [:clear-form-message form-db-path]))})
@@ -328,14 +328,14 @@
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
-                  (reife/push-state :create-arms))}
+                  (reife/push-state :route.arms/create))}
     [tr :string.button/create]]
    " "
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
-                  (reife/push-state :create-arms)
+                  (reife/push-state :route.arms/create)
                   (blazonry-editor/open (c/++ (base-context) :data :achievement :coat-of-arms :field)))}
     [tr :string.button/create-from-blazon]]
    [:div {:style {:padding-top "0.5em"}}

@@ -22,99 +22,99 @@
 
 (def ^:private routes
   [["/"
-    {:name :home
+    {:name :route.home/main
      :view home/view}]
 
    ["/news/"
-    {:name :news
+    {:name :route.news/main
      :view news/view}]
 
    ["/contact/"
-    {:name :contact
+    {:name :route.contact/main
      :view contact/view}]
 
    ["/collections/"
-    {:name :collections
+    {:name :route.collection/list
      :view library.collection/list-view}]
 
    ["/collections/new"
-    {:name :create-collection
+    {:name :route.collection/create
      :view library.collection/create-view
      :conflicting true}]
 
    ["/collections/:id"
-    {:name :view-collection-by-id
+    {:name :route.collection/details-by-id
      :view library.collection/details-view
      :conflicting true}]
 
    ["/collections/:id/:version"
-    {:name :view-collection-by-id-and-version
+    {:name :route.collection/details-by-id-and-version
      :view library.collection/details-view}]
 
    ["/arms/"
-    {:name :arms
+    {:name :route.arms/list
      :view library.arms/list-view}]
 
    ["/arms/new"
-    {:name :create-arms
+    {:name :route.arms/create
      :view library.arms/create-view
      :conflicting true}]
 
    ["/arms/:id"
-    {:name :view-arms-by-id
+    {:name :route.arms/details-by-id
      :view library.arms/details-view
      :conflicting true}]
 
    ["/arms/:id/:version"
-    {:name :view-arms-by-id-and-version
+    {:name :route.arms/details-by-id-and-version
      :view library.arms/details-view}]
 
    ["/charges/"
-    {:name :charges
+    {:name :route.charge/list
      :view library.charge/list-view}]
 
    ["/charges/new"
-    {:name :create-charge
+    {:name :route.charge/create
      :view library.charge/create-view
      :conflicting true}]
 
    ["/charges/:id"
-    {:name :view-charge-by-id
+    {:name :route.charge/details-by-id
      :view library.charge/details-view
      :conflicting true}]
 
    ["/charges/:id/:version"
-    {:name :view-charge-by-id-and-version
+    {:name :route.charge/details-by-id-and-version
      :view library.charge/details-view}]
 
    ["/ribbons/"
-    {:name :ribbons
+    {:name :route.ribbon/list
      :view library.ribbon/list-view}]
 
    ["/ribbons/new"
-    {:name :create-ribbon
+    {:name :route.ribbon/create
      :view library.ribbon/create-view
      :conflicting true}]
 
    ["/ribbons/:id"
-    {:name :view-ribbon-by-id
+    {:name :route.ribbon/details-by-id
      :view library.ribbon/details-view
      :conflicting true}]
 
    ["/ribbons/:id/:version"
-    {:name :view-ribbon-by-id-and-version
+    {:name :route.ribbon/details-by-id-and-version
      :view library.ribbon/details-view}]
 
    ["/users/"
-    {:name :users
+    {:name :route.user/list
      :view library.user/list-view}]
 
    ["/users/:username"
-    {:name :view-user
+    {:name :route.user/details
      :view library.user/details-view}]
 
    ["/account/"
-    {:name :account
+    {:name :route.account/main
      :view account/view}]])
 
 (defn trailing-slash-router [parent]

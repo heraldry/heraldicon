@@ -55,7 +55,7 @@
         (state/invalidate-cache list-db-path (:user-id user-data))
         (rf/dispatch-sync [:set-form-message form-db-path
                            (string/str-tr :string.user.message/collection-saved " " (:version response))])
-        (reife/push-state :view-collection-by-id {:id (id/for-url collection-id)}))
+        (reife/push-state :route.collection/details-by-id {:id (id/for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)
         (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])))))
@@ -278,7 +278,7 @@
              :first-version-created-at
              :name))
     (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
-    (reife/push-state :create-collection)))
+    (reife/push-state :route.collection/create)))
 
 (defn- share-button-clicked []
   (let [url (entity.attribution/full-url-for-collection {:path form-db-path})]
@@ -387,7 +387,7 @@
   (let [collection-id (-> collection
                           :id
                           id/for-url)]
-    [:a {:href (reife/href :view-collection-by-id {:id collection-id})
+    [:a {:href (reife/href :route.collection/details-by-id {:id collection-id})
          :on-click #(do
                       (rf/dispatch-sync [:clear-form-errors form-db-path])
                       (rf/dispatch-sync [:clear-form-message form-db-path]))}
@@ -403,7 +403,7 @@
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
                   (rf/dispatch-sync [:clear-form-message form-db-path])
-                  (reife/push-state :create-collection))}
+                  (reife/push-state :route.collection/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
     [collection-select/list-collections link-to-collection]]])
