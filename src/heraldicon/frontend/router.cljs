@@ -12,9 +12,8 @@
    [heraldicon.frontend.maintenance :as maintenance]
    [heraldicon.frontend.news :as news]
    [heraldicon.frontend.not-found :as not-found]
+   [heraldicon.util.trailing-slash-router :as trailing-slash-router]
    [reagent.core :as rc]
-   [reitit.core :as r]
-   [reitit.frontend :as reif]
    [reitit.frontend.easy :as reife]))
 
 (derive :route.arms.details/by-id :route.arms/details)
@@ -123,31 +122,8 @@
     {:name :route.account/main
      :view account/view}]])
 
-(defn trailing-slash-router [parent]
-  ^{:type ::r/router}
-  (reify r/Router
-    (router-name [_]
-      :trailing-slash-handler)
-    (routes [_]
-      (r/routes parent))
-    (compiled-routes [_]
-      (r/compiled-routes parent))
-    (options [_]
-      (r/options parent))
-    (route-names [_]
-      (r/route-names parent))
-    (match-by-path [_ path]
-      (or (r/match-by-path parent path)
-          (if (s/ends-with? path "/")
-            (r/match-by-path parent (subs path 0 (dec (count path))))
-            (r/match-by-path parent (str path "/")))))
-    (match-by-name [_ name]
-      (r/match-by-name parent name))
-    (match-by-name [_ name params]
-      (r/match-by-name parent name params))))
-
 (def ^:private router
-  (trailing-slash-router (reif/router routes)))
+  (trailing-slash-router/create routes))
 
 (defonce ^:private current-state
   (rc/atom nil))
@@ -174,17 +150,9 @@
     [maintenance/view]
     [route-view]))
 
-(defn- fix-path-in-address-bar [{:keys [path]}]
-  (let [real-path (.. js/window -location -pathname)]
-    (when-not (= path real-path)
-      (some-> js/window.history (.replaceState nil nil path)))))
+(defn- on-navigate [match _history]
+  (trailing-slash-router/fix-path-in-address-bar (:path match))
+  (reset! current-state match))
 
 (defn start []
-  (reife/start!
-   router
-   (fn [match _history]
-     (when match
-       (fix-path-in-address-bar match)
-       (reset! current-state match)))
-   ;; set to false to enable HistoryAPI
-   {:use-fragment false}))
+  (reife/start! router on-navigate {:use-fragment false}))
