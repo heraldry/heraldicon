@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.library.user
   (:require
    [heraldicon.avatar :as avatar]
-   [heraldicon.config :as config]
+   [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.arms :as library.arms]
@@ -123,5 +123,5 @@
 (defn list-view []
   (rf/dispatch [:set-title :string.menu/users])
   [:div {:style {:padding "15px"}}
-   (when (-> (user/data) :username ((config/get :admins)))
+   (when (entity.user/admin? (user/data))
      [user-select/list-users link-to-user])])

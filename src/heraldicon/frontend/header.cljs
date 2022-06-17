@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.header
   (:require
-   [heraldicon.config :as config]
+   [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.language :as language :refer [tr]]
    [heraldicon.frontend.route :as route]
    [heraldicon.frontend.state :as state]
@@ -54,7 +54,7 @@
       [menu-item :route.arms/list :string.menu/arms-library]
       [menu-item :route.charge/list :string.menu/charge-library]
       [menu-item :route.ribbon/list :string.menu/ribbon-library]
-      (when (-> user-data :username ((config/get :admins)))
+      (when (entity.user/admin? user-data)
         [menu-item :route.user/list :string.menu/users])
       [menu-item :route.contact/main :string.menu/contact]
       [:span {:style {:width "5em"}}]
