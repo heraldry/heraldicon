@@ -4,7 +4,7 @@
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.route :as route]
+   [heraldicon.frontend.router :as router]
    [heraldicon.frontend.user :as user]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
@@ -16,7 +16,7 @@
   [:<>
    [header/view]
    [:div.main-content.no-scrollbar
-    [route/view]
+    [router/view]
     [modal/render]
     [auto-complete/render]]])
 
@@ -47,7 +47,7 @@
   (rf/dispatch-sync [:heraldicon.frontend.ui.element.blazonry-editor/clear-parser])
   (rf/dispatch-sync [:heraldicon.frontend.language/load-language-setting])
   #_(print-stats)
-  (route/start-router)
+  (router/start)
   (user/load-session-user-data)
   (r/render
    [app]

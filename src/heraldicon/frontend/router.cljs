@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.route
+(ns heraldicon.frontend.router
   (:require
    [clojure.string :as s]
    [heraldicon.config :as config]
@@ -20,10 +20,11 @@
    [reitit.frontend :as reif]
    [reitit.frontend.easy :as reife]))
 
-(defonce ^:private current-route (rc/atom nil))
+(defonce ^:private current-state
+  (rc/atom nil))
 
-(defn current []
-  (-> @current-route :data :name))
+(defn current-route []
+  (-> @current-state :data :name))
 
 (derive :route.arms.details/by-id :route.arms/details)
 (derive :route.arms.details/by-id-and-version :route.arms/details)
@@ -161,11 +162,11 @@
   (some-> route namespace (s/split #"[.]") second))
 
 (defn active-section? [route]
-  (= (section route) (section (current))))
+  (= (section route) (section (current-state))))
 
 (defn view []
-  (if-let [page-view (-> @current-route :data :view)]
-    [page-view @current-route]
+  (if-let [page-view (-> @current-state :data :view)]
+    [page-view @current-state]
     [not-found/not-found]))
 
 (defn- blocked-by-maintenance-mode? [route]
@@ -185,13 +186,13 @@
     (when-not (= path real-path)
       (some-> js/window.history (.replaceState nil nil path)))))
 
-(defn start-router []
+(defn start []
   (reife/start!
    router
    (fn [match _history]
      (when match
        (fix-path-in-address-bar match)
-       (reset! current-route (cond-> match
+       (reset! current-state (cond-> match
                                (and (config/get :maintenance-mode?)
                                     (not (entity.user/admin? (user/data)))
                                     (-> match :data :name blocked-by-maintenance-mode?))

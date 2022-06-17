@@ -2,7 +2,7 @@
   (:require
    [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.language :as language :refer [tr]]
-   [heraldicon.frontend.route :as route]
+   [heraldicon.frontend.router :as router]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.user :as user]
    [heraldicon.static :as static]
@@ -28,7 +28,7 @@
     (assoc-in db path nil)))
 
 (defn- menu-item [route name]
-  [:li.nav-menu-item {:class (when (route/active-section? route)
+  [:li.nav-menu-item {:class (when (router/active-section? route)
                                "selected")}
    [:a {:href (reife/href route nil nil)} [tr name]]])
 
