@@ -535,8 +535,7 @@
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [:p
-     [tr :string.text.charge-library/create-and-view-charges]]]
+    [:p [tr :string.text.charge-library/create-and-view-charges]]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])

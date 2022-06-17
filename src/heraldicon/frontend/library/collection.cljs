@@ -398,7 +398,7 @@
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
-    [tr :string.text.collection-library/create-and-view-collections]]
+    [:p [tr :string.text.collection-library/create-and-view-collections]]]
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [:clear-form-errors form-db-path])
