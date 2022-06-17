@@ -35,83 +35,83 @@
 
    ["/collections/"
     {:name :collections
-     :view library.collection/view-list}]
+     :view library.collection/list-view}]
 
    ["/collections/new"
     {:name :create-collection
-     :view library.collection/create
+     :view library.collection/create-view
      :conflicting true}]
 
    ["/collections/:id"
     {:name :view-collection-by-id
-     :view library.collection/view-by-id
+     :view library.collection/details-view
      :conflicting true}]
 
    ["/collections/:id/:version"
     {:name :view-collection-by-id-and-version
-     :view library.collection/view-by-id}]
+     :view library.collection/details-view}]
 
    ["/arms/"
     {:name :arms
-     :view library.arms/view-list}]
+     :view library.arms/list-view}]
 
    ["/arms/new"
     {:name :create-arms
-     :view library.arms/create
+     :view library.arms/create-view
      :conflicting true}]
 
    ["/arms/:id"
     {:name :view-arms-by-id
-     :view library.arms/view-by-id
+     :view library.arms/details-view
      :conflicting true}]
 
    ["/arms/:id/:version"
     {:name :view-arms-by-id-and-version
-     :view library.arms/view-by-id}]
+     :view library.arms/details-view}]
 
    ["/charges/"
     {:name :charges
-     :view library.charge/view-list}]
+     :view library.charge/list-view}]
 
    ["/charges/new"
     {:name :create-charge
-     :view library.charge/create
+     :view library.charge/create-view
      :conflicting true}]
 
    ["/charges/:id"
     {:name :view-charge-by-id
-     :view library.charge/view-by-id
+     :view library.charge/details-view
      :conflicting true}]
 
    ["/charges/:id/:version"
     {:name :view-charge-by-id-and-version
-     :view library.charge/view-by-id}]
+     :view library.charge/details-view}]
 
    ["/ribbons/"
     {:name :ribbons
-     :view library.ribbon/view-list}]
+     :view library.ribbon/list-view}]
 
    ["/ribbons/new"
     {:name :create-ribbon
-     :view library.ribbon/create
+     :view library.ribbon/create-view
      :conflicting true}]
 
    ["/ribbons/:id"
     {:name :view-ribbon-by-id
-     :view library.ribbon/view-by-id
+     :view library.ribbon/details-view
      :conflicting true}]
 
    ["/ribbons/:id/:version"
     {:name :view-ribbon-by-id-and-version
-     :view library.ribbon/view-by-id}]
+     :view library.ribbon/details-view}]
 
    ["/users/"
     {:name :users
-     :view library.user/view-list}]
+     :view library.user/list-view}]
 
    ["/users/:username"
     {:name :view-user
-     :view library.user/view-by-username}]
+     :view library.user/details-view}]
 
    ["/account/"
     {:name :account
