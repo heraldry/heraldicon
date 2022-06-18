@@ -14,6 +14,7 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.form :as form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
@@ -37,8 +38,11 @@
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
 
+(def form-id
+  :heraldicon.entity/charge)
+
 (def form-db-path
-  [:charge-form])
+  (form/data-path form-id))
 
 (def ^:private saved-data-db-path
   [:saved-charge-data])
@@ -335,8 +339,7 @@
                            [:data :edn-data :data]
                            svg/strip-unnecessary-parts)
         user-data (user/data)]
-    (rf/dispatch-sync [:clear-form-errors form-db-path])
-    (rf/dispatch-sync [:clear-form-message form-db-path])
+    (rf/dispatch-sync [::form/clear-messages form-id])
     (go
       (try
         (modal/start-loading)
@@ -347,18 +350,19 @@
           (state/invalidate-cache-without-current form-db-path [charge-id nil])
           (state/invalidate-cache-without-current form-db-path [charge-id 0])
           (charge-select/invalidate-charges-cache)
-          (rf/dispatch-sync [:set-form-message form-db-path
-                             (string/str-tr :string.user.message/charge-saved (:version response))])
+          (rf/dispatch-sync [::form/set-message
+                             form-id
+                             (string/str-tr :string.user.message/charge-saved " " (:version response))])
           (reife/push-state :route.charge.details/by-id {:id (id/for-url charge-id)}))
         (modal/stop-loading)
         (catch :default e
           (log/error "save-form error:" e)
-          (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
+          (rf/dispatch-sync [::form/set-error form-id (:message (ex-data e))])
           (modal/stop-loading))))))
 
 (defn- copy-to-new-clicked []
   (let [charge-data @(rf/subscribe [:get form-db-path])]
-    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (rf/dispatch-sync [::form/clear-messages form-id])
     (state/set-async-fetch-data
      form-db-path
      :new
@@ -371,21 +375,18 @@
              :created-at
              :first-version-created-at
              :name))
-    (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
+    (rf/dispatch-sync [::form/set-message form-id :string.user.message/created-unsaved-copy])
     (reife/push-state :route.charge/create)))
 
 (defn- share-button-clicked []
   (let [url (entity.attribution/full-url-for-charge {:path form-db-path})]
-    (rf/dispatch-sync [:clear-form-message form-db-path])
-    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (rf/dispatch-sync [::form/clear-messages form-id])
     (if (copy-to-clipboard url)
-      (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])
-      (rf/dispatch [:set-form-error form-db-path :string.user.message/copy-to-clipboard-failed]))))
+      (rf/dispatch-sync [::form/set-message form-id :string.user.message/copied-url-for-sharing])
+      (rf/dispatch-sync [::form/set-error form-id :string.user.message/copy-to-clipboard-failed]))))
 
 (defn- button-row []
-  (let [error-message @(rf/subscribe [:get-form-error form-db-path])
-        form-message @(rf/subscribe [:get-form-message form-db-path])
-        charge-id @(rf/subscribe [:get (conj form-db-path :id)])
+  (let [charge-id @(rf/subscribe [:get (conj form-db-path :id)])
         charge-username @(rf/subscribe [:get (conj form-db-path :username)])
         charge-svg-url @(rf/subscribe [:get (conj form-db-path :data :svg-data-url)])
         public? (= @(rf/subscribe [:get (conj form-db-path :access)])
@@ -407,10 +408,7 @@
                         saved?
                         (not unsaved-changes?))]
     [:<>
-     (when form-message
-       [:div.success-message [tr form-message]])
-     (when error-message
-       [:div.error-message error-message])
+     [form/messages]
 
      [:div.buttons {:style {:display "flex"}}
       [:label.button {:for "upload"
@@ -527,8 +525,7 @@
 (defn on-select [{:keys [id]}]
   {:href (reife/href :route.charge.details/by-id {:id (id/for-url id)})
    :on-click (fn [_event]
-               (rf/dispatch-sync [:clear-form-errors form-db-path])
-               (rf/dispatch-sync [:clear-form-message form-db-path]))})
+               (rf/dispatch-sync [::form/clear-messages form-id]))})
 
 (defn list-view []
   (rf/dispatch [:set-title :string.entity/charges])
@@ -538,8 +535,7 @@
     [:p [tr :string.text.charge-library/create-and-view-charges]]]
    [:button.button.primary
     {:on-click #(do
-                  (rf/dispatch-sync [:clear-form-errors form-db-path])
-                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (rf/dispatch-sync [::form/clear-messages form-id])
                   (reife/push-state :route.charge/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}

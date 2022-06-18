@@ -24,8 +24,7 @@
 
 (defmethod ui.interface/form-element :attribution [{:keys [path] :as context}]
   (when-let [options (interface/get-relevant-options context)]
-    (let [charge-presets? (-> context :path drop-last last #{:charge-form
-                                                             :charge-data})
+    (let [charge-presets? (->> context :path (drop-last 2) last #{:heraldicon.entity/charge})
           {:keys [ui]} options
           label (:label ui)
           link-name (submenu-link-name (interface/get-sanitized-data context))]

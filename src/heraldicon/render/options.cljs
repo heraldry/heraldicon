@@ -1,6 +1,7 @@
 (ns heraldicon.render.options
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.form :as form]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.interface :as interface]
    [heraldicon.render.mode :as mode]
@@ -18,7 +19,8 @@
 (defmethod interface/options :heraldry/render-options [context]
   (let [mode (-> context (c/++ :mode) interface/get-raw-data (or :colours))
         texture (-> context (c/++ :texture) interface/get-raw-data (or :none))
-        escutcheon-option (if (-> context :path (= [:collection-form :render-options]))
+        ;; TODO: path shouldn't be hard-coded
+        escutcheon-option (if (-> context :path (= (conj (form/data-path :heraldicon.entity/collection) :render-options)))
                             {:type :choice
                              :choices escutcheon/choices
                              :default :none
