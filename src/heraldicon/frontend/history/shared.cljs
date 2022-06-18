@@ -4,10 +4,7 @@
   [:ui :undo])
 
 (def undoable-paths
-  [[:arms-form]
-   [:charge-form]
-   [:collection-form]
-   [:ribbon-form]])
+  (atom #{}))
 
 (def history-size
   200)

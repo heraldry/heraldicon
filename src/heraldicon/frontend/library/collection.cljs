@@ -36,6 +36,8 @@
 (def form-db-path
   (form/data-path form-id))
 
+(history/register-undoable-path form-db-path)
+
 (def ^:private saved-data-db-path
   [:saved-collection-data])
 
