@@ -15,14 +15,6 @@
 
 ;; subs
 
-(rf/reg-sub :get-form-error
-  (fn [db [_ path]]
-    (get-in db (concat [:form-errors] path [:message]))))
-
-(rf/reg-sub :get-form-message
-  (fn [db [_ path]]
-    (get-in db (concat [:form-message] path [:message]))))
-
 (rf/reg-sub :get-title
   (fn [_ _]
     [(rf/subscribe [:get title-path])
