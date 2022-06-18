@@ -14,6 +14,7 @@
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.message :as message]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.core :as ui]
@@ -46,7 +47,7 @@
 
 (defn- save-collection-clicked []
   (go
-    (rf/dispatch-sync [::form/clear-messages form-id])
+    (rf/dispatch-sync [::message/clear form-id])
     (try
       (let [payload @(rf/subscribe [:get form-db-path])
             user-data (user/data)
@@ -58,13 +59,13 @@
         (state/invalidate-cache-without-current form-db-path [collection-id 0])
         (rf/dispatch-sync [:set list-db-path nil])
         (state/invalidate-cache list-db-path (:user-id user-data))
-        (rf/dispatch-sync [::form/set-message
+        (rf/dispatch-sync [::message/set-success
                            form-id
                            (string/str-tr :string.user.message/collection-saved " " (:version response))])
         (reife/push-state :route.collection.details/by-id {:id (id/for-url collection-id)}))
       (catch :default e
         (log/error "save-form error:" e)
-        (rf/dispatch-sync [::form/set-error form-id (:message (ex-data e))])))))
+        (rf/dispatch-sync [::message/set-error form-id (:message (ex-data e))])))))
 
 (defn- render-add-arms [x y size]
   (let [r (* size 0.4)
@@ -270,7 +271,7 @@
 
 (defn- copy-to-new-clicked []
   (let [collection-data @(rf/subscribe [:get form-db-path])]
-    (rf/dispatch-sync [::form/clear-messages form-id])
+    (rf/dispatch-sync [::message/clear form-id])
     (state/set-async-fetch-data
      form-db-path
      :new
@@ -283,15 +284,15 @@
              :created-at
              :first-version-created-at
              :name))
-    (rf/dispatch-sync [::form/set-message form-id :string.user.message/created-unsaved-copy])
+    (rf/dispatch-sync [::message/set-success form-id :string.user.message/created-unsaved-copy])
     (reife/push-state :route.collection/create)))
 
 (defn- share-button-clicked []
   (let [url (entity.attribution/full-url-for-collection {:path form-db-path})]
-    (rf/dispatch-sync [::form/clear-messages form-id])
+    (rf/dispatch-sync [::message/clear form-id])
     (if (copy-to-clipboard url)
-      (rf/dispatch-sync [::form/set-message form-id :string.user.message/copied-url-for-sharing])
-      (rf/dispatch-sync [::form/set-error form-id :string.user.message/copy-to-clipboard-failed]))))
+      (rf/dispatch-sync [::message/set-success form-id :string.user.message/copied-url-for-sharing])
+      (rf/dispatch-sync [::message/set-error form-id :string.user.message/copy-to-clipboard-failed]))))
 
 (defn- button-row []
   (let [collection-id @(rf/subscribe [:get (conj form-db-path :id)])
@@ -316,7 +317,7 @@
                         saved?
                         (not unsaved-changes?))]
     [:<>
-     [form/messages]
+     [message/display form-id]
 
      [:div.buttons {:style {:display "flex"}}
       [:div {:style {:flex "auto"}}]
@@ -389,7 +390,7 @@
                           id/for-url)]
     [:a {:href (reife/href :route.collection.details/by-id {:id collection-id})
          :on-click #(do
-                      (rf/dispatch-sync [::form/clear-messages form-id]))}
+                      (rf/dispatch-sync [::message/clear form-id]))}
      (:name collection)]))
 
 (defn list-view []
@@ -400,7 +401,7 @@
     [:p [tr :string.text.collection-library/create-and-view-collections]]]
    [:button.button.primary
     {:on-click #(do
-                  (rf/dispatch-sync [::form/clear-messages form-id])
+                  (rf/dispatch-sync [::message/clear form-id])
                   (reife/push-state :route.collection/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}

@@ -17,6 +17,7 @@
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.ribbon :as ribbon]
@@ -143,8 +144,8 @@
 (defn- save-arms-clicked [event]
   (.preventDefault event)
   (.stopPropagation event)
+  (rf/dispatch-sync [::message/clear form-id])
   (go
-    (rf/dispatch-sync [::form/clear-messages form-id])
     (try
       (modal/start-loading)
       (let [payload @(rf/subscribe [:get form-db-path])
@@ -159,19 +160,19 @@
         (rf/dispatch-sync [:set arms-select/list-db-path nil])
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
-        (rf/dispatch-sync [::form/set-message
+        (rf/dispatch-sync [::message/set-success
                            form-id
                            (string/str-tr :string.user.message/arms-saved " " (:version response))])
         (reife/push-state :route.arms.details/by-id {:id (id/for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
         (log/error "save form error:" e)
-        (rf/dispatch-sync [::form/set-error form-id (:message (ex-data e))])
+        (rf/dispatch-sync [::message/set-error form-id (:message (ex-data e))])
         (modal/stop-loading)))))
 
 (defn- copy-to-new-clicked []
   (let [arms-data @(rf/subscribe [:get form-db-path])]
-    (rf/dispatch-sync [::form/clear-messages form-id])
+    (rf/dispatch-sync [::message/clear form-id])
     (rf/dispatch-sync [:set saved-data-db-path nil])
     (state/set-async-fetch-data
      form-db-path
@@ -185,15 +186,15 @@
              :created-at
              :first-version-created-at
              :name))
-    (rf/dispatch-sync [::form/set-message form-id :string.user.message/created-unsaved-copy])
+    (rf/dispatch-sync [::message/set-success form-id :string.user.message/created-unsaved-copy])
     (reife/push-state :route.arms/create)))
 
 (defn- share-button-clicked []
   (let [short-url (entity.arms/short-url @(rf/subscribe [:get form-db-path]))]
-    (rf/dispatch-sync [::form/clear-messages form-id])
+    (rf/dispatch-sync [::message/clear form-id])
     (if (copy-to-clipboard short-url)
-      (rf/dispatch-sync [::form/set-message form-id :string.user.message/copied-url-for-sharing])
-      (rf/dispatch-sync [::form/set-error form-id :string.user.message/copy-to-clipboard-failed]))))
+      (rf/dispatch-sync [::message/set-success form-id :string.user.message/copied-url-for-sharing])
+      (rf/dispatch-sync [::message/set-error form-id :string.user.message/copy-to-clipboard-failed]))))
 
 (defn- button-row []
   (let [arms-id @(rf/subscribe [:get (conj form-db-path :id)])
@@ -220,7 +221,7 @@
                         saved?
                         (not unsaved-changes?))]
     [:<>
-     [form/messages]
+     [message/display form-id]
 
      [:div.buttons {:style {:display "flex"}}
       [:div {:style {:flex "auto"}}]
@@ -314,7 +315,7 @@
 (defn on-select [{:keys [id]}]
   {:href (reife/href :route.arms.details/by-id {:id (id/for-url id)})
    :on-click (fn [_event]
-               (rf/dispatch-sync [::form/clear-messages form-id]))})
+               (rf/dispatch-sync [::message/clear form-id]))})
 
 (defn list-view []
   (rf/dispatch [:set-title :string.entity/arms])
@@ -325,13 +326,13 @@
     [:p [tr :string.text.arms-library/svg-png-access-info]]]
    [:button.button.primary
     {:on-click #(do
-                  (rf/dispatch-sync [::form/clear-messages form-id])
+                  (rf/dispatch-sync [::message/clear form-id])
                   (reife/push-state :route.arms/create))}
     [tr :string.button/create]]
    " "
    [:button.button.primary
     {:on-click #(do
-                  (rf/dispatch-sync [::form/clear-messages form-id])
+                  (rf/dispatch-sync [::message/clear form-id])
                   (reife/push-state :route.arms/create)
                   (blazonry-editor/open (c/++ (base-context) :data :achievement :coat-of-arms :field)))}
     [tr :string.button/create-from-blazon]]
