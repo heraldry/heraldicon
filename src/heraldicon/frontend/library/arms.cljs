@@ -12,6 +12,7 @@
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.context :as context]
+   [heraldicon.frontend.form :as form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
@@ -33,8 +34,11 @@
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
 
+(def form-id
+  :heraldicon.entity/arms)
+
 (def form-db-path
-  [:arms-form])
+  (form/data-path form-id))
 
 (def ^:private saved-data-db-path
   [:saved-arms-data])
@@ -138,8 +142,7 @@
   (.preventDefault event)
   (.stopPropagation event)
   (go
-    (rf/dispatch-sync [:clear-form-errors form-db-path])
-    (rf/dispatch-sync [:clear-form-message form-db-path])
+    (rf/dispatch-sync [::form/clear-messages form-id])
     (try
       (modal/start-loading)
       (let [payload @(rf/subscribe [:get form-db-path])
@@ -154,18 +157,19 @@
         (rf/dispatch-sync [:set arms-select/list-db-path nil])
         (invalidate-arms-cache user-id)
         (invalidate-arms-cache :all)
-        (rf/dispatch-sync [:set-form-message form-db-path
+        (rf/dispatch-sync [::form/set-message
+                           form-id
                            (string/str-tr :string.user.message/arms-saved " " (:version response))])
         (reife/push-state :route.arms.details/by-id {:id (id/for-url arms-id)}))
       (modal/stop-loading)
       (catch :default e
         (log/error "save form error:" e)
-        (rf/dispatch [:set-form-error form-db-path (:message (ex-data e))])
+        (rf/dispatch-sync [::form/set-error form-id (:message (ex-data e))])
         (modal/stop-loading)))))
 
 (defn- copy-to-new-clicked []
   (let [arms-data @(rf/subscribe [:get form-db-path])]
-    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (rf/dispatch-sync [::form/clear-messages form-id])
     (rf/dispatch-sync [:set saved-data-db-path nil])
     (state/set-async-fetch-data
      form-db-path
@@ -179,21 +183,18 @@
              :created-at
              :first-version-created-at
              :name))
-    (rf/dispatch-sync [:set-form-message form-db-path :string.user.message/created-unsaved-copy])
+    (rf/dispatch-sync [::form/set-message form-id :string.user.message/created-unsaved-copy])
     (reife/push-state :route.arms/create)))
 
 (defn- share-button-clicked []
   (let [short-url (entity.arms/short-url @(rf/subscribe [:get form-db-path]))]
-    (rf/dispatch-sync [:clear-form-message form-db-path])
-    (rf/dispatch-sync [:clear-form-errors form-db-path])
+    (rf/dispatch-sync [::form/clear-messages form-id])
     (if (copy-to-clipboard short-url)
-      (rf/dispatch [:set-form-message form-db-path :string.user.message/copied-url-for-sharing])
-      (rf/dispatch [:set-form-error form-db-path :string.user.message/copy-to-clipboard-failed]))))
+      (rf/dispatch-sync [::form/set-message form-id :string.user.message/copied-url-for-sharing])
+      (rf/dispatch-sync [::form/set-error form-id :string.user.message/copy-to-clipboard-failed]))))
 
 (defn- button-row []
-  (let [error-message @(rf/subscribe [:get-form-error form-db-path])
-        form-message @(rf/subscribe [:get-form-message form-db-path])
-        arms-id @(rf/subscribe [:get (conj form-db-path :id)])
+  (let [arms-id @(rf/subscribe [:get (conj form-db-path :id)])
         arms-username @(rf/subscribe [:get (conj form-db-path :username)])
         public? (= @(rf/subscribe [:get (conj form-db-path :access)])
                    :public)
@@ -217,10 +218,7 @@
                         saved?
                         (not unsaved-changes?))]
     [:<>
-     (when form-message
-       [:div.success-message [tr form-message]])
-     (when error-message
-       [:div.error-message [tr error-message]])
+     [form/messages]
 
      [:div.buttons {:style {:display "flex"}}
       [:div {:style {:flex "auto"}}]
@@ -314,8 +312,7 @@
 (defn on-select [{:keys [id]}]
   {:href (reife/href :route.arms.details/by-id {:id (id/for-url id)})
    :on-click (fn [_event]
-               (rf/dispatch-sync [:clear-form-errors form-db-path])
-               (rf/dispatch-sync [:clear-form-message form-db-path]))})
+               (rf/dispatch-sync [::form/clear-messages form-id]))})
 
 (defn list-view []
   (rf/dispatch [:set-title :string.entity/arms])
@@ -326,15 +323,13 @@
     [:p [tr :string.text.arms-library/svg-png-access-info]]]
    [:button.button.primary
     {:on-click #(do
-                  (rf/dispatch-sync [:clear-form-errors form-db-path])
-                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (rf/dispatch-sync [::form/clear-messages form-id])
                   (reife/push-state :route.arms/create))}
     [tr :string.button/create]]
    " "
    [:button.button.primary
     {:on-click #(do
-                  (rf/dispatch-sync [:clear-form-errors form-db-path])
-                  (rf/dispatch-sync [:clear-form-message form-db-path])
+                  (rf/dispatch-sync [::form/clear-messages form-id])
                   (reife/push-state :route.arms/create)
                   (blazonry-editor/open (c/++ (base-context) :data :achievement :coat-of-arms :field)))}
     [tr :string.button/create-from-blazon]]

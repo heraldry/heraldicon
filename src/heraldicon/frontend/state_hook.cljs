@@ -1,13 +1,17 @@
 (ns heraldicon.frontend.state-hook)
 
 (defn ^:export handle-db-changes [old-db new-db]
-  (let [scope-path [:arms-form :data :achievement :render-options :scope]]
+  ;; TODO: path shouldn't be hard-coded
+  (let [base-path [:forms :heraldicon.entity/arms :data]
+        scope-path (conj base-path :achievement :render-options :scope)
+        helms-path (conj base-path :data :achievement :helms)
+        ornaments-path (conj base-path :data :achievement :ornaments)]
     (cond-> new-db
       (and (= (get-in new-db scope-path)
               :coat-of-arms)
-           (not= (-> old-db :arms-form :data :achievement :helms)
-                 (-> new-db :arms-form :data :achievement :helms))) (assoc-in scope-path :coat-of-arms-and-helm)
+           (not= (get-in old-db helms-path)
+                 (get-in new-db helms-path))) (assoc-in scope-path :coat-of-arms-and-helm)
       (and (#{:coat-of-arms
               :coat-of-arms-and-helm} (get-in new-db scope-path))
-           (not= (-> old-db :arms-form :data :achievement :ornaments)
-                 (-> new-db :arms-form :data :achievement :ornaments))) (assoc-in scope-path :achievement))))
+           (not= (get-in old-db ornaments-path)
+                 (get-in new-db ornaments-path))) (assoc-in scope-path :achievement))))

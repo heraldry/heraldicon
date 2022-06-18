@@ -99,7 +99,6 @@
                                                                                       :pommeled :gules
                                                                                       :shadow 1.0
                                                                                       :highlight 1.0})}]}}}
-                 :arms-form default/arms-entity
                  :ui {:charge-tree {:show-public? true
                                     :show-own? true}
                       :component-tree {}
@@ -142,29 +141,6 @@
 (macros/reg-event-db :remove
   (fn [db [_ path]]
     (remove-element db path)))
-
-(macros/reg-event-db :set-form-error
-  (fn [db [_ db-path error]]
-    (assoc-in db (concat [:form-errors] db-path [:message]) error)))
-
-(macros/reg-event-db :set-form-message
-  (fn [db [_ db-path message]]
-    (assoc-in db (concat [:form-message] db-path [:message]) message)))
-
-(macros/reg-event-db :clear-form-errors
-  (fn [db [_ db-path]]
-    (remove-element db (into [:form-errors] db-path))))
-
-(macros/reg-event-db :clear-form-message
-  (fn [db [_ db-path]]
-    (remove-element db (into [:form-message] db-path))))
-
-(macros/reg-event-db :clear-form
-  (fn [db [_ db-path]]
-    (-> db
-        (remove-element (into [:form-errors] db-path))
-        (remove-element (into [:form-message] db-path))
-        (remove-element db-path))))
 
 (defn dispatch-on-event [event effect]
   (rf/dispatch effect)
@@ -244,11 +220,14 @@
 (defn- component-node-open-by-default? [path]
   (or (#{[:coat-of-arms]
          [:helms]
-         [:ornaments]}
+         [:ornaments]
+         [:elements]}
        (take-last 1 path))
-      (#{[:coat-of-arms :field]
-         [:collection-form :collection]}
+      (#{[:coat-of-arms :field]}
        (take-last 2 path))
+      (#{;; TODO: path shouldn't be hard-coded
+         [:heraldicon.entity/collection :data :data]}
+       (take-last 3 path))
       (#{[:example-coa :coat-of-arms :field :components 0]}
        (take-last 5 path))))
 
