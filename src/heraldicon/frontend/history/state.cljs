@@ -25,7 +25,7 @@
 
 (defn ^:export add-new-states [db new-db]
   (loop [new-db new-db
-         [path & rest] shared/undoable-paths]
+         [path & rest] @shared/undoable-paths]
     (if path
       (recur (add-new-state path db new-db) rest)
       new-db)))

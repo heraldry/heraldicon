@@ -5,6 +5,9 @@
    [heraldicon.frontend.state :as state]
    [re-frame.core :as rf]))
 
+(defn register-undoable-path [path]
+  (swap! shared/undoable-paths conj path))
+
 (rf/reg-sub ::can-undo?
   (fn [[_ path] _]
     [(rf/subscribe [:get-list-size (shared/history-path path)])
