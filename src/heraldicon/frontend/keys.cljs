@@ -2,7 +2,7 @@
   (:require
    [heraldicon.frontend.library.arms.shared :as library.arms.shared]
    [heraldicon.frontend.library.charge.shared :as library.charge.shared]
-   [heraldicon.frontend.library.collection :as library.collection]
+   [heraldicon.frontend.library.collection.shared :as library.collection.shared]
    [heraldicon.frontend.library.ribbon.shared :as library.ribbon.shared]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.state :as state]
@@ -23,7 +23,7 @@
                     :route.arms/details library.arms.shared/form-db-path
                     :route.charge/details library.charge.shared/form-db-path
                     :route.ribbon/details library.ribbon.shared/form-db-path
-                    :route.collection/details library.collection/form-db-path
+                    :route.collection/details library.collection.shared/form-db-path
                     :else nil)]
     (cond
       (and undo-path

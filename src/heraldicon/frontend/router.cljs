@@ -9,6 +9,7 @@
    [heraldicon.frontend.library.charge :as library.charge]
    [heraldicon.frontend.library.charge.list :as library.charge.list]
    [heraldicon.frontend.library.collection :as library.collection]
+   [heraldicon.frontend.library.collection.list :as library.collection.list]
    [heraldicon.frontend.library.ribbon :as library.ribbon]
    [heraldicon.frontend.library.ribbon.list :as library.ribbon.list]
    [heraldicon.frontend.library.user :as library.user]
@@ -43,7 +44,7 @@
 
    ["/collections/"
     {:name :route.collection/list
-     :view library.collection/list-view}]
+     :view library.collection.list/view}]
 
    ["/collections/new"
     {:name :route.collection/create

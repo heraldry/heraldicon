@@ -10,17 +10,16 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
-   [heraldicon.frontend.form :as form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.library.collection.shared :refer [form-db-path form-id]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
-   [heraldicon.frontend.ui.element.collection-select :as collection-select]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.frontend.ui.form.entity.collection.element :as collection.element]
    [heraldicon.frontend.ui.shared :as shared]
@@ -32,14 +31,6 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
-
-(def form-id
-  :heraldicon.entity/collection)
-
-(def form-db-path
-  (form/data-path form-id))
-
-(history/register-undoable-path form-db-path)
 
 (def ^:private saved-data-db-path
   [:saved-collection-data])
@@ -387,29 +378,6 @@
                                    #(api/fetch-collection collection-id version saved-data-db-path))]
     (when (= status :done)
       [collection-form])))
-
-(defn link-to-collection [collection]
-  (let [collection-id (-> collection
-                          :id
-                          id/for-url)]
-    [:a {:href (reife/href :route.collection.details/by-id {:id collection-id})
-         :on-click #(do
-                      (rf/dispatch-sync [::message/clear form-id]))}
-     (:name collection)]))
-
-(defn list-view []
-  (rf/dispatch [::title/set :string.entity/collections])
-  [:div {:style {:padding "15px"}}
-   [:div {:style {:text-align "justify"
-                  :max-width "40em"}}
-    [:p [tr :string.text.collection-library/create-and-view-collections]]]
-   [:button.button.primary
-    {:on-click #(do
-                  (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.collection/create))}
-    [tr :string.button/create]]
-   [:div {:style {:padding-top "0.5em"}}
-    [collection-select/list-collections link-to-collection]]])
 
 (defn create-view [_match]
   (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
