@@ -5,6 +5,7 @@
    [heraldicon.frontend.contact :as contact]
    [heraldicon.frontend.home :as home]
    [heraldicon.frontend.library.arms :as library.arms]
+   [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge :as library.charge]
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.library.ribbon :as library.ribbon]
@@ -58,7 +59,7 @@
 
    ["/arms/"
     {:name :route.arms/list
-     :view library.arms/list-view}]
+     :view library.arms.list/view}]
 
    ["/arms/new"
     {:name :route.arms/create
