@@ -5,6 +5,7 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user :as user]))
@@ -49,4 +50,4 @@
   (let [[status collection-list] (state/async-fetch-data list-db-path :all api/fetch-collections-list)]
     (if (= status :done)
       [component collection-list link-to-collection invalidate-collections-cache]
-      [:div [tr :string.miscellaneous/loading]])))
+      [loading/loading])))

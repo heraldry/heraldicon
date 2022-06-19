@@ -7,6 +7,7 @@
    [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge.list :as library.charge.list]
    [heraldicon.frontend.library.collection.list :as library.collection.list]
+   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
@@ -35,7 +36,7 @@
        #(invalidate-charges-cache-for-user user-id)
        :remove-empty-groups? true
        :hide-ownership-filter? true]
-      [:div [tr :string.miscellaneous/loading]])))
+      [loading/loading])))
 
 (defn- invalidate-arms-cache-for-user [user-id]
   (state/invalidate-cache [:user-arms] user-id))
@@ -51,7 +52,7 @@
        library.arms.list/on-select
        #(invalidate-arms-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div [tr :string.miscellaneous/loading]])))
+      [loading/loading])))
 
 (defn- invalidate-collection-cache-for-user [user-id]
   (state/invalidate-cache [:user-collections] user-id))
@@ -67,7 +68,7 @@
        library.collection.list/link-to-collection
        #(invalidate-collection-cache-for-user user-id)
        :hide-ownership-filter? true]
-      [:div [tr :string.miscellaneous/loading]])))
+      [loading/loading])))
 
 (defn- user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
