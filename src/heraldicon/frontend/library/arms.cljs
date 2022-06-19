@@ -12,11 +12,11 @@
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.context :as context]
-   [heraldicon.frontend.form :as form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.library.arms.shared :refer [form-db-path form-id base-context]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
@@ -25,7 +25,6 @@
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
-   [heraldicon.frontend.ui.element.blazonry-editor :as blazonry-editor]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.default :as default]
@@ -35,14 +34,6 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
-
-(def form-id
-  :heraldicon.entity/arms)
-
-(def form-db-path
-  (form/data-path form-id))
-
-(history/register-undoable-path form-db-path)
 
 (def ^:private saved-data-db-path
   [:saved-arms-data])
@@ -85,14 +76,6 @@
       attribution-data]
      [charge-attribution]
      [ribbon-attribution]]))
-
-(defn- base-context []
-  (assoc
-   context/default
-   :path form-db-path
-   :render-options-path (conj form-db-path :data :achievement :render-options)
-   :select-component-fn (fn [event context]
-                          (state/dispatch-on-event event [:ui-component-node-select (:path context)]))))
 
 (defn- render-achievement []
   [render/achievement (c/++ (base-context) :data :achievement)])
@@ -312,33 +295,6 @@
       (if arms-data
         [arms-form]
         [not-found/not-found]))))
-
-(defn on-select [{:keys [id]}]
-  {:href (reife/href :route.arms.details/by-id {:id (id/for-url id)})
-   :on-click (fn [_event]
-               (rf/dispatch-sync [::message/clear form-id]))})
-
-(defn list-view []
-  (rf/dispatch [::title/set :string.entity/arms])
-  [:div {:style {:padding "15px"}}
-   [:div {:style {:text-align "justify"
-                  :max-width "40em"}}
-    [:p [tr :string.text.arms-library/create-and-view-arms]]
-    [:p [tr :string.text.arms-library/svg-png-access-info]]]
-   [:button.button.primary
-    {:on-click #(do
-                  (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.arms/create))}
-    [tr :string.button/create]]
-   " "
-   [:button.button.primary
-    {:on-click #(do
-                  (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.arms/create)
-                  (blazonry-editor/open (c/++ (base-context) :data :achievement :coat-of-arms :field)))}
-    [tr :string.button/create-from-blazon]]
-   [:div {:style {:padding-top "0.5em"}}
-    [arms-select/list-arms on-select]]])
 
 (defn- load-hdn [hdn-hash]
   (go

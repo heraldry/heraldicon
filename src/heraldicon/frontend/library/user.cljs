@@ -4,7 +4,7 @@
    [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.library.arms :as library.arms]
+   [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge :as library.charge]
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.state :as state]
@@ -48,7 +48,7 @@
     (if (= status :done)
       [arms-select/component
        [:user-arms]
-       library.arms/on-select
+       library.arms.list/on-select
        #(invalidate-arms-cache-for-user user-id)
        :hide-ownership-filter? true]
       [:div [tr :string.miscellaneous/loading]])))
