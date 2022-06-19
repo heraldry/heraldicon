@@ -18,6 +18,7 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.collection-select :as collection-select]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
@@ -361,7 +362,7 @@
        [tr :string.button/save]]]]))
 
 (defn- collection-form []
-  (rf/dispatch [:set-title-from-path-or-default
+  (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-collection])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
@@ -397,7 +398,7 @@
      (:name collection)]))
 
 (defn list-view []
-  (rf/dispatch [:set-title :string.entity/collections])
+  (rf/dispatch [::title/set :string.entity/collections])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}

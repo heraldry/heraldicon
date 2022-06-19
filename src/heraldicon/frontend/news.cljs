@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.news
   (:require
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.title :as title]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
@@ -13,7 +14,7 @@
             :alt "release update overview"}]]))
 
 (defn view []
-  (rf/dispatch [:set-title :string.text.title/home])
+  (rf/dispatch [::title/set :string.text.title/home])
   [:div
    {:style {:padding "10px"
             :text-align "justify"

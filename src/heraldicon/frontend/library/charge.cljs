@@ -24,6 +24,7 @@
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.svgo-setup] ;; needed for side effects
+   [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
@@ -481,7 +482,7 @@
       attribution-data]]))
 
 (defn- charge-form []
-  (rf/dispatch [:set-title-from-path-or-default
+  (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-charge])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
@@ -531,7 +532,7 @@
                (rf/dispatch-sync [::message/clear form-id]))})
 
 (defn list-view []
-  (rf/dispatch [:set-title :string.entity/charges])
+  (rf/dispatch [::title/set :string.entity/charges])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}
