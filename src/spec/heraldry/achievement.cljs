@@ -10,9 +10,11 @@
 (s/def :heraldry.achievement/coat-of-arms :heraldry/coat-of-arms)
 
 (s/def :heraldry.achievement/render-options :heraldry/render-options)
+(s/def :heraldry.achievement/helms :heraldry/helms)
+(s/def :heraldry.achievement/ornaments :heraldry/ornaments)
 
 (s/def :heraldry/achievement (s/keys :req-un [:heraldry.achievement/type
                                               :heraldry.achievement/coat-of-arms
-                                              :heraldry/render-options
-                                              :heraldry/helms
-                                              :heraldry/ornaments]))
+                                              :heraldry.achievement/render-options
+                                              :heraldry.achievement/helms
+                                              :heraldry.achievement/ornaments]))
