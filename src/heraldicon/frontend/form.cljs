@@ -2,6 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.repository.core :as repository]
@@ -44,7 +45,7 @@
                                          [form-db-path saved-data-db-path]])]
     (case status
       :done [component-fn]
-      (nil :loading) [:div "Loading..."]
+      (nil :loading) [loading/loading]
       :error [not-found/not-found])))
 
 (defn- load-entity-create-data [generate-data-fn target-paths]
@@ -63,5 +64,5 @@
     (if loading?
       (do
         (load-entity-create-data generate-data-fn [form-db-path saved-data-db-path])
-        [:div "Loading..."])
+        [loading/loading])
       [component-fn])))
