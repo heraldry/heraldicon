@@ -3,7 +3,7 @@
    [heraldicon.frontend.library.arms.shared :as library.arms.shared]
    [heraldicon.frontend.library.charge.shared :as library.charge.shared]
    [heraldicon.frontend.library.collection :as library.collection]
-   [heraldicon.frontend.library.ribbon :as library.ribbon]
+   [heraldicon.frontend.library.ribbon.shared :as library.ribbon.shared]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.state :as state]
    [re-frame.core :as rf]))
@@ -22,7 +22,7 @@
         undo-path (condp (flip isa?) current-route
                     :route.arms/details library.arms.shared/form-db-path
                     :route.charge/details library.charge.shared/form-db-path
-                    :route.ribbon/details library.ribbon/form-db-path
+                    :route.ribbon/details library.ribbon.shared/form-db-path
                     :route.collection/details library.collection/form-db-path
                     :else nil)]
     (cond

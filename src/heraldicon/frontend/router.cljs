@@ -10,6 +10,7 @@
    [heraldicon.frontend.library.charge.list :as library.charge.list]
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.library.ribbon :as library.ribbon]
+   [heraldicon.frontend.library.ribbon.list :as library.ribbon.list]
    [heraldicon.frontend.library.user :as library.user]
    [heraldicon.frontend.maintenance :as maintenance]
    [heraldicon.frontend.news :as news]
@@ -96,7 +97,7 @@
 
    ["/ribbons/"
     {:name :route.ribbon/list
-     :view library.ribbon/list-view}]
+     :view library.ribbon.list/view}]
 
    ["/ribbons/new"
     {:name :route.ribbon/create

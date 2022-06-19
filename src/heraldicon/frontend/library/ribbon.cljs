@@ -8,10 +8,10 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
-   [heraldicon.frontend.form :as form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.library.ribbon.shared :refer [form-db-path form-id]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
@@ -35,14 +35,6 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
-
-(def form-id
-  :heraldicon.entity/ribbon)
-
-(def form-db-path
-  (form/data-path form-id))
-
-(history/register-undoable-path form-db-path)
 
 (def ^:private saved-data-db-path
   [:saved-ribbon-data])
@@ -526,25 +518,6 @@
                                     #(go default/ribbon-entity))]
     (when (= status :done)
       [ribbon-form])))
-
-(defn- on-select [{:keys [id]}]
-  {:href (reife/href :route.ribbon.details/by-id {:id (id/for-url id)})
-   :on-click (fn [_event]
-               (rf/dispatch-sync [::message/clear form-id]))})
-
-(defn list-view []
-  (rf/dispatch [::title/set :string.menu/ribbon-library])
-  [:div {:style {:padding "15px"}}
-   [:div {:style {:text-align "justify"
-                  :max-width "40em"}}
-    [:p [tr :string.text.ribbon-library/create-and-view-ribbons]]]
-   [:button.button.primary
-    {:on-click #(do
-                  (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.ribbon/create))}
-    [tr :string.button/create]]
-   [:div {:style {:padding-top "0.5em"}}
-    [ribbon-select/list-ribbons on-select]]])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
   [load-ribbon (str "ribbon:" id) version])
