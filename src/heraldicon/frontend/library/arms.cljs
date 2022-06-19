@@ -7,19 +7,18 @@
    [heraldicon.context :as c]
    [heraldicon.entity.arms :as entity.arms]
    [heraldicon.entity.id :as id]
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.context :as context]
+   [heraldicon.frontend.form :as form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
-   [heraldicon.frontend.library.arms.shared :refer [form-db-path form-id base-context]]
+   [heraldicon.frontend.library.arms.shared :refer [form-db-path saved-data-db-path form-id base-context]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.ribbon :as ribbon]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
@@ -34,9 +33,6 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
-
-(def ^:private saved-data-db-path
-  [:saved-arms-data])
 
 (defn- charge-attribution []
   (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :data :achievement)])
@@ -284,18 +280,6 @@
                         :spacer
                         (conj form-db-path :data :achievement :ornaments)]]]))
 
-(defn- load-arms [arms-id version]
-  (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path arms-id])
-    (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path arms-id]))
-  (let [[status arms-data] (state/async-fetch-data
-                            form-db-path
-                            [arms-id version]
-                            #(api/fetch-arms arms-id version saved-data-db-path))]
-    (when (= status :done)
-      (if arms-data
-        [arms-form]
-        [not-found/not-found]))))
-
 (defn- load-hdn [hdn-hash]
   (go
     (if hdn-hash
@@ -311,14 +295,7 @@
       default/arms-entity)))
 
 (defn create-view [{:keys [query-params]}]
-  (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
-    (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
-  (let [[status _arms-form-data] (state/async-fetch-data
-                                  form-db-path
-                                  :new
-                                  #(go (<? (load-hdn (:base query-params)))))]
-    (when (= status :done)
-      [arms-form])))
+  [form/create-view form-id arms-form #(go (<? (load-hdn (:base query-params))))])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [load-arms (str "arms:" id) version])
+  [form/details-view form-id (str "arms:" id) version arms-form])
