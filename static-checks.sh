@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-rg reg-event -g '*.clj*' | grep -E -o '::?[a-z][a-z0-9-]*' | sort > /tmp/heraldry-reg-events
+rg reg-event -g '*.clj*' | grep -E -o '::?[a-z+*?][a-z0-9+*?./-]*' | sort > /tmp/heraldry-reg-events
 
 double_regs=$(</tmp/heraldry-reg-events uniq -c | grep -v ' 1 ')
 if [ -n "$double_regs" ]; then
@@ -9,7 +9,7 @@ if [ -n "$double_regs" ]; then
   echo
 fi
 
-rg -I reg-sub -g '*.clj*' | grep -E -o '::?[a-z][a-z0-9-]*' | sort > /tmp/heraldry-reg-subs
+rg -I reg-sub -g '*.clj*' | grep -E -o '::?[a-z+*?][a-z0-9+*?./-]*' | sort > /tmp/heraldry-reg-subs
 
 double_subs=$(</tmp/heraldry-reg-subs uniq -c | grep -v ' 1 ')
 if [ -n "$double_subs" ]; then
@@ -18,7 +18,7 @@ if [ -n "$double_subs" ]; then
   echo
 fi
 
-rg -I dispatch -g '*.clj*' | grep -E -v '(defn|dispatch effect)' | perl -pe 's/.*dispatch.*?[[](::?[a-z][a-z0-9-]*).*/\1/' | sort | uniq > /tmp/heraldry-dispatches
+rg -I '/dispatch.*:' -g '*.clj*' | perl -pe 's/.*dispatch.*?[[](::?[a-z+*?][a-z0-9+*?.\/-]*).*/\1/' | sort | uniq > /tmp/heraldry-dispatches
 
 unknown_events=$(comm -23 /tmp/heraldry-dispatches /tmp/heraldry-reg-events)
 if [ -n "$unknown_events" ]; then
@@ -34,7 +34,7 @@ if [ -n "$unused_events" ]; then
   echo
 fi
 
-rg -I subscribe -g '*.clj*' | perl -pe 's/.*subscribe.*?[[](::?[a-z][a-z0-9-]*).*/\1/' | sort | uniq > /tmp/heraldry-subscribes
+rg -I subscribe -g '*.clj*' | perl -pe 's/.*subscribe.*?[[](::?[a-z+*?][a-z0-9+*?.\/-]*).*/\1/' | sort | uniq > /tmp/heraldry-subscribes
 
 unknown_subs=$(comm -23 /tmp/heraldry-subscribes /tmp/heraldry-reg-subs)
 if [ -n "$unknown_subs" ]; then
@@ -50,8 +50,8 @@ if [ -n "$unused_subs" ]; then
   echo
 fi
 
-ignore="^(squiggly-paths|tangent-point)$"
-rg -I '[(]def(|n|multi) ' -g '*.clj*' -g '*.edn' | perl -ne 'print if s/.*[(]def[^ ]* +([a-z0-9_-]{3,}).*/\1/' | grep -E -v "$ignore" | sort | uniq > /tmp/heraldry-symbols
+ignore="^(tangent-point)$"
+rg -I '[(]def(|n|multi) ' -g '*.clj*' -g '*.edn' | perl -ne 'print if s/.*[(]def[^ ]* +([a-z0-9_+*?.\/-]{3,}).*/\1/' | grep -E -v "$ignore" | sort | uniq > /tmp/heraldry-symbols
 
 unused_symbols=$(
 for s in $(cat /tmp/heraldry-symbols); do
