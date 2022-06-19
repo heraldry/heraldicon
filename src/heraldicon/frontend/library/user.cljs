@@ -6,7 +6,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge.list :as library.charge.list]
-   [heraldicon.frontend.library.collection :as library.collection]
+   [heraldicon.frontend.library.collection.list :as library.collection.list]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
@@ -64,7 +64,7 @@
     (if (= status :done)
       [collection-select/component
        collection-list
-       library.collection/link-to-collection
+       library.collection.list/link-to-collection
        #(invalidate-collection-cache-for-user user-id)
        :hide-ownership-filter? true]
       [:div [tr :string.miscellaneous/loading]])))
