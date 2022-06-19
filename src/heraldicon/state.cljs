@@ -19,6 +19,10 @@
   (fn [value [_ _path]]
     (count value)))
 
+(rf/reg-sub :nil?
+  (fn [db [_ path]]
+    (nil? (get-in db path))))
+
 (rf/reg-sub ::component-type
   (fn [[_ path] _]
     (rf/subscribe [:get (conj path :type)]))
