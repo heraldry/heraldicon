@@ -16,7 +16,6 @@
                    :heraldicon.entity.charge.data.edn-data/height
                    :heraldicon.entity.charge.data.edn-data/data]))
 
-(s/def :heraldicon.entity.charge.data/data (s/keys :req-un [:heraldicon.entity.charge.data.data/edn-data]))
 (s/def :heraldicon.entity.charge.data/charge-type (s/or :keyword keyword?
                                                         :string su/non-blank-string?))
 (s/def :heraldicon.entity.charge.data/landscape? boolean?)
