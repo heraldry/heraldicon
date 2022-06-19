@@ -54,10 +54,10 @@ dirty-prod-frontend-deploy: actual-prod-frontend-deploy
 prod-frontend-deploy: check-before-deploy-frontend actual-prod-frontend-deploy
 
 actual-prod-frontend-deploy: prod-frontend-release
-	./sync-with-s3.py $(PROD_FRONTEND_RELEASE_DIR) cdn.heraldicon.org
+	./scripts/sync-with-s3.py $(PROD_FRONTEND_RELEASE_DIR) cdn.heraldicon.org
 	aws --profile heraldry-serverless s3 cp --acl public-read $(PROD_FRONTEND_RELEASE_DIR)/index.html s3://cdn.heraldicon.org/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
 	git tag $(shell date +"deploy-frontend-%Y-%m-%d_%H-%M-%S")
-	./invalidate-distribution.sh cdn.heraldicon.org
+	./scripts/invalidate-distribution.sh cdn.heraldicon.org
 
 # STAGING
 
@@ -80,9 +80,9 @@ staging-frontend-release:
 	npx shadow-cljs release frontend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-dir "./build/staging/js/generated"}'
 
 staging-frontend-deploy: staging-frontend-release
-	./sync-with-s3.py $(STAGING_FRONTEND_RELEASE_DIR) cdn.staging.heraldicon.org
+	./scripts/sync-with-s3.py $(STAGING_FRONTEND_RELEASE_DIR) cdn.staging.heraldicon.org
 	aws --profile heraldry-serverless s3 cp --acl public-read $(STAGING_FRONTEND_RELEASE_DIR)/index.html s3://cdn.staging.heraldicon.org/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
-	./invalidate-distribution.sh cdn.staging.heraldicon.org
+	./scripts/invalidate-distribution.sh cdn.staging.heraldicon.org
 
 # DEV
 
