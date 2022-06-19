@@ -15,6 +15,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.message :as message]
+   [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.ui.core :as ui]
@@ -49,6 +50,7 @@
   (go
     (rf/dispatch-sync [::message/clear form-id])
     (try
+      (modal/start-loading)
       (let [payload @(rf/subscribe [:get form-db-path])
             user-data (user/data)
             response (<? (api.request/call :save-collection payload user-data))
@@ -63,6 +65,7 @@
                            form-id
                            (string/str-tr :string.user.message/collection-saved " " (:version response))])
         (reife/push-state :route.collection.details/by-id {:id (id/for-url collection-id)}))
+      (modal/stop-loading)
       (catch :default e
         (log/error "save-form error:" e)
         (rf/dispatch-sync [::message/set-error form-id (:message (ex-data e))])))))
