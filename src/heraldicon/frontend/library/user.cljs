@@ -5,7 +5,7 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.arms.list :as library.arms.list]
-   [heraldicon.frontend.library.charge :as library.charge]
+   [heraldicon.frontend.library.charge.list :as library.charge.list]
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
@@ -31,7 +31,7 @@
     (if (= status :done)
       [charge-select/component
        [:user-charges]
-       library.charge/on-select
+       library.charge.list/on-select
        #(invalidate-charges-cache-for-user user-id)
        :remove-empty-groups? true
        :hide-ownership-filter? true]

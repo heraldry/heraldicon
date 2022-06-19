@@ -14,10 +14,10 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
-   [heraldicon.frontend.form :as form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.library.charge.shared :refer [form-db-path form-id]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
@@ -39,14 +39,6 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
-
-(def form-id
-  :heraldicon.entity/charge)
-
-(def form-db-path
-  (form/data-path form-id))
-
-(history/register-undoable-path form-db-path)
 
 (def ^:private saved-data-db-path
   [:saved-charge-data])
@@ -525,25 +517,6 @@
                                     #(go default/charge-entity))]
     (when (= status :done)
       [charge-form])))
-
-(defn on-select [{:keys [id]}]
-  {:href (reife/href :route.charge.details/by-id {:id (id/for-url id)})
-   :on-click (fn [_event]
-               (rf/dispatch-sync [::message/clear form-id]))})
-
-(defn list-view []
-  (rf/dispatch [::title/set :string.entity/charges])
-  [:div {:style {:padding "15px"}}
-   [:div {:style {:text-align "justify"
-                  :max-width "40em"}}
-    [:p [tr :string.text.charge-library/create-and-view-charges]]]
-   [:button.button.primary
-    {:on-click #(do
-                  (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.charge/create))}
-    [tr :string.button/create]]
-   [:div {:style {:padding-top "0.5em"}}
-    [charge-select/list-charges on-select]]])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
   [load-charge (str "charge:" id) version])

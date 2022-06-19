@@ -7,6 +7,7 @@
    [heraldicon.frontend.library.arms :as library.arms]
    [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge :as library.charge]
+   [heraldicon.frontend.library.charge.list :as library.charge.list]
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.library.ribbon :as library.ribbon]
    [heraldicon.frontend.library.user :as library.user]
@@ -77,7 +78,7 @@
 
    ["/charges/"
     {:name :route.charge/list
-     :view library.charge/list-view}]
+     :view library.charge.list/view}]
 
    ["/charges/new"
     {:name :route.charge/create

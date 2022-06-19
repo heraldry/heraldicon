@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.keys
   (:require
    [heraldicon.frontend.library.arms.shared :as library.arms.shared]
-   [heraldicon.frontend.library.charge :as library.charge]
+   [heraldicon.frontend.library.charge.shared :as library.charge.shared]
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.library.ribbon :as library.ribbon]
    [heraldicon.frontend.router :as router]
@@ -21,7 +21,7 @@
         current-route (router/current-route)
         undo-path (condp (flip isa?) current-route
                     :route.arms/details library.arms.shared/form-db-path
-                    :route.charge/details library.charge/form-db-path
+                    :route.charge/details library.charge.shared/form-db-path
                     :route.ribbon/details library.ribbon/form-db-path
                     :route.collection/details library.collection/form-db-path
                     :else nil)]
