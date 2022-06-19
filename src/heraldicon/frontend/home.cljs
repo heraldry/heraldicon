@@ -1,11 +1,12 @@
 (ns heraldicon.frontend.home
   (:require
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.title :as title]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (defn view []
-  (rf/dispatch [:set-title :string.menu/about])
+  (rf/dispatch [::title/set :string.menu/about])
   [:div {:style {:padding "10px"
                  :text-align "justify"
                  :min-width "30em"

@@ -1,10 +1,11 @@
 (ns heraldicon.frontend.contact
   (:require
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.title :as title]
    [re-frame.core :as rf]))
 
 (defn view []
-  (rf/dispatch [:set-title :string.menu/contact])
+  (rf/dispatch [::title/set :string.menu/contact])
   [:div {:style {:padding "10px"
                  :text-align "justify"
                  :min-width "30em"

@@ -22,6 +22,7 @@
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.ribbon :as ribbon]
    [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.blazonry-editor :as blazonry-editor]
@@ -278,7 +279,7 @@
        [tr :string.button/save]]]]))
 
 (defn- arms-form []
-  (rf/dispatch [:set-title-from-path-or-default
+  (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-arms])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
@@ -318,7 +319,7 @@
                (rf/dispatch-sync [::message/clear form-id]))})
 
 (defn list-view []
-  (rf/dispatch [:set-title :string.entity/arms])
+  (rf/dispatch [::title/set :string.entity/arms])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}

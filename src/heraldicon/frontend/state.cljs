@@ -7,21 +7,8 @@
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.option.attributes :as attributes]
-   [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
-
-(def ^:private title-path [:ui :title])
-
-;; subs
-
-(rf/reg-sub :get-title
-  (fn [_ _]
-    [(rf/subscribe [:get title-path])
-     (rf/subscribe [:heraldicon.frontend.language/selected-language])])
-
-  (fn [[value selected-language] [_ _path]]
-    (string/tr-raw value selected-language)))
 
 (rf/reg-sub :used-charge-variants
   (fn [[_ path] _]
@@ -53,8 +40,6 @@
                        (:ribbon-variant %)))
          (map :ribbon-variant)
          set)))
-
-;; events
 
 (macros/reg-event-db :clear-db
   (fn [_ _]
@@ -108,18 +93,6 @@
     (if (vector? context)
       (update-in db context merge value)
       (update-in db (:path context) merge value))))
-
-(macros/reg-event-db :set-title
-  (fn [db [_ value]]
-    (assoc-in db title-path value)))
-
-(macros/reg-event-db :set-title-from-path-or-default
-  (fn [db [_ path default]]
-    (let [current (get-in db title-path)
-          new-title (or (get-in db path) default)]
-      (if (not= new-title current)
-        (assoc-in db title-path new-title)
-        db))))
 
 (macros/reg-event-db :update
   (fn [db [_ path update-fn]]

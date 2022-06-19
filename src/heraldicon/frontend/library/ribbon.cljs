@@ -17,6 +17,7 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
@@ -488,7 +489,7 @@
        [tr :string.ribbon.editor/shift-info])]))
 
 (defn- ribbon-form []
-  (rf/dispatch [:set-title-from-path-or-default
+  (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-ribbon])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
@@ -532,7 +533,7 @@
                (rf/dispatch-sync [::message/clear form-id]))})
 
 (defn list-view []
-  (rf/dispatch [:set-title :string.menu/ribbon-library])
+  (rf/dispatch [::title/set :string.menu/ribbon-library])
   [:div {:style {:padding "15px"}}
    [:div {:style {:text-align "justify"
                   :max-width "40em"}}

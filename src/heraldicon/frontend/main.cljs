@@ -5,8 +5,8 @@
    [heraldicon.frontend.keys]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
+   [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user :as user]
-   [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
    [reagent.dom :as r]
    [taoensso.timbre :as log]
@@ -19,12 +19,6 @@
     [router/view]
     [modal/render]
     [auto-complete/render]]])
-
-(defn- title []
-  (string/combine
-   " - "
-   [@(rf/subscribe [:get-title])
-    "Heraldicon"]))
 
 (defonce ^:private stats-accumulator (tufte/add-accumulating-handler! {:ns-pattern "*"}))
 
@@ -53,5 +47,5 @@
    [app]
    (.getElementById js/document "app"))
   (r/render
-   [title]
+   [title/title]
    (first (.getElementsByTagName js/document "title"))))

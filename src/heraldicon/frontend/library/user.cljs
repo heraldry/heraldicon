@@ -8,6 +8,7 @@
    [heraldicon.frontend.library.charge :as library.charge]
    [heraldicon.frontend.library.collection :as library.collection]
    [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
    [heraldicon.frontend.ui.element.collection-select :as collection-select]
@@ -71,7 +72,7 @@
 (defn- user-display []
   (let [user-info-data @(rf/subscribe [:get user-info-db-path])
         user-id (:id user-info-data)]
-    (rf/dispatch [:set-title (:username user-info-data)])
+    (rf/dispatch [::title/set (:username user-info-data)])
     [:div {:style {:display "grid"
                    :grid-gap "10px"
                    :grid-template-columns "[start] 20% [first] auto [second] auto [end]"
@@ -121,7 +122,7 @@
    username])
 
 (defn list-view []
-  (rf/dispatch [:set-title :string.menu/users])
+  (rf/dispatch [::title/set :string.menu/users])
   [:div {:style {:padding "15px"}}
    (when (entity.user/admin? (user/data))
      [user-select/list-users link-to-user])])
