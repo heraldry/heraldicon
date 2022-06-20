@@ -18,13 +18,13 @@
   (conj db-path-base :entity))
 
 (defn- entity-path [entity-id version]
-  (conj db-path-entity [entity-id version]))
+  (conj db-path-entity [entity-id (str version)]))
 
 (def ^:private db-path-entity-for-editing
   (conj db-path-base :entity-for-editing))
 
 (defn- entity-for-editing-path [entity-id version]
-  (conj db-path-entity-for-editing [entity-id version]))
+  (conj db-path-entity-for-editing [entity-id (str version)]))
 
 (defn- entity-type [entity-id]
   (case (some-> entity-id
@@ -49,6 +49,17 @@
     :heraldicon.entity/ribbon :save-ribbon
     :heraldicon.entity/collection :save-collection))
 
+(defn- store-entity [path {:keys [id version latest-version] :as entity}]
+  (let [parent-path (vec (drop-last path))]
+    (when (zero? version)
+      (rf/dispatch-sync [:set (conj parent-path [id (str latest-version)])
+                         {:status :done
+                          :entity (-> entity
+                                      (dissoc :latest-version)
+                                      (assoc :version latest-version))}]))
+    (rf/dispatch-sync [:set path {:status :done
+                                  :entity entity}])))
+
 (defn- fetch-entity [entity-id version path]
   (go
     (rf/dispatch-sync [:set path {:status :loading}])
@@ -59,13 +70,11 @@
                                      (user/data)))]
         (when-not entity
           (throw (ex-info "Not found" {} :entity-not-found)))
-        ;; TODO: handle nil version case, store id/(latest-)version
-        (rf/dispatch [:set path {:status :done
-                                 :entity entity}]))
+        (store-entity path entity))
       (catch :default e
         (log/error "fetch entity error:" e)
-        (rf/dispatch [:set path {:status :error
-                                 :error e}])))))
+        (rf/dispatch-sync [:set path {:status :error
+                                      :error e}])))))
 
 (defmulti ^:private load-editing-data (fn [entity]
                                         (some-> entity :id entity-type)))
@@ -86,18 +95,17 @@
     (rf/dispatch-sync [:set path {:status :loading}])
     (try
       (let [updated-entity (<? (load-editing-data entity))]
-        (rf/dispatch [:set path {:status :done
-                                 :entity updated-entity}]))
+        (store-entity path updated-entity))
       (catch :default e
         (log/error "fetching entity data for editing error:" e)
-        (rf/dispatch [:set path {:status :error
-                                 :error e}])))))
+        (rf/dispatch-sync [:set path {:status :error
+                                      :error e}])))))
 
 (defn- fetch-entity-for-editing [entity-id version path]
   (let [{:keys [status entity] :as result} @(rf/subscribe [::entity entity-id version])]
     (case status
       :done (prepare-for-editing entity path)
-      :error (rf/dispatch [:set path result])
+      :error (rf/dispatch-sync [:set path result])
       nil)))
 
 (defn- async-query-data [path load-fn]
@@ -111,13 +119,15 @@
 
 (rf/reg-sub-raw ::entity
   (fn [_app-db [_ entity-id version]]
-    (async-query-data (entity-path entity-id version)
-                      (partial fetch-entity entity-id version))))
+    (let [version (or version 0)]
+      (async-query-data (entity-path entity-id version)
+                        (partial fetch-entity entity-id version)))))
 
 (rf/reg-sub-raw ::entity-for-editing
   (fn [_app-db [_ entity-id version]]
-    (async-query-data (entity-for-editing-path entity-id version)
-                      (partial fetch-entity-for-editing entity-id version))))
+    (let [version (or version 0)]
+      (async-query-data (entity-for-editing-path entity-id version)
+                        (partial fetch-entity-for-editing entity-id version)))))
 
 (defn store [entity-type entity & {:keys [on-start on-complete on-success on-error]}]
   (go
@@ -125,15 +135,30 @@
       (on-start))
     (try
       (let [user-data (user/data)
-            response (<? (api.request/call
-                          (save-entity-api-function entity-type)
-                          entity user-data))]
+            new-entity (<? (api.request/call
+                            (save-entity-api-function entity-type)
+                            entity user-data))
+            {new-id :id
+             new-version :version} new-entity]
         ;; TODO: wire up things
-        ;; - add new id/version in repository
-        ;; - update is/nil in repository
         ;; - update list repository
+
+        (store-entity
+         (entity-path new-id 0)
+         ;; for now simulate version 0, because this will be the latest
+         (assoc new-entity
+                :version 0
+                :latest-version new-version))
+
+        (store-entity
+         (entity-for-editing-path new-id 0)
+         ;; for now simulate version 0, because this will be the latest
+         (assoc (merge entity new-entity)
+                :version 0
+                :latest-version new-version))
+
         (when on-success
-          (on-success response)))
+          (on-success new-entity)))
 
       (catch :default e
         (log/error "save entity error:" e)
