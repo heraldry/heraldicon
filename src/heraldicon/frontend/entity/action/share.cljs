@@ -44,6 +44,6 @@
     [:button.button {:style {:flex "initial"
                              :color "#777"}
                      :class (when disabled? "disabled")
-                     :title tooltip
+                     :title (tr tooltip)
                      :on-click handler}
      [:i.fas.fa-share-alt]]))

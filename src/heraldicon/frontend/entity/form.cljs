@@ -16,7 +16,7 @@
   (fn [db [_ form-id]]
     (update-in db db-path-base dissoc form-id)))
 
-(rf/reg-sub ::unsaved-changed?
+(rf/reg-sub ::unsaved-changes?
   (fn [[_ form-id] _]
     [(rf/subscribe [:get (data-path form-id)])
      (rf/subscribe [:get (saved-data-path form-id)])])

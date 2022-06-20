@@ -2,6 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.entity.id :as id]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.message :as message]
@@ -9,7 +10,8 @@
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.localization.string :as string]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as reife]))
 
 (rf/reg-sub ::prepare-for-editing
   (fn [[_ entity-id version target-paths] _]
@@ -57,19 +59,30 @@
         [loading/loading])
       [component-fn])))
 
+(defn- details-route [form-id]
+  (case form-id
+    :heraldicon.entity/arms :route.arms.details/by-id-and-version
+    :heraldicon.entity/charge :route.charge.details/by-id-and-version
+    :heraldicon.entity/ribbon :route.ribbon.details/by-id-and-version
+    :heraldicon.entity/collection :route.collection.details/by-id-and-version))
+
 (defn save [form-id]
   (let [form-db-path (form/data-path form-id)
+        saved-data-db-path (form/saved-data-path form-id)
         entity @(rf/subscribe [:get form-db-path])]
     (repository/store
      form-id entity
      :on-start #(modal/start-loading)
      :on-complete #(modal/stop-loading)
-     :on-success (fn [response]
-                   ;; TODO: wire up things
-                   ;; - update saved data
-                   ;; - redirect to new route
-                   (rf/dispatch [::message/set-success
-                                 form-id
-                                 (string/str-tr :string.user.message/arms-saved " " (:version response))]))
+     :on-success (fn [new-entity]
+                   (let [new-data (merge entity new-entity)]
+                     (rf/dispatch-sync [:set form-db-path new-data])
+                     (rf/dispatch-sync [:set saved-data-db-path new-data])
+                     (rf/dispatch-sync [::message/set-success
+                                        form-id
+                                        (string/str-tr :string.user.message/arms-saved " " (:version new-data))])
+                     ;; TODO: this flashes noticeably
+                     (reife/replace-state (details-route form-id) {:id (id/for-url (:id new-data))
+                                                                   :version (:version new-data)})))
      :on-error (fn [error]
                  (rf/dispatch [::message/set-error form-id (:message (ex-data error))])))))
