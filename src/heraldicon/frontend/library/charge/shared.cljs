@@ -6,7 +6,4 @@
 (def form-id
   :heraldicon.entity/charge)
 
-(def form-db-path
-  (form/data-path form-id))
-
-(history/register-undoable-path form-db-path)
+(history/register-undoable-path (form/data-path form-id))

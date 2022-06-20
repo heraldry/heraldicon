@@ -7,9 +7,11 @@
    [heraldicon.frontend.entity.action.share :as share]
    [heraldicon.frontend.ui.element.hover-menu :as hover-menu]))
 
-(defn buttons [form-id]
+(defn buttons [form-id additional-buttons]
   [:<>
    [:div.buttons {:style {:display "flex"}}
+    additional-buttons
+
     [:div {:style {:flex "auto"}}]
     [share/button form-id]
 

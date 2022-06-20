@@ -1,6 +1,5 @@
 (ns heraldicon.frontend.library.charge
   (:require
-   ["copy-to-clipboard" :as copy-to-clipboard]
    ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
    [cljs.core.async :refer [go]]
    [cljs.core.async.interop :refer-macros [<p!]]
@@ -9,39 +8,29 @@
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.context :as c]
-   [heraldicon.entity.attribution :as entity.attribution]
-   [heraldicon.entity.id :as id]
-   [heraldicon.frontend.api :as api]
-   [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.entity.core :as entity]
+   [heraldicon.frontend.entity.details :as details]
+   [heraldicon.frontend.entity.details.buttons :as buttons]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
-   [heraldicon.frontend.library.charge.shared :refer [form-db-path form-id]]
+   [heraldicon.frontend.library.charge.shared :refer [form-id]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.not-found :as not-found]
-   [heraldicon.frontend.state :as state]
    [heraldicon.frontend.svgo-setup] ;; needed for side effects
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
-   [heraldicon.frontend.ui.element.charge-select :as charge-select]
-   [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
    [heraldicon.svg.core :as svg]
    [heraldicon.util.colour :as colour]
    [hickory.core :as hickory]
    [re-frame.core :as rf]
-   [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
-
-(def ^:private saved-data-db-path
-  [:saved-charge-data])
 
 (def ^:private example-coa-db-path
   [:example-coa])
@@ -226,19 +215,19 @@
                  data))
 
 (macros/reg-event-db ::colourize-element
-  (fn [db [_ element-id]]
+  (fn [db [_ form-db-path element-id]]
     (let [colours (set (keys (get-in db (conj form-db-path :data :colours))))
           new-colour (generate-new-colour colours)]
       (-> db
           (update-in (conj form-db-path :data :edn-data :data) (partial colourize-element element-id new-colour))
           (update-in (conj form-db-path :data) update-colours-map)))))
 
-(defn- svg-fill-clicked [element event]
+(defn- svg-fill-clicked [form-db-path element event]
   (doto event
     .preventDefault
     .stopPropagation)
   (if @(rf/subscribe [::colourize-mode?])
-    (rf/dispatch [::colourize-element (-> element second :id)])
+    (rf/dispatch [::colourize-element form-db-path (-> element second :id)])
     (rf/dispatch [::toggle-select-colour (-> element second :fill)])))
 
 (def ^:private colourize-mode-path
@@ -269,7 +258,7 @@
      (when colourize-mode?
        [tr :string.charge.editor/colourize-info])]))
 
-(defn- prepare-for-preview [data]
+(defn- prepare-for-preview [data form-db-path]
   (update-in data
              [:data :edn-data :data]
              (fn [charge-data]
@@ -278,17 +267,17 @@
                                          (-> element second map?)
                                          (-> element second :fill))
                                   (-> element
-                                      (assoc-in [1 :on-click] (partial svg-fill-clicked element))
+                                      (assoc-in [1 :on-click] (partial svg-fill-clicked form-db-path element))
                                       (assoc-in [1 :style :cursor] "pointer"))
                                   element))
                               charge-data))))
 
-(defn- preview [& {:keys [original?]}]
+(defn- preview [form-db-path & {:keys [original?]}]
   (let [form-data @(rf/subscribe [:get form-db-path])
         prepared-charge-data (-> form-data
                                  (update :username #(or % (:username (user/data))))
                                  (cond->
-                                   original? prepare-for-preview))
+                                   original? (prepare-for-preview form-db-path)))
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
         {:keys [result
                 environment]} (render/coat-of-arms
@@ -316,7 +305,7 @@
       [:g {:transform "scale(5,5)"}
        result]]]))
 
-(defn- upload-file [event]
+(defn- upload-file [form-db-path event]
   (modal/start-loading)
   (let [file (-> event .-target .-files (.item 0))]
     (when file
@@ -328,152 +317,42 @@
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
 
-(defn- save-charge-clicked [event]
-  (.preventDefault event)
-  (.stopPropagation event)
-  (let [payload (update-in @(rf/subscribe [:get form-db-path])
-                           [:data :edn-data :data]
-                           svg/strip-unnecessary-parts)
-        user-data (user/data)]
-    (rf/dispatch-sync [::message/clear form-id])
-    (go
-      (try
-        (modal/start-loading)
-        (let [response (<? (api.request/call :save-charge payload user-data))
-              charge-id (:id response)]
-          (rf/dispatch-sync [:set (conj form-db-path :id) charge-id])
-          (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
-          (state/invalidate-cache-without-current form-db-path [charge-id nil])
-          (state/invalidate-cache-without-current form-db-path [charge-id 0])
-          (charge-select/invalidate-charges-cache)
-          (rf/dispatch-sync [::message/set-success
-                             form-id
-                             (string/str-tr :string.user.message/charge-saved " " (:version response))])
-          (reife/push-state :route.charge.details/by-id {:id (id/for-url charge-id)}))
-        (modal/stop-loading)
-        (catch :default e
-          (log/error "save-form error:" e)
-          (rf/dispatch-sync [::message/set-error form-id (:message (ex-data e))])
-          (modal/stop-loading))))))
-
-(defn- copy-to-new-clicked []
-  (let [charge-data @(rf/subscribe [:get form-db-path])]
-    (rf/dispatch-sync [::message/clear form-id])
-    (state/set-async-fetch-data
-     form-db-path
-     :new
-     (dissoc charge-data
-             :id
-             :version
-             :latest-version
-             :username
-             :user-id
-             :created-at
-             :first-version-created-at
-             :name))
-    (rf/dispatch-sync [::message/set-success form-id :string.user.message/created-unsaved-copy])
-    (reife/push-state :route.charge/create)))
-
-(defn- share-button-clicked []
-  (let [url (entity.attribution/full-url-for-charge {:path form-db-path})]
-    (rf/dispatch-sync [::message/clear form-id])
-    (if (copy-to-clipboard url)
-      (rf/dispatch-sync [::message/set-success form-id :string.user.message/copied-url-for-sharing])
-      (rf/dispatch-sync [::message/set-error form-id :string.user.message/copy-to-clipboard-failed]))))
-
-(defn- button-row []
-  (let [charge-id @(rf/subscribe [:get (conj form-db-path :id)])
-        charge-username @(rf/subscribe [:get (conj form-db-path :username)])
-        charge-svg-url @(rf/subscribe [:get (conj form-db-path :data :svg-data-url)])
-        public? (= @(rf/subscribe [:get (conj form-db-path :access)])
-                   :public)
-        user-data (user/data)
-        logged-in? (:logged-in? user-data)
-        unsaved-changes? (not= @(rf/subscribe [:get form-db-path])
-                               @(rf/subscribe [:get saved-data-db-path]))
-        saved? charge-id
-        owned-by-me? (= (:username user-data) charge-username)
-        can-copy? (and logged-in?
-                       saved?
-                       owned-by-me?)
-        can-save? (and logged-in?
-                       (or (not saved?)
-                           owned-by-me?))
-        can-upload? can-save?
-        can-share? (and public?
-                        saved?
-                        (not unsaved-changes?))]
+(defn- svg-buttons [form-db-path]
+  (let [charge-svg-url @(rf/subscribe [:get (conj form-db-path :data :svg-data-url)])
+        can-upload? (and @(rf/subscribe [::user/logged-in?])
+                         (or (not @(rf/subscribe [::entity/saved? form-db-path]))
+                             @(rf/subscribe [::entity/owned-by? form-db-path (user/data)])))]
     [:<>
-     [message/display form-id]
+     [:label.button {:for "upload"
+                     :disabled (not can-upload?)
+                     :style {:display "inline-block"
+                             :width "auto"
+                             :flex "initial"
+                             :margin-right "10px"}}
+      [tr :string.button/upload-svg]
+      [:input {:type "file"
+               :accept "image/svg+xml"
+               :id "upload"
+               :disabled (not can-upload?)
+               :on-change (when can-upload?
+                            (partial upload-file form-db-path))
+               :style {:display "none"}}]]
+     (when charge-svg-url
+       [:a {:href charge-svg-url
+            :target "_blank"
+            :style {:flex "initial"
+                    :padding-top "0.5em"
+                    :white-space "nowrap"}}
+        [tr :string.miscellaneous/svg-file]])]))
 
-     [:div.buttons {:style {:display "flex"}}
-      [:label.button {:for "upload"
-                      :disabled (not can-upload?)
-                      :style {:display "inline-block"
-                              :width "auto"
-                              :flex "initial"
-                              :margin-right "10px"}}
-       [tr :string.button/upload-svg]
-       [:input {:type "file"
-                :accept "image/svg+xml"
-                :id "upload"
-                :disabled (not can-upload?)
-                :on-change (when can-upload?
-                             upload-file)
-                :style {:display "none"}}]]
-      (when charge-svg-url
-        [:a {:href charge-svg-url
-             :target "_blank"
-             :style {:flex "initial"
-                     :padding-top "0.5em"
-                     :white-space "nowrap"}}
-         [tr :string.miscellaneous/svg-file]])
-      [:div {:style {:flex "auto"}}]
-      [:button.button {:style {:flex "initial"
-                               :color "#777"}
-                       :class (when-not can-share? "disabled")
-                       :title (when-not can-share? (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))
-                       :on-click (when can-share?
-                                   share-button-clicked)}
-       [:i.fas.fa-share-alt]]
-      [hover-menu/hover-menu
-       {:path [:arms-form-action-menu]}
-       :string.button/actions
-       [{:title :string.button/copy-to-new
-         :icon "fas fa-clone"
-         :handler copy-to-new-clicked
-         :disabled? (not can-copy?)
-         :tooltip (when-not can-copy?
-                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}
-        {:title :string.button/share
-         :icon "fas fa-share-alt"
-         :handler share-button-clicked
-         :disabled? (not can-share?)
-         :tooltip (when-not can-share?
-                    (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))}]
-       [:button.button {:style {:flex "initial"
-                                :color "#777"
-                                :margin-left "10px"}}
-        [:i.fas.fa-ellipsis-h]]
-       :require-click? true]
-      [:button.button.primary
-       {:type "submit"
-        :class (when-not can-save? "disabled")
-        :on-click (if can-save?
-                    save-charge-clicked
-                    #(js/alert (tr :string.user.message/need-to-be-logged-in-and-own-the-charge.)))
-        :style {:flex "initial"
-                :margin-left "10px"}}
-       [tr :string.button/save]]]]))
-
-(defn- attribution []
+(defn- attribution [form-db-path]
   (let [attribution-data (attribution/for-charge {:path form-db-path})]
     [:div.attribution
      [:h3 [tr :string.attribution/title]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]]))
 
-(defn- charge-form []
+(defn- charge-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-charge])
@@ -481,12 +360,14 @@
                                                                      example-coa-db-path]])
   (layout/three-columns
    [:<>
-    [preview :original? true]
+    [preview form-db-path :original? true]
     [edit-controls]]
    [:<>
     [ui/selected-component]
-    [button-row]
-    [attribution]]
+    [message/display form-id]
+    [buttons/buttons form-id
+     [svg-buttons form-db-path]]
+    [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path
@@ -494,29 +375,10 @@
                         (conj example-coa-db-path :render-options)
                         :spacer
                         (conj example-coa-db-path :coat-of-arms :field :components 0)]]
-    [preview]]))
+    [preview form-db-path]]))
 
-(defn- load-charge [charge-id version]
-  (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path charge-id])
-    (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path charge-id]))
-  (let [[status charge-data] (state/async-fetch-data
-                              form-db-path
-                              [charge-id version]
-                              #(api/fetch-charge-for-editing charge-id version saved-data-db-path))]
-    (when (= status :done)
-      (if charge-data
-        [charge-form]
-        [not-found/not-found]))))
-
-(defn create-view [_match]
-  (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
-    (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
-  (let [[status _charge-form-data] (state/async-fetch-data
-                                    form-db-path
-                                    :new
-                                    #(go default/charge-entity))]
-    (when (= status :done)
-      [charge-form])))
+(defn create-view []
+  [details/create-view form-id charge-form #(go default/charge-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [load-charge (str "charge:" id) version])
+  [details/by-id-view form-id (str "charge:" id) version charge-form])
