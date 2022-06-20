@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.repository.core
   (:require
    [cljs.core.async :refer [go]]
-   [clojure.string :as s]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
+   [heraldicon.entity.id :as id]
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.repository.request :as request]
@@ -25,15 +25,6 @@
 
 (defn- entity-for-editing-path [entity-id version]
   (conj db-path-entity-for-editing [entity-id (str version)]))
-
-(defn- entity-type [entity-id]
-  (case (some-> entity-id
-                (s/split #":")
-                first)
-    "arms" :heraldicon.entity/arms
-    "charge" :heraldicon.entity/charge
-    "ribbon" :heraldicon.entity/ribbon
-    "collection" :heraldicon.entity/collection))
 
 (defn- fetch-entity-api-function [entity-type]
   (case entity-type
@@ -64,7 +55,7 @@
   (go
     (rf/dispatch-sync [:set path {:status :loading}])
     (try
-      (let [entity (<? (request/call (fetch-entity-api-function (entity-type entity-id))
+      (let [entity (<? (request/call (fetch-entity-api-function (id/type-from-id entity-id))
                                      {:id entity-id
                                       :version version}
                                      (user/data)))]
@@ -77,7 +68,7 @@
                                       :error e}])))))
 
 (defmulti ^:private load-editing-data (fn [entity]
-                                        (some-> entity :id entity-type)))
+                                        (some-> entity :id id/type-from-id)))
 
 (defmethod load-editing-data :heraldicon.entity/charge [entity]
   (go-catch

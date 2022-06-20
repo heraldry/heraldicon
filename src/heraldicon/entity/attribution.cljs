@@ -143,13 +143,16 @@
                                                      :default :v4
                                                      :ui {:label :string.attribution/license-version}})))
 
+(defn- full-url-raw [base entity-id version]
+  (str (config/get :heraldicon-url) base (id/for-url entity-id) "/" version))
+
 (defn- full-url [context base]
-  (when-let [object-id (interface/get-raw-data (c/++ context :id))]
+  (when-let [entity-id (interface/get-raw-data (c/++ context :id))]
     (let [version (interface/get-raw-data (c/++ context :version))
           version (if (zero? version)
                     (interface/get-raw-data (c/++ context :latest-version))
                     version)]
-      (str (config/get :heraldicon-url) base (id/for-url object-id) "/" version))))
+      (full-url-raw base entity-id version))))
 
 (defn full-url-for-arms [context]
   (full-url context "/arms/"))
@@ -165,3 +168,12 @@
 
 (defn full-url-for-username [username]
   (str (config/get :heraldicon-url) "/users/" username))
+
+(defn full-url-for-entity [entity-id version]
+  (full-url-raw
+   (case (id/type-from-id entity-id)
+     :heraldicon.entity/arms "/arms/"
+     :heraldicon.entity/charge "/charges/"
+     :heraldicon.entity/ribbon "/ribbons/"
+     :heraldicon.entity/collection "/collections/")
+   entity-id version))
