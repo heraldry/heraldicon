@@ -13,7 +13,7 @@
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
-   [heraldicon.frontend.library.arms.shared :refer [form-db-path form-id base-context]]
+   [heraldicon.frontend.library.arms.shared :refer [form-id base-context]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.ribbon :as ribbon]
    [heraldicon.frontend.title :as title]
@@ -24,7 +24,7 @@
    [heraldicon.render.core :as render]
    [re-frame.core :as rf]))
 
-(defn- charge-attribution []
+(defn- charge-attribution [form-db-path]
   (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :data :achievement)])
         charges-data (map charge/fetch-charge-data used-charges)]
     (when (-> charges-data first :id)
@@ -39,7 +39,7 @@
                          :charge-data charge}])))
              charges-data)])))
 
-(defn- ribbon-attribution []
+(defn- ribbon-attribution [form-db-path]
   (let [used-ribbons @(rf/subscribe [:used-ribbons (conj form-db-path :data :achievement)])
         ribbons-data (map ribbon/fetch-ribbon-data used-ribbons)]
     (when (-> ribbons-data first :id)
@@ -54,19 +54,19 @@
                          :ribbon-data ribbon}])))
              ribbons-data)])))
 
-(defn- attribution []
+(defn- attribution [form-db-path]
   (let [attribution-data (attribution/for-arms {:path form-db-path})]
     [:div.attribution
      [:h3 [tr :string.attribution/title]]
      [:div {:style {:padding-left "1em"}}
       attribution-data]
-     [charge-attribution]
-     [ribbon-attribution]]))
+     [charge-attribution form-db-path]
+     [ribbon-attribution form-db-path]]))
 
 (defn- render-achievement []
-  [render/achievement (c/++ (base-context) :data :achievement)])
+  [render/achievement (c/++ base-context :data :achievement)])
 
-(defn- blazonry []
+(defn- blazonry [form-db-path]
   [:div.blazonry
    [:h3
     [tr :string.entity/blazon]
@@ -76,7 +76,7 @@
     (string/tr-raw (interface/blazon (assoc context/default
                                             :path (conj form-db-path :data :achievement :coat-of-arms))) :en)]])
 
-(defn- arms-form []
+(defn- arms-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-arms])
@@ -87,8 +87,8 @@
     [ui/selected-component]
     [message/display form-id]
     [buttons/buttons form-id]
-    [blazonry]
-    [attribution]]
+    [blazonry form-db-path]
+    [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path

@@ -35,7 +35,7 @@
                                          entity-id version
                                          form-db-path])]
     (case status
-      :done [component-fn]
+      :done [component-fn form-db-path]
       (nil :loading) [loading/loading]
       :error [not-found/not-found])))
 
@@ -54,7 +54,7 @@
       (do
         (load-new-entity-data generate-data-fn form-db-path)
         [loading/loading])
-      [component-fn])))
+      [component-fn form-db-path])))
 
 (defn- details-route [form-id]
   (case form-id

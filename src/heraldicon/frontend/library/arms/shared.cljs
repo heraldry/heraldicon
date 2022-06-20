@@ -8,15 +8,13 @@
 (def form-id
   :heraldicon.entity/arms)
 
-(def form-db-path
-  (form/data-path form-id))
+(history/register-undoable-path (form/data-path form-id))
 
-(history/register-undoable-path form-db-path)
-
-(defn base-context []
-  (assoc
-   context/default
-   :path form-db-path
-   :render-options-path (conj form-db-path :data :achievement :render-options)
-   :select-component-fn (fn [event context]
-                          (state/dispatch-on-event event [:ui-component-node-select (:path context)]))))
+(def base-context
+  (let [form-db-path (form/data-path form-id)]
+    (assoc
+     context/default
+     :path form-db-path
+     :render-options-path (conj form-db-path :data :achievement :render-options)
+     :select-component-fn (fn [event context]
+                            (state/dispatch-on-event event [:ui-component-node-select (:path context)])))))
