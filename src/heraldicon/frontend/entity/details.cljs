@@ -4,8 +4,11 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.loading :as loading]
+   [heraldicon.frontend.message :as message]
+   [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 
 (rf/reg-sub ::prepare-for-editing
@@ -53,3 +56,20 @@
         (load-new-entity-data generate-data-fn [form-db-path saved-data-db-path])
         [loading/loading])
       [component-fn])))
+
+(defn save [form-id]
+  (let [form-db-path (form/data-path form-id)
+        entity @(rf/subscribe [:get form-db-path])]
+    (repository/store
+     form-id entity
+     :on-start #(modal/start-loading)
+     :on-complete #(modal/stop-loading)
+     :on-success (fn [response]
+                   ;; TODO: wire up things
+                   ;; - update saved data
+                   ;; - redirect to new route
+                   (rf/dispatch [::message/set-success
+                                 form-id
+                                 (string/str-tr :string.user.message/arms-saved " " (:version response))]))
+     :on-error (fn [error]
+                 (rf/dispatch [::message/set-error form-id (:message (ex-data error))])))))
