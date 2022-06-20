@@ -14,48 +14,44 @@
    [reitit.frontend.easy :as reife]))
 
 (rf/reg-sub ::prepare-for-editing
-  (fn [[_ entity-id version target-paths] _]
-    [(rf/subscribe [:get (first target-paths)])
+  (fn [[_ entity-id version target-path] _]
+    [(rf/subscribe [:get target-path])
      (rf/subscribe [::repository/entity-for-editing entity-id version])])
 
-  (fn [[current {:keys [status entity] :as result}] [_ _entity-id _version target-paths]]
+  (fn [[current {:keys [status entity] :as result}] [_ _entity-id _version target-path]]
     (if (= status :done)
       (if (= (select-keys current [:id :version])
              (select-keys entity [:id :version]))
         result
         (do
-          (doseq [target-path target-paths]
-            (rf/dispatch [:set target-path entity]))
+          (rf/dispatch [:set target-path entity])
           {:status :loading}))
       result)))
 
 (defn by-id-view [form-id entity-id version component-fn]
   (let [form-db-path (form/data-path form-id)
-        saved-data-db-path (form/saved-data-path form-id)
         {:keys [status]} @(rf/subscribe [::prepare-for-editing
                                          entity-id version
-                                         [form-db-path saved-data-db-path]])]
+                                         form-db-path])]
     (case status
       :done [component-fn]
       (nil :loading) [loading/loading]
       :error [not-found/not-found])))
 
-(defn- load-new-entity-data [generate-data-fn target-paths]
+(defn- load-new-entity-data [generate-data-fn target-path]
   (go
     (let [data (<? (generate-data-fn))]
-      (doseq [target-path target-paths]
-        (rf/dispatch [:set target-path data])))))
+      (rf/dispatch [:set target-path data]))))
 
 (defn create-view [form-id component-fn generate-data-fn]
   (let [form-db-path (form/data-path form-id)
-        saved-data-db-path (form/saved-data-path form-id)
         currently-nil? @(rf/subscribe [:nil? form-db-path])
         current-id @(rf/subscribe [:get (conj form-db-path :id)])
         loading? (or currently-nil?
                      current-id)]
     (if loading?
       (do
-        (load-new-entity-data generate-data-fn [form-db-path saved-data-db-path])
+        (load-new-entity-data generate-data-fn form-db-path)
         [loading/loading])
       [component-fn])))
 
@@ -68,7 +64,6 @@
 
 (defn save [form-id]
   (let [form-db-path (form/data-path form-id)
-        saved-data-db-path (form/saved-data-path form-id)
         entity @(rf/subscribe [:get form-db-path])]
     (repository/store
      form-id entity
@@ -77,7 +72,6 @@
      :on-success (fn [new-entity]
                    (let [new-data (merge entity new-entity)]
                      (rf/dispatch-sync [:set form-db-path new-data])
-                     (rf/dispatch-sync [:set saved-data-db-path new-data])
                      (rf/dispatch-sync [::message/set-success
                                         form-id
                                         (string/str-tr :string.user.message/arms-saved " " (:version new-data))])
