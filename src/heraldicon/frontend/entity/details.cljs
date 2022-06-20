@@ -15,13 +15,14 @@
 
 (rf/reg-sub ::prepare-for-editing
   (fn [[_ entity-id version target-path] _]
-    [(rf/subscribe [:get target-path])
+    [(rf/subscribe [:get (conj target-path :id)])
+     (rf/subscribe [:get (conj target-path :version)])
      (rf/subscribe [::repository/entity-for-editing entity-id version])])
 
-  (fn [[current {:keys [status entity] :as result}] [_ _entity-id _version target-path]]
+  (fn [[current-id current-version {:keys [status entity] :as result}] [_ _entity-id _version target-path]]
     (if (= status :done)
-      (if (= (select-keys current [:id :version])
-             (select-keys entity [:id :version]))
+      (if (= [current-id current-version]
+             ((juxt :id :version) entity))
         result
         (do
           (rf/dispatch [:set target-path entity])
