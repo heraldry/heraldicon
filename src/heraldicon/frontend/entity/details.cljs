@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.message :as message]
@@ -39,10 +40,12 @@
       (nil :loading) [loading/loading]
       :error [not-found/not-found])))
 
-(defn- load-new-entity-data [generate-data-fn target-path]
+(defn- load-new-entity-data [form-id generate-data-fn target-path]
   (go
-    (let [data (<? (generate-data-fn))]
-      (rf/dispatch [:set target-path data]))))
+    (if @(rf/subscribe [::copy-to-new/copy-data form-id])
+      (rf/dispatch [::copy-to-new/copy form-id target-path])
+      (let [data (<? (generate-data-fn))]
+        (rf/dispatch [:set target-path data])))))
 
 (defn create-view [form-id component-fn generate-data-fn]
   (let [form-db-path (form/data-path form-id)
@@ -52,7 +55,7 @@
                      current-id)]
     (if loading?
       (do
-        (load-new-entity-data generate-data-fn form-db-path)
+        (load-new-entity-data form-id generate-data-fn form-db-path)
         [loading/loading])
       [component-fn form-db-path])))
 
