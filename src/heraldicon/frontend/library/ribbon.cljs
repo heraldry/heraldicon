@@ -1,43 +1,27 @@
 (ns heraldicon.frontend.library.ribbon
   (:require
-   ["copy-to-clipboard" :as copy-to-clipboard]
    [cljs.core.async :refer [go]]
-   [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.entity.attribution :as entity.attribution]
-   [heraldicon.entity.id :as id]
-   [heraldicon.frontend.api :as api]
-   [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.entity.details :as details]
+   [heraldicon.frontend.entity.details.buttons :as buttons]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
-   [heraldicon.frontend.library.ribbon.shared :refer [form-db-path form-id]]
+   [heraldicon.frontend.library.ribbon.shared :refer [form-id]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
-   [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.not-found :as not-found]
-   [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
-   [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
-   [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
-   [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.interface :as interface]
-   [heraldicon.localization.string :as string]
    [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.vector :as v]
    [heraldicon.render.core :as render]
    [heraldicon.svg.filter :as filter]
    [heraldicon.svg.path :as path]
-   [re-frame.core :as rf]
-   [reitit.frontend.easy :as reife]
-   [taoensso.timbre :as log]))
-
-(def ^:private saved-data-db-path
-  [:saved-ribbon-data])
+   [re-frame.core :as rf]))
 
 (def ^:private preview-width
   500)
@@ -293,7 +277,7 @@
                    [:path {:d (str "M 0," y " h" width)}]))
             (range 0 (inc height) dy))))
 
-(defn- preview []
+(defn- preview [form-db-path]
   (let [[width height] [preview-width preview-height]
         ribbon-path (conj form-db-path :data :ribbon)
         points-path (conj ribbon-path :points)
@@ -346,120 +330,7 @@
                       [add-point points-path idx point]))
                @(rf/subscribe [::edit-addable-points points-path])))]]]))
 
-(defn- save-ribbon-clicked [event]
-  (.preventDefault event)
-  (.stopPropagation event)
-  (let [payload @(rf/subscribe [:get form-db-path])
-        user-data (user/data)]
-    (rf/dispatch-sync [::message/clear form-id])
-    (go
-      (try
-        (modal/start-loading)
-        (let [response (<? (api.request/call :save-ribbon payload user-data))
-              ribbon-id (:id response)]
-          (rf/dispatch-sync [:set (conj form-db-path :id) ribbon-id])
-          (rf/dispatch-sync [:set saved-data-db-path @(rf/subscribe [:get form-db-path])])
-          (state/invalidate-cache-without-current form-db-path [ribbon-id nil])
-          (state/invalidate-cache-without-current form-db-path [ribbon-id 0])
-          (ribbon-select/invalidate-ribbons-cache)
-          (rf/dispatch-sync [::message/set-success
-                             form-id
-                             (string/str-tr :string.user.message/ribbon-saved " " (:version response))])
-          (reife/push-state :route.ribbon.details/by-id {:id (id/for-url ribbon-id)}))
-        (modal/stop-loading)
-        (catch :default e
-          (log/error "save-form error:" e)
-          (rf/dispatch-sync [::message/set-error form-id (:message (ex-data e))])
-          (modal/stop-loading))))))
-
-(defn- copy-to-new-clicked []
-  (let [ribbon-data @(rf/subscribe [:get form-db-path])]
-    (rf/dispatch-sync [::message/clear form-id])
-    (state/set-async-fetch-data
-     form-db-path
-     :new
-     (dissoc ribbon-data
-             :id
-             :version
-             :latest-version
-             :username
-             :user-id
-             :created-at
-             :first-version-created-at
-             :name))
-    (rf/dispatch-sync [::message/set-success form-id :string.user.message/created-unsaved-copy])
-    (reife/push-state :route.ribbon/create)))
-
-(defn- share-button-clicked []
-  (let [url (entity.attribution/full-url-for-ribbon {:path form-db-path})]
-    (rf/dispatch-sync [::message/clear form-id])
-    (if (copy-to-clipboard url)
-      (rf/dispatch-sync [::message/set-success form-id :string.user.message/copied-url-for-sharing])
-      (rf/dispatch-sync [::message/set-error form-id :string.user.message/copy-to-clipboard-failed]))))
-
-(defn- button-row []
-  (let [ribbon-id @(rf/subscribe [:get (conj form-db-path :id)])
-        ribbon-username @(rf/subscribe [:get (conj form-db-path :username)])
-        public? (= @(rf/subscribe [:get (conj form-db-path :access)])
-                   :public)
-        user-data (user/data)
-        logged-in? (:logged-in? user-data)
-        unsaved-changes? (not= @(rf/subscribe [:get form-db-path])
-                               @(rf/subscribe [:get saved-data-db-path]))
-        saved? ribbon-id
-        owned-by-me? (= (:username user-data) ribbon-username)
-        can-copy? (and logged-in?
-                       saved?
-                       owned-by-me?)
-        can-save? (and logged-in?
-                       (or (not saved?)
-                           owned-by-me?))
-        can-share? (and public?
-                        saved?
-                        (not unsaved-changes?))]
-    [:<>
-     [message/display form-id]
-
-     [:div.buttons {:style {:display "flex"}}
-      [:div {:style {:flex "auto"}}]
-      [:button.button {:style {:flex "initial"
-                               :color "#777"}
-                       :class (when-not can-share? "disabled")
-                       :title (when-not can-share? (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))
-                       :on-click (when can-share?
-                                   share-button-clicked)}
-       [:i.fas.fa-share-alt]]
-      [hover-menu/hover-menu
-       {:path [:arms-form-action-menu]}
-       :string.button/actions
-       [{:title :string.button/copy-to-new
-         :icon "fas fa-clone"
-         :handler copy-to-new-clicked
-         :disabled? (not can-copy?)
-         :tooltip (when-not can-copy?
-                    (tr :string.user.message/need-to-be-logged-in-and-arms-must-be-saved))}
-        {:title :string.button/share
-         :icon "fas fa-share-alt"
-         :handler share-button-clicked
-         :disabled? (not can-share?)
-         :tooltip (when-not can-share?
-                    (tr :string.user.message/arms-need-to-be-public-and-saved-for-sharing))}]
-       [:button.button {:style {:flex "initial"
-                                :color "#777"
-                                :margin-left "10px"}}
-        [:i.fas.fa-ellipsis-h]]
-       :require-click? true]
-      [:button.button.primary
-       {:type "submit"
-        :class (when-not can-save? "disabled")
-        :on-click (if can-save?
-                    save-ribbon-clicked
-                    #(js/alert "Need to be logged in and own the arms."))
-        :style {:flex "initial"
-                :margin-left "10px"}}
-       [tr :string.button/save]]]]))
-
-(defn- attribution []
+(defn- attribution [form-db-path]
   (let [attribution-data (attribution/for-ribbon {:path form-db-path})]
     [:div.attribution
      [:h3 [tr :string.attribution/title]]
@@ -480,44 +351,26 @@
      (when-not (= edit-mode :none)
        [tr :string.ribbon.editor/shift-info])]))
 
-(defn- ribbon-form []
+(defn- ribbon-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-ribbon])
   (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
   (layout/three-columns
    [:<>
-    [preview]
+    [preview form-db-path]
     [edit-controls]]
    [:<>
     [ui/selected-component]
-    [button-row]
-    [attribution]]
+    [message/display form-id]
+    [buttons/buttons form-id]
+    [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path]]]))
 
-(defn- load-ribbon [ribbon-id version]
-  (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path ribbon-id])
-    (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path ribbon-id]))
-  (let [[status ribbon-data] (state/async-fetch-data
-                              form-db-path
-                              [ribbon-id version]
-                              #(api/fetch-ribbon ribbon-id version saved-data-db-path))]
-    (when (= status :done)
-      (if ribbon-data
-        [ribbon-form]
-        [not-found/not-found]))))
-
-(defn create-view [_match]
-  (when @(rf/subscribe [:heraldicon.frontend.history.core/identifier-changed? form-db-path nil])
-    (rf/dispatch-sync [:heraldicon.frontend.history.core/clear form-db-path nil]))
-  (let [[status _ribbon-form-data] (state/async-fetch-data
-                                    form-db-path
-                                    :new
-                                    #(go default/ribbon-entity))]
-    (when (= status :done)
-      [ribbon-form])))
+(defn create-view []
+  [details/create-view form-id ribbon-form #(go default/ribbon-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [load-ribbon (str "ribbon:" id) version])
+  [details/by-id-view form-id (str "ribbon:" id) version ribbon-form])
