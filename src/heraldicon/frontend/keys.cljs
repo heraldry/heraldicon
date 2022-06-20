@@ -23,7 +23,7 @@
         undo-path (condp (flip isa?) current-route
                     :route.arms/details (form/data-path library.arms.shared/form-id)
                     :route.charge/details (form/data-path library.charge.shared/form-id)
-                    :route.ribbon/details library.ribbon.shared/form-db-path
+                    :route.ribbon/details (form/data-path library.ribbon.shared/form-id)
                     :route.collection/details library.collection.shared/form-db-path
                     :else nil)]
     (cond
