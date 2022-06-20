@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.keys
   (:require
+   [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.library.arms.shared :as library.arms.shared]
    [heraldicon.frontend.library.charge.shared :as library.charge.shared]
    [heraldicon.frontend.library.collection.shared :as library.collection.shared]
@@ -20,7 +21,7 @@
         z-pressed? (= code "KeyZ")
         current-route (router/current-route)
         undo-path (condp (flip isa?) current-route
-                    :route.arms/details library.arms.shared/form-db-path
+                    :route.arms/details (form/data-path library.arms.shared/form-id)
                     :route.charge/details library.charge.shared/form-db-path
                     :route.ribbon/details library.ribbon.shared/form-db-path
                     :route.collection/details library.collection.shared/form-db-path
