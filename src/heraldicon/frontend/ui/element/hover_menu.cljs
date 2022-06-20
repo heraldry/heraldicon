@@ -57,7 +57,7 @@
                      [:li.ui-menu-item
                       {:style {:color color}
                        :on-click (when-not (or menu-disabled? disabled?) handler)
-                       :title tooltip}
+                       :title (tr tooltip)}
                       (when icon
                         [:i.ui-icon {:class icon
                                      :style {:margin-right "5px"

@@ -19,7 +19,7 @@
     [:button.button.primary {:type "submit"
                              :class (when-not can-save? "disabled")
                              :title (when-not can-save?
-                                      (tr :string.user.message/need-to-be-logged-in-and-own-the-arms))
+                                      :string.user.message/need-to-be-logged-in-and-own-the-arms)
                              :on-click (when can-save?
                                          (fn [event]
                                            (.preventDefault event)
