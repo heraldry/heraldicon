@@ -4,7 +4,6 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.config :as config]
    [heraldicon.context :as c]
-   [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.context :as context]
@@ -16,17 +15,14 @@
    [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.library.arms.shared :refer [form-db-path form-id base-context]]
    [heraldicon.frontend.message :as message]
-   [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.ribbon :as ribbon]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
-   [heraldicon.frontend.user :as user]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.render.core :as render]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+   [re-frame.core :as rf]))
 
 (defn- charge-attribution []
   (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :data :achievement)])
@@ -79,38 +75,6 @@
    [:div.blazon
     (string/tr-raw (interface/blazon (assoc context/default
                                             :path (conj form-db-path :data :achievement :coat-of-arms))) :en)]])
-
-(defn- generate-svg-clicked []
-  (modal/start-loading)
-  (go
-    (try
-      (let [full-data @(rf/subscribe [:get form-db-path])
-            payload (-> full-data
-                        (select-keys [:id :version])
-                        (assoc :render-options (get-in full-data [:data :achievement :render-options])))
-            user-data (user/data)
-            response (<? (api.request/call :generate-svg-arms payload user-data))]
-        (js/window.open (:svg-url response))
-        (modal/stop-loading))
-      (catch :default e
-        (log/error "generate svg arms error:" e)
-        (modal/stop-loading)))))
-
-(defn- generate-png-clicked []
-  (modal/start-loading)
-  (go
-    (try
-      (let [full-data @(rf/subscribe [:get form-db-path])
-            payload (-> full-data
-                        (select-keys [:id :version])
-                        (assoc :render-options (get-in full-data [:data :achievement :render-options])))
-            user-data (user/data)
-            response (<? (api.request/call :generate-png-arms payload user-data))]
-        (js/window.open (:png-url response))
-        (modal/stop-loading))
-      (catch :default e
-        (log/error "generate png arms error:" e)
-        (modal/stop-loading)))))
 
 (defn- arms-form []
   (rf/dispatch [::title/set-from-path-or-default
