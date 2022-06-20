@@ -11,7 +11,7 @@
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.context :as context]
-   [heraldicon.frontend.form :as form]
+   [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
@@ -295,7 +295,7 @@
       default/arms-entity)))
 
 (defn create-view [{:keys [query-params]}]
-  [form/create-view form-id arms-form #(go (<? (load-hdn (:base query-params))))])
+  [details/create-view form-id arms-form #(go (<? (load-hdn (:base query-params))))])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [form/details-view form-id (str "arms:" id) version arms-form])
+  [details/by-id-view form-id (str "arms:" id) version arms-form])
