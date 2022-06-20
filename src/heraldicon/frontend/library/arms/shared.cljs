@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.library.arms.shared
   (:require
    [heraldicon.frontend.context :as context]
-   [heraldicon.frontend.form :as form]
+   [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.state :as state]))
 

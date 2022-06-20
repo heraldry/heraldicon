@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.library.collection.shared
   (:require
-   [heraldicon.frontend.form :as form]
+   [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.history.core :as history]))
 
 (def form-id

@@ -1,7 +1,7 @@
 (ns heraldicon.render.options
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.form :as form]
+   [heraldicon.frontend.entity.form :as form]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.interface :as interface]
    [heraldicon.render.mode :as mode]
