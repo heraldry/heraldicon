@@ -46,6 +46,13 @@
 (defn data []
   @(rf/subscribe [:get user-db-path]))
 
+(rf/reg-sub ::logged-in?
+  (fn [[_] _]
+    (rf/subscribe [:get (conj user-db-path :logged-in?)]))
+
+  (fn [logged-in? [_]]
+    logged-in?))
+
 (defn- extract-domain [url]
   (-> url
       (s/split #"//" 2)

@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [clojure.string :as s]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
+   [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user :as user]
@@ -41,6 +42,13 @@
     :heraldicon.entity/ribbon :fetch-ribbon
     :heraldicon.entity/collection :fetch-collection))
 
+(defn- save-entity-api-function [entity-type]
+  (case entity-type
+    :heraldicon.entity/arms :save-arms
+    :heraldicon.entity/charge :save-charge
+    :heraldicon.entity/ribbon :save-ribbon
+    :heraldicon.entity/collection :save-collection))
+
 (defn- fetch-entity [entity-id version path]
   (go
     (rf/dispatch-sync [:set path {:status :loading}])
@@ -51,6 +59,7 @@
                                      (user/data)))]
         (when-not entity
           (throw (ex-info "Not found" {} :entity-not-found)))
+        ;; TODO: handle nil version case, store id/(latest-)version
         (rf/dispatch [:set path {:status :done
                                  :entity entity}]))
       (catch :default e
@@ -61,7 +70,7 @@
 (defmulti ^:private load-editing-data (fn [entity]
                                         (some-> entity :id entity-type)))
 
-(defmethod load-editing-data :heraldry.entity/charge [entity]
+(defmethod load-editing-data :heraldicon.entity/charge [entity]
   (go-catch
    (let [edn-data (get-in entity [:data :edn-data])
          svg-data (get-in entity [:data :svg-data])]
@@ -109,3 +118,28 @@
   (fn [_app-db [_ entity-id version]]
     (async-query-data (entity-for-editing-path entity-id version)
                       (partial fetch-entity-for-editing entity-id version))))
+
+(defn store [entity-type entity & {:keys [on-start on-complete on-success on-error]}]
+  (go
+    (when on-start
+      (on-start))
+    (try
+      (let [user-data (user/data)
+            response (<? (api.request/call
+                          (save-entity-api-function entity-type)
+                          entity user-data))]
+        ;; TODO: wire up things
+        ;; - add new id/version in repository
+        ;; - update is/nil in repository
+        ;; - update list repository
+        (when on-success
+          (on-success response)))
+
+      (catch :default e
+        (log/error "save entity error:" e)
+        (when on-error
+          (on-error e)))
+
+      (finally
+        (when on-complete
+          (on-complete))))))
