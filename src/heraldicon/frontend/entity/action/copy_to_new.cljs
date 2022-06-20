@@ -6,10 +6,8 @@
    [reitit.frontend.easy :as reife]))
 
 (defn- invoke [form-id]
-  (let [form-db-path (form/data-path form-id)
-        saved-data-db-path (form/saved-data-path form-id)]
+  (let [form-db-path (form/data-path form-id)]
     (rf/dispatch-sync [::message/clear form-id])
-    (rf/dispatch-sync [:set saved-data-db-path nil])
     ;; TODO: implement the copy
     (rf/dispatch-sync [::message/set-success form-id :string.user.message/created-unsaved-copy])
     (reife/push-state :route.arms/create)))
