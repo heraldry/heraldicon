@@ -38,8 +38,9 @@
     :heraldicon.entity.type/ribbon :route.ribbon.details/by-id-and-version
     :heraldicon.entity.type/collection :route.collection.details/by-id-and-version))
 
-(defn by-id-view [entity-type entity-id version component-fn]
-  (let [form-db-path (form/data-path entity-type)
+(defn by-id-view [entity-id version component-fn]
+  (let [entity-type (id/type-from-id entity-id)
+        form-db-path (form/data-path entity-type)
         {:keys [status entity]} @(rf/subscribe [::prepare-for-editing
                                                 entity-id version
                                                 form-db-path])]
