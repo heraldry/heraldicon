@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.api.request
+(ns heraldicon.frontend.repository.api
   (:require
    [cljs-http.client :as http]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]

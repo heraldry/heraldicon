@@ -2,7 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
-   [heraldicon.frontend.api.request :as api.request]
+   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.repository.core :as repository]
@@ -78,7 +78,7 @@
       (on-start))
     (try
       (let [user-data (user/data)
-            new-entity (<? (api.request/call
+            new-entity (<? (api/call
                             (save-entity-api-function (:type entity))
                             entity user-data))]
         ;; TODO: wire up things

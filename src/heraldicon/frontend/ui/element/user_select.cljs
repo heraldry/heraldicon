@@ -3,9 +3,9 @@
    [cljs.core.async :refer [go]]
    [clojure.string :as s]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.user :as user]
    [taoensso.timbre :as log]))
@@ -16,14 +16,14 @@
 (defn fetch-user [username]
   (go
     (try
-      (<? (api.request/call :fetch-user {:username username} (user/data)))
+      (<? (api/call :fetch-user {:username username} (user/data)))
       (catch :default e
         (log/error "fetch user error:" e)))))
 
 (defn- fetch-user-list []
   (go
     (try
-      (-> (api.request/call :fetch-users-all {} (user/data))
+      (-> (api/call :fetch-users-all {} (user/data))
           <?
           :items)
       (catch :default e
