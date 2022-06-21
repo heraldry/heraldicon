@@ -1,16 +1,10 @@
 (ns heraldicon.frontend.ui.element.ribbon-select
   (:require
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.filter :as filter]
-   [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.user :as user]))
-
-(def ^:private list-db-path
-  [:ribbon-list])
-
-(defn invalidate-ribbons-cache []
-  (state/invalidate-cache list-db-path :all))
+   [heraldicon.frontend.loading :as loading]
+   [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.user :as user]
+   [re-frame.core :as rf]))
 
 (defn- component [ribbon-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                   selected-ribbon
@@ -38,9 +32,12 @@
 
 (defn list-ribbons [on-select & {:keys [selected-ribbon
                                         display-selected-item?]}]
-  (let [[status _ribbon-list] (state/async-fetch-data list-db-path :all api/fetch-ribbons-list)]
+  (let [{:keys [status path]} @(rf/subscribe [::entity-list/data :heraldicon.entity.type/ribbon])]
     (if (= status :done)
-      [component list-db-path on-select invalidate-ribbons-cache
+      [component
+       path
+       on-select
+       #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/ribbon])
        :selected-ribbon selected-ribbon
        :display-selected-item? display-selected-item?]
-      [:div [tr :string.miscellaneous/loading]])))
+      [loading/loading])))
