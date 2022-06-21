@@ -169,8 +169,8 @@
 (defn full-url-for-entity [entity-id version]
   (full-url-raw
    (case (id/type-from-id entity-id)
-     :heraldicon.entity/arms "/arms/"
-     :heraldicon.entity/charge "/charges/"
-     :heraldicon.entity/ribbon "/ribbons/"
-     :heraldicon.entity/collection "/collections/")
+     :heraldicon.entity.type/arms "/arms/"
+     :heraldicon.entity.type/charge "/charges/"
+     :heraldicon.entity.type/ribbon "/ribbons/"
+     :heraldicon.entity.type/collection "/collections/")
    entity-id version))

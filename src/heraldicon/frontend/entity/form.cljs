@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.entity.form
   (:require
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.frontend.repository.entity-for-editing :as entity-for-editing]
    [re-frame.core :as rf])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
@@ -22,7 +22,7 @@
             :as current} @(rf/subscribe [:get (data-path form-id)])]
        (if (and id version)
          (let [{status :status
-                saved :entity} @(rf/subscribe [::repository/entity-for-editing id version])]
+                saved :entity} @(rf/subscribe [::entity-for-editing/data id version])]
            (if (= status :done)
              (case form-id
                :heraldicon.entity/arms (not= (assoc-in current [:data :achievement :render-options] nil)

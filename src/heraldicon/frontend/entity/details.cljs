@@ -9,7 +9,7 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.not-found :as not-found]
-   [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.frontend.repository.entity-for-editing :as entity-for-editing]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
@@ -18,7 +18,7 @@
   (fn [[_ entity-id version target-path] _]
     [(rf/subscribe [:get (conj target-path :id)])
      (rf/subscribe [:get (conj target-path :version)])
-     (rf/subscribe [::repository/entity-for-editing entity-id version])])
+     (rf/subscribe [::entity-for-editing/data entity-id version])])
 
   (fn [[current-id current-version {:keys [status entity] :as result}] [_ _entity-id _version target-path]]
     (if (= status :done)
@@ -74,8 +74,8 @@
 (defn save [form-id]
   (let [form-db-path (form/data-path form-id)
         entity @(rf/subscribe [:get form-db-path])]
-    (repository/store
-     form-id entity
+    (entity-for-editing/store
+     entity
      :on-start #(modal/start-loading)
      :on-complete #(modal/stop-loading)
      :on-success (fn [new-entity]

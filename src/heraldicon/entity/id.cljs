@@ -11,7 +11,7 @@
   (case (some-> entity-id
                 (s/split #":")
                 first)
-    "arms" :heraldicon.entity/arms
-    "charge" :heraldicon.entity/charge
-    "ribbon" :heraldicon.entity/ribbon
-    "collection" :heraldicon.entity/collection))
+    "arms" :heraldicon.entity.type/arms
+    "charge" :heraldicon.entity.type/charge
+    "ribbon" :heraldicon.entity.type/ribbon
+    "collection" :heraldicon.entity.type/collection))
