@@ -51,15 +51,6 @@
       (catch :default e
         (log/error "fetch charge list by user error:" e)))))
 
-(defn fetch-arms-list []
-  (go
-    (try
-      (-> (api.request/call :fetch-arms-list {} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch arms list error:" e)))))
-
 (defn fetch-arms-for-user [user-id]
   (go
     (try
