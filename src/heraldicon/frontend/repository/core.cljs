@@ -5,10 +5,10 @@
 (def db-path-base
   [:repository])
 
-(defn async-query-data [path load-fn]
+(defn async-query-data [path load-fn & {:keys [on-loaded]}]
   (let [data @(rf/subscribe [:get path])]
     (if data
       data
       (do
-        (load-fn)
+        (load-fn :on-loaded on-loaded)
         {:status :loading}))))
