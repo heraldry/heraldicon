@@ -1,9 +1,8 @@
 (ns heraldicon.frontend.ui.element.arms-reference-select
   (:require
    [heraldicon.entity.id :as id]
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.interface :as ui.interface]
@@ -17,12 +16,9 @@
            version :version} (interface/get-raw-data context)
           {:keys [ui]} option
           label (:label ui)
-          [_status arms-data] (when arms-id
-                                (state/async-fetch-data
-                                 [:arms-references arms-id version]
-                                 [arms-id version]
-                                 #(api/fetch-arms arms-id version nil)))
-          arms-title (-> arms-data
+          {:keys [_status entity]} (when arms-id
+                                     @(rf/subscribe [::entity-for-rendering/data arms-id version]))
+          arms-title (-> entity
                          :name
                          (or :string.miscellaneous/none))]
       [:div.ui-setting
@@ -45,5 +41,5 @@
                                                  .stopPropagation)
                                                (rf/dispatch [:set context {:id id
                                                                            :version 0}]))})
-          :selected-arms arms-data
+          :selected-arms entity
           :display-selected-item? true]]]])))

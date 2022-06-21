@@ -63,17 +63,6 @@
       (catch :default e
         (log/error "fetch charge list by user error:" e)))))
 
-(defn fetch-arms [arms-id version target-path]
-  (go
-    (try
-      (let [arms-data (<? (api.request/call :fetch-arms {:id arms-id
-                                                         :version version} (user/data)))]
-        (when target-path
-          (rf/dispatch [:set target-path arms-data]))
-        arms-data)
-      (catch :default e
-        (log/error "fetch arms error:" e)))))
-
 (defn fetch-arms-list []
   (go
     (try
