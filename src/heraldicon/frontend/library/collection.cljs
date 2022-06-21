@@ -3,7 +3,6 @@
    [cljs.core.async :refer [go]]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.entity.details.buttons :as buttons]
@@ -11,6 +10,7 @@
    [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.library.collection.shared :refer [form-id]]
    [heraldicon.frontend.message :as message]
+   [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
@@ -70,11 +70,8 @@
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
-        [_status arms-data] (when arms-id
-                              (state/async-fetch-data
-                               [:arms-references arms-id version]
-                               [arms-id version]
-                               #(api/fetch-arms arms-id version nil)))
+        {:keys [_status entity]} (when arms-id
+                                   @(rf/subscribe [::entity-for-rendering/data arms-id version]))
         collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
         {:keys [result
                 environment]} (render/coat-of-arms
@@ -86,10 +83,10 @@
                                                               old
                                                               new))
                                                           (:render-options shared/coa-select-option-context)
-                                                          (-> arms-data :data :achievement :render-options)
+                                                          (-> entity :data :achievement :render-options)
                                                           collection-render-options))
                                    (c/<< :coat-of-arms
-                                         (if-let [coat-of-arms (-> arms-data :data :achievement :coat-of-arms)]
+                                         (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
                                            coat-of-arms
                                            default/coat-of-arms)))
                                size)
@@ -186,11 +183,8 @@
     (let [arms-reference @(rf/subscribe [:get (conj form-db-path :data :elements selected-element-index :reference)])
           {arms-id :id
            version :version} arms-reference
-          [status arms-data] (when arms-id
-                               (state/async-fetch-data
-                                [:arms-references arms-id version]
-                                [arms-id version]
-                                #(api/fetch-arms arms-id version nil)))
+          {:keys [status entity]} (when arms-id
+                                    @(rf/subscribe [::entity-for-rendering/data arms-id version]))
           collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})]
       (when (or (not arms-id)
                 (= status :done))
@@ -204,10 +198,10 @@
                                                                     old
                                                                     new))
                                                                 (:render-options shared/coa-select-option-context)
-                                                                (-> arms-data :data :achievement :render-options)
+                                                                (-> entity :data :achievement :render-options)
                                                                 collection-render-options))
                                          (c/<< :coat-of-arms
-                                               (if-let [coat-of-arms (-> arms-data :data :achievement :coat-of-arms)]
+                                               (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
                                                  coat-of-arms
                                                  default/coat-of-arms)))
                                      100)
@@ -216,7 +210,7 @@
            (when arms-id
              [:div.attribution
               [attribution/for-arms {:path [:context :arms]
-                                     :arms arms-data}]])
+                                     :arms entity}]])
            [:svg {:id "svg"
                   :style {:width "100%"}
                   :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
