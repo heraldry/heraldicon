@@ -15,7 +15,7 @@
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
-   [heraldicon.frontend.library.charge.shared :refer [form-id]]
+   [heraldicon.frontend.library.charge.shared :refer [entity-type]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
@@ -364,8 +364,8 @@
     [edit-controls]]
    [:<>
     [ui/selected-component]
-    [message/display form-id]
-    [buttons/buttons form-id
+    [message/display entity-type]
+    [buttons/buttons entity-type
      [svg-buttons form-db-path]]
     [attribution form-db-path]]
    [:<>
@@ -378,7 +378,7 @@
     [preview form-db-path]]))
 
 (defn create-view []
-  [details/create-view form-id charge-form #(go default/charge-entity)])
+  [details/create-view entity-type charge-form #(go default/charge-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [details/by-id-view form-id (str "charge:" id) version charge-form])
+  [details/by-id-view entity-type (str "charge:" id) version charge-form])

@@ -7,7 +7,7 @@
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
-   [heraldicon.frontend.library.ribbon.shared :refer [form-id]]
+   [heraldicon.frontend.library.ribbon.shared :refer [entity-type]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.title :as title]
@@ -362,15 +362,15 @@
     [edit-controls]]
    [:<>
     [ui/selected-component]
-    [message/display form-id]
-    [buttons/buttons form-id]
+    [message/display entity-type]
+    [buttons/buttons entity-type]
     [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
     [ui/component-tree [form-db-path]]]))
 
 (defn create-view []
-  [details/create-view form-id ribbon-form #(go default/ribbon-entity)])
+  [details/create-view entity-type ribbon-form #(go default/ribbon-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [details/by-id-view form-id (str "ribbon:" id) version ribbon-form])
+  [details/by-id-view entity-type (str "ribbon:" id) version ribbon-form])

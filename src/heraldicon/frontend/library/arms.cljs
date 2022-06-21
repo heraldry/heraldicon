@@ -13,7 +13,7 @@
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
-   [heraldicon.frontend.library.arms.shared :refer [form-id base-context]]
+   [heraldicon.frontend.library.arms.shared :refer [entity-type base-context]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.ribbon :as ribbon]
    [heraldicon.frontend.title :as title]
@@ -85,8 +85,8 @@
    [render-achievement]
    [:<>
     [ui/selected-component]
-    [message/display form-id]
-    [buttons/buttons form-id]
+    [message/display entity-type]
+    [buttons/buttons entity-type]
     [blazonry form-db-path]
     [attribution form-db-path]]
    [:<>
@@ -115,7 +115,7 @@
       default/arms-entity)))
 
 (defn create-view [{:keys [query-params]}]
-  [details/create-view form-id arms-form #(go (<? (load-hdn (:base query-params))))])
+  [details/create-view entity-type arms-form #(go (<? (load-hdn (:base query-params))))])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [details/by-id-view form-id (str "arms:" id) version arms-form])
+  [details/by-id-view entity-type (str "arms:" id) version arms-form])

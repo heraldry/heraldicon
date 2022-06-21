@@ -2,7 +2,7 @@
 
 (defn ^:export handle-db-changes [old-db new-db]
   ;; TODO: path shouldn't be hard-coded
-  (let [base-path [:forms :heraldicon.entity/arms :data]
+  (let [base-path [:forms :heraldicon.entity.type/arms :data]
         scope-path (conj base-path :achievement :render-options :scope)
         helms-path (conj base-path :data :achievement :helms)
         ornaments-path (conj base-path :data :achievement :ornaments)]

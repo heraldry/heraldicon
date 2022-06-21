@@ -8,7 +8,7 @@
    [heraldicon.frontend.entity.details.buttons :as buttons]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.layout :as layout]
-   [heraldicon.frontend.library.collection.shared :refer [form-id]]
+   [heraldicon.frontend.library.collection.shared :refer [entity-type]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
    [heraldicon.frontend.state :as state]
@@ -227,8 +227,8 @@
    [render-collection form-db-path :allow-adding? true]
    [:<>
     [ui/selected-component]
-    [message/display form-id]
-    [buttons/buttons form-id]
+    [message/display entity-type]
+    [buttons/buttons entity-type]
     [render-arms-preview form-db-path]]
    [:<>
     [history/buttons form-db-path]
@@ -237,7 +237,7 @@
                         (conj form-db-path :data)]]]))
 
 (defn create-view []
-  [details/create-view form-id collection-form #(go default/charge-entity)])
+  [details/create-view entity-type collection-form #(go default/charge-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [details/by-id-view form-id (str "collection:" id) version collection-form])
+  [details/by-id-view entity-type (str "collection:" id) version collection-form])

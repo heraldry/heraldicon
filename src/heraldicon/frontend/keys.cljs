@@ -21,10 +21,10 @@
         z-pressed? (= code "KeyZ")
         current-route (router/current-route)
         undo-path (condp (flip isa?) current-route
-                    :route.arms/details (form/data-path library.arms.shared/form-id)
-                    :route.charge/details (form/data-path library.charge.shared/form-id)
-                    :route.ribbon/details (form/data-path library.ribbon.shared/form-id)
-                    :route.collection/details (form/data-path library.collection.shared/form-id)
+                    :route.arms/details (form/data-path library.arms.shared/entity-type)
+                    :route.charge/details (form/data-path library.charge.shared/entity-type)
+                    :route.ribbon/details (form/data-path library.ribbon.shared/entity-type)
+                    :route.collection/details (form/data-path library.collection.shared/entity-type)
                     nil)]
     (cond
       (and undo-path

@@ -7,11 +7,11 @@
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]))
 
-(defn- invoke [form-id]
-  (details/save form-id))
+(defn- invoke [entity-type]
+  (details/save entity-type))
 
-(defn button [form-id]
-  (let [form-db-path (form/data-path form-id)
+(defn button [entity-type]
+  (let [form-db-path (form/data-path entity-type)
         can-save? (and @(rf/subscribe [::user/logged-in?])
                        (or (not @(rf/subscribe [::entity/saved? form-db-path]))
                            @(rf/subscribe [::entity/owned-by? form-db-path (user/data)])))]
@@ -24,7 +24,7 @@
                                          (fn [event]
                                            (.preventDefault event)
                                            (.stopPropagation event)
-                                           (invoke form-id)))
+                                           (invoke entity-type)))
                              :style {:flex "initial"
                                      :margin-left "10px"}}
      [tr :string.button/save]]))

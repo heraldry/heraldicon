@@ -11,11 +11,11 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
-(defn- invoke [form-id]
+(defn- invoke [entity-type]
   (modal/start-loading)
   (go
     (try
-      (let [form-db-path (form/data-path form-id)
+      (let [form-db-path (form/data-path entity-type)
             full-data @(rf/subscribe [:get form-db-path])
             ;; TODO: this can probably live elsewhere
             payload (-> full-data
@@ -31,20 +31,20 @@
       (finally
         (modal/stop-loading)))))
 
-(defn action [form-id]
-  (when (= form-id :heraldicon.entity/arms)
-    (let [form-db-path (form/data-path form-id)
+(defn action [entity-type]
+  (when (= entity-type :heraldicon.entity.type/arms)
+    (let [form-db-path (form/data-path entity-type)
           logged-in? @(rf/subscribe [::user/logged-in?])
           can-export? (and logged-in?
                            @(rf/subscribe [::entity/saved? form-db-path])
-                           (not @(rf/subscribe [::form/unsaved-changes? form-id])))]
+                           (not @(rf/subscribe [::form/unsaved-changes? entity-type])))]
       {:title (string/str-tr :string.button/export " (SVG)")
        :icon "fas fa-file-export"
        :handler (when can-export?
                   (fn [event]
                     (.preventDefault event)
                     (.stopPropagation event)
-                    (invoke form-id)))
+                    (invoke entity-type)))
        :disabled? (not can-export?)
        :tooltip (when-not can-export?
                   (if (not logged-in?)
