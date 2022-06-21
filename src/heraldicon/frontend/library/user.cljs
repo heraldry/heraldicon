@@ -2,12 +2,12 @@
   (:require
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.user :as entity.user]
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge.list :as library.charge.list]
    [heraldicon.frontend.library.collection.list :as library.collection.list]
    [heraldicon.frontend.loading :as loading]
+   [heraldicon.frontend.repository.entity-list-for-user :as entity-list-for-user]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
@@ -21,52 +21,34 @@
 (def ^:private user-info-db-path
   [:user-info])
 
-(defn- invalidate-charges-cache-for-user [user-id]
-  (state/invalidate-cache [:user-charges] user-id))
-
 (defn- view-charges-for-user [user-id]
-  (let [[status _charges] (state/async-fetch-data
-                           [:user-charges]
-                           user-id
-                           #(api/fetch-charges-for-user user-id))]
+  (let [{:keys [status path]} @(rf/subscribe [::entity-list-for-user/data :heraldicon.entity.type/charge user-id])]
     (if (= status :done)
       [charge-select/component
-       [:user-charges]
+       path
        library.charge.list/on-select
-       #(invalidate-charges-cache-for-user user-id)
+       #(rf/dispatch [::entity-list-for-user/clear :heraldicon.entity.type/charge user-id])
        :remove-empty-groups? true
        :hide-ownership-filter? true]
       [loading/loading])))
 
-(defn- invalidate-arms-cache-for-user [user-id]
-  (state/invalidate-cache [:user-arms] user-id))
-
 (defn- view-arms-for-user [user-id]
-  (let [[status _arms-list] (state/async-fetch-data
-                             [:user-arms]
-                             user-id
-                             #(api/fetch-arms-for-user user-id))]
+  (let [{:keys [status path]} @(rf/subscribe [::entity-list-for-user/data :heraldicon.entity.type/arms user-id])]
     (if (= status :done)
       [arms-select/component
-       [:user-arms]
+       path
        library.arms.list/on-select
-       #(invalidate-arms-cache-for-user user-id)
+       #(rf/dispatch [::entity-list-for-user/clear :heraldicon.entity.type/arms user-id])
        :hide-ownership-filter? true]
       [loading/loading])))
 
-(defn- invalidate-collection-cache-for-user [user-id]
-  (state/invalidate-cache [:user-collections] user-id))
-
 (defn- view-collections-for-user [user-id]
-  (let [[status collection-list] (state/async-fetch-data
-                                  [:user-collections]
-                                  user-id
-                                  #(api/fetch-collections-for-user user-id))]
+  (let [{:keys [status entities]} @(rf/subscribe [::entity-list-for-user/data :heraldicon.entity.type/collection user-id])]
     (if (= status :done)
       [collection-select/component
-       collection-list
+       entities
        library.collection.list/link-to-collection
-       #(invalidate-collection-cache-for-user user-id)
+       #(rf/dispatch [::entity-list-for-user/clear :heraldicon.entity.type/collection user-id])
        :hide-ownership-filter? true]
       [loading/loading])))
 
