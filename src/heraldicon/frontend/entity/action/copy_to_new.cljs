@@ -52,10 +52,10 @@
 
 (defn- create-route [form-id]
   (case form-id
-    :heraldicon.entity/arms :route.arms/create
-    :heraldicon.entity/charge :route.charge/create
-    :heraldicon.entity/ribbon :route.ribbon/create
-    :heraldicon.entity/collection :route.collection/create))
+    :heraldicon.entity/arms :route.arms.details/create
+    :heraldicon.entity/charge :route.charge.details/create
+    :heraldicon.entity/ribbon :route.ribbon.details/create
+    :heraldicon.entity/collection :route.collection.details/create))
 
 (defn- invoke [form-id]
   (let [form-db-path (form/data-path form-id)

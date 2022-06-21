@@ -20,12 +20,16 @@
    [reagent.core :as rc]
    [reitit.frontend.easy :as reife]))
 
+(derive :route.arms.details/create :route.arms/details)
 (derive :route.arms.details/by-id :route.arms/details)
 (derive :route.arms.details/by-id-and-version :route.arms/details)
+(derive :route.charge.details/create :route.charge/details)
 (derive :route.charge.details/by-id :route.charge/details)
 (derive :route.charge.details/by-id-and-version :route.charge/details)
+(derive :route.collection.details/create :route.collection/details)
 (derive :route.collection.details/by-id :route.collection/details)
 (derive :route.collection.details/by-id-and-version :route.collection/details)
+(derive :route.ribbon.details/create :route.ribbon/details)
 (derive :route.ribbon.details/by-id :route.ribbon/details)
 (derive :route.ribbon.details/by-id-and-version :route.ribbon/details)
 
@@ -47,7 +51,7 @@
      :view library.collection.list/view}]
 
    ["/collections/new"
-    {:name :route.collection/create
+    {:name :route.collection.details/create
      :view library.collection/create-view
      :conflicting true}]
 
@@ -65,7 +69,7 @@
      :view library.arms.list/view}]
 
    ["/arms/new"
-    {:name :route.arms/create
+    {:name :route.arms.details/create
      :view library.arms/create-view
      :conflicting true}]
 
@@ -83,7 +87,7 @@
      :view library.charge.list/view}]
 
    ["/charges/new"
-    {:name :route.charge/create
+    {:name :route.charge.details/create
      :view library.charge/create-view
      :conflicting true}]
 
@@ -101,7 +105,7 @@
      :view library.ribbon.list/view}]
 
    ["/ribbons/new"
-    {:name :route.ribbon/create
+    {:name :route.ribbon.details/create
      :view library.ribbon/create-view
      :conflicting true}]
 

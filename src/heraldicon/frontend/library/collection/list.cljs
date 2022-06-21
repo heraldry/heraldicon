@@ -27,7 +27,7 @@
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.collection/create))}
+                  (reife/push-state :route.collection.details/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
     [collection-select/list-collections link-to-collection]]])

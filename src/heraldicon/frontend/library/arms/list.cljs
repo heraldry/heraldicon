@@ -26,13 +26,13 @@
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.arms/create))}
+                  (reife/push-state :route.arms.details/create))}
     [tr :string.button/create]]
    " "
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.arms/create)
+                  (reife/push-state :route.arms.details/create)
                   (blazonry-editor/open (c/++ base-context :data :achievement :coat-of-arms :field)))}
     [tr :string.button/create-from-blazon]]
    [:div {:style {:padding-top "0.5em"}}
