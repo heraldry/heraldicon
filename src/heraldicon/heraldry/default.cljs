@@ -47,7 +47,7 @@
    :layout {:num-fields-x 6}
    :charge {:type :heraldry.charge.type/fleur-de-lis
             :variant {:id (config/get :fleur-de-lis-charge-id)
-                      :version 0}
+                      :version nil}
             :field {:type :heraldry.field.type/plain
                     :tincture :or}
             :tincture {:shadow 1
@@ -69,7 +69,7 @@
   {:type :heraldry.charge.type/helmet
    :function :heraldry.charge.function/helmet
    :variant {:id (config/get :helmet-charge-id)
-             :version 0}
+             :version nil}
    :anchor {:point :bottom
             :offset-x 0
             :offset-y 20}
@@ -82,7 +82,7 @@
   {:type :heraldry.charge.type/torse
    :function :heraldry.charge.function/torse
    :variant {:id (config/get :torse-charge-id)
-             :version 0}
+             :version nil}
    :anchor {:point :fess
             :offset-x 15
             :offset-y -1}
@@ -132,7 +132,7 @@
 (def mantling-charge
   {:type :heraldry.charge.type/mantling
    :variant {:id (config/get :mantling-charge-id)
-             :version 0}
+             :version nil}
    :field field
    :tincture {:shadow 1
               :highlight 1
@@ -145,7 +145,7 @@
 (def compartment-charge
   {:type :heraldry.charge.type/compartment
    :variant {:id (config/get :compartment-charge-id)
-             :version 0}
+             :version nil}
    :field {:type :heraldry.field.type/plain
            :tincture :vert}
    :tincture {:shadow 1
@@ -158,7 +158,7 @@
 (def supporter-left-charge
   {:type :heraldry.charge.type/supporter
    :variant {:id (config/get :supporter-charge-id)
-             :version 0}
+             :version nil}
    :field field
    :tincture {:shadow 1
               :highlight 1}
@@ -173,7 +173,7 @@
 (def supporter-right-charge
   {:type :heraldry.charge.type/supporter
    :variant {:id (config/get :supporter-charge-id)
-             :version 0}
+             :version nil}
    :field field
    :tincture {:shadow 1
               :highlight 1}

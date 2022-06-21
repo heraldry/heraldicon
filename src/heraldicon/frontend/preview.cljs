@@ -4,16 +4,10 @@
    [heraldicon.config :as config]
    [re-frame.core :as rf]))
 
-(defn- effective-version [data]
-  (let [version (:version data)]
-    (if (zero? version)
-      (or (:latest-version data) 0)
-      version)))
-
-(defn preview-url [kind {:keys [id] :as arms} & {:keys [width height]}]
+(defn preview-url [kind {:keys [id version]} & {:keys [width height]}]
   (let [url (or (config/get :heraldicon-site-url)
                 (config/get :heraldicon-url))]
-    (str url "/preview/" (name kind) "/" (-> id (s/split #":") last) "/" (effective-version arms) "/preview.png"
+    (str url "/preview/" (name kind) "/" (-> id (s/split #":") last) "/" version "/preview.png"
          (when (and width height)
            (str "?width=" width "&height=" height)))))
 

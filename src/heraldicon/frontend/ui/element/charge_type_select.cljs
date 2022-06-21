@@ -100,7 +100,7 @@
                                                                                                    (not variant))]))
                 choices)
           [charge-select/list-charges
-           (fn [{:keys [id latest-version data]}]
+           (fn [{:keys [id version data]}]
              {:href (reife/href :route.charge.details/by-id {:id (id/for-url id)})
               :on-click (fn [event]
                           (doto event
@@ -113,7 +113,7 @@
                                                            name
                                                            (keyword "heraldry.charge.type"))
                                                 :variant {:id id
-                                                          :version latest-version}
+                                                          :version version}
                                                 :attitude nil
                                                 :facing nil}
                                                (select-keys data [:attitude :facing]))]))})
