@@ -7,8 +7,8 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defn copy-data-path [form-id]
-  [:copy-data form-id])
+(defn copy-data-path [entity-type]
+  [:copy-data entity-type])
 
 (defn- set-attribution [entity source-entity]
   (let [{source-id :id
@@ -30,16 +30,16 @@
                         :source-creator-link (attribution/full-url-for-username creator)))))
 
 (rf/reg-sub ::copy-data
-  (fn [db [_ form-id]]
-    (get-in db (copy-data-path form-id))))
+  (fn [db [_ entity-type]]
+    (get-in db (copy-data-path entity-type))))
 
 (macros/reg-event-db ::set-copy-data
-  (fn [db [_ form-id data]]
-    (assoc-in db (copy-data-path form-id) data)))
+  (fn [db [_ entity-type data]]
+    (assoc-in db (copy-data-path entity-type) data)))
 
 (macros/reg-event-db ::copy
-  (fn [db [_ form-id target-path]]
-    (let [data-path (copy-data-path form-id)
+  (fn [db [_ entity-type target-path]]
+    (let [data-path (copy-data-path entity-type)
           data (get-in db data-path)]
       (-> db
           (assoc-in target-path data)
@@ -50,23 +50,23 @@
       (select-keys [:type :name :tags :metadata :data])
       (set-attribution source-entity)))
 
-(defn- create-route [form-id]
-  (case form-id
-    :heraldicon.entity/arms :route.arms.details/create
-    :heraldicon.entity/charge :route.charge.details/create
-    :heraldicon.entity/ribbon :route.ribbon.details/create
-    :heraldicon.entity/collection :route.collection.details/create))
+(defn- create-route [entity-type]
+  (case entity-type
+    :heraldicon.entity.type/arms :route.arms.details/create
+    :heraldicon.entity.type/charge :route.charge.details/create
+    :heraldicon.entity.type/ribbon :route.ribbon.details/create
+    :heraldicon.entity.type/collection :route.collection.details/create))
 
-(defn- invoke [form-id]
-  (let [form-db-path (form/data-path form-id)
+(defn- invoke [entity-type]
+  (let [form-db-path (form/data-path entity-type)
         source-entity @(rf/subscribe [:get form-db-path])
         new-entity (copy-entity source-entity)]
-    (rf/dispatch [::set-copy-data form-id new-entity])
-    (rf/dispatch [::message/set-success form-id :string.user.message/created-unsaved-copy])
-    (reife/push-state (create-route form-id))))
+    (rf/dispatch [::set-copy-data entity-type new-entity])
+    (rf/dispatch [::message/set-success entity-type :string.user.message/created-unsaved-copy])
+    (reife/push-state (create-route entity-type))))
 
-(defn action [form-id]
+(defn action [entity-type]
   {:title :string.button/copy-to-new
    :icon "fas fa-clone"
-   :handler (partial invoke form-id)
+   :handler (partial invoke entity-type)
    :disabled? false})

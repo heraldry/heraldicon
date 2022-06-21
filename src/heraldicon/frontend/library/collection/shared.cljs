@@ -3,7 +3,7 @@
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.history.core :as history]))
 
-(def form-id
-  :heraldicon.entity/collection)
+(def entity-type
+  :heraldicon.entity.type/collection)
 
-(history/register-undoable-path (form/data-path form-id))
+(history/register-undoable-path (form/data-path entity-type))
