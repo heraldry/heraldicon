@@ -5,7 +5,6 @@
    [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.user :as user]
-   [heraldicon.svg.core :as svg]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -28,16 +27,6 @@
           :items)
       (catch :default e
         (log/error "fetch ribbon list error:" e)))))
-
-(defn fetch-collection [collection-id version target-path]
-  (go
-    (try
-      (let [collection-data (<? (api.request/call :fetch-collection {:id collection-id
-                                                                     :version version} (user/data)))]
-        (rf/dispatch [:set target-path collection-data])
-        collection-data)
-      (catch :default e
-        (log/error "fetch collection error:" e)))))
 
 (defn fetch-collections-list []
   (go
@@ -67,25 +56,6 @@
         (update charge-data :data assoc :edn-data edn-data))
       (catch :default e
         (log/error "fetch charge for rendering error:" e)))))
-
-(defn fetch-charge-for-editing [charge-id version target-path]
-  (go
-    (try
-      (let [user-data (user/data)
-            charge-data (<? (api.request/call :fetch-charge {:id charge-id
-                                                             :version version} user-data))
-            edn-data (<? (http/fetch (-> charge-data :data :edn-data-url)))
-            svg-data (<? (http/fetch (-> charge-data :data :svg-data-url)))
-            ;; currently need to fetch both, so saving a new version will send them again
-            charge-data (update charge-data
-                                :data assoc
-                                :edn-data (svg/add-ids edn-data)
-                                :svg-data svg-data)]
-        (when target-path
-          (rf/dispatch [:set target-path charge-data]))
-        charge-data)
-      (catch :default e
-        (log/error "fetch charge for editing error:" e)))))
 
 (defn fetch-charges-list []
   (go
