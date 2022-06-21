@@ -6,15 +6,6 @@
    [heraldicon.frontend.user :as user]
    [taoensso.timbre :as log]))
 
-(defn fetch-ribbons-list []
-  (go
-    (try
-      (-> (api.request/call :fetch-ribbons-list {} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch ribbon list error:" e)))))
-
 (defn fetch-collections-list []
   (go
     (try
