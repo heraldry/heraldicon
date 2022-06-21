@@ -25,7 +25,7 @@
                     :route.charge/details (form/data-path library.charge.shared/form-id)
                     :route.ribbon/details (form/data-path library.ribbon.shared/form-id)
                     :route.collection/details (form/data-path library.collection.shared/form-id)
-                    :else nil)]
+                    nil)]
     (cond
       (and undo-path
            (or (and meta? z-pressed?)
