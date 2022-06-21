@@ -11,3 +11,4 @@ build
 gettext/*.mo
 
 .clj-kondo/babashka
+.clj-kondo/metosin
