@@ -2,19 +2,13 @@
   (:require
    [clojure.string :as s]
    [heraldicon.entity.attribution :as attribution]
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.loading :as loading]
-   [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.ui.element.tags :as tags]
-   [heraldicon.frontend.user :as user]))
-
-(def list-db-path
-  [:collection-list])
-
-(defn- invalidate-collections-cache []
-  (state/invalidate-cache list-db-path :all))
+   [heraldicon.frontend.user :as user]
+   [re-frame.core :as rf]))
 
 (defn component [collection-list link-fn refresh-fn & {:keys [hide-ownership-filter?]}]
   (let [user-data (user/data)]
@@ -47,7 +41,10 @@
      :hide-ownership-filter? hide-ownership-filter?]))
 
 (defn list-collections [link-to-collection]
-  (let [[status collection-list] (state/async-fetch-data list-db-path :all api/fetch-collections-list)]
+  (let [{:keys [status entities]} @(rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])]
     (if (= status :done)
-      [component collection-list link-to-collection invalidate-collections-cache]
+      [component
+       entities
+       link-to-collection
+       #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])]
       [loading/loading])))
