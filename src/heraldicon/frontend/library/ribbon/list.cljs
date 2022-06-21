@@ -23,7 +23,7 @@
    [:button.button.primary
     {:on-click #(do
                   (rf/dispatch-sync [::message/clear form-id])
-                  (reife/push-state :route.ribbon/create))}
+                  (reife/push-state :route.ribbon.details/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
     [ribbon-select/list-ribbons on-select]]])
