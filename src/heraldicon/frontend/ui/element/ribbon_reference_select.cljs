@@ -1,12 +1,10 @@
 (ns heraldicon.frontend.ui.element.ribbon-reference-select
   (:require
-   [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.entity.id :as id]
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
-   [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.repository.entity :as entity]
    [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.ui.element.submenu :as submenu]
    [heraldicon.frontend.ui.form.entity.ribbon.data :as ribbon.data]
@@ -32,13 +30,18 @@
     (let [{ribbon-id :id
            ribbon-version :version} ribbon
           parent-path (-> path drop-last vec)
-          ;; TODO: this is a hacky way to do it, and it also means the API call is done twice,
-          ;; here and again via the unrelated the async + cache mechanism when the reference is used
-          _ (go-catch
-             (let [ribbon-data (<? (api/fetch-ribbon ribbon-id ribbon-version nil))]
-               (rf/dispatch [:set-ribbon-data
-                             (conj parent-path :ribbon)
-                             (-> ribbon-data :data :ribbon)])))]
+          ;; TODO: this sets the data either right away when the result status is :done,
+          ;; or inside the on-loaded call
+          ;; this is a bit hacky still, also because it dispatches inside the event,
+          ;; and there's a race condition, because the ::entity/data below also fetches
+          ;; the ribbon with a different subscription, resulting in two requests being
+          ;; sent to the API
+          on-ribbon-load #(rf/dispatch [:set-ribbon-data
+                                        (conj parent-path :ribbon)
+                                        (-> % :data :ribbon)])
+          {:keys [status entity]} @(rf/subscribe [::entity/data ribbon-id ribbon-version on-ribbon-load])]
+      (when (= status :done)
+        (on-ribbon-load entity))
       (assoc-in db path {:id ribbon-id
                          :version ribbon-version}))))
 
@@ -60,12 +63,8 @@
            version :version} (interface/get-raw-data context)
           {:keys [ui]} option
           label (:label ui)
-          [_status ribbon-data] (when ribbon-id
-                                  (state/async-fetch-data
-                                   [:ribbon-references ribbon-id version]
-                                   [ribbon-id version]
-                                   #(api/fetch-ribbon ribbon-id version nil)))
-          ribbon-title (-> ribbon-data
+          {:keys [_status entity]} @(rf/subscribe [::entity/data ribbon-id version])
+          ribbon-title (-> entity
                            :name
                            (or :string.miscellaneous/none))]
       [:div.ui-setting
@@ -90,5 +89,5 @@
                            .preventDefault
                            .stopPropagation)
                          (rf/dispatch [:set-ribbon-reference (:path context) ribbon]))})
-          :selected-ribbon ribbon-data
+          :selected-ribbon entity
           :display-selected-item? true]]]])))
