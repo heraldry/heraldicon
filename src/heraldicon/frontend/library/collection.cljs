@@ -240,4 +240,4 @@
   [details/create-view entity-type collection-form #(go default/charge-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [details/by-id-view entity-type (str "collection:" id) version collection-form])
+  [details/by-id-view (str "collection:" id) version collection-form])

@@ -373,4 +373,4 @@
   [details/create-view entity-type ribbon-form #(go default/ribbon-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [details/by-id-view entity-type (str "ribbon:" id) version ribbon-form])
+  [details/by-id-view (str "ribbon:" id) version ribbon-form])

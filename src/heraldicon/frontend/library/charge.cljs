@@ -381,4 +381,4 @@
   [details/create-view entity-type charge-form #(go default/charge-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [details/by-id-view entity-type (str "charge:" id) version charge-form])
+  [details/by-id-view (str "charge:" id) version charge-form])

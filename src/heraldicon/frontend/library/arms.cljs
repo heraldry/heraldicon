@@ -118,4 +118,4 @@
   [details/create-view entity-type arms-form #(go (<? (load-hdn (:base query-params))))])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
-  [details/by-id-view entity-type (str "arms:" id) version arms-form])
+  [details/by-id-view (str "arms:" id) version arms-form])
