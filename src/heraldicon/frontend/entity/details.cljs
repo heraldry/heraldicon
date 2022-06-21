@@ -30,13 +30,25 @@
           {:status :loading}))
       result)))
 
+(defn- details-route [form-id]
+  (case form-id
+    :heraldicon.entity/arms :route.arms.details/by-id-and-version
+    :heraldicon.entity/charge :route.charge.details/by-id-and-version
+    :heraldicon.entity/ribbon :route.ribbon.details/by-id-and-version
+    :heraldicon.entity/collection :route.collection.details/by-id-and-version))
+
 (defn by-id-view [form-id entity-id version component-fn]
   (let [form-db-path (form/data-path form-id)
-        {:keys [status]} @(rf/subscribe [::prepare-for-editing
-                                         entity-id version
-                                         form-db-path])]
+        {:keys [status entity]} @(rf/subscribe [::prepare-for-editing
+                                                entity-id version
+                                                form-db-path])]
     (case status
-      :done [component-fn form-db-path]
+      :done (if version
+              [component-fn form-db-path]
+              (do
+                (reife/replace-state (details-route form-id) {:id (id/for-url entity-id)
+                                                              :version (:version entity)})
+                [loading/loading]))
       (nil :loading) [loading/loading]
       :error [not-found/not-found])))
 
@@ -58,13 +70,6 @@
         (load-new-entity-data form-id generate-data-fn form-db-path)
         [loading/loading])
       [component-fn form-db-path])))
-
-(defn- details-route [form-id]
-  (case form-id
-    :heraldicon.entity/arms :route.arms.details/by-id-and-version
-    :heraldicon.entity/charge :route.charge.details/by-id-and-version
-    :heraldicon.entity/ribbon :route.ribbon.details/by-id-and-version
-    :heraldicon.entity/collection :route.collection.details/by-id-and-version))
 
 (defn save [form-id]
   (let [form-db-path (form/data-path form-id)
