@@ -6,15 +6,6 @@
    [heraldicon.frontend.user :as user]
    [taoensso.timbre :as log]))
 
-(defn fetch-collections-list []
-  (go
-    (try
-      (-> (api.request/call :fetch-collections-list {} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch collection list error:" e)))))
-
 (defn fetch-collections-for-user [user-id]
   (go
     (try
