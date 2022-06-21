@@ -1,13 +1,12 @@
 (ns heraldicon.frontend.charge
   (:require
-   [heraldicon.frontend.api :as api]
-   [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
+   [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
 (defn fetch-charge-data [{:keys [id version] :as variant}]
   (if (and id version)
-    (let [db-path [:charge-data variant]
-          [status charge-data] (state/async-fetch-data db-path variant #(api/fetch-charge-for-rendering id version))]
+    (let [{:keys [status entity]} @(rf/subscribe [::entity-for-rendering/data id version])]
       (when (= status :done)
-        charge-data))
+        entity))
     (log/error "error fetching charge data, invalid variant:" variant)))

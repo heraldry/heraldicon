@@ -3,7 +3,6 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.api.request :as api.request]
-   [heraldicon.frontend.http :as http]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
@@ -45,17 +44,6 @@
           :items)
       (catch :default e
         (log/error "fetch collection list by user error:" e)))))
-
-(defn fetch-charge-for-rendering [charge-id version]
-  (go
-    (try
-      (let [user-data (user/data)
-            charge-data (<? (api.request/call :fetch-charge {:id charge-id
-                                                             :version version} user-data))
-            edn-data (<? (http/fetch (-> charge-data :data :edn-data-url)))]
-        (update charge-data :data assoc :edn-data edn-data))
-      (catch :default e
-        (log/error "fetch charge for rendering error:" e)))))
 
 (defn fetch-charges-list []
   (go
