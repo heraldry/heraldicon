@@ -4,11 +4,11 @@
    [clojure.string :as s]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.config :as config]
-   [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.aws.cognito :as cognito]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
+   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.state :as state]
    [hodgepodge.core :refer [get-item local-storage remove-item set-item]]
    [re-frame.core :as rf]
@@ -86,7 +86,7 @@
 (defn- complete-login [db-path jwt-token]
   (go
     (try
-      (let [response (<? (api.request/call :login {:jwt-token jwt-token} nil))
+      (let [response (<? (api/call :login {:jwt-token jwt-token} nil))
             {:keys [session-id
                     username
                     user-id]} response]

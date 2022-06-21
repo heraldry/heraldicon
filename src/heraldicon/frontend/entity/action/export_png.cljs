@@ -2,10 +2,10 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.api.request :as api.request]
    [heraldicon.frontend.entity.core :as entity]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.modal :as modal]
+   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.user :as user]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
@@ -22,7 +22,7 @@
                         (select-keys [:id :version])
                         (assoc :render-options (get-in full-data [:data :achievement :render-options])))
             user-data (user/data)
-            response (<? (api.request/call :generate-png-arms payload user-data))]
+            response (<? (api/call :generate-png-arms payload user-data))]
         (js/window.open (:png-url response)))
 
       (catch :default e
