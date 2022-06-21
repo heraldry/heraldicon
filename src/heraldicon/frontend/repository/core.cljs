@@ -40,16 +40,9 @@
     :heraldicon.entity/ribbon :save-ribbon
     :heraldicon.entity/collection :save-collection))
 
-(defn- store-entity [path {:keys [id version latest-version] :as entity}]
-  (let [parent-path (vec (drop-last path))]
-    (when (zero? version)
-      (rf/dispatch-sync [:set (conj parent-path [id (str latest-version)])
-                         {:status :done
-                          :entity (-> entity
-                                      (dissoc :latest-version)
-                                      (assoc :version latest-version))}]))
-    (rf/dispatch-sync [:set path {:status :done
-                                  :entity entity}])))
+(defn- store-entity [path {:keys [id version] :as entity}]
+  (rf/dispatch-sync [:set (conj path [id version]) {:status :done
+                                                    :entity entity}]))
 
 (defn- fetch-entity [entity-id version path]
   (go
@@ -61,7 +54,7 @@
                                      (user/data)))]
         (when-not entity
           (throw (ex-info "Not found" {} :entity-not-found)))
-        (store-entity path entity))
+        (store-entity (drop-last path) entity))
       (catch :default e
         (log/error "fetch entity error:" e)
         (rf/dispatch-sync [:set path {:status :error
@@ -86,7 +79,7 @@
     (rf/dispatch-sync [:set path {:status :loading}])
     (try
       (let [updated-entity (<? (load-editing-data entity))]
-        (store-entity path updated-entity))
+        (store-entity (drop-last path) updated-entity))
       (catch :default e
         (log/error "fetching entity data for editing error:" e)
         (rf/dispatch-sync [:set path {:status :error
@@ -128,25 +121,20 @@
       (let [user-data (user/data)
             new-entity (<? (api.request/call
                             (save-entity-api-function entity-type)
-                            entity user-data))
-            {new-id :id
-             new-version :version} new-entity]
+                            entity user-data))]
         ;; TODO: wire up things
         ;; - update list repository
 
         (store-entity
-         (entity-path new-id 0)
+         db-path-entity
          ;; for now simulate version 0, because this will be the latest
-         (assoc new-entity
-                :version 0
-                :latest-version new-version))
+         new-entity)
 
         (store-entity
-         (entity-for-editing-path new-id 0)
+         db-path-entity-for-editing
          ;; for now simulate version 0, because this will be the latest
-         (assoc (merge entity new-entity)
-                :version 0
-                :latest-version new-version))
+         ;; for now simulate version 0, because this will be the latest
+         (merge entity new-entity))
 
         (when on-success
           (on-success new-entity)))

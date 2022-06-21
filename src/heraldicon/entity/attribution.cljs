@@ -148,10 +148,7 @@
 
 (defn- full-url [context base]
   (when-let [entity-id (interface/get-raw-data (c/++ context :id))]
-    (let [version (interface/get-raw-data (c/++ context :version))
-          version (if (zero? version)
-                    (interface/get-raw-data (c/++ context :latest-version))
-                    version)]
+    (let [version (interface/get-raw-data (c/++ context :version))]
       (full-url-raw base entity-id version))))
 
 (defn full-url-for-arms [context]

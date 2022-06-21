@@ -12,11 +12,7 @@
 
 (defn- set-attribution [entity source-entity]
   (let [{source-id :id
-         source-version :version
-         source-latest-version :latest-version} source-entity
-        source-version (if (zero? source-version)
-                         source-latest-version
-                         source-version)
+         source-version :version} source-entity
         {:keys [license license-version]} (:attribution source-entity)
         {creator :username
          source-name :name} source-entity]
