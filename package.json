@@ -23,6 +23,6 @@
   "devDependencies": {
     "clj-kondo": "^2022.4.8",
     "highlight.js": "11.5.1",
-    "shadow-cljs": "^2.18.0"
+    "shadow-cljs": "2.19.3"
   }
 }
