@@ -5,6 +5,7 @@
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
    [heraldicon.frontend.entity.form :as form]
+   [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
@@ -42,6 +43,8 @@
         {:keys [status entity]} @(rf/subscribe [::prepare-for-editing
                                                 entity-id version
                                                 form-db-path])]
+    (when @(rf/subscribe [::history/identifier-changed? form-db-path entity-id])
+      (rf/dispatch-sync [::history/clear form-db-path entity-id]))
     (case status
       :done (if version
               [component-fn form-db-path]
@@ -65,6 +68,8 @@
         current-id @(rf/subscribe [:get (conj form-db-path :id)])
         loading? (or currently-nil?
                      current-id)]
+    (when @(rf/subscribe [::history/identifier-changed? form-db-path nil])
+      (rf/dispatch-sync [::history/clear form-db-path nil]))
     (if loading?
       (do
         (load-new-entity-data form-id generate-data-fn form-db-path)
