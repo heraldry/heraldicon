@@ -1,17 +1,11 @@
 (ns heraldicon.frontend.ui.element.charge-select
   (:require
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.filter :as filter]
-   [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.loading :as loading]
+   [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.ui.element.blazonry-editor :as blazonry-editor]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]))
-
-(def list-db-path
-  [:charge-list])
-
-(defn invalidate-charges-cache []
-  (state/invalidate-cache list-db-path :all))
 
 (defn component [charge-list-path on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                  selected-charge
@@ -40,15 +34,12 @@
 
 (defn list-charges [on-select & {:keys [selected-charge
                                         display-selected-item?]}]
-  (let [[status _charges-list] (state/async-fetch-data
-                                list-db-path :all api/fetch-charges-list
-                                :on-success #(rf/dispatch
-                                              [:heraldicon.frontend.ui.element.blazonry-editor/update-parser %]))]
+  (let [{:keys [status path]} @(rf/subscribe [::entity-list/data :heraldicon.entity.type/charge blazonry-editor/update-parser])]
     (if (= status :done)
       [component
-       list-db-path
+       path
        on-select
-       invalidate-charges-cache
+       #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/charge])
        :selected-charge selected-charge
        :display-selected-item? display-selected-item?]
-      [:div [tr :string.miscellaneous/loading]])))
+      [loading/loading])))

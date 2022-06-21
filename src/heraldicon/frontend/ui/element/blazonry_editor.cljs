@@ -5,14 +5,12 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldicon.context :as c]
-   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.ui.element.charge-select :as charge-select]
+   [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.reader.blazonry.parser :as parser]
@@ -445,8 +443,13 @@
      "chequy or and gules, chief sable charged with three stars of the field"
      "or, chief enhanced sable, a mascle per pale of the same and gules"]]])
 
+(defn update-parser [charges]
+  (rf/dispatch [::update-parser charges]))
+
 (defn open [context]
   (rf/dispatch-sync [::clear-state])
+  ;; TODO: not the best way to load this
+  @(rf/subscribe [::entity-list/data :heraldicon.entity.type/charge update-parser])
   (let [escutcheon (if (->> context
                             :path
                             (take-last 2)
@@ -466,15 +469,6 @@
      [:div.bottom
       [:p [tr :string.tooltip/alpha-feature-warning]]]]]
    [(fn []
-      ;; TODO: not the best way to load this
-      (let [update-parser #(rf/dispatch [::update-parser %])
-            [status charges] (state/async-fetch-data
-                              charge-select/list-db-path
-                              :all
-                              api/fetch-charges-list
-                              :on-success update-parser)]
-        (when (= status :done)
-          (update-parser charges)))
       [:div
        [:div {:style {:display "flex"
                       :flex-flow "row"

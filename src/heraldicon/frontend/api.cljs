@@ -15,15 +15,6 @@
       (catch :default e
         (log/error "fetch collection list by user error:" e)))))
 
-(defn fetch-charges-list []
-  (go
-    (try
-      (-> (api.request/call :fetch-charges-list {} (user/data))
-          <?
-          :items)
-      (catch :default e
-        (log/error "fetch charge list error:" e)))))
-
 (defn fetch-charges-for-user [user-id]
   (go
     (try
