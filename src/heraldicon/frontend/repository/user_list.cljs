@@ -1,0 +1,44 @@
+(ns heraldicon.frontend.repository.user-list
+  (:require
+   [cljs.core.async :refer [go]]
+   [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.frontend.repository.request :as request]
+   [heraldicon.frontend.user :as user]
+   [re-frame.core :as rf]
+   [taoensso.timbre :as log])
+  (:require-macros [reagent.ratom :refer [reaction]]))
+
+(def ^:private db-path-user-list
+  (conj repository/db-path-base :user-list))
+
+(macros/reg-event-db ::store
+  (fn [db [_ users]]
+    (assoc-in db db-path-user-list {:status :done
+                                    :users users
+                                    :path (conj db-path-user-list :users)})))
+
+(macros/reg-event-db ::store-error
+  (fn [db [_ error]]
+    (assoc-in db db-path-user-list {:status :error
+                                    :error error})))
+
+(macros/reg-event-db ::clear
+  (fn [db [_]]
+    (assoc-in db db-path-user-list nil)))
+
+(defn- fetch []
+  (let [user-data (user/data)]
+    (go
+      (try
+        (let [users (:items (<? (request/call :fetch-users-all {} user-data)))]
+          (rf/dispatch [::store users]))
+        (catch :default e
+          (log/error "fetch user list error:" e)
+          (rf/dispatch [::store-error e]))))))
+
+(rf/reg-sub-raw ::data
+  (fn [_app-db [_]]
+    (reaction
+     (repository/async-query-data db-path-user-list fetch))))
