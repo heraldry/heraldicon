@@ -69,20 +69,21 @@
     :heraldicon.entity.type/collection :fetch-collection))
 
 (defn- fetch [entity-id version & {:keys [on-loaded]}]
-  (go
-    (try
-      (let [entity (<? (request/call (fetch-entity-api-function (id/type-from-id entity-id))
-                                     {:id entity-id
-                                      :version version}
-                                     (user/data)))]
-        (when-not entity
-          (throw (ex-info "Not found" {} :entity-not-found)))
-        (rf/dispatch [::store entity])
-        (when on-loaded
-          (on-loaded entity)))
-      (catch :default e
-        (log/error "fetch entity error:" e)
-        (rf/dispatch [::store-error entity-id version e])))))
+  (let [user-data (user/data)]
+    (go
+      (try
+        (let [entity (<? (request/call (fetch-entity-api-function (id/type-from-id entity-id))
+                                       {:id entity-id
+                                        :version version}
+                                       user-data))]
+          (when-not entity
+            (throw (ex-info "Not found" {} :entity-not-found)))
+          (rf/dispatch [::store entity])
+          (when on-loaded
+            (on-loaded entity)))
+        (catch :default e
+          (log/error "fetch entity error:" e)
+          (rf/dispatch [::store-error entity-id version e]))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-id version on-loaded]]

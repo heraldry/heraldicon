@@ -2,9 +2,9 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
-   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as entity]
    [heraldicon.frontend.user :as user]
@@ -73,31 +73,31 @@
     :heraldicon.entity.type/collection :save-collection))
 
 (defn store [entity & {:keys [on-start on-complete on-success on-error]}]
-  (go
-    (when on-start
-      (on-start))
-    (try
-      (let [user-data (user/data)
-            new-entity (<? (api/call
-                            (save-entity-api-function (:type entity))
-                            entity user-data))]
-        ;; TODO: wire up things
-        ;; - update list repository
+  (let [user-data (user/data)]
+    (go
+      (when on-start
+        (on-start))
+      (try
+        (let [new-entity (<? (api/call
+                              (save-entity-api-function (:type entity))
+                              entity user-data))]
+         ;; TODO: wire up things
+         ;; - update list repository
 
-        (rf/dispatch [::entity/store new-entity])
-        (rf/dispatch [::store (util/deep-merge-with
-                               (fn [_left right]
-                                 right)
-                               entity new-entity)])
+          (rf/dispatch [::entity/store new-entity])
+          (rf/dispatch [::store (util/deep-merge-with
+                                 (fn [_left right]
+                                   right)
+                                 entity new-entity)])
 
-        (when on-success
-          (on-success new-entity)))
+          (when on-success
+            (on-success new-entity)))
 
-      (catch :default e
-        (log/error "save entity error:" e)
-        (when on-error
-          (on-error e)))
+        (catch :default e
+          (log/error "save entity error:" e)
+          (when on-error
+            (on-error e)))
 
-      (finally
-        (when on-complete
-          (on-complete))))))
+        (finally
+          (when on-complete
+            (on-complete)))))))
