@@ -41,15 +41,16 @@
     :heraldicon.entity.type/collection :fetch-collections-for-user))
 
 (defn- fetch [entity-type user-id]
-  (go
-    (try
-      (let [entities (:items (<? (request/call (fetch-entity-list-for-user-api-function entity-type)
-                                               {:user-id user-id}
-                                               (user/data))))]
-        (rf/dispatch [::store entity-type user-id entities]))
-      (catch :default e
-        (log/error "fetch entity list error:" e)
-        (rf/dispatch [::store-error entity-type user-id e])))))
+  (let [user-data (user/data)]
+    (go
+      (try
+        (let [entities (:items (<? (request/call (fetch-entity-list-for-user-api-function entity-type)
+                                                 {:user-id user-id}
+                                                 user-data)))]
+          (rf/dispatch [::store entity-type user-id entities]))
+        (catch :default e
+          (log/error "fetch entity list error:" e)
+          (rf/dispatch [::store-error entity-type user-id e]))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-type user-id]]

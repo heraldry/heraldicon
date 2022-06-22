@@ -41,17 +41,18 @@
     :heraldicon.entity.type/collection :fetch-collections-list))
 
 (defn- fetch [entity-type & {:keys [on-loaded]}]
-  (go
-    (try
-      (let [entities (:items (<? (request/call (fetch-entity-list-api-function entity-type)
-                                               {}
-                                               (user/data))))]
-        (rf/dispatch [::store entity-type entities])
-        (when on-loaded
-          (on-loaded entities)))
-      (catch :default e
-        (log/error "fetch entity list error:" e)
-        (rf/dispatch [::store-error entity-type e])))))
+  (let [user-data (user/data)]
+    (go
+      (try
+        (let [entities (:items (<? (request/call (fetch-entity-list-api-function entity-type)
+                                                 {}
+                                                 user-data)))]
+          (rf/dispatch [::store entity-type entities])
+          (when on-loaded
+            (on-loaded entities)))
+        (catch :default e
+          (log/error "fetch entity list error:" e)
+          (rf/dispatch [::store-error entity-type e]))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-type on-loaded]]

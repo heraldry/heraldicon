@@ -13,6 +13,7 @@
    [taoensso.tufte :as tufte]))
 
 (defn app []
+  (user/load-session-user-data)
   [:<>
    [header/view]
    [:div.main-content.no-scrollbar
@@ -42,7 +43,6 @@
   (rf/dispatch-sync [:heraldicon.frontend.language/load-language-setting])
   #_(print-stats)
   (router/start)
-  (user/load-session-user-data)
   (r/render
    [app]
    (.getElementById js/document "app"))
