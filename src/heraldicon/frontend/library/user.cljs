@@ -19,25 +19,19 @@
    [reitit.frontend.easy :as reife]))
 
 (defn- view-charges-for-user [user-id]
-  (let [{:keys [status path]} @(rf/subscribe [::entity-list-for-user/data :heraldicon.entity.type/charge user-id])]
-    (if (= status :done)
-      [charge-select/component
-       path
-       library.charge.list/on-select
-       #(rf/dispatch [::entity-list-for-user/clear :heraldicon.entity.type/charge user-id])
-       :remove-empty-groups? true
-       :hide-ownership-filter? true]
-      [loading/loading])))
+  [charge-select/component
+   (rf/subscribe [::entity-list-for-user/data :heraldicon.entity.type/charge user-id])
+   library.charge.list/on-select
+   #(rf/dispatch [::entity-list-for-user/clear :heraldicon.entity.type/charge user-id])
+   :remove-empty-groups? true
+   :hide-ownership-filter? true])
 
 (defn- view-arms-for-user [user-id]
-  (let [{:keys [status path]} @(rf/subscribe [::entity-list-for-user/data :heraldicon.entity.type/arms user-id])]
-    (if (= status :done)
-      [arms-select/component
-       path
-       library.arms.list/on-select
-       #(rf/dispatch [::entity-list-for-user/clear :heraldicon.entity.type/arms user-id])
-       :hide-ownership-filter? true]
-      [loading/loading])))
+  [arms-select/component
+   (rf/subscribe [::entity-list-for-user/data :heraldicon.entity.type/arms user-id])
+   library.arms.list/on-select
+   #(rf/dispatch [::entity-list-for-user/clear :heraldicon.entity.type/arms user-id])
+   :hide-ownership-filter? true])
 
 (defn- view-collections-for-user [user-id]
   (let [{:keys [status entities]} @(rf/subscribe [::entity-list-for-user/data :heraldicon.entity.type/collection user-id])]
