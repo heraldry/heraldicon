@@ -2,7 +2,6 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user :as user]
@@ -13,18 +12,18 @@
 (def ^:private db-path-user-list
   (conj repository/db-path-base :user-list))
 
-(macros/reg-event-db ::store
+(rf/reg-event-db ::store
   (fn [db [_ users]]
     (assoc-in db db-path-user-list {:status :done
                                     :users users
                                     :path (conj db-path-user-list :users)})))
 
-(macros/reg-event-db ::store-error
+(rf/reg-event-db ::store-error
   (fn [db [_ error]]
     (assoc-in db db-path-user-list {:status :error
                                     :error error})))
 
-(macros/reg-event-db ::clear
+(rf/reg-event-db ::clear
   (fn [db [_]]
     (assoc-in db db-path-user-list nil)))
 
