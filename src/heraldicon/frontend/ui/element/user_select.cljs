@@ -2,8 +2,8 @@
   (:require
    [clojure.string :as s]
    [heraldicon.frontend.filter :as filter]
-   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.repository.user-list :as repository.user-list]
+   [heraldicon.frontend.status :as status]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]))
 
@@ -29,4 +29,4 @@
   (let [{:keys [status users]} @(rf/subscribe [::repository.user-list/data])]
     (if (= status :done)
       [component users link-to-user #(rf/dispatch [::repository.user-list/clear])]
-      [loading/loading])))
+      [status/loading])))

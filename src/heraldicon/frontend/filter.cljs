@@ -7,9 +7,9 @@
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
+   [heraldicon.frontend.status :as status]
    [heraldicon.frontend.ui.element.checkbox :as checkbox]
    [heraldicon.frontend.ui.element.radio-select :as radio-select]
    [heraldicon.frontend.ui.element.search-field :as search-field]
@@ -261,7 +261,7 @@
                                                            number-of-items-path
                                                            page-size])}
                   [tr :string.miscellaneous/show-more]]])]])])]
-      [loading/loading])))
+      [status/loading])))
 
 (defn component [id user-data items-subscription filter-keys kind on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                                                  hide-access-filter?

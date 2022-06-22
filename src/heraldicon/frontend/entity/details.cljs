@@ -6,11 +6,10 @@
    [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.history.core :as history]
-   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.not-found :as not-found]
    [heraldicon.frontend.repository.entity-for-editing :as entity-for-editing]
+   [heraldicon.frontend.status :as status]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
@@ -52,9 +51,9 @@
               (do
                 (reife/replace-state (details-route entity-type) {:id (id/for-url entity-id)
                                                                   :version (:version entity)})
-                [loading/loading]))
-      (nil :loading) [loading/loading]
-      :error [not-found/not-found])))
+                [status/loading]))
+      (nil :loading) [status/loading]
+      :error [status/not-found])))
 
 (defn- load-new-entity-data [entity-type generate-data-fn target-path]
   (go
@@ -74,7 +73,7 @@
     (if loading?
       (do
         (load-new-entity-data entity-type generate-data-fn form-db-path)
-        [loading/loading])
+        [status/loading])
       [component-fn form-db-path])))
 
 (defn save [entity-type]
