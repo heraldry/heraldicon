@@ -13,13 +13,6 @@
 (def ^:private list-db-path
   [:user-list])
 
-(defn fetch-user [username]
-  (go
-    (try
-      (<? (api/call :fetch-user {:username username} (user/data)))
-      (catch :default e
-        (log/error "fetch user error:" e)))))
-
 (defn- fetch-user-list []
   (go
     (try
