@@ -114,16 +114,6 @@
     .preventDefault
     .stopPropagation))
 
-(defn invalidate-cache-all-but-new []
-  (rf/dispatch-sync [:update [:async-fetch-data]
-                     (fn [async-data]
-                       (into {}
-                             (map (fn [[k v]]
-                                    [k (-> v
-                                           (update :queries select-keys [:new])
-                                           (update :current #(when (= % :new) :new)))]))
-                             async-data))]))
-
 (def ^:private node-flag-db-path [:ui :component-tree :nodes])
 (def ui-submenu-open?-path [:ui :submenu-open?])
 (def ^:private ui-component-node-selected-path [:ui :component-tree :selected-node])

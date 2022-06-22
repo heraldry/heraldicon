@@ -33,6 +33,10 @@
     (let [path (entity-list-for-user-path entity-type user-id)]
       (assoc-in db path nil))))
 
+(macros/reg-event-db ::clear-all
+  (fn [db _]
+    (assoc-in db db-path-entity-list-for-user nil)))
+
 (defn- fetch-entity-list-for-user-api-function [enty-type]
   (case enty-type
     :heraldicon.entity.type/arms :fetch-arms-for-user
