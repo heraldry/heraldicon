@@ -27,6 +27,21 @@
     (assoc-in db (entity-list-path entity-type) {:status :error
                                                  :error error})))
 
+(rf/reg-event-db ::update
+  (fn [db [_ new-entity]]
+    (let [entity-type (:type new-entity)
+          path (conj (entity-list-path entity-type) :entities)
+          entities (get-in db path)]
+      (cond-> db
+        entities (assoc-in path (mapv (fn [entity]
+                                        (if (and (= (:id new-entity)
+                                                    (:id entity))
+                                                 (> (:version new-entity)
+                                                    (:version entity)))
+                                          new-entity
+                                          entity))
+                                      entities))))))
+
 (rf/reg-event-db ::clear
   (fn [db [_ entity-type]]
     (let [path (entity-list-path entity-type)]

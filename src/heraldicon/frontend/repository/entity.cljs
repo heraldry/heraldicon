@@ -4,6 +4,8 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.repository.entity-list-for-user :as entity-list-for-user]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]
@@ -47,13 +49,15 @@
         latest-version
         parsed-version))))
 
-(rf/reg-event-db ::store
-  (fn [db [_ {:keys [id version] :as entity}]]
-    (-> db
-        (assoc-in (entity-path id version) {:status :done
-                                            :entity entity})
-        (update-in (latest-version-path id) (fn [previous-version]
-                                              (max (or previous-version 0) version))))))
+(rf/reg-event-fx ::store
+  (fn [{:keys [db]} [_ {:keys [id version] :as entity}]]
+    {:db (-> db
+             (assoc-in (entity-path id version) {:status :done
+                                                 :entity entity})
+             (update-in (latest-version-path id) (fn [previous-version]
+                                                   (max (or previous-version 0) version))))
+     :fx [[:dispatch [::entity-list/update entity]]
+          [:dispatch [::entity-list-for-user/update entity]]]}))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ entity-id version error]]
