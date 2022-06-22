@@ -39,55 +39,53 @@
    :hide-ownership-filter? true])
 
 (defn- view-collections-for-user [username]
-  (let [{:keys [status entities]} @(rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])]
-    (if (= status :done)
-      [collection-select/component
-       entities
-       library.collection.list/link-to-collection
-       #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])
-       :predicate-fn (partial owned-by-user? username)
-       :hide-ownership-filter? true]
-      [status/loading])))
+  (status/default
+   (rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])
+   (fn [{:keys [entities]}]
+     [collection-select/component
+      entities
+      library.collection.list/link-to-collection
+      #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])
+      :predicate-fn (partial owned-by-user? username)
+      :hide-ownership-filter? true])))
 
 (defn- user-display [username]
-  (let [{status :status
-         user-info-data :user} @(rf/subscribe [::repository.user/data username])
-        username (:username user-info-data)]
-    (if (= status :done)
-      (do
-        (rf/dispatch [::title/set username])
-        [:div {:style {:display "grid"
-                       :grid-gap "10px"
-                       :grid-template-columns "[start] minmax(10em, 20%) [first] minmax(10em, 40%) [second] minmax(10em, 40%) [end]"
-                       :grid-template-rows "[top] 100px [middle] auto [bottom]"
-                       :grid-template-areas "'user-info user-info user-info'
+  (status/default
+   (rf/subscribe [::repository.user/data username])
+   (fn [{user-info-data :user}]
+     (let [username (:username user-info-data)]
+       (rf/dispatch [::title/set username])
+       [:div {:style {:display "grid"
+                      :grid-gap "10px"
+                      :grid-template-columns "[start] minmax(10em, 20%) [first] minmax(10em, 40%) [second] minmax(10em, 40%) [end]"
+                      :grid-template-rows "[top] 100px [middle] auto [bottom]"
+                      :grid-template-areas "'user-info user-info user-info'
                                        'collections arms charges'"
-                       :padding-left "20px"
-                       :padding-right "10px"
-                       :height "100%"}}
-         [:div.no-scrollbar {:style {:grid-area "user-info"
-                                     :overflow-y "scroll"
-                                     :padding-top "10px"}}
-          [:img {:src (avatar/url username)
-                 :style {:width "80px"
-                         :height "80px"}}]
-          [:h2 {:style {:display "inline-block"
-                        :vertical-align "top"
-                        :margin-left "1em"}}
-           (:username user-info-data)]]
-         [:div.no-scrollbar {:style {:grid-area "collections"
-                                     :overflow-y "scroll"}}
-          [:h4 [tr :string.entity/collections]]
-          [view-collections-for-user username]]
-         [:div.no-scrollbar {:style {:grid-area "arms"
-                                     :overflow-y "scroll"}}
-          [:h4 [tr :string.entity/arms]]
-          [view-arms-for-user username]]
-         [:div.no-scrollbar {:style {:grid-area "charges"
-                                     :overflow-y "scroll"}}
-          [:h4 [tr :string.entity/charges]]
-          [view-charges-for-user username]]])
-      [status/loading])))
+                      :padding-left "20px"
+                      :padding-right "10px"
+                      :height "100%"}}
+        [:div.no-scrollbar {:style {:grid-area "user-info"
+                                    :overflow-y "scroll"
+                                    :padding-top "10px"}}
+         [:img {:src (avatar/url username)
+                :style {:width "80px"
+                        :height "80px"}}]
+         [:h2 {:style {:display "inline-block"
+                       :vertical-align "top"
+                       :margin-left "1em"}}
+          (:username user-info-data)]]
+        [:div.no-scrollbar {:style {:grid-area "collections"
+                                    :overflow-y "scroll"}}
+         [:h4 [tr :string.entity/collections]]
+         [view-collections-for-user username]]
+        [:div.no-scrollbar {:style {:grid-area "arms"
+                                    :overflow-y "scroll"}}
+         [:h4 [tr :string.entity/arms]]
+         [view-arms-for-user username]]
+        [:div.no-scrollbar {:style {:grid-area "charges"
+                                    :overflow-y "scroll"}}
+         [:h4 [tr :string.entity/charges]]
+         [view-charges-for-user username]]]))))
 
 (defn details-view [{{{:keys [username]} :path} :parameters}]
   [user-display username])
