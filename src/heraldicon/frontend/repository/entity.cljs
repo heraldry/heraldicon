@@ -4,7 +4,6 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.repository.core :as repository]
-   [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]
@@ -48,25 +47,25 @@
         latest-version
         parsed-version))))
 
-(rf/reg-event-db ::update-latest-versions
-  (fn [db [_ entities]]
-    (let [version-map (into {}
-                            (map (juxt :id :version))
-                            entities)]
-      (update-in
-       db db-path-latest-versions
-       #(merge-with (fn [a b]
-                      (if (and a b)
-                        (max a b)
-                        (or a b)))
-                    % version-map)))))
+(defn update-latest-versions [db entities]
+  (let [version-map (into {}
+                          (map (juxt :id :version))
+                          entities)]
+    (update-in
+     db db-path-latest-versions
+     #(merge-with (fn [a b]
+                    (if (and a b)
+                      (max a b)
+                      (or a b)))
+                  % version-map))))
 
 (rf/reg-event-fx ::store
   (fn [{:keys [db]} [_ {:keys [id version] :as entity}]]
-    {:db (assoc-in db (entity-path id version) {:status :done
-                                                :entity entity})
-     :fx [[:dispatch [::update-latest-versions [entity]]]
-          [:dispatch [::entity-list/update entity]]]}))
+    {:db (-> db
+             (assoc-in (entity-path id version) {:status :done
+                                                 :entity entity})
+             (update-latest-versions [entity]))
+     :fx [[:dispatch [:heraldicon.frontend.repository.entity-list/update entity]]]}))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ entity-id version error]]

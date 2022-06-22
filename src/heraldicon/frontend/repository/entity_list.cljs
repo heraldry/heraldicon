@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.frontend.repository.entity :as repository.entity]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]
@@ -15,13 +16,14 @@
 (defn- entity-list-path [entity-type]
   (conj db-path-entity-list entity-type))
 
-(rf/reg-event-fx ::store
-  (fn [{:keys [db]} [_ entity-type entities]]
-    {:db (let [path (entity-list-path entity-type)]
-           (assoc-in db path {:status :done
-                              :entities entities
-                              :path (conj path :entities)}))
-     :fx [[:dispatch [:heraldicon.frontend.repository.entity/update-latest-versions entities]]]}))
+(rf/reg-event-db ::store
+  (fn [db [_ entity-type entities]]
+    (let [path (entity-list-path entity-type)]
+      (-> db
+          (assoc-in path {:status :done
+                          :entities entities
+                          :path (conj path :entities)})
+          (repository.entity/update-latest-versions entities)))))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ entity-type error]]
