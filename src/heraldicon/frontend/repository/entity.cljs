@@ -49,14 +49,25 @@
         latest-version
         parsed-version))))
 
+(rf/reg-event-db ::update-latest-versions
+  (fn [db [_ entities]]
+    (let [version-map (into {}
+                            (map (juxt :id :version))
+                            entities)]
+      (update-in
+       db db-path-latest-versions
+       #(merge-with (fn [a b]
+                      (if (and a b)
+                        (max a b)
+                        (or a b)))
+                    % version-map)))))
+
 (rf/reg-event-fx ::store
   (fn [{:keys [db]} [_ {:keys [id version] :as entity}]]
-    {:db (-> db
-             (assoc-in (entity-path id version) {:status :done
-                                                 :entity entity})
-             (update-in (latest-version-path id) (fn [previous-version]
-                                                   (max (or previous-version 0) version))))
-     :fx [[:dispatch [::entity-list/update entity]]
+    {:db (assoc-in db (entity-path id version) {:status :done
+                                                :entity entity})
+     :fx [[:dispatch [::update-latest-versions [entity]]]
+          [:dispatch [::entity-list/update entity]]
           [:dispatch [::entity-list-for-user/update entity]]]}))
 
 (rf/reg-event-db ::store-error
