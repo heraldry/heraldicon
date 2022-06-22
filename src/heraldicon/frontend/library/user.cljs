@@ -6,9 +6,9 @@
    [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge.list :as library.charge.list]
    [heraldicon.frontend.library.collection.list :as library.collection.list]
-   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.repository.user :as repository.user]
+   [heraldicon.frontend.status :as status]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
@@ -47,7 +47,7 @@
        #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])
        :predicate-fn (partial owned-by-user? username)
        :hide-ownership-filter? true]
-      [loading/loading])))
+      [status/loading])))
 
 (defn- user-display [username]
   (let [{status :status
@@ -87,7 +87,7 @@
                                      :overflow-y "scroll"}}
           [:h4 [tr :string.entity/charges]]
           [view-charges-for-user username]]])
-      [loading/loading])))
+      [status/loading])))
 
 (defn details-view [{{{:keys [username]} :path} :parameters}]
   [user-display username])

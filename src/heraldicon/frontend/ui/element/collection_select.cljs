@@ -4,8 +4,8 @@
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.status :as status]
    [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]))
@@ -49,4 +49,4 @@
        entities
        link-to-collection
        #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])]
-      [loading/loading])))
+      [status/loading])))

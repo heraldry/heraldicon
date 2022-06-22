@@ -15,7 +15,7 @@
    [heraldicon.frontend.library.user :as library.user]
    [heraldicon.frontend.maintenance :as maintenance]
    [heraldicon.frontend.news :as news]
-   [heraldicon.frontend.not-found :as not-found]
+   [heraldicon.frontend.status :as status]
    [heraldicon.util.trailing-slash-router :as trailing-slash-router]
    [reagent.core :as rc]
    [reitit.frontend.easy :as reife]))
@@ -151,7 +151,7 @@
 (defn- route-view []
   (if-let [page-view (-> @current-state :data :view)]
     [page-view @current-state]
-    [not-found/not-found]))
+    [status/not-found]))
 
 (defn view []
   (if (maintenance/in-effect? (current-section))
