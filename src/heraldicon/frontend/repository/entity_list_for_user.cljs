@@ -2,7 +2,6 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user :as user]
@@ -16,24 +15,24 @@
 (defn- entity-list-for-user-path [entity-type user-id]
   (conj db-path-entity-list-for-user [entity-type user-id]))
 
-(macros/reg-event-db ::store
+(rf/reg-event-db ::store
   (fn [db [_ entity-type user-id entities]]
     (let [path (entity-list-for-user-path entity-type user-id)]
       (assoc-in db path {:status :done
                          :entities entities
                          :path (conj path :entities)}))))
 
-(macros/reg-event-db ::store-error
+(rf/reg-event-db ::store-error
   (fn [db [_ entity-type user-id error]]
     (assoc-in db (entity-list-for-user-path entity-type user-id) {:status :error
                                                                   :error error})))
 
-(macros/reg-event-db ::clear
+(rf/reg-event-db ::clear
   (fn [db [_ entity-type user-id]]
     (let [path (entity-list-for-user-path entity-type user-id)]
       (assoc-in db path nil))))
 
-(macros/reg-event-db ::clear-all
+(rf/reg-event-db ::clear-all
   (fn [db _]
     (assoc-in db db-path-entity-list-for-user nil)))
 

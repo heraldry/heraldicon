@@ -3,7 +3,6 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.frontend.http :as http]
-   [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as entity]
    [re-frame.core :as rf]
@@ -16,12 +15,12 @@
 (defn- entity-for-rendering-path [entity-id version]
   (conj db-path-entity-for-rendering [entity-id version]))
 
-(macros/reg-event-db ::store
+(rf/reg-event-db ::store
   (fn [db [_ {:keys [id version] :as entity}]]
     (assoc-in db (entity-for-rendering-path id version) {:status :done
                                                          :entity entity})))
 
-(macros/reg-event-db ::store-error
+(rf/reg-event-db ::store-error
   (fn [db [_ entity-id version error]]
     (assoc-in db (entity-for-rendering-path entity-id version) {:status :error
                                                                 :error error})))
