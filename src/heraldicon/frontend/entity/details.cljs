@@ -39,21 +39,24 @@
 
 (defn by-id-view [entity-id version component-fn]
   (let [entity-type (id/type-from-id entity-id)
-        form-db-path (form/data-path entity-type)
-        {:keys [status entity]} @(rf/subscribe [::prepare-for-editing
-                                                entity-id version
-                                                form-db-path])]
+        form-db-path (form/data-path entity-type)]
     (when @(rf/subscribe [::history/identifier-changed? form-db-path entity-id])
       (rf/dispatch-sync [::history/clear form-db-path entity-id]))
-    (case status
-      :done (if version
-              [component-fn form-db-path]
-              (do
-                (reife/replace-state (details-route entity-type) {:id (id/for-url entity-id)
-                                                                  :version (:version entity)})
-                [status/loading]))
-      (nil :loading) [status/loading]
-      :error [status/not-found])))
+    (status/default
+     (rf/subscribe [::prepare-for-editing
+                    entity-id version
+                    form-db-path])
+     (fn [{:keys [entity]}]
+       (if version
+         [component-fn form-db-path]
+         (do
+           (reife/replace-state (details-route entity-type) {:id (id/for-url entity-id)
+                                                             :version (:version entity)})
+           [status/loading])))
+     :on-error (fn [error]
+                 (if (-> error ex-cause (= :entity-not-found))
+                   [status/not-found]
+                   [status/error-display])))))
 
 (defn- load-new-entity-data [entity-type generate-data-fn target-path]
   (go

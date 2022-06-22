@@ -43,10 +43,10 @@
      :predicate-fn predicate-fn]))
 
 (defn list-collections [link-to-collection]
-  (let [{:keys [status entities]} @(rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])]
-    (if (= status :done)
-      [component
-       entities
-       link-to-collection
-       #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])]
-      [status/loading])))
+  (status/default
+   (rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])
+   (fn [{:keys [entities]}]
+     [component
+      entities
+      link-to-collection
+      #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])])))

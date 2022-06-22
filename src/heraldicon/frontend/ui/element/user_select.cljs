@@ -26,7 +26,7 @@
      :hide-ownership-filter? true]))
 
 (defn list-users [link-to-user]
-  (let [{:keys [status users]} @(rf/subscribe [::repository.user-list/data])]
-    (if (= status :done)
-      [component users link-to-user #(rf/dispatch [::repository.user-list/clear])]
-      [status/loading])))
+  (status/default
+   (rf/subscribe [::repository.user-list/data])
+   (fn [{:keys [users]}]
+     [component users link-to-user #(rf/dispatch [::repository.user-list/clear])])))
