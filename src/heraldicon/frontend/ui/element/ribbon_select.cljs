@@ -7,7 +7,8 @@
 
 (defn- component [ribbons-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                       selected-ribbon
-                                                                      display-selected-item?]}]
+                                                                      display-selected-item?
+                                                                      predicate-fn]}]
   (let [user-data (user/data)]
     [filter/component
      :ribbon-list
@@ -27,13 +28,12 @@
                          {:height "80vh"}
                          {:height "90vh"})
      :selected-item selected-ribbon
-     :display-selected-item? display-selected-item?]))
+     :display-selected-item? display-selected-item?
+     :predicate-fn predicate-fn]))
 
-(defn list-ribbons [on-select & {:keys [selected-ribbon
-                                        display-selected-item?]}]
+(defn list-ribbons [on-select & {:as options}]
   [component
    (rf/subscribe [::entity-list/data :heraldicon.entity.type/ribbon])
    on-select
    #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/ribbon])
-   :selected-ribbon selected-ribbon
-   :display-selected-item? display-selected-item?])
+   options])

@@ -7,7 +7,8 @@
 
 (defn component [arms-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                   selected-arms
-                                                                  display-selected-item?]}]
+                                                                  display-selected-item?
+                                                                  predicate-fn]}]
   [filter/component
    :arms-list
    (user/data)
@@ -26,13 +27,12 @@
                        {:height "80vh"}
                        {:height "90vh"})
    :selected-item selected-arms
-   :display-selected-item? display-selected-item?])
+   :display-selected-item? display-selected-item?
+   :predicate-fn predicate-fn])
 
-(defn list-arms [on-select & {:keys [selected-arms
-                                     display-selected-item?]}]
+(defn list-arms [on-select & {:as options}]
   [component
    (rf/subscribe [::entity-list/data :heraldicon.entity.type/arms])
    on-select
    #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/arms])
-   :selected-arms selected-arms
-   :display-selected-item? display-selected-item?])
+   options])

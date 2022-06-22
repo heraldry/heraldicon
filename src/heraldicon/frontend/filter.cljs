@@ -172,6 +172,7 @@
                                                                                      hide-ownership-filter?
                                                                                      hide-access-filter?
                                                                                      selected-item
+                                                                                     predicate-fn
                                                                                      display-selected-item?]}]
   (let [filter-path [:ui :filter id]
         selected-item-path (conj filter-path :selected-item)
@@ -193,6 +194,8 @@
         {status :status
          all-items-path :path
          all-items :entities} @items-subscription
+        all-items (cond->> all-items
+                    predicate-fn (filterv predicate-fn))
         filtered-items (filter-items user-data
                                      all-items
                                      filter-keys
@@ -321,7 +324,8 @@
                                                                                            on-filter-string-change
                                                                                            component-styles
                                                                                            page-size
-                                                                                           sort-fn]}]
+                                                                                           sort-fn
+                                                                                           predicate-fn]}]
   (let [filter-path [:ui :filter id]
         filter-string-path (conj filter-path :filter-string)
         filter-tags-path (conj filter-path :filter-tags)
@@ -333,6 +337,8 @@
         filter-ownership (if @(rf/subscribe [:get filter-ownership-path])
                            :mine
                            :all)
+        all-items (cond->> all-items
+                    predicate-fn (filterv predicate-fn))
         filtered-items (filter-items user-data
                                      all-items
                                      filter-keys

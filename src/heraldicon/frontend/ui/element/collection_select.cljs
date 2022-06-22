@@ -10,7 +10,8 @@
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]))
 
-(defn component [collection-list link-fn refresh-fn & {:keys [hide-ownership-filter?]}]
+(defn component [collection-list link-fn refresh-fn & {:keys [hide-ownership-filter?
+                                                              predicate-fn]}]
   (let [user-data (user/data)]
     [filter/legacy-component
      :collection-list
@@ -38,7 +39,8 @@
                        [tags/tags-view (-> collection :tags keys)]])))
              (sort-by (comp s/lower-case :name) items)))
      refresh-fn
-     :hide-ownership-filter? hide-ownership-filter?]))
+     :hide-ownership-filter? hide-ownership-filter?
+     :predicate-fn predicate-fn]))
 
 (defn list-collections [link-to-collection]
   (let [{:keys [status entities]} @(rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])]

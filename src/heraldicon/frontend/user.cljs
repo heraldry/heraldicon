@@ -84,7 +84,6 @@
 
 (defn- clear-list-repositories []
   (rf/dispatch-sync [:heraldicon.frontend.repository.entity-list/clear-all])
-  (rf/dispatch-sync [:heraldicon.frontend.repository.entity-list-for-user/clear-all])
   (rf/dispatch-sync [:heraldicon.frontend.repository.user-list/clear]))
 
 (defn- complete-login [db-path jwt-token]
