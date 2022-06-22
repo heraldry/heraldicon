@@ -8,7 +8,8 @@
 
 (defn component [charges-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                      selected-charge
-                                                                     display-selected-item?]}]
+                                                                     display-selected-item?
+                                                                     predicate-fn]}]
   (let [user-data (user/data)]
     [filter/component
      :charge-list
@@ -29,13 +30,12 @@
                          {:height "75vh"}
                          {:height "90vh"})
      :selected-item selected-charge
-     :display-selected-item? display-selected-item?]))
+     :display-selected-item? display-selected-item?
+     :predicate-fn predicate-fn]))
 
-(defn list-charges [on-select & {:keys [selected-charge
-                                        display-selected-item?]}]
+(defn list-charges [on-select & {:as options}]
   [component
    (rf/subscribe [::entity-list/data :heraldicon.entity.type/charge blazonry-editor/update-parser])
    on-select
    #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/charge])
-   :selected-charge selected-charge
-   :display-selected-item? display-selected-item?])
+   options])

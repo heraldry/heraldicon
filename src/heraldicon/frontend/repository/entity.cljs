@@ -5,7 +5,6 @@
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity-list :as entity-list]
-   [heraldicon.frontend.repository.entity-list-for-user :as entity-list-for-user]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user :as user]
    [re-frame.core :as rf]
@@ -67,8 +66,7 @@
     {:db (assoc-in db (entity-path id version) {:status :done
                                                 :entity entity})
      :fx [[:dispatch [::update-latest-versions [entity]]]
-          [:dispatch [::entity-list/update entity]]
-          [:dispatch [::entity-list-for-user/update entity]]]}))
+          [:dispatch [::entity-list/update entity]]]}))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ entity-id version error]]
