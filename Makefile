@@ -92,6 +92,11 @@ dev-local:
 dev-test:
 	npx shadow-cljs watch test
 
+check-all:
+	-make check-debug-print-frontend
+	-make check-debug-print-backend
+	-make check
+
 check: check-json
 	clj-kondo --parallel --lint src test backend/src; cljfmt --parallel check src test backend/src
 	! rg ':require[ ]' src test backend/src
