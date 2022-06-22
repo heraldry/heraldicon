@@ -7,6 +7,7 @@
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.loading :as loading]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
    [heraldicon.frontend.ui.element.checkbox :as checkbox]
@@ -166,21 +167,19 @@
                    :overflow "hidden"
                    :height "25px"}]])]]]))
 
-(defn component [id user-data all-items-path filter-keys kind on-select refresh-fn & {:keys [hide-ownership-filter?
-                                                                                             hide-access-filter?
-                                                                                             on-filter-string-change
-                                                                                             component-styles
-                                                                                             page-size
-                                                                                             sort-fn
-                                                                                             selected-item
-                                                                                             display-selected-item?]}]
+(defn- results [id user-data items-subscription filter-keys kind on-select & {:keys [page-size
+                                                                                     sort-fn
+                                                                                     hide-ownership-filter?
+                                                                                     hide-access-filter?
+                                                                                     selected-item
+                                                                                     display-selected-item?]}]
   (let [filter-path [:ui :filter id]
         selected-item-path (conj filter-path :selected-item)
         filter-string-path (conj filter-path :filter-string)
         filter-tags-path (conj filter-path :filter-tags)
         filter-access-path (conj filter-path :filter-access)
-        filter-ownership-path (conj filter-path :filter-ownership)
         filter-string @(rf/subscribe [:get filter-string-path])
+        filter-ownership-path (conj filter-path :filter-ownership)
         filter-tags @(rf/subscribe [:get filter-tags-path])
         filter-ownership (if-not hide-ownership-filter?
                            @(rf/subscribe [:get filter-ownership-path])
@@ -191,7 +190,9 @@
         filter-access (if consider-filter-access?
                         @(rf/subscribe [:get filter-access-path])
                         :all)
-        all-items @(rf/subscribe [:get all-items-path])
+        {status :status
+         all-items-path :path
+         all-items :entities} @items-subscription
         filtered-items (filter-items user-data
                                      all-items
                                      filter-keys
@@ -214,7 +215,68 @@
                             @(rf/subscribe [:get number-of-items-path])
                             page-size)
         display-items (cond->> sorted-items
-                        page-size (take number-of-items))
+                        page-size (take number-of-items))]
+    (if (= status :done)
+      [:<>
+       [:div.filter-component-tags
+        [tags/tags-view tags-to-display
+         :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
+         :selected filter-tags
+         :style {:display "flex"
+                 :flex-flow "row"
+                 :flex-wrap "wrap"
+                 :width "auto"
+                 :overflow "hidden"
+                 :height "25px"}]]
+
+       (let [results-id (str "filter-results-" id)]
+         [:div.filter-component-results {:id results-id}
+          (if (empty? display-items)
+            [:div [tr :string.miscellaneous/none]]
+            [:> InfiniteScroll
+             {:dataLength (count display-items)
+              :hasMore (not= (count filtered-items)
+                             (count display-items))
+              :next #(rf/dispatch [::show-more
+                                   number-of-items-path
+                                   page-size])
+              :scrollableTarget results-id
+              :style {:overflow "visible"}}
+             [:ul.filter-results
+              (when display-selected-item?
+                [result-card all-items-path (:id selected-item) kind nil selected-item-path
+                 :selection-placeholder? true])
+              (into [:<>]
+                    (map (fn [item]
+                           ^{:key (:id item)}
+                           [result-card all-items-path (:id item) kind on-select selected-item-path]))
+                    display-items)
+              (when-not (= (count filtered-items)
+                           (count display-items))
+                [:li.filter-result-card-wrapper.filter-component-show-more
+                 [:button.button {:on-click #(rf/dispatch [::show-more
+                                                           number-of-items-path
+                                                           page-size])}
+                  [tr :string.miscellaneous/show-more]]])]])])]
+      [loading/loading])))
+
+(defn component [id user-data items-subscription filter-keys kind on-select refresh-fn & {:keys [hide-ownership-filter?
+                                                                                                 hide-access-filter?
+                                                                                                 on-filter-string-change
+                                                                                                 component-styles
+                                                                                                 selected-item]
+                                                                                          :as options}]
+  (let [filter-path [:ui :filter id]
+        selected-item-path (conj filter-path :selected-item)
+        filter-string-path (conj filter-path :filter-string)
+        filter-access-path (conj filter-path :filter-access)
+        filter-ownership-path (conj filter-path :filter-ownership)
+        filter-ownership (if-not hide-ownership-filter?
+                           @(rf/subscribe [:get filter-ownership-path])
+                           :all)
+        consider-filter-access? (and (not hide-access-filter?)
+                                     (or (= filter-ownership :mine)
+                                         (entity.user/admin? user-data)))
         stored-selected-item @(rf/subscribe [:get selected-item-path])]
 
     (when (not= stored-selected-item selected-item)
@@ -252,46 +314,7 @@
                             [:string.option.access-filter-choice/public :public]
                             [:string.option.access-filter-choice/private :private]]}])]
 
-     [:div.filter-component-tags
-      [tags/tags-view tags-to-display
-       :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
-       :selected filter-tags
-       :style {:display "flex"
-               :flex-flow "row"
-               :flex-wrap "wrap"
-               :width "auto"
-               :overflow "hidden"
-               :height "25px"}]]
-
-     (let [results-id (str "filter-results-" id)]
-       [:div.filter-component-results {:id results-id}
-        (if (empty? display-items)
-          [:div [tr :string.miscellaneous/none]]
-          [:> InfiniteScroll
-           {:dataLength (count display-items)
-            :hasMore (not= (count filtered-items)
-                           (count display-items))
-            :next #(rf/dispatch [::show-more
-                                 number-of-items-path
-                                 page-size])
-            :scrollableTarget results-id
-            :style {:overflow "visible"}}
-           [:ul.filter-results
-            (when display-selected-item?
-              [result-card all-items-path (:id selected-item) kind nil selected-item-path
-               :selection-placeholder? true])
-            (into [:<>]
-                  (map (fn [item]
-                         ^{:key (:id item)}
-                         [result-card all-items-path (:id item) kind on-select selected-item-path]))
-                  display-items)
-            (when-not (= (count filtered-items)
-                         (count display-items))
-              [:li.filter-result-card-wrapper.filter-component-show-more
-               [:button.button {:on-click #(rf/dispatch [::show-more
-                                                         number-of-items-path
-                                                         page-size])}
-                [tr :string.miscellaneous/show-more]]])]])])]))
+     [results id user-data items-subscription filter-keys kind on-select options]]))
 
 (defn legacy-component [id user-data all-items filter-keys display-fn refresh-fn & {:keys [hide-ownership-filter?
                                                                                            hide-access-filter?
