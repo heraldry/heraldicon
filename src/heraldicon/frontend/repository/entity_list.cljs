@@ -15,12 +15,13 @@
 (defn- entity-list-path [entity-type]
   (conj db-path-entity-list entity-type))
 
-(rf/reg-event-db ::store
-  (fn [db [_ entity-type entities]]
-    (let [path (entity-list-path entity-type)]
-      (assoc-in db path {:status :done
-                         :entities entities
-                         :path (conj path :entities)}))))
+(rf/reg-event-fx ::store
+  (fn [{:keys [db]} [_ entity-type entities]]
+    {:db (let [path (entity-list-path entity-type)]
+           (assoc-in db path {:status :done
+                              :entities entities
+                              :path (conj path :entities)}))
+     :fx [[:dispatch [:heraldicon.frontend.repository.entity/update-latest-versions entities]]]}))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ entity-type error]]
