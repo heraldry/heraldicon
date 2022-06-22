@@ -9,7 +9,6 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.api :as api]
-   [heraldicon.frontend.state :as state]
    [hodgepodge.core :refer [get-item local-storage remove-item set-item]]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
@@ -83,6 +82,11 @@
                           :user-id user-id
                           :logged-in? true})])))
 
+(defn- clear-list-repositories []
+  (rf/dispatch-sync [:heraldicon.frontend.repository.entity-list/clear-all])
+  (rf/dispatch-sync [:heraldicon.frontend.repository.entity-list-for-user/clear-all])
+  (rf/dispatch-sync [:heraldicon.frontend.repository.user-list/clear]))
+
 (defn- complete-login [db-path jwt-token]
   (go
     (try
@@ -95,7 +99,7 @@
         (set-item local-storage local-storage-user-id-name user-id)
         (read-session-data)
         (rf/dispatch-sync [::message/clear db-path])
-        (state/invalidate-cache-all-but-new)
+        (clear-list-repositories)
         (modal/clear)
         (modal/stop-loading))
       (catch :default e
@@ -517,7 +521,7 @@
                                 ";domain=" (extract-domain (config/get :heraldicon-url))
                                 ";path=/"
                                 ";Max-Age=-99999999"))
-  (state/invalidate-cache-all-but-new)
+  (clear-list-repositories)
   (rf/dispatch [:remove user-db-path]))
 
 (defn load-session-user-data []
