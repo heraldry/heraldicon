@@ -1,14 +1,11 @@
 (ns heraldicon.frontend.state
   (:require
-   [cljs.core.async :refer [go]]
-   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.form.entity.collection.element :as collection.element]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.option.attributes :as attributes]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+   [re-frame.core :as rf]))
 
 (rf/reg-sub :used-charge-variants
   (fn [[_ path] _]
@@ -116,56 +113,6 @@
   (doto event
     .preventDefault
     .stopPropagation))
-
-(defn set-async-fetch-data [db-path query-id data]
-  (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
-  (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] {:state :done
-                                                                         :data data}])
-  (rf/dispatch-sync [:set db-path data]))
-
-;; TODO: this should be redone and also live elsewhere probably
-(defn async-fetch-data [db-path query-id async-function & {:keys [on-success]}]
-  (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])
-        query @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]])
-        current-data @(rf/subscribe [:get db-path])]
-    (cond
-      (not= current-query query-id) (do
-                                      (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
-                                      (rf/dispatch-sync [:set db-path nil])
-                                      [:loading nil])
-      current-data [:done current-data]
-      (-> query :state (= :done)) (do
-                                    (rf/dispatch-sync [:set db-path (:data query)])
-                                    (when on-success
-                                      (on-success (:data query)))
-                                    [:done (:data query)])
-      (:state query) [:loading nil]
-      :else (do
-              (go
-                (try
-                  (when-not (:state @(rf/subscribe [:get [:async-fetch-data db-path :queries query-id]]))
-                    (rf/dispatch-sync [:set db-path nil])
-                    (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id])
-                    (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
-                                       {:state :loading}])
-                    (let [data (<? (async-function))]
-                      (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id]
-                                         {:state :done
-                                          :data data}]))
-                    (rf/dispatch-sync [:set [:async-fetch-data db-path :current] query-id]))
-                  (catch :default e
-                    (log/error "async fetch data error:" db-path query-id e))))
-              [:loading nil]))))
-
-(defn invalidate-cache-without-current [db-path query-id]
-  (rf/dispatch-sync [:set [:async-fetch-data db-path :queries query-id] nil]))
-
-(defn invalidate-cache [db-path query-id]
-  (invalidate-cache-without-current db-path query-id)
-  (let [current-query @(rf/subscribe [:get [:async-fetch-data db-path :current]])]
-    (when (= current-query query-id)
-      (rf/dispatch-sync [:set [:async-fetch-data db-path :current] nil])
-      (rf/dispatch-sync [:set db-path nil]))))
 
 (defn invalidate-cache-all-but-new []
   (rf/dispatch-sync [:update [:async-fetch-data]
