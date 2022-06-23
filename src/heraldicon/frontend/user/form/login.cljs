@@ -7,6 +7,7 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.api :as api]
+   [heraldicon.frontend.user.form.confirmation :as confirmation]
    [heraldicon.frontend.user.form.core :as form]
    [heraldicon.frontend.user.form.password-reset-confirmation :as password-reset-confirmation]
    [heraldicon.frontend.user.session :as session]
@@ -80,11 +81,10 @@
      username password
      :on-success (fn [^js/Object user]
                    (login-with-token (-> user .getAccessToken .getJwtToken)))
-     :on-confirmation-needed nil #_(fn [user]
-                                     (rf/dispatch [::message/clear db-path])
-                                     (rf/dispatch [:set (conj user-db-path :user) user])
-                                     (confirmation-modal)
-                                     (modal/stop-loading))
+     :on-confirmation-needed (fn [user]
+                               (rf/dispatch [::form/clear-and-close ::id])
+                               (rf/dispatch [::confirmation/show user])
+                               (modal/stop-loading))
      :on-failure (fn [error]
                    (log/error "login error:" error)
                    (rf/dispatch [::message/set-error ::id (.-message error)])
