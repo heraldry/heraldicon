@@ -29,7 +29,6 @@
   (rf/dispatch [::message/clear db-path])
   (rf/dispatch [:set db-path nil]))
 
-(declare login-modal)
 (declare confirmation-modal)
 (declare change-temporary-password-modal)
 (declare password-reset-confirmation-modal)
@@ -89,125 +88,6 @@
   (rf/dispatch-sync [:heraldicon.frontend.repository.entity-list/clear-all])
   (rf/dispatch-sync [:heraldicon.frontend.repository.user-list/clear]))
 
-(defn- complete-login [db-path jwt-token]
-  (go
-    (try
-      (let [response (<? (api/call :login {:jwt-token jwt-token} nil))
-            {:keys [session-id
-                    username
-                    user-id]} response]
-        (set-item local-storage local-storage-session-id-name session-id)
-        (set-item local-storage local-storage-username-name username)
-        (set-item local-storage local-storage-user-id-name user-id)
-        (read-session-data)
-        (rf/dispatch-sync [::message/clear db-path])
-        (clear-list-repositories)
-        (modal/clear)
-        (modal/stop-loading))
-      (catch :default e
-        (log/error "complete login error:" e)
-        (rf/dispatch [::message/set-error db-path (:message e)])
-        (modal/stop-loading)))))
-
-(defn- login-clicked [db-path]
-  (let [{:keys [username password]} @(rf/subscribe [:get db-path])]
-    (rf/dispatch-sync [::message/clear db-path])
-    (cond
-      (-> username count zero?) (rf/dispatch [::message/set-error (conj db-path :username) :string.user.message/username-required])
-      (-> password count zero?) (rf/dispatch [::message/set-error (conj db-path :password) :string.user.message/password-required])
-      :else (do
-              (modal/start-loading)
-              (cognito/login username
-                             password
-                             :on-success (fn [^js/Object user]
-                                           (complete-login db-path (-> user
-                                                                       .getAccessToken
-                                                                       .getJwtToken)))
-                             :on-confirmation-needed (fn [user]
-                                                       (rf/dispatch [::message/clear db-path])
-                                                       (rf/dispatch [:set (conj user-db-path :user) user])
-                                                       (confirmation-modal)
-                                                       (modal/stop-loading))
-                             :on-failure (fn [error]
-                                           (log/error "login error:" error)
-                                           (rf/dispatch [::message/set-error db-path (.-message error)])
-                                           (modal/stop-loading))
-                             :on-new-password-required (fn [user user-attributes]
-                                                         (rf/dispatch [::message/clear db-path])
-                                                         (rf/dispatch [:set (conj user-db-path :user) user])
-                                                         (rf/dispatch [:set (conj user-db-path :user-attributes) user-attributes])
-                                                         (change-temporary-password-modal)
-                                                         (modal/stop-loading)))))))
-(defn- forgotten-password-clicked [db-path]
-  (let [{:keys [username]} @(rf/subscribe [:get db-path])]
-    (rf/dispatch-sync [::message/clear db-path])
-    (if (-> username
-            count
-            zero?)
-      (rf/dispatch [::message/set-error (conj db-path :username) :string.user.message/username-required-for-password-reset])
-      (do
-        (modal/start-loading)
-        (cognito/forgot-password
-         username
-         :on-success (fn [user]
-                       (clear-form db-path)
-                       (rf/dispatch [:set (conj user-db-path :user) user])
-                       (password-reset-confirmation-modal)
-                       (modal/stop-loading))
-         :on-failure (fn [error]
-                       (log/error "password reset initiation error:" error)
-                       (rf/dispatch [::message/set-error db-path (.-message error)])
-                       (modal/stop-loading)))))))
-
-(defn- login-form [db-path]
-  (let [on-submit (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (login-clicked db-path))]
-    [:form.modal-form
-     {:on-key-press (fn [event]
-                      (when (-> event .-code (= "Enter"))
-                        (on-submit event)))
-      :on-submit on-submit}
-     [message/display db-path]
-     [text-field (conj db-path :username)
-      (fn [& {:keys [value on-change]}]
-        [:div
-         [:input {:id "username"
-                  :name "username"
-                  :value value
-                  :on-change on-change
-                  :placeholder (tr :string.user/username)
-                  :type "text"}]])]
-     [text-field (conj db-path :password)
-      (fn [& {:keys [value on-change]}]
-        [:div
-         [:input {:id "password"
-                  :name "password"
-                  :value value
-                  :on-change on-change
-                  :placeholder (tr :string.user/password)
-                  :type "password"}]])]
-     [:a
-      {:style {:margin-right "5px"}
-       :href "#"
-       :on-click (fn [event]
-                   (.preventDefault event)
-                   (.stopPropagation event)
-                   (forgotten-password-clicked db-path))}
-      [tr :string.user/forgotten-password]]
-     [:div {:style {:text-align "right"
-                    :margin-top "10px"}}
-      [:button.button
-       {:style {:margin-right "5px"}
-        :type "reset"
-        :on-click #(do
-                     (clear-form db-path)
-                     (modal/clear))}
-       [tr :string.button/cancel]]
-      [:button.button.primary {:type "submit"}
-       [tr :string.menu/login]]]]))
-
 (defn- sign-up-clicked [db-path]
   (let [{:keys [username email password password-again]} @(rf/subscribe [:get db-path])]
     (rf/dispatch-sync [::message/clear db-path])
@@ -221,7 +101,7 @@
               (cognito/sign-up username password email
                                :on-success (fn [_user]
                                              (clear-form db-path)
-                                             (login-modal :string.user.message/registration-completed)
+                                             #_(login-modal :string.user.message/registration-completed)
                                              (modal/stop-loading))
                                :on-confirmation-needed (fn [user]
                                                          (rf/dispatch [::message/clear db-path])
@@ -310,7 +190,7 @@
     (cognito/confirm user code
                      :on-success (fn [_user]
                                    (clear-form db-path)
-                                   (login-modal :string.user.message/registration-completed)
+                                   #_(login-modal :string.user.message/registration-completed)
                                    (modal/stop-loading))
                      :on-failure (fn [error]
                                    (log/error "confirmation error:" error)
@@ -380,9 +260,9 @@
                user-attributes
                :on-success (fn [^js/Object user]
                              (clear-form db-path)
-                             (complete-login db-path (-> user
-                                                         .getAccessToken
-                                                         .getJwtToken)))
+                             #_(complete-login db-path (-> user
+                                                           .getAccessToken
+                                                           .getJwtToken)))
                :on-failure (fn [error]
                              (log/error "change password error:" error)
                              (rf/dispatch [::message/set-error db-path (.-message error)])
@@ -452,7 +332,7 @@
                new-password
                :on-success (fn [_user]
                              (clear-form db-path)
-                             (login-modal :string.user.message/password-reset-completed)
+                             #_(login-modal :string.user.message/password-reset-completed)
                              (modal/stop-loading))
                :on-failure (fn [error]
                              (log/error "password reset error:" error)
@@ -529,11 +409,6 @@
 (defn load-session-user-data []
   (when-not (data)
     (read-session-data)))
-
-(defn login-modal [& [title]]
-  (let [db-path [:login-form]]
-    (modal/create (or title :string.menu/login) [login-form db-path]
-                  :on-cancel #(clear-form db-path))))
 
 (defn sign-up-modal []
   (let [db-path [:sign-up-form]]
