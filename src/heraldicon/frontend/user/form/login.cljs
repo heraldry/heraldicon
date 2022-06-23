@@ -7,6 +7,7 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.api :as api]
+   [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.user.form.core :as form]
    [heraldicon.frontend.user.form.password-reset-confirmation :as password-reset-confirmation]
    [heraldicon.frontend.user.session :as session]
@@ -56,16 +57,12 @@
         (and username?
              password?) (assoc ::login [username password])))))
 
-(defn- clear-list-repositories []
-  (rf/dispatch [:heraldicon.frontend.repository.entity-list/clear-all])
-  (rf/dispatch [:heraldicon.frontend.repository.user-list/clear]))
-
 (defn login-with-token [jwt-token & {:keys [form-id]
                                      :or {form-id ::id}}]
   (go
     (try
       (let [session-data (<? (api/call :login {:jwt-token jwt-token} nil))]
-        (clear-list-repositories)
+        (rf/dispatch [::repository/clear-lists])
         (rf/dispatch [::session/store session-data])
         (rf/dispatch [::form/clear-and-close form-id]))
       (catch :default e
