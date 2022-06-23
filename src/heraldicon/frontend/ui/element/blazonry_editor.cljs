@@ -65,11 +65,8 @@
   (fn [value _]
     (or value parser/default)))
 
-(rf/reg-sub ::parser-status
-  (fn [_ _]
-    (rf/subscribe [:get status-path]))
-
-  (fn [{:keys [status error warnings]} _]
+(defn- parser-status []
+  (let [{:keys [status error warnings]} @(rf/subscribe [:get status-path])]
     [:<>
      (case status
        :success [:span.parser-success [tr :string.blazonry-editor/success]]
@@ -80,9 +77,6 @@
              (map (fn [warning]
                     [:li [tr :string.blazonry-editor/warning] ": " warning]))
              warnings))]))
-
-(defn- parser-status []
-  @(rf/subscribe [::parser-status]))
 
 (defn- caret-position [index]
   (let [selection (js/document.getSelection)
