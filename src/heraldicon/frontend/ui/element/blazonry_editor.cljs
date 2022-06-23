@@ -58,7 +58,7 @@
         (assoc-in status-path nil)
         (assoc-in last-parsed-path nil))))
 
-(rf/reg-sub :blazonry-parser
+(rf/reg-sub ::blazonry-parser
   (fn [_ _]
     (rf/subscribe [:get (conj parser-path :parser)]))
 
@@ -292,7 +292,7 @@
         text (.getPlainText content)]
     (when (not= text last-parsed)
       (let [cursor-index (cursor-index editor-state)
-            parser @(rf/subscribe [:blazonry-parser])
+            parser @(rf/subscribe [::blazonry-parser])
             parse-result (parse-blazonry text cursor-index parser)]
         (complete-parsing text parse-result)))))
 
