@@ -1,22 +1,27 @@
 (ns heraldicon.frontend.auto-complete
   (:require
-   [heraldicon.frontend.macros :as macros]
    [re-frame.core :as rf]))
 
 (def ^:private db-path
   [:ui :auto-complete])
 
-(macros/reg-event-db :set-auto-complete-data
+(rf/reg-event-db ::set
   (fn [db [_ value]]
     (update-in db db-path merge value)))
 
-(defn set-data [data]
-  (rf/dispatch [:set-auto-complete-data data]))
+(rf/reg-event-db ::clear
+  (fn [db [_]]
+    (assoc-in db db-path nil)))
 
-(defn clear-data []
-  (rf/dispatch [:set db-path nil]))
-
-(rf/dispatch [:remove db-path])
+(rf/reg-event-db ::apply-first
+  (fn [db _]
+    (let [{:keys [choices
+                  position
+                  on-click]} (get-in db db-path)]
+      (when (and position
+                 (seq choices))
+        (on-click (ffirst choices)))
+      db)))
 
 (defn render []
   (let [{:keys [choices
@@ -40,11 +45,3 @@
                        (when hint
                          [:span.hint hint])])))
             choices))))
-
-(defn auto-complete-first []
-  (let [{:keys [choices
-                position
-                on-click]} @(rf/subscribe [:get db-path])]
-    (when (and position
-               (seq choices))
-      (on-click (ffirst choices)))))

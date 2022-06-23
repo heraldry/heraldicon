@@ -7,8 +7,8 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.context :as context]
+   [heraldicon.frontend.debounce :as debounce]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.heraldry.default :as default]
@@ -36,9 +36,6 @@
 (def ^:private last-parsed-path
   (conj blazon-editor-path :last-parsed))
 
-(def ^:private timer-path
-  (conj blazon-editor-path :timer))
-
 (rf/reg-event-db ::clear-parser
   (fn [db _]
     (assoc-in db parser-path nil)))
@@ -57,13 +54,6 @@
         (assoc-in editor-state-path (.createEmpty draft-js/EditorState))
         (assoc-in status-path nil)
         (assoc-in last-parsed-path nil))))
-
-(rf/reg-sub ::blazonry-parser
-  (fn [_ _]
-    (rf/subscribe [:get (conj parser-path :parser)]))
-
-  (fn [value _]
-    (or value parser/default)))
 
 (defn- parser-status []
   (let [{:keys [status error warnings]} @(rf/subscribe [:get status-path])]
@@ -178,7 +168,7 @@
          :auto-complete (cond-> {:choices auto-complete-choices}
                           (not api?) (assoc :on-click
                                             (fn [choice]
-                                              (rf/dispatch [:auto-completion-clicked index cursor-index choice])))
+                                              (rf/dispatch [::auto-completion-clicked index cursor-index choice])))
                           position (assoc :position position))
          :index index}))))
 
@@ -249,54 +239,46 @@
                                 warnings)))))
                   (apply concat))})
 
+(rf/reg-event-fx ::parse
+  (fn [{:keys [db]} [_]]
+    (let [parser (get-in db (conj parser-path :parser) parser/default)
+          editor-state ^draft-js/EditorState (get-in db editor-state-path)
+          content ^draft-js/ContentState (.getCurrentContent editor-state)
+          text (.getPlainText content)
+          cursor-index (cursor-index editor-state)
+          {:keys [hdn error auto-complete index]} (parse-blazonry text cursor-index parser)]
+      {:db (-> db
+               (assoc-in editor-state-path (draft-js/EditorState.set
+                                            editor-state
+                                            (clj->js
+                                             {:decorator (unknown-string-decorator index)})))
+               (assoc-in last-parsed-path text)
+               (assoc-in status-path (build-parse-status hdn error))
+               (cond->
+                 hdn (assoc-in (conj hdn-path :coat-of-arms) {:field hdn})))
+       :dispatch (if auto-complete
+                   [::auto-complete/set auto-complete]
+                   [::auto-complete/clear])})))
+
+(rf/reg-event-fx ::parse-if-changed
+  (fn [{:keys [db]} _]
+    (let [editor-state ^draft-js/EditorState (get-in db editor-state-path)
+          content ^draft-js/ContentState (.getCurrentContent editor-state)
+          last-parsed (get-in db last-parsed-path)
+          text (.getPlainText content)]
+      (cond-> {}
+        (not= text last-parsed) (assoc :dispatch [::parse])))))
+
 (def ^:private change-dedupe-time
   250)
 
-(rf/reg-event-db ::set-change-timer
-  (fn [db [_ f]]
-    (let [timer (get-in db timer-path)]
-      (when timer
-        (js/clearTimeout timer))
-      (assoc-in db timer-path (js/setTimeout f change-dedupe-time)))))
-
-(defn- complete-parsing [text {:keys [hdn
-                                      error
-                                      auto-complete
-                                      index]}]
-  (let [editor-state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
-        content ^draft-js/ContentState (.getCurrentContent editor-state)
-        current-text (.getPlainText content)]
-    (when (= text current-text)
-      (rf/dispatch-sync [:set editor-state-path (draft-js/EditorState.set
-                                                 editor-state
-                                                 (clj->js
-                                                  {:decorator (unknown-string-decorator index)}))])
-      (rf/dispatch [:set last-parsed-path text])
-      (rf/dispatch [:set status-path (build-parse-status hdn error)])
-      (if auto-complete
-        (auto-complete/set-data auto-complete)
-        (auto-complete/clear-data))
-      (when hdn
-        (rf/dispatch [:set (conj hdn-path :coat-of-arms) {:field hdn}])))))
-
-(defn- attempt-parsing []
-  (let [editor-state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
-        content ^draft-js/ContentState (.getCurrentContent editor-state)
-        last-parsed @(rf/subscribe [:get last-parsed-path])
-        text (.getPlainText content)]
-    (when (not= text last-parsed)
-      (let [cursor-index (cursor-index editor-state)
-            parser @(rf/subscribe [::blazonry-parser])
-            parse-result (parse-blazonry text cursor-index parser)]
-        (complete-parsing text parse-result)))))
+(rf/reg-event-fx ::update-editor-state
+  (fn [{:keys [db]} [_ editor-state]]
+    {:db (assoc-in db editor-state-path editor-state)
+     ::debounce/dispatch [::update-editor-state [::parse-if-changed] change-dedupe-time]}))
 
 (defn- on-editor-change [new-editor-state]
-  (rf/dispatch [:set editor-state-path new-editor-state])
-  (rf/dispatch [::set-change-timer attempt-parsing]))
-
-(defn- on-editor-change-sync [new-editor-state]
-  (rf/dispatch-sync [:set editor-state-path new-editor-state])
-  (rf/dispatch [::set-change-timer attempt-parsing]))
+  (rf/dispatch [::update-editor-state new-editor-state]))
 
 (defn- put-cursor-at [^draft-js/EditorState state index]
   (let [content (.getCurrentContent state)
@@ -321,8 +303,8 @@
         (put-cursor-at (count blazon))
         on-editor-change)))
 
-(macros/reg-event-db :auto-completion-clicked
-  (fn [db [_ index cursor-index choice]]
+(rf/reg-event-fx ::auto-completion-clicked
+  (fn [{:keys [db]} [_ index cursor-index choice]]
     (let [state (get-in db editor-state-path)
           content ^draft-js/ContentState (.getCurrentContent state)
           current-text (.getPlainText content)
@@ -352,9 +334,8 @@
                          new-content
                          "insert-characters")
                         (put-cursor-at (+ (count choice) index)))]
-      (on-editor-change new-state)
-      (auto-complete/clear-data)
-      db)))
+      {:fx [[:dispatch [::auto-complete/clear]]
+            [:dispatch [::update-editor-state new-state]]]})))
 
 (defn- blazonry-editor [attributes]
   [:div attributes
@@ -364,7 +345,7 @@
                         (let [state @(rf/subscribe [:get editor-state-path])]
                           [:> draft-js/Editor
                            {:editorState state
-                            :onChange on-editor-change-sync
+                            :onChange #(rf/dispatch-sync [::update-editor-state %])
                             :keyBindingFn (fn [event]
                                             (if (= (.-code event) "Tab")
                                               (do
@@ -375,7 +356,7 @@
                             :handleKeyCommand (fn [command]
                                                 (if (= command "auto-complete")
                                                   (do
-                                                    (auto-complete/auto-complete-first)
+                                                    (rf/dispatch [::auto-complete/apply-first])
                                                     "handled")
                                                   "not-handled"))}]))})]])
 
@@ -389,11 +370,11 @@
        data))
    data))
 
-(macros/reg-event-db :apply-blazon-result
-  (fn [db [_ {:keys [path]}]]
+(rf/reg-event-fx ::apply-blazon-result
+  (fn [{:keys [db]} [_ {:keys [path]}]]
     (let [field-data (clean-field-data (get-in db (conj hdn-path :coat-of-arms :field)))]
-      (modal/clear)
-      (assoc-in db path field-data))))
+      {:db (assoc-in db path field-data)
+       :dispatch [::modal/clear]})))
 
 (def blazonry-examples
   [["partitions with sub fields and line styles"
@@ -531,13 +512,13 @@
           :style {:flex "initial"
                   :margin-left "10px"}
           :on-click (fn [_]
-                      (auto-complete/clear-data)
+                      (rf/dispatch [::auto-complete/clear])
                       (modal/clear))}
          [tr :string.button/cancel]]
 
         [:button.button.primary {:type "submit"
-                                 :on-click #(rf/dispatch [:apply-blazon-result context])
+                                 :on-click #(rf/dispatch [::apply-blazon-result context])
                                  :style {:flex "initial"
                                          :margin-left "10px"}}
          [tr :string.button/apply]]]])]
-   :on-cancel #(auto-complete/clear-data)))
+   :on-cancel #(rf/dispatch [::auto-complete/clear])))
