@@ -26,8 +26,6 @@
   (rf/dispatch [::message/clear db-path])
   (rf/dispatch [:set db-path nil]))
 
-(declare change-temporary-password-modal)
-
 (defn- text-field [db-path function]
   (let [value @(rf/subscribe [:get db-path])
         error? @(rf/subscribe [::message/error? db-path])]
@@ -176,78 +174,6 @@
       [:button.button.primary {:type "submit"}
        [tr :string.menu/register]]]]))
 
-(defn- change-temporary-password-clicked [db-path]
-  (let [user-data (data)
-        user (:user user-data)
-        user-attributes (:user-attributes user-data)
-        {:keys [new-password
-                new-password-again]} @(rf/subscribe [:get db-path])]
-    (rf/dispatch-sync [::message/clear db-path])
-    (cond
-      (-> new-password count zero?) (rf/dispatch [::message/set-error (conj db-path :new-password) :string.user.message/password-required])
-      (not= new-password new-password-again) (rf/dispatch [::message/set-error (conj db-path :new-password-again) :string.user.message/passwords-do-not-match])
-      :else (do
-              (modal/start-loading)
-              (cognito/complete-new-password-challenge
-               user
-               new-password
-               user-attributes
-               :on-success (fn [^js/Object user]
-                             (clear-form db-path)
-                             #_(complete-login db-path (-> user
-                                                           .getAccessToken
-                                                           .getJwtToken)))
-               :on-failure (fn [error]
-                             (log/error "change password error:" error)
-                             (rf/dispatch [::message/set-error db-path (.-message error)])
-                             (modal/stop-loading)))))))
-
-(defn- change-temporary-password-form [db-path]
-  (let [on-submit (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (change-temporary-password-clicked db-path))]
-    [:form.modal-form
-     {:autoComplete "off"
-      :on-key-press (fn [event]
-                      (when (-> event .-code (= "Enter"))
-                        (on-submit event)))
-      :on-submit on-submit}
-     [message/display db-path]
-     [text-field (conj db-path :new-password)
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "new-password"} [tr :string.user/new-password]]
-         [:input {:id "new-password"
-                  :name "new-password"
-                  :value value
-                  :on-change on-change
-                  :autoComplete "off"
-                  :placeholder (tr :string.user/new-password)
-                  :type "password"}]])]
-     [text-field (conj db-path :new-password-again)
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "new-password-again"} [tr :string.user/new-password-again]]
-         [:input {:id "new-password-again"
-                  :name "new-password-again"
-                  :value value
-                  :autoComplete "off"
-                  :on-change on-change
-                  :placeholder (tr :string.user/new-password-again)
-                  :type "password"}]])]
-     [:div {:style {:text-align "right"
-                    :margin-top "10px"}}
-      [:button.button
-       {:style {:margin-right "5px"}
-        :type "reset"
-        :on-click #(do
-                     (clear-form db-path)
-                     (modal/clear))}
-       [tr :string.button/cancel]]
-      [:button.button.primary {:type "submit"}
-       [tr :string.user.button/change]]]]))
-
 (defn logout []
   ;; TODO: logout via API
   (remove-item local-storage local-storage-session-id-name)
@@ -272,9 +198,4 @@
 (defn sign-up-modal []
   (let [db-path [:sign-up-form]]
     (modal/create :string.menu/register [sign-up-form db-path]
-                  :on-cancel #(clear-form db-path))))
-
-(defn- change-temporary-password-modal []
-  (let [db-path [:change-temporary-password-form]]
-    (modal/create :string.user/change-temporary-password [change-temporary-password-form db-path]
                   :on-cancel #(clear-form db-path))))

@@ -7,7 +7,6 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.api :as api]
-   [heraldicon.frontend.user.form.confirmation :as confirmation]
    [heraldicon.frontend.user.form.core :as form]
    [heraldicon.frontend.user.form.password-reset-confirmation :as password-reset-confirmation]
    [heraldicon.frontend.user.session :as session]
@@ -61,16 +60,17 @@
   (rf/dispatch [:heraldicon.frontend.repository.entity-list/clear-all])
   (rf/dispatch [:heraldicon.frontend.repository.user-list/clear]))
 
-(defn- login-with-token [jwt-token]
+(defn login-with-token [jwt-token & {:keys [form-id]
+                                     :or {form-id ::id}}]
   (go
     (try
       (let [session-data (<? (api/call :login {:jwt-token jwt-token} nil))]
         (session/store session-data)
         (clear-list-repositories)
-        (rf/dispatch [::form/clear-and-close ::id]))
+        (rf/dispatch [::form/clear-and-close form-id]))
       (catch :default e
         (log/error "login with token error:" e)
-        (rf/dispatch [::message/set-error ::id (:message e)]))
+        (rf/dispatch [::message/set-error form-id (:message e)]))
       (finally
         (modal/stop-loading)))))
 
@@ -83,18 +83,16 @@
                    (login-with-token (-> user .getAccessToken .getJwtToken)))
      :on-confirmation-needed (fn [user]
                                (rf/dispatch [::form/clear-and-close ::id])
-                               (rf/dispatch [::confirmation/show user])
+                               (rf/dispatch [:heraldicon.frontend.user.form.confirmation/show user])
                                (modal/stop-loading))
      :on-failure (fn [error]
                    (log/error "login error:" error)
                    (rf/dispatch [::message/set-error ::id (.-message error)])
                    (modal/stop-loading))
-     #_:on-new-password-required nil #_(fn [user user-attributes]
-                                         (rf/dispatch [::message/clear db-path])
-                                         (rf/dispatch [:set (conj user-db-path :user) user])
-                                         (rf/dispatch [:set (conj user-db-path :user-attributes) user-attributes])
-                                         (change-temporary-password-modal)
-                                         (modal/stop-loading)))))
+     :on-new-password-required (fn [user user-attributes]
+                                 (rf/dispatch [::form/clear-and-close ::id])
+                                 (rf/dispatch [:heraldicon.frontend.user.form.change-temporary-password/show user user-attributes])
+                                 (modal/stop-loading)))))
 
 (rf/reg-fx ::start-password-reset
   (fn [[username]]
