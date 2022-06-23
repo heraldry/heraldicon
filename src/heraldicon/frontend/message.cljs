@@ -30,7 +30,14 @@
 
 (macros/reg-event-db ::clear
   (fn [db [_ message-id]]
-    (update-in db db-path-base dissoc message-id)))
+    (update-in db db-path-base (fn [messages]
+                                 (into {}
+                                       (keep (fn [[k v]]
+                                               (when-not (or (= k message-id)
+                                                             (and (map? k)
+                                                                  (-> k :parent (= message-id))))
+                                                 [k v])))
+                                       messages)))))
 
 (defn display [message-id]
   (let [{:keys [type message]} @(rf/subscribe [::message message-id])]
