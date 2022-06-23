@@ -1,18 +1,15 @@
 (ns heraldicon.frontend.user
   (:require
-   [cljs.core.async :refer [go]]
    [clojure.string :as s]
-   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.config :as config]
    [heraldicon.frontend.aws.cognito :as cognito]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.repository.api :as api]
    [hodgepodge.core :refer [get-item local-storage remove-item set-item]]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
--
+
 (def ^:private user-db-path
   [:user-data])
 
@@ -31,7 +28,6 @@
 
 (declare confirmation-modal)
 (declare change-temporary-password-modal)
-(declare password-reset-confirmation-modal)
 
 (defn- text-field [db-path function]
   (let [value @(rf/subscribe [:get db-path])
@@ -314,81 +310,6 @@
       [:button.button.primary {:type "submit"}
        [tr :string.user.button/change]]]]))
 
-(defn- reset-password-clicked [db-path]
-  (let [{:keys [code
-                new-password
-                new-password-again]} @(rf/subscribe [:get db-path])
-        user-data (data)
-        user (:user user-data)]
-    (rf/dispatch-sync [::message/clear db-path])
-    (cond
-      (-> new-password count zero?) (rf/dispatch [::message/set-error (conj db-path :new-password) :string.user.message/password-required])
-      (not= new-password new-password-again) (rf/dispatch [::message/set-error (conj db-path :new-password-again) :string.user.message/passwords-do-not-match])
-      :else (do
-              (modal/start-loading)
-              (cognito/confirm-password
-               user
-               code
-               new-password
-               :on-success (fn [_user]
-                             (clear-form db-path)
-                             #_(login-modal :string.user.message/password-reset-completed)
-                             (modal/stop-loading))
-               :on-failure (fn [error]
-                             (log/error "password reset error:" error)
-                             (rf/dispatch [::message/set-error db-path (.-message error)])
-                             (modal/stop-loading)))))))
-
-(defn- password-reset-confirmation-form [db-path]
-  (let [on-submit (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (reset-password-clicked db-path))]
-    [:form.modal-form
-     {:autoComplete "off"
-      :on-key-press (fn [event]
-                      (when (-> event .-code (= "Enter"))
-                        (on-submit event)))
-      :on-submit on-submit}
-     [:p [tr :string.user.message/password-reset-confirmation-code-sent]]
-     [message/display db-path]
-     [text-field (conj db-path :code)
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "code"} [tr :string.user/confirmation-code]]
-         [:input {:id "code"
-                  :name "code"
-                  :autoComplete "off"
-                  :value value
-                  :on-change on-change
-                  :placeholder (tr :string.user/confirmation-code)
-                  :type "text"}]])]
-     [text-field (conj db-path :new-password)
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "new-password"} [tr :string.user/new-password]]
-         [:input {:id "new-password"
-                  :name "new-password"
-                  :autoComplete "off"
-                  :value value
-                  :on-change on-change
-                  :placeholder (tr :string.user/new-password)
-                  :type "password"}]])]
-     [text-field (conj db-path :new-password-again)
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "new-password-again"} [tr :string.user/new-password-again]]
-         [:input {:id "new-password-again"
-                  :name "new-password-again"
-                  :autoComplete "off"
-                  :value value
-                  :on-change on-change
-                  :placeholder (tr :string.user/new-password-again)
-                  :type "password"}]])]
-     [:div {:style {:text-align "right"
-                    :margin-top "10px"}}
-      [:button.button.primary {:type "submit"} [tr :string.user.button/reset-password]]]]))
-
 (defn logout []
   ;; TODO: logout via API
   (remove-item local-storage local-storage-session-id-name)
@@ -424,8 +345,3 @@
   (let [db-path [:change-temporary-password-form]]
     (modal/create :string.user/change-temporary-password [change-temporary-password-form db-path]
                   :on-cancel #(clear-form db-path))))
-
-(defn- password-reset-confirmation-modal []
-  (let [db-path [:password-reset-confirmation-form]]
-    (modal/create :string.user/reset-forgotten-password [password-reset-confirmation-form db-path]
-                  :on-cancel# (clear-form db-path))))
