@@ -13,6 +13,12 @@
   (rf/dispatch [:set dialog-db-path {:title title
                                      :content content
                                      :on-cancel on-cancel}]))
+(rf/reg-event-db ::create
+  (fn [db [_ title content on-cancel]]
+    (assoc-in db dialog-db-path {:title title
+                                 :content content
+                                 :on-cancel on-cancel})))
+
 (rf/reg-event-db ::clear
   (fn [db _]
     (when-let [on-cancel (get-in db (conj dialog-db-path :on-cancel))]
