@@ -13,10 +13,14 @@
   (rf/dispatch [:set dialog-db-path {:title title
                                      :content content
                                      :on-cancel on-cancel}]))
+(rf/reg-event-db ::clear
+  (fn [db _]
+    (when-let [on-cancel (get-in db (conj dialog-db-path :on-cancel))]
+      (on-cancel))
+    (assoc-in db dialog-db-path nil)))
+
 (defn clear []
-  (when-let [on-cancel @(rf/subscribe [:get (conj dialog-db-path :on-cancel)])]
-    (on-cancel))
-  (rf/dispatch [:remove dialog-db-path]))
+  (rf/dispatch [::clear]))
 
 (defn start-loading []
   (rf/dispatch-sync [:set loader-db-path true]))
