@@ -6,7 +6,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [hodgepodge.core :refer [get-item local-storage remove-item set-item]]
+   [hodgepodge.core :refer [get-item local-storage remove-item]]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -26,7 +26,6 @@
   (rf/dispatch [::message/clear db-path])
   (rf/dispatch [:set db-path nil]))
 
-(declare confirmation-modal)
 (declare change-temporary-password-modal)
 
 (defn- text-field [db-path function]
@@ -102,7 +101,7 @@
                                :on-confirmation-needed (fn [user]
                                                          (rf/dispatch [::message/clear db-path])
                                                          (rf/dispatch [:set (conj user-db-path :user) user])
-                                                         (confirmation-modal)
+                                                         #_(confirmation-modal)
                                                          (modal/stop-loading))
                                :on-failure (fn [error]
                                              (log/error "sign-up error" error)
@@ -176,67 +175,6 @@
        [tr :string.button/cancel]]
       [:button.button.primary {:type "submit"}
        [tr :string.menu/register]]]]))
-
-(defn- confirm-clicked [db-path]
-  (let [{:keys [code]} @(rf/subscribe [:get db-path])
-        user-data (data)
-        user (:user user-data)]
-    (rf/dispatch-sync [::message/clear db-path])
-    (modal/start-loading)
-    (cognito/confirm user code
-                     :on-success (fn [_user]
-                                   (clear-form db-path)
-                                   #_(login-modal :string.user.message/registration-completed)
-                                   (modal/stop-loading))
-                     :on-failure (fn [error]
-                                   (log/error "confirmation error:" error)
-                                   (rf/dispatch [::message/set-error db-path (.-message error)])
-                                   (modal/stop-loading)))))
-
-(defn- resend-code-clicked [db-path]
-  (let [user-data (data)
-        user (:user user-data)]
-    (modal/start-loading)
-    (cognito/resend-code user
-                         :on-success (fn []
-                                       (js/alert (tr :string.user.message/new-confirmation-code-sent))
-                                       (modal/stop-loading))
-                         :on-failure (fn [error]
-                                       (log/error "resend code error:" error)
-                                       (rf/dispatch [::message/set-error db-path (.-message error)])
-                                       (modal/stop-loading)))))
-
-(defn- confirmation-form [db-path]
-  (let [on-submit (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (confirm-clicked db-path))]
-    [:form.modal-form
-     {:autoComplete "off"
-      :on-key-press (fn [event]
-                      (when (-> event .-code (= "Enter"))
-                        (on-submit event)))
-      :on-submit on-submit}
-     [:p [tr :string.user.message/confirmation-code-sent]]
-     [message/display db-path]
-     [text-field (conj db-path :code)
-      (fn [& {:keys [value on-change]}]
-        [:<>
-         [:label {:for "code"} [tr :string.user/confirmation-code]]
-         [:input {:id "code"
-                  :name "code"
-                  :value value
-                  :on-change on-change
-                  :placeholder (tr :string.user/confirmation-code)
-                  :type "text"}]])]
-     [:div {:style {:text-align "right"
-                    :margin-top "10px"}}
-      [:button.button
-       {:style {:margin-right "5px"}
-        :type "button"
-        :on-click #(resend-code-clicked db-path)}
-       [tr :string.user.button/resend-code]]
-      [:button.button.primary {:type "submit"} [tr :string.user.button/confirm]]]]))
 
 (defn- change-temporary-password-clicked [db-path]
   (let [user-data (data)
@@ -334,11 +272,6 @@
 (defn sign-up-modal []
   (let [db-path [:sign-up-form]]
     (modal/create :string.menu/register [sign-up-form db-path]
-                  :on-cancel #(clear-form db-path))))
-
-(defn- confirmation-modal []
-  (let [db-path [:confirmation-form]]
-    (modal/create :string.user/register-confirmation [confirmation-form db-path]
                   :on-cancel #(clear-form db-path))))
 
 (defn- change-temporary-password-modal []
