@@ -25,20 +25,20 @@
     (assoc-in db (user-path username) {:status :error
                                        :error error})))
 
-(defn- fetch [username]
-  (let [user-data (user/data)]
-    (go
-      (try
-        (let [user (<? (request/call :fetch-user {:username username} user-data))]
-          (when-not user
-            (throw (ex-info "Not found" {} :user-not-found)))
-          (rf/dispatch [::store user]))
-        (catch :default e
-          (log/error "fetch user error:" e)
-          (rf/dispatch [::store-error username e]))))))
+(defn- fetch [username user-data]
+  (go
+    (try
+      (let [user (<? (request/call :fetch-user {:username username} user-data))]
+        (when-not user
+          (throw (ex-info "Not found" {} :user-not-found)))
+        (rf/dispatch [::store user]))
+      (catch :default e
+        (log/error "fetch user error:" e)
+        (rf/dispatch [::store-error username e])))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ username]]
     (reaction
-     (repository/async-query-data (user-path username)
-                                  (partial fetch username)))))
+     (let [user-data (user/data)]
+       (repository/async-query-data (user-path username)
+                                    (partial fetch username user-data))))))
