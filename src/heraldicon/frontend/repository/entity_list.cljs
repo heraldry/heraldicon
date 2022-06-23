@@ -5,7 +5,7 @@
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as repository.entity]
    [heraldicon.frontend.repository.request :as request]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
@@ -77,7 +77,7 @@
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-type on-loaded]]
     (reaction
-     (let [user-data (user/data)]
+     (let [user-data @(rf/subscribe [::session/data])]
        (repository/async-query-data (entity-list-path entity-type)
                                     (partial fetch entity-type user-data)
                                     :on-loaded on-loaded)))))
@@ -89,7 +89,7 @@
 (rf/reg-event-fx ::load-if-absent
   (fn [{:keys [db]} [_ entity-type on-loaded]]
     (let [path (entity-list-path entity-type)
-          user-data (user/data-from-db db)]
+          user-data (session/data-from-db db)]
       (cond-> {}
         (not (get-in db path)) (assoc ::fetch {:entity-type entity-type
                                                :on-loaded on-loaded

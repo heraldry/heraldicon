@@ -6,7 +6,7 @@
    [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as entity]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
@@ -73,7 +73,7 @@
 
 (rf/reg-event-fx ::save
   (fn [{:keys [db]} [_ entity {:keys [on-start on-complete on-success on-error]}]]
-    (let [user-data (user/data-from-db db)]
+    (let [user-data (session/data-from-db db)]
       (go
         (when on-start
           (on-start))

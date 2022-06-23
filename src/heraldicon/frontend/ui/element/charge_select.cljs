@@ -3,14 +3,14 @@
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.ui.element.blazonry-editor :as blazonry-editor]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
 (defn component [charges-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                      selected-charge
                                                                      display-selected-item?
                                                                      predicate-fn]}]
-  (let [user-data (user/data)]
+  (let [user-data @(rf/subscribe [::session/data])]
     [filter/component
      :charge-list
      user-data

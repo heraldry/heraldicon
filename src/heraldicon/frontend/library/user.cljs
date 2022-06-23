@@ -14,7 +14,7 @@
    [heraldicon.frontend.ui.element.charge-select :as charge-select]
    [heraldicon.frontend.ui.element.collection-select :as collection-select]
    [heraldicon.frontend.ui.element.user-select :as user-select]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
@@ -97,5 +97,5 @@
 (defn list-view []
   (rf/dispatch [::title/set :string.menu/users])
   [:div {:style {:padding "15px"}}
-   (when (entity.user/admin? (user/data))
+   (when (entity.user/admin? @(rf/subscribe [::session/data]))
      [user-select/list-users link-to-user])])

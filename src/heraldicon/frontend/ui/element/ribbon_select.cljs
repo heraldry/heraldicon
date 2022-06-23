@@ -2,14 +2,14 @@
   (:require
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.repository.entity-list :as entity-list]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
 (defn- component [ribbons-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                       selected-ribbon
                                                                       display-selected-item?
                                                                       predicate-fn]}]
-  (let [user-data (user/data)]
+  (let [user-data @(rf/subscribe [::session/data])]
     [filter/component
      :ribbon-list
      user-data

@@ -6,14 +6,13 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.title :as title]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [reagent.dom :as r]
    [taoensso.timbre :as log]
    [taoensso.tufte :as tufte]))
 
 (defn app []
-  (user/load-session-user-data)
   [:<>
    [header/view]
    [:div.main-content.no-scrollbar
@@ -41,6 +40,7 @@
   (rf/dispatch-sync [:initialize-db])
   (rf/dispatch-sync [:heraldicon.frontend.ui.element.blazonry-editor/clear-parser])
   (rf/dispatch-sync [:heraldicon.frontend.language/load-language-setting])
+  (session/read-from-storage)
   #_(print-stats)
   (router/start)
   (r/render

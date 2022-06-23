@@ -12,3 +12,8 @@
       (do
         (load-fn :on-loaded on-loaded)
         {:status :loading}))))
+
+(rf/reg-event-fx ::clear-lists
+  (fn [_ _]
+    {:dispatch-n [[:heraldicon.frontend.repository.entity-list/clear-all]
+                  [:heraldicon.frontend.repository.user-list/clear]]}))

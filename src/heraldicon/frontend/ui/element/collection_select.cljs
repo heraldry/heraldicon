@@ -7,12 +7,12 @@
    [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.ui.element.tags :as tags]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
 (defn component [collection-list link-fn refresh-fn & {:keys [hide-ownership-filter?
                                                               predicate-fn]}]
-  (let [user-data (user/data)]
+  (let [user-data @(rf/subscribe [::session/data])]
     [filter/legacy-component
      :collection-list
      user-data

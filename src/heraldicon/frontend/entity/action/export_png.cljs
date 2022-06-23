@@ -6,7 +6,7 @@
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.api :as api]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
@@ -21,7 +21,7 @@
             payload (-> full-data
                         (select-keys [:id :version])
                         (assoc :render-options (get-in full-data [:data :achievement :render-options])))
-            user-data (user/data)
+            user-data @(rf/subscribe [::session/data])
             response (<? (api/call :generate-png-arms payload user-data))]
         (js/window.open (:png-url response)))
 
@@ -34,7 +34,7 @@
 (defn action [entity-type]
   (when (= entity-type :heraldicon.entity.type/arms)
     (let [form-db-path (form/data-path entity-type)
-          logged-in? @(rf/subscribe [::user/logged-in?])
+          logged-in? @(rf/subscribe [::session/logged-in?])
           can-export? (and logged-in?
                            @(rf/subscribe [::entity/saved? form-db-path])
                            (not @(rf/subscribe [::form/unsaved-changes? entity-type])))]

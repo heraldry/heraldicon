@@ -2,7 +2,7 @@
   (:require
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.repository.entity-list :as entity-list]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
 (defn component [arms-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
@@ -11,7 +11,7 @@
                                                                   predicate-fn]}]
   [filter/component
    :arms-list
-   (user/data)
+   @(rf/subscribe [::session/data])
    arms-subscription
    [:name :username :metadata :tags]
    :arms
