@@ -42,13 +42,16 @@
   {:parent form-id
    :id field-id})
 
-(defn text-field [form-id field-id placeholder & {:keys [type]
+(defn text-field [form-id field-id placeholder & {:keys [type
+                                                         label]
                                                   :or {type "text"}}]
   (let [message-id (message-id form-id field-id)]
     [:div {:class (when @(rf/subscribe [::message/error? message-id])
                     "error")}
      [message/display message-id]
      [:div
+      (when label
+        [:label {:for (name field-id)} [tr label]])
       [:input {:id (name field-id)
                :name (name field-id)
                :value @(rf/subscribe [::field-value form-id field-id])
@@ -57,8 +60,8 @@
                :placeholder (tr placeholder)
                :type type}]]]))
 
-(defn password-field [form-id field-id placeholder]
-  (text-field form-id field-id placeholder :type "password"))
+(defn password-field [form-id field-id placeholder & {:as options}]
+  (text-field form-id field-id placeholder (assoc options :type "password")))
 
 (defn on-submit-fn [event-vector]
   (fn [event]

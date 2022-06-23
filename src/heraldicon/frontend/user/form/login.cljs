@@ -8,6 +8,7 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.user.form.core :as form]
+   [heraldicon.frontend.user.form.password-reset-confirmation :as password-reset-confirmation]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
@@ -88,12 +89,12 @@
                    (log/error "login error:" error)
                    (rf/dispatch [::message/set-error ::id (.-message error)])
                    (modal/stop-loading))
-     #_#_:on-new-password-required nil #_(fn [user user-attributes]
-                                           (rf/dispatch [::message/clear db-path])
-                                           (rf/dispatch [:set (conj user-db-path :user) user])
-                                           (rf/dispatch [:set (conj user-db-path :user-attributes) user-attributes])
-                                           (change-temporary-password-modal)
-                                           (modal/stop-loading)))))
+     #_:on-new-password-required nil #_(fn [user user-attributes]
+                                         (rf/dispatch [::message/clear db-path])
+                                         (rf/dispatch [:set (conj user-db-path :user) user])
+                                         (rf/dispatch [:set (conj user-db-path :user-attributes) user-attributes])
+                                         (change-temporary-password-modal)
+                                         (modal/stop-loading)))))
 
 (rf/reg-fx ::start-password-reset
   (fn [[username]]
@@ -102,8 +103,7 @@
      username
      :on-success (fn [user]
                    (rf/dispatch [::form/clear-and-close ::id])
-                   #_(rf/dispatch [:set (conj user-db-path :user) user])
-                   #_(password-reset-confirmation-modal)
+                   (rf/dispatch [::password-reset-confirmation/show user])
                    (modal/stop-loading))
      :on-failure (fn [error]
                    (log/error "password reset initiation error:" error)
