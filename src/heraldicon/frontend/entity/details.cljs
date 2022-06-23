@@ -59,11 +59,10 @@
                    [status/error-display])))))
 
 (defn- load-new-entity-data [entity-type generate-data-fn target-path]
-  (go
-    (if @(rf/subscribe [::copy-to-new/copy-data entity-type])
-      (rf/dispatch [::copy-to-new/copy entity-type target-path])
-      (let [data (<? (generate-data-fn))]
-        (rf/dispatch [:set target-path data])))))
+  (if @(rf/subscribe [::copy-to-new/copy-data entity-type])
+    (rf/dispatch [::copy-to-new/copy entity-type target-path])
+    (go
+      (rf/dispatch [:set target-path (<? (generate-data-fn))]))))
 
 (defn create-view [entity-type component-fn generate-data-fn]
   (let [form-db-path (form/data-path entity-type)
