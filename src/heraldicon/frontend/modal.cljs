@@ -29,10 +29,10 @@
   (rf/dispatch [::clear]))
 
 (defn start-loading []
-  (rf/dispatch-sync [:set loader-db-path true]))
+  (rf/dispatch [:set loader-db-path true]))
 
 (defn stop-loading []
-  (rf/dispatch-sync [:set loader-db-path nil]))
+  (rf/dispatch [:set loader-db-path nil]))
 
 (defn render []
   (let [{:keys [title content]} @(rf/subscribe [:get dialog-db-path])

@@ -30,24 +30,32 @@
     {:db (assoc-in db (form-path form-id) nil)
      :dispatch [::message/clear form-id]}))
 
-(rf/reg-event-fx ::cancel
+(rf/reg-event-fx ::clear-and-close
   (fn [_ [_ form-id]]
     {:dispatch-n [[::modal/clear]
                   [::clear form-id]]}))
 
+(defn data-from-db [db form-id]
+  (get-in db (form-path form-id)))
+
+(defn message-id [form-id field-id]
+  {:parent form-id
+   :id field-id})
+
 (defn text-field [form-id field-id placeholder & {:keys [type]
                                                   :or {type "text"}}]
-  [:div {:class (when @(rf/subscribe [::message/error? form-id])
-                  "error")}
-   [message/display form-id]
-   [:div
-    [:input {:id (name field-id)
-             :name (name field-id)
-             :value @(rf/subscribe [::field-value form-id field-id])
-             :on-change #(let [new-value (-> % .-target .-value)]
-                           (rf/dispatch-sync [::set-field-value form-id field-id new-value]))
-             :placeholder (tr placeholder)
-             :type type}]]])
+  (let [message-id (message-id form-id field-id)]
+    [:div {:class (when @(rf/subscribe [::message/error? message-id])
+                    "error")}
+     [message/display message-id]
+     [:div
+      [:input {:id (name field-id)
+               :name (name field-id)
+               :value @(rf/subscribe [::field-value form-id field-id])
+               :on-change #(let [new-value (-> % .-target .-value)]
+                             (rf/dispatch-sync [::set-field-value form-id field-id new-value]))
+               :placeholder (tr placeholder)
+               :type type}]]]))
 
 (defn password-field [form-id field-id placeholder]
   (text-field form-id field-id placeholder :type "password"))
