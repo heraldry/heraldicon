@@ -42,6 +42,9 @@
      (function :value value
                :on-change #(let [new-value (-> % .-target .-value)]
                              (rf/dispatch-sync [:set db-path new-value])))]))
+(defn data-from-db [db]
+  (get-in db user-db-path))
+
 (defn data []
   @(rf/subscribe [:get user-db-path]))
 

@@ -79,21 +79,22 @@
         [status/loading])
       [component-fn form-db-path])))
 
-(defn save [entity-type]
-  (let [form-db-path (form/data-path entity-type)
-        entity @(rf/subscribe [:get form-db-path])]
-    (entity-for-editing/store
-     entity
-     :on-start #(modal/start-loading)
-     :on-complete #(modal/stop-loading)
-     :on-success (fn [new-entity]
-                   (let [new-data (merge entity new-entity)]
-                     (rf/dispatch-sync [:set form-db-path new-data])
-                     (rf/dispatch-sync [::message/set-success
-                                        entity-type
-                                        (string/str-tr :string.user.message/arms-saved " " (:version new-data))])
-                     ;; TODO: this flashes noticeably
-                     (reife/replace-state (details-route entity-type) {:id (id/for-url (:id new-data))
-                                                                       :version (:version new-data)})))
-     :on-error (fn [error]
-                 (rf/dispatch [::message/set-error entity-type (:message (ex-data error))])))))
+(rf/reg-event-fx ::save
+  (fn [{:keys [db]} [_ entity-type]]
+    (let [form-db-path (form/data-path entity-type)
+          entity (get-in db form-db-path)]
+      {:fx [[:dispatch [::entity-for-editing/save
+                        entity
+                        {:on-start #(modal/start-loading)
+                         :on-complete #(modal/stop-loading)
+                         :on-success (fn [new-entity]
+                                       (let [new-data (merge entity new-entity)]
+                                         (rf/dispatch-sync [:set form-db-path new-data])
+                                         (rf/dispatch-sync [::message/set-success
+                                                            entity-type
+                                                            (string/str-tr :string.user.message/arms-saved " " (:version new-data))])
+                                         ;; TODO: this flashes noticeably
+                                         (reife/replace-state (details-route entity-type) {:id (id/for-url (:id new-data))
+                                                                                           :version (:version new-data)})))
+                         :on-error (fn [error]
+                                     (rf/dispatch [::message/set-error entity-type (:message (ex-data error))]))}]]]})))

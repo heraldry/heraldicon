@@ -8,7 +8,7 @@
    [re-frame.core :as rf]))
 
 (defn- invoke [entity-type]
-  (details/save entity-type))
+  (rf/dispatch [::details/save entity-type]))
 
 (defn button [entity-type]
   (let [form-db-path (form/data-path entity-type)
