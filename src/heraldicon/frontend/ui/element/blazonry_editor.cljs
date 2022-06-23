@@ -448,8 +448,7 @@
 
 (defn open [context]
   (rf/dispatch-sync [::clear-state])
-  ;; TODO: not the best way to load this
-  @(rf/subscribe [::entity-list/data :heraldicon.entity.type/charge update-parser])
+  (rf/dispatch [::entity-list/load-if-absent :heraldicon.entity.type/charge update-parser])
   (let [escutcheon (if (->> context
                             :path
                             (take-last 2)

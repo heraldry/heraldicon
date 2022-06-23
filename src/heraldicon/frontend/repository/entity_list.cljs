@@ -81,3 +81,16 @@
        (repository/async-query-data (entity-list-path entity-type)
                                     (partial fetch entity-type user-data)
                                     :on-loaded on-loaded)))))
+
+(rf/reg-fx ::fetch
+  (fn [{:keys [entity-type on-loaded user-data]}]
+    (fetch entity-type user-data :on-loaded on-loaded)))
+
+(rf/reg-event-fx ::load-if-absent
+  (fn [{:keys [db]} [_ entity-type on-loaded]]
+    (let [path (entity-list-path entity-type)
+          user-data (user/data-from-db db)]
+      (cond-> {}
+        (not (get-in db path)) (assoc ::fetch {:entity-type entity-type
+                                               :on-loaded on-loaded
+                                               :user-data user-data})))))
