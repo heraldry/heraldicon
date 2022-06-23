@@ -79,13 +79,13 @@
     :heraldicon.entity.type/ribbon :fetch-ribbon
     :heraldicon.entity.type/collection :fetch-collection))
 
-(defn- fetch [entity-id version user-data & {:keys [on-loaded]}]
+(defn- fetch [entity-id version session & {:keys [on-loaded]}]
   (go
     (try
       (let [entity (<? (request/call (fetch-entity-api-function (id/type-from-id entity-id))
                                      {:id entity-id
                                       :version version}
-                                     user-data))]
+                                     session))]
         (when-not entity
           (throw (ex-info "Not found" {} :entity-not-found)))
         (rf/dispatch [::store entity])
@@ -99,7 +99,7 @@
   (fn [_app-db [_ entity-id version on-loaded]]
     (reaction
      (let [version @(rf/subscribe [::effective-version entity-id version])
-           user-data @(rf/subscribe [::session/data])]
+           session @(rf/subscribe [::session/data])]
        (repository/async-query-data (entity-path entity-id version)
-                                    (partial fetch entity-id version user-data)
+                                    (partial fetch entity-id version session)
                                     :on-loaded on-loaded)))))

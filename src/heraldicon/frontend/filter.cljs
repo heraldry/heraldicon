@@ -54,7 +54,7 @@
                                  v)
                             (matches-word v word))) data)))
 
-(defn- filter-items [user-data item-list filter-keys filter-string filter-tags filter-access filter-ownership]
+(defn- filter-items [session item-list filter-keys filter-string filter-tags filter-access filter-ownership]
   (let [words (-> filter-string
                   normalize-string-for-match
                   (s/split #" +"))
@@ -64,7 +64,7 @@
     (filterv (fn [item]
                (and (case filter-ownership
                       :mine (= (:username item)
-                               (:username user-data))
+                               (:username session))
                       :heraldicon (= (:username item) "heraldicon")
                       :community (not= (:username item) "heraldicon")
                       true)
@@ -167,13 +167,13 @@
                    :overflow "hidden"
                    :height "25px"}]])]]]))
 
-(defn- results [id user-data items-subscription filter-keys kind on-select & {:keys [page-size
-                                                                                     sort-fn
-                                                                                     hide-ownership-filter?
-                                                                                     hide-access-filter?
-                                                                                     selected-item
-                                                                                     predicate-fn
-                                                                                     display-selected-item?]}]
+(defn- results [id session items-subscription filter-keys kind on-select & {:keys [page-size
+                                                                                   sort-fn
+                                                                                   hide-ownership-filter?
+                                                                                   hide-access-filter?
+                                                                                   selected-item
+                                                                                   predicate-fn
+                                                                                   display-selected-item?]}]
   (status/default
    items-subscription
    (fn [{all-items-path :path
@@ -191,13 +191,13 @@
                               :all)
            consider-filter-access? (and (not hide-access-filter?)
                                         (or (= filter-ownership :mine)
-                                            (entity.user/admin? user-data)))
+                                            (entity.user/admin? session)))
            filter-access (if consider-filter-access?
                            @(rf/subscribe [:get filter-access-path])
                            :all)
            all-items (cond->> all-items
                        predicate-fn (filterv predicate-fn))
-           filtered-items (filter-items user-data
+           filtered-items (filter-items session
                                         all-items
                                         filter-keys
                                         filter-string
@@ -262,12 +262,12 @@
                                                             page-size])}
                    [tr :string.miscellaneous/show-more]]])]])])]))))
 
-(defn component [id user-data items-subscription filter-keys kind on-select refresh-fn & {:keys [hide-ownership-filter?
-                                                                                                 hide-access-filter?
-                                                                                                 on-filter-string-change
-                                                                                                 component-styles
-                                                                                                 selected-item]
-                                                                                          :as options}]
+(defn component [id session items-subscription filter-keys kind on-select refresh-fn & {:keys [hide-ownership-filter?
+                                                                                               hide-access-filter?
+                                                                                               on-filter-string-change
+                                                                                               component-styles
+                                                                                               selected-item]
+                                                                                        :as options}]
   (let [filter-path [:ui :filter id]
         selected-item-path (conj filter-path :selected-item)
         filter-string-path (conj filter-path :filter-string)
@@ -278,7 +278,7 @@
                            :all)
         consider-filter-access? (and (not hide-access-filter?)
                                      (or (= filter-ownership :mine)
-                                         (entity.user/admin? user-data)))
+                                         (entity.user/admin? session)))
         stored-selected-item @(rf/subscribe [:get selected-item-path])]
 
     (when (not= stored-selected-item selected-item)
@@ -316,15 +316,15 @@
                             [:string.option.access-filter-choice/public :public]
                             [:string.option.access-filter-choice/private :private]]}])]
 
-     [results id user-data items-subscription filter-keys kind on-select options]]))
+     [results id session items-subscription filter-keys kind on-select options]]))
 
-(defn legacy-component [id user-data all-items filter-keys display-fn refresh-fn & {:keys [hide-ownership-filter?
-                                                                                           hide-access-filter?
-                                                                                           on-filter-string-change
-                                                                                           component-styles
-                                                                                           page-size
-                                                                                           sort-fn
-                                                                                           predicate-fn]}]
+(defn legacy-component [id session all-items filter-keys display-fn refresh-fn & {:keys [hide-ownership-filter?
+                                                                                         hide-access-filter?
+                                                                                         on-filter-string-change
+                                                                                         component-styles
+                                                                                         page-size
+                                                                                         sort-fn
+                                                                                         predicate-fn]}]
   (let [filter-path [:ui :filter id]
         filter-string-path (conj filter-path :filter-string)
         filter-tags-path (conj filter-path :filter-tags)
@@ -338,7 +338,7 @@
                            :all)
         all-items (cond->> all-items
                     predicate-fn (filterv predicate-fn))
-        filtered-items (filter-items user-data
+        filtered-items (filter-items session
                                      all-items
                                      filter-keys
                                      filter-string

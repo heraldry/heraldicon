@@ -2,5 +2,5 @@
   (:require
    [heraldicon.config :as config]))
 
-(defn admin? [user-data]
-  (-> user-data :username ((config/get :admins))))
+(defn admin? [session]
+  (-> session :username ((config/get :admins))))

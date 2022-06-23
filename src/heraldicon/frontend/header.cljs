@@ -35,7 +35,7 @@
    [:a {:href (reife/href route nil nil)} [tr name]]])
 
 (defn view []
-  (let [user-data @(rf/subscribe [::session/data])]
+  (let [session @(rf/subscribe [::session/data])]
     [:div.header
      [:div {:style {:flex 1.5
                     :line-height "2em"
@@ -57,13 +57,13 @@
       [menu-item :route.arms/list :string.menu/arms-library]
       [menu-item :route.charge/list :string.menu/charge-library]
       [menu-item :route.ribbon/list :string.menu/ribbon-library]
-      (when (entity.user/admin? user-data)
+      (when (entity.user/admin? session)
         [menu-item :route.user/list :string.menu/users])
       [menu-item :route.contact/main :string.menu/contact]
       [:span {:style {:width "5em"}}]
       [language/selector]
       [:span {:style {:width "1em"}}]
-      (if (:logged-in? user-data)
+      (if (:logged-in? session)
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
          {:on-mouse-leave #(rf/dispatch [::clear-menu-open?
                                          user-menu-open?-path])}
@@ -73,7 +73,7 @@
                              :on-click #(state/dispatch-on-event-and-prevent-default
                                          % [::toggle-menu-open?
                                             user-menu-open?-path])}
-           (str "@" (:username user-data) " ")]
+           (str "@" (:username session) " ")]
           [:ul.nav-menu.nav-menu-children
            {:style {:display (if @(rf/subscribe [::menu-open?
                                                  user-menu-open?-path])

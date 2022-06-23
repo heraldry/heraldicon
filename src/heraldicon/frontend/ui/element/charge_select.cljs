@@ -10,10 +10,10 @@
                                                                      selected-charge
                                                                      display-selected-item?
                                                                      predicate-fn]}]
-  (let [user-data @(rf/subscribe [::session/data])]
+  (let [session @(rf/subscribe [::session/data])]
     [filter/component
      :charge-list
-     user-data
+     session
      charges-subscription
      [:name :username :metadata :tags
       [:data :charge-type] [:data :attitude] [:data :facing] [:data :attributes] [:data :colours]]

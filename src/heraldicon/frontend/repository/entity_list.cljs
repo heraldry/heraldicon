@@ -61,12 +61,12 @@
     :heraldicon.entity.type/ribbon :fetch-ribbons-list
     :heraldicon.entity.type/collection :fetch-collections-list))
 
-(defn- fetch [entity-type user-data & {:keys [on-loaded]}]
+(defn- fetch [entity-type session & {:keys [on-loaded]}]
   (go
     (try
       (let [entities (:items (<? (request/call (fetch-entity-list-api-function entity-type)
                                                {}
-                                               user-data)))]
+                                               session)))]
         (rf/dispatch [::store entity-type entities])
         (when on-loaded
           (on-loaded entities)))
@@ -77,20 +77,20 @@
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-type on-loaded]]
     (reaction
-     (let [user-data @(rf/subscribe [::session/data])]
+     (let [session @(rf/subscribe [::session/data])]
        (repository/async-query-data (entity-list-path entity-type)
-                                    (partial fetch entity-type user-data)
+                                    (partial fetch entity-type session)
                                     :on-loaded on-loaded)))))
 
 (rf/reg-fx ::fetch
-  (fn [{:keys [entity-type on-loaded user-data]}]
-    (fetch entity-type user-data :on-loaded on-loaded)))
+  (fn [{:keys [entity-type on-loaded session]}]
+    (fetch entity-type session :on-loaded on-loaded)))
 
 (rf/reg-event-fx ::load-if-absent
   (fn [{:keys [db]} [_ entity-type on-loaded]]
     (let [path (entity-list-path entity-type)
-          user-data (session/data-from-db db)]
+          session (session/data-from-db db)]
       (cond-> {}
         (not (get-in db path)) (assoc ::fetch {:entity-type entity-type
                                                :on-loaded on-loaded
-                                               :user-data user-data})))))
+                                               :session session})))))
