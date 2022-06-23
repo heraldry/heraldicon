@@ -27,17 +27,17 @@
   (fn [db [_]]
     (assoc-in db db-path-user-list nil)))
 
-(defn- fetch []
-  (let [user-data (user/data)]
-    (go
-      (try
-        (let [users (:items (<? (request/call :fetch-users-all {} user-data)))]
-          (rf/dispatch [::store users]))
-        (catch :default e
-          (log/error "fetch user list error:" e)
-          (rf/dispatch [::store-error e]))))))
+(defn- fetch [user-data]
+  (go
+    (try
+      (let [users (:items (<? (request/call :fetch-users-all {} user-data)))]
+        (rf/dispatch [::store users]))
+      (catch :default e
+        (log/error "fetch user list error:" e)
+        (rf/dispatch [::store-error e])))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_]]
     (reaction
-     (repository/async-query-data db-path-user-list fetch))))
+     (let [user-data (user/data)]
+       (repository/async-query-data db-path-user-list (partial fetch user-data))))))
