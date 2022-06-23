@@ -5,6 +5,7 @@
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.form.login :as form.login]
    [heraldicon.static :as static]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
@@ -84,7 +85,7 @@
         [:<>
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(user/login-modal)} [tr :string.menu/login]]]
+                             :on-click #(rf/dispatch [::form.login/show])} [tr :string.menu/login]]]
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
                              :on-click #(user/sign-up-modal)} [tr :string.menu/register]]]])]]))
