@@ -4,8 +4,9 @@
    [heraldicon.frontend.language :as language :refer [tr]]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.user :as user]
    [heraldicon.frontend.user.form.login :as form.login]
+   [heraldicon.frontend.user.form.register :as form.register]
+   [heraldicon.frontend.user.session :as session]
    [heraldicon.static :as static]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
@@ -34,7 +35,7 @@
    [:a {:href (reife/href route nil nil)} [tr name]]])
 
 (defn view []
-  (let [user-data (user/data)]
+  (let [user-data @(rf/subscribe [::session/data])]
     [:div.header
      [:div {:style {:flex 1.5
                     :line-height "2em"
@@ -81,11 +82,11 @@
            [menu-item :route.account/main :string.menu/account]
            [:li.nav-menu-item
             [:a.nav-menu-link {:href "#"
-                               :on-click #(user/logout)} [tr :string.menu/logout]]]]]]
+                               :on-click #(rf/dispatch [::session/logout])} [tr :string.menu/logout]]]]]]
         [:<>
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
                              :on-click #(rf/dispatch [::form.login/show])} [tr :string.menu/login]]]
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(user/sign-up-modal)} [tr :string.menu/register]]]])]]))
+                             :on-click #(rf/dispatch [::form.register/show])} [tr :string.menu/register]]]])]]))

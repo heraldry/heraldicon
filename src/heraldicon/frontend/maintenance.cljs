@@ -2,7 +2,8 @@
   (:require
    [heraldicon.config :as config]
    [heraldicon.entity.user :as entity.user]
-   [heraldicon.frontend.user :as user]))
+   [heraldicon.frontend.user.session :as session]
+   [re-frame.core :as rf]))
 
 (defn view [_m]
   [:div {:style {:padding-left "10px"}}
@@ -19,5 +20,5 @@
 
 (defn in-effect? [section]
   (and (config/get :maintenance-mode?)
-       (not (entity.user/admin? (user/data)))
+       (not (entity.user/admin? @(rf/subscribe [::session/data])))
        (affected-section? section)))

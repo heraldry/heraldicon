@@ -4,7 +4,7 @@
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
 (defn- invoke [entity-type]
@@ -12,9 +12,9 @@
 
 (defn button [entity-type]
   (let [form-db-path (form/data-path entity-type)
-        can-save? (and @(rf/subscribe [::user/logged-in?])
+        can-save? (and @(rf/subscribe [::session/logged-in?])
                        (or (not @(rf/subscribe [::entity/saved? form-db-path]))
-                           @(rf/subscribe [::entity/owned-by? form-db-path (user/data)])))]
+                           @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])))]
 
     [:button.button.primary {:type "submit"
                              :class (when-not can-save? "disabled")

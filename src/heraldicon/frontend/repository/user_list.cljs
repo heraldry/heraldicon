@@ -4,7 +4,7 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.request :as request]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
@@ -39,5 +39,5 @@
 (rf/reg-sub-raw ::data
   (fn [_app-db [_]]
     (reaction
-     (let [user-data (user/data)]
+     (let [user-data @(rf/subscribe [::session/data])]
        (repository/async-query-data db-path-user-list (partial fetch user-data))))))

@@ -23,7 +23,7 @@
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.shared :as shared]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [heraldicon.heraldry.default :as default]
    [heraldicon.render.core :as render]
    [heraldicon.svg.core :as svg]
@@ -275,7 +275,7 @@
 (defn- preview [form-db-path & {:keys [original?]}]
   (let [form-data @(rf/subscribe [:get form-db-path])
         prepared-charge-data (-> form-data
-                                 (update :username #(or % (:username (user/data))))
+                                 (update :username #(or % (:username @(rf/subscribe [::session/data]))))
                                  (cond->
                                    original? (prepare-for-preview form-db-path)))
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
@@ -319,9 +319,9 @@
 
 (defn- svg-buttons [form-db-path]
   (let [charge-svg-url @(rf/subscribe [:get (conj form-db-path :data :svg-data-url)])
-        can-upload? (and @(rf/subscribe [::user/logged-in?])
+        can-upload? (and @(rf/subscribe [::session/logged-in?])
                          (or (not @(rf/subscribe [::entity/saved? form-db-path]))
-                             @(rf/subscribe [::entity/owned-by? form-db-path (user/data)])))]
+                             @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])))]
     [:<>
      [:label.button {:for "upload"
                      :disabled (not can-upload?)

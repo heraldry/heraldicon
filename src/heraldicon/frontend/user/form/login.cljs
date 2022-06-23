@@ -65,8 +65,8 @@
   (go
     (try
       (let [session-data (<? (api/call :login {:jwt-token jwt-token} nil))]
-        (session/store session-data)
         (clear-list-repositories)
+        (rf/dispatch [::session/store session-data])
         (rf/dispatch [::form/clear-and-close form-id]))
       (catch :default e
         (log/error "login with token error:" e)

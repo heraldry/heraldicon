@@ -14,7 +14,7 @@
    [heraldicon.frontend.ui.element.radio-select :as radio-select]
    [heraldicon.frontend.ui.element.search-field :as search-field]
    [heraldicon.frontend.ui.element.tags :as tags]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::filter-toggle-tag
@@ -122,7 +122,7 @@
   (let [item @(rf/subscribe [::filtered-item items-path item-id])
         selected? @(rf/subscribe [::filtered-item-selected? selected-item-path item-id])
         username (:username item)
-        own-username (:username (user/data))]
+        own-username (:username @(rf/subscribe [::session/data]))]
     [:li.filter-result-card-wrapper
      [:div.filter-result-card {:class (when (and item selected?) "selected")
                                :style (when selection-placeholder?

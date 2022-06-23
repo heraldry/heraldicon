@@ -5,7 +5,7 @@
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.request :as request]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
@@ -99,7 +99,7 @@
   (fn [_app-db [_ entity-id version on-loaded]]
     (reaction
      (let [version @(rf/subscribe [::effective-version entity-id version])
-           user-data (user/data)]
+           user-data @(rf/subscribe [::session/data])]
        (repository/async-query-data (entity-path entity-id version)
                                     (partial fetch entity-id version user-data)
                                     :on-loaded on-loaded)))))

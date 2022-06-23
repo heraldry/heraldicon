@@ -4,11 +4,11 @@
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.repository.user-list :as repository.user-list]
    [heraldicon.frontend.status :as status]
-   [heraldicon.frontend.user :as user]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
 (defn- component [user-list link-fn refresh-fn]
-  (let [user-data (user/data)]
+  (let [user-data @(rf/subscribe [::session/data])]
     [filter/legacy-component
      :user-list
      user-data
