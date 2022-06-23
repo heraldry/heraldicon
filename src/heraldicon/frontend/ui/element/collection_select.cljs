@@ -12,10 +12,10 @@
 
 (defn component [collection-list link-fn refresh-fn & {:keys [hide-ownership-filter?
                                                               predicate-fn]}]
-  (let [user-data @(rf/subscribe [::session/data])]
+  (let [session @(rf/subscribe [::session/data])]
     [filter/legacy-component
      :collection-list
-     user-data
+     session
      collection-list
      [:name :username :metadata :tags]
      (fn [& {:keys [items]}]

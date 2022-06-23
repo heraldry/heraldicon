@@ -10,7 +10,7 @@
    [tr :string.user.message/need-to-be-logged-in]])
 
 (defn view []
-  (let [user-data @(rf/subscribe [::session/data])]
-    (if (:logged-in? user-data)
-      [library.user/details-view {:parameters {:path {:username (:username user-data)}}}]
+  (let [session @(rf/subscribe [::session/data])]
+    (if (:logged-in? session)
+      [library.user/details-view {:parameters {:path {:username (:username session)}}}]
       [not-logged-in])))

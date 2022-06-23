@@ -27,10 +27,10 @@
   (fn [db [_]]
     (assoc-in db db-path-user-list nil)))
 
-(defn- fetch [user-data]
+(defn- fetch [session]
   (go
     (try
-      (let [users (:items (<? (request/call :fetch-users-all {} user-data)))]
+      (let [users (:items (<? (request/call :fetch-users-all {} session)))]
         (rf/dispatch [::store users]))
       (catch :default e
         (log/error "fetch user list error:" e)
@@ -39,5 +39,5 @@
 (rf/reg-sub-raw ::data
   (fn [_app-db [_]]
     (reaction
-     (let [user-data @(rf/subscribe [::session/data])]
-       (repository/async-query-data db-path-user-list (partial fetch user-data))))))
+     (let [session @(rf/subscribe [::session/data])]
+       (repository/async-query-data db-path-user-list (partial fetch session))))))

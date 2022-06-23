@@ -20,5 +20,5 @@
   (fn [[_ path] _]
     (rf/subscribe [:get (conj path :username)]))
 
-  (fn [username [_ _path user-data]]
-    (= username (:username user-data))))
+  (fn [username [_ _path session]]
+    (= username (:username session))))

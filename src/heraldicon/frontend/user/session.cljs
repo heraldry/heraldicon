@@ -7,7 +7,7 @@
    [re-frame.core :as rf]))
 
 (def ^:private db-path
-  [:user-data])
+  [:session])
 
 (def ^:private local-storage-session-id-name
   "cl-session-id")

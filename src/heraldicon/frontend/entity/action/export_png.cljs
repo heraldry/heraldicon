@@ -21,8 +21,8 @@
             payload (-> full-data
                         (select-keys [:id :version])
                         (assoc :render-options (get-in full-data [:data :achievement :render-options])))
-            user-data @(rf/subscribe [::session/data])
-            response (<? (api/call :generate-png-arms payload user-data))]
+            session @(rf/subscribe [::session/data])
+            response (<? (api/call :generate-png-arms payload session))]
         (js/window.open (:png-url response)))
 
       (catch :default e

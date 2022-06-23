@@ -8,10 +8,10 @@
    [re-frame.core :as rf]))
 
 (defn- component [user-list link-fn refresh-fn]
-  (let [user-data @(rf/subscribe [::session/data])]
+  (let [session @(rf/subscribe [::session/data])]
     [filter/legacy-component
      :user-list
-     user-data
+     session
      user-list
      [:username]
      (fn [& {:keys [items]}]

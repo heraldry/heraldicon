@@ -9,10 +9,10 @@
                                                                       selected-ribbon
                                                                       display-selected-item?
                                                                       predicate-fn]}]
-  (let [user-data @(rf/subscribe [::session/data])]
+  (let [session @(rf/subscribe [::session/data])]
     [filter/component
      :ribbon-list
-     user-data
+     session
      ribbons-subscription
      [:name :username :metadata :tags]
      :ribbon

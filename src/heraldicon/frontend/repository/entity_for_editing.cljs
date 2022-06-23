@@ -73,14 +73,14 @@
 
 (rf/reg-event-fx ::save
   (fn [{:keys [db]} [_ entity {:keys [on-start on-complete on-success on-error]}]]
-    (let [user-data (session/data-from-db db)]
+    (let [session (session/data-from-db db)]
       (go
         (when on-start
           (on-start))
         (try
           (let [new-entity (<? (api/call
                                 (save-entity-api-function (:type entity))
-                                entity user-data))]
+                                entity session))]
          ;; TODO: wire up things
          ;; - update list repository
 

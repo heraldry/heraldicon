@@ -4,10 +4,10 @@
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.config :as config]))
 
-(defn call [name payload user-data]
+(defn call [name payload session]
   (go-catch
    (let [response (<? (http/post (config/get :heraldicon-api-endpoint)
-                                 {:headers {"Session-Id" (:session-id user-data)}
+                                 {:headers {"Session-Id" (:session-id session)}
                                   :edn-params {:call name
                                                :data payload}}))
          status (:status response)

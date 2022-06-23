@@ -21,8 +21,8 @@
             payload (-> full-data
                         (select-keys [:id :version])
                         (assoc :render-options (get-in full-data [:data :achievement :render-options])))
-            user-data @(rf/subscribe [::session/data])
-            response (<? (api/call :generate-svg-arms payload user-data))]
+            session @(rf/subscribe [::session/data])
+            response (<? (api/call :generate-svg-arms payload session))]
         (js/window.open (:svg-url response)))
 
       (catch :default e
