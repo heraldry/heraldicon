@@ -12,7 +12,6 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.interface :as interface]
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.reader :as reader]
    [heraldicon.render.core :as render]
@@ -446,18 +445,27 @@
 (defn update-parser [charges]
   (rf/dispatch [::update-parser charges]))
 
+(rf/reg-event-db ::set-hdn-escutcheon
+  (fn [db [_ context]]
+    (let [escutcheon (if (->> context
+                              :path
+                              (take-last 2)
+                              (= [:coat-of-arms :field]))
+                       ;; TODO: rather complex and convoluted
+                       (let [escutcheon-db-path (-> context
+                                                    (c/-- 2)
+                                                    (c/++ :render-options :escutcheon)
+                                                    :path)]
+                         (get-in db escutcheon-db-path :heater))
+                       :rectangle)]
+      (assoc-in db hdn-path (update default/achievement :render-options
+                                    merge {:escutcheon escutcheon
+                                           :outline? true})))))
+
 (defn open [context]
   (rf/dispatch-sync [::clear-state])
   (rf/dispatch [::entity-list/load-if-absent :heraldicon.entity.type/charge update-parser])
-  (let [escutcheon (if (->> context
-                            :path
-                            (take-last 2)
-                            (= [:coat-of-arms :field]))
-                     (interface/get-sanitized-data (c/++ context :render-options :escutcheon))
-                     :rectangle)]
-    (rf/dispatch-sync [:set hdn-path (update default/achievement :render-options
-                                             merge {:escutcheon escutcheon
-                                                    :outline? true})]))
+  (rf/dispatch-sync [::set-hdn-escutcheon context])
   (modal/create
    [:div
     [tr :string.button/from-blazon]
