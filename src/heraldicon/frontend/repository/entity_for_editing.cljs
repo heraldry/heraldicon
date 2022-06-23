@@ -71,32 +71,34 @@
     :heraldicon.entity.type/ribbon :save-ribbon
     :heraldicon.entity.type/collection :save-collection))
 
-(defn store [entity & {:keys [on-start on-complete on-success on-error]}]
-  (let [user-data (user/data)]
-    (go
-      (when on-start
-        (on-start))
-      (try
-        (let [new-entity (<? (api/call
-                              (save-entity-api-function (:type entity))
-                              entity user-data))]
+(rf/reg-event-fx ::save
+  (fn [{:keys [db]} [_ entity {:keys [on-start on-complete on-success on-error]}]]
+    (let [user-data (user/data-from-db db)]
+      (go
+        (when on-start
+          (on-start))
+        (try
+          (let [new-entity (<? (api/call
+                                (save-entity-api-function (:type entity))
+                                entity user-data))]
          ;; TODO: wire up things
          ;; - update list repository
 
-          (rf/dispatch [::entity/store new-entity])
-          (rf/dispatch [::store (util/deep-merge-with
-                                 (fn [_left right]
-                                   right)
-                                 entity new-entity)])
+            (rf/dispatch [::entity/store new-entity])
+            (rf/dispatch [::store (util/deep-merge-with
+                                   (fn [_left right]
+                                     right)
+                                   entity new-entity)])
 
-          (when on-success
-            (on-success new-entity)))
+            (when on-success
+              (on-success new-entity)))
 
-        (catch :default e
-          (log/error "save entity error:" e)
-          (when on-error
-            (on-error e)))
+          (catch :default e
+            (log/error "save entity error:" e)
+            (when on-error
+              (on-error e)))
 
-        (finally
-          (when on-complete
-            (on-complete)))))))
+          (finally
+            (when on-complete
+              (on-complete)))))
+      {})))
