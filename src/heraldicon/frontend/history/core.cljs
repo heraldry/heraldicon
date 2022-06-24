@@ -39,7 +39,11 @@
         new-index (index-fn index)]
     (if (<= 0 new-index (-> history count dec))
       (-> db
-          (assoc-in path (get history new-index))
+          (update-in path (fn [previous-data]
+                            (let [replacement (get history new-index)]
+                              (assoc replacement
+                                     :id (:id previous-data)
+                                     :version (:version previous-data)))))
           (assoc-in index-path new-index)
           (state/change-selected-component-if-removed path))
       db)))
