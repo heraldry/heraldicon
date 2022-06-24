@@ -137,6 +137,7 @@
            [:img {:src (avatar/url username)
                   :style {:border-radius "50%"}}]])]
        [:div.filter-result-card-title
+        {:title (:name item)}
         (:name item)]
        (when item
          [:div.filter-result-card-access
@@ -146,8 +147,9 @@
               [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))])]
       [(if item
          :a.filter-result-card-preview
-         :div.filter-result-card-preview) (when on-select
-                                            (on-select item))
+         :div.filter-result-card-preview) (merge {:title (:name item)}
+                                                 (when on-select
+                                                   (on-select item)))
        (if item
          [preview/preview-image kind item]
          [:div.filter-no-item-selected

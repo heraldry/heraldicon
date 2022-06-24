@@ -92,6 +92,7 @@
                                size)
         {:keys [width height]} environment]
     [:g
+     [:title (:name data)]
      [arms-highlight path x y width height]
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
       result
