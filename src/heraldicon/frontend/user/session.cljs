@@ -95,7 +95,7 @@
 
 (rf/reg-event-fx ::logout
   (fn [_ _]
-    {:dispatch-n [[::repository/clear-lists]
-                  [::clear]]
+    {:dispatch-n [[::clear]
+                  [::repository/session-change]]
      ::set-cookie [nil]
      ::write-to-local-storage [nil nil nil]}))
