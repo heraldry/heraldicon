@@ -76,7 +76,7 @@
                         :ui {:charge-tree {:show-public? true
                                            :show-own? true}
                              :component-tree {}
-                             :list-all? crawler?}}
+                             :crawler? crawler?}}
                        (assoc-in (form/data-path :heraldicon.entity.type/arms) default/arms-entity)
                        (assoc-in (form/data-path :heraldicon.entity.type/charge) default/charge-entity)
                        (assoc-in (form/data-path :heraldicon.entity.type/ribbon) default/ribbon-entity)
