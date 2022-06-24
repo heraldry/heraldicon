@@ -193,7 +193,7 @@
 
 (macros/reg-event-db ::toggle-select-colour
   (fn [db [_ colour]]
-    (update-in db (conj show-colours-path colour) not)))
+    (update-in db (conj show-colours-path (colour/normalize colour)) not)))
 
 (macros/reg-event-db ::clear-selected-colours
   (fn [db _]
