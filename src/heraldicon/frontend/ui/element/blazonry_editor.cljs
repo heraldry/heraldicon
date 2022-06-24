@@ -11,6 +11,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.ui.element.blazonry-editor.help :as help]
    [heraldicon.heraldry.default :as default]
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.reader :as reader]
@@ -277,9 +278,6 @@
     {:db (assoc-in db editor-state-path editor-state)
      ::debounce/dispatch [::update-editor-state [::parse-if-changed] change-dedupe-time]}))
 
-(defn- on-editor-change [new-editor-state]
-  (rf/dispatch [::update-editor-state new-editor-state]))
-
 (defn- put-cursor-at [^draft-js/EditorState state index]
   (let [content (.getCurrentContent state)
         {:keys [key offset]} (get-block-key-and-offset content index)
@@ -293,15 +291,15 @@
      state
      selection)))
 
-(defn- set-blazon [blazon]
-  (let [state ^draft-js/EditorState @(rf/subscribe [:get editor-state-path])
-        new-content (draft-js/ContentState.createFromText blazon)]
-    (-> state
-        (draft-js/EditorState.push
-         new-content
-         "insert-characters")
-        (put-cursor-at (count blazon))
-        on-editor-change)))
+(rf/reg-event-fx ::set-blazon
+  (fn [{:keys [db]} [_ blazon]]
+    (let [state ^draft-js/EditorState (get-in db editor-state-path)
+          new-content (draft-js/ContentState.createFromText blazon)]
+      {:dispatch [::update-editor-state (-> state
+                                            (draft-js/EditorState.push
+                                             new-content
+                                             "insert-characters")
+                                            (put-cursor-at (count blazon)))]})))
 
 (rf/reg-event-fx ::auto-completion-clicked
   (fn [{:keys [db]} [_ index cursor-index choice]]
@@ -376,47 +374,6 @@
       {:db (assoc-in db path field-data)
        :dispatch [::modal/clear]})))
 
-(def blazonry-examples
-  [["partitions with sub fields and line styles"
-    ["per pale indented or and azure"
-     "tierced per pall gules, argent and or"
-     "quartered (or, an orle gules), (azure, a fess argent)"
-     "vairy argent and azure"
-     "potenty of 6x10 or and gules"]]
-   ["ordinaries with line styles, fimbriation, and cottising"
-    ["azure, a fess wavy or"
-     "or, a bend chequy of 12x3 tracts azure and argent"
-     "azure, a chevronnel enhanced inverted or"
-     "azure, a pall fimbriated or gules"
-     "azure, a label of 5 points dovetailed truncated gules"
-     "azure, a fess or cottised argent and or"]]
-   ["humetty/voided ordinaries"
-    ["azure, a fess humetty or"
-     "azure, a pale voided or"
-     "azure, a pall couped and voided or"]]
-   ["ordinary groups"
-    ["azure, three barrulets or"
-     "azure, double tressures engrailed or"
-     "azure, a bordure engrailed or"
-     "azure, 3 piles throughout or"]]
-   ["charges with fimbriation"
-    ["azure, a star of 6 points fimbriated or sable"
-     "azure, a lion or, langued gules, armed argent"
-     "azure, a lion sejant reversed or"]]
-   ["charge groups"
-    ["azure, a chief argent charged with 3 stars sable"
-     "per pale gules, or, twelve stars counterchanged in annullo"
-     "azure, 10 roundels or 4 3 2 1"
-     "azure, 8 stars argent in orle"]]
-   ["semy"
-    ["azure semy fleur-de-lis or"
-     "or semé of 6x8 stars gules"]]
-   ["tincture referencing"
-    ["tierced per fess azure, or, and argent, a pallet of the third, a pallet of the second, a pallet of the first"
-     "or, chief sable charged with three stars of the field"
-     "chequy or and gules, chief sable charged with three stars of the field"
-     "or, chief enhanced sable, a mascle per pale of the same and gules"]]])
-
 (defn update-parser [charges]
   (rf/dispatch [::update-parser charges]))
 
@@ -455,29 +412,7 @@
        [:div {:style {:display "flex"
                       :flex-flow "row"
                       :height "30em"}}
-        [:div.blazonry-editor-help
-         {:style {:width "25em"
-                  :overflow-y "scroll"}}
-         [:p "This blazonry parser is a work in progress. While it already can parse a lot of blazons, there is still a lot of work to do. Once you apply the result you can edit it further in the main interface."]
-         [:p "Some things it supports already:"]
-         [:ul
-          [:li "English blazonry"]
-          [:li "TAB auto completes first suggestion"]
-          (into [:<>]
-                (map (fn [[group-name blazons]]
-                       [:li group-name
-                        (into [:ul]
-                              (map (fn [blazon]
-                                     [:li [:span.blazon-example
-                                           {:on-click #(set-blazon blazon)}
-                                           blazon]]))
-                              blazons)]))
-                blazonry-examples)]
-         [:p "Some things that still need work or have known issues:"]
-         [:ul
-          [:li "blazonry in other languages"]
-          [:li "explicit charge positioning, e.g. 'in chief', 'in base'"]
-          [:li "charge/ordinary arrangement in relation to each other, e.g. 'between'"]]]
+        [help/help]
         [:div {:style {:display "flex"
                        :flex-flow "column"
                        :flex "auto"
