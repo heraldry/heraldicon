@@ -1,6 +1,5 @@
 (ns heraldicon.frontend.state
   (:require
-   [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.form.entity.collection.element :as collection.element]
    [heraldicon.heraldry.component :as component]
@@ -76,11 +75,7 @@
                         :ui {:charge-tree {:show-public? true
                                            :show-own? true}
                              :component-tree {}
-                             :crawler? crawler?}}
-                       (assoc-in (form/data-path :heraldicon.entity.type/arms) default/arms-entity)
-                       (assoc-in (form/data-path :heraldicon.entity.type/charge) default/charge-entity)
-                       (assoc-in (form/data-path :heraldicon.entity.type/ribbon) default/ribbon-entity)
-                       (assoc-in (form/data-path :heraldicon.entity.type/collection) default/collection-entity))]
+                             :crawler? crawler?}})]
       (merge-with merge defaults db))))
 
 (macros/reg-event-db :set
