@@ -14,7 +14,8 @@
 (defn preview-image [kind item]
   (let [url (preview-url kind item :width 300 :height 215)
         loaded-flag-path [:ui :preview-image-loaded? url]
-        loaded? @(rf/subscribe [:get loaded-flag-path])]
+        loaded? (or @(rf/subscribe [:get loaded-flag-path])
+                    @(rf/subscribe [:get [:ui :crawler?]]))]
     [:<>
      [:img {:src url
             :on-load (when-not loaded? #(rf/dispatch [:set loaded-flag-path true]))
