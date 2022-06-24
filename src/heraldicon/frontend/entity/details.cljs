@@ -6,6 +6,7 @@
    [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.history.core :as history]
+   [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.entity-for-editing :as entity-for-editing]
@@ -14,22 +15,13 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(rf/reg-sub ::prepare-for-editing
-  (fn [[_ entity-id version target-path] _]
-    [(rf/subscribe [:get (conj target-path :id)])
-     (rf/subscribe [:get (conj target-path :version)])
-     (rf/subscribe [::entity-for-editing/data entity-id version])])
-
-  (fn [[current-id current-version {:keys [status entity] :as result}] [_ _entity-id _version target-path]]
-    (if (= status :done)
-      (if (= [current-id current-version]
-             ((juxt :id :version) entity))
-        result
-        (do
-          (rf/dispatch [:set target-path entity])
-          {:status :done
-           :entity entity}))
-      result)))
+(defn- int-version [version]
+  (if (nil? version)
+    version
+    (let [n (js/parseInt version)]
+      (if (js/isNaN n)
+        nil
+        n))))
 
 (defn- details-route [entity-type]
   (case entity-type
@@ -38,22 +30,38 @@
     :heraldicon.entity.type/ribbon :route.ribbon.details/by-id-and-version
     :heraldicon.entity.type/collection :route.collection.details/by-id-and-version))
 
+;; TODO: there probably is a better way to do this
+;; but it needs to be outside a subscription, so saving doesn't cause it to
+;; write the old, unchanged entity of id/version to the history when saving
+;; changes the id/version
+(defn- prepare-for-editing [entity-id version]
+  (let [entity-type (id/type-from-id entity-id)
+        form-db-path (form/data-path entity-type)
+        current-id @(rf/subscribe [:get (conj form-db-path :id)])
+        current-version @(rf/subscribe [:get (conj form-db-path :version)])
+        version (int-version version)]
+    (when (not= [entity-id version]
+                [current-id current-version])
+      (let [{:keys [status entity]} @(rf/subscribe [::entity-for-editing/data entity-id version])]
+        (when (= status :done)
+          (when (not= [(:id entity) (:version entity)]
+                      [current-id current-version])
+            (rf/dispatch-sync [:set form-db-path entity]))
+          (reife/replace-state (details-route entity-type) {:id (id/for-url entity-id)
+                                                            :version (:version entity)}))))))
+
 (defn by-id-view [entity-id version component-fn]
   (let [entity-type (id/type-from-id entity-id)
         form-db-path (form/data-path entity-type)]
+    (prepare-for-editing entity-id version)
     (when @(rf/subscribe [::history/identifier-changed? form-db-path entity-id])
       (rf/dispatch-sync [::history/clear form-db-path entity-id]))
     (status/default
-     (rf/subscribe [::prepare-for-editing
-                    entity-id version
-                    form-db-path])
-     (fn [{:keys [entity]}]
+     (rf/subscribe [::entity-for-editing/data entity-id version])
+     (fn [_]
        (if version
          [component-fn form-db-path]
-         (do
-           (reife/replace-state (details-route entity-type) {:id (id/for-url entity-id)
-                                                             :version (:version entity)})
-           [status/loading])))
+         [status/loading]))
      :on-error (fn [error]
                  (if (-> error ex-cause (= :entity-not-found))
                    [status/not-found]
@@ -83,7 +91,7 @@
   (fn [[route params]]
     (reife/replace-state route params)))
 
-(rf/reg-event-fx ::replace-data
+(macros/reg-event-fx ::replace-data
   (fn [{:keys [db]} [_ {entity-id :id
                         version :version
                         :as entity}]]
