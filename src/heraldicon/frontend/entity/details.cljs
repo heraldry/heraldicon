@@ -27,7 +27,8 @@
         result
         (do
           (rf/dispatch [:set target-path entity])
-          {:status :loading}))
+          {:status :done
+           :entity entity}))
       result)))
 
 (defn- details-route [entity-type]
@@ -78,6 +79,21 @@
         [status/loading])
       [component-fn form-db-path])))
 
+(rf/reg-fx ::replace-route
+  (fn [[route params]]
+    (reife/replace-state route params)))
+
+(rf/reg-event-fx ::replace-data
+  (fn [{:keys [db]} [_ {entity-id :id
+                        version :version
+                        :as entity}]]
+    (let [entity-type (id/type-from-id entity-id)
+          form-db-path (form/data-path entity-type)]
+      {:db (assoc-in db form-db-path entity)
+       ::replace-route [(details-route entity-type)
+                        {:id (id/for-url entity-id)
+                         :version version}]})))
+
 (rf/reg-event-fx ::save
   (fn [{:keys [db]} [_ entity-type]]
     (let [form-db-path (form/data-path entity-type)
@@ -88,12 +104,9 @@
                          :on-complete #(modal/stop-loading)
                          :on-success (fn [new-entity]
                                        (let [new-data (merge entity new-entity)]
-                                         (rf/dispatch-sync [:set form-db-path new-data])
+                                         (rf/dispatch-sync [::replace-data new-data])
                                          (rf/dispatch-sync [::message/set-success
                                                             entity-type
-                                                            (string/str-tr :string.user.message/arms-saved " " (:version new-data))])
-                                         ;; TODO: this flashes noticeably
-                                         (reife/replace-state (details-route entity-type) {:id (id/for-url (:id new-data))
-                                                                                           :version (:version new-data)})))
+                                                            (string/str-tr :string.user.message/arms-saved " " (:version new-data))])))
                          :on-error (fn [error]
                                      (rf/dispatch [::message/set-error entity-type (:message (ex-data error))]))}]]]})))
