@@ -50,12 +50,15 @@
           (reife/replace-state (details-route entity-type) {:id (id/for-url entity-id)
                                                             :version (:version entity)}))))))
 
+(defn- clear-history-on-new-identifier [form-db-path entity-id]
+  (when @(rf/subscribe [::history/identifier-changed? form-db-path entity-id])
+    (rf/dispatch-sync [::history/clear form-db-path entity-id])))
+
 (defn by-id-view [entity-id version component-fn]
   (let [entity-type (id/type-from-id entity-id)
         form-db-path (form/data-path entity-type)]
     (prepare-for-editing entity-id version)
-    (when @(rf/subscribe [::history/identifier-changed? form-db-path entity-id])
-      (rf/dispatch-sync [::history/clear form-db-path entity-id]))
+    (clear-history-on-new-identifier form-db-path entity-id)
     (status/default
      (rf/subscribe [::entity-for-editing/data entity-id version])
      (fn [_]
@@ -79,8 +82,7 @@
         current-id @(rf/subscribe [:get (conj form-db-path :id)])
         loading? (or currently-nil?
                      current-id)]
-    (when @(rf/subscribe [::history/identifier-changed? form-db-path nil])
-      (rf/dispatch-sync [::history/clear form-db-path nil]))
+    (clear-history-on-new-identifier form-db-path nil)
     (if loading?
       (do
         (load-new-entity-data entity-type generate-data-fn form-db-path)
