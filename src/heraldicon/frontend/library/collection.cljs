@@ -237,7 +237,7 @@
                         (conj form-db-path :data)]]]))
 
 (defn create-view []
-  [details/create-view entity-type collection-form #(go default/charge-entity)])
+  [details/create-view entity-type collection-form #(go default/collection-entity)])
 
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
   [details/by-id-view (str "collection:" id) version collection-form])
