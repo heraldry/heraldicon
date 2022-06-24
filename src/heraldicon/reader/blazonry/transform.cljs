@@ -779,6 +779,7 @@
   (into {:ordinary/PALLET :heraldry.ordinary.type/pale
          :ordinary/BARRULET :heraldry.ordinary.type/fess
          :ordinary/CHEVRONNEL :heraldry.ordinary.type/chevron
+         :ordinary/CANTON :heraldry.ordinary.type/quarter
          :ordinary/BENDLET :heraldry.ordinary.type/bend
          :ordinary/BENDLET-SINISTER :heraldry.ordinary.type/bend-sinister}
         (map (fn [[key _]]
@@ -804,6 +805,8 @@
              :ordinary/BENDLET
              :ordinary/BENDLET-SINISTER}
            node-type) (assoc-in [:geometry :size] 10)
+          (#{:ordinary/CANTON}
+           node-type) (assoc-in [:geometry :size] 80)
           (= :heraldry.ordinary.type/gore
              ordinary-type) (assoc :line {:type :enarched
                                           :flipped? true}))
