@@ -80,18 +80,16 @@
         (try
           (let [new-entity (<? (api/call
                                 (save-entity-api-function (:type entity))
-                                entity session))]
-         ;; TODO: wire up things
-         ;; - update list repository
-
+                                entity session))
+                form-data (util/deep-merge-with
+                           (fn [_left right]
+                             right)
+                           entity new-entity)]
             (rf/dispatch [::entity/store new-entity])
-            (rf/dispatch [::store (util/deep-merge-with
-                                   (fn [_left right]
-                                     right)
-                                   entity new-entity)])
+            (rf/dispatch [::store form-data])
 
             (when on-success
-              (on-success new-entity)))
+              (on-success form-data)))
 
           (catch :default e
             (log/error "save entity error:" e)
