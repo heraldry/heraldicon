@@ -2,9 +2,12 @@
   (:require
    [heraldicon.frontend.history.shared :as shared]))
 
+(defn- remove-ignored [data]
+  (dissoc data :id :version :created-at))
+
 (defn- add-new-state [path db new-db]
-  (let [previous-state (get-in db path)
-        new-state (get-in new-db path)]
+  (let [previous-state (remove-ignored (get-in db path))
+        new-state (remove-ignored (get-in new-db path))]
     (if (or (= previous-state new-state)
             (not new-state))
       new-db
