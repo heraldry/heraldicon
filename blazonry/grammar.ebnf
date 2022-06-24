@@ -798,6 +798,7 @@ ordinary-type
     | ordinary/ORLE
     | ordinary/PALE
     | ordinary/PALL
+    | ordinary/PALLET
     | ordinary/PILE
     | ordinary/POINT
     | ordinary/QUARTER
