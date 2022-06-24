@@ -26,6 +26,7 @@
      [:button.button {:style {:flex "initial"
                               :color "#777"
                               :margin-left "10px"}}
-      [:i.fas.fa-ellipsis-h]]]
+      [:i.fas.fa-ellipsis-h]]
+     :require-click? true]
 
     [save/button entity-type]]])
