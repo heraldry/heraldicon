@@ -35,7 +35,7 @@
 
 (defn list-charges [on-select & {:as options}]
   [component
-   (rf/subscribe [::entity-list/data :heraldicon.entity.type/charge #((rf/dispatch [::blazonry-editor.parser/update]))])
+   (rf/subscribe [::entity-list/data :heraldicon.entity.type/charge #(rf/dispatch [::blazonry-editor.parser/update %])])
    on-select
    #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/charge])
    options])
