@@ -6,6 +6,7 @@
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
+   [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.ui.element.blazonry-editor.editor :as editor]
    [heraldicon.frontend.ui.element.blazonry-editor.help :as help]
    [heraldicon.frontend.ui.element.blazonry-editor.parser :as parser]
@@ -52,7 +53,7 @@
 
 (defn open [context]
   (rf/dispatch-sync [::editor/clear])
-  ;;(rf/dispatch [::entity-list/load-if-absent :heraldicon.entity.type/charge update-parser])
+  (rf/dispatch [::entity-list/load-if-absent :heraldicon.entity.type/charge #(rf/dispatch [::parser/update %])])
   (rf/dispatch-sync [::set-hdn-escutcheon context])
   (modal/create
    [:div
