@@ -20,7 +20,7 @@
   (let [mode (-> context (c/++ :mode) interface/get-raw-data (or :colours))
         texture (-> context (c/++ :texture) interface/get-raw-data (or :none))
         ;; TODO: path shouldn't be hard-coded
-        escutcheon-option (if (-> context :path (= (conj (form/data-path :heraldicon.entity/collection) :render-options)))
+        escutcheon-option (if (-> context :path (= (conj (form/data-path :heraldicon.entity.type/collection) :data :render-options)))
                             {:type :choice
                              :choices escutcheon/choices
                              :default :none
