@@ -12,8 +12,7 @@
               (.getLength block)))
        (reduce +)))
 
-(defn- get-block-key-and-offset [^draft-js/ContentState content
-                                 index]
+(defn- get-block-key-and-offset [^draft-js/ContentState content index]
   (loop [[^draft-js/ContentBlock block & rest] (.getBlocksAsArray content)
          index index]
     (when block
@@ -41,13 +40,13 @@
       :component (fn [props]
                    (r/as-element [:span {:style {:color "red"}} (.-children props)]))}])))
 
-(defn selection ^draft-js/SelectionState [^draft-js/EditorState state]
-  (.getSelection state))
+(defn selection [^draft-js/EditorState state]
+  ^draft-js/SelectionState (.getSelection state))
 
-(defn content ^draft-js/ContentState [^draft-js/EditorState state]
-  (.getCurrentContent state))
+(defn content [^draft-js/EditorState state]
+  ^draft-js/ContentState (.getCurrentContent state))
 
-(defn cursor-index ^js/Number [^draft-js/EditorState state]
+(defn cursor-index [^draft-js/EditorState state]
   (let [selection (selection state)
         content (content state)
         block ^draft-js/ContentBlock (.getBlockForKey content (.getFocusKey selection))
@@ -55,10 +54,10 @@
         offset (.getFocusOffset selection)]
     (+ block-start offset)))
 
-(defn- merge-selection [selection other]
-  (.merge selection (clj->js other)))
+(defn- merge-selection [^draft-js/SelectionState selection other]
+  ^draft-js/SelectionState (.merge selection (clj->js other)))
 
-(defn set-cursor-index ^draft-js/EditorState [^draft-js/EditorState state index]
+(defn set-cursor-index [^draft-js/EditorState state index]
   (let [content (content state)
         selection (selection state)
         {:keys [key offset]} (get-block-key-and-offset content index)
@@ -69,15 +68,15 @@
                                     :focusOffset offset})]
     (draft-js/EditorState.forceSelection state selection)))
 
-(defn text ^js/String [^draft-js/EditorState state]
+(defn text [^draft-js/EditorState state]
   (.getPlainText (content state)))
 
-(defn set-text ^draft-js/EditorState [^draft-js/EditorState state text]
+(defn set-text [^draft-js/EditorState state text]
   (let [new-content (draft-js/ContentState.createFromText text)]
     (-> (draft-js/EditorState.push state new-content "insert-characters")
         (set-cursor-index (count text)))))
 
-(defn replace-text ^draft-js/EditorState [^draft-js/EditorState state from-index to-index text]
+(defn replace-text [^draft-js/EditorState state from-index to-index text]
   (let [content (content state)
         {start-key :key
          start-offset :offset} (get-block-key-and-offset content from-index)
@@ -92,7 +91,7 @@
     (-> (draft-js/EditorState.push state new-content "insert-characters")
         (set-cursor-index (+ (count text) from-index)))))
 
-(defn highlight-unknown-string ^draft-js/EditorState [^draft-js/EditorState state index]
+(defn highlight-unknown-string [^draft-js/EditorState state index]
   (draft-js/EditorState.set state (clj->js {:decorator (unknown-string-decorator index)})))
 
 (defn create []
