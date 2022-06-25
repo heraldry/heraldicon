@@ -1,14 +1,14 @@
-(ns heraldicon.frontend.ui.element.blazonry-editor.editor
+(ns heraldicon.frontend.ui.blazonry-editor.editor
   (:require
    ["draft-js" :as draft-js]
    [clojure.string :as s]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.debounce :as debounce]
-   [heraldicon.frontend.ui.element.blazonry-editor.dom :as dom]
-   [heraldicon.frontend.ui.element.blazonry-editor.parser :as parser]
-   [heraldicon.frontend.ui.element.blazonry-editor.shared :as shared]
-   [heraldicon.frontend.ui.element.blazonry-editor.state :as state]
-   [heraldicon.frontend.ui.element.blazonry-editor.suggestions :as suggestions]
+   [heraldicon.frontend.ui.blazonry-editor.dom :as dom]
+   [heraldicon.frontend.ui.blazonry-editor.parser :as parser]
+   [heraldicon.frontend.ui.blazonry-editor.shared :as shared]
+   [heraldicon.frontend.ui.blazonry-editor.state :as state]
+   [heraldicon.frontend.ui.blazonry-editor.suggestions :as suggestions]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 

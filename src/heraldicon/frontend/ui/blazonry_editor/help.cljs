@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.element.blazonry-editor.help
+(ns heraldicon.frontend.ui.blazonry-editor.help
   (:require
    [re-frame.core :as rf]))
 
@@ -58,7 +58,7 @@
                   (into [:ul]
                         (map (fn [blazon]
                                [:li [:span.blazon-example
-                                     {:on-click #(rf/dispatch [:heraldicon.frontend.ui.element.blazonry-editor.editor/set-blazon blazon])}
+                                     {:on-click #(rf/dispatch [:heraldicon.frontend.ui.blazonry-editor.editor/set-blazon blazon])}
                                      blazon]]))
                         blazons)]))
           blazonry-examples)]

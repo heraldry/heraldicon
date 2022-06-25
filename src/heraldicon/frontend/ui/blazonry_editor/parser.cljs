@@ -1,9 +1,9 @@
-(ns heraldicon.frontend.ui.element.blazonry-editor.parser
+(ns heraldicon.frontend.ui.blazonry-editor.parser
   (:require
    ["genex" :as genex]
    [clojure.string :as s]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.ui.element.blazonry-editor.shared :as shared]
+   [heraldicon.frontend.ui.blazonry-editor.shared :as shared]
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.reader :as reader]
    [re-frame.core :as rf]))
@@ -93,4 +93,4 @@
     (let [parser (get-in db (conj parser-path :parser) parser/default)
           {:keys [hdn error] :as result} (parse-blazonry text parser)]
       {:db (set-status db hdn error)
-       :dispatch [:heraldicon.frontend.ui.element.blazonry-editor.editor/on-parse-result text result]})))
+       :dispatch [:heraldicon.frontend.ui.blazonry-editor.editor/on-parse-result text result]})))

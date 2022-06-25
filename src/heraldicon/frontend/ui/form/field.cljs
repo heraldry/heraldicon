@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.ui.element.blazonry-editor.core :as blazonry-editor]
+   [heraldicon.frontend.ui.blazonry-editor.core :as blazonry-editor]
    [heraldicon.frontend.ui.element.tincture-select :as tincture-select]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
