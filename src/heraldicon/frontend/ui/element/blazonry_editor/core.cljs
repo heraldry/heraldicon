@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.element.blazonry-editor
+(ns heraldicon.frontend.ui.element.blazonry-editor.core
   (:require
    [clojure.walk :as walk]
    [heraldicon.context :as c]

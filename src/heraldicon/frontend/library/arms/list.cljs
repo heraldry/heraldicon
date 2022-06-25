@@ -7,7 +7,7 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.element.arms-select :as arms-select]
-   [heraldicon.frontend.ui.element.blazonry-editor :as blazonry-editor]
+   [heraldicon.frontend.ui.element.blazonry-editor.core :as blazonry-editor]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
