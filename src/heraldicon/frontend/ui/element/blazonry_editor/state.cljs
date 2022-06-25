@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.element.blazonry-editor.editor-state
+(ns heraldicon.frontend.ui.element.blazonry-editor.state
   (:require
    ["draft-js" :as draft-js]
    [reagent.core :as r]))
