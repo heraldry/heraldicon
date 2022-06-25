@@ -27,6 +27,8 @@
              (case entity-type
                :heraldicon.entity.type/arms (not= (assoc-in current [:data :achievement :render-options] nil)
                                                   (assoc-in saved [:data :achievement :render-options] nil))
+               :heraldicon.entity.type/collection (not= (assoc-in current [:data :render-options] nil)
+                                                        (assoc-in saved [:data :render-options] nil))
                (not= current saved))
              true))
          true)))))
