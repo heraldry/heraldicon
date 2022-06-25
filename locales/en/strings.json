@@ -839,6 +839,12 @@
     }
   },
   "escutcheon": {
+    "group": {
+      "traditional": "Traditional",
+      "shapes": "Shapes",
+      "decorative": "Decorative",
+      "community": "Community"
+    },
     "type": {
       "english": "English",
       "flag": "Flag",

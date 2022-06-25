@@ -838,6 +838,12 @@
     }
   },
   "escutcheon": {
+    "group": {
+      "traditional": "Traditionell",
+      "shapes": "Formen",
+      "decorative": "Dekorativ",
+      "community": "Community"
+    },
     "type": {
       "english": "Englische Form",
       "flag": "Flagge",

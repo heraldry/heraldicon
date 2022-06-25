@@ -45,10 +45,16 @@
            [value-mode-select/value-mode-select context]]
           [:div {:style {:transform "translate(-0.333em,0)"}}
            [escutcheon-choice context value choice-name :on-click? false]]]
-         {:style {:width "17.5em"
+         {:style {:width "26em"
                   :vertical-align "top"}}
          (into [:<>]
-               (map (fn [[display-name key]]
-                      ^{:key key}
-                      [escutcheon-choice context key display-name :selected? (= key value)]))
+               (map (fn [[group-name & group]]
+                      (into
+                       ^{:key group-name}
+                       [:<>
+                        [:h4 [tr group-name]]]
+                       (map (fn [[display-name key]]
+                              ^{:key display-name}
+                              [escutcheon-choice context key display-name :selected? (= key value)]))
+                       group)))
                choices)]]])))
