@@ -85,10 +85,10 @@
    [(r/create-class
      {:display-name "core"
       :reagent-render (fn []
-                        (let [editor-state @(rf/subscribe [:get editor-state-path])]
+                        (let [state @(rf/subscribe [:get editor-state-path])]
                           [:> draft-js/Editor
-                           {:editorState (:state editor-state)
-                            :onChange #(rf/dispatch-sync [::update-editor-state (editor-state/EditorState. %)])
+                           {:editorState state
+                            :onChange #(rf/dispatch-sync [::update-editor-state %])
                             :keyBindingFn (fn [event]
                                             (if (= (.-code event) "Tab")
                                               (do
