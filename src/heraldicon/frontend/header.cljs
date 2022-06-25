@@ -29,10 +29,11 @@
   (fn [db [_ path]]
     (assoc-in db path nil)))
 
-(defn- menu-item [route name]
+(defn- menu-item [route name & {:keys [on-click]}]
   [:li.nav-menu-item {:class (when (router/active-section? route)
                                "selected")}
-   [:a {:href (reife/href route nil nil)} [tr name]]])
+   [:a {:href (reife/href route nil nil)
+        :on-click on-click} [tr name]]])
 
 (defn view []
   (let [session @(rf/subscribe [::session/data])]
@@ -79,10 +80,12 @@
                                                  user-menu-open?-path])
                                "block"
                                "none")}}
-           [menu-item :route.account/main :string.menu/account]
+           [menu-item :route.account/main :string.menu/account
+            :on-click #(rf/dispatch [::clear-menu-open? user-menu-open?-path])]
            [:li.nav-menu-item
             [:a.nav-menu-link {:href "#"
-                               :on-click #(rf/dispatch [::session/logout])} [tr :string.menu/logout]]]]]]
+                               :on-click #(do (rf/dispatch [::clear-menu-open? user-menu-open?-path])
+                                              (rf/dispatch [::session/logout]))} [tr :string.menu/logout]]]]]]
         [:<>
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
