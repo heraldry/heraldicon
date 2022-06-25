@@ -2,7 +2,7 @@
   (:require
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.repository.entity-list :as entity-list]
-   [heraldicon.frontend.ui.element.blazonry-editor.parser :as blazonry-editor.parser]
+   [heraldicon.frontend.ui.blazonry-editor.parser :as blazonry-editor.parser]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 

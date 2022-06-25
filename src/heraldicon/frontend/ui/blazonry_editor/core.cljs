@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.element.blazonry-editor.core
+(ns heraldicon.frontend.ui.blazonry-editor.core
   (:require
    [clojure.walk :as walk]
    [heraldicon.context :as c]
@@ -7,10 +7,10 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.entity-list :as entity-list]
-   [heraldicon.frontend.ui.element.blazonry-editor.editor :as editor]
-   [heraldicon.frontend.ui.element.blazonry-editor.help :as help]
-   [heraldicon.frontend.ui.element.blazonry-editor.parser :as parser]
-   [heraldicon.frontend.ui.element.blazonry-editor.shared :as shared]
+   [heraldicon.frontend.ui.blazonry-editor.editor :as editor]
+   [heraldicon.frontend.ui.blazonry-editor.help :as help]
+   [heraldicon.frontend.ui.blazonry-editor.parser :as parser]
+   [heraldicon.frontend.ui.blazonry-editor.shared :as shared]
    [heraldicon.heraldry.default :as default]
    [heraldicon.render.core :as render]
    [re-frame.core :as rf]))

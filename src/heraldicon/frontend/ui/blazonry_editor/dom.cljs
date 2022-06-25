@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.element.blazonry-editor.dom)
+(ns heraldicon.frontend.ui.blazonry-editor.dom)
 
 (defn caret-position [index]
   (let [selection (js/document.getSelection)

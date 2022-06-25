@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.element.blazonry-editor.suggestions
+(ns heraldicon.frontend.ui.blazonry-editor.suggestions
   (:require
    [clojure.string :as s]
    [heraldicon.frontend.auto-complete :as auto-complete]
