@@ -39,15 +39,13 @@
    :hide-ownership-filter? true])
 
 (defn- view-collections-for-user [username]
-  (status/default
+  [collection-select/component
    (rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])
-   (fn [{:keys [entities]}]
-     [collection-select/component
-      entities
-      library.collection.list/link-to-collection
-      #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])
-      :predicate-fn (partial owned-by-user? username)
-      :hide-ownership-filter? true])))
+   library.collection.list/on-select
+   #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])
+   :predicate-fn (partial owned-by-user? username)
+   :remove-empty-groups? true
+   :hide-ownership-filter? true])
 
 (defn- user-display [username]
   (status/default
