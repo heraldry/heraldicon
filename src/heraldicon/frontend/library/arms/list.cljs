@@ -6,8 +6,8 @@
    [heraldicon.frontend.library.arms.shared :refer [entity-type base-context]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.title :as title]
-   [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [heraldicon.frontend.ui.blazonry-editor.core :as blazonry-editor]
+   [heraldicon.frontend.ui.element.arms-select :as arms-select]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 

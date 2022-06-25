@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.ui.blazonry-editor.suggestions
   (:require
    [clojure.string :as s]
-   [heraldicon.frontend.auto-complete :as auto-complete]
+   [heraldicon.frontend.ui.auto-complete :as auto-complete]
    [re-frame.core :as rf]))
 
 (def ^:private hint-order

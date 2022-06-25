@@ -2,11 +2,11 @@
   (:require
    [clojure.walk :as walk]
    [heraldicon.context :as c]
-   [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.ui.auto-complete :as auto-complete]
    [heraldicon.frontend.ui.blazonry-editor.editor :as editor]
    [heraldicon.frontend.ui.blazonry-editor.help :as help]
    [heraldicon.frontend.ui.blazonry-editor.parser :as parser]

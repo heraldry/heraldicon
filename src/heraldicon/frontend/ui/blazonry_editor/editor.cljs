@@ -2,8 +2,8 @@
   (:require
    ["draft-js" :as draft-js]
    [clojure.string :as s]
-   [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.debounce :as debounce]
+   [heraldicon.frontend.ui.auto-complete :as auto-complete]
    [heraldicon.frontend.ui.blazonry-editor.dom :as dom]
    [heraldicon.frontend.ui.blazonry-editor.parser :as parser]
    [heraldicon.frontend.ui.blazonry-editor.shared :as shared]
