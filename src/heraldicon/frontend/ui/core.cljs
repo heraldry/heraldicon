@@ -9,7 +9,7 @@
    [heraldicon.frontend.ui.element.arms-reference-select] ;; needed for side effects
    [heraldicon.frontend.ui.element.attributes] ;; needed for side effects
    [heraldicon.frontend.ui.element.attribution] ;; needed for side effects
-   [heraldicon.frontend.ui.element.blazonry-editor] ;; needed for side effects
+   [heraldicon.frontend.ui.element.blazonry-editor.core] ;; needed for side effects
    [heraldicon.frontend.ui.element.charge-group-preset-select] ;; needed for side effects
    [heraldicon.frontend.ui.element.charge-group-slot-number] ;; needed for side effects
    [heraldicon.frontend.ui.element.charge-group-type-select] ;; needed for side effects
