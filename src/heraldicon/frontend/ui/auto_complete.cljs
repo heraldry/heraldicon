@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.auto-complete
+(ns heraldicon.frontend.ui.auto-complete
   (:require
    [re-frame.core :as rf]))
 
