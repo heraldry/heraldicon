@@ -46,6 +46,7 @@
   (content ^:private [this] "Get content")
   (text [this] "Get text")
   (set-text [this text] "Set text content")
+  (replace-text [this from-index to-index text] "Replace text for the given range")
   (cursor-index [this] "Get the cursor index")
   (set-cursor-index [this index] "Set the cursor index")
   (highlight-unknown-string [this index] "Highlight the unknown string"))
@@ -66,6 +67,21 @@
     (let [new-content (draft-js/ContentState.createFromText text)]
       (-> (EditorState. (draft-js/EditorState.push state new-content "insert-characters"))
           (set-cursor-index (count text)))))
+
+  (replace-text ^EditorState [{:keys [state] :as this} from-index to-index text]
+    (let [content (content this)
+          {start-key :key
+           start-offset :offset} (get-block-key-and-offset content from-index)
+          {end-key :key
+           end-offset :offset} (get-block-key-and-offset content to-index)
+          range-selection {:anchorKey start-key
+                           :anchorOffset start-offset
+                           :focusKey end-key
+                           :focusOffset end-offset}
+          range-selection (.merge (selection this) (clj->js range-selection))
+          new-content (draft-js/Modifier.replaceText content range-selection text)]
+      (-> (EditorState. (draft-js/EditorState.push state new-content "insert-characters"))
+          (set-cursor-index (+ (count text) from-index)))))
 
   (cursor-index ^js/Number [this]
     (let [selection (selection this)
