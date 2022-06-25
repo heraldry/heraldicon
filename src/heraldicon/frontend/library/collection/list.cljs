@@ -9,14 +9,10 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defn link-to-collection [collection]
-  (let [collection-id (-> collection
-                          :id
-                          id/for-url)]
-    [:a {:href (reife/href :route.collection.details/by-id {:id collection-id})
-         :on-click #(do
-                      (rf/dispatch-sync [::message/clear entity-type]))}
-     (:name collection)]))
+(defn on-select [{:keys [id]}]
+  {:href (reife/href :route.collection.details/by-id {:id (id/for-url id)})
+   :on-click (fn [_event]
+               (rf/dispatch-sync [::message/clear entity-type]))})
 
 (defn view []
   (rf/dispatch [::title/set :string.entity/collections])
@@ -30,4 +26,4 @@
                   (reife/push-state :route.collection.details/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
-    [collection-select/list-collections link-to-collection]]])
+    [collection-select/list-collections on-select]]])

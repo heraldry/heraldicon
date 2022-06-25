@@ -1,52 +1,38 @@
 (ns heraldicon.frontend.ui.element.collection-select
   (:require
-   [clojure.string :as s]
-   [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.filter :as filter]
-   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.repository.entity-list :as entity-list]
-   [heraldicon.frontend.status :as status]
-   [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
-(defn component [collection-list link-fn refresh-fn & {:keys [hide-ownership-filter?
-                                                              predicate-fn]}]
-  (let [session @(rf/subscribe [::session/data])]
-    [filter/legacy-component
-     :collection-list
-     session
-     collection-list
-     [:name :username :metadata :tags]
-     (fn [& {:keys [items]}]
-       (into [:ul.collection-list]
-             (map (fn [collection]
-                    (let [username (:username collection)]
-                      ^{:key (:id collection)}
-                      [:li.collection
-                       (if (-> :access collection (= :public))
-                         [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
-                         [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]])
-                       " "
-                       [link-fn collection]
-                       " "
-                       [tr :string.miscellaneous/by]
-                       " "
-                       [:a {:href (attribution/full-url-for-username username)
-                            :target "_blank"} username]
+(defn component [collections-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
+                                                                         selected-collection
+                                                                         display-selected-item?
+                                                                         predicate-fn]}]
+  [filter/component
+   :collection-list
+   @(rf/subscribe [::session/data])
+   collections-subscription
+   [:name :username :metadata :tags]
+   :collection
+   on-select
+   refresh-fn
+   :sort-fn (juxt (comp filter/normalize-string-for-sort :name)
+                  :type
+                  :id
+                  :version)
+   :page-size 20
+   :hide-ownership-filter? hide-ownership-filter?
+   :component-styles (if display-selected-item?
+                       {:height "80vh"}
+                       {:height "90vh"})
+   :selected-item selected-collection
+   :display-selected-item? display-selected-item?
+   :predicate-fn predicate-fn])
 
-                       " "
-                       [tags/tags-view (-> collection :tags keys)]])))
-             (sort-by (comp s/lower-case :name) items)))
-     refresh-fn
-     :hide-ownership-filter? hide-ownership-filter?
-     :predicate-fn predicate-fn]))
-
-(defn list-collections [link-to-collection]
-  (status/default
+(defn list-collections [on-select & {:as options}]
+  [component
    (rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])
-   (fn [{:keys [entities]}]
-     [component
-      entities
-      link-to-collection
-      #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])])))
+   on-select
+   #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])
+   options])
