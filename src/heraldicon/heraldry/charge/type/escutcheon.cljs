@@ -17,7 +17,8 @@
   (let [escutcheon-option {:type :choice
                            :choices (-> escutcheon/choices
                                         vec
-                                        (assoc-in [0 0] :string.escutcheon.type/root))
+                                        (assoc-in [0 0] :string.escutcheon.type/root)
+                                        (assoc-in [0 1 0] :string.escutcheon.type/root))
                            :default :none
                            :ui {:label :string.render-options/escutcheon
                                 :form-type :escutcheon-select}}
