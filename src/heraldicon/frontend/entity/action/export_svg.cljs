@@ -11,6 +11,11 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
+(defn- generate-svg-api-function [entity-type]
+  (case entity-type
+    :heraldicon.entity.type/arms :generate-svg-arms
+    :heraldicon.entity.type/collection :generate-svg-collection))
+
 (defn- invoke [entity-type]
   (modal/start-loading)
   (go
@@ -20,19 +25,24 @@
             ;; TODO: this can probably live elsewhere
             payload (-> full-data
                         (select-keys [:id :version])
-                        (assoc :render-options (get-in full-data [:data :achievement :render-options])))
+                        (assoc :render-options
+                               (get-in full-data
+                                       (case entity-type
+                                         :heraldicon.entity.type/arms [:data :achievement :render-options]
+                                         :heraldicon.entity.type/collection [:data :render-options]))))
             session @(rf/subscribe [::session/data])
-            response (<? (api/call :generate-svg-arms payload session))]
+            response (<? (api/call (generate-svg-api-function entity-type) payload session))]
         (js/window.open (:svg-url response)))
 
       (catch :default e
-        (log/error "generate svg arms error:" e))
+        (log/error "generate svg error:" e))
 
       (finally
         (modal/stop-loading)))))
 
 (defn action [entity-type]
-  (when (= entity-type :heraldicon.entity.type/arms)
+  (when (#{:heraldicon.entity.type/arms
+           :heraldicon.entity.type/collection} entity-type)
     (let [form-db-path (form/data-path entity-type)
           logged-in? @(rf/subscribe [::session/logged-in?])
           can-export? (and logged-in?
