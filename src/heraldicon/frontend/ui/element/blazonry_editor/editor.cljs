@@ -1,11 +1,14 @@
 (ns heraldicon.frontend.ui.element.blazonry-editor.editor
   (:require
    ["draft-js" :as draft-js]
+   [clojure.string :as s]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.debounce :as debounce]
+   [heraldicon.frontend.ui.element.blazonry-editor.dom :as dom]
    [heraldicon.frontend.ui.element.blazonry-editor.editor-state :as editor-state]
    [heraldicon.frontend.ui.element.blazonry-editor.parser :as parser]
    [heraldicon.frontend.ui.element.blazonry-editor.shared :as shared]
+   [heraldicon.frontend.ui.element.blazonry-editor.suggestions :as suggestions]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
@@ -31,7 +34,7 @@
           text (editor-state/text state)
           last-parsed (get-in db last-parsed-path)]
       (if (not= text last-parsed)
-        {:dispatch [::parser/parse text (editor-state/cursor-index state)]}
+        {:dispatch [::parser/parse text]}
         {}))))
 
 (def ^:private change-dedupe-time
@@ -52,50 +55,27 @@
     (let [state (get-in db editor-state-path)]
       {:dispatch [::update-editor-state-and-parse (editor-state/set-text state blazon)]})))
 
-#_(rf/reg-event-fx ::auto-completion-clicked
-    (fn [{:keys [db]} [_ index cursor-index choice]]
-      (let [state (get-in db editor-state-path)
-            content ^draft-js/ContentState (.getCurrentContent state)
-            current-text (.getPlainText content)
-            choice (cond-> choice
-                     (and (pos? index)
-                          (pos? (count current-text))
-                          (not= (subs current-text (dec index) index) " ")) (->> (str " "))
-                     (and (< cursor-index (count current-text))
-                          (not= (subs current-text cursor-index (inc cursor-index)) " ")) (str " "))
-            {start-key :key
-             start-offset :offset} (get-block-key-and-offset content index)
-            {end-key :key
-             end-offset :offset} (get-block-key-and-offset content cursor-index)
-            range-selection {:anchorKey start-key
-                             :anchorOffset start-offset
-                             :focusKey end-key
-                             :focusOffset end-offset}
-            range-selection (-> state
-                                ^draft-js/SelectionState (.getSelection)
-                                (.merge (clj->js range-selection)))
-            new-content (draft-js/Modifier.replaceText
-                         content
-                         range-selection
-                         choice)
-            new-state (-> state
-                          (draft-js/EditorState.push
-                           new-content
-                           "insert-characters")
-                          (put-cursor-at (+ (count choice) index)))]
-        {:fx [[:dispatch [::auto-complete/clear]]
-              [:dispatch [::update-editor-state new-state]]]})))
+(rf/reg-event-fx ::auto-completion-clicked
+  (fn [{:keys [db]} [_ index cursor-index choice]]
+    (let [state (get-in db editor-state-path)]
+      {:dispatch-n [[::auto-complete/clear]
+                    [::update-editor-state-and-parse (editor-state/replace-text state index cursor-index choice)]]})))
 
 (rf/reg-event-fx ::on-parse-result
-  (fn [{:keys [db]} [_ text {:keys [hdn index auto-complete]}]]
-    {:db (-> db
-             (update-in editor-state-path editor-state/highlight-unknown-string index)
-             (assoc-in last-parsed-path text)
-             (cond->
-               hdn (assoc-in (conj hdn-path :coat-of-arms) {:field hdn})))
-     :dispatch (if auto-complete
-                 [::auto-complete/set auto-complete]
-                 [::auto-complete/clear])}))
+  (fn [{:keys [db]} [_ text {:keys [hdn index suggestions]}]]
+    (let [state (get-in db editor-state-path)
+          cursor-index (-> (editor-state/cursor-index state)
+                           (max index)
+                           (min (count text)))
+          substring-since-error (s/trim (subs text index cursor-index))]
+      {:db (-> db
+               (update-in editor-state-path editor-state/highlight-unknown-string index)
+               (assoc-in last-parsed-path text)
+               (cond->
+                 hdn (assoc-in (conj hdn-path :coat-of-arms) {:field hdn})))
+       :dispatch [::suggestions/set (dom/caret-position index) suggestions substring-since-error
+                  (fn [choice]
+                    (rf/dispatch [::auto-completion-clicked index cursor-index choice]))]})))
 
 (defn editor []
   [:div {:style {:display "inline-block"
