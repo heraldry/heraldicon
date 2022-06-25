@@ -329,6 +329,18 @@
                     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
                     :points {:fess (v/Vector. 0 half-width)}}))})
 
+(def ^:private square-philippine
+  {:environment (environment/create
+                 (str "m 0,0"
+                      "a 5 5 0 0 0 5,0"
+                      "v 7"
+                      "a 5 5 0 0 1 -10,0"
+                      "v -7"
+                      "a 5 5 0 0 0 5,0"
+                      "z")
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. -5 5 0 (+ 7 5))})})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:string.escutcheon.type/heater #'heater]
@@ -351,7 +363,9 @@
     [:string.escutcheon.type/swiss #'swiss]
     [:string.escutcheon.type/renaissance #'renaissance]
     [:string.escutcheon.type/polish #'polish]
-    [:string.escutcheon.type/polish-19th-century #'polish-19th-century]]])
+    [:string.escutcheon.type/polish-19th-century #'polish-19th-century]]
+   [:string.escutcheon.group/community
+    ["Square Philippine (coinageFission)" #'square-philippine]]])
 
 (def ^:private kinds-map
   (into {}
