@@ -1,40 +1,18 @@
 (ns heraldicon.frontend.ui.element.blazonry-editor.parser
   (:require
-   ["draft-js" :as draft-js]
    ["genex" :as genex]
    [clojure.string :as s]
-   [clojure.walk :as walk]
-   [heraldicon.context :as c]
-   [heraldicon.frontend.auto-complete :as auto-complete]
-   [heraldicon.frontend.context :as context]
-   [heraldicon.frontend.debounce :as debounce]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.repository.entity-list :as entity-list]
-   [heraldicon.frontend.ui.element.blazonry-editor.help :as help]
    [heraldicon.frontend.ui.element.blazonry-editor.shared :as shared]
-   [heraldicon.heraldry.default :as default]
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.reader :as reader]
-   [heraldicon.render.core :as render]
-   [re-frame.core :as rf]
-   [reagent.core :as r]))
-
-(def ^:private hdn-path
-  (conj shared/blazonry-editor-path :hdn))
+   [re-frame.core :as rf]))
 
 (def ^:private parser-path
   (conj shared/blazonry-editor-path :parser))
 
 (def ^:private status-path
   (conj shared/blazonry-editor-path :status))
-
-(def ^:private last-parsed-path
-  (conj shared/blazonry-editor-path :last-parsed))
-
-(rf/reg-event-db ::clear
-  (fn [db _]
-    (assoc-in db parser-path nil)))
 
 (rf/reg-event-db ::update
   (fn [db [_ charges]]
@@ -43,25 +21,6 @@
           (get-in (conj parser-path :charges))
           (not= charges)) (assoc-in parser-path {:charges charges
                                                  :parser (parser/generate charges)}))))
-
-(rf/reg-event-db ::clear-state
-  (fn [db _]
-    (-> db
-        (assoc-in status-path nil)
-        (assoc-in last-parsed-path nil))))
-
-(defn status []
-  (let [{:keys [status error warnings]} @(rf/subscribe [:get status-path])]
-    [:<>
-     (case status
-       :success [:span.parser-success [tr :string.blazonry-editor/success]]
-       :error [:span.parser-error [tr :string.blazonry-editor/error] ": " error]
-       nil)
-     (when (seq warnings)
-       (into [:ul.parser-warnings]
-             (map (fn [warning]
-                    [:li [tr :string.blazonry-editor/warning] ": " warning]))
-             warnings))]))
 
 (defn- caret-position [index]
   (let [selection (js/document.getSelection)
@@ -117,7 +76,7 @@
          "facing"
          "number"]))
 
-(defn parse-blazonry [blazon cursor-index parser & {:keys [api?]}]
+(defn- parse-blazonry [blazon cursor-index parser & {:keys [api?]}]
   (try
     (let [hdn (reader/read blazon parser)]
       {:blazon blazon
@@ -167,76 +126,44 @@
                           position (assoc :position position))
          :index index}))))
 
-(defn- get-block-key-and-offset [^draft-js/ContentState content
-                                 index]
-  (loop [[^draft-js/ContentBlock block & rest] (.getBlocksAsArray content)
-         index index]
-    (when block
-      (let [block-length (.getLength block)]
-        (if (<= index block-length)
-          {:key (.getKey block)
-           :offset index}
-          (recur rest
-                 (- index block-length)))))))
+(rf/reg-event-db ::clear-status
+  (fn [db _]
+    (assoc-in db status-path nil)))
 
-(defn- block-start-index [^draft-js/ContentState content block]
-  (->> content
-       .getBlocksAsArray
-       (take-while #(not= (.-key %) (.-key block)))
-       (map (fn [^draft-js/ContentBlock block]
-              (.getLength block)))
-       (reduce +)))
+(defn- set-status [db hdn error]
+  (assoc-in db status-path
+            {:status (if hdn
+                       :success
+                       (when error
+                         :error))
+             :error error
+             :warnings (->> hdn
+                            (tree-seq (some-fn vector? map? seq?) seq)
+                            (keep (fn [data]
+                                    (when (map? data)
+                                      (let [warnings (concat
+                                                      (:heraldicon.reader.blazonry.transform/warnings data)
+                                                      (:heraldicon.reader.blazonry.process/warnings data))]
+                                        (when (seq warnings)
+                                          warnings)))))
+                            (apply concat))}))
 
-(defn- unknown-string-decorator [index]
-  (draft-js/CompositeDecorator.
-   (clj->js
-    [{:strategy (fn [^draft-js/ContentBlock block
-                     callback
-                     ^draft-js/ContentState content]
-                  (when index
-                    (let [block-start (block-start-index content block)
-                          block-end (+ block-start (.getLength block))]
-                      (when (<= index block-end)
-                        (callback (-> index
-                                      (max block-start)
-                                      (- block-start))
-                                  (- block-end
-                                     block-start))))))
-      :component (fn [props]
-                   (r/as-element [:span {:style {:color "red"}} (.-children props)]))}])))
-
-(defn- build-parse-status [hdn error]
-  {:status (if hdn
-             :success
-             (when error
-               :error))
-   :error error
-   :warnings (->> hdn
-                  (tree-seq
-                   (some-fn vector? map? seq?)
-                   seq)
-                  (keep (fn [data]
-                          (when (map? data)
-                            (let [warnings (concat
-                                            (:heraldicon.reader.blazonry.transform/warnings data)
-                                            (:heraldicon.reader.blazonry.process/warnings data))]
-                              (when (seq warnings)
-                                warnings)))))
-                  (apply concat))})
+(defn status []
+  (let [{:keys [status error warnings]} @(rf/subscribe [:get status-path])]
+    [:<>
+     (case status
+       :success [:span.parser-success [tr :string.blazonry-editor/success]]
+       :error [:span.parser-error [tr :string.blazonry-editor/error] ": " error]
+       nil)
+     (when (seq warnings)
+       (into [:ul.parser-warnings]
+             (map (fn [warning]
+                    [:li [tr :string.blazonry-editor/warning] ": " warning]))
+             warnings))]))
 
 (rf/reg-event-fx ::parse
   (fn [{:keys [db]} [_ text cursor-index]]
     (let [parser (get-in db (conj parser-path :parser) parser/default)
-          {:keys [hdn error auto-complete index]} (parse-blazonry text cursor-index parser)]
-      {:db (-> db
-               #_(assoc-in editor-state-path (draft-js/EditorState.set
-                                              editor-state
-                                              (clj->js
-                                               {:decorator (unknown-string-decorator index)})))
-               #_(assoc-in last-parsed-path text)
-               (assoc-in status-path (build-parse-status hdn error))
-               (cond->
-                 hdn (assoc-in (conj hdn-path :coat-of-arms) {:field hdn})))
-       :dispatch (if auto-complete
-                   [::auto-complete/set auto-complete]
-                   [::auto-complete/clear])})))
+          {:keys [hdn error] :as result} (parse-blazonry text cursor-index parser)]
+      {:db (set-status db hdn error)
+       :dispatch [:heraldicon.frontend.ui.element.blazonry-editor.editor/on-parse-result text result]})))

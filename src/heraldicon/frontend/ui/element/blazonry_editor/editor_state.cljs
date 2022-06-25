@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.ui.element.blazonry-editor.editor-state
   (:require
-   ["draft-js" :as draft-js]))
+   ["draft-js" :as draft-js]
+   [reagent.core :as r]))
 
 (defn- block-start-index [^draft-js/ContentState content
                           ^draft-js/ContentBlock block]
@@ -22,13 +23,32 @@
            :offset index}
           (recur rest (- index block-length)))))))
 
+(defn- unknown-string-decorator [index]
+  (draft-js/CompositeDecorator.
+   (clj->js
+    [{:strategy (fn [^draft-js/ContentBlock block
+                     callback
+                     ^draft-js/ContentState content]
+                  (when index
+                    (let [block-start (block-start-index content block)
+                          block-end (+ block-start (.getLength block))]
+                      (when (<= index block-end)
+                        (callback (-> index
+                                      (max block-start)
+                                      (- block-start))
+                                  (- block-end
+                                     block-start))))))
+      :component (fn [props]
+                   (r/as-element [:span {:style {:color "red"}} (.-children props)]))}])))
+
 (defprotocol EditorStateProtocol
   (selection ^:private [this] "Get selection")
   (content ^:private [this] "Get content")
   (text [this] "Get text")
   (set-text [this text] "Set text content")
   (cursor-index [this] "Get the cursor index")
-  (set-cursor-index [this index] "Set the cursor index"))
+  (set-cursor-index [this index] "Set the cursor index")
+  (highlight-unknown-string [this index] "Highlight the unknown string"))
 
 (defrecord ^:export EditorState [^draft-js/EditorState state]
   EditorStateProtocol
@@ -66,7 +86,11 @@
                                       :anchorOffset offset
                                       :focusKey key
                                       :focusOffset offset}))]
-      (EditorState. (draft-js/EditorState.forceSelection state selection)))))
+      (EditorState. (draft-js/EditorState.forceSelection state selection))))
+
+  (highlight-unknown-string ^EditorState [{:keys [state]} index]
+    (EditorState.
+     (draft-js/EditorState.set state (clj->js {:decorator (unknown-string-decorator index)})))))
 
 (defn create []
   (EditorState. (.createEmpty draft-js/EditorState)))

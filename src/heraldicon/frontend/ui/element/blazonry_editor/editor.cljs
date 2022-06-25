@@ -15,65 +15,15 @@
 (def ^:private last-parsed-path
   (conj shared/blazonry-editor-path :last-parsed))
 
-(rf/reg-event-db ::clear
-  (fn [db _]
-    (-> db
-        (assoc-in editor-state-path (editor-state/create))
-        #_(assoc-in status-path nil)
-        (assoc-in last-parsed-path nil))))
+(def ^:private hdn-path
+  (conj shared/blazonry-editor-path :hdn))
 
-#_(defn- caret-position [index]
-    (let [selection (js/document.getSelection)
-          range-count (.-rangeCount selection)]
-      (when (pos? range-count)
-        (let [range (.getRangeAt selection 0)
-              node (.-startContainer range)
-              node-length (-> node .-length (or 0))
-              offset (if index
-                       (min index node-length)
-                       (.-startOffset range))]
-          (cond
-            (pos? offset) (let [rect (.getBoundingClientRect
-                                      (doto (js/document.createRange)
-                                        (.setStart node (dec offset))
-                                        (.setEnd node offset)))]
-                            {:top (.-top rect)
-                             :left (.-left rect)})
-            (< offset
-               node-length) (let [rect (.getBoundingClientRect
-                                        (doto (js/document.createRange)
-                                          (.setStart node offset)
-                                          (.setEnd node (inc offset))))]
-                              {:top (.-top rect)
-                               :left (.-left rect)})
-            :else (let [node (first (js/document.getElementsByClassName "DraftEditor-root"))
-                        rect (.getBoundingClientRect node)
-                        styles (js/getComputedStyle node)
-                        line-height (js/parseInt (.-lineHeight styles))
-                        font-size (js/parseInt (.-fontSize styles))
-                        delta (/ (- line-height font-size) 2)]
-                    {:top (-> rect
-                              .-top
-                              (+ delta))
-                     :left (.-left rect)}))))))
-
-#_(defn- unknown-string-decorator [index]
-    (draft-js/CompositeDecorator.
-     (clj->js
-      [{:strategy (fn [^draft-js/ContentBlock block
-                       callback
-                       ^draft-js/ContentState content]
-                    (when index
-                      (let [block-start (block-start-index content block)
-                            block-end (+ block-start (.getLength block))]
-                        (when (<= index block-end)
-                          (callback (-> index
-                                        (max block-start)
-                                        (- block-start))
-                                    (- block-end
-                                       block-start))))))
-        :component (fn [props]
-                     (r/as-element [:span {:style {:color "red"}} (.-children props)]))}])))
+(rf/reg-event-fx ::clear
+  (fn [{:keys [db]} _]
+    {:db (-> db
+             (assoc-in editor-state-path (editor-state/create))
+             (assoc-in last-parsed-path nil))
+     :dispatch [::parser/clear-status]}))
 
 (rf/reg-event-fx ::parse-if-changed
   (fn [{:keys [db]} _]
@@ -135,6 +85,17 @@
                           (put-cursor-at (+ (count choice) index)))]
         {:fx [[:dispatch [::auto-complete/clear]]
               [:dispatch [::update-editor-state new-state]]]})))
+
+(rf/reg-event-fx ::on-parse-result
+  (fn [{:keys [db]} [_ text {:keys [hdn index auto-complete]}]]
+    {:db (-> db
+             (update-in editor-state-path editor-state/highlight-unknown-string index)
+             (assoc-in last-parsed-path text)
+             (cond->
+               hdn (assoc-in (conj hdn-path :coat-of-arms) {:field hdn})))
+     :dispatch (if auto-complete
+                 [::auto-complete/set auto-complete]
+                 [::auto-complete/clear])}))
 
 (defn editor []
   [:div {:style {:display "inline-block"
