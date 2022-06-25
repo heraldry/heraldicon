@@ -38,7 +38,7 @@
 
 (defn ^:export init []
   (rf/dispatch-sync [:initialize-db])
-  (rf/dispatch-sync [:heraldicon.frontend.ui.element.blazonry-editor/clear-parser])
+  (rf/dispatch-sync [:heraldicon.frontend.ui.element.blazonry-editor.parser/clear])
   (rf/dispatch-sync [:heraldicon.frontend.language/load-language-setting])
   (session/read-from-storage)
   #_(print-stats)
