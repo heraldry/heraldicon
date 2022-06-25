@@ -1,8 +1,6 @@
 (ns heraldicon.frontend.user.session
   (:require
-   [heraldicon.config :as config]
    [heraldicon.frontend.repository.core :as repository]
-   [heraldicon.util.url :as url]
    [hodgepodge.core :as hp]
    [re-frame.core :as rf]))
 
@@ -40,16 +38,12 @@
 
 (rf/reg-fx ::set-cookie
   (fn [[session-id]]
-    (let [relevant-url (or (config/get :heraldicon-site-url)
-                           (config/get :heraldicon-url))]
-      (if (some-> session-id count pos?)
-        (set! js/document.cookie (str "session-id=" session-id
-                                      ";domain=" (url/domain relevant-url)
-                                      ";path=/"))
-        (set! js/document.cookie (str "session-id="
-                                      ";domain=" (url/domain relevant-url)
-                                      ";path=/"
-                                      ";Max-Age=-99999999"))))))
+    (if (some-> session-id count pos?)
+      (set! js/document.cookie (str "session-id=" session-id
+                                    ";path=/"))
+      (set! js/document.cookie (str "session-id="
+                                    ";path=/"
+                                    ";Max-Age=-99999999")))))
 
 (rf/reg-fx ::write-to-local-storage
   (fn [[session-id username user-id]]
