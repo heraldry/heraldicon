@@ -7,7 +7,7 @@
 (defn preview-url [kind {:keys [id version]} & {:keys [width height]}]
   (let [url (or (config/get :heraldicon-site-url)
                 (config/get :heraldicon-url))]
-    (str url "/preview/" (name kind) "/" (-> id (s/split #":") last) "/" version "/preview.png"
+    (str url "/preview/" (name kind) "/" (-> id (s/split #":") last) "/" (or version 0) "/preview.png"
          (when (and width height)
            (str "?width=" width "&height=" height)))))
 
