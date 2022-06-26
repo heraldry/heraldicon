@@ -7,13 +7,14 @@
 (deftest valid-variant
   (are [form] (tu/valid? :heraldry.charge/variant form)
     {:id "some-id"
-     :version 5}))
+     :version 5}
+
+    {:id "some-id"
+     :version nil}))
 
 (deftest invalid-variant
   (are [form] (tu/invalid? :heraldry.charge/variant form)
     {}
-
-    {:id "some-id"}
 
     {:version 5}
 
