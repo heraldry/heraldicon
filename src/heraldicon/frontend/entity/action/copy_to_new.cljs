@@ -57,16 +57,21 @@
     :heraldicon.entity.type/ribbon :route.ribbon.details/create
     :heraldicon.entity.type/collection :route.collection.details/create))
 
-(defn- invoke [entity-type]
-  (let [form-db-path (form/data-path entity-type)
-        source-entity @(rf/subscribe [:get form-db-path])
-        new-entity (copy-entity source-entity)]
-    (rf/dispatch [::set-copy-data entity-type new-entity])
-    (rf/dispatch [::message/set-success entity-type :string.user.message/created-unsaved-copy])
+(rf/reg-fx ::set-create-entity-route
+  (fn [entity-type]
     (reife/push-state (create-route entity-type))))
+
+(rf/reg-event-fx ::invoke
+  (fn [{:keys [db]} [_ entity-type]]
+    (let [form-db-path (form/data-path entity-type)
+          source-entity (get-in db form-db-path)
+          new-entity (copy-entity source-entity)]
+      {:fx [[:dispatch [::set-copy-data entity-type new-entity]]
+            [:dispatch [::message/set-success entity-type :string.user.message/created-unsaved-copy]]
+            [::set-create-entity-route entity-type]]})))
 
 (defn action [entity-type]
   {:title :string.button/copy-to-new
    :icon "fas fa-clone"
-   :handler (partial invoke entity-type)
+   :handler #(rf/dispatch [::invoke entity-type])
    :disabled? false})

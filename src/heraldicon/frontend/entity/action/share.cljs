@@ -9,20 +9,22 @@
    [heraldicon.frontend.message :as message]
    [re-frame.core :as rf]))
 
-(defn- generate-url [entity-type]
-  (let [form-db-path (form/data-path entity-type)]
+(defn- generate-url [db entity-type]
+  (let [form-db-path (form/data-path entity-type)
+        context {:path (into [:context :db] form-db-path)
+                 :db db}]
     (case entity-type
-      :heraldicon.entity.type/arms (entity.arms/short-url @(rf/subscribe [:get form-db-path]))
-      :heraldicon.entity.type/charge (entity.attribution/full-url-for-charge {:path form-db-path})
-      :heraldicon.entity.type/ribbon (entity.attribution/full-url-for-ribbon {:path form-db-path})
-      :heraldicon.entity.type/collection (entity.attribution/full-url-for-collection {:path form-db-path}))))
+      :heraldicon.entity.type/arms (entity.arms/short-url (get-in db form-db-path))
+      :heraldicon.entity.type/charge (entity.attribution/full-url-for-charge context)
+      :heraldicon.entity.type/ribbon (entity.attribution/full-url-for-ribbon context)
+      :heraldicon.entity.type/collection (entity.attribution/full-url-for-collection context))))
 
-(defn- invoke [entity-type]
-  (let [share-url (generate-url entity-type)]
-    (rf/dispatch-sync [::message/clear entity-type])
-    (if (copy-to-clipboard share-url)
-      (rf/dispatch-sync [::message/set-success entity-type :string.user.message/copied-url-for-sharing])
-      (rf/dispatch-sync [::message/set-error entity-type :string.user.message/copy-to-clipboard-failed]))))
+(rf/reg-event-fx ::invoke
+  (fn [{:keys [db]} [_ entity-type]]
+    (let [share-url (generate-url db entity-type)]
+      {:dispatch (if (copy-to-clipboard share-url)
+                   [::message/set-success entity-type :string.user.message/copied-url-for-sharing]
+                   [::message/set-error entity-type :string.user.message/copy-to-clipboard-failed])})))
 
 (defn action [entity-type]
   (let [form-db-path (form/data-path entity-type)
@@ -32,7 +34,7 @@
     {:title :string.button/share
      :icon "fas fa-share-alt"
      :handler (when can-share?
-                (partial invoke entity-type))
+                #(rf/dispatch [::invoke entity-type]))
      :disabled? (not can-share?)
      :tooltip (when-not can-share?
                 :string.user.message/arms-need-to-be-public-and-saved-for-sharing)}))

@@ -16,29 +16,33 @@
     :heraldicon.entity.type/arms :generate-svg-arms
     :heraldicon.entity.type/collection :generate-svg-collection))
 
-(defn- invoke [entity-type]
-  (modal/start-loading)
-  (go
-    (try
-      (let [form-db-path (form/data-path entity-type)
-            full-data @(rf/subscribe [:get form-db-path])
-            ;; TODO: this can probably live elsewhere
-            payload (-> full-data
-                        (select-keys [:id :version])
-                        (assoc :render-options
-                               (get-in full-data
-                                       (case entity-type
-                                         :heraldicon.entity.type/arms [:data :achievement :render-options]
-                                         :heraldicon.entity.type/collection [:data :render-options]))))
-            session @(rf/subscribe [::session/data])
-            response (<? (api/call (generate-svg-api-function entity-type) payload session))]
-        (js/window.open (:svg-url response)))
+(rf/reg-fx ::export-svg
+  (fn [[entity-type entity-data session]]
+    (modal/start-loading)
+    (go
+      (try
+        (let [;; TODO: this can probably live elsewhere
+              payload (-> entity-data
+                          (select-keys [:id :version])
+                          (assoc :render-options
+                                 (get-in entity-data
+                                         (case entity-type
+                                           :heraldicon.entity.type/arms [:data :achievement :render-options]
+                                           :heraldicon.entity.type/collection [:data :render-options]))))
+              response (<? (api/call (generate-svg-api-function entity-type) payload session))]
+          (js/window.open (:svg-url response)))
 
-      (catch :default e
-        (log/error "generate svg error:" e))
+        (catch :default e
+          (log/error "generate svg error:" e))
 
-      (finally
-        (modal/stop-loading)))))
+        (finally
+          (modal/stop-loading))))))
+
+(rf/reg-event-fx ::invoke
+  (fn [{:keys [db]} [_ entity-type session]]
+    (let [form-db-path (form/data-path entity-type)
+          entity-data (get-in db form-db-path)]
+      {::export-svg [entity-type entity-data session]})))
 
 (defn action [entity-type]
   (when (#{:heraldicon.entity.type/arms
@@ -47,14 +51,12 @@
           logged-in? @(rf/subscribe [::session/logged-in?])
           can-export? (and logged-in?
                            @(rf/subscribe [::entity/saved? form-db-path])
-                           (not @(rf/subscribe [::form/unsaved-changes? entity-type])))]
+                           (not @(rf/subscribe [::form/unsaved-changes? entity-type])))
+          session @(rf/subscribe [::session/data])]
       {:title (string/str-tr :string.button/export " (SVG)")
        :icon "fas fa-file-export"
        :handler (when can-export?
-                  (fn [event]
-                    (.preventDefault event)
-                    (.stopPropagation event)
-                    (invoke entity-type)))
+                  #(rf/dispatch [::invoke entity-type session]))
        :disabled? (not can-export?)
        :tooltip (when-not can-export?
                   (if (not logged-in?)
