@@ -5,7 +5,7 @@
    [taoensso.timbre :as log]))
 
 (defn fetch-ribbon-data [{:keys [id version] :as variant}]
-  (if (and id version)
+  (if id
     (let [{:keys [status entity]} @(rf/subscribe [::entity-for-rendering/data id version])]
       (when (= status :done)
         entity))
