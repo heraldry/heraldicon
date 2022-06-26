@@ -7,9 +7,6 @@
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
-(defn- invoke [entity-type]
-  (rf/dispatch [::details/save entity-type]))
-
 (defn button [entity-type]
   (let [form-db-path (form/data-path entity-type)
         can-save? (and @(rf/subscribe [::session/logged-in?])
@@ -24,7 +21,7 @@
                                          (fn [event]
                                            (.preventDefault event)
                                            (.stopPropagation event)
-                                           (invoke entity-type)))
+                                           (rf/dispatch [::details/save entity-type])))
                              :style {:flex "initial"
                                      :margin-left "10px"}}
      [tr :string.button/save]]))
