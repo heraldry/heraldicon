@@ -18,7 +18,6 @@
                         (seq? %)) seq)
          (filter #(and (map? %)
                        (some-> % :type namespace (= "heraldry.charge.type"))
-                       (-> % :variant :version)
                        (-> % :variant :id)))
          (map :variant)
          set)))
