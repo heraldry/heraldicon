@@ -34,16 +34,22 @@
   (fn [db [_ new-entity]]
     (let [entity-type (:type new-entity)
           path (conj (entity-list-path entity-type) :entities)
-          entities (get-in db path)]
+          entities (get-in db path)
+          known-id? (some #(-> % :id (= (:id new-entity))) entities)
+          new-entities (if known-id?
+                         (mapv (fn [entity]
+                                 (if (and (= (:id new-entity)
+                                             (:id entity))
+                                          (> (:version new-entity)
+                                             (:version entity)))
+                                   new-entity
+                                   entity))
+                               entities)
+                         (when-not (nil? entities)
+                           (conj entities new-entity)))]
+
       (cond-> db
-        entities (assoc-in path (mapv (fn [entity]
-                                        (if (and (= (:id new-entity)
-                                                    (:id entity))
-                                                 (> (:version new-entity)
-                                                    (:version entity)))
-                                          new-entity
-                                          entity))
-                                      entities))))))
+        entities (assoc-in path new-entities)))))
 
 (rf/reg-event-db ::clear
   (fn [db [_ entity-type]]
