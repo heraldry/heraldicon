@@ -16,7 +16,7 @@
    [heraldicon.reader.blazonry.transform.ordinal] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child type?]]
    [heraldicon.reader.blazonry.transform.tincture] ;; needed for side effects
-   ))
+   [heraldicon.reader.blazonry.transform.tincture-modifier :refer [add-tincture-modifiers]]))
 (def ^:private max-layout-amount 50)
 
 (defmethod ast->hdn :horizontal-layout [[_ & nodes]]
@@ -431,37 +431,6 @@
                                                {:type :heraldry.charge-group.element.type/strip
                                                 :slots (vec (repeat amount 0))})
                                              amounts)})))))
-
-(def ^:private tincture-modifier-type-map
-  (->> attributes/tincture-modifier-map
-       (map (fn [[key _]]
-              [(->> key
-                    name
-                    s/upper-case
-                    (keyword "tincture-modifier"))
-               key]))
-       (into {})))
-
-(defn- get-tincture-modifier-type [nodes]
-  (let [node-type (first (get-child tincture-modifier-type-map nodes))]
-    (get tincture-modifier-type-map node-type)))
-
-(defmethod ast->hdn :tincture-modifier-type [[_ & nodes]]
-  (get-tincture-modifier-type nodes))
-
-(defmethod ast->hdn :tincture-modifier [[_ & nodes]]
-  (let [modifier-type (ast->hdn (get-child #{:tincture-modifier-type} nodes))
-        tincture (ast->hdn (get-child #{:tincture} nodes))]
-    [modifier-type tincture]))
-
-(defn- add-tincture-modifiers [hdn nodes]
-  (let [modifiers (into {}
-                        (comp (filter (type? #{:tincture-modifier}))
-                              (map ast->hdn))
-                        nodes)]
-    (cond-> hdn
-      (seq modifiers) (assoc :tincture modifiers))))
-
 (def ^:private charge-locations
   {:point/DEXTER :dexter
    :point/SINISTER :sinister
