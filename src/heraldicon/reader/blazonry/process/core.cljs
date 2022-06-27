@@ -1,4 +1,4 @@
-(ns heraldicon.reader.blazonry.process
+(ns heraldicon.reader.blazonry.process.core
   (:require
    [heraldicon.reader.blazonry.process.charge :as process.charge]
    [heraldicon.reader.blazonry.process.charge-group :as charge-group]

@@ -1,4 +1,4 @@
-(ns heraldicon.reader.blazonry.transform
+(ns heraldicon.reader.blazonry.transform.core
   (:require
    [heraldicon.reader.blazonry.transform.amount] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.charge] ;; needed for side effects

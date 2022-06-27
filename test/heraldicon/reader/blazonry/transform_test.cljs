@@ -1,7 +1,7 @@
 (ns heraldicon.reader.blazonry.transform-test
   (:require
    [cljs.test :refer-macros [are deftest]]
-   [heraldicon.reader.blazonry.transform :as transform]))
+   [heraldicon.reader.blazonry.transform.core :as transform]))
 
 (deftest transforming
   (are [ast form] (= (transform/transform ast) form)
