@@ -6,9 +6,9 @@
    [heraldicon.reader.blazonry.transform.tincture :as tincture]))
 
 (defn read [data parser]
-  (let [ast (some-> data
-                    (parser/parse parser))
-        tinctures (tincture/find-tinctures ast)]
-    (some-> ast
-            transform/transform
-            (process/process parser tinctures))))
+  (when data
+    (let [ast (parser/parse data parser)
+          tinctures (tincture/find-tinctures ast)]
+      (-> ast
+          transform/transform
+          (process/process parser tinctures)))))
