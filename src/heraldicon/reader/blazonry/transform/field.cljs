@@ -1,5 +1,7 @@
 (ns heraldicon.reader.blazonry.transform.field
   (:require
+   [heraldicon.reader.blazonry.transform.field.partition] ;; needed for side effects
+   [heraldicon.reader.blazonry.transform.field.plain] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]))
 
 (defmethod ast->hdn :component [[_ node]]

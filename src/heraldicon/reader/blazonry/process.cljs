@@ -2,7 +2,8 @@
   (:require
    [clojure.string :as s]
    [clojure.walk :as walk]
-   [heraldicon.heraldry.charge.options :as charge.options]))
+   [heraldicon.heraldry.charge.options :as charge.options]
+   [heraldicon.reader.blazonry.result :as result]))
 
 (defn- add-charge-group-defaults [{:heraldicon.reader.blazonry.transform/keys [default-charge-group-amount]
                                    :keys [type]
@@ -307,7 +308,7 @@
              :version nil})
         (select-keys [:id :version])
         (cond->
-          (seq warnings) (assoc ::warnings warnings)))))
+          (seq warnings) (assoc ::result/warnings warnings)))))
 
 (defn- is-charge-type? [charge-type]
   (some-> charge-type namespace (= "heraldry.charge.type")))

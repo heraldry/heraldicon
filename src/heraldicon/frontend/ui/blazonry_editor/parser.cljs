@@ -6,6 +6,7 @@
    [heraldicon.frontend.ui.blazonry-editor.shared :as shared]
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.reader :as reader]
+   [heraldicon.reader.blazonry.result :as result]
    [re-frame.core :as rf]))
 
 (def ^:private parser-path
@@ -68,9 +69,7 @@
                             (tree-seq (some-fn vector? map? seq?) seq)
                             (keep (fn [data]
                                     (when (map? data)
-                                      (let [warnings (concat
-                                                      (:heraldicon.reader.blazonry.transform/warnings data)
-                                                      (:heraldicon.reader.blazonry.process/warnings data))]
+                                      (let [warnings (::result/warnings data)]
                                         (when (seq warnings)
                                           warnings)))))
                             (apply concat))}))

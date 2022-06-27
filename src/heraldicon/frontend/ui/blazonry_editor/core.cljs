@@ -12,6 +12,7 @@
    [heraldicon.frontend.ui.blazonry-editor.parser :as parser]
    [heraldicon.frontend.ui.blazonry-editor.shared :as shared]
    [heraldicon.heraldry.default :as default]
+   [heraldicon.reader.blazonry.result :as result]
    [heraldicon.render.core :as render]
    [re-frame.core :as rf]))
 
@@ -22,9 +23,7 @@
   (walk/postwalk
    (fn [data]
      (if (map? data)
-       (dissoc data
-               :heraldicon.reader.blazonry.transform/warnings
-               :heraldicon.reader.blazonry.process/warnings)
+       (dissoc data ::result/warnings)
        data))
    data))
 
