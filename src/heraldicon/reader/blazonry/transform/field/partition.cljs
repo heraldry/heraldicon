@@ -7,7 +7,7 @@
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.reader.blazonry.result :as result]
    [heraldicon.reader.blazonry.transform.line :refer [add-lines]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first filter-nodes]]
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first transform-all filter-nodes]]
    [heraldicon.util.number :as number]))
 
 (def ^:private field-type-map
@@ -280,9 +280,7 @@
                          (-> layout :num-fields-x (or 6))
                          (-> layout :num-fields-y (or 6))
                          2))
-        given-fields (->> nodes
-                          (filter-nodes #{:partition-field})
-                          (map ast->hdn)
+        given-fields (->> (transform-all #{:partition-field} nodes)
                           (map (fn [field-data]
                                  (update field-data
                                          :references
