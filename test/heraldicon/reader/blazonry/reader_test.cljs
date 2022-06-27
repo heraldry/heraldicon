@@ -584,7 +584,7 @@
               {:type :heraldry.field.type/ref
                :index 0}]
      :heraldicon.reader.blazonry.transform/warnings
-     ["Field for partition mentioned more than once: ii."]}
+     ["Field for partition mentioned more than once: II."]}
 
     "paly i. ii. or, 3rd and 5th azure"
     {:type :heraldry.field.type/paly
@@ -612,9 +612,9 @@
               {:type :heraldry.field.type/ref
                :index 0}]
      :heraldicon.reader.blazonry.transform/warnings
-     ["Field for partition missing: ii."
-      "Fields not found in partition: xix., chief"
-      "Field for partition mentioned more than once: i."]}
+     ["Field for partition missing: II."
+      "Fields not found in partition: XIX., chief"
+      "Field for partition mentioned more than once: I."]}
 
     "per pale chief or, base azure"
     {:type :heraldry.field.type/per-pale
@@ -623,7 +623,7 @@
               {:type :heraldry.field.type/plain
                :tincture :void}]
      :heraldicon.reader.blazonry.transform/warnings
-     ["Fields for partition missing: i., ii."
+     ["Fields for partition missing: I., II."
       "Fields not found in partition: base, chief"]}
 
     "or a bend fimbriated or and vert gules"
