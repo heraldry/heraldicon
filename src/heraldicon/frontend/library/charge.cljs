@@ -25,7 +25,7 @@
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.frontend.user.session :as session]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.render.core :as render]
+   [heraldicon.render.coat-of-arms :as coat-of-arms]
    [heraldicon.svg.core :as svg]
    [heraldicon.util.colour :as colour]
    [hickory.core :as hickory]
@@ -280,7 +280,7 @@
                                    original? (prepare-for-preview form-db-path)))
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
         {:keys [result
-                environment]} (render/coat-of-arms
+                environment]} (coat-of-arms/render
                                (-> shared/coa-select-option-context
                                    (c/<< :path [:context :coat-of-arms])
                                    (c/<< :ui-show-colours

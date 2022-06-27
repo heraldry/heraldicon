@@ -18,7 +18,7 @@
    [heraldicon.frontend.ui.shared :as shared]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
-   [heraldicon.render.core :as render]
+   [heraldicon.render.coat-of-arms :as coat-of-arms]
    [re-frame.core :as rf]))
 
 (defn- render-add-arms [x y size]
@@ -74,7 +74,7 @@
                                    @(rf/subscribe [::entity-for-rendering/data arms-id version]))
         collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
         {:keys [result
-                environment]} (render/coat-of-arms
+                environment]} (coat-of-arms/render
                                (-> shared/coa-select-option-context
                                    (c/<< :path [:context :coat-of-arms])
                                    (c/<< :render-options (merge-with
@@ -190,7 +190,7 @@
       (when (or (not arms-id)
                 (= status :done))
         (let [{:keys [result
-                      environment]} (render/coat-of-arms
+                      environment]} (coat-of-arms/render
                                      (-> shared/coa-select-option-context
                                          (c/<< :path [:context :coat-of-arms])
                                          (c/<< :render-options (merge-with
