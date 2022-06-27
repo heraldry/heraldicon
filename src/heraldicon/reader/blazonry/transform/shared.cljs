@@ -8,7 +8,7 @@
   (log/debug :ast->hdn-error ast)
   ast)
 
-(defn type? [type-fn]
+(defn- type? [type-fn]
   #(-> % first type-fn))
 
 (defn filter-nodes [type-fn nodes]
