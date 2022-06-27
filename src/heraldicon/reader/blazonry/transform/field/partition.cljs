@@ -6,7 +6,6 @@
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.reader.blazonry.result :as result]
-   [heraldicon.reader.blazonry.transform.field.partition.field] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.line :refer [add-lines]]
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]
    [heraldicon.util.number :as number]))

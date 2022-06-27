@@ -7,7 +7,11 @@
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.heraldry.tincture :as tincture]
+   [heraldicon.reader.blazonry.transform.amount] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.field] ;; needed for side effects
+   [heraldicon.reader.blazonry.transform.field.partition] ;; needed for side effects
+   [heraldicon.reader.blazonry.transform.field.partition.field] ;; needed for side effects
+   [heraldicon.reader.blazonry.transform.field.plain] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
    [heraldicon.reader.blazonry.transform.line :refer [add-lines]]
    [heraldicon.reader.blazonry.transform.ordinal] ;; needed for side effects
