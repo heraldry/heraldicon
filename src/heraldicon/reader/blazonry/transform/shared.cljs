@@ -16,3 +16,7 @@
 
 (defn get-child [type-fn nodes]
   (first (filter-nodes type-fn nodes)))
+
+(defn transform-first [type-fn nodes]
+  (some-> (get-child type-fn nodes)
+          ast->hdn))

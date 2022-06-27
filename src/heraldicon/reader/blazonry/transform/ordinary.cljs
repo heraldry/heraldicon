@@ -5,7 +5,7 @@
    [heraldicon.reader.blazonry.transform.cottising :refer [add-cottising]]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
    [heraldicon.reader.blazonry.transform.line :refer [add-lines]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first filter-nodes]]))
 
 (def ^:private ordinary-type-map
   (into {:ordinary/PALLET :heraldry.ordinary.type/pale
@@ -20,9 +20,7 @@
         ordinary.options/ordinary-map))
 
 (defn- get-ordinary-type [nodes]
-  (let [node-type (->> nodes
-                       (get-child ordinary-type-map)
-                       first)]
+  (let [node-type (first (get-child ordinary-type-map nodes))]
     [node-type (get ordinary-type-map node-type)]))
 
 (def ^:private max-label-points 20)
@@ -125,14 +123,13 @@
                                              (= :label
                                                 ordinary-type) (assoc :num-points
                                                                       (->> (get ordinary-options :label-points)
-                                                                           (get-child #{:amount})
-                                                                           ast->hdn
+                                                                           (transform-first #{:amount})
                                                                            (min max-label-points)))))))
 
 (defmethod ast->hdn :ordinary [[_ & nodes]]
   (let [[node-type ordinary-type] (get-ordinary-type nodes)]
     (-> {:type ordinary-type
-         :field (ast->hdn (get-child #{:field} nodes))}
+         :field (transform-first #{:field} nodes)}
         (cond->
           (#{:ordinary/PALLET}
            node-type) (assoc-in [:geometry :size] 15)

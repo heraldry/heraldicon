@@ -4,10 +4,10 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
    [heraldicon.reader.blazonry.transform.line :refer [add-lines]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first filter-nodes]]))
 
 (defmethod ast->hdn :cottise [[_ & nodes]]
-  (let [field (ast->hdn (get-child #{:field} nodes))]
+  (let [field (transform-first #{:field} nodes)]
     (-> default/cottise
         (assoc :field field)
         (add-lines nodes)

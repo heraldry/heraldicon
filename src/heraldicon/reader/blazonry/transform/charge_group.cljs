@@ -1,7 +1,7 @@
 (ns heraldicon.reader.blazonry.transform.charge-group
   (:require
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first get-child filter-nodes]]
    [heraldicon.reader.blazonry.transform.tincture-modifier :refer [add-tincture-modifiers]]))
 
 (def ^:private max-charge-group-columns 20)
@@ -112,19 +112,13 @@
 (def ^:private max-charge-group-amount 64)
 
 (defmethod ast->hdn :charge-group [[_ & nodes]]
-  (let [amount-node (get-child #{:amount} nodes)
-        amount (if amount-node
-                 (ast->hdn amount-node)
-                 1)
-        amount (-> amount
+  (let [amount (-> (transform-first #{:amount} nodes)
+                   (or 1)
                    (max 1)
                    (min max-charge-group-amount))
-        anchor-point (some-> (get-child #{:charge-location} nodes)
-                             ast->hdn)
-        field (ast->hdn (get-child #{:field} nodes))
-        charge (-> #{:charge-without-fimbriation}
-                   (get-child nodes)
-                   ast->hdn
+        anchor-point (transform-first #{:charge-location} nodes)
+        field (transform-first #{:field} nodes)
+        charge (-> (transform-first #{:charge-without-fimbriation} nodes)
                    (assoc :field field)
                    (add-tincture-modifiers nodes)
                    (add-fimbriation nodes))]

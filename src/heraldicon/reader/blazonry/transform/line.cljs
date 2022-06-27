@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first filter-nodes]]))
 
 (defmethod ast->hdn :line-type [[_ node]]
   (let [raw-type (-> node
@@ -14,10 +14,10 @@
          raw-type raw-type)))
 
 (defmethod ast->hdn :line [[_ & nodes]]
-  (let [line-type (get-child #{:line-type} nodes)]
+  (let [line-type (transform-first #{:line-type} nodes)]
     (-> nil
         (cond->
-          line-type (assoc :type (ast->hdn line-type)))
+          line-type (assoc :type line-type))
         (add-fimbriation nodes))))
 
 (defn add-lines [hdn nodes]

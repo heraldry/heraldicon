@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first]]))
 
 (def ^:private tincture-map
   (into {:tincture/PROPER :void}
@@ -12,8 +12,7 @@
         tincture/tincture-map))
 
 (defmethod ast->hdn :tincture [[_ & nodes]]
-  (let [ordinal (some-> (get-child #{:ordinal} nodes)
-                        ast->hdn)
+  (let [ordinal (transform-first #{:ordinal} nodes)
         field (get-child #{:FIELD} nodes)
         same (get-child #{:SAME} nodes)]
     (cond

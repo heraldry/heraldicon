@@ -7,7 +7,7 @@
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.reader.blazonry.result :as result]
    [heraldicon.reader.blazonry.transform.line :refer [add-lines]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first filter-nodes]]
    [heraldicon.util.number :as number]))
 
 (def ^:private field-type-map
@@ -261,10 +261,9 @@
 
 (defmethod ast->hdn :partition [[_ & nodes]]
   (let [field-type (get-field-type nodes)
-        layout (some-> (get-child #{:layout
-                                    :horizontal-layout
-                                    :vertical-layout} nodes)
-                       ast->hdn)
+        layout (transform-first #{:layout
+                                  :horizontal-layout
+                                  :vertical-layout} nodes)
         field-type (if (and (= field-type :heraldry.field.type/gyronny)
                             layout
                             (-> layout :num-fields-x (not= 8)))
