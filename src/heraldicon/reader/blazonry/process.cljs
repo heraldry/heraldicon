@@ -3,7 +3,8 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldicon.heraldry.charge.options :as charge.options]
-   [heraldicon.reader.blazonry.result :as result]))
+   [heraldicon.reader.blazonry.result :as result]
+   [heraldicon.reader.blazonry.transform.tincture :as tincture]))
 
 (defn- add-charge-group-defaults [{:heraldicon.reader.blazonry.transform/keys [default-charge-group-amount]
                                    :keys [type]
@@ -338,7 +339,7 @@
                      (fn [data]
                        (if (map? data)
                          (condp apply [data]
-                           :heraldicon.reader.blazonry.transform/tincture-ordinal-reference
+                           ::tincture/tincture-ordinal-reference
                            :>> (fn [tincture-reference]
                                  (let [index (dec tincture-reference)]
                                    (if (and (<= 0 index)
@@ -346,7 +347,7 @@
                                      (get tinctures index)
                                      :void)))
 
-                           :heraldicon.reader.blazonry.parser/tincture-same-id
+                           ::tincture/tincture-same-id
                            (or (last-tincture tinctures data)
                                :void)
 
@@ -357,7 +358,7 @@
                                        (walk/prewalk
                                         (fn [data]
                                           (if (map? data)
-                                            (if (:heraldicon.reader.blazonry.transform/tincture-field-reference data)
+                                            (if (::tincture/tincture-field-reference data)
                                               ;; if any of the subfields of the root field reference the field,
                                               ;; then that must be considered :void for this step, so we don't
                                               ;; get an infinite loop
@@ -370,11 +371,11 @@
      (fn [data]
        (if (map? data)
          (if (and (-> data :type (= :heraldry.field.type/plain))
-                  (-> data :tincture :heraldicon.reader.blazonry.transform/tincture-field-reference))
+                  (-> data :tincture ::tincture/tincture-field-reference))
            (-> data
                (dissoc :tincture)
                (merge root-field-without-components))
-           (if (:heraldicon.reader.blazonry.transform/tincture-field-reference data)
+           (if (::tincture/tincture-field-reference data)
              :void
              data))
          data))
