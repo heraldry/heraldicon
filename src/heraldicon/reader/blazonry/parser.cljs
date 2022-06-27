@@ -3,6 +3,7 @@
    ["genex" :as genex]
    [clojure.string :as s]
    [clojure.walk :as walk]
+   [heraldicon.reader.blazonry.transform.tincture :as tincture]
    [instaparse.core :as insta])
   (:require-macros
    [heraldicon.reader.blazonry.parser :refer [default-parser]]))
@@ -171,7 +172,7 @@
      (fn [ast]
        (if (and (vector? ast)
                 (-> ast first (= :SAME)))
-         (let [new-value [:SAME {::tincture-same-id @counter}]]
+         (let [new-value [:SAME {::tincture/tincture-same-id @counter}]]
            (swap! counter inc)
            new-value)
          ast))
