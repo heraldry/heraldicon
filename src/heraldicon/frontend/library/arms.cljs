@@ -21,7 +21,7 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.render.core :as render]
+   [heraldicon.render.achievement :as achievement]
    [re-frame.core :as rf]))
 
 (defn- charge-attribution [form-db-path]
@@ -64,7 +64,7 @@
      [ribbon-attribution form-db-path]]))
 
 (defn- render-achievement []
-  [render/achievement (c/++ base-context :data :achievement)])
+  [achievement/render (c/++ base-context :data :achievement)])
 
 (defn- blazonry [form-db-path]
   [:div.blazonry
