@@ -50,10 +50,17 @@
 (defn- post-process-options [options context & {:keys [part-of-semy?
                                                        part-of-charge-group?]}]
   (let [ornament? (some #(= % :ornaments) (:path context))
+        helm? (some #(= % :helms) (:path context))
         without-anchor? (or part-of-semy?
                             part-of-charge-group?)]
     (cond-> options
       without-anchor? (dissoc :anchor)
+      helm? (update-in [:geometry :size] (fn [size]
+                                           (when size
+                                             (assoc size
+                                                    :min 5
+                                                    :max 400
+                                                    :default 25))))
       ornament? (update-in [:geometry :size] (fn [size]
                                                (when size
                                                  (assoc size
