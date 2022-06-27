@@ -18,7 +18,7 @@
    [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.vector :as v]
-   [heraldicon.render.core :as render]
+   [heraldicon.render.ribbon :as render.ribbon]
    [heraldicon.svg.filter :as filter]
    [heraldicon.svg.path :as path]
    [re-frame.core :as rf]))
@@ -313,8 +313,8 @@
         [grid-lines width height 20 20])
 
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render/ribbon (assoc render-context
-                             :path ribbon-path) :argent :none :helmet-dark]
+       [render.ribbon/render (assoc render-context
+                                    :path ribbon-path) :argent :none :helmet-dark]
        [render-edit-overlay ribbon-path]
 
        (into [:<>]
