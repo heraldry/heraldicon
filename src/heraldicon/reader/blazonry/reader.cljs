@@ -2,8 +2,7 @@
   (:require
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.process :as process]
-   [heraldicon.reader.blazonry.transform] ;; needed for side effects
-   [heraldicon.reader.blazonry.transform.shared :as transform.shared]
+   [heraldicon.reader.blazonry.transform :as transform]
    [heraldicon.reader.blazonry.transform.tincture :as tincture]))
 
 (defn read [data parser]
@@ -11,7 +10,7 @@
                     (parser/parse parser))
         tinctures (tincture/find-tinctures ast)]
     (some-> ast
-            transform.shared/ast->hdn
+            transform/transform
             process/process-charge-groups
             process/process-ordinary-groups
             (process/process-charge-references parser)
