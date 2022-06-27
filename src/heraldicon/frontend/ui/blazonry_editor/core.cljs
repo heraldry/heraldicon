@@ -13,7 +13,7 @@
    [heraldicon.frontend.ui.blazonry-editor.shared :as shared]
    [heraldicon.heraldry.default :as default]
    [heraldicon.reader.blazonry.result :as result]
-   [heraldicon.render.core :as render]
+   [heraldicon.render.achievement :as achievement]
    [re-frame.core :as rf]))
 
 (def ^:private hdn-path
@@ -83,7 +83,7 @@
            [editor/editor]]
           [:div {:style {:width "15em"
                          :height "100%"}}
-           [render/achievement
+           [achievement/render
             (assoc context/default
                    :path hdn-path
                    :render-options-path (conj hdn-path :render-options))]]]

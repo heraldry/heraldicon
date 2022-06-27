@@ -1,4 +1,4 @@
-(ns heraldicon.render.core
+(ns heraldicon.render.achievement
   (:require
    [heraldicon.context :as c]
    [heraldicon.font :as font]
@@ -55,11 +55,11 @@
                                                   j
                                                   :font))))))
 
-(defn achievement [{:keys [short-url
-                           svg-export?
-                           target-width
-                           target-height
-                           embed-fonts] :as context}]
+(defn render [{:keys [short-url
+                      svg-export?
+                      target-width
+                      target-height
+                      embed-fonts] :as context}]
   (let [short-url-font :deja-vu-sans
         coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
