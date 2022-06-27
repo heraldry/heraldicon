@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.heraldry.option.attributes :as attributes]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first filter-nodes]]))
 
 (def ^:private tincture-modifier-type-map
   (->> attributes/tincture-modifier-map
@@ -22,8 +22,8 @@
   (get-tincture-modifier-type nodes))
 
 (defmethod ast->hdn :tincture-modifier [[_ & nodes]]
-  (let [modifier-type (ast->hdn (get-child #{:tincture-modifier-type} nodes))
-        tincture (ast->hdn (get-child #{:tincture} nodes))]
+  (let [modifier-type (transform-first #{:tincture-modifier-type} nodes)
+        tincture (transform-first #{:tincture} nodes)]
     [modifier-type tincture]))
 
 (defn add-tincture-modifiers [hdn nodes]

@@ -4,7 +4,7 @@
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first filter-nodes]]))
 
 (def ^:private attitude-map
   (->> attributes/attitude-map
@@ -45,10 +45,8 @@
                                 (map (fn [[key & nodes]]
                                        [key nodes]))
                                 (into {}))
-        attitude (some-> (get-child #{:attitude} nodes)
-                         ast->hdn)
-        facing (some-> (get-child #{:facing} nodes)
-                       ast->hdn)
+        attitude (transform-first #{:attitude} nodes)
+        facing (transform-first #{:facing} nodes)
         charge-type (-> hdn :type name keyword)]
     (cond-> hdn
       (get charge-options :MIRRORED) (assoc-in [:geometry :mirrored?] true)
@@ -57,8 +55,7 @@
                                           (= :star
                                              charge-type) (assoc :num-points
                                                                  (->> (get charge-options :star-points)
-                                                                      (get-child #{:amount})
-                                                                      ast->hdn
+                                                                      (transform-first #{:amount})
                                                                       (min max-star-points))))
       attitude (assoc :attitude attitude)
       facing (assoc :facing facing))))
@@ -85,7 +82,7 @@
            (keyword "heraldry.charge.type")))
 
 (defmethod ast->hdn :charge-other [[_ & nodes]]
-  (let [charge-type (ast->hdn (get-child #{:charge-other-type} nodes))]
+  (let [charge-type (transform-first #{:charge-other-type} nodes)]
     (add-charge-options
      {:type charge-type
       :variant {:id "charge:N87wec"
@@ -93,11 +90,9 @@
      nodes)))
 
 (defmethod ast->hdn :charge-without-fimbriation [[_ & nodes]]
-  (-> (get-child #{:charge-standard
-                   :charge-other} nodes)
-      ast->hdn))
+  (transform-first #{:charge-standard
+                     :charge-other} nodes))
 
 (defmethod ast->hdn :charge [[_ & nodes]]
-  (-> (get-child #{:charge-without-fimbriation} nodes)
-      ast->hdn
+  (-> (transform-first #{:charge-without-fimbriation} nodes)
       (add-fimbriation nodes)))

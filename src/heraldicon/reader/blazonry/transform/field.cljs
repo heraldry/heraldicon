@@ -1,6 +1,6 @@
 (ns heraldicon.reader.blazonry.transform.field
   (:require
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first filter-nodes]]))
 
 (defmethod ast->hdn :component [[_ node]]
   (ast->hdn node))
@@ -12,15 +12,13 @@
        vec))
 
 (defmethod ast->hdn :field [[_ & nodes]]
-  (if-let [nested-field (get-child #{:field} nodes)]
-    ;; for fields inside parentheses
-    (ast->hdn nested-field)
-    (let [field (ast->hdn (get-child #{:variation} nodes))
-          component (some-> (get-child #{:component} nodes) ast->hdn)
-          components (some-> (get-child #{:components} nodes) ast->hdn)
-          components (vec (concat component components))]
-      (cond-> field
-        (seq components) (assoc :components components)))))
+  ;; for fields inside parentheses
+  (or (transform-first #{:field} nodes)
+      (let [field (transform-first #{:variation} nodes)
+            components (vec (concat (transform-first #{:component} nodes)
+                                    (transform-first #{:components} nodes)))]
+        (cond-> field
+          (seq components) (assoc :components components)))))
 
 (defmethod ast->hdn :variation [[_ node]]
   (ast->hdn node))
