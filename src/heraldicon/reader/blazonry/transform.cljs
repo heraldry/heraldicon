@@ -10,38 +10,13 @@
    [heraldicon.reader.blazonry.transform.field.partition.field] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.field.plain] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
+   [heraldicon.reader.blazonry.transform.layout] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.line] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.ordinal] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.ordinary] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child type?]]
    [heraldicon.reader.blazonry.transform.tincture] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.tincture-modifier :refer [add-tincture-modifiers]]))
-
-(def ^:private max-layout-amount 50)
-
-(defmethod ast->hdn :horizontal-layout [[_ & nodes]]
-  (let [amount (ast->hdn (get-child #{:amount} nodes))]
-    {:num-fields-x (min max-layout-amount amount)}))
-
-(defmethod ast->hdn :vertical-layout-implicit [[_ & nodes]]
-  (let [amount (ast->hdn (get-child #{:amount} nodes))]
-    {:num-fields-y (min max-layout-amount amount)}))
-
-(defmethod ast->hdn :vertical-layout-explicit [[_ & nodes]]
-  (let [amount (ast->hdn (get-child #{:amount} nodes))]
-    {:num-fields-y (min max-layout-amount amount)}))
-
-(defmethod ast->hdn :vertical-layout [[_ node]]
-  (ast->hdn node))
-
-(defmethod ast->hdn :layout [[_ & nodes]]
-  (let [layouts (->> nodes
-                     (filter (type? #{:horizontal-layout
-                                      :vertical-layout
-                                      :vertical-layout-explicit
-                                      :vertical-layout-implicit}))
-                     (map ast->hdn))]
-    (apply merge layouts)))
 
 (def ^:private max-ordinary-group-amount 20)
 
