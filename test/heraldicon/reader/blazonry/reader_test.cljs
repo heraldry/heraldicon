@@ -2,7 +2,8 @@
   (:require
    [cljs.test :refer-macros [are deftest]]
    [heraldicon.reader.blazonry.parser :as parser]
-   [heraldicon.reader.blazonry.reader :as reader]))
+   [heraldicon.reader.blazonry.reader :as reader]
+   [heraldicon.reader.blazonry.result :as result]))
 
 (deftest parsing
   (are [blazon form] (= (reader/read blazon parser/default) form)
@@ -583,7 +584,7 @@
                :tincture :azure}
               {:type :heraldry.field.type/ref
                :index 0}]
-     :heraldicon.reader.blazonry.transform/warnings
+     ::result/warnings
      ["Field for partition mentioned more than once: II."]}
 
     "paly i. ii. or, 3rd and 5th azure"
@@ -611,7 +612,7 @@
                :index 1}
               {:type :heraldry.field.type/ref
                :index 0}]
-     :heraldicon.reader.blazonry.transform/warnings
+     ::result/warnings
      ["Field for partition missing: II."
       "Fields not found in partition: XIX., chief"
       "Field for partition mentioned more than once: I."]}
@@ -622,7 +623,7 @@
                :tincture :void}
               {:type :heraldry.field.type/plain
                :tincture :void}]
-     :heraldicon.reader.blazonry.transform/warnings
+     ::result/warnings
      ["Fields for partition missing: I., II."
       "Fields not found in partition: base, chief"]}
 
