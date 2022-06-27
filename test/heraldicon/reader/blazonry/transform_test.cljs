@@ -1,10 +1,10 @@
 (ns heraldicon.reader.blazonry.transform-test
   (:require
    [cljs.test :refer-macros [are deftest]]
-   [heraldicon.reader.blazonry.transform :as transform]))
+   [heraldicon.reader.blazonry.transform.shared :as transform.shared]))
 
 (deftest transforming
-  (are [ast form] (= (transform/ast->hdn ast) form)
+  (are [ast form] (= (transform.shared/ast->hdn ast) form)
 
     [:A "a"] 1
     [:A "an"] 1
