@@ -26,7 +26,7 @@
      "azure, a bordure engrailed or"
      "azure, 3 piles throughout or"]]
    ["charges with fimbriation"
-    ["azure, a star of 6 points fimbriated or sable"
+    ["azure, a star of 7 points fimbriated or purpure"
      "azure, a lion or, langued gules, armed argent"
      "azure, a lion sejant reversed or"]]
    ["charge groups"
