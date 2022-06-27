@@ -489,3 +489,6 @@
                    (add-tincture-modifiers nodes)
                    (add-fimbriation nodes))]
     [(semy charge nodes)]))
+
+(defn transform [ast]
+  (ast->hdn ast))
