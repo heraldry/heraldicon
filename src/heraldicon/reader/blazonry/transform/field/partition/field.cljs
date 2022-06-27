@@ -1,5 +1,6 @@
 (ns heraldicon.reader.blazonry.transform.field.partition.field
   (:require
+   [heraldicon.reader.blazonry.transform.ordinal] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child filter-nodes]]))
 
 (def ^:private field-locations

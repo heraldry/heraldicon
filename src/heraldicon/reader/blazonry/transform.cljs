@@ -10,8 +10,8 @@
    [heraldicon.reader.blazonry.transform.field] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
    [heraldicon.reader.blazonry.transform.line :refer [add-lines]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child type?]]
-   [heraldicon.util.number :as number]))
+   [heraldicon.reader.blazonry.transform.ordinal] ;; needed for side effects
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child type?]]))
 
 (def ^:private tincture-map
   (into {:tincture/PROPER :void}
@@ -19,13 +19,6 @@
                [(keyword "tincture" (-> key name s/upper-case))
                 key]))
         tincture/tincture-map))
-
-(defmethod ast->hdn :ordinal [[_ & nodes]]
-  (->> nodes
-       (tree-seq (some-fn map? vector? seq?) seq)
-       (filter string?)
-       first
-       number/ordinal-from-string))
 
 (defmethod ast->hdn :tincture [[_ & nodes]]
   (let [ordinal (some-> (get-child #{:ordinal} nodes)
