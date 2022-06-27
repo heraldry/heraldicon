@@ -10,22 +10,9 @@
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.util.number :as number]
-   [taoensso.timbre :as log]))
-
-(defmulti ast->hdn first)
-
-(defmethod ast->hdn :default [ast]
-  (log/debug :ast->hdn-error ast)
-  ast)
-
-(defn- type? [type-fn]
-  #(-> % first type-fn))
-
-(defn- get-child [type-fn nodes]
-  (->> nodes
-       (filter (type? type-fn))
-       first))
+   [heraldicon.reader.blazonry.transform.field] ;; needed for side effects
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child type?]]
+   [heraldicon.util.number :as number]))
 
 (def ^:private tincture-map
   (into {:tincture/PROPER :void}
@@ -494,17 +481,6 @@
        (map (fn [s]
               (or (number/from-string s) 0)))
        (reduce +)))
-
-(defmethod ast->hdn :components [[_ & nodes]]
-  (let [components (->> nodes
-                        (filter (type? #{:component}))
-                        (mapcat ast->hdn)
-                        vec)]
-    (when (seq components)
-      components)))
-
-(defmethod ast->hdn :component [[_ node]]
-  (ast->hdn node))
 
 (def ^:private max-label-points 20)
 
@@ -983,26 +959,6 @@
                    (add-tincture-modifiers nodes)
                    (add-fimbriation nodes))]
     [(semy charge nodes)]))
-
-(defmethod ast->hdn :field [[_ & nodes]]
-  (if-let [nested-field (get-child #{:field} nodes)]
-    (ast->hdn nested-field)
-    (let [field (ast->hdn (get-child #{:variation} nodes))
-          component (some-> (get-child #{:component} nodes)
-                            ast->hdn)
-          components (some->> nodes
-                              (get-child #{:components})
-                              ast->hdn)
-          components (vec (concat component
-                                  components))]
-      (cond-> field
-        (seq components) (assoc :components components)))))
-
-(defmethod ast->hdn :variation [[_ node]]
-  (ast->hdn node))
-
-(defmethod ast->hdn :blazon [[_ node]]
-  (ast->hdn node))
 
 (defn find-tinctures [ast]
   (->> ast
