@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first transform-all]]))
 
 (defmethod ast->hdn :line-type [[_ node]]
   (let [raw-type (-> node
@@ -23,9 +23,7 @@
 (defn add-lines [hdn nodes]
   (let [[line
          opposite-line
-         extra-line] (->> nodes
-                          (filter-nodes #{:line})
-                          (mapv ast->hdn))]
+         extra-line] (transform-all #{:line} nodes)]
     (cond-> hdn
       line (assoc :line line)
       opposite-line (assoc :opposite-line opposite-line)

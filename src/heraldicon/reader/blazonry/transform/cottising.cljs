@@ -4,7 +4,7 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
    [heraldicon.reader.blazonry.transform.line :refer [add-lines]]
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first transform-all]]))
 
 (defmethod ast->hdn :cottise [[_ & nodes]]
   (let [field (transform-first #{:field} nodes)]
@@ -15,9 +15,7 @@
 
 (defmethod ast->hdn :cottising [[_ & nodes]]
   (let [[cottise-1
-         cottise-2] (->> nodes
-                         (filter-nodes #{:cottise})
-                         (map ast->hdn))
+         cottise-2] (transform-all #{:cottise} nodes)
         double-node (get-child #{:DOUBLY} nodes)
         cottise-2 (or cottise-2
                       (when double-node
@@ -30,9 +28,7 @@
 (defn add-cottising [hdn nodes]
   (let [[main
          opposite
-         extra] (->> nodes
-                     (filter-nodes #{:cottising})
-                     (map ast->hdn))
+         extra] (transform-all #{:cottising} nodes)
         ordinary-type (-> hdn :type name keyword)
         opposite (or opposite
                      (when (#{:fess

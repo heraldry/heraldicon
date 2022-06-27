@@ -20,3 +20,7 @@
 (defn transform-first [type-fn nodes]
   (some-> (get-child type-fn nodes)
           ast->hdn))
+
+(defn transform-all [type-fn nodes]
+  (->> (filter-nodes type-fn nodes)
+       (map ast->hdn)))

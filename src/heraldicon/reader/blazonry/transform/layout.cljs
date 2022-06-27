@@ -1,6 +1,6 @@
 (ns heraldicon.reader.blazonry.transform.layout
   (:require
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first transform-all]]))
 
 (def ^:private max-layout-amount 50)
 
@@ -20,10 +20,7 @@
   (ast->hdn node))
 
 (defmethod ast->hdn :layout [[_ & nodes]]
-  (let [layouts (->> nodes
-                     (filter-nodes #{:horizontal-layout
-                                     :vertical-layout
-                                     :vertical-layout-explicit
-                                     :vertical-layout-implicit})
-                     (map ast->hdn))]
-    (apply merge layouts)))
+  (apply merge (transform-all #{:horizontal-layout
+                                :vertical-layout
+                                :vertical-layout-explicit
+                                :vertical-layout-implicit} nodes)))

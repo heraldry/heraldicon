@@ -1,6 +1,6 @@
 (ns heraldicon.reader.blazonry.transform.field.partition.field
   (:require
-   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first filter-nodes]]))
+   [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first transform-all]]))
 
 (def ^:private field-locations
   {:point/DEXTER :dexter
@@ -27,9 +27,5 @@
       (transform-first #{:field-location} nodes)))
 
 (defmethod ast->hdn :partition-field [[_ & nodes]]
-  (let [field (transform-first #{:field :plain} nodes)
-        references (->> nodes
-                        (filter-nodes #{:field-reference})
-                        (map ast->hdn))]
-    {:references references
-     :field field}))
+  {:references (transform-all #{:field-reference} nodes)
+   :field (transform-first #{:field :plain} nodes)})
