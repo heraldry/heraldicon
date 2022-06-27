@@ -1,6 +1,7 @@
 (ns heraldicon.reader.blazonry.transform-test
   (:require
    [cljs.test :refer-macros [are deftest]]
+   [heraldicon.reader.blazonry.transform.amount] ;; needed for side effects
    [heraldicon.reader.blazonry.transform.shared :as transform.shared]))
 
 (deftest transforming
