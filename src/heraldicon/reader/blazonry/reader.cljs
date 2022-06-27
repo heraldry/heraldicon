@@ -11,7 +11,4 @@
         tinctures (tincture/find-tinctures ast)]
     (some-> ast
             transform/transform
-            process/process-charge-groups
-            process/process-ordinary-groups
-            (process/process-charge-references parser)
-            (process/process-tincture-references tinctures))))
+            (process/process parser tinctures))))
