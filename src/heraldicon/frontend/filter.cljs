@@ -10,7 +10,6 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
    [heraldicon.frontend.status :as status]
-   [heraldicon.frontend.ui.element.checkbox :as checkbox]
    [heraldicon.frontend.ui.element.radio-select :as radio-select]
    [heraldicon.frontend.ui.element.search-field :as search-field]
    [heraldicon.frontend.ui.element.tags :as tags]
@@ -319,84 +318,3 @@
                             [:string.option.access-filter-choice/private :private]]}])]
 
      [results id session items-subscription filter-keys kind on-select options]]))
-
-(defn legacy-component [id session all-items filter-keys display-fn refresh-fn & {:keys [hide-ownership-filter?
-                                                                                         hide-access-filter?
-                                                                                         on-filter-string-change
-                                                                                         component-styles
-                                                                                         page-size
-                                                                                         sort-fn
-                                                                                         predicate-fn]}]
-  (let [filter-path [:ui :filter id]
-        filter-string-path (conj filter-path :filter-string)
-        filter-tags-path (conj filter-path :filter-tags)
-        filter-access-path (conj filter-path :filter-access)
-        filter-ownership-path (conj filter-path :filter-ownership)
-        filter-string @(rf/subscribe [:get filter-string-path])
-        filter-tags @(rf/subscribe [:get filter-tags-path])
-        filter-access @(rf/subscribe [:get filter-access-path])
-        filter-ownership (if @(rf/subscribe [:get filter-ownership-path])
-                           :mine
-                           :all)
-        all-items (cond->> all-items
-                    predicate-fn (filterv predicate-fn))
-        filtered-items (filter-items session
-                                     all-items
-                                     filter-keys
-                                     filter-string
-                                     filter-tags
-                                     filter-access
-                                     filter-ownership)
-        tags-to-display (frequencies (mapcat (comp keys :tags) filtered-items))
-        filtered? (or (-> filter-string count pos?)
-                      (-> filter-tags count pos?))
-        sorted-items (cond->> filtered-items
-                       sort-fn (sort-by sort-fn))
-        number-of-items-path [:ui :filter id [filter-keys filter-string filter-tags filter-access filter-ownership]]
-        number-of-items (or @(rf/subscribe [:get number-of-items-path])
-                            page-size)
-        display-items (cond->> sorted-items
-                        page-size (take number-of-items))]
-    [:div.filter-component {:style component-styles}
-     [:div.filter-component-search
-      [search-field/search-field {:path filter-string-path}
-       :on-change (fn [value]
-                    (rf/dispatch-sync [:set filter-string-path value])
-                    (when on-filter-string-change
-                      (on-filter-string-change)))]
-      (when refresh-fn
-        [:a {:style {:margin-left "0.5em"}
-             :on-click #(do
-                          (refresh-fn)
-                          (.stopPropagation %))} [:i.fas.fa-sync-alt]])]
-     [:div.filter-component-filters
-      (when-not hide-ownership-filter?
-        [checkbox/checkbox {:path filter-ownership-path}
-         :option {:type :boolean
-                  :ui {:label :string.miscellaneous/mine-only}}])
-      (when-not hide-access-filter?
-        [radio-select/radio-select {:path filter-access-path}
-         :option {:type :choice
-                  :default :all
-                  :choices [[:string.option.access-filter-choice/all :all]
-                            [:string.option.access-filter-choice/public :public]
-                            [:string.option.access-filter-choice/private :private]]}])]
-
-     [:div.filter-component-tags
-      [tags/tags-view tags-to-display
-       :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
-       :selected filter-tags]]
-
-     [:div.filter-component-results
-      (if (empty? display-items)
-        [:div [tr :string.miscellaneous/none]]
-        [display-fn
-         :items display-items
-         :filtered? filtered?])]
-     (when-not (= (count filtered-items)
-                  (count display-items))
-       [:div.filter-component-show-more
-        [:button.button {:on-click #(rf/dispatch [::show-more
-                                                  number-of-items-path
-                                                  page-size])}
-         [tr :string.miscellaneous/show-more]]])]))
