@@ -103,14 +103,14 @@ check: check-json
 
 check-debug-print-frontend:
 	! rg println src --glob=!src/**/*test*.cljs
-	! rg js/console src
+	! rg '\(js/console' src
 
 check-dirty-frontend:
 	git diff --quiet || (echo ". is dirty" && false)
 
 check-debug-print-backend:
 	! rg println src backend/src --glob=!src/**/*test*.cljs --glob=!backend/src/heraldicon/manage.cljs
-	! rg js/console backend/src
+	! rg '\(js/console' backend/src
 
 check-dirty-backend:
 	cd backend && git diff --quiet || (echo "backend is dirty" && false)
