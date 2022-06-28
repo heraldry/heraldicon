@@ -66,7 +66,7 @@
         (rf/dispatch [::repository/session-change])
         (rf/dispatch [::form/clear-and-close form-id]))
       (catch :default e
-        (log/error "login with token error:" e)
+        (log/error e "login with token error")
         (rf/dispatch [::message/set-error form-id (:message e)]))
       (finally
         (modal/stop-loading)))))

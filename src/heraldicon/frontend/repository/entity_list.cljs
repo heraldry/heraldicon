@@ -73,7 +73,7 @@
         (when on-loaded
           (on-loaded entities)))
       (catch :default e
-        (log/error "fetch entity list error:" e)
+        (log/error e "fetch entity list error")
         (rf/dispatch [::store-error entity-type e])))))
 
 (rf/reg-sub-raw ::data

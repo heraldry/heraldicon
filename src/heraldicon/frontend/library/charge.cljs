@@ -186,7 +186,7 @@
                                                 :svg-data data})]))))
      (rf/dispatch [::clear-selected-colours])
      (catch :default e
-       (log/error "load svg file error:" e)))))
+       (log/error e "load svg file error")))))
 
 (def ^:private show-colours-path
   [:ui :colours :show])

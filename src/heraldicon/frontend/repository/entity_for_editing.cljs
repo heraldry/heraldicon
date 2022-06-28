@@ -47,7 +47,7 @@
       (let [updated-entity (<? (load-editing-data entity))]
         (rf/dispatch [::store updated-entity]))
       (catch :default e
-        (log/error "fetching entity data for editing error:" e)
+        (log/error e "fetching entity data for editing error")
         (rf/dispatch [::store-error (:id entity) (:version entity) e])))))
 
 (defn- fetch-entity-for-editing [entity-id version]
@@ -92,7 +92,7 @@
               (on-success form-data)))
 
           (catch :default e
-            (log/error "save entity error:" e)
+            (log/error e "save entity error")
             (when on-error
               (on-error e)))
 

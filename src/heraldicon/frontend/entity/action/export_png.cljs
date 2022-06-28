@@ -33,7 +33,7 @@
           (js/window.open (:png-url response)))
 
         (catch :default e
-          (log/error "generate png error:" e))
+          (log/error e "generate png error"))
 
         (finally
           (modal/stop-loading))))))
