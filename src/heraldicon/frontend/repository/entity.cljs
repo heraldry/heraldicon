@@ -92,7 +92,7 @@
         (when on-loaded
           (on-loaded entity)))
       (catch :default e
-        (log/error "fetch entity error:" e)
+        (log/error e "fetch entity error")
         (rf/dispatch [::store-error entity-id version e])))))
 
 (rf/reg-sub-raw ::data

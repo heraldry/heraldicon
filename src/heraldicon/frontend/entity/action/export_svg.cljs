@@ -33,7 +33,7 @@
           (js/window.open (:svg-url response)))
 
         (catch :default e
-          (log/error "generate svg error:" e))
+          (log/error e "generate svg error"))
 
         (finally
           (modal/stop-loading))))))

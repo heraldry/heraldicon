@@ -33,7 +33,7 @@
       (let [users (:items (<? (request/call :fetch-users-all {} session)))]
         (rf/dispatch [::store users]))
       (catch :default e
-        (log/error "fetch user list error:" e)
+        (log/error e "fetch user list error")
         (rf/dispatch [::store-error e])))))
 
 (rf/reg-sub-raw ::data

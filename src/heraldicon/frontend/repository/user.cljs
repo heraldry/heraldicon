@@ -33,7 +33,7 @@
           (throw (ex-info "Not found" {} :user-not-found)))
         (rf/dispatch [::store user]))
       (catch :default e
-        (log/error "fetch user error:" e)
+        (log/error e "fetch user error")
         (rf/dispatch [::store-error username e])))))
 
 (rf/reg-sub-raw ::data
