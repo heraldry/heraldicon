@@ -20,5 +20,5 @@
     middle]
    [:div.no-scrollbar {:style {:grid-area "right"
                                :padding-top "5px"
-                               :position :relative}}
+                               :position "relative"}}
     right]])
