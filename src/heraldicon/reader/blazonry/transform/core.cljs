@@ -6,7 +6,7 @@
    [heraldicon.reader.blazonry.transform.cottising]
    [heraldicon.reader.blazonry.transform.field.core]
    [heraldicon.reader.blazonry.transform.field.partition]
-   [heraldicon.reader.blazonry.transform.field.partition.field]
+   [heraldicon.reader.blazonry.transform.field.partition-field]
    [heraldicon.reader.blazonry.transform.field.plain]
    [heraldicon.reader.blazonry.transform.fimbriation]
    [heraldicon.reader.blazonry.transform.layout]
