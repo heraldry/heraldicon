@@ -34,21 +34,23 @@
 (defn stop-loading []
   (rf/dispatch [:set loader-db-path nil]))
 
-(defn render []
-  (let [{:keys [title content]} @(rf/subscribe [:get dialog-db-path])
-        loader @(rf/subscribe [:get loader-db-path])]
-    ^{:key title}
+(defn- modal []
+  (let [{:keys [title content]} @(rf/subscribe [:get dialog-db-path])]
+    (when content
+      [:<>
+       [:div.modal-background {:on-click #(clear)}]
+       [:div.modal.dialog
+        [:div.modal-header [tr title]]
+        [:div.modal-content content]]])))
+
+(defn- loading []
+  (when @(rf/subscribe [:get loader-db-path])
     [:<>
-     (when content
-       [:<>
-        [:div.modal-background {:on-click #(clear)}]
-        [:div.modal.dialog
-         [:div.modal-header (if (keyword? title)
-                              [tr title]
-                              title)]
-         [:div.modal-content content]]])
-     (when loader
-       [:<>
-        [:div.modal-background {:style {:z-index 2000}}]
-        [:div.modal {:style {:z-index 2001}}
-         [:div.loader]]])]))
+     [:div.modal-background {:style {:z-index 2000}}]
+     [:div.modal {:style {:z-index 2001}}
+      [:div.loader]]]))
+
+(defn render []
+  [:<>
+   [modal]
+   [loading]])
