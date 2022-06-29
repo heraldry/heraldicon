@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.library.collection
+(ns heraldicon.frontend.library.collection.details
   (:require
    [cljs.core.async :refer [go]]
    [heraldicon.context :as c]

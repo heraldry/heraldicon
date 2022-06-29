@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.library.charge
+(ns heraldicon.frontend.library.charge.details
   (:require
    ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
    [cljs.core.async :refer [go]]
