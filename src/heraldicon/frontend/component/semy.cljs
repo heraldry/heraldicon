@@ -21,5 +21,5 @@
                            (charge.options/title charge-context))
      :nodes [{:context charge-context}]}))
 
-(defmethod component/form-data :heraldry/semy [_context]
+(defmethod component/form :heraldry/semy [_context]
   form)

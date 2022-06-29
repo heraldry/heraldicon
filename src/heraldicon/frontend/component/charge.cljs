@@ -45,5 +45,5 @@
    :validation (validation/validate-charge context)
    :nodes [{:context (c/++ context :field)}]})
 
-(defmethod component/form-data :heraldry/charge [_context]
+(defmethod component/form :heraldry/charge [_context]
   form)

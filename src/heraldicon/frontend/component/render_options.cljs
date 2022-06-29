@@ -28,5 +28,5 @@
 (defmethod component/node-data :heraldry/render-options [_context]
   {:title :string.render-options/title})
 
-(defmethod component/form-data :heraldry/render-options [_context]
+(defmethod component/form :heraldry/render-options [_context]
   form)

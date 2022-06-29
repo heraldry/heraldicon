@@ -6,5 +6,5 @@
   {:title :string.miscellaneous/shield-layer
    :selectable? false})
 
-(defmethod component/form-data :heraldry/shield-separator [_context]
+(defmethod component/form :heraldry/shield-separator [_context]
   {})

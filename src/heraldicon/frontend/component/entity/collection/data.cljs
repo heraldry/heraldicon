@@ -38,5 +38,5 @@
                                       :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
                  vec)}))
 
-(defmethod component/form-data :heraldicon.entity.collection/data [_context]
+(defmethod component/form :heraldicon.entity.collection/data [_context]
   form)

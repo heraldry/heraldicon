@@ -52,5 +52,5 @@
    :validation (validation/validate-cottise context)
    :nodes [{:context (c/++ context :field)}]})
 
-(defmethod component/form-data :heraldry/cottise [_context]
+(defmethod component/form :heraldry/cottise [_context]
   form)

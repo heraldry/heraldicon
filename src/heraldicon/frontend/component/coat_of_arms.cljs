@@ -14,5 +14,5 @@
   {:title :string.render-options.scope-choice/coat-of-arms
    :nodes [{:context (c/++ context :field)}]})
 
-(defmethod component/form-data :heraldry/coat-of-arms [_context]
+(defmethod component/form :heraldry/coat-of-arms [_context]
   form)

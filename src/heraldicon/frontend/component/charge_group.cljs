@@ -345,5 +345,5 @@
                                               :handler #(state/dispatch-on-event % [::remove-charge charge-context])}]})))
                          vec))}))
 
-(defmethod component/form-data :heraldry/charge-group [_context]
+(defmethod component/form :heraldry/charge-group [_context]
   form)
