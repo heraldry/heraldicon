@@ -13,7 +13,7 @@
    [:num-columns
     :font]))
 
-(defmethod component/node-data :heraldicon.entity.collection/data [context]
+(defmethod component/node :heraldicon.entity.collection/data [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.entity/arms

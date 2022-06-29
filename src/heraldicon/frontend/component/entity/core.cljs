@@ -21,7 +21,7 @@
         [:div {:style {:height "1.5em"}}]
         [data-form data-context]]))])
 
-(defmethod component/node-data :heraldicon/entity [context]
+(defmethod component/node :heraldicon/entity [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 

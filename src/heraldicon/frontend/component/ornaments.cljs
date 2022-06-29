@@ -8,7 +8,7 @@
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
-(defmethod component/node-data :heraldry/ornaments [context]
+(defmethod component/node :heraldry/ornaments [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.charge.attribute.group/ornaments

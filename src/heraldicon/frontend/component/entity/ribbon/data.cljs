@@ -246,7 +246,7 @@
        (c/++ context :ribbon)
        :title :string.ribbon.text/segment-explanation]])])
 
-(defmethod component/node-data :heraldicon.entity.ribbon/data [context]
+(defmethod component/node :heraldicon.entity.ribbon/data [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 

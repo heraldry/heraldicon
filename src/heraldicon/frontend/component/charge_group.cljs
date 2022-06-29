@@ -312,7 +312,7 @@
 
      [element/element (c/++ context :manual-blazon)]]))
 
-(defmethod component/node-data :heraldry/charge-group [context]
+(defmethod component/node :heraldry/charge-group [context]
   (let [charges-context (c/++ context :charges)
         num-charges (interface/get-list-size charges-context)]
     {:title (string/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)

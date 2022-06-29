@@ -5,7 +5,8 @@
    [heraldicon.font :as font]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.component.entity.collection.element :as element]
-   [heraldicon.frontend.core :as ui]
+   [heraldicon.frontend.component.form :as form]
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.history.core :as history]
@@ -227,15 +228,15 @@
   (layout/three-columns
    [render-collection form-db-path :allow-adding? true]
    [:<>
-    [ui/selected-component]
+    [form/active]
     [message/display entity-type]
     [buttons/buttons entity-type]
     [render-arms-preview form-db-path]]
    [:<>
     [history/buttons form-db-path]
-    [ui/component-tree [form-db-path
-                        (conj form-db-path :data :render-options)
-                        (conj form-db-path :data)]]]))
+    [tree/tree [form-db-path
+                (conj form-db-path :data :render-options)
+                (conj form-db-path :data)]]]))
 
 (defn create-view []
   [details/create-view entity-type collection-form #(go default/collection-entity)])

@@ -6,8 +6,9 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
+   [heraldicon.frontend.component.form :as form]
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
-   [heraldicon.frontend.core :as ui]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.history.core :as history]
@@ -84,21 +85,21 @@
   (layout/three-columns
    [render-achievement]
    [:<>
-    [ui/selected-component]
+    [form/active]
     [message/display entity-type]
     [buttons/buttons entity-type]
     [blazonry form-db-path]
     [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
-    [ui/component-tree [form-db-path
-                        (conj form-db-path :data :achievement :render-options)
-                        :spacer
-                        (conj form-db-path :data :achievement :helms)
-                        :spacer
-                        (conj form-db-path :data :achievement :coat-of-arms)
-                        :spacer
-                        (conj form-db-path :data :achievement :ornaments)]]]))
+    [tree/tree [form-db-path
+                (conj form-db-path :data :achievement :render-options)
+                :spacer
+                (conj form-db-path :data :achievement :helms)
+                :spacer
+                (conj form-db-path :data :achievement :coat-of-arms)
+                :spacer
+                (conj form-db-path :data :achievement :ornaments)]]]))
 
 (defn- load-hdn [hdn-hash]
   (go

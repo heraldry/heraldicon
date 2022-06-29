@@ -2,6 +2,8 @@
   (:require
    [cljs.core.async :refer [go]]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.component.form :as form]
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.core :as ui]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
@@ -361,13 +363,13 @@
     [preview form-db-path]
     [edit-controls]]
    [:<>
-    [ui/selected-component]
+    [form/active]
     [message/display entity-type]
     [buttons/buttons entity-type]
     [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
-    [ui/component-tree [form-db-path]]]))
+    [tree/tree [form-db-path]]]))
 
 (defn create-view []
   [details/create-view entity-type ribbon-form #(go default/ribbon-entity)])

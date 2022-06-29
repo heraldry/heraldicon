@@ -66,7 +66,7 @@
     :outline?
     :manual-blazon]))
 
-(defmethod component/node-data :heraldry/ordinary [context]
+(defmethod component/node :heraldry/ordinary [context]
   (let [ordinary-type (interface/get-raw-data (c/++ context :type))
         cottising-options (interface/get-relevant-options (c/++ context :cottising))
         cottise-1 (interface/get-raw-data (c/++ context :cottising :cottise-1))
