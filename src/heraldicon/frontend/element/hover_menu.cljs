@@ -4,21 +4,21 @@
    [heraldicon.frontend.macros :as macros]
    [re-frame.core :as rf]))
 
-(rf/reg-sub :ui-hover-menu-open?
+(rf/reg-sub ::open?
   (fn [db [_ path]]
     (get-in db [:ui :hover-menu-open? path])))
 
-(macros/reg-event-db :ui-hover-menu-open
+(macros/reg-event-db ::open
   (fn [db [_ path]]
     (assoc-in db [:ui :hover-menu-open? path] true)))
 
-(macros/reg-event-db :ui-hover-menu-close
+(macros/reg-event-db ::close
   (fn [db [_ path]]
     (update-in db [:ui :hover-menu-open?] dissoc path)))
 
 (defn hover-menu [{:keys [path]} title menu trigger-element & {:keys [disabled?
                                                                       require-click?]}]
-  (let [menu-open? @(rf/subscribe [:ui-hover-menu-open? path])
+  (let [menu-open? @(rf/subscribe [::open? path])
         menu-disabled? disabled?]
     [:span.node-icon.ui-hover-menu
      {:class (when disabled? "disabled")
@@ -26,12 +26,12 @@
         :on-click
         :on-mouse-enter) (when-not disabled?
                            (fn [event]
-                             (rf/dispatch [:ui-hover-menu-open path])
+                             (rf/dispatch [::open path])
                              (.preventDefault event)
                              (.stopPropagation event)))
       :on-mouse-leave (when-not disabled?
                         (fn [event]
-                          (rf/dispatch [:ui-hover-menu-close path])
+                          (rf/dispatch [::close path])
                           (.preventDefault event)
                           (.stopPropagation event)))}
      trigger-element
@@ -46,7 +46,7 @@
             (map (fn [{:keys [icon title handler tooltip disabled?]}]
                    (let [handler (when handler
                                    #(do
-                                      (rf/dispatch [:ui-hover-menu-close path])
+                                      (rf/dispatch [::close path])
                                       (.preventDefault %)
                                       (.stopPropagation %)
                                       (handler %)))

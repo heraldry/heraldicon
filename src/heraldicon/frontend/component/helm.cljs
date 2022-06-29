@@ -9,7 +9,7 @@
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 
-(rf/reg-sub :get-helm-status
+(rf/reg-sub ::status
   (fn [[_ path] _]
     (rf/subscribe [:get (conj path :components)]))
 
@@ -29,7 +29,7 @@
 
 (defmethod component/node-data :heraldry/helm [{:keys [path] :as context}]
   (let [{:keys [helmet?
-                torse?]} @(rf/subscribe [:get-helm-status path])
+                torse?]} @(rf/subscribe [::status path])
         components-context (c/++ context :components)
         num-helms (interface/get-list-size (c/-- context))
         num-components (interface/get-list-size components-context)

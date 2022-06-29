@@ -15,7 +15,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.static :as static]))
 
-(macros/reg-event-db :override-field-part-reference
+(macros/reg-event-db ::override-part-reference
   (fn [db [_ path]]
     (let [{:keys [index]} (get-in db path)
           referenced-part (get-in db (-> path
@@ -26,7 +26,7 @@
           (assoc-in path referenced-part)
           (state/ui-component-node-select path :open? true)))))
 
-(macros/reg-event-db :reset-field-part-reference
+(macros/reg-event-db ::reset-part-reference
   (fn [db [_ {:keys [path] :as context}]]
     (let [index (last path)
           parent-context (c/-- context 2)
@@ -167,7 +167,7 @@
                 (if ref?
                   [{:icon "fas fa-sliders-h"
                     :title :string.user.button/change
-                    :handler #(state/dispatch-on-event % [:override-field-part-reference path])}]
+                    :handler #(state/dispatch-on-event % [::override-part-reference path])}]
                   (cond-> [{:icon "fas fa-plus"
                             :title :string.button/add
                             :menu [{:title :string.entity/ordinary
@@ -184,7 +184,7 @@
                     (non-mandatory-part-of-parent? context)
                     (conj {:icon "fas fa-undo"
                            :title "Reset"
-                           :handler #(state/dispatch-on-event % [:reset-field-part-reference context])}))))
+                           :handler #(state/dispatch-on-event % [::reset-part-reference context])}))))
      :nodes (concat (when (and (not (show-tinctures-only? field-type))
                                (-> field-type name keyword (not= :plain)))
                       (let [fields-context (c/++ context :fields)

@@ -18,7 +18,7 @@
                    (attribution/license-display-name license license-version))]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(macros/reg-event-db :merge-attribution
+(macros/reg-event-db ::merge
   (fn [db [_ path data]]
     (update-in db path merge data)))
 
@@ -47,7 +47,7 @@
               ["Encyclopedia Heraldica" :encyclopedia-heraldica]]
              :on-change (fn [value]
                           (case value
-                            :wappenwiki (rf/dispatch [:merge-attribution
+                            :wappenwiki (rf/dispatch [::merge
                                                       path
                                                       {:nature :derivative
                                                        :license :cc-attribution-non-commercial-share-alike
@@ -56,14 +56,14 @@
                                                        :source-license-version :v3
                                                        :source-creator-name "WappenWiki"
                                                        :source-creator-link "http://wappenwiki.org"}])
-                            :wikimedia (rf/dispatch [:merge-attribution
+                            :wikimedia (rf/dispatch [::merge
                                                      path
                                                      {:nature :derivative
                                                       :license :cc-attribution-share-alike
                                                       :license-version :v4
                                                       :source-license :cc-attribution-share-alike
                                                       :source-license-version :v3}])
-                            :wikimedia-sodacan (rf/dispatch [:merge-attribution
+                            :wikimedia-sodacan (rf/dispatch [::merge
                                                              path
                                                              {:nature :derivative
                                                               :license :cc-attribution-share-alike

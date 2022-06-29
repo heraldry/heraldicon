@@ -15,18 +15,18 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(macros/reg-event-db :update-charge
+(macros/reg-event-db ::update
   (fn [db [_ path changes]]
     (update-in db path merge changes)))
 
 (defn- charge-type-choice [path key display-name & {:keys [selected?]}]
   [:div.choice.tooltip {:on-click #(state/dispatch-on-event
                                     %
-                                    [:update-charge path {:type key
-                                                          :attitude nil
-                                                          :facing nil
-                                                          :data nil
-                                                          :variant nil}])}
+                                    [::update path {:type key
+                                                    :attitude nil
+                                                    :facing nil
+                                                    :data nil
+                                                    :variant nil}])}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url
@@ -106,7 +106,7 @@
                           (doto event
                             .preventDefault
                             .stopPropagation)
-                          (rf/dispatch [:update-charge
+                          (rf/dispatch [::update
                                         (:path charge-context)
                                         (merge {:type (->> data
                                                            :charge-type

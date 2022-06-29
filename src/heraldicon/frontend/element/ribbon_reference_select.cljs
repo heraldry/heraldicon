@@ -13,7 +13,7 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(macros/reg-event-db :set-ribbon-data
+(macros/reg-event-db ::set-data
   (fn [db [_ path ribbon-data]]
     (let [previous-segments (get-in db (conj path :segments))]
       (-> db
@@ -25,7 +25,7 @@
                                               [:text
                                                :font])))))))
 
-(macros/reg-event-db :set-ribbon-reference
+(macros/reg-event-db ::set-reference
   (fn [db [_ path ribbon]]
     (let [{ribbon-id :id
            ribbon-version :version} ribbon
@@ -36,7 +36,7 @@
           ;; and there's a race condition, because the ::entity/data below also fetches
           ;; the ribbon with a different subscription, resulting in two requests being
           ;; sent to the API
-          on-ribbon-load #(rf/dispatch [:set-ribbon-data
+          on-ribbon-load #(rf/dispatch [::set-data
                                         (conj parent-path :ribbon)
                                         (-> % :data :ribbon)])
           {:keys [status entity]} @(rf/subscribe [::entity/data ribbon-id ribbon-version on-ribbon-load])]
@@ -88,6 +88,6 @@
                          (doto event
                            .preventDefault
                            .stopPropagation)
-                         (rf/dispatch [:set-ribbon-reference (:path context) ribbon]))})
+                         (rf/dispatch [::set-reference (:path context) ribbon]))})
           :selected-ribbon entity
           :display-selected-item? true]]]])))

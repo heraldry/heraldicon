@@ -57,7 +57,7 @@
                                                                                  :dummy %}))))
           (update-in path dissoc :tincture)))))
 
-(macros/reg-event-db :set-field-type
+(macros/reg-event-db ::set
   (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
     (set-field-type db path new-type num-fields-x num-fields-y num-base-fields)))
 
@@ -75,7 +75,7 @@
                                                                                new-field
                                                                                (interface/options {:path [:context :dummy]
                                                                                                    :dummy new-field})))]
-                                       (state/dispatch-on-event % [:set-field-type field-path key num-fields-x num-fields-y num-base-fields])))}
+                                       (state/dispatch-on-event % [::set field-path key num-fields-x num-fields-y num-base-fields])))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url

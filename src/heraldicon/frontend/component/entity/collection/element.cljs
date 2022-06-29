@@ -10,14 +10,14 @@
 (def highlighted-element-path
   [:ui :collection-library :selected-element])
 
-(rf/reg-sub :collection-library-highlighted-element
+(rf/reg-sub ::highlighted-element
   (fn [_ _]
     (rf/subscribe [:get highlighted-element-path]))
 
   (fn [value _]
     value))
 
-(rf/reg-sub :collection-library-highlighted?
+(rf/reg-sub ::highlighted?
   (fn [_ _]
     (rf/subscribe [:get highlighted-element-path]))
 

@@ -10,7 +10,7 @@
    [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
-(rf/reg-sub :motto-name
+(rf/reg-sub ::name
   (fn [[_ path] _]
     (rf/subscribe [:get (drop-last path)]))
 
@@ -64,7 +64,7 @@
         [ribbon/segments-form ribbon-context]]))])
 
 (defmethod component/node-data :heraldry/motto [{:keys [path]}]
-  {:title @(rf/subscribe [:motto-name path])})
+  {:title @(rf/subscribe [::name path])})
 
 (defmethod component/form-data :heraldry/motto [_context]
   {:form form})

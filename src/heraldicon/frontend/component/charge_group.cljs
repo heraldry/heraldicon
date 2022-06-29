@@ -17,7 +17,7 @@
    [heraldicon.math.vector :as v]
    [heraldicon.static :as static]))
 
-(macros/reg-event-db :cycle-charge-index
+(macros/reg-event-db ::cycle-charge-index
   (fn [db [_ path num-charges]]
     (let [slots-path (drop-last path)
           slot-index (last path)
@@ -30,7 +30,7 @@
                       :else (inc current-value))]
       (assoc-in db slots-path (assoc slots slot-index new-value)))))
 
-(macros/reg-event-db :remove-charge-group-charge
+(macros/reg-event-db ::remove-charge
   (fn [db [_ {:keys [path]}]]
     (let [elements-path (drop-last path)
           strips-context (-> path
@@ -65,7 +65,7 @@
                                         slots)))
           (state/element-order-changed elements-path index nil)))))
 
-(macros/reg-event-db :move-charge-group-charge-up
+(macros/reg-event-db ::move-charge-up
   (fn [db [_ {:keys [path]}]]
     (let [elements-path (drop-last path)
           strips-context (-> path
@@ -107,14 +107,14 @@
                                         slots)))
           (state/element-order-changed elements-path index (inc index))))))
 
-(macros/reg-event-db :add-charge-group-strip
+(macros/reg-event-db ::add-strip
   (fn [db [_ {:keys [path]} value]]
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)]
       (assoc-in db path elements))))
 
-(macros/reg-event-db :move-charge-group-charge-down
+(macros/reg-event-db ::move-charge-down
   (fn [db [_ {:keys [path]}]]
     (let [elements-path (drop-last path)
           strips-context (-> path
@@ -195,7 +195,7 @@
                                               (tincture/pick context)))]
                               ^{:key idx}
                               [:g {:transform (str "translate(" (v/->str point) ")")
-                                   :on-click #(state/dispatch-on-event % [:cycle-charge-index slot-path num-charges])
+                                   :on-click #(state/dispatch-on-event % [::cycle-charge-index slot-path num-charges])
                                    :style {:cursor "pointer"}}
                                [:circle {:r dot-size
                                          :style {:stroke "#000"
@@ -280,7 +280,7 @@
          [:div.ui-setting
           [:label [tr type-plural-str]
            " "
-           [:button {:on-click #(state/dispatch-on-event % [:add-charge-group-strip
+           [:button {:on-click #(state/dispatch-on-event % [::add-strip
                                                             strips-context default/charge-group-strip])}
             [:i.fas.fa-plus] " " [tr :string.button/add]]]
 
@@ -334,15 +334,15 @@
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :title :string.tooltip/move-down
-                                              :handler #(state/dispatch-on-event % [:move-charge-group-charge-down charge-context])}
+                                              :handler #(state/dispatch-on-event % [::move-charge-down charge-context])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-charges))
                                               :title :string.tooltip/move-up
-                                              :handler #(state/dispatch-on-event % [:move-charge-group-charge-up charge-context])}
+                                              :handler #(state/dispatch-on-event % [::move-charge-up charge-context])}
                                              {:icon "far fa-trash-alt"
                                               :disabled? (= num-charges 1)
                                               :title :string.tooltip/remove
-                                              :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-context])}]})))
+                                              :handler #(state/dispatch-on-event % [::remove-charge charge-context])}]})))
                          vec))}))
 
 (defmethod component/form-data :heraldry/charge-group [_context]

@@ -17,7 +17,7 @@
     :heraldry.ordinary.type/gore :enarched
     :straight))
 
-(macros/reg-event-db :set-ordinary-type
+(macros/reg-event-db ::set
   (fn [db [_ path new-type]]
     (let [current (get-in db path)
           has-default-line-style? (-> current
@@ -45,7 +45,7 @@
                                                              on-click?]
                                                       :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
-                                    #(state/dispatch-on-event % [:set-ordinary-type (vec (drop-last path)) key]))}
+                                    #(state/dispatch-on-event % [::set (vec (drop-last path)) key]))}
    [:img.clickable {:style {:width "5em"
                             :height "5.7em"}
                     :src (static/static-url
