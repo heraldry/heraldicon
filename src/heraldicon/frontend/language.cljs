@@ -47,7 +47,7 @@
   (fn [db [_ language]]
     (set-language db language)))
 
-(macros/reg-event-db ::load-language-setting
+(macros/reg-event-db ::load-setting
   (fn [db _]
     (browser-preferred-language)
     (let [loaded-language (get-item local-storage local-storage-language-name ":en")
