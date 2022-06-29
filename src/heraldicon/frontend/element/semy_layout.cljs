@@ -6,13 +6,14 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]
+   [heraldicon.state :as state]
    [re-frame.core :as rf]))
 
 ;; TODO: probably can be improved with better subscriptions
 (rf/reg-sub ::link-name
   (fn [[_ context] _]
     [(rf/subscribe [:get context])
-     (rf/subscribe [:heraldicon.state/options (:path context)])])
+     (rf/subscribe [::state/options (:path context)])])
 
   (fn [[layout options] [_ _path]]
     (let [sanitized-layout (options/sanitize layout options)

@@ -6,6 +6,7 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.user.form.confirmation :as confirmation]
    [heraldicon.frontend.user.form.core :as form]
+   [heraldicon.frontend.user.form.login :as-alias login]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -72,7 +73,7 @@
      username password email
      :on-success (fn [_user]
                    (rf/dispatch [::form/clear-and-close ::id])
-                   (rf/dispatch [:heraldicon.frontend.user.form.login/show
+                   (rf/dispatch [::login/show
                                  :string.user.message/registration-completed])
                    (modal/stop-loading))
      :on-confirmation-needed (fn [user]

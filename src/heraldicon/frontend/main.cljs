@@ -3,6 +3,7 @@
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys]
+   [heraldicon.frontend.language :as language]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.title :as title]
@@ -38,7 +39,7 @@
 
 (defn ^:export init []
   (rf/dispatch-sync [:initialize-db])
-  (rf/dispatch-sync [:heraldicon.frontend.language/load-language-setting])
+  (rf/dispatch-sync [::language/load-language-setting])
   (session/read-from-storage)
   #_(print-stats)
   (router/start)

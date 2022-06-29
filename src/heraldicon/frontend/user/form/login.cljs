@@ -8,8 +8,10 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.frontend.user.form.change-temporary-password :as-alias change-temporary-password]
+   [heraldicon.frontend.user.form.confirmation :as-alias confirmation]
    [heraldicon.frontend.user.form.core :as form]
-   [heraldicon.frontend.user.form.password-reset-confirmation :as password-reset-confirmation]
+   [heraldicon.frontend.user.form.password-reset-confirmation :as-alias password-reset-confirmation]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
@@ -80,7 +82,7 @@
                    (login-with-token (-> user .getAccessToken .getJwtToken)))
      :on-confirmation-needed (fn [user]
                                (rf/dispatch [::form/clear-and-close ::id])
-                               (rf/dispatch [:heraldicon.frontend.user.form.confirmation/show user])
+                               (rf/dispatch [::confirmation/show user])
                                (modal/stop-loading))
      :on-failure (fn [error]
                    (log/error "login error:" error)
@@ -88,7 +90,7 @@
                    (modal/stop-loading))
      :on-new-password-required (fn [user user-attributes]
                                  (rf/dispatch [::form/clear-and-close ::id])
-                                 (rf/dispatch [:heraldicon.frontend.user.form.change-temporary-password/show user user-attributes])
+                                 (rf/dispatch [::change-temporary-password/show user user-attributes])
                                  (modal/stop-loading)))))
 
 (rf/reg-fx ::start-password-reset
