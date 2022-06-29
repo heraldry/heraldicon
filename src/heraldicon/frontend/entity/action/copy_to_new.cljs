@@ -7,7 +7,7 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defn copy-data-path [entity-type]
+(defn- copy-data-path [entity-type]
   [:copy-data entity-type])
 
 (defn- set-attribution [entity source-entity]
