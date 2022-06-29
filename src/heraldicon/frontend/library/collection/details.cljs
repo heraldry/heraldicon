@@ -4,7 +4,7 @@
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.frontend.attribution :as attribution]
-   [heraldicon.frontend.component.entity.collection.element :as collection.element]
+   [heraldicon.frontend.component.entity.collection.element :as element]
    [heraldicon.frontend.core :as ui]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
@@ -45,18 +45,18 @@
        :style {:fill "#fff"}}]]))
 
 (defn- selected-element-index [form-db-path]
-  (let [selected-node-path @(rf/subscribe [:collection-library-highlighted-element])
+  (let [selected-node-path @(rf/subscribe [::element/highlighted-element])
         index (last selected-node-path)]
     (when (int? index)
       (if (< index @(rf/subscribe [:get-list-size (conj form-db-path :data :elements)]))
         index
         ;; index not valid anymore
         (do
-          (collection.element/highlight-element nil)
+          (element/highlight-element nil)
           nil)))))
 
 (defn- arms-highlight [path x y width height]
-  (if @(rf/subscribe [:collection-library-highlighted? path])
+  (if @(rf/subscribe [::element/highlighted? path])
     [:rect {:x (- x (/ width 2) 7)
             :y (- y (/ height 2) 7)
             :rx 10

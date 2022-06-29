@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.layout
   (:require
+   [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.state :as state]))
 
 (defn three-columns [left middle right]
@@ -10,7 +11,7 @@
                  :grid-template-areas "'left middle right'"
                  :padding-right "10px"
                  :height "100%"}
-         :on-click #(state/dispatch-on-event % [:ui-submenu-close-all])}
+         :on-click #(state/dispatch-on-event % [::submenu/close-all])}
    [:div.no-scrollbar {:style {:grid-area "left"
                                :position "relative"}}
     left]

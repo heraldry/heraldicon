@@ -7,7 +7,7 @@
    [heraldicon.frontend.state :as state]
    [heraldicon.static :as static]))
 
-(macros/reg-event-db :select-charge-group-preset
+(macros/reg-event-db ::select
   ;; TODO: this must not be an fn-traced, can be done once
   ;; https://github.com/day8/re-frame-debux/issues/40 is resolved
   (fn [db [_ path charge-group-preset charge-adjustments]]
@@ -26,7 +26,7 @@
           new-db)))))
 
 (defn- charge-group-preset-choice [path key group charge-adjustments display-name]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [:select-charge-group-preset path group charge-adjustments])}
+  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [::select path group charge-adjustments])}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url

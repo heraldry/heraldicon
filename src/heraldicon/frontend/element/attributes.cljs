@@ -9,11 +9,11 @@
    [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
-(macros/reg-event-db :add-attribute
+(macros/reg-event-db ::add
   (fn [db [_ db-path attribute]]
     (update-in db db-path assoc attribute true)))
 
-(macros/reg-event-db :remove-attribute
+(macros/reg-event-db ::remove
   (fn [db [_ db-path attribute]]
     (update-in db db-path dissoc attribute)))
 
@@ -48,7 +48,7 @@
       [:label [tr :string.entity/attributes]]
       [:div.option
        (into [:select {:on-change #(let [selected (keyword (-> % .-target .-value))]
-                                     (rf/dispatch [:add-attribute path selected]))
+                                     (rf/dispatch [::add path selected]))
                        :value :none}]
              (map (fn [[group-name & group-choices]]
                     (if (and (-> group-choices count (= 1))
@@ -69,4 +69,4 @@
                      attributes/attribute-choices))
        [:div {:style {:padding-top "10px"}}
         [attributes-view (keys attributes)
-         :on-delete #(rf/dispatch [:remove-attribute path %])]]]]]))
+         :on-delete #(rf/dispatch [::remove path %])]]]]]))

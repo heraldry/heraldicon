@@ -85,7 +85,7 @@
                        merge (get previous-text-segments previous-text-idx))
                rest)))))
 
-(macros/reg-event-db :ribbon-edit-annotate-segments
+(macros/reg-event-db ::annotate-segments
   (fn [db [_ path layer-mode flow-mode start-mode]]
     (let [segments-path (conj path :segments)
           points (get-in db (conj path :points))
@@ -163,7 +163,7 @@
                            :text
                            :font]))))))))
 
-(macros/reg-event-db :ribbon-edit-invert-segments
+(macros/reg-event-db ::invert-segments
   (fn [db [_ path]]
     (let [segments-path (conj path :segments)]
 
@@ -232,13 +232,13 @@
         [:string.ribbon.start-presets-choice/background :background]]]
 
       [:div
-       [:button {:on-click #(rf/dispatch [:ribbon-edit-annotate-segments
+       [:button {:on-click #(rf/dispatch [::annotate-segments
                                           (-> context :path (conj :ribbon))
                                           layer-mode-value
                                           flow-mode-value
                                           start-mode-value])}
         [tr :string.ribbon/apply-presets]]
-       [:button {:on-click #(rf/dispatch [:ribbon-edit-invert-segments
+       [:button {:on-click #(rf/dispatch [::invert-segments
                                           (-> context :path (conj :ribbon))])}
         [tr :string.ribbon.button/invert]]]
 

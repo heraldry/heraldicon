@@ -6,7 +6,7 @@
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
-(macros/reg-event-db :set-charge-group-slot-number
+(macros/reg-event-db ::set-slot-number
   (fn [db [_ path num-slots]]
     (update-in db path (fn [slots]
                          (if (-> slots count (< num-slots))
@@ -22,4 +22,4 @@
         default (:default (interface/get-relevant-options context))]
     [range/range-input context
      :value value
-     :on-change #(rf/dispatch [:set-charge-group-slot-number path (or % default)])]))
+     :on-change #(rf/dispatch [::set-slot-number path (or % default)])]))

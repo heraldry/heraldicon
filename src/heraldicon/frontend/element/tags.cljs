@@ -12,7 +12,7 @@
 (def ^:private value-path
   [:ui :tag-input-value])
 
-(macros/reg-event-db :add-tags
+(macros/reg-event-db ::add
   (fn [db [_ db-path tags]]
     (update-in db db-path (fn [current-tags]
                             (into {}
@@ -23,7 +23,7 @@
                                        (concat tags)
                                        (keep tag/clean)))))))
 
-(macros/reg-event-db :remove-tags
+(macros/reg-event-db ::remove
   (fn [db [_ db-path tags]]
     (update-in db db-path (fn [current-tags]
                             (loop [current-tags current-tags
@@ -44,11 +44,11 @@
                  s/lower-case
                  (s/split #"[^a-z0-9-]+")
                  (->> (keep tag/clean)))]
-    (rf/dispatch [:add-tags path tags])
+    (rf/dispatch [::add path tags])
     (rf/dispatch [:set value-path nil])))
 
 (defn- delete-tag-clicked [path tag]
-  (rf/dispatch [:remove-tags path [tag]]))
+  (rf/dispatch [::remove path [tag]]))
 
 (defn- tag-view [tag & {:keys [on-delete
                                on-click

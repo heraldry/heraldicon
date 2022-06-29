@@ -9,7 +9,7 @@
    [re-frame.core :as rf]))
 
 ;; TODO: probably can be improved with better subscriptions
-(rf/reg-sub :semy-layout-submenu-link-name
+(rf/reg-sub ::link-name
   (fn [[_ context] _]
     [(rf/subscribe [:get context])
      (rf/subscribe [:heraldicon.state/options (:path context)])])
@@ -35,7 +35,7 @@
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
-          link-name @(rf/subscribe [:semy-layout-submenu-link-name context])]
+          link-name @(rf/subscribe [::link-name context])]
       [:div.ui-setting
        (when label
          [:label [tr label]])

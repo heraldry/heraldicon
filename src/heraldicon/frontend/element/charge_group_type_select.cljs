@@ -5,7 +5,7 @@
    [heraldicon.frontend.macros :as macros]
    [re-frame.core :as rf]))
 
-(macros/reg-event-db :change-charge-group-type
+(macros/reg-event-db ::change
   (fn [db [_ path new-type]]
     (update-in db path (fn [charge-group]
                          (-> charge-group
@@ -25,4 +25,4 @@
 
 (defmethod element/element :charge-group-type-select [{:keys [path] :as context}]
   [radio-select/radio-select context
-   :on-change #(rf/dispatch [:change-charge-group-type (vec (drop-last path)) %])])
+   :on-change #(rf/dispatch [::change (vec (drop-last path)) %])])

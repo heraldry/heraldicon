@@ -37,7 +37,7 @@
                   [:string.submenu-summary/default])]
     (string/upper-case-first (string/combine ", " changes))))
 
-(macros/reg-event-db :set-field-layout-num-fields-x
+(macros/reg-event-db ::set-num-fields-x
   (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]
@@ -49,7 +49,7 @@
        (-> field :layout :num-fields-y)
        (-> field :layout :num-base-fields)))))
 
-(macros/reg-event-db :set-field-layout-num-fields-y
+(macros/reg-event-db ::set-num-fields-y
   (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]
@@ -61,7 +61,7 @@
        value
        (-> field :layout :num-base-fields)))))
 
-(macros/reg-event-db :set-field-layout-num-base-fields
+(macros/reg-event-db ::num-base-fields
   (fn [db [_ path value]]
     (let [field-path (drop-last 2 path)
           field (get-in db field-path)]
@@ -98,14 +98,14 @@
 (defmethod element/element :field-layout-num-fields-x [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
-                (rf/dispatch [:set-field-layout-num-fields-x path value]))])
+                (rf/dispatch [::set-num-fields-x path value]))])
 
 (defmethod element/element :field-layout-num-fields-y [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
-                (rf/dispatch [:set-field-layout-num-fields-y path value]))])
+                (rf/dispatch [::set-num-fields-y path value]))])
 
 (defmethod element/element :field-layout-num-base-fields [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
-                (rf/dispatch [:set-field-layout-num-base-fields path value]))])
+                (rf/dispatch [::num-base-fields path value]))])
