@@ -9,9 +9,9 @@
    [heraldicon.frontend.element.radio-select :as radio-select]
    [heraldicon.frontend.element.search-field :as search-field]
    [heraldicon.frontend.element.tags :as tags]
+   [heraldicon.frontend.entity.preview :as preview]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.preview :as preview]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
@@ -148,7 +148,7 @@
                                                  (when on-select
                                                    (on-select item)))
        (if item
-         [preview/preview-image kind item]
+         [preview/image kind item]
          [:div.filter-no-item-selected
           [tr :string.miscellaneous/no-item-selected]])]
       [:div.filter-result-card-tags
