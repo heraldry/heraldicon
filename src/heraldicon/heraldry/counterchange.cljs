@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.counterchange
   (:require
+   [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
 (defn- collect-tinctures [field {:keys [tincture-mapping]}]
@@ -23,14 +24,19 @@
        (map #(get tincture-mapping % %))
        distinct))
 
-(defn get-counterchange-tinctures [data context]
+(defn- get-tinctures [data context]
   (-> data
       (collect-tinctures context)
       (->> (take 2))))
 
-(rf/reg-sub :get-counterchange-tinctures
+(defn tinctures [{:keys [path] :as context}]
+  (if (-> path first (= :context))
+    (get-tinctures (interface/get-raw-data context) context)
+    @(rf/subscribe [::tinctures path context])))
+
+(rf/reg-sub ::tinctures
   (fn [[_ path _context] _]
     (rf/subscribe [:get path]))
 
   (fn [data [_ _path context]]
-    (get-counterchange-tinctures data context)))
+    (get-tinctures data context)))
