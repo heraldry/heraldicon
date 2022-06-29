@@ -96,16 +96,14 @@
     (rf/subscribe [:get path]))
 
   (fn [items [_ _path item-id]]
-    (->> items
-         (filter #(-> % :id (= item-id)))
-         first)))
+    (first (filter #(= (:id %) item-id) items))))
 
 (rf/reg-sub ::filtered-item-selected?
   (fn [[_ path _item-id] _]
     (rf/subscribe [:get path]))
 
   (fn [selected-item [_ _path item-id]]
-    (-> selected-item :id (= item-id))))
+    (= (:id selected-item) item-id)))
 
 (defn- heraldicon-tag []
   [:span.tag {:style {:background "#3e933f"
