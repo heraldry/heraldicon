@@ -2,8 +2,8 @@
   (:require
    [cljs.core.async :refer [go]]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
-   [heraldicon.frontend.entity.details.buttons :as buttons]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]

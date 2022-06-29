@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.entity.details.buttons
+(ns heraldicon.frontend.entity.buttons
   (:require
    [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
    [heraldicon.frontend.entity.action.export-png :as export-png]
