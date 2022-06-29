@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.entity
+(ns heraldicon.frontend.ui.form.entity.core
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]
