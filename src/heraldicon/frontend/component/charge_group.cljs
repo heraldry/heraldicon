@@ -294,19 +294,19 @@
                                                     :white-space "nowrap"}}
                             [:a (if (zero? idx)
                                   {:class "disabled"}
-                                  {:on-click #(state/dispatch-on-event % [:move-element strip-context (dec idx)])})
+                                  {:on-click #(state/dispatch-on-event % [::element/move strip-context (dec idx)])})
                              [:i.fas.fa-chevron-up]]
                             " "
                             [:a (if (= idx (dec num-strips))
                                   {:class "disabled"}
-                                  {:on-click #(state/dispatch-on-event % [:move-element strip-context (inc idx)])})
+                                  {:on-click #(state/dispatch-on-event % [::element/move strip-context (inc idx)])})
                              [:i.fas.fa-chevron-down]]]
                            [:div
                             [strip-form strip-context type-str]]
                            [:div {:style {:padding-left "10px"}}
                             [:a (if (< num-strips 2)
                                   {:class "disabled"}
-                                  {:on-click #(state/dispatch-on-event % [:remove-element strip-context])})
+                                  {:on-click #(state/dispatch-on-event % [::element/remove strip-context])})
                              [:i.far.fa-trash-alt]]]])))
                  (range num-strips))]]))
 
@@ -325,7 +325,7 @@
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :menu [{:title :string.entity/charge
-                        :handler #(state/dispatch-on-event % [:add-element charges-context default/charge])}]}]
+                        :handler #(state/dispatch-on-event % [::element/add charges-context default/charge])}]}]
      :nodes (concat (->> (range num-charges)
                          reverse
                          (map (fn [idx]

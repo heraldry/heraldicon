@@ -4,6 +4,7 @@
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.component.entity.collection.element :as element]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
@@ -166,7 +167,7 @@
               y (quot num-elements num-columns)]
           ^{:key num-elements}
           [:g {:on-click #(state/dispatch-on-event
-                           % [:add-element {:path (conj form-db-path :data :elements)}
+                           % [::component.element/add {:path (conj form-db-path :data :elements)}
                               default/collection-element])
                :style {:cursor "pointer"}}
            [render-add-arms

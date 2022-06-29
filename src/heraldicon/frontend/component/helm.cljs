@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.element :as element]
    [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.shield-separator :as shield-separator]
@@ -36,19 +37,19 @@
         add-menu (cond-> []
                    (not helmet?) (conj {:title :string.entity/helmet
                                         :handler #(state/dispatch-on-event
-                                                   % [:add-element components-context default/helmet
+                                                   % [::element/add components-context default/helmet
                                                       shield-separator/add-element-options])})
                    (not torse?) (conj {:title :string.entity/torse
                                        :handler #(state/dispatch-on-event
-                                                  % [:add-element components-context default/torse
+                                                  % [::element/add components-context default/torse
                                                      shield-separator/add-element-options])})
                    true (conj {:title :string.entity/crest-charge
                                :handler #(state/dispatch-on-event
-                                          % [:add-element components-context default/crest-charge
+                                          % [::element/add components-context default/crest-charge
                                              shield-separator/add-element-options])})
                    true (conj {:title :string.entity/crest-charge-group
                                :handler #(state/dispatch-on-event
-                                          % [:add-element components-context default/crest-charge-group
+                                          % [::element/add components-context default/crest-charge-group
                                              shield-separator/add-element-options])}))]
 
     {:title (string/str-tr (when (> num-helms 1)
@@ -62,22 +63,22 @@
                  reverse
                  (map (fn [idx]
                         (let [component-context (c/++ components-context idx)
-                              removable? @(rf/subscribe [:element-removable? component-context])]
+                              removable? @(rf/subscribe [::element/removable? component-context])]
                           {:context component-context
                            :buttons (cond-> [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :title :string.tooltip/move-down
-                                              :handler #(state/dispatch-on-event % [:move-element component-context (dec idx)])}
+                                              :handler #(state/dispatch-on-event % [::element/move component-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
                                               :title :string.tooltip/move-up
-                                              :handler #(state/dispatch-on-event % [:move-element component-context (inc idx)])}]
+                                              :handler #(state/dispatch-on-event % [::element/move component-context (inc idx)])}]
                                       removable? (conj
                                                   {:icon "far fa-trash-alt"
                                                    :remove? true
                                                    :title :string.tooltip/remove
                                                    :handler #(state/dispatch-on-event
                                                               %
-                                                              [:remove-element component-context
+                                                              [::element/remove component-context
                                                                shield-separator/remove-element-options])}))})))
                  vec)}))
