@@ -9,7 +9,8 @@
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
-(def ^:private value-path [:ui :tag-input-value])
+(def ^:private value-path
+  [:ui :tag-input-value])
 
 (macros/reg-event-db :add-tags
   (fn [db [_ db-path tags]]

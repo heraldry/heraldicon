@@ -13,8 +13,11 @@
    [heraldicon.util.sanitize :as sanitize]
    [re-frame.core :as rf]))
 
-(def ^:private name-path [:ui :metadata :new-name])
-(def ^:private value-path [:ui :metadata :new-value])
+(def ^:private name-path
+  [:ui :metadata :new-name])
+
+(def ^:private value-path
+  [:ui :metadata :new-value])
 
 (defn- on-name-change [event]
   (let [new-value (-> event .-target .-value)]
