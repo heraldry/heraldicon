@@ -123,7 +123,7 @@
         right (assoc (:right points) :y (:y unadjusted-anchor-point))
         width (:width environment)
         height (:height environment)
-        band-width ((math/percent-of width) size)
+        band-width (math/percent-of width size)
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
@@ -198,8 +198,8 @@
                  end-bottom-left-lower
                  end-bottom-right-lower)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
         {line-top-left-lower :line
          line-top-left-lower-start :line-start
          line-top-left-lower-min :line-min

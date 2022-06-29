@@ -218,12 +218,12 @@
         line {:type :straight
               :fimbriation fimbriation}
         anchor-point (position/calculate anchor environment :fess)
-        band-height ((math/percent-of (:width environment)) thickness)
+        band-height (math/percent-of (:width environment) thickness)
         anchor-point (case (:alignment anchor)
                        :left (v/add anchor-point (v/Vector. 0 (/ band-height 2)))
                        :right (v/sub anchor-point (v/Vector. 0 (/ band-height 2)))
                        anchor-point)
-        point-width ((math/percent-of (:width environment)) size)
+        point-width (math/percent-of (:width environment) size)
         point-height (* point-width stretch)
         width (:width environment)
         {:keys [lines

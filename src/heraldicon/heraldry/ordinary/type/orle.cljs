@@ -79,8 +79,8 @@
         opposite-line-type (interface/get-sanitized-data (c/++ context :opposite-line :type))
         points (:points environment)
         width (:width environment)
-        distance ((math/percent-of width) distance)
-        thickness ((math/percent-of width) thickness)
+        distance (math/percent-of width distance)
+        thickness (math/percent-of width thickness)
         environment-shape (-> environment
                               (update-in [:shape :paths] (partial take 1))
                               environment/effective-shape)

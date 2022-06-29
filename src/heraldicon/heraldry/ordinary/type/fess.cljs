@@ -79,7 +79,7 @@
         right (assoc (:right points) :y (:y anchor-point))
         width (:width environment)
         height (:height environment)
-        band-height ((math/percent-of height) size)
+        band-height (math/percent-of height size)
         row1 (case (:alignment anchor)
                :left (:y anchor-point)
                :right (- (:y anchor-point) band-height)
@@ -113,11 +113,11 @@
         first-right (v/Vector. shared-end-x (:y first-right))
         second-right (v/Vector. shared-end-x (:y second-right))
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
         opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (math/percent-of height))
-                          (update-in [:fimbriation :thickness-2] (math/percent-of height)))
+                          (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
+                          (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
         {line-one :line
          line-one-start :line-start
          line-one-min :line-min

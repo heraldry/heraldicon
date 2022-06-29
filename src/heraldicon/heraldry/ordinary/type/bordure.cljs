@@ -62,7 +62,7 @@
         line-type (interface/get-sanitized-data (c/++ context :line :type))
         points (:points environment)
         width (:width environment)
-        thickness ((math/percent-of width) thickness)
+        thickness (math/percent-of width thickness)
         environment-shape (-> environment
                               (update-in [:shape :paths] (partial take 1))
                               environment/effective-shape)

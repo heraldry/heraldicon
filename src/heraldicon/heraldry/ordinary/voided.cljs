@@ -30,7 +30,7 @@
                 {:paths [shape]})]
     (if (interface/get-sanitized-data (c/++ context :voided?))
       (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
-            thickness ((math/percent-of base-thickness) thickness)
+            thickness (math/percent-of base-thickness thickness)
             corner (interface/get-sanitized-data (c/++ context :corner))
             environment-shape (environment/effective-shape
                                environment

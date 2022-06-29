@@ -5,9 +5,6 @@
       Math/abs
       (< 0.000000000001)))
 
-(defn percent-of [^js/Number base-value]
-  (fn [v]
-    (when v
-      (-> v
-          (* base-value)
-          (/ 100)))))
+(defn percent-of [^js/Number base-value v]
+  (when v
+    (/ (* v base-value) 100)))

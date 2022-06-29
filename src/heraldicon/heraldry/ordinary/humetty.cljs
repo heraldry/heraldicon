@@ -30,7 +30,7 @@
                 {:paths [shape]})]
     (if (interface/get-sanitized-data (c/++ context :humetty?))
       (let [distance (interface/get-sanitized-data (c/++ context :distance))
-            distance ((math/percent-of base-distance) distance)
+            distance (math/percent-of base-distance distance)
             corner (interface/get-sanitized-data (c/++ context :corner))
             environment-shape (environment/effective-shape environment)
             shrunken-environment-shape (environment/shrink-shape environment-shape distance corner)

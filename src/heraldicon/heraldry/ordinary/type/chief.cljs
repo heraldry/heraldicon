@@ -49,7 +49,7 @@
         right (:right points)
         width (:width environment)
         height (:height environment)
-        band-height ((math/percent-of height) size)
+        band-height (math/percent-of height size)
         row (+ (:y top) band-height)
         row-left (v/Vector. (:x left) row)
         row-right (v/Vector. (:x right) row)
@@ -68,8 +68,8 @@
         row-left (v/Vector. shared-start-x (:y row-left))
         row-right (v/Vector. shared-end-x (:y row-right))
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
         {line-reversed :line
          line-reversed-start :line-start
          line-reversed-min :line-min

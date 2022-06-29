@@ -234,8 +234,8 @@
                       v/abs)
         end (max end-left end-right)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (math/percent-of thickness-base))
-                 (update-in [:fimbriation :thickness-2] (math/percent-of thickness-base)))
+                 (update-in [:fimbriation :thickness-1] (partial math/percent-of thickness-base))
+                 (update-in [:fimbriation :thickness-2] (partial math/percent-of thickness-base)))
         {line-left :line
          line-left-start :line-start
          line-left-min :line-min

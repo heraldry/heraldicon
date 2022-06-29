@@ -65,8 +65,8 @@
         top-left (:top-left points)
         top-right (:top-right points)
 
-        real-point-width ((math/percent-of width) point-width)
-        real-point-height ((math/percent-of width) point-height)
+        real-point-width (math/percent-of width point-width)
+        real-point-height (math/percent-of width point-height)
 
         ideal-point-side (v/Vector. (if (= variant :dexter)
                                       (:x top-left)
