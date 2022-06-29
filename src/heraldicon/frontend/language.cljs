@@ -42,7 +42,7 @@
       (assoc-in db language-path language))
     db))
 
-(macros/reg-event-db ::set-language
+(macros/reg-event-db ::set
   (fn [db [_ language]]
     (set-language db language)))
 
@@ -97,5 +97,5 @@
                  ^{:key language-code}
                  [:li.nav-menu-item
                   [language-option language-code
-                   :on-click #(rf/dispatch [::set-language language-code])]]))
+                   :on-click #(rf/dispatch [::set language-code])]]))
           (keys locale/all))]])
