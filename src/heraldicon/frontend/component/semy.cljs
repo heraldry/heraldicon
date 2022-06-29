@@ -22,4 +22,4 @@
      :nodes [{:context charge-context}]}))
 
 (defmethod component/form-data :heraldry/semy [_context]
-  {:form form})
+  form)

@@ -67,4 +67,4 @@
   {:title @(rf/subscribe [::name path])})
 
 (defmethod component/form-data :heraldry/motto [_context]
-  {:form form})
+  form)

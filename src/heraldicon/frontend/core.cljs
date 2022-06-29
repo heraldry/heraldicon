@@ -261,7 +261,7 @@
     (merge
      {:title (:title node-data)
       :context context}
-     (frontend.component/form-data context))))
+     {:form (frontend.component/form-data context)})))
 
 (defn- component-form [context]
   (let [{:keys [title context form]} (when context

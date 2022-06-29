@@ -15,4 +15,4 @@
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod component/form-data :heraldry/coat-of-arms [_context]
-  {:form form})
+  form)

@@ -16,7 +16,7 @@
      :tags])
 
    (let [data-context (c/++ context :data)]
-     (when-let [data-form (:form (component/form-data data-context))]
+     (when-let [data-form (component/form-data data-context)]
        [:<>
         [:div {:style {:height "1.5em"}}]
         [data-form data-context]]))])
@@ -26,4 +26,4 @@
    :validation (validation/validate-entity context)})
 
 (defmethod component/form-data :heraldicon/entity [_context]
-  {:form form})
+  form)

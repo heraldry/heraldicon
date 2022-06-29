@@ -186,4 +186,4 @@
                                                  :handler #(state/dispatch-on-event % [::remove-cottise cottise-extra-2-context])}]}))}))
 
 (defmethod component/form-data :heraldry/ordinary [_context]
-  {:form form})
+  form)

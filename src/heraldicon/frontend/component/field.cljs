@@ -213,4 +213,4 @@
                          vec))}))
 
 (defmethod component/form-data :heraldry/field [_context]
-  {:form form})
+  form)

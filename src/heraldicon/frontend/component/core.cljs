@@ -12,4 +12,4 @@
 (defmulti form-data interface/effective-component-type)
 
 (defmethod form-data nil [_context]
-  {:form (constantly [:<>])})
+  nil)

@@ -251,4 +251,4 @@
    :validation (validation/validate-entity context)})
 
 (defmethod component/form-data :heraldicon.entity.ribbon/data [_context]
-  {:form form})
+  form)

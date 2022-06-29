@@ -39,4 +39,4 @@
                  vec)}))
 
 (defmethod component/form-data :heraldicon.entity.collection/data [_context]
-  {:form form})
+  form)
