@@ -1,4 +1,4 @@
-(ns heraldicon.reader.blazonry.transform.field.partition.field
+(ns heraldicon.reader.blazonry.transform.field.partition-field
   (:require
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first transform-all]]))
 
