@@ -4,10 +4,10 @@
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.element.charge-select :as charge-select]
    [heraldicon.frontend.element.submenu :as submenu]
+   [heraldicon.frontend.entity.preview :as preview]
    [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.preview :as preview]
    [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.interface :as interface]
@@ -48,7 +48,7 @@
                     default)
           variant (interface/get-raw-data variant-context)]
       (if variant
-        (preview/preview-url
+        (preview/url
          :charge variant
          :width 64
          :height 72)

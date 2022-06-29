@@ -4,10 +4,10 @@
    [heraldicon.frontend.component.entity.ribbon.data :as ribbon.data]
    [heraldicon.frontend.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.element.submenu :as submenu]
+   [heraldicon.frontend.entity.preview :as preview]
    [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.preview :as preview]
    [heraldicon.frontend.repository.entity :as entity]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]
@@ -47,7 +47,7 @@
 
 (defn- choice-preview [context]
   (let [ribbon (interface/get-raw-data context)
-        img-url (preview/preview-url
+        img-url (preview/url
                  :ribbon ribbon
                  :width 64
                  :height 72)]
