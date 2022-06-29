@@ -26,8 +26,8 @@
             size (interface/get-sanitized-data (c/++ context :geometry :size))
             thickness (interface/get-sanitized-data (c/++ context :ribbon :thickness))
             position (v/add (-> environment :points (get anchor-point))
-                            (v/Vector. ((math/percent-of width) offset-x)
-                                       (- ((math/percent-of height) offset-y))))
+                            (v/Vector. (math/percent-of width offset-x)
+                                       (- (math/percent-of height offset-y))))
             ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
             ;; assumed to be (0 thickness) as a max) needs to be added to every point for the correct
             ;; height; could perhaps be a subscription or the ribbon function can provide it?
@@ -38,7 +38,7 @@
                                            (map (partial v/add (v/Vector. 0 thickness)) points)))
             ribbon-width (- max-x min-x)
             ribbon-height (- max-y min-y)
-            target-width ((math/percent-of width) size)
+            target-width (math/percent-of width size)
             scale (/ target-width ribbon-width)
             outline-thickness (/ outline/stroke-width
                                  2

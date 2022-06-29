@@ -156,7 +156,7 @@
         bottom (:bottom points)
         width (:width environment)
         height (:height environment)
-        band-height ((math/percent-of height) size)
+        band-height (math/percent-of height size)
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                environment
@@ -217,11 +217,11 @@
                           (v/abs (v/sub second-real-end second-start))))
         angle (v/angle-to-point middle-start middle-end)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
         opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (math/percent-of height))
-                          (update-in [:fimbriation :thickness-2] (math/percent-of height)))
+                          (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
+                          (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
         {line-one :line
          line-one-start :line-start
          line-one-min :line-min

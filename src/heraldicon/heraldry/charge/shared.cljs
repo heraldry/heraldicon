@@ -219,8 +219,8 @@
           size (when (or (not auto-resize?)
                          (interface/get-raw-data (c/++ context :geometry :size)))
                  size)
-          target-arg-value ((math/percent-of arg-value) (or size
-                                                            80))
+          target-arg-value (math/percent-of arg-value (or size
+                                                          80))
           {:keys [shape
                   charge-width
                   charge-height
@@ -235,10 +235,10 @@
                              (min (- (:y anchor-point) (:y top))
                                   (- (:y bottom) (:y anchor-point))))
           target-width (if size
-                         ((math/percent-of width) size)
+                         (math/percent-of width size)
                          (* min-x-distance 2 0.8))
           target-height (/ (if size
-                             ((math/percent-of height) size)
+                             (math/percent-of height size)
                              (* min-y-distance 2 0.7))
                            stretch)
           angle (if (and (-> orientation :point (= :angle))
@@ -290,7 +290,7 @@
        (when vertical-mask?
          (let [total-width (- max-x min-x)
                total-height (- max-y min-y)
-               mask-height ((math/percent-of total-height) (Math/abs vertical-mask))]
+               mask-height (math/percent-of total-height (Math/abs vertical-mask))]
            [:defs
             [:mask {:id vertical-mask-id}
              [:rect {:transform (str "translate(" (v/->str anchor-point) ")")
@@ -313,12 +313,8 @@
        [:g (when vertical-mask?
              {:mask (str "url(#" vertical-mask-id ")")})
         (when (-> fimbriation :mode #{:double})
-          (let [thickness (+ (-> fimbriation
-                                 :thickness-1
-                                 ((math/percent-of charge-width)))
-                             (-> fimbriation
-                                 :thickness-2
-                                 ((math/percent-of charge-width))))]
+          (let [thickness (+ (math/percent-of (:thickness-1 fimbriation) charge-width)
+                             (math/percent-of (:thickness-2 fimbriation) charge-width))]
             [:<>
              (when outline?
                [fimbriation/dilate-and-fill-path
@@ -337,9 +333,7 @@
                   (tincture/pick context)) context
               :corner (:corner fimbriation)]]))
         (when (-> fimbriation :mode #{:single :double})
-          (let [thickness (-> fimbriation
-                              :thickness-1
-                              ((math/percent-of charge-width)))]
+          (let [thickness (math/percent-of (:thickness-1 fimbriation) charge-width)]
             [:<>
              (when outline?
                [fimbriation/dilate-and-fill-path

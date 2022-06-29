@@ -81,7 +81,7 @@
         right (assoc (:right points) :y (:y anchor-point))
         width (:width environment)
         height (:height environment)
-        band-width ((math/percent-of width) size)
+        band-width (math/percent-of width size)
         col1 (- (:x anchor-point) (/ band-width 2))
         col2 (+ col1 band-width)
         pale-top-left (v/Vector. col1 (-> top :y (- 10)))
@@ -139,8 +139,8 @@
                  end-fess-bottom-left
                  end-fess-bottom-right)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (math/percent-of height)))
+                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
+                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
         {line-pale-top-left :line
          line-pale-top-left-start :line-start
          line-pale-top-left-min :line-min

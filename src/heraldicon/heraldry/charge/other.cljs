@@ -291,10 +291,10 @@
                                (min (- (:y anchor-point) (:y top))
                                     (- (:y bottom) (:y anchor-point))))
             target-width (if size
-                           ((math/percent-of width) size)
+                           (math/percent-of width size)
                            (* min-x-distance 2 0.8))
             target-height (/ (if size
-                               ((math/percent-of height) size)
+                               (math/percent-of height size)
                                (* min-y-distance 2 0.7))
                              stretch)
             angle (if (and (-> orientation :point (= :angle))
@@ -401,15 +401,9 @@
                                    angle
                                    :scale (v/Vector. scale-x scale-y))
             extra-margin (-> (case (:mode fimbriation)
-                               :double (+ (-> fimbriation
-                                              :thickness-1
-                                              ((math/percent-of positional-charge-width)))
-                                          (-> fimbriation
-                                              :thickness-2
-                                              ((math/percent-of positional-charge-width))))
-                               :single (-> fimbriation
-                                           :thickness-1
-                                           ((math/percent-of positional-charge-width)))
+                               :double (+ (math/percent-of (:thickness-1 fimbriation) positional-charge-width)
+                                          (math/percent-of (:thickness-2 fimbriation) positional-charge-width))
+                               :single (math/percent-of (:thickness-1 fimbriation) positional-charge-width)
                                0)
                              (+ outline/stroke-width)
                              (* scale-x))
@@ -453,7 +447,7 @@
          (when vertical-mask?
            (let [total-width (- max-x min-x)
                  total-height (- max-y min-y)
-                 mask-height ((math/percent-of total-height) (Math/abs vertical-mask))]
+                 mask-height (math/percent-of total-height (Math/abs vertical-mask))]
              [:defs
               [:mask {:id vertical-mask-id}
                [:g {:transform (str "translate(" (v/->str anchor-point) ")")}
@@ -571,12 +565,8 @@
                                        "translate(" (-> anchor-point (v/mul -1) v/->str) ")")]
             [:g {:transform transform}
              (when (-> fimbriation :mode #{:double})
-               (let [thickness (+ (-> fimbriation
-                                      :thickness-1
-                                      ((math/percent-of positional-charge-width)))
-                                  (-> fimbriation
-                                      :thickness-2
-                                      ((math/percent-of positional-charge-width))))]
+               (let [thickness (+ (math/percent-of (:thickness-1 fimbriation) positional-charge-width)
+                                  (math/percent-of (:thickness-2 fimbriation) positional-charge-width))]
                  [:<>
                   (when outline?
                     [fimbriation/dilate-and-fill
@@ -595,9 +585,7 @@
                    :transform reverse-transform
                    :corner (:corner fimbriation)]]))
              (when (-> fimbriation :mode #{:single :double})
-               (let [thickness (-> fimbriation
-                                   :thickness-1
-                                   ((math/percent-of positional-charge-width)))]
+               (let [thickness (math/percent-of (:thickness-1 fimbriation) positional-charge-width)]
                  [:<>
                   (when outline?
                     [fimbriation/dilate-and-fill

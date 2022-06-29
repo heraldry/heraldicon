@@ -77,7 +77,7 @@
         top (assoc (:top points) :x (:x anchor-point))
         bottom (assoc (:bottom points) :x (:x anchor-point))
         width (:width environment)
-        band-width ((math/percent-of width) size)
+        band-width (math/percent-of width size)
         col1 (case (:alignment anchor)
                :left (:x anchor-point)
                :right (- (:x anchor-point) band-width)
@@ -111,11 +111,11 @@
         first-bottom (v/Vector. (:x first-bottom) shared-end-y)
         second-bottom (v/Vector. (:x second-bottom) shared-end-y)
         line (-> line
-                 (update-in [:fimbriation :thickness-1] (math/percent-of width))
-                 (update-in [:fimbriation :thickness-2] (math/percent-of width)))
+                 (update-in [:fimbriation :thickness-1] (partial math/percent-of width))
+                 (update-in [:fimbriation :thickness-2] (partial math/percent-of width)))
         opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (math/percent-of width))
-                          (update-in [:fimbriation :thickness-2] (math/percent-of width)))
+                          (update-in [:fimbriation :thickness-1] (partial math/percent-of width))
+                          (update-in [:fimbriation :thickness-2] (partial math/percent-of width)))
         {line-one :line
          line-one-start :line-start
          line-one-min :line-min

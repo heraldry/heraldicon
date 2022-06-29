@@ -96,7 +96,7 @@
 (defn- calculate-properties-for-thickness [environment anchor orientation
                                            {:keys [size stretch]}
                                            thickness-base base-angle]
-  (let [thickness ((math/percent-of thickness-base) size)
+  (let [thickness (math/percent-of thickness-base size)
         orientation-type (or (:type orientation)
                              :edge)
         {real-anchor :real-anchor
