@@ -1,69 +1,69 @@
 (ns heraldicon.frontend.ui.core
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.history.state] ;; needed for side effects
+   [heraldicon.frontend.history.state]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.ui.element.access] ;; needed for side effects
-   [heraldicon.frontend.ui.element.arms-reference-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.attributes] ;; needed for side effects
-   [heraldicon.frontend.ui.element.attribution] ;; needed for side effects
-   [heraldicon.frontend.ui.element.charge-group-preset-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.charge-group-slot-number] ;; needed for side effects
-   [heraldicon.frontend.ui.element.charge-group-type-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.charge-type-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.checkbox] ;; needed for side effects
-   [heraldicon.frontend.ui.element.colours] ;; needed for side effects
-   [heraldicon.frontend.ui.element.escutcheon-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.field-layout] ;; needed for side effects
-   [heraldicon.frontend.ui.element.field-type-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.fimbriation] ;; needed for side effects
-   [heraldicon.frontend.ui.element.flag-aspect-ratio-preset-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.geometry] ;; needed for side effects
-   [heraldicon.frontend.ui.element.hover-menu :as hover-menu] ;; needed for side effects
-   [heraldicon.frontend.ui.element.humetty] ;; needed for side effects
-   [heraldicon.frontend.ui.element.line] ;; needed for side effects
-   [heraldicon.frontend.ui.element.line-type-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.metadata] ;; needed for side effects
-   [heraldicon.frontend.ui.element.ordinary-type-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.position] ;; needed for side effects
-   [heraldicon.frontend.ui.element.radio-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.range] ;; needed for side effects
-   [heraldicon.frontend.ui.element.ribbon-reference-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.semy-layout] ;; needed for side effects
-   [heraldicon.frontend.ui.element.submenu :as submenu] ;; needed for side effects
-   [heraldicon.frontend.ui.element.tags] ;; needed for side effects
-   [heraldicon.frontend.ui.element.text-field] ;; needed for side effects
-   [heraldicon.frontend.ui.element.theme-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.tincture-modifiers] ;; needed for side effects
-   [heraldicon.frontend.ui.element.tincture-select] ;; needed for side effects
-   [heraldicon.frontend.ui.element.voided] ;; needed for side effects
-   [heraldicon.frontend.ui.form.charge] ;; needed for side effects
-   [heraldicon.frontend.ui.form.charge-group] ;; needed for side effects
-   [heraldicon.frontend.ui.form.coat-of-arms] ;; needed for side effects
-   [heraldicon.frontend.ui.form.cottise] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.arms.data] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.charge.data] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.collection.data] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.collection.element] ;; needed for side effects
-   [heraldicon.frontend.ui.form.entity.ribbon.data] ;; needed for side effects
-   [heraldicon.frontend.ui.form.field] ;; needed for side effects
-   [heraldicon.frontend.ui.form.helm] ;; needed for side effects
-   [heraldicon.frontend.ui.form.helms] ;; needed for side effects
-   [heraldicon.frontend.ui.form.motto] ;; needed for side effects
-   [heraldicon.frontend.ui.form.ordinary] ;; needed for side effects
-   [heraldicon.frontend.ui.form.ornaments] ;; needed for side effects
-   [heraldicon.frontend.ui.form.render-options] ;; needed for side effects
-   [heraldicon.frontend.ui.form.semy] ;; needed for side effects
-   [heraldicon.frontend.ui.form.shield-separator] ;; needed for side effects
-   [heraldicon.frontend.ui.interface :as ui.interface] ;; needed for side effects
-   [heraldicon.frontend.validation :as validation] ;; needed for side effects
+   [heraldicon.frontend.ui.element.access]
+   [heraldicon.frontend.ui.element.arms-reference-select]
+   [heraldicon.frontend.ui.element.attributes]
+   [heraldicon.frontend.ui.element.attribution]
+   [heraldicon.frontend.ui.element.charge-group-preset-select]
+   [heraldicon.frontend.ui.element.charge-group-slot-number]
+   [heraldicon.frontend.ui.element.charge-group-type-select]
+   [heraldicon.frontend.ui.element.charge-type-select]
+   [heraldicon.frontend.ui.element.checkbox]
+   [heraldicon.frontend.ui.element.colours]
+   [heraldicon.frontend.ui.element.escutcheon-select]
+   [heraldicon.frontend.ui.element.field-layout]
+   [heraldicon.frontend.ui.element.field-type-select]
+   [heraldicon.frontend.ui.element.fimbriation]
+   [heraldicon.frontend.ui.element.flag-aspect-ratio-preset-select]
+   [heraldicon.frontend.ui.element.geometry]
+   [heraldicon.frontend.ui.element.hover-menu :as hover-menu]
+   [heraldicon.frontend.ui.element.humetty]
+   [heraldicon.frontend.ui.element.line]
+   [heraldicon.frontend.ui.element.line-type-select]
+   [heraldicon.frontend.ui.element.metadata]
+   [heraldicon.frontend.ui.element.ordinary-type-select]
+   [heraldicon.frontend.ui.element.position]
+   [heraldicon.frontend.ui.element.radio-select]
+   [heraldicon.frontend.ui.element.range]
+   [heraldicon.frontend.ui.element.ribbon-reference-select]
+   [heraldicon.frontend.ui.element.select]
+   [heraldicon.frontend.ui.element.semy-layout]
+   [heraldicon.frontend.ui.element.submenu :as submenu]
+   [heraldicon.frontend.ui.element.tags]
+   [heraldicon.frontend.ui.element.text-field]
+   [heraldicon.frontend.ui.element.theme-select]
+   [heraldicon.frontend.ui.element.tincture-modifiers]
+   [heraldicon.frontend.ui.element.tincture-select]
+   [heraldicon.frontend.ui.element.voided]
+   [heraldicon.frontend.ui.form.charge]
+   [heraldicon.frontend.ui.form.charge-group]
+   [heraldicon.frontend.ui.form.coat-of-arms]
+   [heraldicon.frontend.ui.form.cottise]
+   [heraldicon.frontend.ui.form.entity]
+   [heraldicon.frontend.ui.form.entity.arms.data]
+   [heraldicon.frontend.ui.form.entity.charge.data]
+   [heraldicon.frontend.ui.form.entity.collection.data]
+   [heraldicon.frontend.ui.form.entity.collection.element]
+   [heraldicon.frontend.ui.form.entity.ribbon.data]
+   [heraldicon.frontend.ui.form.field]
+   [heraldicon.frontend.ui.form.helm]
+   [heraldicon.frontend.ui.form.helms]
+   [heraldicon.frontend.ui.form.motto]
+   [heraldicon.frontend.ui.form.ordinary]
+   [heraldicon.frontend.ui.form.ornaments]
+   [heraldicon.frontend.ui.form.render-options]
+   [heraldicon.frontend.ui.form.semy]
+   [heraldicon.frontend.ui.form.shield-separator]
+   [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.shield-separator :as shield-separator]
-   [heraldicon.shared] ;; needed for side effects
+   [heraldicon.shared]
    [heraldicon.util.vec :as vec]
    [re-frame.core :as rf]))
 
