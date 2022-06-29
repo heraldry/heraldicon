@@ -39,7 +39,7 @@
 
 (defn ^:export init []
   (rf/dispatch-sync [:initialize-db])
-  (rf/dispatch-sync [::language/load-language-setting])
+  (rf/dispatch-sync [::language/load-setting])
   (session/read-from-storage)
   #_(print-stats)
   (router/start)
