@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.library.ribbon
+(ns heraldicon.frontend.library.ribbon.details
   (:require
    [cljs.core.async :refer [go]]
    [heraldicon.frontend.attribution :as attribution]

@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.library.arms
+(ns heraldicon.frontend.library.arms.details
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
