@@ -2,5 +2,5 @@
   (:require
    [heraldicon.frontend.component.core :as component]))
 
-(defmethod component/form-data :heraldicon.entity.arms/data [_context]
+(defmethod component/form :heraldicon.entity.arms/data [_context]
   nil)

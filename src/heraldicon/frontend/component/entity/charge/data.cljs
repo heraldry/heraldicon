@@ -19,5 +19,5 @@
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 
-(defmethod component/form-data :heraldicon.entity.charge/data [_context]
+(defmethod component/form :heraldicon.entity.charge/data [_context]
   form)

@@ -185,5 +185,5 @@
                                                  :title :string.tooltip/remove
                                                  :handler #(state/dispatch-on-event % [::remove-cottise cottise-extra-2-context])}]}))}))
 
-(defmethod component/form-data :heraldry/ordinary [_context]
+(defmethod component/form :heraldry/ordinary [_context]
   form)

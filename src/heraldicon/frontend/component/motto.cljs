@@ -66,5 +66,5 @@
 (defmethod component/node-data :heraldry/motto [{:keys [path]}]
   {:title @(rf/subscribe [::name path])})
 
-(defmethod component/form-data :heraldry/motto [_context]
+(defmethod component/form :heraldry/motto [_context]
   form)

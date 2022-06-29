@@ -212,5 +212,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-element component-context])}]})))
                          vec))}))
 
-(defmethod component/form-data :heraldry/field [_context]
+(defmethod component/form :heraldry/field [_context]
   form)

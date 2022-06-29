@@ -9,7 +9,7 @@
   (log/warn :not-implemented "node-data" context)
   {:title (str "unknown")})
 
-(defmulti form-data interface/effective-component-type)
+(defmulti form interface/effective-component-type)
 
-(defmethod form-data nil [_context]
+(defmethod form nil [_context]
   nil)

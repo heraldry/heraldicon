@@ -41,5 +41,5 @@
                              name
                              :string.miscellaneous/no-name))}))
 
-(defmethod component/form-data :heraldicon.entity.collection/element [_context]
+(defmethod component/form :heraldicon.entity.collection/element [_context]
   form)
