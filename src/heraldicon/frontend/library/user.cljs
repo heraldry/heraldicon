@@ -2,6 +2,9 @@
   (:require
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.user :as entity.user]
+   [heraldicon.frontend.element.arms-select :as arms-select]
+   [heraldicon.frontend.element.charge-select :as charge-select]
+   [heraldicon.frontend.element.collection-select :as collection-select]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge.list :as library.charge.list]
@@ -11,9 +14,6 @@
    [heraldicon.frontend.repository.user-list :as repository.user-list]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.title :as title]
-   [heraldicon.frontend.ui.element.arms-select :as arms-select]
-   [heraldicon.frontend.ui.element.charge-select :as charge-select]
-   [heraldicon.frontend.ui.element.collection-select :as collection-select]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))

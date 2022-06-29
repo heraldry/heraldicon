@@ -1,10 +1,10 @@
 (ns heraldicon.frontend.component.ribbon
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.element.submenu :as submenu]
+   [heraldicon.frontend.element.text-field :as text-field]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.ui.element.submenu :as submenu]
-   [heraldicon.frontend.ui.element.text-field :as text-field]
-   [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))

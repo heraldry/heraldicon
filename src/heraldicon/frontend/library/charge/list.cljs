@@ -1,11 +1,11 @@
 (ns heraldicon.frontend.library.charge.list
   (:require
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.element.charge-select :as charge-select]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.charge.shared :refer [entity-type]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.title :as title]
-   [heraldicon.frontend.ui.element.charge-select :as charge-select]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 

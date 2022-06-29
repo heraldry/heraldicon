@@ -1,10 +1,10 @@
 (ns heraldicon.frontend.component.ordinary
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.component.cottise :as cottise]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.component.cottise :as cottise]
-   [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.ordinary.core :as ordinary]

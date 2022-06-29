@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.component.entity.collection.element
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))

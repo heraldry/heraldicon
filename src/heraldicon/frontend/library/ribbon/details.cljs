@@ -2,6 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.core :as ui]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.history.core :as history]
@@ -11,7 +12,6 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.title :as title]
-   [heraldicon.frontend.ui.core :as ui]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.interface :as interface]

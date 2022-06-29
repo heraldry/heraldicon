@@ -1,11 +1,11 @@
 (ns heraldicon.frontend.component.field
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.blazonry-editor.core :as blazonry-editor]
+   [heraldicon.frontend.element.tincture-select :as tincture-select]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.ui.blazonry-editor.core :as blazonry-editor]
-   [heraldicon.frontend.ui.element.tincture-select :as tincture-select]
-   [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.core :as field]

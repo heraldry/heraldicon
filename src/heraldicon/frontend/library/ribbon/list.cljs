@@ -1,11 +1,11 @@
 (ns heraldicon.frontend.library.ribbon.list
   (:require
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.ribbon.shared :refer [entity-type]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.title :as title]
-   [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
