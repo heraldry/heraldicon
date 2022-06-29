@@ -113,10 +113,17 @@
     .preventDefault
     .stopPropagation))
 
-(def ^:private node-flag-db-path [:ui :component-tree :nodes])
-(def ui-submenu-open?-path [:ui :submenu-open?])
-(def ^:private ui-component-node-selected-path [:ui :component-tree :selected-node])
-(def ^:private ui-component-node-selected-default-path [:ui :component-tree :selected-node-default])
+(def ^:private node-flag-db-path
+  [:ui :component-tree :nodes])
+
+(def ui-submenu-open?-path
+  [:ui :submenu-open?])
+
+(def ^:private ui-component-node-selected-path
+  [:ui :component-tree :selected-node])
+
+(def ^:private ui-component-node-selected-default-path
+  [:ui :component-tree :selected-node-default])
 
 (defn- component-node-open-by-default? [path]
   (or (#{[:coat-of-arms]

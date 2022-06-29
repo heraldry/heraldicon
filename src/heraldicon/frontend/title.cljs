@@ -5,7 +5,8 @@
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 
-(def ^:private title-path [:ui :title])
+(def ^:private title-path
+  [:ui :title])
 
 (macros/reg-event-db ::set
   (fn [db [_ value]]

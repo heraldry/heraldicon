@@ -89,11 +89,14 @@
            [:li.nav-menu-item
             [:a.nav-menu-link {:href "#"
                                :on-click #(do (rf/dispatch [::clear-menu-open? user-menu-open?-path])
-                                              (rf/dispatch [::session/logout]))} [tr :string.menu/logout]]]]]]
+                                              (rf/dispatch [::session/logout]))}
+             [tr :string.menu/logout]]]]]]
         [:<>
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(rf/dispatch [::form.login/show])} [tr :string.menu/login]]]
+                             :on-click #(rf/dispatch [::form.login/show])}
+           [tr :string.menu/login]]]
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(rf/dispatch [::form.register/show])} [tr :string.menu/register]]]])]]))
+                             :on-click #(rf/dispatch [::form.register/show])}
+           [tr :string.menu/register]]]])]]))

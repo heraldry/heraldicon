@@ -6,7 +6,8 @@
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 
-(def ui-highlighted-element-path [:ui :collection-library :selected-element])
+(def ui-highlighted-element-path
+  [:ui :collection-library :selected-element])
 
 (rf/reg-sub :collection-library-highlighted-element
   (fn [_ _]
