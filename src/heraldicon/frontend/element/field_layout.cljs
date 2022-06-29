@@ -1,9 +1,9 @@
 (ns heraldicon.frontend.element.field-layout
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.field-type-select :as field-type-select]
    [heraldicon.frontend.element.range :as range]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
@@ -73,7 +73,7 @@
        (-> field :layout :num-fields-y)
        value))))
 
-(defmethod ui.interface/form-element :field-layout [context]
+(defmethod element/element :field-layout [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -84,7 +84,7 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-field-layout"}
-         (ui.interface/form-elements
+         (element/elements
           context
           [:num-base-fields
            :num-fields-x
@@ -95,17 +95,17 @@
            :stretch-y
            :rotation])]]])))
 
-(defmethod ui.interface/form-element :field-layout-num-fields-x [{:keys [path] :as context}]
+(defmethod element/element :field-layout-num-fields-x [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-fields-x path value]))])
 
-(defmethod ui.interface/form-element :field-layout-num-fields-y [{:keys [path] :as context}]
+(defmethod element/element :field-layout-num-fields-y [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-fields-y path value]))])
 
-(defmethod ui.interface/form-element :field-layout-num-base-fields [{:keys [path] :as context}]
+(defmethod element/element :field-layout-num-base-fields [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [:set-field-layout-num-base-fields path value]))])

@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.radio-select
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.util.core :as util]
@@ -45,5 +45,5 @@
               choices)
         [value-mode-select/value-mode-select context]]])))
 
-(defmethod ui.interface/form-element :radio-select [context]
+(defmethod element/element :radio-select [context]
   [radio-select context])

@@ -1,9 +1,9 @@
 (ns heraldicon.frontend.element.attribution
   (:require
    [heraldicon.entity.attribution :as attribution]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.select :as select]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
@@ -22,7 +22,7 @@
   (fn [db [_ path data]]
     (update-in db path merge data)))
 
-(defmethod ui.interface/form-element :attribution [{:keys [path] :as context}]
+(defmethod element/element :attribution [{:keys [path] :as context}]
   (when-let [options (interface/get-relevant-options context)]
     (let [charge-presets? (->> context :path drop-last last #{:heraldicon.entity.type/charge})
           {:keys [ui]} options
@@ -84,7 +84,7 @@
                                                                    :source-creator-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"}])
                             nil))])
 
-          (ui.interface/form-elements
+          (element/elements
            context
            [:nature
             :license
@@ -92,7 +92,7 @@
 
           [:div {:style {:height "1.5em"}}]
 
-          (ui.interface/form-elements
+          (element/elements
            context
            [:source-license
             :source-license-version

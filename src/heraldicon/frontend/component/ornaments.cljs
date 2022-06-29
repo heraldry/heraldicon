@@ -1,14 +1,14 @@
 (ns heraldicon.frontend.component.ornaments
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
-(defmethod ui.interface/component-node-data :heraldry/ornaments [context]
+(defmethod component/node-data :heraldry/ornaments [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.charge.attribute.group/ornaments

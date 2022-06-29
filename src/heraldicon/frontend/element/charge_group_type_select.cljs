@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.charge-group-type-select
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.radio-select :as radio-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.macros :as macros]
    [re-frame.core :as rf]))
 
@@ -23,6 +23,6 @@
                                        new-type)
                                     (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0 0 0 0])))))))
 
-(defmethod ui.interface/form-element :charge-group-type-select [{:keys [path] :as context}]
+(defmethod element/element :charge-group-type-select [{:keys [path] :as context}]
   [radio-select/radio-select context
    :on-change #(rf/dispatch [:change-charge-group-type (vec (drop-last path)) %])])

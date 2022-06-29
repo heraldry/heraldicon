@@ -1,12 +1,12 @@
 (ns heraldicon.frontend.element.access
   (:require
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
-(defmethod ui.interface/form-element :access [context]
+(defmethod element/element :access [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [component-id (uid/generate "access")
           {:keys [ui default]} option

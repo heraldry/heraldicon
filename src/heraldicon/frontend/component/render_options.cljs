@@ -1,9 +1,10 @@
 (ns heraldicon.frontend.component.render-options
   (:require
-   [heraldicon.frontend.interface :as ui.interface]))
+   [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.element.core :as element]))
 
 (defn- form [context]
-  (ui.interface/form-elements
+  (element/elements
    context
    [:scope
     :escutcheon
@@ -24,8 +25,8 @@
     :squiggly?
     :coat-of-arms-angle]))
 
-(defmethod ui.interface/component-node-data :heraldry/render-options [_context]
+(defmethod component/node-data :heraldry/render-options [_context]
   {:title :string.render-options/title})
 
-(defmethod ui.interface/component-form-data :heraldry/render-options [_context]
+(defmethod component/form-data :heraldry/render-options [_context]
   {:form form})

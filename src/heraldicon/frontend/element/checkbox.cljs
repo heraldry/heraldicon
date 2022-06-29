@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.checkbox
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.util.uid :as uid]
@@ -33,5 +33,5 @@
        [:label.for-checkbox {:for component-id} [tr label]]
        [value-mode-select/value-mode-select context :disabled? disabled?]])))
 
-(defmethod ui.interface/form-element :checkbox [context]
+(defmethod element/element :checkbox [context]
   [checkbox context])

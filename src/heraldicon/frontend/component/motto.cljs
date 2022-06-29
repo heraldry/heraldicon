@@ -1,8 +1,9 @@
 (ns heraldicon.frontend.component.motto
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.ribbon :as ribbon]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
@@ -34,7 +35,7 @@
 
 (defn- form [context]
   [:<>
-   (ui.interface/form-elements
+   (element/elements
     context
     [:type
      :anchor
@@ -44,7 +45,7 @@
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr :string.entity/tincture]]
 
-   (ui.interface/form-elements
+   (element/elements
     context
     [:tincture-foreground
      :tincture-background
@@ -54,7 +55,7 @@
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr :string.entity/ribbon]]
 
-   [ui.interface/form-element (c/++ context :ribbon-variant)]
+   [element/element (c/++ context :ribbon-variant)]
 
    (when (interface/get-raw-data (c/++ context :ribbon-variant))
      (let [ribbon-context (c/++ context :ribbon)]
@@ -62,8 +63,8 @@
         [ribbon/form ribbon-context]
         [ribbon/segments-form ribbon-context]]))])
 
-(defmethod ui.interface/component-node-data :heraldry/motto [{:keys [path]}]
+(defmethod component/node-data :heraldry/motto [{:keys [path]}]
   {:title @(rf/subscribe [:motto-name path])})
 
-(defmethod ui.interface/component-form-data :heraldry/motto [_context]
+(defmethod component/form-data :heraldry/motto [_context]
   {:form form})

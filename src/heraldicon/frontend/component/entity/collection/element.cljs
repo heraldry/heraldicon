@@ -1,7 +1,8 @@
 (ns heraldicon.frontend.component.entity.collection.element
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
@@ -27,12 +28,12 @@
   (rf/dispatch-sync [:set highlighted-element-path path]))
 
 (defn- form [context]
-  (ui.interface/form-elements
+  (element/elements
    context
    [:name
     :reference]))
 
-(defmethod ui.interface/component-node-data :heraldicon.entity.collection/element [{:keys [path] :as context}]
+(defmethod component/node-data :heraldicon.entity.collection/element [{:keys [path] :as context}]
   (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
     {:title (string/str-tr (inc index) ": "
@@ -40,5 +41,5 @@
                              name
                              :string.miscellaneous/no-name))}))
 
-(defmethod ui.interface/component-form-data :heraldicon.entity.collection/element [_context]
+(defmethod component/form-data :heraldicon.entity.collection/element [_context]
   {:form form})

@@ -2,10 +2,10 @@
   (:require
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.component.entity.ribbon.data :as ribbon.data]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.entity.preview :as preview]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.repository.entity :as entity]
@@ -57,7 +57,7 @@
      (when ribbon
        [:img.clickable {:src img-url}])]))
 
-(defmethod ui.interface/form-element :ribbon-reference-select [context]
+(defmethod element/element :ribbon-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{ribbon-id :id
            version :version} (interface/get-raw-data context)

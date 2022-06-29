@@ -1,8 +1,9 @@
 (ns heraldicon.frontend.component.ordinary
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.cottise :as cottise]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.validation :as validation]
@@ -41,7 +42,7 @@
           (state/change-selected-component-if-removed (-> path drop-last vec))))))
 
 (defn- form [context]
-  (ui.interface/form-elements
+  (element/elements
    context
    [:type
     :origin
@@ -65,7 +66,7 @@
     :outline?
     :manual-blazon]))
 
-(defmethod ui.interface/component-node-data :heraldry/ordinary [context]
+(defmethod component/node-data :heraldry/ordinary [context]
   (let [ordinary-type (interface/get-raw-data (c/++ context :type))
         cottising-options (interface/get-relevant-options (c/++ context :cottising))
         cottise-1 (interface/get-raw-data (c/++ context :cottising :cottise-1))
@@ -184,5 +185,5 @@
                                                  :title :string.tooltip/remove
                                                  :handler #(state/dispatch-on-event % [:remove-cottise cottise-extra-2-context])}]}))}))
 
-(defmethod ui.interface/component-form-data :heraldry/ordinary [_context]
+(defmethod component/form-data :heraldry/ordinary [_context]
   {:form form})

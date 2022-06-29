@@ -3,9 +3,9 @@
    [heraldicon.context :as c]
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.element.charge-select :as charge-select]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.entity.preview :as preview]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
@@ -67,7 +67,7 @@
                               :border (when variant
                                         "1.5px solid #ddd")}}]]))
 
-(defmethod ui.interface/form-element :charge-type-select [context]
+(defmethod element/element :charge-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [charge-context (c/-- context)
           variant-context (c/++ charge-context :variant)

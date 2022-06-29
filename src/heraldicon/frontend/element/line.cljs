@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.line
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.interface :as interface]
@@ -27,7 +27,7 @@
                    :string.submenu-summary/fimbriated)]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(defmethod ui.interface/form-element :line [context]
+(defmethod element/element :line [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -40,7 +40,7 @@
          [tr link-name]
          {:style {:width "26em"}
           :class "submenu-line"}
-         (ui.interface/form-elements
+         (element/elements
           context
           [:type
            :eccentricity

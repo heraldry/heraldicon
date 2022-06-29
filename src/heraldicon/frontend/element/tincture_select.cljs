@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.element.tincture-select
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.interface :as interface]
@@ -59,5 +59,5 @@
                        group)))
                choices)]]])))
 
-(defmethod ui.interface/form-element :tincture-select [context]
+(defmethod element/element :tincture-select [context]
   [tincture-select context])

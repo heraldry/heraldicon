@@ -2,8 +2,9 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.blazonry-editor.core :as blazonry-editor]
+   [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.tincture-select :as tincture-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.validation :as validation]
@@ -44,7 +45,7 @@
 
 (defn- form [context]
   [:<>
-   (ui.interface/form-elements
+   (element/elements
     context
     [:inherit-environment?
      :type
@@ -74,10 +75,10 @@
                   ^{:key idx}
                   [:<>
                    [tincture-select/tincture-select (c/++ context :fields idx :tincture)]
-                   [ui.interface/form-element (c/++ context :fields idx :pattern-scaling)]
-                   [ui.interface/form-element (c/++ context :fields idx :pattern-rotation)]
-                   [ui.interface/form-element (c/++ context :fields idx :pattern-offset-x)]
-                   [ui.interface/form-element (c/++ context :fields idx :pattern-offset-y)]]))
+                   [element/element (c/++ context :fields idx :pattern-scaling)]
+                   [element/element (c/++ context :fields idx :pattern-rotation)]
+                   [element/element (c/++ context :fields idx :pattern-offset-x)]
+                   [element/element (c/++ context :fields idx :pattern-offset-y)]]))
            (range (interface/get-list-size (c/++ context :fields)))))])
 
 (defn- parent-context [{:keys [path] :as context}]
@@ -99,7 +100,7 @@
       (when-let [parent-context (parent-context context)]
         (>= index (field/mandatory-part-count parent-context))))))
 
-(defmethod ui.interface/component-node-data :heraldry/field [{:keys [path] :as context}]
+(defmethod component/node-data :heraldry/field [{:keys [path] :as context}]
   (let [field-type (interface/get-raw-data (c/++ context :type))
         ref? (= field-type :heraldry.field.type/ref)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
@@ -211,5 +212,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-element component-context])}]})))
                          vec))}))
 
-(defmethod ui.interface/component-form-data :heraldry/field [_context]
+(defmethod component/form-data :heraldry/field [_context]
   {:form form})

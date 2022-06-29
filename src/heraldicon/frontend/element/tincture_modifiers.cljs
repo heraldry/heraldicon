@@ -5,10 +5,10 @@
    [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.frontend.charge :as charge]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.range :as range]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.tincture-select :as tincture-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.tincture :as tincture]
@@ -16,7 +16,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]))
 
-(defmethod ui.interface/form-element :tincture-modifiers [context]
+(defmethod element/element :tincture-modifiers [context]
   (let [preview? (interface/get-raw-data (-> context c/-- (c/++ :preview?)))
         variant (interface/get-raw-data (-> context c/-- (c/++ :variant)))]
     (when (or preview?

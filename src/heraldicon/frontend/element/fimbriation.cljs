@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.fimbriation
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
@@ -30,7 +30,7 @@
                    :string.submenu-summary/adjusted)]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(defmethod ui.interface/form-element :fimbriation [context]
+(defmethod element/element :fimbriation [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -41,7 +41,7 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-fimbriation"}
-         (ui.interface/form-elements
+         (element/elements
           context
           [:mode
            :alignment

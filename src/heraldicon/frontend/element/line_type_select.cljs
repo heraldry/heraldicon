@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.element.line-type-select
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.interface :as interface]
@@ -22,7 +22,7 @@
       [:h3 {:style {:text-align "center"}} [tr display-name]]
       [:i]])])
 
-(defmethod ui.interface/form-element :line-type-select [context]
+(defmethod element/element :line-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option

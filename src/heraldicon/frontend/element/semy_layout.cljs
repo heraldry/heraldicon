@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.semy-layout
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
@@ -31,7 +31,7 @@
                      :string.submenu-summary/rotated)]]
       (string/upper-case-first (string/combine ", " changes)))))
 
-(defmethod ui.interface/form-element :semy-layout [context]
+(defmethod element/element :semy-layout [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -42,7 +42,7 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-semy-layout"}
-         (ui.interface/form-elements
+         (element/elements
           context
           [:num-fields-x
            :num-fields-y

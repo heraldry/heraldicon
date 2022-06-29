@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.select
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.util.core :as util]
@@ -62,5 +62,5 @@
                     :none)]
       [raw-select context value label choices :on-change on-change])))
 
-(defmethod ui.interface/form-element :select [context]
+(defmethod element/element :select [context]
   [select context])
