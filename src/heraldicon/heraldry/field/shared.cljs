@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.context :as c]
+   [heraldicon.heraldry.counterchange :as counterchange]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.interface :as interface]
@@ -76,8 +77,7 @@
     (let [parent-field-context (-> context
                                    (c/<< :path parent-field-path)
                                    effective-field-context)
-          counterchange-tinctures (interface/get-counterchange-tinctures
-                                   parent-field-context)
+          counterchange-tinctures (counterchange/tinctures parent-field-context)
           counterchanged-context (-> context
                                      (update :counterchanged-paths conj path)
                                      (add-tinctures-to-mapping counterchange-tinctures))]

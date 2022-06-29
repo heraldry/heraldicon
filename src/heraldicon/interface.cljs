@@ -2,7 +2,6 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.component :as component]
-   [heraldicon.heraldry.counterchange :as counterchange]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.options :as options]
    [re-frame.core :as rf]
@@ -78,11 +77,6 @@
   (if (-> path first (= :context))
     (count (get-in context (drop 1 path)))
     @(rf/subscribe [:get-list-size path])))
-
-(defn get-counterchange-tinctures [{:keys [path] :as context}]
-  (if (-> path first (= :context))
-    (counterchange/get-counterchange-tinctures (get-raw-data context) context)
-    @(rf/subscribe [:get-counterchange-tinctures path context])))
 
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (c/<< context :path (conj render-options-path key))))
