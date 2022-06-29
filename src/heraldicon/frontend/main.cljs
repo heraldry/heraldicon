@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.main
   (:require
    [heraldicon.frontend.auto-complete :as auto-complete]
+   [heraldicon.frontend.core]
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys]
    [heraldicon.frontend.language :as language]

@@ -4,7 +4,6 @@
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
-   [heraldicon.frontend.core :as ui]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.history.core :as history]
