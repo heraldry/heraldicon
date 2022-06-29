@@ -4,6 +4,7 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.frontend.repository.entity-list :as-alias entity-list]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
@@ -65,7 +66,7 @@
              (assoc-in (entity-path id version) {:status :done
                                                  :entity entity})
              (update-latest-versions [entity]))
-     :fx [[:dispatch [:heraldicon.frontend.repository.entity-list/update entity]]]}))
+     :fx [[:dispatch [::entity-list/update entity]]]}))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ entity-id version error]]

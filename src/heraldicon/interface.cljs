@@ -4,6 +4,7 @@
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.options :as options]
+   [heraldicon.state :as-alias state]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -39,7 +40,7 @@
 ;; TODO: this is one of the biggest potential bottle necks
 (defn get-relevant-options [{:keys [path] :as context}]
   (if (-> path first (not= :context))
-    @(rf/subscribe [:heraldicon.state/options (:path context)])
+    @(rf/subscribe [::state/options (:path context)])
     (let [[options relative-path] (or (->> (range (count path) 0 -1)
                                            (keep (fn [idx]
                                                    (let [option-path (subvec path 0 idx)
@@ -71,7 +72,7 @@
     (let [data (get-raw-data context)
           options (get-relevant-options context)]
       (options/sanitize-value-or-data data options))
-    @(rf/subscribe [:heraldicon.state/sanitized-data (:path context)])))
+    @(rf/subscribe [::state/sanitized-data (:path context)])))
 
 (defn get-list-size [{:keys [path] :as context}]
   (if (-> path first (= :context))

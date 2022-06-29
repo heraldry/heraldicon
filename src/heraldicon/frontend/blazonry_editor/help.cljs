@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.blazonry-editor.help
   (:require
+   [heraldicon.frontend.blazonry-editor.editor :as-alias editor]
    [re-frame.core :as rf]))
 
 (def blazonry-examples
@@ -58,7 +59,7 @@
                   (into [:ul]
                         (map (fn [blazon]
                                [:li [:span.blazon-example
-                                     {:on-click #(rf/dispatch [:heraldicon.frontend.blazonry-editor.editor/set-blazon blazon])}
+                                     {:on-click #(rf/dispatch [::editor/set-blazon blazon])}
                                      blazon]]))
                         blazons)]))
           blazonry-examples)]

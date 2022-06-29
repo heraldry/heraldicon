@@ -2,6 +2,7 @@
   (:require
    ["genex" :as genex]
    [clojure.string :as s]
+   [heraldicon.frontend.blazonry-editor.editor :as-alias editor]
    [heraldicon.frontend.blazonry-editor.shared :as shared]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.reader.blazonry.parser :as parser]
@@ -92,4 +93,4 @@
     (let [parser (get-in db (conj parser-path :parser) parser/default)
           {:keys [hdn error] :as result} (parse-blazonry text parser)]
       {:db (set-status db hdn error)
-       :dispatch [:heraldicon.frontend.blazonry-editor.editor/on-parse-result text result]})))
+       :dispatch [::editor/on-parse-result text result]})))

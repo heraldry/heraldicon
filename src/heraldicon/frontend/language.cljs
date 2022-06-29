@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.language
   (:require
    [clojure.string :as s]
+   [heraldicon.frontend.header :as-alias header]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
    [heraldicon.localization.locale :as locale]
@@ -79,17 +80,17 @@
 
 (defn selector []
   [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
-   {:on-mouse-leave #(rf/dispatch [:heraldicon.frontend.header/clear-menu-open?
+   {:on-mouse-leave #(rf/dispatch [::header/clear-menu-open?
                                    language-menu-open?-path])}
    [:<>
     [:a.nav-menu-link {:href "#"
                        :on-click #(state/dispatch-on-event-and-prevent-default
-                                   % [:heraldicon.frontend.header/toggle-menu-open?
+                                   % [::header/toggle-menu-open?
                                       language-menu-open?-path])}
      [selected-language-option]
      " "]
     (into [:ul.nav-menu.nav-menu-children
-           {:style {:display (if @(rf/subscribe [:heraldicon.frontend.header/menu-open?
+           {:style {:display (if @(rf/subscribe [::header/menu-open?
                                                  language-menu-open?-path])
                                "block"
                                "none")}}]
