@@ -4,7 +4,7 @@
    [heraldicon.reader.blazonry.transform.charge]
    [heraldicon.reader.blazonry.transform.charge-group]
    [heraldicon.reader.blazonry.transform.cottising]
-   [heraldicon.reader.blazonry.transform.field]
+   [heraldicon.reader.blazonry.transform.field.core]
    [heraldicon.reader.blazonry.transform.field.partition]
    [heraldicon.reader.blazonry.transform.field.partition.field]
    [heraldicon.reader.blazonry.transform.field.plain]
