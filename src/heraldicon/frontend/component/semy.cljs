@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.semy
+(ns heraldicon.frontend.component.semy
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]

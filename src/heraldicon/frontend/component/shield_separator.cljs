@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.shield-separator
+(ns heraldicon.frontend.component.shield-separator
   (:require
    [heraldicon.frontend.ui.interface :as ui.interface]))
 

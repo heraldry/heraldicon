@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.render-options
+(ns heraldicon.frontend.component.render-options
   (:require
    [heraldicon.frontend.ui.interface :as ui.interface]))
 

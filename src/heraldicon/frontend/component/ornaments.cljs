@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.ornaments
+(ns heraldicon.frontend.component.ornaments
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.state :as state]

@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.charge
+(ns heraldicon.frontend.component.charge
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.element.charge-type-select :as charge-type-select]

@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.field
+(ns heraldicon.frontend.component.field
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.macros :as macros]

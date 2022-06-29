@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.coat-of-arms
+(ns heraldicon.frontend.component.coat-of-arms
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]))

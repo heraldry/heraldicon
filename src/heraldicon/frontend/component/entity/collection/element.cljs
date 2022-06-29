@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.entity.collection.element
+(ns heraldicon.frontend.component.entity.collection.element
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]
@@ -6,25 +6,25 @@
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
 
-(def ui-highlighted-element-path
+(def highlighted-element-path
   [:ui :collection-library :selected-element])
 
 (rf/reg-sub :collection-library-highlighted-element
   (fn [_ _]
-    (rf/subscribe [:get ui-highlighted-element-path]))
+    (rf/subscribe [:get highlighted-element-path]))
 
   (fn [value _]
     value))
 
 (rf/reg-sub :collection-library-highlighted?
   (fn [_ _]
-    (rf/subscribe [:get ui-highlighted-element-path]))
+    (rf/subscribe [:get highlighted-element-path]))
 
   (fn [value [_ path]]
     (= value path)))
 
 (defn highlight-element [path]
-  (rf/dispatch-sync [:set ui-highlighted-element-path path]))
+  (rf/dispatch-sync [:set highlighted-element-path path]))
 
 (defn- form [context]
   (ui.interface/form-elements
