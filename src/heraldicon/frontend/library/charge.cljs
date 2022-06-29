@@ -19,7 +19,7 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.svgo-setup] ;; needed for side effects
+   [heraldicon.frontend.svgo-setup]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.ui.core :as ui]
    [heraldicon.frontend.ui.shared :as shared]
