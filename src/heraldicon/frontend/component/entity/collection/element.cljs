@@ -33,7 +33,7 @@
    [:name
     :reference]))
 
-(defmethod component/node-data :heraldicon.entity.collection/element [{:keys [path] :as context}]
+(defmethod component/node :heraldicon.entity.collection/element [{:keys [path] :as context}]
   (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
     {:title (string/str-tr (inc index) ": "

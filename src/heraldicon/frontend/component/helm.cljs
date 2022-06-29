@@ -27,7 +27,7 @@
                                 (= :heraldry.charge.function/torse))))
                   seq)}))
 
-(defmethod component/node-data :heraldry/helm [{:keys [path] :as context}]
+(defmethod component/node :heraldry/helm [{:keys [path] :as context}]
   (let [{:keys [helmet?
                 torse?]} @(rf/subscribe [::status path])
         components-context (c/++ context :components)

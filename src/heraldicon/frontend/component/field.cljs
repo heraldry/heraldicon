@@ -100,7 +100,7 @@
       (when-let [parent-context (parent-context context)]
         (>= index (field/mandatory-part-count parent-context))))))
 
-(defmethod component/node-data :heraldry/field [{:keys [path] :as context}]
+(defmethod component/node :heraldry/field [{:keys [path] :as context}]
   (let [field-type (interface/get-raw-data (c/++ context :type))
         ref? (= field-type :heraldry.field.type/ref)
         tincture (interface/get-sanitized-data (c/++ context :tincture))

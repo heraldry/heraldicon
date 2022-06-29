@@ -14,7 +14,7 @@
     :rectangular?
     :manual-blazon]))
 
-(defmethod component/node-data :heraldry/semy [context]
+(defmethod component/node :heraldry/semy [context]
   (let [charge-context (c/++ context :charge)]
     {:title (string/str-tr :string.miscellaneous/semy-of
                            " "

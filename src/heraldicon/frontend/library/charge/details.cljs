@@ -9,7 +9,8 @@
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.context :as c]
    [heraldicon.frontend.attribution :as attribution]
-   [heraldicon.frontend.core :as ui]
+   [heraldicon.frontend.component.form :as form]
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.core :as entity]
    [heraldicon.frontend.entity.details :as details]
@@ -363,18 +364,18 @@
     [preview form-db-path :original? true]
     [edit-controls]]
    [:<>
-    [ui/selected-component]
+    [form/active]
     [message/display entity-type]
     [buttons/buttons entity-type
      [svg-buttons form-db-path]]
     [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
-    [ui/component-tree [form-db-path
-                        :spacer
-                        (conj example-coa-db-path :render-options)
-                        :spacer
-                        (conj example-coa-db-path :coat-of-arms :field :components 0)]]
+    [tree/tree [form-db-path
+                :spacer
+                (conj example-coa-db-path :render-options)
+                :spacer
+                (conj example-coa-db-path :coat-of-arms :field :components 0)]]
     [preview form-db-path]]))
 
 (defn create-view []

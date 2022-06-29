@@ -15,7 +15,7 @@
     :fixed-tincture
     :attributes]))
 
-(defmethod component/node-data :heraldicon.entity.charge/data [context]
+(defmethod component/node :heraldicon.entity.charge/data [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 

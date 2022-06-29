@@ -3,10 +3,10 @@
    [heraldicon.interface :as interface]
    [taoensso.timbre :as log]))
 
-(defmulti node-data interface/effective-component-type)
+(defmulti node interface/effective-component-type)
 
-(defmethod node-data nil [context]
-  (log/warn :not-implemented "node-data" context)
+(defmethod node nil [context]
+  (log/warn :not-implemented "node" context)
   {:title (str "unknown")})
 
 (defmulti form interface/effective-component-type)

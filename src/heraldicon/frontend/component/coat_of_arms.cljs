@@ -10,7 +10,7 @@
    [:escutcheon
     :manual-blazon]))
 
-(defmethod component/node-data :heraldry/coat-of-arms [context]
+(defmethod component/node :heraldry/coat-of-arms [context]
   {:title :string.render-options.scope-choice/coat-of-arms
    :nodes [{:context (c/++ context :field)}]})
 

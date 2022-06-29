@@ -25,7 +25,7 @@
     :squiggly?
     :coat-of-arms-angle]))
 
-(defmethod component/node-data :heraldry/render-options [_context]
+(defmethod component/node :heraldry/render-options [_context]
   {:title :string.render-options/title})
 
 (defmethod component/form :heraldry/render-options [_context]

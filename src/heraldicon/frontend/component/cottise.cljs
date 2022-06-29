@@ -47,7 +47,7 @@
      " "
      (get names cottise-key))))
 
-(defmethod component/node-data :heraldry/cottise [context]
+(defmethod component/node :heraldry/cottise [context]
   {:title (cottise-name context)
    :validation (validation/validate-cottise context)
    :nodes [{:context (c/++ context :field)}]})

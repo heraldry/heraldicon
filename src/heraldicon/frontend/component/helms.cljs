@@ -6,7 +6,7 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]))
 
-(defmethod component/node-data :heraldry/helms [context]
+(defmethod component/node :heraldry/helms [context]
   (let [elements-context (c/++ context :elements)
         num-helms (interface/get-list-size elements-context)]
     {:title :string.entity/helms-and-crests
