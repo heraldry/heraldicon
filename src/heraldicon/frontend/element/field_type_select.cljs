@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.element.field-type-select
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
@@ -85,7 +85,7 @@
       [:h3 {:style {:text-align "center"}} [tr display-name]]
       [:i]])])
 
-(defmethod ui.interface/form-element :field-type-select [{:keys [path] :as context}]
+(defmethod element/element :field-type-select [{:keys [path] :as context}]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option

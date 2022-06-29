@@ -1,18 +1,19 @@
 (ns heraldicon.frontend.component.entity.collection.data
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]))
 
 (defn- form [context]
-  (ui.interface/form-elements
+  (element/elements
    context
    [:num-columns
     :font]))
 
-(defmethod ui.interface/component-node-data :heraldicon.entity.collection/data [context]
+(defmethod component/node-data :heraldicon.entity.collection/data [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     {:title :string.entity/arms
@@ -37,5 +38,5 @@
                                       :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
                  vec)}))
 
-(defmethod ui.interface/component-form-data :heraldicon.entity.collection/data [_context]
+(defmethod component/form-data :heraldicon.entity.collection/data [_context]
   {:form form})

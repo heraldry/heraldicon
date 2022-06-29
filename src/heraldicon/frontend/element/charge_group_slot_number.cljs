@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.charge-group-slot-number
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.range :as range]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
@@ -17,7 +17,7 @@
                                 (take num-slots)
                                 vec))))))
 
-(defmethod ui.interface/form-element :charge-group-slot-number [{:keys [path] :as context}]
+(defmethod element/element :charge-group-slot-number [{:keys [path] :as context}]
   (let [value (interface/get-list-size context)
         default (:default (interface/get-relevant-options context))]
     [range/range-input context

@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.component.entity.arms.data
   (:require
-   [heraldicon.frontend.interface :as ui.interface]))
+   [heraldicon.frontend.component.core :as component]))
 
-(defmethod ui.interface/component-form-data :heraldicon.entity.arms/data [_context]
+(defmethod component/form-data :heraldicon.entity.arms/data [_context]
   nil)

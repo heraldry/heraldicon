@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.component.helm
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.shield-separator :as shield-separator]
@@ -27,7 +27,7 @@
                                 (= :heraldry.charge.function/torse))))
                   seq)}))
 
-(defmethod ui.interface/component-node-data :heraldry/helm [{:keys [path] :as context}]
+(defmethod component/node-data :heraldry/helm [{:keys [path] :as context}]
   (let [{:keys [helmet?
                 torse?]} @(rf/subscribe [:get-helm-status path])
         components-context (c/++ context :components)

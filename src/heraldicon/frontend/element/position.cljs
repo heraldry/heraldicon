@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.position
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
@@ -20,7 +20,7 @@
                    "aligned")]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(defmethod ui.interface/form-element :position [context]
+(defmethod element/element :position [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -31,7 +31,7 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-position"}
-         (ui.interface/form-elements
+         (element/elements
           context
           [:point
            :alignment

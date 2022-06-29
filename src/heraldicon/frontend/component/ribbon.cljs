@@ -1,16 +1,16 @@
 (ns heraldicon.frontend.component.ribbon
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.text-field :as text-field]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
 
 (defn form [context]
-  (ui.interface/form-elements
+  (element/elements
    context
    [:thickness
     :edge-angle
@@ -28,7 +28,7 @@
     [:div {:style {:position "relative"}}
      [submenu/submenu context nil [tr title] {:style {:width "28em"}
                                               :class "submenu-segment-form"}
-      (ui.interface/form-elements
+      (element/elements
        context
        [:type
         :z-index

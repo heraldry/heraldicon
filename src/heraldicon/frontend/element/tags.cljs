@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.entity.tag :as tag]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
@@ -91,7 +91,7 @@
                   :selected? (get selected tag)]))
           sorted-tags)))
 
-(defmethod ui.interface/form-element :tags [{:keys [path] :as context}]
+(defmethod element/element :tags [{:keys [path] :as context}]
   (let [value (interface/get-raw-data (c/<< context :path value-path))
         tags (interface/get-raw-data context)
         on-click (fn [event]

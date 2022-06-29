@@ -4,6 +4,7 @@
    [heraldicon.frontend.component.charge]
    [heraldicon.frontend.component.charge-group]
    [heraldicon.frontend.component.coat-of-arms]
+   [heraldicon.frontend.component.core :as frontend.component]
    [heraldicon.frontend.component.cottise]
    [heraldicon.frontend.component.entity.arms.data]
    [heraldicon.frontend.component.entity.charge.data]
@@ -56,7 +57,6 @@
    [heraldicon.frontend.element.tincture-select]
    [heraldicon.frontend.element.voided]
    [heraldicon.frontend.history.state]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
@@ -137,7 +137,7 @@
   (merge {:open? @(rf/subscribe [:ui-component-node-open? path])
           :selected? (= path @(rf/subscribe [:ui-component-node-selected-path]))
           :selectable? true}
-         (ui.interface/component-node-data context)))
+         (frontend.component/node-data context)))
 
 (defn- component-node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
   (let [node-data (raw-component-node context)
@@ -261,7 +261,7 @@
     (merge
      {:title (:title node-data)
       :context context}
-     (ui.interface/component-form-data context))))
+     (frontend.component/form-data context))))
 
 (defn- component-form [context]
   (let [{:keys [title context form]} (when context

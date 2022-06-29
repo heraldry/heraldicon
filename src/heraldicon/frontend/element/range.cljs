@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.range
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.util.uid :as uid]
@@ -71,5 +71,5 @@
              :disabled? disabled?
              :on-change on-change]]])))))
 
-(defmethod ui.interface/form-element :range [context]
+(defmethod element/element :range [context]
   [range-input context])

@@ -1,12 +1,12 @@
 (ns heraldicon.frontend.component.helms
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]))
 
-(defmethod ui.interface/component-node-data :heraldry/helms [context]
+(defmethod component/node-data :heraldry/helms [context]
   (let [elements-context (c/++ context :elements)
         num-helms (interface/get-list-size elements-context)]
     {:title :string.entity/helms-and-crests

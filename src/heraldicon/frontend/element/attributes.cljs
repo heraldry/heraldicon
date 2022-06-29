@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.element.attributes
   (:require
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.heraldry.option.attributes :as attributes]
@@ -40,7 +40,7 @@
                 " "]))
         (sort attributes)))
 
-(defmethod ui.interface/form-element :attributes [{:keys [path] :as context}]
+(defmethod element/element :attributes [{:keys [path] :as context}]
   (let [attributes (interface/get-raw-data context)]
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"

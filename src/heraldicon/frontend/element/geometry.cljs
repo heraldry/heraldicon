@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.geometry
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
@@ -27,7 +27,7 @@
       (string/upper-case-first (string/combine ", " changes))
       "Default")))
 
-(defmethod ui.interface/form-element :geometry [context]
+(defmethod element/element :geometry [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -38,7 +38,7 @@
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-geometry"}
-         (ui.interface/form-elements
+         (element/elements
           context
           [:width
            :height

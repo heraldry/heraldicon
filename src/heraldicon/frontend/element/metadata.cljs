@@ -3,9 +3,9 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.entity.metadata :as metadata]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.select :as select]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
@@ -52,7 +52,7 @@
   (fn [db [_ context name]]
     (update-in db (:path context) remove-metadata-name name)))
 
-(defmethod ui.interface/form-element :metadata [context]
+(defmethod element/element :metadata [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)

@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.element.text-field
   (:require
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
@@ -25,5 +25,5 @@
                                  (on-change value)
                                  (rf/dispatch-sync [:set context value])))}]]])))
 
-(defmethod ui.interface/form-element :text-field [context]
+(defmethod element/element :text-field [context]
   [text-field context])

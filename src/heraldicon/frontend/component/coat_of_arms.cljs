@@ -1,17 +1,18 @@
 (ns heraldicon.frontend.component.coat-of-arms
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.interface :as ui.interface]))
+   [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.element.core :as element]))
 
 (defn- form [context]
-  (ui.interface/form-elements
+  (element/elements
    context
    [:escutcheon
     :manual-blazon]))
 
-(defmethod ui.interface/component-node-data :heraldry/coat-of-arms [context]
+(defmethod component/node-data :heraldry/coat-of-arms [context]
   {:title :string.render-options.scope-choice/coat-of-arms
    :nodes [{:context (c/++ context :field)}]})
 
-(defmethod ui.interface/component-form-data :heraldry/coat-of-arms [_context]
+(defmethod component/form-data :heraldry/coat-of-arms [_context]
   {:form form})

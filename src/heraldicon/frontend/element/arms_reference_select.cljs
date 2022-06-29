@@ -2,15 +2,15 @@
   (:require
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.element.arms-select :as arms-select]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defmethod ui.interface/form-element :arms-reference-select [context]
+(defmethod element/element :arms-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{arms-id :id
            version :version} (interface/get-raw-data context)

@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.element.theme-select
   (:require
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.interface :as interface]
@@ -29,7 +29,7 @@
        [tr display-name]]
       [:i]])])
 
-(defmethod ui.interface/form-element :theme-select [context]
+(defmethod element/element :theme-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{:keys [ui inherited default choices]} option
           current-value (interface/get-raw-data context)

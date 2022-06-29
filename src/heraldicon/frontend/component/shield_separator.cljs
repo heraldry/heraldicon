@@ -1,10 +1,10 @@
 (ns heraldicon.frontend.component.shield-separator
   (:require
-   [heraldicon.frontend.interface :as ui.interface]))
+   [heraldicon.frontend.component.core :as component]))
 
-(defmethod ui.interface/component-node-data :heraldry/shield-separator [_context]
+(defmethod component/node-data :heraldry/shield-separator [_context]
   {:title :string.miscellaneous/shield-layer
    :selectable? false})
 
-(defmethod ui.interface/component-form-data :heraldry/shield-separator [_context]
+(defmethod component/form-data :heraldry/shield-separator [_context]
   {})

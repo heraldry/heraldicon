@@ -1,10 +1,10 @@
 (ns heraldicon.frontend.component.charge-group
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.element.charge-group-preset-select
-    :as charge-group-preset-select]
+   [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.element.charge-group-preset-select :as charge-group-preset-select]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
@@ -232,7 +232,7 @@
     [:div {:style {:position "relative"}}
      [submenu/submenu context type-str [tr title] {:style {:width "20em"}
                                                    :class "submenu-strip-form"}
-      (ui.interface/form-elements
+      (element/elements
        context
        [:slots
         :stretch
@@ -255,11 +255,11 @@
                    :vertical-align "top"}}
      [charge-group-preset-select/charge-group-preset-select context]
 
-     [ui.interface/form-element (c/++ context :anchor)]
+     [element/element (c/++ context :anchor)]
 
      [preview-form path]
 
-     (ui.interface/form-elements
+     (element/elements
       context
       [:type
        :spacing
@@ -310,9 +310,9 @@
                              [:i.far.fa-trash-alt]]]])))
                  (range num-strips))]]))
 
-     [ui.interface/form-element (c/++ context :manual-blazon)]]))
+     [element/element (c/++ context :manual-blazon)]]))
 
-(defmethod ui.interface/component-node-data :heraldry/charge-group [context]
+(defmethod component/node-data :heraldry/charge-group [context]
   (let [charges-context (c/++ context :charges)
         num-charges (interface/get-list-size charges-context)]
     {:title (string/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)
@@ -345,5 +345,5 @@
                                               :handler #(state/dispatch-on-event % [:remove-charge-group-charge charge-context])}]})))
                          vec))}))
 
-(defmethod ui.interface/component-form-data :heraldry/charge-group [_context]
+(defmethod component/form-data :heraldry/charge-group [_context]
   {:form form})

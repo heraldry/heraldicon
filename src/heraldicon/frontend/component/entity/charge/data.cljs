@@ -1,10 +1,11 @@
 (ns heraldicon.frontend.component.entity.charge.data
   (:require
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.validation :as validation]))
 
 (defn- form [context]
-  (ui.interface/form-elements
+  (element/elements
    context
    [:charge-type
     :landscape?
@@ -14,9 +15,9 @@
     :fixed-tincture
     :attributes]))
 
-(defmethod ui.interface/component-node-data :heraldicon.entity.charge/data [context]
+(defmethod component/node-data :heraldicon.entity.charge/data [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 
-(defmethod ui.interface/component-form-data :heraldicon.entity.charge/data [_context]
+(defmethod component/form-data :heraldicon.entity.charge/data [_context]
   {:form form})

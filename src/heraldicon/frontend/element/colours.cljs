@@ -2,7 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.element.checkbox :as checkbox]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.option.attributes :as attributes]
@@ -20,7 +20,7 @@
                  (second value))))
        vec))
 
-(defmethod ui.interface/form-element :colours [{:keys [path] :as context}]
+(defmethod element/element :colours [{:keys [path] :as context}]
   (let [colours (interface/get-raw-data context)
         sort-column (or (interface/get-raw-data (c/<< context :path [:ui :colours :sort path]))
                         :colour)

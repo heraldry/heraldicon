@@ -1,13 +1,14 @@
 (ns heraldicon.frontend.component.cottise
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
 
 (defn- form [context]
-  (ui.interface/form-elements
+  (element/elements
    context
    [:line
     :opposite-line
@@ -46,10 +47,10 @@
      " "
      (get names cottise-key))))
 
-(defmethod ui.interface/component-node-data :heraldry/cottise [context]
+(defmethod component/node-data :heraldry/cottise [context]
   {:title (cottise-name context)
    :validation (validation/validate-cottise context)
    :nodes [{:context (c/++ context :field)}]})
 
-(defmethod ui.interface/component-form-data :heraldry/cottise [_context]
+(defmethod component/form-data :heraldry/cottise [_context]
   {:form form})

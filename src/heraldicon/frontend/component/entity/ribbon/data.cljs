@@ -1,9 +1,9 @@
 (ns heraldicon.frontend.component.entity.ribbon.data
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.ribbon :as form.ribbon]
    [heraldicon.frontend.element.select :as select]
-   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.validation :as validation]
@@ -246,9 +246,9 @@
        (c/++ context :ribbon)
        :title :string.ribbon.text/segment-explanation]])])
 
-(defmethod ui.interface/component-node-data :heraldicon.entity.ribbon/data [context]
+(defmethod component/node-data :heraldicon.entity.ribbon/data [context]
   {:title :string.miscellaneous/general
    :validation (validation/validate-entity context)})
 
-(defmethod ui.interface/component-form-data :heraldicon.entity.ribbon/data [_context]
+(defmethod component/form-data :heraldicon.entity.ribbon/data [_context]
   {:form form})
