@@ -2,7 +2,7 @@
   (:require
    ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
    [cljs.core.async.interop :refer-macros [<p!]]
-   [com.wsscode.async.async-cljs :refer [<? go-catch]]
+   [com.wsscode.async.async-cljs :refer [go]]
    [heraldicon.svg.core :as svg]))
 
 ;; There seems to be a bug in Inkscape, which strips ENTITY definitions from SVGs
@@ -42,12 +42,11 @@
 (defn- setup-svg-loading []
   (svg/optimize minimal-adobe-illustrator-svg
                 (fn [options data]
-                  (go-catch
-                   (-> options
-                       getSvgoInstance
-                       (.optimize data)
-                       <p!)))))
+                  (go
+                    (-> options
+                        getSvgoInstance
+                        (.optimize data)
+                        <p!)))))
 
 (defonce ^:export init
-  (go-catch
-   (<? (setup-svg-loading))))
+  (setup-svg-loading))
