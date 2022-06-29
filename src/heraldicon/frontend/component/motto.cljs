@@ -1,9 +1,9 @@
 (ns heraldicon.frontend.component.motto
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.component.ribbon :as ribbon]
-   [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.frontend.interface :as ui.interface]
+   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.util.core :as util]

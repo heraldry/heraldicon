@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.component.render-options
   (:require
-   [heraldicon.frontend.ui.interface :as ui.interface]))
+   [heraldicon.frontend.interface :as ui.interface]))
 
 (defn- form [context]
   (ui.interface/form-elements

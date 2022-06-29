@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.component.entity.core
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]))
 
 (defn- form [context]

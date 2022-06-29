@@ -1,11 +1,11 @@
 (ns heraldicon.frontend.main
   (:require
+   [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.title :as title]
-   [heraldicon.frontend.ui.auto-complete :as auto-complete]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [reagent.dom :as r]

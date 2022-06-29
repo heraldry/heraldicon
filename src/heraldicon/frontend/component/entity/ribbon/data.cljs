@@ -1,11 +1,11 @@
 (ns heraldicon.frontend.component.entity.ribbon.data
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.component.ribbon :as form.ribbon]
+   [heraldicon.frontend.element.select :as select]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.ui.element.select :as select]
-   [heraldicon.frontend.component.ribbon :as form.ribbon]
-   [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.math.curve.core :as curve]

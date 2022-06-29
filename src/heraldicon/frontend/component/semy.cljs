@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.component.semy
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.localization.string :as string]))
 

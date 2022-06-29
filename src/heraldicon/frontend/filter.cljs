@@ -6,13 +6,13 @@
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.user :as entity.user]
+   [heraldicon.frontend.element.radio-select :as radio-select]
+   [heraldicon.frontend.element.search-field :as search-field]
+   [heraldicon.frontend.element.tags :as tags]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.preview :as preview]
    [heraldicon.frontend.status :as status]
-   [heraldicon.frontend.ui.element.radio-select :as radio-select]
-   [heraldicon.frontend.ui.element.search-field :as search-field]
-   [heraldicon.frontend.ui.element.tags :as tags]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 

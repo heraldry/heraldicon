@@ -1,13 +1,13 @@
 (ns heraldicon.frontend.component.charge-group
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.element.charge-group-preset-select
+    :as charge-group-preset-select]
+   [heraldicon.frontend.element.submenu :as submenu]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.ui.element.charge-group-preset-select
-    :as charge-group-preset-select]
-   [heraldicon.frontend.ui.element.submenu :as submenu]
-   [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.charge-group.core :as charge-group]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.heraldry.default :as default]

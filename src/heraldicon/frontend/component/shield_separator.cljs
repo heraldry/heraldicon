@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.component.shield-separator
   (:require
-   [heraldicon.frontend.ui.interface :as ui.interface]))
+   [heraldicon.frontend.interface :as ui.interface]))
 
 (defmethod ui.interface/component-node-data :heraldry/shield-separator [_context]
   {:title :string.miscellaneous/shield-layer

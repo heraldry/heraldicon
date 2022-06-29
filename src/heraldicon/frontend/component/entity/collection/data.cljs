@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.component.entity.collection.data
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.state :as state]
-   [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]))
 

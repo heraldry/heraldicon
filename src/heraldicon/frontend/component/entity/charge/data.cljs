@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.component.entity.charge.data
   (:require
-   [heraldicon.frontend.ui.interface :as ui.interface]
+   [heraldicon.frontend.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]))
 
 (defn- form [context]
