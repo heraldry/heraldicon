@@ -1,10 +1,10 @@
 (ns heraldicon.shared
   (:require
    ["paper" :refer [paper Size]]
-   [heraldicon.entity]
    [heraldicon.entity.charge.data]
    [heraldicon.entity.collection.data]
    [heraldicon.entity.collection.element]
+   [heraldicon.entity.core]
    [heraldicon.heraldry.charge-group.core]
    [heraldicon.heraldry.charge-group.options]
    [heraldicon.heraldry.charge.core]

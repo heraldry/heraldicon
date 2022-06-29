@@ -1,4 +1,4 @@
-(ns heraldicon.entity
+(ns heraldicon.entity.core
   (:require
    [heraldicon.context :as c]
    [heraldicon.entity.attribution :as attribution]
