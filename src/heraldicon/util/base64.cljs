@@ -9,6 +9,4 @@
     (b64/encodeByteArray data)))
 
 (defn decode-utf-8 [data]
-  (-> data
-      (b64/decodeStringToByteArray true)
-      crypt/utf8ByteArrayToString))
+  (crypt/utf8ByteArrayToString (b64/decodeStringToByteArray data true)))
