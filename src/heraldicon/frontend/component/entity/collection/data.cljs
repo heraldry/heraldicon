@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.default :as default]
@@ -19,7 +20,7 @@
     {:title :string.entity/arms
      :selectable? false
      :buttons [{:icon "fas fa-plus"
-                :handler #(state/dispatch-on-event % [:add-element elements-context default/collection-element])}]
+                :handler #(state/dispatch-on-event % [::component.element/add elements-context default/collection-element])}]
      :nodes (->> (range num-elements)
                  (map (fn [idx]
                         (let [element-context (c/++ elements-context idx)]
@@ -27,15 +28,15 @@
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :title :string.tooltip/move-down
-                                      :handler #(state/dispatch-on-event % [:move-element element-context (dec idx)])}
+                                      :handler #(state/dispatch-on-event % [::component.element/move element-context (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-elements))
                                       :title :string.tooltip/move-up
-                                      :handler #(state/dispatch-on-event % [:move-element element-context (inc idx)])}
+                                      :handler #(state/dispatch-on-event % [::component.element/move element-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
                                       :remove? true
                                       :title :string.tooltip/remove
-                                      :handler #(state/dispatch-on-event % [:remove-element element-context])}]})))
+                                      :handler #(state/dispatch-on-event % [::component.element/remove element-context])}]})))
                  vec)}))
 
 (defmethod component/form :heraldicon.entity.collection/data [_context]

@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.blazonry-editor.core :as blazonry-editor]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.tincture-select :as tincture-select]
    [heraldicon.frontend.macros :as macros]
@@ -171,13 +172,13 @@
                   (cond-> [{:icon "fas fa-plus"
                             :title :string.button/add
                             :menu [{:title :string.entity/ordinary
-                                    :handler #(state/dispatch-on-event % [:add-element components-context default/ordinary])}
+                                    :handler #(state/dispatch-on-event % [::component.element/add components-context default/ordinary])}
                                    {:title :string.entity/charge
-                                    :handler #(state/dispatch-on-event % [:add-element components-context default/charge])}
+                                    :handler #(state/dispatch-on-event % [::component.element/add components-context default/charge])}
                                    {:title :string.entity/charge-group
-                                    :handler #(state/dispatch-on-event % [:add-element components-context default/charge-group])}
+                                    :handler #(state/dispatch-on-event % [::component.element/add components-context default/charge-group])}
                                    {:title :string.entity/semy
-                                    :handler #(state/dispatch-on-event % [:add-element components-context default/semy])}]}
+                                    :handler #(state/dispatch-on-event % [::component.element/add components-context default/semy])}]}
                            {:icon "fas fa-pen-nib"
                             :title :string.button/from-blazon
                             :handler #(blazonry-editor/open context)}]
@@ -201,15 +202,15 @@
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :title :string.tooltip/move-down
-                                              :handler #(state/dispatch-on-event % [:move-element component-context (dec idx)])}
+                                              :handler #(state/dispatch-on-event % [::component.element/move component-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
                                               :title :string.tooltip/move-up
-                                              :handler #(state/dispatch-on-event % [:move-element component-context (inc idx)])}
+                                              :handler #(state/dispatch-on-event % [::component.element/move component-context (inc idx)])}
                                              {:icon "far fa-trash-alt"
                                               :remove? true
                                               :title :string.tooltip/remove
-                                              :handler #(state/dispatch-on-event % [:remove-element component-context])}]})))
+                                              :handler #(state/dispatch-on-event % [::component.element/remove component-context])}]})))
                          vec))}))
 
 (defmethod component/form :heraldry/field [_context]
