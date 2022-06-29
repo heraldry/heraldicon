@@ -16,9 +16,7 @@
       (and (not a) b)))
 
 (defn keyword->str [k]
-  (-> k
-      str
-      (subs 1)))
+  (subs (str k) 1))
 
 (defn index-of [item coll]
   (count (take-while (partial not= item) coll)))

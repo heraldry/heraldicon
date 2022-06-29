@@ -200,10 +200,7 @@
     (hex-colour l l l)))
 
 (defn percent-grey [percentage]
-  (let [v (-> percentage
-              (/ 100)
-              (* 255)
-              int)]
+  (let [v (int (* (/ percentage 100) 255))]
     (hex-colour v v v)))
 
 (defn random []
