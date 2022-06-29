@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.entity.charge.data
+(ns heraldicon.frontend.component.entity.charge.data
   (:require
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]))

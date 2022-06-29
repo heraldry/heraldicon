@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.state
   (:require
+   [heraldicon.frontend.component.entity.collection.element :as collection.element]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.ui.form.entity.collection.element :as collection.element]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.option.attributes :as attributes]
@@ -200,7 +200,7 @@
                                   (not open?) drop-last))
         (cond->
           (= component-type :heraldicon.entity.collection/element)
-          (assoc-in collection.element/ui-highlighted-element-path path)))))
+          (assoc-in collection.element/highlighted-element-path path)))))
 
 (macros/reg-event-db :ui-component-node-select
   (fn [db [_ path {:keys [open?]}]]
@@ -258,7 +258,7 @@
   (-> db
       (update-in ui-component-node-selected-path
                  adjust-component-path-after-order-change elements-path index new-index)
-      (update-in collection.element/ui-highlighted-element-path
+      (update-in collection.element/highlighted-element-path
                  adjust-component-path-after-order-change elements-path index new-index)
       (update-in ui-submenu-open?-path
                  (fn [flags]

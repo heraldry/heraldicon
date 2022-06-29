@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.charge-group
+(ns heraldicon.frontend.component.charge-group
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]

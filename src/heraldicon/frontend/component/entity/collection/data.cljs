@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.entity.collection.data
+(ns heraldicon.frontend.component.entity.collection.data
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.state :as state]

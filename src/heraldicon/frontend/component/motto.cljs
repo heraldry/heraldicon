@@ -1,8 +1,8 @@
-(ns heraldicon.frontend.ui.form.motto
+(ns heraldicon.frontend.component.motto
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.ui.form.ribbon :as ribbon]
+   [heraldicon.frontend.component.ribbon :as ribbon]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]

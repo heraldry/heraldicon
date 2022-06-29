@@ -1,10 +1,10 @@
-(ns heraldicon.frontend.ui.form.entity.ribbon.data
+(ns heraldicon.frontend.component.entity.ribbon.data
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.ui.element.select :as select]
-   [heraldicon.frontend.ui.form.ribbon :as form.ribbon]
+   [heraldicon.frontend.component.ribbon :as form.ribbon]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.ribbon :as ribbon]

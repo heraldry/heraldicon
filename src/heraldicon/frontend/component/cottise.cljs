@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.cottise
+(ns heraldicon.frontend.component.cottise
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.ui.interface :as ui.interface]

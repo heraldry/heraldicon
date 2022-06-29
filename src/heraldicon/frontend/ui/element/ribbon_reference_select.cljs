@@ -7,7 +7,7 @@
    [heraldicon.frontend.repository.entity :as entity]
    [heraldicon.frontend.ui.element.ribbon-select :as ribbon-select]
    [heraldicon.frontend.ui.element.submenu :as submenu]
-   [heraldicon.frontend.ui.form.entity.ribbon.data :as ribbon.data]
+   [heraldicon.frontend.component.entity.ribbon.data :as ribbon.data]
    [heraldicon.frontend.ui.interface :as ui.interface]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]

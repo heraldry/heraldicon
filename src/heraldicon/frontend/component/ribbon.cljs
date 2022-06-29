@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.ui.form.ribbon
+(ns heraldicon.frontend.component.ribbon
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
