@@ -46,4 +46,4 @@
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod component/form-data :heraldry/charge [_context]
-  {:form form})
+  form)

@@ -29,4 +29,4 @@
   {:title :string.render-options/title})
 
 (defmethod component/form-data :heraldry/render-options [_context]
-  {:form form})
+  form)

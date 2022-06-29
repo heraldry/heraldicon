@@ -20,4 +20,4 @@
    :validation (validation/validate-entity context)})
 
 (defmethod component/form-data :heraldicon.entity.charge/data [_context]
-  {:form form})
+  form)

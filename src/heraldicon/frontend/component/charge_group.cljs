@@ -346,4 +346,4 @@
                          vec))}))
 
 (defmethod component/form-data :heraldry/charge-group [_context]
-  {:form form})
+  form)

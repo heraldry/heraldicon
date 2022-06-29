@@ -53,4 +53,4 @@
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod component/form-data :heraldry/cottise [_context]
-  {:form form})
+  form)
