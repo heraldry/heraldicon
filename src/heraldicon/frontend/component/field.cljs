@@ -17,16 +17,15 @@
    [heraldicon.localization.string :as string]
    [heraldicon.static :as static]))
 
-(macros/reg-event-db ::override-part-reference
-  (fn [db [_ path]]
+(macros/reg-event-fx ::override-part-reference
+  (fn [{:keys [db]} [_ path]]
     (let [{:keys [index]} (get-in db path)
           referenced-part (get-in db (-> path
                                          drop-last
                                          vec
                                          (conj index)))]
-      (-> db
-          (assoc-in path referenced-part)
-          (tree/select-node path :open? true)))))
+      {:db (assoc-in db path referenced-part)
+       :dispatch [::tree/select-node path true]})))
 
 (macros/reg-event-db ::reset-part-reference
   (fn [db [_ {:keys [path] :as context}]]
