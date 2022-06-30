@@ -2,13 +2,13 @@
   (:require
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.history.core :as history]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.library.arms.shared :as library.arms.shared]
    [heraldicon.frontend.library.charge.shared :as library.charge.shared]
    [heraldicon.frontend.library.collection.shared :as library.collection.shared]
    [heraldicon.frontend.library.ribbon.details :as library.ribbon.details]
    [heraldicon.frontend.library.ribbon.shared :as library.ribbon.shared]
    [heraldicon.frontend.router :as router]
-   [heraldicon.frontend.state :as state]
    [re-frame.core :as rf]))
 
 (defn- flip [f]
@@ -31,13 +31,13 @@
     (cond
       (and undo-path
            (or (and meta? z-pressed?)
-               (and ctrl? z-pressed?))) (if shift?
-                                          ;; need to prevent the default here, else this'll
-                                          ;; cause dodgy behaviour in text fields
-                                          (state/dispatch-on-event-and-prevent-default
-                                           event [::history/redo undo-path])
-                                          (state/dispatch-on-event-and-prevent-default
-                                           event [::history/undo undo-path]))
+               (and ctrl? z-pressed?))) (do
+                                          ((js-event/handled) event)
+                                          (if shift?
+                                            ;; need to prevent the default here, else this'll
+                                            ;; cause dodgy behaviour in text fields
+                                            (rf/dispatch [::history/redo undo-path])
+                                            (rf/dispatch [::history/undo undo-path])))
       (isa? current-route :route.ribbon/details) (rf/dispatch
                                                   [::library.ribbon.details/edit-set-key-modifiers
                                                    {:shift? shift?}]))))

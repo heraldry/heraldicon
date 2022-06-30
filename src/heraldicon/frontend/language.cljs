@@ -2,8 +2,8 @@
   (:require
    [clojure.string :as s]
    [heraldicon.frontend.header :as-alias header]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.localization.locale :as locale]
    [heraldicon.localization.string :as string]
    [hodgepodge.core :refer [get-item local-storage set-item]]
@@ -70,12 +70,7 @@
 (defn- language-option [language-code & {:keys [on-click]}]
   (let [title (get locale/all language-code)]
     [:a.nav-menu-link {:href "#"
-                       :on-click (fn [event]
-                                   (doto event
-                                     .preventDefault
-                                     .stopPropagation)
-                                   (when on-click
-                                     (on-click)))}
+                       :on-click (js-event/handled on-click)}
      [tr title]]))
 
 (defn selector []
@@ -84,9 +79,9 @@
                                    language-menu-open?-path])}
    [:<>
     [:a.nav-menu-link {:href "#"
-                       :on-click #(state/dispatch-on-event-and-prevent-default
-                                   % [::header/toggle-menu-open?
-                                      language-menu-open?-path])}
+                       :on-click (js-event/handled
+                                  #(rf/dispatch [::header/toggle-menu-open?
+                                                 language-menu-open?-path]))}
      [selected-language-option]
      " "]
     (into [:ul.nav-menu.nav-menu-children

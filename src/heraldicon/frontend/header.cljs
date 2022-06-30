@@ -1,9 +1,9 @@
 (ns heraldicon.frontend.header
   (:require
    [heraldicon.entity.user :as entity.user]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :as language :refer [tr]]
    [heraldicon.frontend.router :as router]
-   [heraldicon.frontend.state :as state]
    [heraldicon.frontend.user.form.login :as form.login]
    [heraldicon.frontend.user.form.register :as form.register]
    [heraldicon.frontend.user.session :as session]
@@ -69,14 +69,11 @@
       [:span {:style {:width "1em"}}]
       (if (:logged-in? session)
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
-         {:on-mouse-leave #(rf/dispatch [::clear-menu-open?
-                                         user-menu-open?-path])}
+         {:on-mouse-leave #(rf/dispatch [::clear-menu-open? user-menu-open?-path])}
          [:<>
           [:a.nav-menu-link {:style {:min-width "6em"}
                              :href "#"
-                             :on-click #(state/dispatch-on-event-and-prevent-default
-                                         % [::toggle-menu-open?
-                                            user-menu-open?-path])}
+                             :on-click (js-event/handled #(rf/dispatch [::toggle-menu-open? user-menu-open?-path]))}
            (str "@" (:username session) " ")]
           [:ul.nav-menu.nav-menu-children
            {:style {:display (if @(rf/subscribe [::menu-open?
@@ -88,15 +85,16 @@
             :highlight-active? false]
            [:li.nav-menu-item
             [:a.nav-menu-link {:href "#"
-                               :on-click #(do (rf/dispatch [::clear-menu-open? user-menu-open?-path])
-                                              (rf/dispatch [::session/logout]))}
+                               :on-click (js-event/handled
+                                          #(do (rf/dispatch [::clear-menu-open? user-menu-open?-path])
+                                               (rf/dispatch [::session/logout])))}
              [tr :string.menu/logout]]]]]]
         [:<>
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(rf/dispatch [::form.login/show])}
+                             :on-click (js-event/handled #(rf/dispatch [::form.login/show]))}
            [tr :string.menu/login]]]
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
-                             :on-click #(rf/dispatch [::form.register/show])}
+                             :on-click (js-event/handled #(rf/dispatch [::form.register/show]))}
            [tr :string.menu/register]]]])]]))
