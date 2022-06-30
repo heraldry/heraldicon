@@ -106,7 +106,7 @@
        (:name data)]]]))
 
 (defn- on-arms-click [form-db-path event index]
-  (state/dispatch-on-event event [::tree/node-select (conj form-db-path :data :elements index)]))
+  (state/dispatch-on-event event [::tree/select-node (conj form-db-path :data :elements index)]))
 
 (defn- render-collection [form-db-path & {:keys [allow-adding?]}]
   (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
