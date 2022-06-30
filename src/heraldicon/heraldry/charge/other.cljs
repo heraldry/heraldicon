@@ -3,6 +3,7 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldicon.context :as c]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
    [heraldicon.heraldry.field.environment :as environment]
@@ -470,7 +471,8 @@
               (when-not (or svg-export?
                             charge-preview?)
                 {:on-click (when select-component-fn
-                             #(select-component-fn % context))
+                             (js-event/handled
+                              #(select-component-fn context)))
                  :style {:cursor "pointer"}
                  :clip-path (str "url(#" charge-clip-path-id ")")})
               (when vertical-mask?

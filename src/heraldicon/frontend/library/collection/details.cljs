@@ -11,12 +11,12 @@
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.history.core :as history]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.library.collection.shared :refer [entity-type]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
    [heraldicon.frontend.shared :as shared]
-   [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
@@ -105,9 +105,6 @@
                       :font-size font-size}}
        (:name data)]]]))
 
-(defn- on-arms-click [form-db-path event index]
-  (state/dispatch-on-event event [::tree/select-node (conj form-db-path :data :elements index)]))
-
 (defn- render-collection [form-db-path & {:keys [allow-adding?]}]
   (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
                      font/css-string)
@@ -145,7 +142,8 @@
                    (let [x (mod idx num-columns)
                          y (quot idx num-columns)]
                      ^{:key idx}
-                     [:g {:on-click #(on-arms-click form-db-path % idx)
+                     [:g {:on-click (js-event/handled
+                                     #(rf/dispatch [::tree/select-node (conj form-db-path :data :elements idx)]))
                           :style {:cursor "pointer"}}
                       [render-arms
                        form-db-path
@@ -166,9 +164,9 @@
         (let [x (mod num-elements num-columns)
               y (quot num-elements num-columns)]
           ^{:key num-elements}
-          [:g {:on-click #(state/dispatch-on-event
-                           % [::component.element/add {:path (conj form-db-path :data :elements)}
-                              default/collection-element])
+          [:g {:on-click (js-event/handled
+                          #(rf/dispatch [::component.element/add {:path (conj form-db-path :data :elements)}
+                                         default/collection-element]))
                :style {:cursor "pointer"}}
            [render-add-arms
             (+ margin

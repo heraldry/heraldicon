@@ -3,14 +3,15 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.static :as static]
-   [heraldicon.util.core :as util]))
+   [heraldicon.util.core :as util]
+   [re-frame.core :as rf]))
 
 (defn- default-line-style-of-ordinary-type [ordinary-type]
   (case ordinary-type
@@ -45,7 +46,7 @@
                                                              on-click?]
                                                       :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
-                                    #(state/dispatch-on-event % [::set (vec (drop-last path)) key]))}
+                                    (js-event/handled #(rf/dispatch [::set (vec (drop-last path)) key])))}
    [:img.clickable {:style {:width "5em"
                             :height "5.7em"}
                     :src (static/static-url

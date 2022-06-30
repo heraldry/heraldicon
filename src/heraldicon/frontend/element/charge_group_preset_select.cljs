@@ -2,10 +2,11 @@
   (:require
    [heraldicon.frontend.element.charge-group-preset-select-presets :as charge-group-preset-select-presets]
    [heraldicon.frontend.element.submenu :as submenu]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
-   [heraldicon.static :as static]))
+   [heraldicon.static :as static]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db ::select
   ;; TODO: this must not be an fn-traced, can be done once
@@ -26,7 +27,7 @@
           new-db)))))
 
 (defn- charge-group-preset-choice [path key group charge-adjustments display-name]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event % [::select path group charge-adjustments])}
+  [:div.choice.tooltip {:on-click (js-event/handled #(rf/dispatch [::select path group charge-adjustments]))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url

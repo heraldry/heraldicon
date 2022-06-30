@@ -2,8 +2,8 @@
   (:require
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.history.shared :as shared]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.state :as state]
    [re-frame.core :as rf]))
 
 (defn register-undoable-path [path]
@@ -70,11 +70,13 @@
     [:div.history-buttons
      [:i.fas.fa-undo.ui-icon {:title (tr :string.tooltip/undo)
                               :on-click (when can-undo?
-                                          #(state/dispatch-on-event % [::undo path]))
+                                          (js-event/handled
+                                           #(rf/dispatch [::undo path])))
                               :class (when-not can-undo?
                                        "disabled")}]
      [:i.fas.fa-redo.ui-icon {:title (tr :string.tooltip/redo)
                               :on-click (when can-redo?
-                                          #(state/dispatch-on-event % [::redo path]))
+                                          (js-event/handled
+                                           #(rf/dispatch [::redo path])))
                               :class (when-not can-redo?
                                        "disabled")}]]))

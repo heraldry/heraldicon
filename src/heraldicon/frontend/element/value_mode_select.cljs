@@ -1,20 +1,19 @@
 (ns heraldicon.frontend.element.value-mode-select
   (:require
    [heraldicon.frontend.element.hover-menu :as hover-menu]
-   [heraldicon.frontend.state :as state]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.options :as options]))
+   [heraldicon.options :as options]
+   [re-frame.core :as rf]))
 
 (defn value-mode-select [context & {:keys [display-fn disabled? on-change default-option]}]
   (let [current-value (interface/get-raw-data context)
         handler-for-value (fn [new-value]
-                            (fn [event]
-                              (if on-change
-                                (do
-                                  (on-change new-value)
-                                  (.stopPropagation event))
-                                (state/dispatch-on-event event [:set context new-value]))))
+                            (js-event/handled
+                             (if on-change
+                               #(on-change new-value)
+                               #(rf/dispatch [:set context new-value]))))
         {:keys [inherited
                 default
                 type

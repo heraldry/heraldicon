@@ -2,8 +2,7 @@
   (:require
    [heraldicon.frontend.macros :as macros]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.heraldry.option.attributes :as attributes]
-   [re-frame.core :as rf]))
+   [heraldicon.heraldry.option.attributes :as attributes]))
 
 (macros/reg-event-db ::clear-db
   (fn [_ _]
@@ -45,7 +44,3 @@
 (macros/reg-event-db ::initialize
   (fn [db [_ crawler?]]
     (merge-with merge (assoc-in db-defaults [:ui :crawler?] crawler?) db)))
-
-(defn dispatch-on-event [event effect]
-  (rf/dispatch effect)
-  (.stopPropagation event))

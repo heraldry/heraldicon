@@ -3,14 +3,15 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.static :as static]))
+   [heraldicon.static :as static]
+   [re-frame.core :as rf]))
 
 ;; TODO: this needs some more thinking, currently it creates dummy contexts to access db data
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]
@@ -73,7 +74,7 @@
                                                           on-click?]
                                                    :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
-                                    #(state/dispatch-on-event % [::set path key]))}
+                                    (js-event/handled #(rf/dispatch [::set path key])))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url

@@ -6,9 +6,9 @@
    [heraldicon.frontend.element.charge-group-preset-select :as charge-group-preset-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.charge-group.core :as charge-group]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.heraldry.default :as default]
@@ -16,7 +16,8 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.math.vector :as v]
-   [heraldicon.static :as static]))
+   [heraldicon.static :as static]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db ::cycle-charge-index
   (fn [db [_ path num-charges]]
@@ -196,7 +197,8 @@
                                               (tincture/pick context)))]
                               ^{:key idx}
                               [:g {:transform (str "translate(" (v/->str point) ")")
-                                   :on-click #(state/dispatch-on-event % [::cycle-charge-index slot-path num-charges])
+                                   :on-click (js-event/handled
+                                              #(rf/dispatch [::cycle-charge-index slot-path num-charges]))
                                    :style {:cursor "pointer"}}
                                [:circle {:r dot-size
                                          :style {:stroke "#000"
@@ -281,8 +283,9 @@
          [:div.ui-setting
           [:label [tr type-plural-str]
            " "
-           [:button {:on-click #(state/dispatch-on-event % [::add-strip
-                                                            strips-context default/charge-group-strip])}
+           [:button {:on-click (js-event/handled
+                                #(rf/dispatch [::add-strip
+                                               strips-context default/charge-group-strip]))}
             [:i.fas.fa-plus] " " [tr :string.button/add]]]
 
           [:div.option.charge-group-strips
@@ -295,19 +298,22 @@
                                                     :white-space "nowrap"}}
                             [:a (if (zero? idx)
                                   {:class "disabled"}
-                                  {:on-click #(state/dispatch-on-event % [::element/move strip-context (dec idx)])})
+                                  {:on-click (js-event/handled
+                                              #(rf/dispatch [::element/move strip-context (dec idx)]))})
                              [:i.fas.fa-chevron-up]]
                             " "
                             [:a (if (= idx (dec num-strips))
                                   {:class "disabled"}
-                                  {:on-click #(state/dispatch-on-event % [::element/move strip-context (inc idx)])})
+                                  {:on-click (js-event/handled
+                                              #(rf/dispatch [::element/move strip-context (inc idx)]))})
                              [:i.fas.fa-chevron-down]]]
                            [:div
                             [strip-form strip-context type-str]]
                            [:div {:style {:padding-left "10px"}}
                             [:a (if (< num-strips 2)
                                   {:class "disabled"}
-                                  {:on-click #(state/dispatch-on-event % [::element/remove strip-context])})
+                                  {:on-click (js-event/handled
+                                              #(rf/dispatch [::element/remove strip-context]))})
                              [:i.far.fa-trash-alt]]]])))
                  (range num-strips))]]))
 
@@ -326,7 +332,7 @@
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :menu [{:title :string.entity/charge
-                        :handler #(state/dispatch-on-event % [::element/add charges-context default/charge])}]}]
+                        :handler #(rf/dispatch [::element/add charges-context default/charge])}]}]
      :nodes (concat (->> (range num-charges)
                          reverse
                          (map (fn [idx]
@@ -335,15 +341,15 @@
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :title :string.tooltip/move-down
-                                              :handler #(state/dispatch-on-event % [::move-charge-down charge-context])}
+                                              :handler #(rf/dispatch [::move-charge-down charge-context])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-charges))
                                               :title :string.tooltip/move-up
-                                              :handler #(state/dispatch-on-event % [::move-charge-up charge-context])}
+                                              :handler #(rf/dispatch [::move-charge-up charge-context])}
                                              {:icon "far fa-trash-alt"
                                               :disabled? (= num-charges 1)
                                               :title :string.tooltip/remove
-                                              :handler #(state/dispatch-on-event % [::remove-charge charge-context])}]})))
+                                              :handler #(rf/dispatch [::remove-charge charge-context])}]})))
                          vec))}))
 
 (defmethod component/form :heraldry/charge-group [_context]

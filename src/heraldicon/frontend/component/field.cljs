@@ -8,14 +8,14 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.tincture-select :as tincture-select]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.static :as static]))
+   [heraldicon.static :as static]
+   [re-frame.core :as rf]))
 
 (macros/reg-event-fx ::override-part-reference
   (fn [{:keys [db]} [_ path]]
@@ -168,24 +168,24 @@
                 (if ref?
                   [{:icon "fas fa-sliders-h"
                     :title :string.user.button/change
-                    :handler #(state/dispatch-on-event % [::override-part-reference path])}]
+                    :handler #(rf/dispatch [::override-part-reference path])}]
                   (cond-> [{:icon "fas fa-plus"
                             :title :string.button/add
                             :menu [{:title :string.entity/ordinary
-                                    :handler #(state/dispatch-on-event % [::component.element/add components-context default/ordinary])}
+                                    :handler #(rf/dispatch [::component.element/add components-context default/ordinary])}
                                    {:title :string.entity/charge
-                                    :handler #(state/dispatch-on-event % [::component.element/add components-context default/charge])}
+                                    :handler #(rf/dispatch [::component.element/add components-context default/charge])}
                                    {:title :string.entity/charge-group
-                                    :handler #(state/dispatch-on-event % [::component.element/add components-context default/charge-group])}
+                                    :handler #(rf/dispatch [::component.element/add components-context default/charge-group])}
                                    {:title :string.entity/semy
-                                    :handler #(state/dispatch-on-event % [::component.element/add components-context default/semy])}]}
+                                    :handler #(rf/dispatch [::component.element/add components-context default/semy])}]}
                            {:icon "fas fa-pen-nib"
                             :title :string.button/from-blazon
                             :handler #(blazonry-editor/open context)}]
                     (non-mandatory-part-of-parent? context)
                     (conj {:icon "fas fa-undo"
                            :title "Reset"
-                           :handler #(state/dispatch-on-event % [::reset-part-reference context])}))))
+                           :handler #(rf/dispatch [::reset-part-reference context])}))))
      :nodes (concat (when (and (not (show-tinctures-only? field-type))
                                (-> field-type name keyword (not= :plain)))
                       (let [fields-context (c/++ context :fields)
@@ -202,15 +202,15 @@
                                    :buttons [{:icon "fas fa-chevron-down"
                                               :disabled? (zero? idx)
                                               :title :string.tooltip/move-down
-                                              :handler #(state/dispatch-on-event % [::component.element/move component-context (dec idx)])}
+                                              :handler #(rf/dispatch [::component.element/move component-context (dec idx)])}
                                              {:icon "fas fa-chevron-up"
                                               :disabled? (= idx (dec num-components))
                                               :title :string.tooltip/move-up
-                                              :handler #(state/dispatch-on-event % [::component.element/move component-context (inc idx)])}
+                                              :handler #(rf/dispatch [::component.element/move component-context (inc idx)])}
                                              {:icon "far fa-trash-alt"
                                               :remove? true
                                               :title :string.tooltip/remove
-                                              :handler #(state/dispatch-on-event % [::component.element/remove component-context])}]})))
+                                              :handler #(rf/dispatch [::component.element/remove component-context])}]})))
                          vec))}))
 
 (defmethod component/form :heraldry/field [_context]
