@@ -8,8 +8,8 @@
    [heraldicon.util.vec :as vec]
    [re-frame.core :as rf]))
 
-(macros/reg-event-db ::add
-  (fn [db [_ {:keys [path]} value {:keys [post-fn selected-element-path-fn]}]]
+(macros/reg-event-fx ::add
+  (fn [{:keys [db]} [_ {:keys [path]} value {:keys [post-fn selected-element-path-fn]}]]
     (let [elements (-> (get-in db path)
                        (conj value)
                        vec)
@@ -21,21 +21,20 @@
                              (selected-element-path-fn new-element-path (last elements) elements)
                              new-element-path)
           added-type (component/effective-type (:type value))]
-      (-> db
-          (assoc-in path elements)
-          (tree/select-node
-           (if (isa? added-type :heraldry/helm)
-             (conj new-element-path :components 1)
-             new-element-path)
-           :open? true)
-          submenu/close-all
-          (cond->
-            (isa? added-type :heraldry/helm) (submenu/open (conj new-element-path :components 1 :type))
-            (isa? added-type :heraldry/ordinary) (submenu/open (conj new-element-path :type))
-            (isa? added-type :heraldry/charge) (submenu/open (conj new-element-path :type))
-            (isa? added-type :heraldry/charge-group) (submenu/open new-element-path)
-            (isa? added-type :heraldry/motto) (submenu/open (conj new-element-path :ribbon-variant))
-            (isa? added-type :heraldicon.entity.collection/element) (submenu/open (conj new-element-path :reference)))))))
+      {:db (assoc-in db path elements)
+       :dispatch-n [[::submenu/close-all]
+                    [::tree/select-node (if (isa? added-type :heraldry/helm)
+                                          (conj new-element-path :components 1)
+                                          new-element-path)
+                     :open? true]
+                    (cond
+                      (isa? added-type :heraldry/helm) [::submenu/open (conj new-element-path :components 1 :type)]
+                      (isa? added-type :heraldry/ordinary) [::submenu/open (conj new-element-path :type)]
+                      (isa? added-type :heraldry/charge) [::submenu/open (conj new-element-path :type)]
+                      (isa? added-type :heraldry/charge-group) [::submenu/open new-element-path]
+                      (isa? added-type :heraldry/motto) [::submenu/open (conj new-element-path :ribbon-variant)]
+                      (isa? added-type :heraldicon.entity.collection/element) [::submenu/open (conj new-element-path :reference)]
+                      :else nil)]})))
 
 (macros/reg-event-db ::remove
   (fn [db [_ {:keys [path]} {:keys [post-fn]}]]

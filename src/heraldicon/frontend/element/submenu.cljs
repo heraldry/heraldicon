@@ -12,28 +12,22 @@
   (fn [db [_ path]]
     (get-in db (conj open?-path path))))
 
-(defn close-all [db]
-  (assoc-in db open?-path nil))
-
 (macros/reg-event-db ::close-all
   (fn [db _]
-    (close-all db)))
-
-(defn open [db path]
-  (-> db
-      (update-in open?-path
-                 (fn [open-flags]
-                   (into {}
-                         (keep (fn [[key value]]
-                                 (when (= key
-                                          (take (count key) path))
-                                   [key value])))
-                         open-flags)))
-      (assoc-in (conj open?-path path) true)))
+    (assoc-in db open?-path nil)))
 
 (macros/reg-event-db ::open
   (fn [db [_ path]]
-    (open db path)))
+    (-> db
+        (update-in open?-path
+                   (fn [open-flags]
+                     (into {}
+                           (keep (fn [[key value]]
+                                   (when (= key
+                                            (take (count key) path))
+                                     [key value])))
+                           open-flags)))
+        (assoc-in (conj open?-path path) true))))
 
 (macros/reg-event-db ::close
   (fn [db [_ path]]

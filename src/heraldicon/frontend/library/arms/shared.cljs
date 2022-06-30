@@ -18,4 +18,4 @@
      :path form-db-path
      :render-options-path (conj form-db-path :data :achievement :render-options)
      :select-component-fn (fn [event context]
-                            (state/dispatch-on-event event [::tree/node-select (:path context)])))))
+                            (state/dispatch-on-event event [::tree/select-node (:path context)])))))
