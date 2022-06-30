@@ -10,8 +10,7 @@
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.static :as static]
-   [re-frame.core :as rf]))
+   [heraldicon.static :as static]))
 
 ;; TODO: this needs some more thinking, currently it creates dummy contexts to access db data
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]
@@ -58,24 +57,23 @@
           (update-in path dissoc :tincture)))))
 
 (macros/reg-event-db ::set
-  (fn [db [_ path new-type num-fields-x num-fields-y num-base-fields]]
-    (set-field-type db path new-type num-fields-x num-fields-y num-base-fields)))
+  (fn [db [_ path new-type]]
+    (let [field-path (vec (drop-last path))
+          field (get-in db field-path)
+          new-field (assoc field :type key)
+          {:keys [num-fields-x
+                  num-fields-y
+                  num-base-fields]} (:layout (options/sanitize-or-nil
+                                              new-field
+                                              (interface/options {:path [:context :dummy]
+                                                                  :dummy new-field})))]
+      (set-field-type db field-path new-type num-fields-x num-fields-y num-base-fields))))
 
 (defn- field-type-choice [path key display-name & {:keys [selected?
                                                           on-click?]
                                                    :or {on-click? true}}]
   [:div.choice.tooltip {:on-click (when on-click?
-                                    #(let [;; TODO: this should move into the event handler
-                                           field-path (vec (drop-last path))
-                                           field @(rf/subscribe [:get field-path])
-                                           new-field (assoc field :type key)
-                                           {:keys [num-fields-x
-                                                   num-fields-y
-                                                   num-base-fields]} (:layout (options/sanitize-or-nil
-                                                                               new-field
-                                                                               (interface/options {:path [:context :dummy]
-                                                                                                   :dummy new-field})))]
-                                       (state/dispatch-on-event % [::set field-path key num-fields-x num-fields-y num-base-fields])))}
+                                    #(state/dispatch-on-event % [::set path key]))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url
