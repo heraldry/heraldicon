@@ -102,4 +102,4 @@
         (into [:ul]
               (map (fn [user]
                      [:li (link-to-user user)]))
-              users))))])
+              (sort-by :username users)))))])
