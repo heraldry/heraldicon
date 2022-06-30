@@ -3,8 +3,8 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.element.checkbox :as checkbox]
    [heraldicon.frontend.element.core :as element]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
    [heraldicon.util.core :as util]
@@ -62,21 +62,18 @@
            [:tr
             [:td {:style (dissoc header-td-style :padding-left)}
              [:a {:href "#"
-                  :on-click #(state/dispatch-on-event
-                              % [:set [:ui :colours :sort path] :colour])} "#"
+                  :on-click (js-event/handled #(rf/dispatch [:set [:ui :colours :sort path] :colour]))} "#"
               (when (= sort-column :colour)
                 [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
             [:td {:style header-td-style}
              [:a {:href "#"
-                  :on-click #(state/dispatch-on-event
-                              % [:set [:ui :colours :sort path] :modifier])}
+                  :on-click (js-event/handled #(rf/dispatch [:set [:ui :colours :sort path] :modifier]))}
               [tr :string.option/function]
               (when (= sort-column :modifier)
                 [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
             [:td {:style header-td-style}
              [:a {:href "#"
-                  :on-click #(state/dispatch-on-event
-                              % [:set [:ui :colours :sort path] :qualifier])}
+                  :on-click (js-event/handled #(rf/dispatch [:set [:ui :colours :sort path] :qualifier]))}
               [tr :string.option/shading]
               (when (= sort-column :qualifier)
                 [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]

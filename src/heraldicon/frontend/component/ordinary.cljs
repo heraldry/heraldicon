@@ -6,7 +6,6 @@
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.ordinary.core :as ordinary]
@@ -103,7 +102,7 @@
                (conj {:title (cottise/cottise-name cottise-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-1-context default/cottise])
-                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-1-context) true]))})
+                                  (rf/dispatch [::tree/select-node (:path cottise-1-context) true]))})
 
                (and (:cottise-2 cottising-options)
                     cottise-1?
@@ -111,14 +110,14 @@
                (conj {:title (cottise/cottise-name cottise-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-2-context default/cottise])
-                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-2-context) true]))})
+                                  (rf/dispatch [::tree/select-node (:path cottise-2-context) true]))})
 
                (and (:cottise-opposite-1 cottising-options)
                     (not cottise-opposite-1?))
                (conj {:title (cottise/cottise-name cottise-opposite-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-opposite-1-context default/cottise])
-                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-opposite-1-context) true]))})
+                                  (rf/dispatch [::tree/select-node (:path cottise-opposite-1-context) true]))})
 
                (and (:cottise-opposite-2 cottising-options)
                     cottise-opposite-1?
@@ -126,14 +125,14 @@
                (conj {:title (cottise/cottise-name cottise-opposite-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-opposite-2-context default/cottise])
-                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-opposite-2-context) true]))})
+                                  (rf/dispatch [::tree/select-node (:path cottise-opposite-2-context) true]))})
 
                (and (:cottise-extra-1 cottising-options)
                     (not cottise-extra-1?))
                (conj {:title (cottise/cottise-name cottise-extra-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-extra-1-context default/cottise])
-                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-extra-1-context) true]))})
+                                  (rf/dispatch [::tree/select-node (:path cottise-extra-1-context) true]))})
 
                (and (:cottise-extra-2 cottising-options)
                     cottise-extra-1?
@@ -141,7 +140,7 @@
                (conj {:title (cottise/cottise-name cottise-extra-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-extra-2-context default/cottise])
-                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-extra-2-context) true]))}))]
+                                  (rf/dispatch [::tree/select-node (:path cottise-extra-2-context) true]))}))]
     {:title (ordinary/title context)
      :icon {:default (static/static-url
                       (str "/svg/ordinary-type-" (name ordinary-type) "-unselected.svg"))
@@ -157,34 +156,34 @@
                                 :buttons [{:icon "far fa-trash-alt"
                                            :remove? true
                                            :title :string.tooltip/remove
-                                           :handler #(state/dispatch-on-event % [::remove-cottise cottise-2-context])}]})
+                                           :handler #(rf/dispatch [::remove-cottise cottise-2-context])}]})
               cottise-1? (conj {:context cottise-1-context
                                 :buttons [{:icon "far fa-trash-alt"
                                            :remove? true
                                            :title :string.tooltip/remove
-                                           :handler #(state/dispatch-on-event % [::remove-cottise cottise-1-context])}]})
+                                           :handler #(rf/dispatch [::remove-cottise cottise-1-context])}]})
               cottise-opposite-1? (conj {:context cottise-opposite-1-context
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :remove? true
                                                     :title :string.tooltip/remove
-                                                    :handler #(state/dispatch-on-event % [::remove-cottise cottise-opposite-1-context])}]})
+                                                    :handler #(rf/dispatch [::remove-cottise cottise-opposite-1-context])}]})
 
               cottise-opposite-2? (conj {:context cottise-opposite-2-context
                                          :buttons [{:icon "far fa-trash-alt"
                                                     :remove? true
                                                     :title :string.tooltip/remove
-                                                    :handler #(state/dispatch-on-event % [::remove-cottise cottise-opposite-2-context])}]})
+                                                    :handler #(rf/dispatch [::remove-cottise cottise-opposite-2-context])}]})
               cottise-extra-1? (conj {:context cottise-extra-1-context
                                       :buttons [{:icon "far fa-trash-alt"
                                                  :remove? true
                                                  :title :string.tooltip/remove
-                                                 :handler #(state/dispatch-on-event % [::remove-cottise cottise-extra-1-context])}]})
+                                                 :handler #(rf/dispatch [::remove-cottise cottise-extra-1-context])}]})
 
               cottise-extra-2? (conj {:context cottise-extra-2-context
                                       :buttons [{:icon "far fa-trash-alt"
                                                  :remove? true
                                                  :title :string.tooltip/remove
-                                                 :handler #(state/dispatch-on-event % [::remove-cottise cottise-extra-2-context])}]}))}))
+                                                 :handler #(rf/dispatch [::remove-cottise cottise-extra-2-context])}]}))}))
 
 (defmethod component/form :heraldry/ordinary [_context]
   form)

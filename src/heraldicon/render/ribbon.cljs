@@ -3,6 +3,7 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
@@ -37,7 +38,8 @@
         text-colour (tincture/pick tincture-text context)]
     (into [:g (when-not svg-export?
                 {:on-click (when select-component-fn
-                             #(select-component-fn % (c/-- context)))
+                             (js-event/handled
+                              #(select-component-fn (c/-- context))))
                  :style {:cursor "pointer"}})]
           (map (fn [[idx partial-curve]]
                  (let [top-edge (path/curve-to-relative partial-curve)

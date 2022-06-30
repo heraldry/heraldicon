@@ -3,6 +3,7 @@
    [clojure.string :as s]
    [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.render.hatching :as hatching]
@@ -146,7 +147,8 @@
                   :fill colour
                   :on-click (when (and (not svg-export?)
                                        select-component-fn)
-                              #(select-component-fn % context))
+                              (js-event/handled
+                               #(select-component-fn context)))
                   :style (merge
                           (when-not charge-preview?
                             {:cursor "pointer"})

@@ -1,7 +1,8 @@
 (ns heraldicon.frontend.layout
   (:require
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.state :as state]))
+   [heraldicon.frontend.js-event :as js-event]
+   [re-frame.core :as rf]))
 
 (defn three-columns [left middle right]
   [:div {:style {:display "grid"
@@ -11,7 +12,7 @@
                  :grid-template-areas "'left middle right'"
                  :padding-right "10px"
                  :height "100%"}
-         :on-click #(state/dispatch-on-event % [::submenu/close-all])}
+         :on-click (js-event/handled #(rf/dispatch [::submenu/close-all]))}
    [:div.no-scrollbar {:style {:grid-area "left"
                                :position "relative"}}
     left]

@@ -6,9 +6,9 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.entity.preview :as preview]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.interface :as interface]
    [heraldicon.static :as static]
@@ -20,13 +20,12 @@
     (update-in db path merge changes)))
 
 (defn- charge-type-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click #(state/dispatch-on-event
-                                    %
-                                    [::update path {:type key
-                                                    :attitude nil
-                                                    :facing nil
-                                                    :data nil
-                                                    :variant nil}])}
+  [:div.choice.tooltip {:on-click (js-event/handled
+                                   #(rf/dispatch [::update path {:type key
+                                                                 :attitude nil
+                                                                 :facing nil
+                                                                 :data nil
+                                                                 :variant nil}]))}
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :src (static/static-url

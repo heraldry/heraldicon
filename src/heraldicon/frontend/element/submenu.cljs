@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.element.submenu
   (:require
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [re-frame.core :as rf]))
 
 (def open?-path
@@ -40,10 +40,10 @@
                               :on-click #(.stopPropagation %)}
      (when submenu-open?
        [:div.ui-component.ui-submenu extra
-        [:div.ui-component-header [:a {:on-click #(state/dispatch-on-event % [::close submenu-id])}
+        [:div.ui-component-header [:a {:on-click (js-event/handled #(rf/dispatch [::close submenu-id]))}
                                    [:i.far.fa-times-circle]]
          " " [tr title]]
         (into [:div.content]
               content)])
-     [:a {:on-click #(state/dispatch-on-event % [::open submenu-id])}
+     [:a {:on-click (js-event/handled #(rf/dispatch [::open submenu-id]))}
       link-name]]))

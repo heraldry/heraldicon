@@ -5,9 +5,9 @@
    [heraldicon.frontend.component.entity.collection.element :as collection.element]
    [heraldicon.frontend.element.hover-menu :as hover-menu]
    [heraldicon.frontend.element.submenu :as submenu]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.component :as component]
    [re-frame.core :as rf]))
@@ -51,7 +51,7 @@
                         "#000")}}
       (if openable?
         [:span.node-icon.clickable
-         {:on-click #(state/dispatch-on-event % [::toggle-node path])
+         {:on-click (js-event/handled #(rf/dispatch [::toggle-node path]))
           :style {:width "0.9em"}}
          [:i.fa.ui-icon {:class (if open?
                                   "fa-angle-down"
@@ -107,7 +107,8 @@
                                    :style {:margin-left (when (and (pos? idx)
                                                                    remove?) "0.5em")}}
                                   [:i.ui-icon {:class icon
-                                               :on-click (when-not disabled? handler)
+                                               :on-click (when-not disabled?
+                                                           (js-event/handled handler))
                                                :style {:font-size "0.8em"
                                                        :color (if disabled?
                                                                 "#ccc"
