@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.history.core
   (:require
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.history.shared :as shared]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.state :as state]
@@ -45,7 +46,7 @@
                                      :id (:id previous-data)
                                      :version (:version previous-data)))))
           (assoc-in index-path new-index)
-          (state/change-selected-component-if-removed path))
+          (tree/change-selected-component-if-removed path))
       db)))
 
 (rf/reg-event-db ::clear

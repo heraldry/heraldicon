@@ -106,7 +106,7 @@
        (:name data)]]]))
 
 (defn- on-arms-click [form-db-path event index]
-  (state/dispatch-on-event event [:ui-component-node-select (conj form-db-path :data :elements index)]))
+  (state/dispatch-on-event event [::tree/node-select (conj form-db-path :data :elements index)]))
 
 (defn- render-collection [form-db-path & {:keys [allow-adding?]}]
   (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
@@ -225,7 +225,7 @@
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-collection])
-  (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path]])
+  (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path]])
   (layout/three-columns
    [render-collection form-db-path :allow-adding? true]
    [:<>

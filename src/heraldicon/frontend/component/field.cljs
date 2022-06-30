@@ -4,6 +4,7 @@
    [heraldicon.frontend.blazonry-editor.core :as blazonry-editor]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.element :as component.element]
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.tincture-select :as tincture-select]
    [heraldicon.frontend.macros :as macros]
@@ -25,7 +26,7 @@
                                          (conj index)))]
       (-> db
           (assoc-in path referenced-part)
-          (state/ui-component-node-select path :open? true)))))
+          (tree/select-node path :open? true)))))
 
 (macros/reg-event-db ::reset-part-reference
   (fn [db [_ {:keys [path] :as context}]]

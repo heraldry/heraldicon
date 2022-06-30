@@ -1,8 +1,8 @@
 (ns heraldicon.frontend.component.element
   (:require
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.state :as state]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.util.vec :as vec]
@@ -23,7 +23,7 @@
           added-type (component/effective-type (:type value))]
       (-> db
           (assoc-in path elements)
-          (state/ui-component-node-select
+          (tree/select-node
            (if (isa? added-type :heraldry/helm)
              (conj new-element-path :components 1)
              new-element-path)
@@ -50,7 +50,7 @@
                                        (cond-> (vec (concat (subvec elements 0 index)
                                                             (subvec elements (inc index))))
                                          post-fn post-fn)))
-            (state/element-order-changed elements-path index nil))))))
+            (tree/element-order-changed elements-path index nil))))))
 
 (macros/reg-event-db ::move
   (fn [db [_ {:keys [path]} new-index]]
@@ -65,7 +65,7 @@
         db
         (-> db
             (update-in elements-path vec/move-element index new-index)
-            (state/element-order-changed elements-path index new-index))))))
+            (tree/element-order-changed elements-path index new-index))))))
 
 (rf/reg-sub ::removable?
   (fn [[_ {:keys [path]}] _]

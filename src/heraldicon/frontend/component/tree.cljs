@@ -2,10 +2,14 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as frontend.component]
+   [heraldicon.frontend.component.entity.collection.element :as collection.element]
    [heraldicon.frontend.element.hover-menu :as hover-menu]
+   [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.validation :as validation]
+   [heraldicon.heraldry.component :as component]
    [re-frame.core :as rf]))
 
 (def node-context
@@ -13,8 +17,8 @@
    :render-options-path [:context :render-options]})
 
 (defn node-data [{:keys [path] :as context}]
-  (merge {:open? @(rf/subscribe [:ui-component-node-open? path])
-          :selected? (= path @(rf/subscribe [:ui-component-node-selected-path]))
+  (merge {:open? @(rf/subscribe [::node-open? path])
+          :selected? (= path @(rf/subscribe [::active-node-path]))
           :selectable? true}
          (frontend.component/node context)))
 
@@ -39,15 +43,15 @@
                     (when (or (not open?)
                               (not selectable?)
                               selected?)
-                      (rf/dispatch [:ui-component-node-toggle path]))
+                      (rf/dispatch [::toggle-node path]))
                     (when selectable?
-                      (rf/dispatch [:ui-component-node-select path]))
+                      (rf/dispatch [::select-node path]))
                     (.stopPropagation %))
        :style {:color (when-not selectable?
                         "#000")}}
       (if openable?
         [:span.node-icon.clickable
-         {:on-click #(state/dispatch-on-event % [:ui-component-node-toggle path])
+         {:on-click #(state/dispatch-on-event % [::toggle-node path])
           :style {:width "0.9em"}}
          [:i.fa.ui-icon {:class (if open?
                                   "fa-angle-down"
@@ -128,3 +132,166 @@
                            [:div {:style {:height "1em"}}]
                            [node (c/<< node-context :path node-path)])]))
          paths)])
+
+(def ^:private active-node-path
+  [:ui :component-tree :selected-node])
+
+(def ^:private node-selected-default-path
+  [:ui :component-tree :selected-node-default])
+
+(def ^:private node-flag-db-path
+  [:ui :component-tree :nodes])
+
+(defn- node-open-by-default? [path]
+  (or (#{[:coat-of-arms]
+         [:helms]
+         [:ornaments]
+         [:elements]}
+       (take-last 1 path))
+      (#{[:coat-of-arms :field]}
+       (take-last 2 path))
+      (#{;; TODO: path shouldn't be hard-coded
+         [:heraldicon.entity/collection :data :data]}
+       (take-last 3 path))
+      (#{[:example-coa :coat-of-arms :field :components 0]}
+       (take-last 5 path))))
+
+(defn- node-open? [flag path]
+  (if (nil? flag)
+    (node-open-by-default? path)
+    flag))
+
+(rf/reg-sub ::node-open?
+  (fn [[_ path] _]
+    (rf/subscribe [:get (conj node-flag-db-path path)]))
+
+  (fn [flag [_ path]]
+    (node-open? flag path)))
+
+(rf/reg-sub ::active-node-path
+  ;; TODO: subscription here is a bug
+  (fn [_ _]
+    [(rf/subscribe [:get active-node-path])
+     (rf/subscribe [:get @(rf/subscribe [:get active-node-path])])
+     (rf/subscribe [:get node-selected-default-path])])
+
+  (fn [[selected-node-path data default] [_ _path]]
+    (if (and selected-node-path
+             data)
+      selected-node-path
+      default)))
+
+(defn- open-node [db path]
+  (let [path (vec path)]
+    (update-in db node-flag-db-path
+               merge (into {}
+                           (map (fn [idx]
+                                  [(subvec path 0 (inc idx)) true]))
+                           (range (count path))))))
+
+(defn- close-node [db path]
+  (update-in
+   db node-flag-db-path
+   (fn [flags]
+     (into {}
+           (map (fn [[other-path v]]
+                  (if (= (take (count path) other-path)
+                         path)
+                    [other-path false]
+                    [other-path v])))
+           (assoc flags path false)))))
+
+(macros/reg-event-db ::toggle-node
+  (fn [db [_ path]]
+    (if (node-open?
+         (get-in db (conj node-flag-db-path path))
+         path)
+      (close-node db path)
+      (open-node db path))))
+
+;; TODO: use event handler instead
+(defn select-node [db path & {:keys [open?]}]
+  (let [raw-type (get-in db (conj path :type))
+        component-type (component/effective-type raw-type)]
+    (-> db
+        (assoc-in active-node-path path)
+        (open-node (cond-> path
+                     (not open?) drop-last))
+        (cond->
+          (= component-type :heraldicon.entity.collection/element)
+          (assoc-in collection.element/highlighted-element-path path)))))
+
+(macros/reg-event-db ::select-node
+  (fn [db [_ path {:keys [open?]}]]
+    (select-node db path :open? open?)))
+
+(macros/reg-event-db ::node-select-default
+  (fn [db [_ path valid-prefixes]]
+    (let [current-selected-node (get-in db active-node-path)
+          valid-path? (some (fn [path]
+                              (= (take (count path) current-selected-node)
+                                 path))
+                            valid-prefixes)]
+      (-> db
+          (assoc-in node-selected-default-path path)
+          (cond->
+            (not valid-path?) (assoc-in active-node-path nil))))))
+
+(defn- adjust-component-path-after-order-change [path elements-path index new-index]
+  (let [elements-path-size (count elements-path)
+        path-base (when (-> path count (>= elements-path-size))
+                    (subvec path 0 elements-path-size))
+        path-rest (when (-> path count (>= elements-path-size))
+                    (subvec path (count elements-path)))
+        current-index (first path-rest)
+        path-rest (when (-> path-rest count (> 1))
+                    (subvec path-rest 1))]
+    (if (or (not= path-base elements-path)
+            (= index new-index))
+      path
+      (if (nil? new-index)
+        (cond
+          (= current-index index) nil
+          (> current-index index) (vec (concat path-base
+                                               [(dec current-index)]
+                                               path-rest))
+          :else path)
+        (cond
+          (= current-index index) (vec (concat path-base
+                                               [new-index]
+                                               path-rest))
+          (<= index current-index new-index) (vec (concat path-base
+                                                          [(dec current-index)]
+                                                          path-rest))
+          (<= new-index current-index index) (vec (concat path-base
+                                                          [(inc current-index)]
+                                                          path-rest))
+          :else path)))))
+
+(defn change-selected-component-if-removed [db fallback-path]
+  (if (get-in db (get-in db active-node-path))
+    db
+    (assoc-in db active-node-path fallback-path)))
+
+(defn element-order-changed [db elements-path index new-index]
+  (-> db
+      (update-in active-node-path
+                 adjust-component-path-after-order-change elements-path index new-index)
+      (update-in collection.element/highlighted-element-path
+                 adjust-component-path-after-order-change elements-path index new-index)
+      (update-in submenu/open?-path
+                 (fn [flags]
+                   (into {}
+                         (comp (filter first)
+                               (map (fn [[k v]]
+                                      [(adjust-component-path-after-order-change
+                                        k elements-path index new-index) v])))
+                         flags)))
+      (update-in node-flag-db-path (fn [flags]
+                                     (into {}
+                                           (keep (fn [[path flag]]
+                                                   (let [new-path (adjust-component-path-after-order-change
+                                                                   path elements-path index new-index)]
+                                                     (when new-path
+                                                       [new-path flag]))))
+                                           flags)))))

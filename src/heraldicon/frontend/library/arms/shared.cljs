@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.library.arms.shared
   (:require
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.history.core :as history]
@@ -17,4 +18,4 @@
      :path form-db-path
      :render-options-path (conj form-db-path :data :achievement :render-options)
      :select-component-fn (fn [event context]
-                            (state/dispatch-on-event event [:ui-component-node-select (:path context)])))))
+                            (state/dispatch-on-event event [::tree/node-select (:path context)])))))

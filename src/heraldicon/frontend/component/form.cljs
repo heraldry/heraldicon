@@ -19,6 +19,6 @@
         [form context])]]))
 
 (defn active []
-  (let [selected-component-path @(rf/subscribe [:ui-component-node-selected-path])]
+  (let [selected-component-path @(rf/subscribe [::tree/active-node-path])]
     [form (when selected-component-path
             (c/<< tree/node-context :path selected-component-path))]))
