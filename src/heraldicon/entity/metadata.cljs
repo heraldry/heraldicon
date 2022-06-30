@@ -3,7 +3,7 @@
 (def known-metadata-keys
   ["source"
    "source url"
-   "blazonry"
+   "blazon"
    "armiger"
    "house"
    "location name"
