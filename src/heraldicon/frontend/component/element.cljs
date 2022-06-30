@@ -26,7 +26,7 @@
                     [::tree/select-node (if (isa? added-type :heraldry/helm)
                                           (conj new-element-path :components 1)
                                           new-element-path)
-                     :open? true]
+                     true]
                     (cond
                       (isa? added-type :heraldry/helm) [::submenu/open (conj new-element-path :components 1 :type)]
                       (isa? added-type :heraldry/ordinary) [::submenu/open (conj new-element-path :type)]
