@@ -478,6 +478,22 @@
    :orange "#e35d03"
    :rose "#df2ddf"})
 
+(def ^:private theme-community-custom-philippine
+  {;; metals
+   :argent "#ffffff"
+   :or "#fcd116"
+   ;; colours
+   :azure "#0038a8"
+   :vert "#177245"
+   :gules "#ce1126"
+   :sable "#161616"
+   :purpure "#99004d"
+   ;; stains
+   :murrey "#6b0035" ;; 30% darkened purpure
+   :sanguine "#900b1a" ;; 30% darkened gules
+   :tenne "#6c5801" ;; 60% darkened or
+   })
+
 (def ^:private themes
   [[:string.theme.group/general
     [:string.theme/wappenwiki :wappenwiki theme-wappenwiki]
@@ -509,7 +525,8 @@
     ["The Monet Maker" :community-the-monet-maker theme-community-the-monet-maker]
     ["Van Goes Vroem" :community-van-goes-vroem theme-community-van-goes-vroem]
     ["Content Cranium" :community-content-cranium theme-community-content-cranium]
-    ["Sodacan by Bananasplit1611" :community-sodacan theme-community-sodacan]]])
+    ["Sodacan by Bananasplit1611" :community-sodacan theme-community-sodacan]
+    ["Custom Philippine by coinageFission" :community-custom-philippine theme-community-custom-philippine]]])
 
 (def default
   :wappenwiki)
