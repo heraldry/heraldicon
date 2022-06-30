@@ -40,7 +40,9 @@
       [:<>
        [:div.modal-background {:on-click #(clear)}]
        [:div.modal.dialog
-        [:div.modal-header [tr title]]
+        [:div.modal-header (if (vector? title)
+                             title
+                             [tr title])]
         [:div.modal-content content]]])))
 
 (defn- loading []
