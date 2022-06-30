@@ -12,14 +12,14 @@
   (fn [db [_ path]]
     (get-in db (conj open?-path path))))
 
-(defn ui-submenu-close-all [db]
+(defn close-all [db]
   (assoc-in db open?-path nil))
 
 (macros/reg-event-db ::close-all
   (fn [db _]
-    (ui-submenu-close-all db)))
+    (close-all db)))
 
-(defn ui-submenu-open [db path]
+(defn open [db path]
   (-> db
       (update-in open?-path
                  (fn [open-flags]
@@ -33,7 +33,7 @@
 
 (macros/reg-event-db ::open
   (fn [db [_ path]]
-    (ui-submenu-open db path)))
+    (open db path)))
 
 (macros/reg-event-db ::close
   (fn [db [_ path]]
