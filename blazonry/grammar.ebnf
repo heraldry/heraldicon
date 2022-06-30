@@ -198,6 +198,10 @@ tincture/BRUNATRE
     = #"\bbrunatre\b"
     | #"\bbrunâtre\b"
 tincture/BUFF = #"\bbuff\b"
+tincture/CARNATION = #"\bcarnation\b"
+tincture/CENDREE
+    = #"\bcendreé(?=([ ,&]|$))"
+    | #"\bcendree\b"
 
 tincture/ERMINE = #"\bermine\b"
 tincture/ERMINES = #"\bermines\b"
@@ -561,6 +565,8 @@ tincture
     | tincture/BLEU-CELESTE
     | tincture/ROSE
     | tincture/COPPER
+    | tincture/CARNATION
+    | tincture/CENDREE
     | tincture/PROPER
     | tincture/WHITE
     | tincture/BRUNATRE
