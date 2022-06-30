@@ -4,6 +4,7 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.config :as config]
    [heraldicon.context :as c]
+   [heraldicon.entity.arms :as entity.arms]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.component.form :as form]
@@ -25,8 +26,22 @@
    [heraldicon.render.achievement :as achievement]
    [re-frame.core :as rf]))
 
+(rf/reg-sub ::used-charge-variants
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [data [_ _path]]
+    (entity.arms/charge-variants data)))
+
+(rf/reg-sub ::used-ribbons
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [data [_ _path]]
+    (entity.arms/used-ribbons data)))
+
 (defn- charge-attribution [form-db-path]
-  (let [used-charges @(rf/subscribe [:used-charge-variants (conj form-db-path :data :achievement)])
+  (let [used-charges @(rf/subscribe [::used-charge-variants (conj form-db-path :data :achievement)])
         charges-data (map charge/fetch-charge-data used-charges)]
     (when (-> charges-data first :id)
       [:<>
@@ -41,7 +56,7 @@
              charges-data)])))
 
 (defn- ribbon-attribution [form-db-path]
-  (let [used-ribbons @(rf/subscribe [:used-ribbons (conj form-db-path :data :achievement)])
+  (let [used-ribbons @(rf/subscribe [::used-ribbons (conj form-db-path :data :achievement)])
         ribbons-data (map ribbon/fetch-ribbon-data used-ribbons)]
     (when (-> ribbons-data first :id)
       [:<>

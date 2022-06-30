@@ -5,36 +5,6 @@
    [heraldicon.heraldry.option.attributes :as attributes]
    [re-frame.core :as rf]))
 
-(rf/reg-sub :used-charge-variants
-  (fn [[_ path] _]
-    (rf/subscribe [:get path]))
-
-  (fn [data [_ _path]]
-    (->> data
-         (tree-seq #(or (map? %)
-                        (vector? %)
-                        (seq? %)) seq)
-         (filter #(and (map? %)
-                       (some-> % :type namespace (= "heraldry.charge.type"))
-                       (-> % :variant :id)))
-         (map :variant)
-         set)))
-
-(rf/reg-sub :used-ribbons
-  (fn [[_ path] _]
-    (rf/subscribe [:get path]))
-
-  (fn [data [_ _path]]
-    (->> data
-         (tree-seq #(or (map? %)
-                        (vector? %)
-                        (seq? %)) seq)
-         (filter #(and (map? %)
-                       (some-> % :type (isa? :heraldry/motto))
-                       (:ribbon-variant %)))
-         (map :ribbon-variant)
-         set)))
-
 (macros/reg-event-db :clear-db
   (fn [_ _]
     {}))
