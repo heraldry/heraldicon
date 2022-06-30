@@ -54,6 +54,7 @@
    [heraldicon.frontend.element.tincture-modifiers]
    [heraldicon.frontend.element.tincture-select]
    [heraldicon.frontend.element.voided]
+   [heraldicon.frontend.global]
    [heraldicon.frontend.history.state]
    [heraldicon.frontend.state]
    [heraldicon.shared]))

@@ -46,12 +46,6 @@
   (fn [db [_ crawler?]]
     (merge-with merge (assoc-in db-defaults [:ui :crawler?] crawler?) db)))
 
-(macros/reg-event-db :set
-  (fn [db [_ context value]]
-    (if (vector? context)
-      (assoc-in db context value)
-      (assoc-in db (:path context) value))))
-
 (defn dispatch-on-event [event effect]
   (rf/dispatch effect)
   (.stopPropagation event))
@@ -61,16 +55,3 @@
   (doto event
     .preventDefault
     .stopPropagation))
-
-(rf/reg-sub :get
-  (fn [db [_ path]]
-    (if (map? path)
-      (get-in db (:path path))
-      (get-in db path))))
-
-(rf/reg-sub :get-list-size
-  (fn [[_ path] _]
-    (rf/subscribe [:get path]))
-
-  (fn [value [_ _path]]
-    (count value)))
