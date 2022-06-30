@@ -341,6 +341,26 @@
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 500 0 600)})})
 
+(def ^:private community-kalasag
+  {:environment (environment/create
+                 "m 54.303084,263.03992 c 0.481806,0.77857 13.294025,21.48369
+                 13.294025,21.48369 1.495301,2.41641 21.449132,2.28517
+                 20.298782,-2.22508 C 81.70257,258.01944 90.593797,199.39078
+                 91.918145,151.87564 93.242492,104.35792 89.3215,28.973867
+                 100,9.0516574 L 90.936994,0 76.58444,13.160936 C
+                 96.580416,49.516131 39.329083,48.993572 59.995667,12.50895 L
+                 50,2.5406234 40.004333,12.50895 C 60.670917,48.993624
+                 3.4195838,49.516182 23.41556,13.160936 L 9.0630062,0
+                 0,9.0516574 C 10.678139,28.974383 6.7571471,104.35534
+                 8.0818554,151.87564 c 1.3243472,47.51772 10.2154196,106.14689
+                 4.0222536,130.42289 -1.150505,4.51025 18.803326,4.64149
+                 20.298782,2.22508 0,0 12.812219,-20.70476 13.294025,-21.48369
+                 0.481791,-0.77863 2.691407,-2.02849 4.303755,-2.02849
+                 1.612347,0 3.821948,1.24991 4.303754,2.02849 z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 286.085)
+                  :points {:fess (v/Vector. 50 143.0425)}})})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:string.escutcheon.type/heater #'heater]
@@ -365,7 +385,8 @@
     [:string.escutcheon.type/polish #'polish]
     [:string.escutcheon.type/polish-19th-century #'polish-19th-century]]
    [:string.escutcheon.group/community
-    ["Square Iberian Engrailed by coinageFission" #'community-square-iberian-engrailed]]])
+    ["Square Iberian Engrailed by coinageFission" #'community-square-iberian-engrailed]
+    ["Kalasag by vairy" #'community-kalasag]]])
 
 (def ^:private kinds-map
   (into {}
