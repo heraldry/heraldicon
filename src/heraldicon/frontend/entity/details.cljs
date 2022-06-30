@@ -76,9 +76,13 @@
     (go
       (rf/dispatch [:set target-path (<? (generate-data-fn))]))))
 
+(rf/reg-sub ::nil?
+  (fn [db [_ path]]
+    (nil? (get-in db path))))
+
 (defn create-view [entity-type component-fn generate-data-fn]
   (let [form-db-path (form/data-path entity-type)
-        currently-nil? @(rf/subscribe [:nil? form-db-path])
+        currently-nil? @(rf/subscribe [::nil? form-db-path])
         current-id @(rf/subscribe [:get (conj form-db-path :id)])
         loading? (or currently-nil?
                      current-id)]

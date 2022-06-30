@@ -74,7 +74,3 @@
 
   (fn [value [_ _path]]
     (count value)))
-
-(rf/reg-sub :nil?
-  (fn [db [_ path]]
-    (nil? (get-in db path))))
