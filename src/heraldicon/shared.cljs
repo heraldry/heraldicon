@@ -21,7 +21,6 @@
    [heraldicon.heraldry.ribbon]
    [heraldicon.heraldry.semy]
    [heraldicon.heraldry.tincture]
-   [heraldicon.render.options]
-   [heraldicon.state]))
+   [heraldicon.render.options]))
 
 (.setup paper (new Size 500 500))

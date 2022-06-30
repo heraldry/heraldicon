@@ -1,10 +1,10 @@
 (ns heraldicon.interface
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.state :as-alias state]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.options :as options]
-   [heraldicon.state :as-alias state]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
