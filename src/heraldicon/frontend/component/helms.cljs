@@ -2,7 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
-   [heraldicon.frontend.component.element :as element]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
@@ -13,7 +13,7 @@
     {:title :string.entity/helms-and-crests
      :selectable? false
      :buttons [{:icon "fas fa-plus"
-                :handler #(rf/dispatch [::element/add elements-context default/helm])}]
+                :handler #(rf/dispatch [::component.element/add elements-context default/helm])}]
      :nodes (->> (range num-helms)
                  (map (fn [idx]
                         (let [helm-context (c/++ elements-context idx)]
@@ -21,12 +21,12 @@
                            :buttons [{:icon "fas fa-chevron-up"
                                       :disabled? (zero? idx)
                                       :title :string.tooltip/move-down
-                                      :handler #(rf/dispatch [::element/move helm-context (dec idx)])}
+                                      :handler #(rf/dispatch [::component.element/move helm-context (dec idx)])}
                                      {:icon "fas fa-chevron-down"
                                       :disabled? (= idx (dec num-helms))
                                       :title :string.tooltip/move-up
-                                      :handler #(rf/dispatch [::element/move helm-context (inc idx)])}
+                                      :handler #(rf/dispatch [::component.element/move helm-context (inc idx)])}
                                      {:icon "far fa-trash-alt"
                                       :remove? true
                                       :title :string.tooltip/remove
-                                      :handler #(rf/dispatch [::element/remove helm-context])}]}))))}))
+                                      :handler #(rf/dispatch [::component.element/remove helm-context])}]}))))}))
