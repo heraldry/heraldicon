@@ -52,25 +52,6 @@
       (assoc-in db context value)
       (assoc-in db (:path context) value))))
 
-(macros/reg-event-db :merge
-  (fn [db [_ context value]]
-    (if (vector? context)
-      (update-in db context merge value)
-      (update-in db (:path context) merge value))))
-
-(macros/reg-event-db :update
-  (fn [db [_ path update-fn]]
-    (update-in db path update-fn)))
-
-(defn remove-element [db path]
-  (cond-> db
-    (-> path count (= 1)) (dissoc (first path))
-    (-> path count (> 1)) (update-in (drop-last path) dissoc (last path))))
-
-(macros/reg-event-db :remove
-  (fn [db [_ path]]
-    (remove-element db path)))
-
 (defn dispatch-on-event [event effect]
   (rf/dispatch effect)
   (.stopPropagation event))
