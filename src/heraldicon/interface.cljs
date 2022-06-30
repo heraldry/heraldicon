@@ -1,12 +1,12 @@
 (ns heraldicon.interface
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.state :as-alias state]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.options :as options]
    [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log])
+  (:require-macros [reagent.ratom :refer [reaction]]))
 
 (defn get-raw-data [{:keys [path subscriptions] :as context}]
   (cond
@@ -40,7 +40,7 @@
 ;; TODO: this is one of the biggest potential bottle necks
 (defn get-relevant-options [{:keys [path] :as context}]
   (if (-> path first (not= :context))
-    @(rf/subscribe [::state/options (:path context)])
+    @(rf/subscribe [::options (:path context)])
     (let [[options relative-path] (or (->> (range (count path) 0 -1)
                                            (keep (fn [idx]
                                                    (let [option-path (subvec path 0 idx)
@@ -67,17 +67,59 @@
       :type
       (isa? :heraldry/motto)))
 
+(rf/reg-sub ::sanitized-data
+  (fn [[_ path] _]
+    [(rf/subscribe [:get path])
+     (rf/subscribe [::options path])])
+
+  (fn [[data options] [_ _path]]
+    (options/sanitize-value-or-data data options)))
+
 (defn get-sanitized-data [{:keys [path] :as context}]
   (if (-> path first (= :context))
     (let [data (get-raw-data context)
           options (get-relevant-options context)]
       (options/sanitize-value-or-data data options))
-    @(rf/subscribe [::state/sanitized-data (:path context)])))
+    @(rf/subscribe [::sanitized-data (:path context)])))
 
 (defn get-list-size [{:keys [path] :as context}]
   (if (-> path first (= :context))
     (count (get-in context (drop 1 path)))
     @(rf/subscribe [:get-list-size path])))
+
+(rf/reg-sub ::component-type
+  (fn [[_ path] _]
+    (rf/subscribe [:get (conj path :type)]))
+
+  (fn [raw-type _]
+    (component/effective-type raw-type)))
+
+(rf/reg-sub ::options-subscriptions-data
+  (fn [[_ path] _]
+    [(rf/subscribe [::component-type path])
+     (rf/subscribe [:get (conj path :type)])])
+
+  (fn [[component-type entity-type] [_ path]]
+    (when (isa? component-type :heraldry.options/root)
+      (let [context {:path path
+                     :dispatch-value component-type
+                     :entity-type entity-type}]
+        (assoc context :required-subscriptions (options-subscriptions context))))))
+
+(rf/reg-sub-raw ::options
+  (fn [_app-db [_ path]]
+    (reaction
+     (when (seq path)
+       (if-let [context @(rf/subscribe [::options-subscriptions-data path])]
+         (-> context
+             (assoc :subscriptions {:base-path path
+                                    :data (into {}
+                                                (map (fn [relative-path]
+                                                       [relative-path
+                                                        @(rf/subscribe [:get (vec (concat path relative-path))])]))
+                                                (:required-subscriptions context))})
+             options)
+         (get @(rf/subscribe [::options (pop path)]) (last path)))))))
 
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (c/<< context :path (conj render-options-path key))))
