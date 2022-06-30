@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.context :as c]
-   [heraldicon.heraldry.counterchange :as counterchange]
+   [heraldicon.frontend.counterchange :as counterchange]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.interface :as interface]
