@@ -209,17 +209,20 @@
       (close-node db path)
       (open-node db path))))
 
-(macros/reg-event-db ::select-node
-  (fn [db [_ path open?]]
+(macros/reg-event-fx ::select-node
+  (fn [{:keys [db]} [_ path open?]]
     (let [raw-type (get-in db (conj path :type))
           component-type (component/effective-type raw-type)]
-      (-> db
-          (assoc-in active-node-path path)
-          (open-node (cond-> path
-                       (not open?) drop-last))
-          (cond->
-            (= component-type :heraldicon.entity.collection/element)
-            (assoc-in collection.element/highlighted-element-path path))))))
+      (cond->
+        {:db (-> db
+
+                 (assoc-in active-node-path path)
+                 (open-node (cond-> path
+                              (not open?) drop-last))
+                 (cond->))}
+
+        (= component-type
+           :heraldicon.entity.collection/element) (assoc :dispatch [::collection.element/highlight path])))))
 
 (macros/reg-event-db ::node-select-default
   (fn [db [_ path valid-prefixes]]

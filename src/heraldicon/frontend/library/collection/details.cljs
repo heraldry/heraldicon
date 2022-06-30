@@ -54,7 +54,7 @@
         index
         ;; index not valid anymore
         (do
-          (element/highlight-element nil)
+          (rf/dispatch [::element/highlight nil])
           nil)))))
 
 (defn- arms-highlight [path x y width height]
