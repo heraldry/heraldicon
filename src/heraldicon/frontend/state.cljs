@@ -49,9 +49,3 @@
 (defn dispatch-on-event [event effect]
   (rf/dispatch effect)
   (.stopPropagation event))
-
-(defn dispatch-on-event-and-prevent-default [event effect]
-  (rf/dispatch effect)
-  (doto event
-    .preventDefault
-    .stopPropagation))
