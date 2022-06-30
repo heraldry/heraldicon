@@ -328,7 +328,8 @@
                              @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])))]
     [:<>
      [:label.button {:for "upload"
-                     :disabled (not can-upload?)
+                     :class (when-not can-upload?
+                              "disabled")
                      :style {:display "inline-block"
                              :width "auto"
                              :flex "initial"
