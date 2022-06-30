@@ -106,88 +106,91 @@
                                     keys
                                     set)))))))
 
-(defn- load-svg-file [db-path data]
-  (go-catch
-   (try
-     (-> data
-         (svg/optimize (fn [options data]
-                         (go-catch
-                          (-> options
-                              getSvgoInstance
-                              (.optimize data)
-                              <p!))))
-         <?
-         hickory/parse-fragment
-         first
-         hickory/as-hiccup
-         svg/process-style-blocks
-         svg/strip-unnecessary-parts
-         svg/fix-string-style-values
-         svg/fix-attribute-and-tag-names
-         (as-> parsed
-               (let [edn-data (-> parsed
-                                  (assoc 0 :g)
-                                  ;; add fill and stroke at top level as default
-                                  ;; some SVGs don't specify them for elements if
-                                  ;; they are black, but for that to work we need
-                                  ;; the root element to specify them
-                                  ;; disadvantage: this colour will now always show
-                                  ;; im the interface, even if the charge doesn't
-                                  ;; contain and black elements, but they usually will
-                                  ;;
-                                  ;; the stroke-width is also set to 0, because areas
-                                  ;; that really should not get an outline otherwise
-                                  ;; would default to one of width 1
-                                  (assoc 1 {:fill "#000000"
-                                            :stroke "none"
-                                            :stroke-width 0})
-                                  (->> (walk/postwalk
-                                        (fn [data]
-                                          ;; as a follow up to above comment:
-                                          ;; if we find an element that has a stroke-width but no
-                                          ;; stroke, then set that stroke to none, so those thick
-                                          ;; black outlines won't appear
-                                          ;; TODO: this might, for some SVGs, remove some outlines,
-                                          ;; namely if the element was supposed to inherit the stroke
-                                          ;; from a parent element
-                                          (if (and (map? data)
-                                                   (contains? data :stroke-width)
-                                                   (not (contains? data :stroke)))
-                                            (assoc data :stroke "none")
-                                            data))))
-                                  svg/add-ids)
-                     width (-> parsed
-                               (get-in [1 :width])
-                               parse-number-with-unit)
-                     height (-> parsed
-                                (get-in [1 :height])
-                                parse-number-with-unit)
-                     [shift-x shift-y
-                      width height] (let [[viewbox-x viewbox-y
-                                           viewbox-width viewbox-height] (-> parsed
-                                                                             (get-in [1 :viewbox])
-                                                                             parse-width-height-from-viewbox)]
-                                      (if (and viewbox-width viewbox-height)
-                                        [viewbox-x viewbox-y viewbox-width viewbox-height]
-                                        [0 0 width height]))
-                     [shift-x shift-y] (if (and shift-x shift-y)
-                                         [shift-x shift-y]
-                                         [100 100])
-                     [width height] (if (and width height)
-                                      [width height]
-                                      [100 100])
-                     edn-data (assoc-in edn-data
-                                        [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")"))
-                     existing-colours @(rf/subscribe [:get (conj db-path :colours)])]
-                 (rf/dispatch [:merge db-path (update-colours-map
-                                               {:colours existing-colours
-                                                :edn-data {:data edn-data
-                                                           :width width
-                                                           :height height}
-                                                :svg-data data})]))))
-     (rf/dispatch [::clear-selected-colours])
-     (catch :default e
-       (log/error e "load svg file error")))))
+(macros/reg-event-fx ::set-svg-data
+  (fn [{:keys [db]} [_ db-path edn-data raw-svg-data]]
+    (let [width (parse-number-with-unit (get-in edn-data [1 :width]))
+          height (parse-number-with-unit (get-in edn-data [1 :height]))
+          [shift-x shift-y
+           width height] (let [[viewbox-x viewbox-y
+                                viewbox-width viewbox-height] (parse-width-height-from-viewbox
+                                                               (get-in edn-data [1 :viewbox]))]
+                           (if (and viewbox-width viewbox-height)
+                             [viewbox-x viewbox-y viewbox-width viewbox-height]
+                             [0 0 width height]))
+          [shift-x shift-y] (if (and shift-x shift-y)
+                              [shift-x shift-y]
+                              [100 100])
+          [width height] (if (and width height)
+                           [width height]
+                           [100 100])
+          prepared-edn-data (-> edn-data
+                                (assoc 0 :g)
+                                   ;; add fill and stroke at top level as default
+                                   ;; some SVGs don't specify them for elements if
+                                   ;; they are black, but for that to work we need
+                                   ;; the root element to specify them
+                                   ;; disadvantage: this colour will now always show
+                                   ;; im the interface, even if the charge doesn't
+                                   ;; contain and black elements, but they usually will
+                                   ;;
+                                   ;; the stroke-width is also set to 0, because areas
+                                   ;; that really should not get an outline otherwise
+                                   ;; would default to one of width 1
+                                (assoc 1 {:fill "#000000"
+                                          :stroke "none"
+                                          :stroke-width 0})
+                                (->> (walk/postwalk
+                                      (fn [data]
+                                           ;; as a follow up to above comment:
+                                           ;; if we find an element that has a stroke-width but no
+                                           ;; stroke, then set that stroke to none, so those thick
+                                           ;; black outlines won't appear
+                                           ;; TODO: this might, for some SVGs, remove some outlines,
+                                           ;; namely if the element was supposed to inherit the stroke
+                                           ;; from a parent element
+                                        (if (and (map? data)
+                                                 (contains? data :stroke-width)
+                                                 (not (contains? data :stroke)))
+                                          (assoc data :stroke "none")
+                                          data))))
+                                svg/add-ids
+                                (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))
+          existing-colours (get-in db (conj db-path :colours))]
+      {:db (update-in db db-path merge
+                      (update-colours-map
+                       {:colours existing-colours
+                        :edn-data {:data prepared-edn-data
+                                   :width width
+                                   :height height}
+                        :svg-data raw-svg-data}))
+       :dispatch [::clear-selected-colours]})))
+
+(rf/reg-fx ::process-svg-file
+  (fn [[db-path raw-svg-data]]
+    (go
+      (try
+        (let [parsed-svg-data (-> raw-svg-data
+                                  (svg/optimize (fn [options data]
+                                                  (go-catch
+                                                   (-> options
+                                                       getSvgoInstance
+                                                       (.optimize data)
+                                                       <p!))))
+                                  <?
+                                  hickory/parse-fragment
+                                  first
+                                  hickory/as-hiccup
+                                  svg/process-style-blocks
+                                  svg/strip-unnecessary-parts
+                                  svg/fix-string-style-values
+                                  svg/fix-attribute-and-tag-names)]
+          (rf/dispatch [::set-svg-data db-path parsed-svg-data raw-svg-data]))
+        (catch :default e
+          (log/error e "load svg file error"))))))
+
+(macros/reg-event-fx ::load-svg-file
+  (fn [_ [_ db-path data]]
+    {::process-svg-file [db-path data]}))
 
 (def ^:private show-colours-path
   [:ui :colours :show])
@@ -313,7 +316,7 @@
       (let [reader (js/FileReader.)]
         (set! (.-onloadend reader) (fn []
                                      (let [raw-data (.-result reader)]
-                                       (load-svg-file (conj form-db-path :data) raw-data))
+                                       (rf/dispatch [::load-svg-file (conj form-db-path :data) raw-data]))
                                      (modal/stop-loading)))
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
