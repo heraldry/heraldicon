@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.element.core :as element]
+   [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
@@ -24,8 +25,9 @@
   (fn [value [_ path]]
     (= value path)))
 
-(defn highlight-element [path]
-  (rf/dispatch-sync [:set highlighted-element-path path]))
+(macros/reg-event-db ::highlight
+  (fn [db [_ path]]
+    (assoc-in db highlighted-element-path path)))
 
 (defn- form [context]
   (element/elements
