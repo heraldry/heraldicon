@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.charge-group-preset-select :as charge-group-preset-select]
    [heraldicon.frontend.element.core :as element]
@@ -299,13 +300,13 @@
                             [:a (if (zero? idx)
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::element/move strip-context (dec idx)]))})
+                                              #(rf/dispatch [::component.element/move strip-context (dec idx)]))})
                              [:i.fas.fa-chevron-up]]
                             " "
                             [:a (if (= idx (dec num-strips))
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::element/move strip-context (inc idx)]))})
+                                              #(rf/dispatch [::component.element/move strip-context (inc idx)]))})
                              [:i.fas.fa-chevron-down]]]
                            [:div
                             [strip-form strip-context type-str]]
@@ -313,7 +314,7 @@
                             [:a (if (< num-strips 2)
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::element/remove strip-context]))})
+                                              #(rf/dispatch [::component.element/remove strip-context]))})
                              [:i.far.fa-trash-alt]]]])))
                  (range num-strips))]]))
 
@@ -332,7 +333,7 @@
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :menu [{:title :string.entity/charge
-                        :handler #(rf/dispatch [::element/add charges-context default/charge])}]}]
+                        :handler #(rf/dispatch [::component.element/add charges-context default/charge])}]}]
      :nodes (concat (->> (range num-charges)
                          reverse
                          (map (fn [idx]
