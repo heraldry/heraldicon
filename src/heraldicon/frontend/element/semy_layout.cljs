@@ -3,10 +3,10 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.state :as state]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]
-   [heraldicon.state :as state]
    [re-frame.core :as rf]))
 
 ;; TODO: probably can be improved with better subscriptions
