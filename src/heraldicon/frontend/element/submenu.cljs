@@ -5,12 +5,15 @@
    [heraldicon.frontend.state :as state]
    [re-frame.core :as rf]))
 
+(def open?-path
+  [:ui :submenu-open?])
+
 (rf/reg-sub ::open?
   (fn [db [_ path]]
-    (get-in db (conj state/ui-submenu-open?-path path))))
+    (get-in db (conj open?-path path))))
 
 (defn ui-submenu-close-all [db]
-  (assoc-in db state/ui-submenu-open?-path nil))
+  (assoc-in db open?-path nil))
 
 (macros/reg-event-db ::close-all
   (fn [db _]
@@ -18,7 +21,7 @@
 
 (defn ui-submenu-open [db path]
   (-> db
-      (update-in state/ui-submenu-open?-path
+      (update-in open?-path
                  (fn [open-flags]
                    (into {}
                          (keep (fn [[key value]]
@@ -26,7 +29,7 @@
                                           (take (count key) path))
                                    [key value])))
                          open-flags)))
-      (assoc-in (conj state/ui-submenu-open?-path path) true)))
+      (assoc-in (conj open?-path path) true)))
 
 (macros/reg-event-db ::open
   (fn [db [_ path]]
@@ -34,7 +37,7 @@
 
 (macros/reg-event-db ::close
   (fn [db [_ path]]
-    (assoc-in db (conj state/ui-submenu-open?-path path) false)))
+    (assoc-in db (conj open?-path path) false)))
 
 (defn submenu [{:keys [path]} title link-name extra & content]
   (let [submenu-id path

@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.cottise :as cottise]
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.state :as state]
@@ -39,7 +40,7 @@
                                                      (get-in db (conj path :cottise-extra-2))))
 
             (= cottise :cottise-extra-2) (update-in path dissoc :cottise-extra-2))
-          (state/change-selected-component-if-removed (-> path drop-last vec))))))
+          (tree/change-selected-component-if-removed (-> path drop-last vec))))))
 
 (defn- form [context]
   (element/elements
@@ -102,7 +103,7 @@
                (conj {:title (cottise/cottise-name cottise-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-1-context default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-1-context) {:open? true}]))})
+                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-1-context) {:open? true}]))})
 
                (and (:cottise-2 cottising-options)
                     cottise-1?
@@ -110,14 +111,14 @@
                (conj {:title (cottise/cottise-name cottise-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-2-context default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-2-context) {:open? true}]))})
+                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-2-context) {:open? true}]))})
 
                (and (:cottise-opposite-1 cottising-options)
                     (not cottise-opposite-1?))
                (conj {:title (cottise/cottise-name cottise-opposite-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-opposite-1-context default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-opposite-1-context) {:open? true}]))})
+                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-opposite-1-context) {:open? true}]))})
 
                (and (:cottise-opposite-2 cottising-options)
                     cottise-opposite-1?
@@ -125,14 +126,14 @@
                (conj {:title (cottise/cottise-name cottise-opposite-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-opposite-2-context default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-opposite-2-context) {:open? true}]))})
+                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-opposite-2-context) {:open? true}]))})
 
                (and (:cottise-extra-1 cottising-options)
                     (not cottise-extra-1?))
                (conj {:title (cottise/cottise-name cottise-extra-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-extra-1-context default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-extra-1-context) {:open? true}]))})
+                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-extra-1-context) {:open? true}]))})
 
                (and (:cottise-extra-2 cottising-options)
                     cottise-extra-1?
@@ -140,7 +141,7 @@
                (conj {:title (cottise/cottise-name cottise-extra-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-extra-2-context default/cottise])
-                                  (state/dispatch-on-event % [:ui-component-node-select (:path cottise-extra-2-context) {:open? true}]))}))]
+                                  (state/dispatch-on-event % [::tree/select-node (:path cottise-extra-2-context) {:open? true}]))}))]
     {:title (ordinary/title context)
      :icon {:default (static/static-url
                       (str "/svg/ordinary-type-" (name ordinary-type) "-unselected.svg"))

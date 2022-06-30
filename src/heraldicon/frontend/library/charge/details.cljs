@@ -357,8 +357,8 @@
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-charge])
-  (rf/dispatch-sync [:ui-component-node-select-default form-db-path [form-db-path
-                                                                     example-coa-db-path]])
+  (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path
+                                                              example-coa-db-path]])
   (layout/three-columns
    [:<>
     [preview form-db-path :original? true]

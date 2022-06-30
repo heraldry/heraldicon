@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.charge-group-preset-select :as charge-group-preset-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
@@ -63,7 +64,7 @@
                                             (> charge-index index) (dec charge-index)
                                             :else charge-index))
                                         slots)))
-          (state/element-order-changed elements-path index nil)))))
+          (tree/element-order-changed elements-path index nil)))))
 
 (macros/reg-event-db ::move-charge-up
   (fn [db [_ {:keys [path]}]]
@@ -105,7 +106,7 @@
                                             (= charge-index (inc index)) (dec charge-index)
                                             :else charge-index))
                                         slots)))
-          (state/element-order-changed elements-path index (inc index))))))
+          (tree/element-order-changed elements-path index (inc index))))))
 
 (macros/reg-event-db ::add-strip
   (fn [db [_ {:keys [path]} value]]
@@ -153,7 +154,7 @@
                                             (= charge-index index) (dec charge-index)
                                             :else charge-index))
                                         slots)))
-          (state/element-order-changed elements-path index (dec index))))))
+          (tree/element-order-changed elements-path index (dec index))))))
 
 (def ^:private preview-tinctures
   [:azure :or :vert :gules :purpure :sable])
