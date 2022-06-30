@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.keys
   (:require
    [heraldicon.frontend.entity.form :as form]
+   [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.library.arms.shared :as library.arms.shared]
    [heraldicon.frontend.library.charge.shared :as library.charge.shared]
    [heraldicon.frontend.library.collection.shared :as library.collection.shared]
@@ -34,9 +35,9 @@
                                           ;; need to prevent the default here, else this'll
                                           ;; cause dodgy behaviour in text fields
                                           (state/dispatch-on-event-and-prevent-default
-                                           event [:heraldicon.frontend.history.core/redo undo-path])
+                                           event [::history/redo undo-path])
                                           (state/dispatch-on-event-and-prevent-default
-                                           event [:heraldicon.frontend.history.core/undo undo-path]))
+                                           event [::history/undo undo-path]))
       (isa? current-route :route.ribbon/details) (rf/dispatch
                                                   [::library.ribbon.details/edit-set-key-modifiers
                                                    {:shift? shift?}]))))
