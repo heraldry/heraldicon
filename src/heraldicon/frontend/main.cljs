@@ -7,6 +7,7 @@
    [heraldicon.frontend.language :as language]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
+   [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
@@ -39,7 +40,7 @@
   (start-stats-timer print-stats))
 
 (defn ^:export init []
-  (rf/dispatch-sync [:initialize-db])
+  (rf/dispatch-sync [::state/initialize])
   (rf/dispatch-sync [::language/load-setting])
   (session/read-from-storage)
   #_(print-stats)
