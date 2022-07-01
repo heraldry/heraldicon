@@ -12,7 +12,7 @@
                         (interface/get-relevant-options context))]
     (let [component-id (uid/generate "checkbox")
           {:keys [ui inherited default]} option
-          label (:label ui)
+          {:keys [label tooltip]} ui
           current-value (interface/get-raw-data context)
           checked? (->> [current-value
                          inherited
@@ -31,7 +31,14 @@
                                 (on-change new-checked?)
                                 (rf/dispatch [:set context new-checked?])))}]
        [:label.for-checkbox {:for component-id} [tr label]]
-       [value-mode-select/value-mode-select context :disabled? disabled?]])))
+       [value-mode-select/value-mode-select context :disabled? disabled?]
+       (when tooltip
+         [:div.tooltip.info {:style {:display "inline-block"
+                                     :margin-left "0.2em"}}
+          [:i.fas.fa-question-circle]
+          [:div.bottom
+           [:h3 {:style {:text-align "center"}} [tr tooltip]]
+           [:i]]])])))
 
 (defmethod element/element :checkbox [context]
   [checkbox context])

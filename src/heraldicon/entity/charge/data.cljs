@@ -12,11 +12,12 @@
 
 (defmethod interface/options :heraldicon.entity.charge/data [context]
   (cond-> {:charge-type {:type :text
-                         :ui {:label :string.option/charge-type}}
+                         :ui {:label :string.option/charge-type
+                              :tooltip :string.tooltip/charge-type}}
            :attributes {:ui {:form-type :attributes}}
            :landscape? {:type :boolean
                         :ui {:label :string.option/landscape?
-                             :tooltip "Keep the SVG as-is, embedded graphics also are allowed. This is only a good idea if you want to use images as landscape backgrounds."}}}
+                             :tooltip :string.tooltip/landscape?}}}
     (not (interface/get-raw-data (c/++ context :landscape?)))
     (merge {:attitude {:type :choice
                        :choices attributes/attitude-choices
@@ -30,4 +31,5 @@
             :fixed-tincture {:type :choice
                              :choices tincture/fixed-tincture-choices
                              :default :none
-                             :ui {:label :string.option/fixed-tincture}}})))
+                             :ui {:label :string.option/fixed-tincture
+                                  :tooltip :string.tooltip/fixed-tincture}}})))
