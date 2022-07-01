@@ -5,6 +5,7 @@
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.element.text-field :as text-field]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
@@ -47,13 +48,7 @@
   (let [num-segments (interface/get-list-size (c/++ context :segments))]
     [:div.option.ribbon-segments {:style {:margin-top "0.5em"}}
      [:div {:style {:font-size "1.3em"}} [tr :string.ribbon/segments]
-      (when tooltip
-        [:div.tooltip.info {:style {:display "inline-block"
-                                    :margin-left "0.2em"
-                                    :vertical-align "top"}}
-         [:i.fas.fa-question-circle]
-         [:div.bottom {:style {:width "20em"}}
-          [tr tooltip]]])]
+      [tooltip/info tooltip :width "20em"]]
 
      (into [:ul]
            (map (fn [idx]

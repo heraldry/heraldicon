@@ -5,6 +5,7 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
@@ -27,14 +28,13 @@
           new-db)))))
 
 (defn- charge-group-preset-choice [path key group charge-adjustments display-name]
-  [:div.choice.tooltip {:on-click (js-event/handled #(rf/dispatch [::select path group charge-adjustments]))}
+  [tooltip/choice
+   display-name
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
+                    :on-click (js-event/handled #(rf/dispatch [::select path group charge-adjustments]))
                     :src (static/static-url
-                          (str "/svg/charge-group-preset-" (name key) ".svg"))}]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} [tr display-name]]
-    [:i]]])
+                          (str "/svg/charge-group-preset-" (name key) ".svg"))}]])
 
 (defn charge-group-preset-select [{:keys [path] :as context}]
   [:div.ui-setting

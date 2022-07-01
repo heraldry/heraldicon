@@ -3,6 +3,7 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.interface :as interface]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
@@ -32,13 +33,7 @@
                                 (rf/dispatch [:set context new-checked?])))}]
        [:label.for-checkbox {:for component-id} [tr label]]
        [value-mode-select/value-mode-select context :disabled? disabled?]
-       (when tooltip
-         [:div.tooltip.info {:style {:display "inline-block"
-                                     :margin-left "0.2em"}}
-          [:i.fas.fa-question-circle]
-          [:div.bottom
-           [:h3 {:style {:text-align "center"}} [tr tooltip]]
-           [:i]]])])))
+       [tooltip/info tooltip]])))
 
 (defmethod element/element :checkbox [context]
   [checkbox context])

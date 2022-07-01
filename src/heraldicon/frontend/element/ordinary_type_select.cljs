@@ -6,6 +6,7 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
@@ -43,18 +44,17 @@
                                                  (options/sanitize-or-nil % (interface/options {:path %}))))))))
 
 (defn- ordinary-type-choice [path key display-name & {:keys [selected?
-                                                             on-click?]
-                                                      :or {on-click? true}}]
-  [:div.choice.tooltip {:on-click (when on-click?
-                                    (js-event/handled #(rf/dispatch [::set (vec (drop-last path)) key])))}
-   [:img.clickable {:style {:width "5em"
-                            :height "5.7em"}
-                    :src (static/static-url
-                          (str "/svg/ordinary-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
-   (when on-click?
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} [tr display-name]]
-      [:i]])])
+                                                             clickable?]
+                                                      :or {clickable? true}}]
+  (let [choice [:img.clickable {:style {:width "5em"
+                                        :height "5.7em"}
+                                :on-click (when clickable?
+                                            (js-event/handled #(rf/dispatch [::set (vec (drop-last path)) key])))
+                                :src (static/static-url
+                                      (str "/svg/ordinary-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]]
+    (if clickable?
+      [tooltip/choice display-name choice]
+      choice)))
 
 (defmethod element/element :ordinary-type-select [{:keys [path] :as context}]
   (when-let [option (interface/get-relevant-options context)]
@@ -77,7 +77,7 @@
            [value-mode-select/value-mode-select context
             :display-fn ordinary.options/ordinary-map]]
           [:div {:style {:transform "translate(-0.42em,0)"}}
-           [ordinary-type-choice path value choice-name :on-click? false]]]
+           [ordinary-type-choice path value choice-name :clickable? false]]]
          {:style {:width "21.5em"}}
          (into [:<>]
                (map (fn [[display-name key]]

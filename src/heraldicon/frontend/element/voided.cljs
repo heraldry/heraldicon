@@ -3,6 +3,7 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]))
@@ -29,13 +30,7 @@
       [:div.ui-setting
        (when label
          [:label [tr label]
-          (when tooltip
-            [:div.tooltip.info {:style {:display "inline-block"
-                                        :margin-left "0.2em"}}
-             [:i.fas.fa-question-circle]
-             [:div.bottom
-              [:h3 {:style {:text-align "center"}} [tr tooltip]]
-              [:i]]])])
+          [tooltip/info tooltip]])
        [:div.option
         [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                        :class "submenu-voided"}

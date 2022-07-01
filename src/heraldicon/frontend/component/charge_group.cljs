@@ -10,6 +10,7 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.charge-group.core :as charge-group]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.heraldry.default :as default]
@@ -211,13 +212,7 @@
                                                    :stroke-width 0.5
                                                    :fill "#fff"}}])])))
              slot-positions)]]
-     [:div.tooltip.info {:style {:display "inline-block"
-                                 :margin-left "0.2em"
-                                 :vertical-align "top"}}
-      [:i.fas.fa-question-circle]
-      [:div.bottom
-       [:h3 {:style {:text-align "center"}} "Click the slots to disable them or cycle through the available charges (added below)."]
-       [:i]]]]))
+     [tooltip/info :string.tooltip/charge-group-preview]]))
 
 (defn- strip-form [context type-str]
   (let [num-slots (interface/get-list-size (c/++ context :slots))

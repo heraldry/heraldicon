@@ -11,6 +11,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.default :as default]
    [heraldicon.reader.blazonry.result :as result]
    [heraldicon.render.achievement :as achievement]
@@ -57,12 +58,9 @@
   (modal/create
    [:div
     [tr :string.button/from-blazon]
-    [:div.tooltip.info {:style {:display "inline-block"
-                                :margin-left "0.2em"}}
-     [:sup {:style {:color "#d40"}}
-      "alpha"]
-     [:div.bottom
-      [:p [tr :string.tooltip/alpha-feature-warning]]]]]
+    [tooltip/info :string.tooltip/alpha-feature-warning
+     :element [:sup {:style {:color "#d40"}}
+               "alpha"]]]
    [(fn []
       [:div
        [:div {:style {:display "flex"

@@ -6,6 +6,7 @@
    [heraldicon.frontend.element.select :as select]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.math.curve.core :as curve]
@@ -189,13 +190,11 @@
    [:div {:style {:font-size "1.3em"
                   :margin-top "0.5em"
                   :margin-bottom "0.5em"}} [tr :string.ribbon/topology]
-    [:div.tooltip.info {:style {:display "inline-block"
-                                :margin-left "0.2em"
-                                :vertical-align "top"}}
-     [:i.fas.fa-question-circle]
-     [:div.bottom {:style {:width "20em"}}
+    [tooltip/info
+     [:<>
       [:p [tr :string.ribbon.text/topology-explanation-1]]
-      [:p [tr :string.ribbon.text/topology-explanation-2]]]]]
+      [:p [tr :string.ribbon.text/topology-explanation-2]]]
+     :width "20em"]]
 
    [:p {:style {:color "#f86"}}
     [tr :string.ribbon.text/apply-preset-after-change]]
@@ -244,7 +243,7 @@
 
       [form.ribbon/segments-form
        (c/++ context :ribbon)
-       :title :string.ribbon.text/segment-explanation]])])
+       :tooltip :string.ribbon.text/segment-explanation]])])
 
 (defmethod component/node :heraldicon.entity.ribbon/data [context]
   {:title :string.miscellaneous/general
