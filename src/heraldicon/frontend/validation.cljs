@@ -3,6 +3,7 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
@@ -268,17 +269,17 @@
 (defn render [validation]
   (if (seq validation)
     (let [first-message (first validation)]
-      [:div.tooltip.info {:style {:display "inline-block"
-                                  :margin-left "0.2em"}}
-       [render-icon (:level first-message)]
-       [:div.bottom {:style {:width "25em"}}
-        (into [:ul {:style {:position "relative"
-                            :padding-left "1.8em"}}]
-              (map-indexed (fn [idx {:keys [level message]}]
-                             ^{:key idx}
-                             [:li [:div {:style {:position "absolute"
-                                                 :left "0em"}}
-                                   [render-icon level]]
-                              [tr message]]))
-              validation)]])
+      [tooltip/info
+       (into [:ul {:style {:position "relative"
+                           :padding-left "1.8em"}}]
+             (map-indexed (fn [idx {:keys [level message]}]
+                            ^{:key idx}
+                            [:li [:div {:style {:position "absolute"
+                                                :left "0em"}}
+                                  [render-icon level]]
+                             [tr message]]))
+             validation)
+       :element [render-icon (:level first-message)]
+       :width "25em"])
+
     [:<>]))

@@ -6,6 +6,7 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.interface :as interface]
@@ -71,18 +72,17 @@
       (set-field-type db field-path new-type num-fields-x num-fields-y num-base-fields))))
 
 (defn- field-type-choice [path key display-name & {:keys [selected?
-                                                          on-click?]
-                                                   :or {on-click? true}}]
-  [:div.choice.tooltip {:on-click (when on-click?
-                                    (js-event/handled #(rf/dispatch [::set path key])))}
-   [:img.clickable {:style {:width "4em"
-                            :height "4.5em"}
-                    :src (static/static-url
-                          (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
-   (when on-click?
-     [:div.bottom
-      [:h3 {:style {:text-align "center"}} [tr display-name]]
-      [:i]])])
+                                                          clickable?]
+                                                   :or {clickable? true}}]
+  (let [choice [:img.clickable {:style {:width "4em"
+                                        :height "4.5em"}
+                                :on-click (when clickable?
+                                            (js-event/handled #(rf/dispatch [::set path key])))
+                                :src (static/static-url
+                                      (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]]
+    (if clickable?
+      [tooltip/choice display-name choice]
+      choice)))
 
 (defmethod element/element :field-type-select [{:keys [path] :as context}]
   (when-let [option (interface/get-relevant-options context)]
@@ -105,7 +105,7 @@
           [value-mode-select/value-mode-select context
            :display-fn field.options/field-map]
           [:div {:style {:transform "translate(-0.3333em,0)"}}
-           [field-type-choice path value choice-name :on-click? false]]]
+           [field-type-choice path value choice-name :clickable? false]]]
          {:style {:width "21.5em"}}
          (into [:<>]
                (map (fn [[display-name key]]

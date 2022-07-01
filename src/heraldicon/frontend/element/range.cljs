@@ -3,6 +3,7 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.value-mode-select :as value-mode-select]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.interface :as interface]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]
@@ -26,13 +27,7 @@
                         min)]
           [:div.ui-setting
            [:label {:for component-id} [tr label]
-            (when tooltip
-              [:div.tooltip.info {:style {:display "inline-block"
-                                          :margin-left "0.2em"}}
-               [:i.fas.fa-question-circle]
-               [:div.bottom
-                [:h3 {:style {:text-align "center"}} [tr tooltip]]
-                [:i]]])]
+            [tooltip/info tooltip]]
            [:div.option
             [:input {:type "range"
                      :id component-id

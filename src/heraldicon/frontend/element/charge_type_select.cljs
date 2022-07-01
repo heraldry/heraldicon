@@ -9,6 +9,7 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.interface :as interface]
    [heraldicon.static :as static]
@@ -20,19 +21,17 @@
     (update-in db path merge changes)))
 
 (defn- charge-type-choice [path key display-name & {:keys [selected?]}]
-  [:div.choice.tooltip {:on-click (js-event/handled
-                                   #(rf/dispatch [::update path {:type key
-                                                                 :attitude nil
-                                                                 :facing nil
-                                                                 :data nil
-                                                                 :variant nil}]))}
-   [:img.clickable {:style {:width "4em"
-                            :height "4.5em"}
-                    :src (static/static-url
-                          (str "/svg/charge-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
-   [:div.bottom
-    [:h3 {:style {:text-align "center"}} [tr display-name]]
-    [:i]]])
+  (let [choice [:img.clickable {:style {:width "4em"
+                                        :height "4.5em"}
+                                :on-click (js-event/handled
+                                           #(rf/dispatch [::update path {:type key
+                                                                         :attitude nil
+                                                                         :facing nil
+                                                                         :data nil
+                                                                         :variant nil}]))
+                                :src (static/static-url
+                                      (str "/svg/charge-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]]
+    [tooltip/choice display-name choice]))
 
 (defn choice-preview-url [context]
   (if (interface/get-raw-data (c/++ context :preview?))
