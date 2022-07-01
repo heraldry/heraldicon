@@ -3,7 +3,6 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.state :as state]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]
@@ -13,7 +12,7 @@
 (rf/reg-sub ::link-name
   (fn [[_ context] _]
     [(rf/subscribe [:get context])
-     (rf/subscribe [::state/options (:path context)])])
+     (rf/subscribe [::interface/options (:path context)])])
 
   (fn [[layout options] [_ _path]]
     (let [sanitized-layout (options/sanitize layout options)
