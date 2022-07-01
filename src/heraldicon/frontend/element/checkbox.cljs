@@ -32,8 +32,8 @@
                                 (on-change new-checked?)
                                 (rf/dispatch [:set context new-checked?])))}]
        [:label.for-checkbox {:for component-id} [tr label]]
-       [value-mode-select/value-mode-select context :disabled? disabled?]
-       [tooltip/info tooltip]])))
+       [tooltip/info tooltip]
+       [value-mode-select/value-mode-select context :disabled? disabled?]])))
 
 (defmethod element/element :checkbox [context]
   [checkbox context])
