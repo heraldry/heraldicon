@@ -24,7 +24,7 @@
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :choice
+     {:anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:fess
                                   :dexter
@@ -35,12 +35,12 @@
                                   :right])
                        :default :fess
                        :ui/label :string.option/point}
-               :alignment {:type :choice
+               :alignment {:type :option.type/choice
                            :choices position/alignment-choices
                            :default :middle
                            :ui/label :string.option/alignment
                            :ui/element :ui.element/radio-select}
-               :offset-x {:type :range
+               :offset-x {:type :option.type/range
                           :min -50
                           :max 50
                           :default 0
@@ -50,7 +50,7 @@
                :ui/element :ui.element/position}
       :line line-style
       :opposite-line opposite-line-style
-      :geometry {:size {:type :range
+      :geometry {:size {:type :option.type/range
                         :min 0.1
                         :max 90
                         :default 25

@@ -17,13 +17,13 @@
         num-points (or (interface/get-raw-data (c/++ context :num-points))
                        default-num-points)]
     (-> (charge.shared/options context)
-        (assoc :num-points {:type :range
+        (assoc :num-points {:type :option.type/range
                             :default default-num-points
                             :min 3
                             :max 32
                             :integer? true
                             :ui/label :string.option/number-of-points})
-        (assoc :eccentricity {:type :range
+        (assoc :eccentricity {:type :option.type/range
                               :default (- 1
                                           (cond
                                             (< num-points 5) 0.25
@@ -37,7 +37,7 @@
                               :max 0.95
                               :ui/label :string.option/eccentricity
                               :ui/step 0.01})
-        (assoc :wavy-rays? {:type :boolean
+        (assoc :wavy-rays? {:type :option.type/boolean
                             :default false
                             :ui/label :string.option/wavy-rays?}))))
 

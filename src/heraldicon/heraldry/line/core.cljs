@@ -154,7 +154,7 @@
   (options/choices->map choices))
 
 (def ^:private type-option
-  {:type :choice
+  {:type :option.type/choice
    :choices choices
    :default :straight
    :ui/label :string.option/type
@@ -177,58 +177,58 @@
   (options/choices->map corner-dampening-mode-choices))
 
 (def ^:private default-options
-  {:eccentricity {:type :range
+  {:eccentricity {:type :option.type/range
                   :min 0
                   :max 1
                   :default 0.5
                   :ui/label :string.option/eccentricity
                   :ui/step 0.01}
-   :height {:type :range
+   :height {:type :option.type/range
             :min 0
             :max 3
             :default 1
             :ui/label :string.option/height
             :ui/step 0.01}
-   :width {:type :range
+   :width {:type :option.type/range
            :min 2
            :max 100
            :default 10
            :ui/label :string.option/width
            :ui/step 0.01}
-   :offset {:type :range
+   :offset {:type :option.type/range
             :min -1
             :max 3
             :default 0
             :ui/label :string.option/offset
             :ui/step 0.01}
-   :spacing {:type :range
+   :spacing {:type :option.type/range
              :min 0
              :max 5
              :default 0
              :ui/label :string.option/spacing
              :ui/step 0.01}
-   :base-line {:type :choice
+   :base-line {:type :option.type/choice
                :choices base-line-choices
                :default :middle
                :ui/label :string.option/base-line
                :ui/element :ui.element/radio-select}
-   :corner-dampening-radius {:type :range
+   :corner-dampening-radius {:type :option.type/range
                              :min 0
                              :max 50
                              :default 0
                              :ui/label :string.option/dampening-radius
                              :ui/tooltip :string.tooltip/dampening-radius
                              :ui/step 0.01}
-   :corner-dampening-mode {:type :choice
+   :corner-dampening-mode {:type :option.type/choice
                            :choices corner-dampening-mode-choices
                            :default :clamp-to-zero
                            :ui/label :string.option/dampening-mode
                            :ui/tooltip :string.tooltip/dampening-mode
                            :ui/step 0.01}
-   :mirrored? {:type :boolean
+   :mirrored? {:type :option.type/boolean
                :default false
                :ui/label :string.option/mirrored?}
-   :flipped? {:type :boolean
+   :flipped? {:type :option.type/boolean
               :default false
               :ui/label :string.option/flipped?}})
 

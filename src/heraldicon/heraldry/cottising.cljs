@@ -16,19 +16,19 @@
            key
            {:line (assoc line-style :ui/label :string.entity/line)
             :opposite-line (assoc opposite-line-style :ui/label :string.entity/opposite-line)
-            :distance {:type :range
+            :distance {:type :option.type/range
                        :min -10
                        :max 20
                        :default 2
                        :ui/label :string.option/distance
                        :ui/step 0.1}
-            :thickness {:type :range
+            :thickness {:type :option.type/range
                         :min 0.1
                         :max 20
                         :default 2
                         :ui/label :string.option/thickness
                         :ui/step 0.1}
-            :outline? {:type :boolean
+            :outline? {:type :option.type/boolean
                        :default false
                        :ui/label :string.charge.tincture-modifier.special/outline}
             :ui/element :ui.element/cottising})))

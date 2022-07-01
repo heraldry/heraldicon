@@ -12,26 +12,26 @@
    [heraldicon.svg.path :as path]))
 
 (defn options [_context]
-  {:thickness {:type :range
+  {:thickness {:type :option.type/range
                :default 30
                :min 5
                :max 150
                :ui/label :string.option/thickness
                :ui/step 0.1}
-   :edge-angle {:type :range
+   :edge-angle {:type :option.type/range
                 :default 0
                 :min -90
                 :max 90
                 :ui/label :string.option/edge-angle
                 :ui/step 1
                 :ui/tooltip :string.tooltip/edge-angle}
-   :end-split {:type :range
+   :end-split {:type :option.type/range
                :default 0
                :min 0
                :max 80
                :ui/label :string.option/end-split
                :ui/step 1}
-   :outline? {:type :boolean
+   :outline? {:type :option.type/boolean
               :default true
               :ui/label :string.charge.tincture-modifier.special/outline}})
 
@@ -129,7 +129,7 @@
   (options/choices->map segment-type-choices))
 
 (def ^:private type-option
-  {:type :choice
+  {:type :option.type/choice
    :choices segment-type-choices
    :ui/label :string.option/type
    :ui/element :ui.element/radio-select})
@@ -140,7 +140,7 @@
   #{[:type]})
 
 (defmethod interface/options :heraldry.ribbon/segment [context]
-  (-> {:z-index {:type :range
+  (-> {:z-index {:type :option.type/range
                  :min 0
                  :max 100
                  :integer? true
@@ -148,31 +148,31 @@
       (cond->
         (= (interface/get-raw-data (c/++ context :type))
            :heraldry.ribbon.segment.type/foreground-with-text)
-        (merge {:offset-x {:type :range
+        (merge {:offset-x {:type :option.type/range
                            :default 0
                            :min -0.5
                            :max 0.5
                            :ui/label :string.option/offset-x
                            :ui/step 0.01}
-                :offset-y {:type :range
+                :offset-y {:type :option.type/range
                            :default 0
                            :min -0.5
                            :max 0.5
                            :ui/label :string.option/offset-y
                            :ui/step 0.01}
-                :font-scale {:type :range
+                :font-scale {:type :option.type/range
                              :default 0.8
                              :min 0.01
                              :max 1
                              :ui/label :string.option/font-scale
                              :ui/step 0.01}
-                :spacing {:type :range
+                :spacing {:type :option.type/range
                           :default 0.1
                           :min -0.5
                           :max 2
                           :ui/label :string.option/spacing
                           :ui/step 0.01}
-                :text {:type :text
+                :text {:type :option.type/text
                        :default ""}
                 :font (-> font/default-options
                           (assoc :default :baskerville-berthold))}))

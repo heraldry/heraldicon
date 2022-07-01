@@ -27,7 +27,7 @@
 (defmethod ordinary.interface/options ordinary-type [context]
   (let [num-points (or (interface/get-raw-data (c/++ context :num-points))
                        3)]
-    (-> {:anchor {:point {:type :choice
+    (-> {:anchor {:point {:type :option.type/choice
                           :choices (position/anchor-choices
                                     [:fess
                                      :chief
@@ -39,12 +39,12 @@
                                      :bottom])
                           :default :chief
                           :ui/label :string.option/point}
-                  :alignment {:type :choice
+                  :alignment {:type :option.type/choice
                               :choices position/alignment-choices
                               :default :middle
                               :ui/label :string.option/alignment
                               :ui/element :ui.element/radio-select}
-                  :offset-y {:type :range
+                  :offset-y {:type :option.type/range
                              :min -45
                              :max 45
                              :default 0
@@ -52,18 +52,18 @@
                              :ui/step 0.1}
                   :ui/label :string.option/anchor
                   :ui/element :ui.element/position}
-         :variant {:type :choice
+         :variant {:type :option.type/choice
                    :choices variant-choices
                    :default :full
                    :ui/label :string.option/variant
                    :ui/element :ui.element/radio-select}
-         :num-points {:type :range
+         :num-points {:type :option.type/range
                       :min 1
                       :max 16
                       :default 3
                       :integer? true
                       :ui/label :string.option/number-of-points}
-         :geometry {:size {:type :range
+         :geometry {:size {:type :option.type/range
                            :min 2
                            :max 90
                            :default (case num-points
@@ -77,7 +77,7 @@
                                       5)
                            :ui/label :string.option/size
                            :ui/step 0.1}
-                    :width {:type :range
+                    :width {:type :option.type/range
                             :min 10
                             :max 150
                             :default (case num-points
@@ -91,19 +91,19 @@
                                        90)
                             :ui/label :string.option/width
                             :ui/step 0.1}
-                    :thickness {:type :range
+                    :thickness {:type :option.type/range
                                 :min 0
                                 :max 20
                                 :default 5
                                 :ui/label :string.option/bar-thickness
                                 :ui/step 0.1}
-                    :eccentricity {:type :range
+                    :eccentricity {:type :option.type/range
                                    :min 0
                                    :max 1
                                    :default 0
                                    :ui/label :string.option/eccentricity
                                    :ui/step 0.01}
-                    :stretch {:type :range
+                    :stretch {:type :option.type/range
                               :min 0.33
                               :max 10
                               :default (case num-points

@@ -77,7 +77,7 @@
   (options/choices->map choices))
 
 (def ^:private type-option
-  {:type :choice
+  {:type :option.type/choice
    :choices choices
    :ui/label :string.option/partition
    :ui/element :ui.element/field-type-select})
@@ -119,14 +119,14 @@
       (and (not ref?)
            (or subfield?
                root-field?
-               semy-charge?)) (update-in [:type :choices] #(->> %
-                                                                (filter (fn [[_ t]]
-                                                                          (not= t :heraldry.field.type/counterchanged)))
-                                                                vec))
+               semy-charge?)) (update-in [:type :option.type/choices] #(->> %
+                                                                            (filter (fn [[_ t]]
+                                                                                      (not= t :heraldry.field.type/counterchanged)))
+                                                                            vec))
       (not (or root-field?
                semy-charge?
                counterchanged?
                ref?)) (assoc :inherit-environment?
-                             {:type :boolean
+                             {:type :option.type/boolean
                               :default false
                               :ui/label :string.option/inherit-environment?}))))

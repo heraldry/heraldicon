@@ -35,7 +35,7 @@
   (options/choices->map corner-choices))
 
 (def ^:private mode-option
-  {:type :choice
+  {:type :option.type/choice
    :choices mode-choices
    :default :none
    :ui/element :ui.element/radio-select})
@@ -53,32 +53,32 @@
          :ui/element :ui.element/fimbriation}
         (cond->
           (#{:single
-             :double} mode) (assoc :alignment {:type :choice
+             :double} mode) (assoc :alignment {:type :option.type/choice
                                                :choices alignment-choices
                                                :default :even
                                                :ui/label :string.option/alignment}
-                                   :corner {:type :choice
+                                   :corner {:type :option.type/choice
                                             :choices corner-choices
                                             :default :sharp
                                             :ui/label :string.option/corner}
-                                   :thickness-1 {:type :range
+                                   :thickness-1 {:type :option.type/range
                                                  :min 1
                                                  :max 30
                                                  :default 6
                                                  :ui/label :string.option/thickness
                                                  :ui/step 0.01}
-                                   :tincture-1 {:type :choice
+                                   :tincture-1 {:type :option.type/choice
                                                 :choices tincture/choices
                                                 :default :none
                                                 :ui/label :string.option/tincture
                                                 :ui/element :ui.element/tincture-select})
-          (= mode :double) (assoc :thickness-2 {:type :range
+          (= mode :double) (assoc :thickness-2 {:type :option.type/range
                                                 :min 1
                                                 :max 30
                                                 :default 3
                                                 :ui/label (string/str-tr :string.option/thickness " 2")
                                                 :ui/step 0.01}
-                                  :tincture-2 {:type :choice
+                                  :tincture-2 {:type :option.type/choice
                                                :choices tincture/choices
                                                :default :none
                                                :ui/label (string/str-tr :string.option/tincture " 2")

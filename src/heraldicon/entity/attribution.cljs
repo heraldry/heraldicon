@@ -89,11 +89,11 @@
     (compatible-licenses (or license :none))))
 
 (defn options [context]
-  (cond-> {:license {:type :choice
+  (cond-> {:license {:type :option.type/choice
                      :choices license-choices
                      :default :none
                      :ui/label :string.attribution/license}
-           :nature {:type :choice
+           :nature {:type :option.type/choice
                     :choices nature-choices
                     :default :own-work
                     :ui/element :ui.element/radio-select}
@@ -103,7 +103,7 @@
     (-> context
         (c/++ :license)
         interface/get-raw-data
-        cc-license?) (assoc :license-version {:type :choice
+        cc-license?) (assoc :license-version {:type :option.type/choice
                                               :choices cc-license-version-choices
                                               :default :v4
                                               :ui/label :string.attribution/license-version})
@@ -111,34 +111,34 @@
     (-> context
         (c/++ :nature)
         interface/get-raw-data
-        (= :derivative)) (merge {:source-license {:type :choice
+        (= :derivative)) (merge {:source-license {:type :option.type/choice
                                                   :choices license-choices
                                                   :default :none
                                                   :ui/label :string.attribution/source-license}
 
-                                 :source-name {:type :text
+                                 :source-name {:type :option.type/text
                                                :default ""
                                                :ui/label :string.attribution/source-name}
 
-                                 :source-link {:type :text
+                                 :source-link {:type :option.type/text
                                                :default ""
                                                :ui/label :string.attribution/source-link}
 
-                                 :source-creator-name {:type :text
+                                 :source-creator-name {:type :option.type/text
                                                        :default ""
                                                        :ui/label :string.attribution/creator-name}
 
-                                 :source-creator-link {:type :text
+                                 :source-creator-link {:type :option.type/text
                                                        :default ""
                                                        :ui/label :string.attribution/creator-link}
-                                 :source-modification {:type :text
+                                 :source-modification {:type :option.type/text
                                                        :default ""
                                                        :ui/label :string.attribution/source-modification}})
 
     (-> context
         (c/++ :source-license)
         interface/get-raw-data
-        cc-license?) (assoc :source-license-version {:type :choice
+        cc-license?) (assoc :source-license-version {:type :option.type/choice
                                                      :choices cc-license-version-choices
                                                      :default :v4
                                                      :ui/label :string.attribution/license-version})))

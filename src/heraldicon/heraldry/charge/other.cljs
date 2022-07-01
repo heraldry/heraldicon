@@ -25,21 +25,21 @@
 
 (defmethod charge.interface/options :heraldry.charge.type/other [context]
   (-> (charge.shared/options context)
-      (assoc :tincture {:eyed {:type :choice
+      (assoc :tincture {:eyed {:type :option.type/choice
                                :choices tincture/choices
                                :default :argent
                                :ui/label :string.charge.tincture-modifier/eyed}
-                        :toothed {:type :choice
+                        :toothed {:type :option.type/choice
                                   :choices tincture/choices
                                   :default :argent
                                   :ui/label :string.charge.tincture-modifier/toothed}
-                        :shadow {:type :range
+                        :shadow {:type :option.type/range
                                  :min 0
                                  :max 1
                                  :default 1
                                  :ui/label :string.option/shadow
                                  :ui/step 0.01}
-                        :highlight {:type :range
+                        :highlight {:type :option.type/range
                                     :min 0
                                     :max 1
                                     :default 1
@@ -48,7 +48,7 @@
                         :ui/label :string.entity/tinctures
                         :ui/element :ui.element/tincture-modifiers})
       (assoc :ignore-layer-separator?
-             {:type :boolean
+             {:type :option.type/boolean
               :default (->> context :path (some #{:coat-of-arms}))
               :ui/label :string.option/ignore-layer-separator?
               :ui/tooltip :string.tooltip/ignore-layer-separator?})))

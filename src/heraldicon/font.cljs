@@ -40,7 +40,7 @@
   (get font-map (or font default)))
 
 (def default-options
-  {:type :choice
+  {:type :option.type/choice
    :choices choices
    :default default
    :ui/label :string.option/font})

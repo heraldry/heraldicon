@@ -29,7 +29,7 @@
                                               :inherited-options line-style)
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
-        orientation-point-option {:type :choice
+        orientation-point-option {:type :option.type/choice
                                   :choices (position/orientation-choices
                                             [:top-left
                                              :top-right
@@ -43,7 +43,7 @@
                                    orientation-point-option)]
     ;; TODO: perhaps there should be anchor options for the corners?
     ;; so one can align fro top-left to bottom-right
-    {:anchor {:point {:type :choice
+    {:anchor {:point {:type :option.type/choice
                       :choices (position/anchor-choices
                                 [:chief
                                  :base
@@ -57,13 +57,13 @@
                                  :center])
                       :default :fess
                       :ui/label :string.option/point}
-              :offset-x {:type :range
+              :offset-x {:type :option.type/range
                          :min -45
                          :max 45
                          :default 0
                          :ui/label :string.option/offset-x
                          :ui/step 0.1}
-              :offset-y {:type :range
+              :offset-y {:type :option.type/range
                          :min -45
                          :max 45
                          :default 0
@@ -76,20 +76,20 @@
                            :ui/element :ui.element/position}
 
                     (= current-orientation-point
-                       :angle) (assoc :angle {:type :range
+                       :angle) (assoc :angle {:type :option.type/range
                                               :min 10
                                               :max 80
                                               :default 45
                                               :ui/label :string.option/angle})
 
                     (not= current-orientation-point
-                          :angle) (assoc :offset-x {:type :range
+                          :angle) (assoc :offset-x {:type :option.type/range
                                                     :min -45
                                                     :max 45
                                                     :default 0
                                                     :ui/label :string.option/offset-x
                                                     :ui/step 0.1}
-                                         :offset-y {:type :range
+                                         :offset-y {:type :option.type/range
                                                     :min -45
                                                     :max 45
                                                     :default 0

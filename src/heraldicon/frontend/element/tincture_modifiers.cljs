@@ -110,7 +110,7 @@
                              [tincture-select/tincture-select
                               (c/++ context t)
                               ;; TODO: this could probably be generated dynamically in charge/options
-                              :default-option {:type :choice
+                              :default-option {:type :option.type/choice
                                                :choices tincture/choices
                                                :default :none
                                                :ui/label (blazonry/translate-cap-first t)}]))

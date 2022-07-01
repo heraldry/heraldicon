@@ -21,7 +21,7 @@
         opposite-line-type (or (interface/get-raw-data (c/++ context :opposite-line :type))
                                :straight)
         adjust-line-style #(-> %
-                               (update-in [:type :choices]
+                               (update-in [:type :option.type/choices]
                                           (fn [choices]
                                             (into []
                                                   (remove (fn [[_ line-type]]
@@ -29,19 +29,19 @@
                                                                  (-> line-type line/kinds-pattern-map :full?))))
                                                   choices)))
                                (options/override-if-exists [:base-line :default] :bottom))]
-    {:thickness {:type :range
+    {:thickness {:type :option.type/range
                  :min 0.1
                  :max 20
                  :default 5
                  :ui/label :string.option/thickness
                  :ui/step 0.1}
-     :distance {:type :range
+     :distance {:type :option.type/range
                 :min 0.1
                 :max 30
                 :default 4
                 :ui/label :string.option/distance
                 :ui/step 0.1}
-     :corner-radius {:type :range
+     :corner-radius {:type :option.type/range
                      :min 0
                      :max 20
                      :default (if (and (= line-type :straight)
@@ -50,7 +50,7 @@
                                 5)
                      :ui/label :string.option/corner-radius
                      :ui/step 0.1}
-     :smoothing {:type :range
+     :smoothing {:type :option.type/range
                  :min 0
                  :max 20
                  :default 0

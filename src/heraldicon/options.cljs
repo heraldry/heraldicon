@@ -3,15 +3,19 @@
    [clojure.walk :as walk]
    [heraldicon.util.sanitize :as sanitize]))
 
-(def ^:private option-types #{:range :choice :boolean :text})
+(def ^:private option-types
+  #{:option.type/range
+    :option.type/choice
+    :option.type/boolean
+    :option.type/text})
 
 (def manual-blazon
-  {:type :text
+  {:type :option.type/text
    :default nil
    :ui/label :string.option/manual-blazon})
 
 (def plain-outline?-option
-  {:type :boolean
+  {:type :option.type/boolean
    :default false
    :ui/label :string.charge.tincture-modifier.special/outline})
 
@@ -35,35 +39,35 @@
           value (first (keep identity [value
                                        fallback]))]
       (case (:type options)
-        :boolean (boolean value)
-        :choice (let [choices (choices->map (:choices options))]
-                  (if (contains? choices value)
-                    value
-                    (if (contains? choices fallback)
-                      fallback
-                      (-> options :choices first second))))
-        :range (cond
-                 (and (nil? value)
-                      (-> options :default nil?)) nil
-                 (nil? value) (:min options)
-                 :else (-> value
-                           (max (:min options))
-                           (min (:max options))))
-        :text (or value (:default options))
+        :option.type/boolean (boolean value)
+        :option.type/choice (let [choices (choices->map (:choices options))]
+                              (if (contains? choices value)
+                                value
+                                (if (contains? choices fallback)
+                                  fallback
+                                  (-> options :choices first second))))
+        :option.type/range (cond
+                             (and (nil? value)
+                                  (-> options :default nil?)) nil
+                             (nil? value) (:min options)
+                             :else (-> value
+                                       (max (:min options))
+                                       (min (:max options))))
+        :option.type/text (or value (:default options))
         nil))))
 
 (defn- get-sanitized-value-or-nil [value options]
   (when-not (nil? value)
     (case (:type options)
-      :boolean (boolean value)
-      :choice (let [choices (choices->map (:choices options))]
-                (when (contains? choices value)
-                  value))
-      :range (when-not (nil? value)
-               (-> value
-                   (max (:min options))
-                   (min (:max options))))
-      :text value
+      :option.type/boolean (boolean value)
+      :option.type/choice (let [choices (choices->map (:choices options))]
+                            (when (contains? choices value)
+                              value))
+      :option.type/range (when-not (nil? value)
+                           (-> value
+                               (max (:min options))
+                               (min (:max options))))
+      :option.type/text value
       nil)))
 
 (defn sanitize [values given-options]
@@ -120,7 +124,7 @@
 (defn populate-inheritance [options inherited-values]
   (into {}
         (map (fn [[k v]]
-               [k (if (and (-> v :type #{:choice :range :boolean :text})
+               [k (if (and (-> v :type option-types)
                            (get inherited-values k))
                     (assoc v :inherited (get inherited-values k))
                     v)]))

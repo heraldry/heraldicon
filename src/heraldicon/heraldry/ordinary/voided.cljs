@@ -7,18 +7,18 @@
 
 (defn options [context]
   (let [voided? (interface/get-raw-data (c/++ context :voided?))]
-    (cond-> {:voided? {:type :boolean
+    (cond-> {:voided? {:type :option.type/boolean
                        :ui/label :string.charge.attribute/voided}
              :ui/label :string.charge.attribute/voided
              :ui/tooltip :string.tooltip/humetty-warning
              :ui/element :ui.element/voided}
-      voided? (assoc :corner {:type :choice
+      voided? (assoc :corner {:type :option.type/choice
                               :choices [[:string.option.corner-choice/round :round]
                                         [:string.option.corner-choice/sharp :sharp]
                                         [:string.option.corner-choice/bevel :bevel]]
                               :default :sharp
                               :ui/label :string.option/corner}
-                     :thickness {:type :range
+                     :thickness {:type :option.type/range
                                  :min 1
                                  :max 45
                                  :default 10

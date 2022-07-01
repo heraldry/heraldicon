@@ -11,24 +11,24 @@
   #{[:landscape?]})
 
 (defmethod interface/options :heraldicon.entity.charge/data [context]
-  (cond-> {:charge-type {:type :text
+  (cond-> {:charge-type {:type :option.type/text
                          :ui/label :string.option/charge-type
                          :ui/tooltip :string.tooltip/charge-type}
            :attributes {:ui/element :ui.element/attributes}
-           :landscape? {:type :boolean
+           :landscape? {:type :option.type/boolean
                         :ui/label :string.option/landscape?
                         :ui/tooltip :string.tooltip/landscape?}}
     (not (interface/get-raw-data (c/++ context :landscape?)))
-    (merge {:attitude {:type :choice
+    (merge {:attitude {:type :option.type/choice
                        :choices attributes/attitude-choices
                        :default :none
                        :ui/label :string.option/attitude}
-            :facing {:type :choice
+            :facing {:type :option.type/choice
                      :choices attributes/facing-choices
                      :default :none
                      :ui/label :string.option/facing}
             :colours {:ui/element :ui.element/colours}
-            :fixed-tincture {:type :choice
+            :fixed-tincture {:type :option.type/choice
                              :choices tincture/fixed-tincture-choices
                              :default :none
                              :ui/label :string.option/fixed-tincture

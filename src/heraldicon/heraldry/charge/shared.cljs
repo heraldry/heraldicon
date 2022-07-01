@@ -26,7 +26,7 @@
   (options/choices->map outline-mode-choices))
 
 (defn options [context]
-  (let [anchor-point-option {:type :choice
+  (let [anchor-point-option {:type :option.type/choice
                              :choices (position/anchor-choices
                                        [:fess
                                         :chief
@@ -48,7 +48,7 @@
                                         :bottom-right])
                              :default :fess
                              :ui/label :string.option/point}
-        orientation-point-option {:type :choice
+        orientation-point-option {:type :option.type/choice
                                   :choices (position/orientation-choices
                                             [:top-left
                                              :top
@@ -73,13 +73,13 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     {:anchor {:point anchor-point-option
-              :offset-x {:type :range
+              :offset-x {:type :option.type/range
                          :min -45
                          :max 45
                          :default 0
                          :ui/label :string.option/offset-x
                          :ui/step 0.1}
-              :offset-y {:type :range
+              :offset-y {:type :option.type/range
                          :min -45
                          :max 45
                          :default 0
@@ -92,41 +92,41 @@
                            :ui/element :ui.element/position}
 
                     (= current-orientation-point
-                       :angle) (assoc :angle {:type :range
+                       :angle) (assoc :angle {:type :option.type/range
                                               :min 0
                                               :max 360
                                               :default 0
                                               :ui/label :string.option/angle})
 
                     (not= current-orientation-point
-                          :angle) (assoc :offset-x {:type :range
+                          :angle) (assoc :offset-x {:type :option.type/range
                                                     :min -45
                                                     :max 45
                                                     :default 0
                                                     :ui/label :string.option/offset-x
                                                     :ui/step 0.1}
-                                         :offset-y {:type :range
+                                         :offset-y {:type :option.type/range
                                                     :min -45
                                                     :max 45
                                                     :default 0
                                                     :ui/label :string.option/offset-y
                                                     :ui/step 0.1}))
-     :geometry {:size {:type :range
+     :geometry {:size {:type :option.type/range
                        :min 5
                        :max 250
                        :default 50
                        :ui/label :string.option/size
                        :ui/step 0.1}
-                :stretch {:type :range
+                :stretch {:type :option.type/range
                           :min 0.33
                           :max 3
                           :default 1
                           :ui/label :string.option/stretch
                           :ui/step 0.01}
-                :mirrored? {:type :boolean
+                :mirrored? {:type :option.type/boolean
                             :default false
                             :ui/label :string.option/mirrored?}
-                :reversed? {:type :boolean
+                :reversed? {:type :option.type/boolean
                             :default false
                             :ui/label :string.option/reversed?}
                 :ui/label :string.option/geometry
@@ -138,11 +138,11 @@
                       (options/override-if-exists [:thickness-1 :max :default] 10)
                       (options/override-if-exists [:thickness-2 :max :max] 50)
                       (options/override-if-exists [:thickness-2 :max :default] 10))
-     :outline-mode {:type :choice
+     :outline-mode {:type :option.type/choice
                     :choices outline-mode-choices
                     :default :keep
                     :ui/label :string.option/outline-mode}
-     :vertical-mask {:type :range
+     :vertical-mask {:type :option.type/range
                      :default 0
                      :min -100
                      :max 100

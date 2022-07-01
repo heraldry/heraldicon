@@ -299,7 +299,7 @@
       (when-not hide-ownership-filter?
         [:div {:style {:border-right (when consider-filter-access? "1px solid #888")}}
          [radio-select/radio-select {:path filter-ownership-path}
-          :option {:type :choice
+          :option {:type :option.type/choice
                    :default :all
                    :choices (concat [[:string.option.ownership-filter-choice/all :all]
                                      [:string.option.ownership-filter-choice/mine :mine]]
@@ -309,7 +309,7 @@
 
       (when consider-filter-access?
         [radio-select/radio-select {:path filter-access-path}
-         :option {:type :choice
+         :option {:type :option.type/choice
                   :default :all
                   :choices [[:string.option.access-filter-choice/all :all]
                             [:string.option.access-filter-choice/public :public]

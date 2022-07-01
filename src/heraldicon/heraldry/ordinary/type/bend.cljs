@@ -22,7 +22,7 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))
-        anchor-point-option {:type :choice
+        anchor-point-option {:type :option.type/choice
                              :choices (position/anchor-choices
                                        [:fess
                                         :chief
@@ -38,7 +38,7 @@
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)
-        orientation-point-option {:type :choice
+        orientation-point-option {:type :option.type/choice
                                   :choices (position/orientation-choices
                                             (case current-anchor-point
                                               :top-left [:fess
@@ -74,18 +74,18 @@
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
      {:anchor {:point anchor-point-option
-               :alignment {:type :choice
+               :alignment {:type :option.type/choice
                            :choices position/alignment-choices
                            :default :middle
                            :ui/label :string.option/alignment
                            :ui/element :ui.element/radio-select}
-               :offset-x {:type :range
+               :offset-x {:type :option.type/range
                           :min -75
                           :max 75
                           :default 0
                           :ui/label :string.option/offset-x
                           :ui/step 0.1}
-               :offset-y {:type :range
+               :offset-y {:type :option.type/range
                           :min -75
                           :max 75
                           :default 0
@@ -98,25 +98,25 @@
                             :ui/element :ui.element/position}
 
                      (= current-orientation-point
-                        :angle) (assoc :angle {:type :range
+                        :angle) (assoc :angle {:type :option.type/range
                                                :min 0
                                                :max 360
                                                :default 45
                                                :ui/label :string.option/angle})
 
                      (not= current-orientation-point
-                           :angle) (assoc :alignment {:type :choice
+                           :angle) (assoc :alignment {:type :option.type/choice
                                                       :choices position/alignment-choices
                                                       :default :middle
                                                       :ui/label :string.option/alignment
                                                       :ui/element :ui.element/radio-select}
-                                          :offset-x {:type :range
+                                          :offset-x {:type :option.type/range
                                                      :min -75
                                                      :max 75
                                                      :default 0
                                                      :ui/label :string.option/offset-x
                                                      :ui/step 0.1}
-                                          :offset-y {:type :range
+                                          :offset-y {:type :option.type/range
                                                      :min -75
                                                      :max 75
                                                      :default 0
@@ -124,7 +124,7 @@
                                                      :ui/step 0.1}))
       :line line-style
       :opposite-line opposite-line-style
-      :geometry {:size {:type :range
+      :geometry {:size {:type :option.type/range
                         :min 0.1
                         :max 90
                         :default 25

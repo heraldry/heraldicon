@@ -31,17 +31,17 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
      {:line line-style
-      :variant {:type :choice
+      :variant {:type :option.type/choice
                 :choices variant-choices
                 :default :dexter
                 :ui/label :string.option/variant
                 :ui/element :ui.element/select}
-      :geometry {:width {:type :range
+      :geometry {:width {:type :option.type/range
                          :min 10
                          :max 100
                          :default 50
                          :ui/label :string.option/width}
-                 :height {:type :range
+                 :height {:type :option.type/range
                           :min 10
                           :max 100
                           :default 50

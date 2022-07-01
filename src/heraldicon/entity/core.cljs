@@ -26,10 +26,10 @@
   (options/choices->map access-choices))
 
 (defmethod interface/options :heraldicon/entity [context]
-  {:name {:type :text
+  {:name {:type :option.type/text
           :default ""
           :ui/label :string.option/name}
-   :access {:type :choice
+   :access {:type :option.type/choice
             :choices access-choices
             :default :private
             :ui/label :string.option/is-public

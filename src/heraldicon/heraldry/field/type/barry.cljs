@@ -17,27 +17,27 @@
 (defmethod field.interface/part-names field-type [_] nil)
 
 (defmethod field.interface/options field-type [context]
-  {:layout {:num-fields-y {:type :range
+  {:layout {:num-fields-y {:type :option.type/range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
                            :ui/label :string.option/subfields-y
                            :ui/element :ui.element/field-layout-num-fields-y}
-            :num-base-fields {:type :range
+            :num-base-fields {:type :option.type/range
                               :min 2
                               :max 8
                               :default 2
                               :integer? true
                               :ui/label :string.option/base-fields
                               :ui/element :ui.element/field-layout-num-base-fields}
-            :offset-y {:type :range
+            :offset-y {:type :option.type/range
                        :min -1
                        :max 1
                        :default 0
                        :ui/label :string.option/offset-y
                        :ui/step 0.01}
-            :stretch-y {:type :range
+            :stretch-y {:type :option.type/range
                         :min 0.5
                         :max 2
                         :default 1

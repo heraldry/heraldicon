@@ -3,19 +3,16 @@
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]))
 
-(defn- default-element [type]
-  (case type
-    :choice :ui.element/select
-    :boolean :ui.element/checkbox
-    :range :ui.element/range
-    :text :ui.element/text-field
-    nil))
+(def ^:private default-element
+  {:option.type/choice :ui.element/select
+   :option.type/boolean :ui.element/checkbox
+   :option.type/range :ui.element/range
+   :option.type/text :ui.element/text-field})
 
 (defmulti element (fn [context]
-                    (let [options (interface/get-relevant-options context)]
-                      (or
-                       (:ui/element options)
-                       (-> options :type default-element)))))
+                    (let [{:keys [type]
+                           :ui/keys [element]} (interface/get-relevant-options context)]
+                      (or element (get default-element type)))))
 
 (defmethod element nil [context]
   (when-let [options (interface/get-relevant-options context)]

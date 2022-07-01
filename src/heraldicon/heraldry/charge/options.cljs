@@ -40,7 +40,7 @@
   (options/choices->map choices))
 
 (def ^:private type-option
-  {:type :choice
+  {:type :option.type/choice
    :choices choices
    :ui/label :string.option/type
    :ui/element :ui.element/charge-type-select})

@@ -20,7 +20,7 @@
 (defmethod field.interface/options field-type [context]
   (let [line-style (line/options (c/++ context :line)
                                  :fimbriation? false)]
-    {:anchor {:point {:type :choice
+    {:anchor {:point {:type :option.type/choice
                       :choices (position/anchor-choices
                                 [:fess
                                  :dexter
@@ -32,7 +32,7 @@
                                  :right])
                       :default :fess
                       :ui/label :string.option/point}
-              :offset-x {:type :range
+              :offset-x {:type :option.type/range
                          :min -45
                          :max 45
                          :default 0
@@ -40,7 +40,7 @@
                          :ui/step 0.1}
               :ui/label :string.option/anchor
               :ui/element :ui.element/position}
-     :layout {:stretch-x {:type :range
+     :layout {:stretch-x {:type :option.type/range
                           :min 0.5
                           :max 2
                           :default 1

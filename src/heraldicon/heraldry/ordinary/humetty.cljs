@@ -7,18 +7,18 @@
 
 (defn options [context]
   (let [humetty? (interface/get-raw-data (c/++ context :humetty?))]
-    (cond-> {:humetty? {:type :boolean
+    (cond-> {:humetty? {:type :option.type/boolean
                         :ui/label :string.option/humetty}
              :ui/label :string.option/humetty
              :ui/tooltip :string.tooltip/humetty-warning
              :ui/element :ui.element/humetty}
-      humetty? (assoc :corner {:type :choice
+      humetty? (assoc :corner {:type :option.type/choice
                                :choices [[:string.option.corner-choice/round :round]
                                          [:string.option.corner-choice/sharp :sharp]
                                          [:string.option.corner-choice/bevel :bevel]]
                                :default :round
                                :ui/label :string.option/corner}
-                      :distance {:type :range
+                      :distance {:type :option.type/range
                                  :min 1
                                  :max 45
                                  :default 5
