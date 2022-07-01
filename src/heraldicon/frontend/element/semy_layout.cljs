@@ -34,8 +34,7 @@
 
 (defmethod element/element :ui.element/semy-layout [context]
   (when-let [options (interface/get-relevant-options context)]
-    (let [{:keys [ui]} options
-          label (:label ui)
+    (let [{:ui/keys [label]} options
           link-name @(rf/subscribe [::link-name context])]
       [:div.ui-setting
        (when label

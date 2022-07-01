@@ -25,8 +25,7 @@
 (defmethod element/element :ui.element/attribution [{:keys [path] :as context}]
   (when-let [options (interface/get-relevant-options context)]
     (let [charge-presets? (->> context :path drop-last last #{:heraldicon.entity.type/charge})
-          {:keys [ui]} options
-          label (:label ui)
+          {:ui/keys [label]} options
           link-name (submenu-link-name (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label

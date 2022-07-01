@@ -49,35 +49,35 @@
                                   :center
                                   :bottom])
                        :default :fess
-                       :ui {:label :string.option/point}}
+                       :ui/label :string.option/point}
                :alignment {:type :choice
                            :choices position/alignment-choices
                            :default :middle
-                           :ui {:label :string.option/alignment
-                                :form-type :ui.element/radio-select}}
+                           :ui/label :string.option/alignment
+                           :ui/element :ui.element/radio-select}
                :offset-y {:type :range
                           :min -45
                           :max 45
                           :default 0
-                          :ui {:label :string.option/offset-y
-                               :step 0.1}}
-               :ui {:label :string.option/anchor
-                    :form-type :ui.element/position}}
+                          :ui/label :string.option/offset-y
+                          :ui/step 0.1}
+               :ui/label :string.option/anchor
+               :ui/element :ui.element/position}
       :line line-style
       :opposite-line opposite-line-style
       :variant {:type :choice
                 :choices variant-choices
                 :default :dexter-chief
-                :ui {:label :string.option/variant
-                     :form-type :ui.element/select}}
+                :ui/label :string.option/variant
+                :ui/element :ui.element/select}
       :geometry {:size {:type :range
                         :min 10
                         :max 150
                         :default 100
-                        :ui {:label :string.option/size
-                             :step 0.1}}
-                 :ui {:label :string.option/geometry
-                      :form-type :ui.element/geometry}}
+                        :ui/label :string.option/size
+                        :ui/step 0.1}
+                 :ui/label :string.option/geometry
+                 :ui/element :ui.element/geometry}
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 

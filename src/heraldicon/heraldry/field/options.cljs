@@ -79,8 +79,8 @@
 (def ^:private type-option
   {:type :choice
    :choices choices
-   :ui {:label :string.option/partition
-        :form-type :ui.element/field-type-select}})
+   :ui/label :string.option/partition
+   :ui/element :ui.element/field-type-select})
 
 (derive :heraldry/field :heraldry.options/root)
 
@@ -129,4 +129,4 @@
                ref?)) (assoc :inherit-environment?
                              {:type :boolean
                               :default false
-                              :ui {:label :string.option/inherit-environment?}}))))
+                              :ui/label :string.option/inherit-environment?}))))

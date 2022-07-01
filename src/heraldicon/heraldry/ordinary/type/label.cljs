@@ -38,31 +38,31 @@
                                      :center
                                      :bottom])
                           :default :chief
-                          :ui {:label :string.option/point}}
+                          :ui/label :string.option/point}
                   :alignment {:type :choice
                               :choices position/alignment-choices
                               :default :middle
-                              :ui {:label :string.option/alignment
-                                   :form-type :ui.element/radio-select}}
+                              :ui/label :string.option/alignment
+                              :ui/element :ui.element/radio-select}
                   :offset-y {:type :range
                              :min -45
                              :max 45
                              :default 0
-                             :ui {:label :string.option/offset-y
-                                  :step 0.1}}
-                  :ui {:label :string.option/anchor
-                       :form-type :ui.element/position}}
+                             :ui/label :string.option/offset-y
+                             :ui/step 0.1}
+                  :ui/label :string.option/anchor
+                  :ui/element :ui.element/position}
          :variant {:type :choice
                    :choices variant-choices
                    :default :full
-                   :ui {:label :string.option/variant
-                        :form-type :ui.element/radio-select}}
+                   :ui/label :string.option/variant
+                   :ui/element :ui.element/radio-select}
          :num-points {:type :range
                       :min 1
                       :max 16
                       :default 3
                       :integer? true
-                      :ui {:label :string.option/number-of-points}}
+                      :ui/label :string.option/number-of-points}
          :geometry {:size {:type :range
                            :min 2
                            :max 90
@@ -75,8 +75,8 @@
                                       6 7
                                       7 6
                                       5)
-                           :ui {:label :string.option/size
-                                :step 0.1}}
+                           :ui/label :string.option/size
+                           :ui/step 0.1}
                     :width {:type :range
                             :min 10
                             :max 150
@@ -89,20 +89,20 @@
                                        6 84
                                        7 87
                                        90)
-                            :ui {:label :string.option/width
-                                 :step 0.1}}
+                            :ui/label :string.option/width
+                            :ui/step 0.1}
                     :thickness {:type :range
                                 :min 0
                                 :max 20
                                 :default 5
-                                :ui {:label :string.option/bar-thickness
-                                     :step 0.1}}
+                                :ui/label :string.option/bar-thickness
+                                :ui/step 0.1}
                     :eccentricity {:type :range
                                    :min 0
                                    :max 1
                                    :default 0
-                                   :ui {:label :string.option/eccentricity
-                                        :step 0.01}}
+                                   :ui/label :string.option/eccentricity
+                                   :ui/step 0.01}
                     :stretch {:type :range
                               :min 0.33
                               :max 10
@@ -115,10 +115,10 @@
                                          6 2.75
                                          7 3
                                          3.25)
-                              :ui {:label :string.option/stretch
-                                   :step 0.01}}
-                    :ui {:label :string.option/geometry
-                         :form-type :ui.element/geometry}}
+                              :ui/label :string.option/stretch
+                              :ui/step 0.01}
+                    :ui/label :string.option/geometry
+                    :ui/element :ui.element/geometry}
          :outline? options/plain-outline?-option
          :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
                           (options/override-if-exists [:alignment :default] :outside))}

@@ -71,11 +71,11 @@
           variant-context (c/++ charge-context :variant)
           variant (interface/get-raw-data variant-context)
           current-value (interface/get-raw-data context)
-          {:keys [ui inherited default choices]} option
+          {:keys [inherited default choices]
+           :ui/keys [label]} option
           value (or current-value
                     inherited
-                    default)
-          label (:label ui)]
+                    default)]
       [:div.ui-setting
        (when label
          [:label [tr label]])

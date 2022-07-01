@@ -14,7 +14,7 @@
 (defmulti element (fn [context]
                     (let [options (interface/get-relevant-options context)]
                       (or
-                       (-> options :ui :form-type)
+                       (:ui/element options)
                        (-> options :type default-element)))))
 
 (defmethod element nil [context]

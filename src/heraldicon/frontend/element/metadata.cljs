@@ -54,8 +54,7 @@
 
 (defmethod element/element :ui.element/metadata [context]
   (when-let [options (interface/get-relevant-options context)]
-    (let [{:keys [ui]} options
-          label (:label ui)
+    (let [{:ui/keys [label]} options
           num-metadata (interface/get-list-size context)
           link-name (if (pos? num-metadata)
                       (string/str-tr :string.user.button/change " (" num-metadata ")")

@@ -40,7 +40,7 @@
                                         :bottom-right
                                         :angle])
                              :default :base
-                             :ui {:label :string.option/point}}
+                             :ui/label :string.option/point}
         current-origin-point (options/get-value
                               (interface/get-raw-data (c/++ context :origin :point))
                               origin-point-option)
@@ -107,7 +107,7 @@
                                              :top-right :right
                                              :angle :angle
                                              :bottom-left)
-                                  :ui {:label :string.option/point}}
+                                  :ui/label :string.option/point}
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
@@ -130,69 +130,69 @@
                                  :bottom
                                  :bottom-right])
                       :default :fess
-                      :ui {:label :string.option/point}}
+                      :ui/label :string.option/point}
               :offset-x {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label :string.option/offset-x
-                              :step 0.1}}
+                         :ui/label :string.option/offset-x
+                         :ui/step 0.1}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label :string.option/offset-y
-                              :step 0.1}}
-              :ui {:label :string.option/anchor
-                   :form-type :ui.element/position}}
+                         :ui/label :string.option/offset-y
+                         :ui/step 0.1}
+              :ui/label :string.option/anchor
+              :ui/element :ui.element/position}
      :origin (cond-> {:point origin-point-option
-                      :ui {:label :string.charge.attitude/issuant
-                           :form-type :ui.element/position}}
+                      :ui/label :string.charge.attitude/issuant
+                      :ui/element :ui.element/position}
 
                (= current-origin-point
                   :angle) (assoc :angle {:type :range
                                          :min -180
                                          :max 180
                                          :default 0
-                                         :ui {:label :string.option/angle}})
+                                         :ui/label :string.option/angle})
 
                (not= current-origin-point
                      :angle) (assoc :offset-x {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label :string.option/offset-x
-                                                    :step 0.1}}
+                                               :ui/label :string.option/offset-x
+                                               :ui/step 0.1}
                                     :offset-y {:type :range
                                                :min -45
                                                :max 45
                                                :default 0
-                                               :ui {:label :string.option/offset-y
-                                                    :step 0.1}}))
+                                               :ui/label :string.option/offset-y
+                                               :ui/step 0.1}))
      :orientation (cond-> {:point orientation-point-option
-                           :ui {:label :string.option/orientation
-                                :form-type :ui.element/position}}
+                           :ui/label :string.option/orientation
+                           :ui/element :ui.element/position}
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :range
                                               :min 0
                                               :max 360
                                               :default 45
-                                              :ui {:label :string.option/angle}})
+                                              :ui/label :string.option/angle})
 
                     (not= current-orientation-point
                           :angle) (assoc :offset-x {:type :range
                                                     :min -45
                                                     :max 45
                                                     :default 0
-                                                    :ui {:label :string.option/offset-x
-                                                         :step 0.1}}
+                                                    :ui/label :string.option/offset-x
+                                                    :ui/step 0.1}
                                          :offset-y {:type :range
                                                     :min -45
                                                     :max 45
                                                     :default 0
-                                                    :ui {:label :string.option/offset-y
-                                                         :step 0.1}}))
+                                                    :ui/label :string.option/offset-y
+                                                    :ui/step 0.1}))
      :line line-style
      :opposite-line opposite-line-style}))
 

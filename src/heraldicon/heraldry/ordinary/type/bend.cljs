@@ -34,7 +34,7 @@
                                         :top-left
                                         :bottom-right])
                              :default :top-left
-                             :ui {:label :string.option/point}}
+                             :ui/label :string.option/point}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)
@@ -68,7 +68,7 @@
                                              :top-left :fess
                                              :bottom-right :fess
                                              :top-left)
-                                  :ui {:label :string.option/point}}
+                                  :ui/label :string.option/point}
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
@@ -77,61 +77,61 @@
                :alignment {:type :choice
                            :choices position/alignment-choices
                            :default :middle
-                           :ui {:label :string.option/alignment
-                                :form-type :ui.element/radio-select}}
+                           :ui/label :string.option/alignment
+                           :ui/element :ui.element/radio-select}
                :offset-x {:type :range
                           :min -75
                           :max 75
                           :default 0
-                          :ui {:label :string.option/offset-x
-                               :step 0.1}}
+                          :ui/label :string.option/offset-x
+                          :ui/step 0.1}
                :offset-y {:type :range
                           :min -75
                           :max 75
                           :default 0
-                          :ui {:label :string.option/offset-y
-                               :step 0.1}}
-               :ui {:label :string.option/anchor
-                    :form-type :ui.element/position}}
+                          :ui/label :string.option/offset-y
+                          :ui/step 0.1}
+               :ui/label :string.option/anchor
+               :ui/element :ui.element/position}
       :orientation (cond-> {:point orientation-point-option
-                            :ui {:label :string.option/orientation
-                                 :form-type :ui.element/position}}
+                            :ui/label :string.option/orientation
+                            :ui/element :ui.element/position}
 
                      (= current-orientation-point
                         :angle) (assoc :angle {:type :range
                                                :min 0
                                                :max 360
                                                :default 45
-                                               :ui {:label :string.option/angle}})
+                                               :ui/label :string.option/angle})
 
                      (not= current-orientation-point
                            :angle) (assoc :alignment {:type :choice
                                                       :choices position/alignment-choices
                                                       :default :middle
-                                                      :ui {:label :string.option/alignment
-                                                           :form-type :ui.element/radio-select}}
+                                                      :ui/label :string.option/alignment
+                                                      :ui/element :ui.element/radio-select}
                                           :offset-x {:type :range
                                                      :min -75
                                                      :max 75
                                                      :default 0
-                                                     :ui {:label :string.option/offset-x
-                                                          :step 0.1}}
+                                                     :ui/label :string.option/offset-x
+                                                     :ui/step 0.1}
                                           :offset-y {:type :range
                                                      :min -75
                                                      :max 75
                                                      :default 0
-                                                     :ui {:label :string.option/offset-y
-                                                          :step 0.1}}))
+                                                     :ui/label :string.option/offset-y
+                                                     :ui/step 0.1}))
       :line line-style
       :opposite-line opposite-line-style
       :geometry {:size {:type :range
                         :min 0.1
                         :max 90
                         :default 25
-                        :ui {:label :string.option/size
-                             :step 0.1}}
-                 :ui {:label :string.option/geometry
-                      :form-type :ui.element/geometry}}
+                        :ui/label :string.option/size
+                        :ui/step 0.1}
+                 :ui/label :string.option/geometry
+                 :ui/element :ui.element/geometry}
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 

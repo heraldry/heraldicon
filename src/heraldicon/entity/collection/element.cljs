@@ -9,6 +9,6 @@
 
 (defmethod interface/options :heraldicon.entity.collection/element [_context]
   {:name {:type :text
-          :ui {:label :string.option/name}}
-   :reference {:ui {:label :string.option/arms
-                    :form-type :ui.element/arms-reference-select}}})
+          :ui/label :string.option/name}
+   :reference {:ui/label :string.option/arms
+               :ui/element :ui.element/arms-reference-select}})

@@ -16,10 +16,9 @@
       (when-let [option (interface/get-relevant-options context)]
         (let [component-id (uid/generate "range")
               current-value (interface/get-raw-data context)
-              {:keys [ui inherited default min max]} option
-              step (or (:step ui) 1)
-              label (:label ui)
-              tooltip (:tooltip ui)
+              {:keys [inherited default min max]
+               :ui/keys [label tooltip step]} option
+              step (or step 1)
               value (or value
                         current-value
                         inherited

@@ -26,10 +26,10 @@
                         :min 0.1
                         :max 75
                         :default 25
-                        :ui {:label :string.option/size
-                             :step 0.1}}
-                 :ui {:label :string.option/geometry
-                      :form-type :ui.element/geometry}}
+                        :ui/label :string.option/size
+                        :ui/step 0.1}
+                 :ui/label :string.option/geometry
+                 :ui/element :ui.element/geometry}
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 

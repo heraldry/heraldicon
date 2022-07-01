@@ -33,14 +33,14 @@
                  :min 0.1
                  :max 20
                  :default 5
-                 :ui {:label :string.option/thickness
-                      :step 0.1}}
+                 :ui/label :string.option/thickness
+                 :ui/step 0.1}
      :distance {:type :range
                 :min 0.1
                 :max 30
                 :default 4
-                :ui {:label :string.option/distance
-                     :step 0.1}}
+                :ui/label :string.option/distance
+                :ui/step 0.1}
      :corner-radius {:type :range
                      :min 0
                      :max 20
@@ -48,15 +48,15 @@
                                        (= opposite-line-type :straight))
                                 0
                                 5)
-                     :ui {:label :string.option/corner-radius
-                          :step 0.1}}
+                     :ui/label :string.option/corner-radius
+                     :ui/step 0.1}
      :smoothing {:type :range
                  :min 0
                  :max 20
                  :default 0
-                 :ui {:label :string.option/smoothing
-                      :tooltip :string.tooltip/smoothing
-                      :step 0.1}}
+                 :ui/label :string.option/smoothing
+                 :ui/tooltip :string.tooltip/smoothing
+                 :ui/step 0.1}
      :line (adjust-line-style
             (line/options (c/++ context :line)
                           :fimbriation? false

@@ -34,20 +34,20 @@
       :variant {:type :choice
                 :choices variant-choices
                 :default :dexter
-                :ui {:label :string.option/variant
-                     :form-type :ui.element/select}}
+                :ui/label :string.option/variant
+                :ui/element :ui.element/select}
       :geometry {:width {:type :range
                          :min 10
                          :max 100
                          :default 50
-                         :ui {:label :string.option/width}}
+                         :ui/label :string.option/width}
                  :height {:type :range
                           :min 10
                           :max 100
                           :default 50
-                          :ui {:label :string.option/height}}
-                 :ui {:label :string.option/geometry
-                      :form-type :ui.element/geometry}}
+                          :ui/label :string.option/height}
+                 :ui/label :string.option/geometry
+                 :ui/element :ui.element/geometry}
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 

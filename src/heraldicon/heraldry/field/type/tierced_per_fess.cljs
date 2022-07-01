@@ -31,23 +31,23 @@
                                  :center
                                  :bottom])
                       :default :fess
-                      :ui {:label :string.option/point}}
+                      :ui/label :string.option/point}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label :string.option/offset-y
-                              :step 0.1}}
-              :ui {:label :string.option/anchor
-                   :form-type :ui.element/position}}
+                         :ui/label :string.option/offset-y
+                         :ui/step 0.1}
+              :ui/label :string.option/anchor
+              :ui/element :ui.element/position}
      :layout {:stretch-y {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label :string.option/stretch-y
-                               :step 0.01}}
-              :ui {:label :string.option/layout
-                   :form-type :ui.element/field-layout}}
+                          :ui/label :string.option/stretch-y
+                          :ui/step 0.01}
+              :ui/label :string.option/layout
+              :ui/element :ui.element/field-layout}
      :line line-style}))
 
 (defmethod field.interface/render-field field-type

@@ -38,7 +38,7 @@
   {:type :choice
    :choices mode-choices
    :default :none
-   :ui {:form-type :ui.element/radio-select}})
+   :ui/element :ui.element/radio-select})
 
 (defn options [context & {:keys [inherited-options]}]
   (let [inherited (when inherited-options
@@ -49,40 +49,40 @@
                                 inherited (assoc :default (:mode inherited)))
         mode (options/get-value (interface/get-raw-data (c/++ context :mode)) effective-mode-option)]
     (-> {:mode mode-option
-         :ui {:label :string.option/fimbriation
-              :form-type :ui.element/fimbriation}}
+         :ui/label :string.option/fimbriation
+         :ui/element :ui.element/fimbriation}
         (cond->
           (#{:single
              :double} mode) (assoc :alignment {:type :choice
                                                :choices alignment-choices
                                                :default :even
-                                               :ui {:label :string.option/alignment}}
+                                               :ui/label :string.option/alignment}
                                    :corner {:type :choice
                                             :choices corner-choices
                                             :default :sharp
-                                            :ui {:label :string.option/corner}}
+                                            :ui/label :string.option/corner}
                                    :thickness-1 {:type :range
                                                  :min 1
                                                  :max 30
                                                  :default 6
-                                                 :ui {:label :string.option/thickness
-                                                      :step 0.01}}
+                                                 :ui/label :string.option/thickness
+                                                 :ui/step 0.01}
                                    :tincture-1 {:type :choice
                                                 :choices tincture/choices
                                                 :default :none
-                                                :ui {:label :string.option/tincture
-                                                     :form-type :ui.element/tincture-select}})
+                                                :ui/label :string.option/tincture
+                                                :ui/element :ui.element/tincture-select})
           (= mode :double) (assoc :thickness-2 {:type :range
                                                 :min 1
                                                 :max 30
                                                 :default 3
-                                                :ui {:label (string/str-tr :string.option/thickness " 2")
-                                                     :step 0.01}}
+                                                :ui/label (string/str-tr :string.option/thickness " 2")
+                                                :ui/step 0.01}
                                   :tincture-2 {:type :choice
                                                :choices tincture/choices
                                                :default :none
-                                               :ui {:label (string/str-tr :string.option/tincture " 2")
-                                                    :form-type :ui.element/tincture-select}}))
+                                               :ui/label (string/str-tr :string.option/tincture " 2")
+                                               :ui/element :ui.element/tincture-select}))
         (options/populate-inheritance inherited))))
 
 (defn- linejoin [corner]

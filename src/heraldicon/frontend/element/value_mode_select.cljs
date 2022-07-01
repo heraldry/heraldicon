@@ -17,10 +17,9 @@
         {:keys [inherited
                 default
                 type
-                choices
-                ui]} (or (interface/get-relevant-options context)
-                         default-option)
-        {:keys [additional-values]} ui
+                choices]
+         :ui/keys [additional-values]} (or (interface/get-relevant-options context)
+                                           default-option)
         display-fn (or display-fn
                        (when (= type :choice)
                          (fn [v]

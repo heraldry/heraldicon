@@ -14,8 +14,7 @@
   (when-let [option (interface/get-relevant-options context)]
     (let [{arms-id :id
            version :version} (interface/get-raw-data context)
-          {:keys [ui]} option
-          label (:label ui)
+          {:ui/keys [label]} option
           {:keys [_status entity]} (when arms-id
                                      @(rf/subscribe [::entity-for-rendering/data arms-id version]))
           arms-title (-> entity

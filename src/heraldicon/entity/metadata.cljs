@@ -15,5 +15,5 @@
    "year max"])
 
 (defn options [_context]
-  {:ui {:label :string.entity/metadata
-        :form-type :ui.element/metadata}})
+  {:ui/label :string.entity/metadata
+   :ui/element :ui.element/metadata})

@@ -24,13 +24,13 @@
                             {:type :choice
                              :choices escutcheon/choices
                              :default :none
-                             :ui {:label :string.render-options/escutcheon
-                                  :form-type :ui.element/escutcheon-select}}
+                             :ui/label :string.render-options/escutcheon
+                             :ui/element :ui.element/escutcheon-select}
                             {:type :choice
                              :choices (drop 1 escutcheon/choices)
                              :default :heater
-                             :ui {:label :string.render-options/escutcheon
-                                  :form-type :ui.element/escutcheon-select}})
+                             :ui/label :string.render-options/escutcheon
+                             :ui/element :ui.element/escutcheon-select})
         escutcheon (-> context (c/++ :escutcheon) interface/get-raw-data
                        (or (-> escutcheon-option :choices first second)))]
     (cond-> {:escutcheon escutcheon-option
@@ -38,57 +38,57 @@
              :mode {:type :choice
                     :choices mode/choices
                     :default :colours
-                    :ui {:label :string.render-options/mode
-                         :form-type :ui.element/radio-select}}
+                    :ui/label :string.render-options/mode
+                    :ui/element :ui.element/radio-select}
 
              :texture {:type :choice
                        :choices texture/choices
                        :default :none
-                       :ui {:label :string.render-options/texture}}
+                       :ui/label :string.render-options/texture}
 
              :shiny? {:type :boolean
                       :default false
-                      :ui {:label :string.render-options/shiny?}}
+                      :ui/label :string.render-options/shiny?}
 
              :escutcheon-shadow? {:type :boolean
                                   :default false
-                                  :ui {:label :string.render-options/escutcheon-shadow?}}
+                                  :ui/label :string.render-options/escutcheon-shadow?}
 
              :escutcheon-outline? {:type :boolean
                                    :default false
-                                   :ui {:label :string.render-options/escutcheon-outline?}}
+                                   :ui/label :string.render-options/escutcheon-outline?}
 
              :outline? {:type :boolean
                         :default false
-                        :ui {:label :string.render-options/outline?}}
+                        :ui/label :string.render-options/outline?}
 
              :squiggly? {:type :boolean
                          :default false
-                         :ui {:label :string.render-options/squiggly?}}
+                         :ui/label :string.render-options/squiggly?}
 
              :coat-of-arms-angle {:type :range
                                   :default 0
                                   :min -45
                                   :max 45
-                                  :ui {:label :string.render-options/coat-of-arms-angle
-                                       :additional-values [[:string.render-options.coat-of-arms-angle-presets/half 22.5]
-                                                           [:string.render-options.coat-of-arms-angle-presets/two-thirds 30]
-                                                           [:string.render-options.coat-of-arms-angle-presets/full 45]]
-                                       :step 1}}
+                                  :ui/label :string.render-options/coat-of-arms-angle
+                                  :ui/additional-values [[:string.render-options.coat-of-arms-angle-presets/half 22.5]
+                                                         [:string.render-options.coat-of-arms-angle-presets/two-thirds 30]
+                                                         [:string.render-options.coat-of-arms-angle-presets/full 45]]
+                                  :ui/step 1}
              :scope {:type :choice
                      :choices scope/choices
                      :default :achievement
-                     :ui {:label :string.render-options/scope}}}
+                     :ui/label :string.render-options/scope}}
 
       (= escutcheon :flag) (merge escutcheon/flag-options)
 
       (not= texture :none) (assoc :texture-displacement?
                                   {:type :boolean
                                    :default false
-                                   :ui {:label :string.render-options/simulate-surface}})
+                                   :ui/label :string.render-options/simulate-surface})
 
       (= mode :colours) (assoc :theme {:type :choice
                                        :choices theme/choices
                                        :default theme/default
-                                       :ui {:label :string.render-options/theme
-                                            :form-type :ui.element/theme-select}}))))
+                                       :ui/label :string.render-options/theme
+                                       :ui/element :ui.element/theme-select}))))

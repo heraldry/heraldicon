@@ -8,12 +8,12 @@
 (def manual-blazon
   {:type :text
    :default nil
-   :ui {:label :string.option/manual-blazon}})
+   :ui/label :string.option/manual-blazon})
 
 (def plain-outline?-option
   {:type :boolean
    :default false
-   :ui {:label :string.charge.tincture-modifier.special/outline}})
+   :ui/label :string.charge.tincture-modifier.special/outline})
 
 (defn choices->map [choices]
   (into {}

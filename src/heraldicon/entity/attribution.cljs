@@ -92,21 +92,21 @@
   (cond-> {:license {:type :choice
                      :choices license-choices
                      :default :none
-                     :ui {:label :string.attribution/license}}
+                     :ui/label :string.attribution/license}
            :nature {:type :choice
                     :choices nature-choices
                     :default :own-work
-                    :ui {:form-type :ui.element/radio-select}}
+                    :ui/element :ui.element/radio-select}
 
-           :ui {:label :string.attribution/title
-                :form-type :ui.element/attribution}}
+           :ui/label :string.attribution/title
+           :ui/element :ui.element/attribution}
     (-> context
         (c/++ :license)
         interface/get-raw-data
         cc-license?) (assoc :license-version {:type :choice
                                               :choices cc-license-version-choices
                                               :default :v4
-                                              :ui {:label :string.attribution/license-version}})
+                                              :ui/label :string.attribution/license-version})
 
     (-> context
         (c/++ :nature)
@@ -114,26 +114,26 @@
         (= :derivative)) (merge {:source-license {:type :choice
                                                   :choices license-choices
                                                   :default :none
-                                                  :ui {:label :string.attribution/source-license}}
+                                                  :ui/label :string.attribution/source-license}
 
                                  :source-name {:type :text
                                                :default ""
-                                               :ui {:label :string.attribution/source-name}}
+                                               :ui/label :string.attribution/source-name}
 
                                  :source-link {:type :text
                                                :default ""
-                                               :ui {:label :string.attribution/source-link}}
+                                               :ui/label :string.attribution/source-link}
 
                                  :source-creator-name {:type :text
                                                        :default ""
-                                                       :ui {:label :string.attribution/creator-name}}
+                                                       :ui/label :string.attribution/creator-name}
 
                                  :source-creator-link {:type :text
                                                        :default ""
-                                                       :ui {:label :string.attribution/creator-link}}
+                                                       :ui/label :string.attribution/creator-link}
                                  :source-modification {:type :text
                                                        :default ""
-                                                       :ui {:label :string.attribution/source-modification}}})
+                                                       :ui/label :string.attribution/source-modification}})
 
     (-> context
         (c/++ :source-license)
@@ -141,7 +141,7 @@
         cc-license?) (assoc :source-license-version {:type :choice
                                                      :choices cc-license-version-choices
                                                      :default :v4
-                                                     :ui {:label :string.attribution/license-version}})))
+                                                     :ui/label :string.attribution/license-version})))
 
 (defn- full-url-raw [base entity-id version]
   (str (config/get :heraldicon-url) base (id/for-url entity-id) "/" version))

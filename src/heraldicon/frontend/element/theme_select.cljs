@@ -32,12 +32,12 @@
 
 (defmethod element/element :ui.element/theme-select [context]
   (when-let [option (interface/get-relevant-options context)]
-    (let [{:keys [ui inherited default choices]} option
+    (let [{:keys [inherited default choices]
+           :ui/keys [label]} option
           current-value (interface/get-raw-data context)
           value (or current-value
                     inherited
                     default)
-          label (:label ui)
           choice-map (options/choices->map choices)
           choice-name (get choice-map value)]
       [:div.ui-setting

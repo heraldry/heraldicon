@@ -9,8 +9,8 @@
 (defmethod element/element :ui.element/access [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [component-id (uid/generate "access")
-          {:keys [ui default]} option
-          label (:label ui)
+          {:keys [default]
+           :ui/keys [label]} option
           current-value (interface/get-raw-data context)
           checked? (->> [current-value
                          default]

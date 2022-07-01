@@ -36,7 +36,7 @@
                                              :top-right
                                              :angle])
                                   :default :top-left
-                                  :ui {:label :string.option/point}}
+                                  :ui/label :string.option/point}
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
@@ -50,45 +50,45 @@
                                   :fly
                                   :center])
                        :default :fess
-                       :ui {:label :string.option/point}}
+                       :ui/label :string.option/point}
                :offset-x {:type :range
                           :min -45
                           :max 45
                           :default 0
-                          :ui {:label :string.option/offset-x
-                               :step 0.1}}
+                          :ui/label :string.option/offset-x
+                          :ui/step 0.1}
                :offset-y {:type :range
                           :min -45
                           :max 45
                           :default 0
-                          :ui {:label :string.option/offset-y
-                               :step 0.1}}
-               :ui {:label :string.option/anchor
-                    :form-type :ui.element/position}}
+                          :ui/label :string.option/offset-y
+                          :ui/step 0.1}
+               :ui/label :string.option/anchor
+               :ui/element :ui.element/position}
       :orientation (cond-> {:point orientation-point-option
-                            :ui {:label :string.option/orientation
-                                 :form-type :ui.element/position}}
+                            :ui/label :string.option/orientation
+                            :ui/element :ui.element/position}
 
                      (= current-orientation-point
                         :angle) (assoc :angle {:type :range
                                                :min -80
                                                :max 80
                                                :default -45
-                                               :ui {:label :string.option/angle}})
+                                               :ui/label :string.option/angle})
 
                      (not= current-orientation-point
                            :angle) (assoc :offset-x {:type :range
                                                      :min -45
                                                      :max 45
                                                      :default 0
-                                                     :ui {:label :string.option/offset-x
-                                                          :step 0.1}}
+                                                     :ui/label :string.option/offset-x
+                                                     :ui/step 0.1}
                                           :offset-y {:type :range
                                                      :min -45
                                                      :max 45
                                                      :default 0
-                                                     :ui {:label :string.option/offset-y
-                                                          :step 0.1}}))
+                                                     :ui/label :string.option/offset-y
+                                                     :ui/step 0.1}))
       :line line-style
       :opposite-line opposite-line-style
       :outline? options/plain-outline?-option} context)))

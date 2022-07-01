@@ -19,60 +19,60 @@
                :min 0
                :max 0.5
                :default 0.1
-               :ui {:label :string.option/thickness
-                    :step 0.01}}
+               :ui/label :string.option/thickness
+               :ui/step 0.01}
    :gap {:type :range
          :min 0
          :max 1
          :default 0.1
-         :ui {:label :string.option/gap
-              :step 0.01}}
+         :ui/label :string.option/gap
+         :ui/step 0.01}
    :layout {:num-fields-x {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label :string.option/subfields-x
-                                :form-type :ui.element/field-layout-num-fields-x}}
+                           :ui/label :string.option/subfields-x
+                           :ui/element :ui.element/field-layout-num-fields-x}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label :string.option/subfields-y
-                                :form-type :ui.element/field-layout-num-fields-y}}
+                           :ui/label :string.option/subfields-y
+                           :ui/element :ui.element/field-layout-num-fields-y}
             :offset-x {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label :string.option/offset-x
-                            :step 0.01}}
+                       :ui/label :string.option/offset-x
+                       :ui/step 0.01}
             :offset-y {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label :string.option/offset-y
-                            :step 0.01}}
+                       :ui/label :string.option/offset-y
+                       :ui/step 0.01}
             :stretch-x {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label :string.option/stretch-x
-                             :step 0.01}}
+                        :ui/label :string.option/stretch-x
+                        :ui/step 0.01}
             :stretch-y {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label :string.option/stretch-y
-                             :step 0.01}}
+                        :ui/label :string.option/stretch-y
+                        :ui/step 0.01}
             :rotation {:type :range
                        :min -45
                        :max 45
                        :default 0
-                       :ui {:label :string.option/rotation
-                            :step 0.01}}
-            :ui {:label :string.option/layout
-                 :form-type :ui.element/field-layout}}})
+                       :ui/label :string.option/rotation
+                       :ui/step 0.01}
+            :ui/label :string.option/layout
+            :ui/element :ui.element/field-layout}})
 
 (defn- fretty-default [part-width part-height thickness gap]
   (let [width (* 2 part-width)
