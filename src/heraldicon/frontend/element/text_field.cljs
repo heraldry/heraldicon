@@ -12,11 +12,18 @@
           value (or current-value
                     inherited
                     default)
-          label (:label ui)]
+          {:keys [label tooltip]} ui]
       [:div.ui-setting
        {:style style}
        (when label
-         [:label [tr label]])
+         [:label [tr label]
+          (when tooltip
+            [:div.tooltip.info {:style {:display "inline-block"
+                                        :margin-left "0.2em"}}
+             [:i.fas.fa-question-circle]
+             [:div.bottom
+              [:h3 {:style {:text-align "center"}} [tr tooltip]]
+              [:i]]])])
        [:div.option
         [:input {:type "text"
                  :value value

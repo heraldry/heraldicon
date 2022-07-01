@@ -40,11 +40,18 @@
                   group-choices))))
         choices))
 
-(defn raw-select [context value label choices & {:keys [on-change]}]
+(defn raw-select [context value label choices & {:keys [on-change tooltip]}]
   (let [component-id (uid/generate "select")]
     [:div.ui-setting
      (when label
-       [:label {:for component-id} [tr label]])
+       [:label {:for component-id} [tr label]
+        (when tooltip
+          [:div.tooltip.info {:style {:display "inline-block"
+                                      :margin-left "0.2em"}}
+           [:i.fas.fa-question-circle]
+           [:div.bottom
+            [:h3 {:style {:text-align "center"}} [tr tooltip]]
+            [:i]]])])
      [:div.option
       [raw-select-inline context value choices
        :on-change on-change
@@ -55,12 +62,12 @@
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui default inherited choices]} option
-          label (:label ui)
+          {:keys [label tooltip]} ui
           value (or current-value
                     inherited
                     default
                     :none)]
-      [raw-select context value label choices :on-change on-change])))
+      [raw-select context value label choices :tooltip tooltip :on-change on-change])))
 
 (defmethod element/element :select [context]
   [select context])
