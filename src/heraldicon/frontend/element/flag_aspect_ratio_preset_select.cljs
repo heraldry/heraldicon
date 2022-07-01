@@ -19,7 +19,7 @@
 (defmethod element/element :ui.element/flag-aspect-ratio-preset-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [choices (:choices option)
-          label (-> option :ui :label)]
+          {:ui/keys [label]} option]
       [select/raw-select context :none label choices
        :on-change (fn [value]
                     (let [[_ height width] (-> value

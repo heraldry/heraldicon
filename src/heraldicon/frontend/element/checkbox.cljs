@@ -12,8 +12,8 @@
   (when-let [option (or option
                         (interface/get-relevant-options context))]
     (let [component-id (uid/generate "checkbox")
-          {:keys [ui inherited default]} option
-          {:keys [label tooltip]} ui
+          {:keys [inherited default]
+           :ui/keys [label tooltip]} option
           current-value (interface/get-raw-data context)
           checked? (->> [current-value
                          inherited

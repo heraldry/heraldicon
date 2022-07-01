@@ -31,11 +31,12 @@
   (when-let [option (or (interface/get-relevant-options context)
                         default-option)]
     (let [current-value (interface/get-raw-data context)
-          {:keys [ui choices]} option
+          {:keys [choices]
+           :ui/keys [label]} option
           value (options/get-value current-value option)
           choice-map (options/choices->map choices)
           choice-name (get choice-map value)
-          label (or (:label ui) :string.option/tincture)]
+          label (or label :string.option/tincture)]
       [:div.ui-setting
        (when label
          [:label [tr label]])

@@ -52,62 +52,62 @@
                                              :fly
                                              :angle])
                                   :default :angle
-                                  :ui {:label :string.option/point}}
+                                  :ui/label :string.option/point}
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     {:orientation (cond-> {:point orientation-point-option
-                           :ui {:label :string.option/orientation
-                                :form-type :ui.element/position}}
+                           :ui/label :string.option/orientation
+                           :ui/element :ui.element/position}
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :range
                                               :min 10
                                               :max 170
                                               :default 45
-                                              :ui {:label :string.option/angle}})
+                                              :ui/label :string.option/angle})
 
                     (not= current-orientation-point
                           :angle) (assoc :offset-x {:type :range
                                                     :min -45
                                                     :max 45
                                                     :default 0
-                                                    :ui {:label :string.option/offset-x
-                                                         :step 0.1}}
+                                                    :ui/label :string.option/offset-x
+                                                    :ui/step 0.1}
                                          :offset-y {:type :range
                                                     :min -45
                                                     :max 45
                                                     :default 0
-                                                    :ui {:label :string.option/offset-y
-                                                         :step 0.1}}))
+                                                    :ui/label :string.option/offset-y
+                                                    :ui/step 0.1}))
      :layout {:num-fields-y {:type :range
                              :min 1
                              :max 20
                              :default 6
                              :integer? true
-                             :ui {:label :string.option/subfields-y
-                                  :form-type :ui.element/field-layout-num-fields-y}}
+                             :ui/label :string.option/subfields-y
+                             :ui/element :ui.element/field-layout-num-fields-y}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
-                                :ui {:label :string.option/base-fields
-                                     :form-type :ui.element/field-layout-num-base-fields}}
+                                :ui/label :string.option/base-fields
+                                :ui/element :ui.element/field-layout-num-base-fields}
               :offset-y {:type :range
                          :min -3
                          :max 3
                          :default 0
-                         :ui {:label :string.option/offset-y
-                              :step 0.01}}
+                         :ui/label :string.option/offset-y
+                         :ui/step 0.01}
               :stretch-y {:type :range
                           :min 0.5
                           :max 2
                           :default 1
-                          :ui {:label :string.option/stretch-y
-                               :step 0.01}}
-              :ui {:label :string.option/layout
-                   :form-type :ui.element/field-layout}}
+                          :ui/label :string.option/stretch-y
+                          :ui/step 0.01}
+              :ui/label :string.option/layout
+              :ui/element :ui.element/field-layout}
      :line line-style
      :opposite-line opposite-line-style}))
 

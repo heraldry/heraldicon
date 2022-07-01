@@ -8,21 +8,21 @@
 (defn options [context]
   (let [humetty? (interface/get-raw-data (c/++ context :humetty?))]
     (cond-> {:humetty? {:type :boolean
-                        :ui {:label :string.option/humetty}}
-             :ui {:label :string.option/humetty
-                  :tooltip :string.tooltip/humetty-warning
-                  :form-type :ui.element/humetty}}
+                        :ui/label :string.option/humetty}
+             :ui/label :string.option/humetty
+             :ui/tooltip :string.tooltip/humetty-warning
+             :ui/element :ui.element/humetty}
       humetty? (assoc :corner {:type :choice
                                :choices [[:string.option.corner-choice/round :round]
                                          [:string.option.corner-choice/sharp :sharp]
                                          [:string.option.corner-choice/bevel :bevel]]
                                :default :round
-                               :ui {:label :string.option/corner}}
+                               :ui/label :string.option/corner}
                       :distance {:type :range
                                  :min 1
                                  :max 45
                                  :default 5
-                                 :ui {:label :string.option/distance}}))))
+                                 :ui/label :string.option/distance}))))
 
 (defn coup [shape base-distance {:keys [environment] :as context}]
   (let [shape (if (map? shape)

@@ -157,8 +157,8 @@
   {:type :choice
    :choices choices
    :default :straight
-   :ui {:label :string.option/type
-        :form-type :ui.element/line-type-select}})
+   :ui/label :string.option/type
+   :ui/element :ui.element/line-type-select})
 
 (def ^:private base-line-choices
   [[:string.option.alignment-choice/bottom :bottom]
@@ -181,56 +181,56 @@
                   :min 0
                   :max 1
                   :default 0.5
-                  :ui {:label :string.option/eccentricity
-                       :step 0.01}}
+                  :ui/label :string.option/eccentricity
+                  :ui/step 0.01}
    :height {:type :range
             :min 0
             :max 3
             :default 1
-            :ui {:label :string.option/height
-                 :step 0.01}}
+            :ui/label :string.option/height
+            :ui/step 0.01}
    :width {:type :range
            :min 2
            :max 100
            :default 10
-           :ui {:label :string.option/width
-                :step 0.01}}
+           :ui/label :string.option/width
+           :ui/step 0.01}
    :offset {:type :range
             :min -1
             :max 3
             :default 0
-            :ui {:label :string.option/offset
-                 :step 0.01}}
+            :ui/label :string.option/offset
+            :ui/step 0.01}
    :spacing {:type :range
              :min 0
              :max 5
              :default 0
-             :ui {:label :string.option/spacing
-                  :step 0.01}}
+             :ui/label :string.option/spacing
+             :ui/step 0.01}
    :base-line {:type :choice
                :choices base-line-choices
                :default :middle
-               :ui {:label :string.option/base-line
-                    :form-type :ui.element/radio-select}}
+               :ui/label :string.option/base-line
+               :ui/element :ui.element/radio-select}
    :corner-dampening-radius {:type :range
                              :min 0
                              :max 50
                              :default 0
-                             :ui {:label :string.option/dampening-radius
-                                  :tooltip :string.tooltip/dampening-radius
-                                  :step 0.01}}
+                             :ui/label :string.option/dampening-radius
+                             :ui/tooltip :string.tooltip/dampening-radius
+                             :ui/step 0.01}
    :corner-dampening-mode {:type :choice
                            :choices corner-dampening-mode-choices
                            :default :clamp-to-zero
-                           :ui {:label :string.option/dampening-mode
-                                :tooltip :string.tooltip/dampening-mode
-                                :step 0.01}}
+                           :ui/label :string.option/dampening-mode
+                           :ui/tooltip :string.tooltip/dampening-mode
+                           :ui/step 0.01}
    :mirrored? {:type :boolean
                :default false
-               :ui {:label :string.option/mirrored?}}
+               :ui/label :string.option/mirrored?}
    :flipped? {:type :boolean
               :default false
-              :ui {:label :string.option/flipped?}}})
+              :ui/label :string.option/flipped?}})
 
 (defn options [{:keys [path] :as context} & {:keys [fimbriation?
                                                     inherited-options
@@ -409,11 +409,11 @@
                                                    [[:corner-dampening-radius]
                                                     [:corner-dampening-mode]]
                                                    {})))
-          (assoc :ui {:label (case kind
-                               :opposite-line :string.entity/opposite-line
-                               :extra-line :string.entity/extra-line
-                               :string.entity/line)
-                      :form-type :ui.element/line})))))
+          (assoc :ui/label (case kind
+                             :opposite-line :string.entity/opposite-line
+                             :extra-line :string.entity/extra-line
+                             :string.entity/line)
+                 :ui/element :ui.element/line)))))
 
 (defn- create-raw [{:keys [type] :or {type :straight} :as line} length
                    & {:keys [angle flipped? context seed reversed?] :as line-options}]

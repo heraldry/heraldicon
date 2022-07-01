@@ -22,29 +22,29 @@
                            :max 20
                            :default 6
                            :integer? true
-                           :ui {:label :string.option/subfields-y
-                                :form-type :ui.element/field-layout-num-fields-y}}
+                           :ui/label :string.option/subfields-y
+                           :ui/element :ui.element/field-layout-num-fields-y}
             :num-base-fields {:type :range
                               :min 2
                               :max 8
                               :default 2
                               :integer? true
-                              :ui {:label :string.option/base-fields
-                                   :form-type :ui.element/field-layout-num-base-fields}}
+                              :ui/label :string.option/base-fields
+                              :ui/element :ui.element/field-layout-num-base-fields}
             :offset-y {:type :range
                        :min -1
                        :max 1
                        :default 0
-                       :ui {:label :string.option/offset-y
-                            :step 0.01}}
+                       :ui/label :string.option/offset-y
+                       :ui/step 0.01}
             :stretch-y {:type :range
                         :min 0.5
                         :max 2
                         :default 1
-                        :ui {:label :string.option/stretch-y
-                             :step 0.01}}
-            :ui {:label :string.option/layout
-                 :form-type :ui.element/field-layout}}
+                        :ui/label :string.option/stretch-y
+                        :ui/step 0.01}
+            :ui/label :string.option/layout
+            :ui/element :ui.element/field-layout}
    :line (line/options (c/++ context :line)
                        :fimbriation? false)})
 

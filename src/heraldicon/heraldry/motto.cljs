@@ -33,7 +33,7 @@
 (def ^:private type-option
   {:type :choice
    :choices type-choices
-   :ui {:label :string.option/type}})
+   :ui/label :string.option/type})
 
 (derive :heraldry/motto :heraldry.options/root)
 
@@ -51,37 +51,39 @@
                           :default (case motto-type
                                      :heraldry.motto.type/slogan :top
                                      :bottom)
-                          :ui {:label :string.option/point}}
+                          :ui/label :string.option/point}
                   :offset-x {:type :range
                              :min -100
                              :max 100
                              :default 0
-                             :ui {:label :string.option/offset-x
-                                  :step 0.1}}
+                             :ui/label :string.option/offset-x
+                             :ui/step 0.1}
                   :offset-y {:type :range
                              :min -100
                              :max 100
                              :default 0
-                             :ui {:label :string.option/offset-y
-                                  :step 0.1}}
-                  :ui {:label :string.option/anchor
-                       :form-type :ui.element/position}}
+                             :ui/label :string.option/offset-y
+                             :ui/step 0.1}
+                  :ui/label :string.option/anchor
+                  :ui/element :ui.element/position}
+
          :geometry {:size {:type :range
                            :min 5
                            :max 300
                            :default 100
-                           :ui {:label :string.option/size
-                                :step 0.1}}
-                    :ui {:label :string.option/geometry
-                         :form-type :ui.element/geometry}}
-         :ribbon-variant {:ui {:label :string.entity/ribbon
-                               :form-type :ui.element/ribbon-reference-select}}
+                           :ui/label :string.option/size
+                           :ui/step 0.1}
+                    :ui/label :string.option/geometry
+                    :ui/element :ui.element/geometry}
+
+         :ribbon-variant {:ui/label :string.entity/ribbon
+                          :ui/element :ui.element/ribbon-reference-select}
 
          :tincture-foreground {:type :choice
                                :choices tinctures-without-furs
                                :default :argent
-                               :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment.type/foreground)
-                                    :form-type :ui.element/tincture-select}}
+                               :ui/label (ribbon/segment-type-map :heraldry.ribbon.segment.type/foreground)
+                               :ui/element :ui.element/tincture-select}
 
          :tincture-background {:type :choice
                                :choices (assoc tinctures-without-furs 0 [:string.option.tincture-background-group/other-or-metal
@@ -89,14 +91,14 @@
                                                                          [(tincture/tincture-map :argent) :argent]
                                                                          [(tincture/tincture-map :or) :or]])
                                :default :none
-                               :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment.type/background)
-                                    :form-type :ui.element/tincture-select}}
+                               :ui/label (ribbon/segment-type-map :heraldry.ribbon.segment.type/background)
+                               :ui/element :ui.element/tincture-select}
 
          :tincture-text {:type :choice
                          :choices tinctures-without-furs
                          :default :helmet-dark
-                         :ui {:label (ribbon/segment-type-map :heraldry.ribbon.segment.type/foreground-with-text)
-                              :form-type :ui.element/tincture-select}}}
+                         :ui/label (ribbon/segment-type-map :heraldry.ribbon.segment.type/foreground-with-text)
+                         :ui/element :ui.element/tincture-select}}
         (cond->
           ribbon-variant (assoc :ribbon (ribbon/options (c/++ context :ribbon))))
         (assoc :type type-option))))

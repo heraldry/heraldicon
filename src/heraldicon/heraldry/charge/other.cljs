@@ -28,30 +28,30 @@
       (assoc :tincture {:eyed {:type :choice
                                :choices tincture/choices
                                :default :argent
-                               :ui {:label :string.charge.tincture-modifier/eyed}}
+                               :ui/label :string.charge.tincture-modifier/eyed}
                         :toothed {:type :choice
                                   :choices tincture/choices
                                   :default :argent
-                                  :ui {:label :string.charge.tincture-modifier/toothed}}
+                                  :ui/label :string.charge.tincture-modifier/toothed}
                         :shadow {:type :range
                                  :min 0
                                  :max 1
                                  :default 1
-                                 :ui {:label :string.option/shadow
-                                      :step 0.01}}
+                                 :ui/label :string.option/shadow
+                                 :ui/step 0.01}
                         :highlight {:type :range
                                     :min 0
                                     :max 1
                                     :default 1
-                                    :ui {:label :string.option/highlight
-                                         :step 0.01}}
-                        :ui {:label :string.entity/tinctures
-                             :form-type :ui.element/tincture-modifiers}})
+                                    :ui/label :string.option/highlight
+                                    :ui/step 0.01}
+                        :ui/label :string.entity/tinctures
+                        :ui/element :ui.element/tincture-modifiers})
       (assoc :ignore-layer-separator?
              {:type :boolean
               :default (->> context :path (some #{:coat-of-arms}))
-              :ui {:label :string.option/ignore-layer-separator?
-                   :tooltip :string.tooltip/ignore-layer-separator?}})))
+              :ui/label :string.option/ignore-layer-separator?
+              :ui/tooltip :string.tooltip/ignore-layer-separator?})))
 
 (defn- placeholder-colour-modifier [placeholder-colours colour]
   (attributes/tincture-modifier (get placeholder-colours colour)))

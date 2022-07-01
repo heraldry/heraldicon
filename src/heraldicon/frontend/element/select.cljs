@@ -56,8 +56,8 @@
 (defn- select [context & {:keys [on-change]}]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
-          {:keys [ui default inherited choices]} option
-          {:keys [label tooltip]} ui
+          {:keys [default inherited choices]
+           :ui/keys [label tooltip]} option
           value (or current-value
                     inherited
                     default

@@ -34,30 +34,30 @@
                                   :left
                                   :right])
                        :default :fess
-                       :ui {:label :string.option/point}}
+                       :ui/label :string.option/point}
                :alignment {:type :choice
                            :choices position/alignment-choices
                            :default :middle
-                           :ui {:label :string.option/alignment
-                                :form-type :ui.element/radio-select}}
+                           :ui/label :string.option/alignment
+                           :ui/element :ui.element/radio-select}
                :offset-x {:type :range
                           :min -50
                           :max 50
                           :default 0
-                          :ui {:label :string.option/offset-x
-                               :step 0.1}}
-               :ui {:label :string.option/anchor
-                    :form-type :ui.element/position}}
+                          :ui/label :string.option/offset-x
+                          :ui/step 0.1}
+               :ui/label :string.option/anchor
+               :ui/element :ui.element/position}
       :line line-style
       :opposite-line opposite-line-style
       :geometry {:size {:type :range
                         :min 0.1
                         :max 90
                         :default 25
-                        :ui {:label :string.option/size
-                             :step 0.1}}
-                 :ui {:label :string.option/geometry
-                      :form-type :ui.element/geometry}}
+                        :ui/label :string.option/size
+                        :ui/step 0.1}
+                 :ui/label :string.option/geometry
+                 :ui/element :ui.element/geometry}
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 

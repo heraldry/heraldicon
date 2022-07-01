@@ -16,24 +16,24 @@
                :default 30
                :min 5
                :max 150
-               :ui {:label :string.option/thickness
-                    :step 0.1}}
+               :ui/label :string.option/thickness
+               :ui/step 0.1}
    :edge-angle {:type :range
                 :default 0
                 :min -90
                 :max 90
-                :ui {:label :string.option/edge-angle
-                     :step 1
-                     :tooltip :string.tooltip/edge-angle}}
+                :ui/label :string.option/edge-angle
+                :ui/step 1
+                :ui/tooltip :string.tooltip/edge-angle}
    :end-split {:type :range
                :default 0
                :min 0
                :max 80
-               :ui {:label :string.option/end-split
-                    :step 1}}
+               :ui/label :string.option/end-split
+               :ui/step 1}
    :outline? {:type :boolean
               :default true
-              :ui {:label :string.charge.tincture-modifier.special/outline}}})
+              :ui/label :string.charge.tincture-modifier.special/outline}})
 
 (derive :heraldry/ribbon :heraldry.options/root)
 
@@ -131,8 +131,8 @@
 (def ^:private type-option
   {:type :choice
    :choices segment-type-choices
-   :ui {:label :string.option/type
-        :form-type :ui.element/radio-select}})
+   :ui/label :string.option/type
+   :ui/element :ui.element/radio-select})
 
 (derive :heraldry.ribbon/segment :heraldry.options/root)
 
@@ -144,7 +144,7 @@
                  :min 0
                  :max 100
                  :integer? true
-                 :ui {:label :string.option/layer}}}
+                 :ui/label :string.option/layer}}
       (cond->
         (= (interface/get-raw-data (c/++ context :type))
            :heraldry.ribbon.segment.type/foreground-with-text)
@@ -152,26 +152,26 @@
                            :default 0
                            :min -0.5
                            :max 0.5
-                           :ui {:label :string.option/offset-x
-                                :step 0.01}}
+                           :ui/label :string.option/offset-x
+                           :ui/step 0.01}
                 :offset-y {:type :range
                            :default 0
                            :min -0.5
                            :max 0.5
-                           :ui {:label :string.option/offset-y
-                                :step 0.01}}
+                           :ui/label :string.option/offset-y
+                           :ui/step 0.01}
                 :font-scale {:type :range
                              :default 0.8
                              :min 0.01
                              :max 1
-                             :ui {:label :string.option/font-scale
-                                  :step 0.01}}
+                             :ui/label :string.option/font-scale
+                             :ui/step 0.01}
                 :spacing {:type :range
                           :default 0.1
                           :min -0.5
                           :max 2
-                          :ui {:label :string.option/spacing
-                               :step 0.01}}
+                          :ui/label :string.option/spacing
+                          :ui/step 0.01}
                 :text {:type :text
                        :default ""}
                 :font (-> font/default-options

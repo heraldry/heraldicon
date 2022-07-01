@@ -55,8 +55,8 @@
 (def ^:private type-option
   {:type :choice
    :choices choices
-   :ui {:label :string.option/type
-        :form-type :ui.element/ordinary-type-select}})
+   :ui/label :string.option/type
+   :ui/element :ui.element/ordinary-type-select})
 
 (derive :heraldry/ordinary :heraldry.options/root)
 

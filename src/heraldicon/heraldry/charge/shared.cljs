@@ -47,7 +47,7 @@
                                         :bottom
                                         :bottom-right])
                              :default :fess
-                             :ui {:label :string.option/point}}
+                             :ui/label :string.option/point}
         orientation-point-option {:type :choice
                                   :choices (position/orientation-choices
                                             [:top-left
@@ -68,7 +68,7 @@
                                              :nombril
                                              :angle])
                                   :default :angle
-                                  :ui {:label :string.option/orientation}}
+                                  :ui/label :string.option/orientation}
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
@@ -77,60 +77,60 @@
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label :string.option/offset-x
-                              :step 0.1}}
+                         :ui/label :string.option/offset-x
+                         :ui/step 0.1}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label :string.option/offset-y
-                              :step 0.1}}
-              :ui {:label :string.option/anchor
-                   :form-type :ui.element/position}}
+                         :ui/label :string.option/offset-y
+                         :ui/step 0.1}
+              :ui/label :string.option/anchor
+              :ui/element :ui.element/position}
      :orientation (cond-> {:point orientation-point-option
-                           :ui {:label :string.option/orientation
-                                :form-type :ui.element/position}}
+                           :ui/label :string.option/orientation
+                           :ui/element :ui.element/position}
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :range
                                               :min 0
                                               :max 360
                                               :default 0
-                                              :ui {:label :string.option/angle}})
+                                              :ui/label :string.option/angle})
 
                     (not= current-orientation-point
                           :angle) (assoc :offset-x {:type :range
                                                     :min -45
                                                     :max 45
                                                     :default 0
-                                                    :ui {:label :string.option/offset-x
-                                                         :step 0.1}}
+                                                    :ui/label :string.option/offset-x
+                                                    :ui/step 0.1}
                                          :offset-y {:type :range
                                                     :min -45
                                                     :max 45
                                                     :default 0
-                                                    :ui {:label :string.option/offset-y
-                                                         :step 0.1}}))
+                                                    :ui/label :string.option/offset-y
+                                                    :ui/step 0.1}))
      :geometry {:size {:type :range
                        :min 5
                        :max 250
                        :default 50
-                       :ui {:label :string.option/size
-                            :step 0.1}}
+                       :ui/label :string.option/size
+                       :ui/step 0.1}
                 :stretch {:type :range
                           :min 0.33
                           :max 3
                           :default 1
-                          :ui {:label :string.option/stretch
-                               :step 0.01}}
+                          :ui/label :string.option/stretch
+                          :ui/step 0.01}
                 :mirrored? {:type :boolean
                             :default false
-                            :ui {:label :string.option/mirrored?}}
+                            :ui/label :string.option/mirrored?}
                 :reversed? {:type :boolean
                             :default false
-                            :ui {:label :string.option/reversed?}}
-                :ui {:label :string.option/geometry
-                     :form-type :ui.element/geometry}}
+                            :ui/label :string.option/reversed?}
+                :ui/label :string.option/geometry
+                :ui/element :ui.element/geometry}
      :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
                       (dissoc :alignment)
                       (options/override-if-exists [:corner :default] :round)
@@ -141,13 +141,13 @@
      :outline-mode {:type :choice
                     :choices outline-mode-choices
                     :default :keep
-                    :ui {:label :string.option/outline-mode}}
+                    :ui/label :string.option/outline-mode}
      :vertical-mask {:type :range
                      :default 0
                      :min -100
                      :max 100
-                     :ui {:label :string.option/vertical-mask
-                          :step 1}}}))
+                     :ui/label :string.option/vertical-mask
+                     :ui/step 1}}))
 
 (defn make-charge
   [{:keys [environment

@@ -22,7 +22,7 @@
                             :min 3
                             :max 32
                             :integer? true
-                            :ui {:label :string.option/number-of-points}})
+                            :ui/label :string.option/number-of-points})
         (assoc :eccentricity {:type :range
                               :default (- 1
                                           (cond
@@ -35,11 +35,11 @@
                                                        (Math/cos angle-half-step)))))
                               :min 0
                               :max 0.95
-                              :ui {:label :string.option/eccentricity
-                                   :step 0.01}})
+                              :ui/label :string.option/eccentricity
+                              :ui/step 0.01})
         (assoc :wavy-rays? {:type :boolean
                             :default false
-                            :ui {:label :string.option/wavy-rays?}}))))
+                            :ui/label :string.option/wavy-rays?}))))
 
 (defmethod charge.interface/render-charge charge-type
   [context]

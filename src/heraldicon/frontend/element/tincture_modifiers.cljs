@@ -22,8 +22,7 @@
     (when (or preview?
               variant)
       (let [options (interface/get-relevant-options context)
-            {:keys [ui]} options
-            label (:label ui)
+            {:ui/keys [label]} options
             tincture-data (interface/get-raw-data context)
             sanitized-tincture-data (merge tincture-data
                                            (options/sanitize tincture-data options))
@@ -114,5 +113,5 @@
                               :default-option {:type :choice
                                                :choices tincture/choices
                                                :default :none
-                                               :ui {:label (blazonry/translate-cap-first t)}}]))
+                                               :ui/label (blazonry/translate-cap-first t)}]))
                       sorted-supported-tinctures)]])]])))))

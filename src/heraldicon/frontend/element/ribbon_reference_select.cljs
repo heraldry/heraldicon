@@ -61,8 +61,7 @@
   (when-let [option (interface/get-relevant-options context)]
     (let [{ribbon-id :id
            version :version} (interface/get-raw-data context)
-          {:keys [ui]} option
-          label (:label ui)
+          {:ui/keys [label]} option
           {:keys [_status entity]} @(rf/subscribe [::entity/data ribbon-id version])
           ribbon-title (-> entity
                            :name

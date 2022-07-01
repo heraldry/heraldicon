@@ -35,43 +35,43 @@
                                  :fly
                                  :center])
                       :default :fess
-                      :ui {:label :string.option/point}}
+                      :ui/label :string.option/point}
               :offset-x {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label :string.option/offset-x
-                              :step 0.1}}
+                         :ui/label :string.option/offset-x
+                         :ui/step 0.1}
               :offset-y {:type :range
                          :min -45
                          :max 45
                          :default 0
-                         :ui {:label :string.option/offset-y
-                              :step 0.1}}
-              :ui {:label :string.option/anchor
-                   :form-type :ui.element/position}}
+                         :ui/label :string.option/offset-y
+                         :ui/step 0.1}
+              :ui/label :string.option/anchor
+              :ui/element :ui.element/position}
      :layout {:num-fields-x {:type :range
                              :min 3
                              :max 32
                              :default 6
                              :integer? true
-                             :ui {:label :string.option/subfields
-                                  :form-type :ui.element/field-layout-num-fields-x}}
+                             :ui/label :string.option/subfields
+                             :ui/element :ui.element/field-layout-num-fields-x}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
-                                :ui {:label :string.option/base-fields
-                                     :form-type :ui.element/field-layout-num-base-fields}}
+                                :ui/label :string.option/base-fields
+                                :ui/element :ui.element/field-layout-num-base-fields}
               :offset-x {:type :range
                          :min -1
                          :max 1
                          :default -0.5
-                         :ui {:label :string.option/offset
-                              :step 0.01}}
-              :ui {:label :string.option/layout
-                   :form-type :ui.element/field-layout}}
+                         :ui/label :string.option/offset
+                         :ui/step 0.01}
+              :ui/label :string.option/layout
+              :ui/element :ui.element/field-layout}
      :line line-style}))
 
 (defmethod field.interface/render-field field-type

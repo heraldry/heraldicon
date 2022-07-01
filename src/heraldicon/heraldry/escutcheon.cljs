@@ -449,40 +449,40 @@
                                         ["19:36" :preset-19-36]
                                         ["22:41" :preset-22-41]
                                         ["28:37" :preset-28-37]]
-                              :ui {:label :string.option/aspect-ratio-preset
-                                   :form-type :ui.element/flag-aspect-ratio-preset-select}}
+                              :ui/label :string.option/aspect-ratio-preset
+                              :ui/element :ui.element/flag-aspect-ratio-preset-select}
 
    :flag-width {:type :range
                 :default 3
                 :min 0.1
                 :max 41
-                :ui {:label :string.option/flag-width
-                     :step 0.01}}
+                :ui/label :string.option/flag-width
+                :ui/step 0.01}
 
    :flag-height {:type :range
                  :default 2
                  :min 0.1
                  :max 41
-                 :ui {:label :string.option/flag-height
-                      :step 0.01}}
+                 :ui/label :string.option/flag-height
+                 :ui/step 0.01}
 
    :flag-swallow-tail {:type :range
                        :default 0
                        :min 0
                        :max 100
-                       :ui {:label :string.option/flag-swallow-tail
-                            :step 0.01}}
+                       :ui/label :string.option/flag-swallow-tail
+                       :ui/step 0.01}
 
    :flag-tail-point-height {:type :range
                             :default 0
                             :min 0
                             :max 90
-                            :ui {:label :string.option/flag-tail-point-height
-                                 :step 0.01}}
+                            :ui/label :string.option/flag-tail-point-height
+                            :ui/step 0.01}
 
    :flag-tail-tongue {:type :range
                       :default 0
                       :min 0
                       :max 100
-                      :ui {:label :string.option/flag-tongue
-                           :step 0.01}}})
+                      :ui/label :string.option/flag-tongue
+                      :ui/step 0.01}})

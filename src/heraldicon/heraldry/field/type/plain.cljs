@@ -16,32 +16,32 @@
     (cond-> {:tincture {:type :choice
                         :choices tincture/choices
                         :default :none
-                        :ui {:label :string.option/tincture
-                             :form-type :ui.element/tincture-select}}}
+                        :ui/label :string.option/tincture
+                        :ui/element :ui.element/tincture-select}}
       (tincture/furs tincture) (assoc :pattern-scaling {:type :range
                                                         :min 0.1
                                                         :max 3
                                                         :default 1
-                                                        :ui {:label :string.option/pattern-scaling
-                                                             :step 0.01}}
+                                                        :ui/label :string.option/pattern-scaling
+                                                        :ui/step 0.01}
                                       :pattern-rotation {:type :range
                                                          :min -180
                                                          :max 180
                                                          :default 0
-                                                         :ui {:label :string.option/pattern-rotation
-                                                              :step 0.01}}
+                                                         :ui/label :string.option/pattern-rotation
+                                                         :ui/step 0.01}
                                       :pattern-offset-x {:type :range
                                                          :min 0
                                                          :max 10
                                                          :default 0
-                                                         :ui {:label :string.option/pattern-offset-x
-                                                              :step 0.01}}
+                                                         :ui/label :string.option/pattern-offset-x
+                                                         :ui/step 0.01}
                                       :pattern-offset-y {:type :range
                                                          :min 0
                                                          :max 10
                                                          :default 0
-                                                         :ui {:label :string.option/pattern-offset-y
-                                                              :step 0.01}}))))
+                                                         :ui/label :string.option/pattern-offset-y
+                                                         :ui/step 0.01}))))
 
 (defmethod field.interface/render-field field-type
   [context]

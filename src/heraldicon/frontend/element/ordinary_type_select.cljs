@@ -59,13 +59,13 @@
 (defmethod element/element :ui.element/ordinary-type-select [{:keys [path] :as context}]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
-          {:keys [ui inherited default choices]} option
+          {:keys [inherited default choices]
+           :ui/keys [label]} option
           value (or current-value
                     inherited
                     default)
           choice-map (options/choices->map choices)
-          choice-name (get choice-map value)
-          label (:label ui)]
+          choice-name (get choice-map value)]
       [:div.ui-setting
        (when label
          [:label [tr label]])

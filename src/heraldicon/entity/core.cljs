@@ -28,12 +28,12 @@
 (defmethod interface/options :heraldicon/entity [context]
   {:name {:type :text
           :default ""
-          :ui {:label :string.option/name}}
+          :ui/label :string.option/name}
    :access {:type :choice
             :choices access-choices
             :default :private
-            :ui {:label :string.option/is-public
-                 :form-type :ui.element/access}}
+            :ui/label :string.option/is-public
+            :ui/element :ui.element/access}
    :attribution (attribution/options (c/++ context :attribution))
    :metadata (metadata/options (c/++ context :metadata))
-   :tags {:ui {:form-type :ui.element/tags}}})
+   :tags {:ui/element :ui.element/tags}})

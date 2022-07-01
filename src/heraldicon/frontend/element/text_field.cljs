@@ -8,12 +8,12 @@
 
 (defn text-field [context & {:keys [on-change style]}]
   (when-let [option (interface/get-relevant-options context)]
-    (let [{:keys [ui inherited default]} option
+    (let [{:keys [inherited default]
+           :ui/keys [label tooltip]} option
           current-value (interface/get-raw-data context)
           value (or current-value
                     inherited
-                    default)
-          {:keys [label tooltip]} ui]
+                    default)]
       [:div.ui-setting
        {:style style}
        (when label

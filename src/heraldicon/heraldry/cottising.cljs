@@ -14,24 +14,24 @@
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (assoc options
            key
-           {:line (assoc-in line-style [:ui :label] :string.entity/line)
-            :opposite-line (assoc-in opposite-line-style [:ui :label] :string.entity/opposite-line)
+           {:line (assoc line-style :ui/label :string.entity/line)
+            :opposite-line (assoc opposite-line-style :ui/label :string.entity/opposite-line)
             :distance {:type :range
                        :min -10
                        :max 20
                        :default 2
-                       :ui {:label :string.option/distance
-                            :step 0.1}}
+                       :ui/label :string.option/distance
+                       :ui/step 0.1}
             :thickness {:type :range
                         :min 0.1
                         :max 20
                         :default 2
-                        :ui {:label :string.option/thickness
-                             :step 0.1}}
+                        :ui/label :string.option/thickness
+                        :ui/step 0.1}
             :outline? {:type :boolean
                        :default false
-                       :ui {:label :string.charge.tincture-modifier.special/outline}}
-            :ui {:form-type :ui.element/cottising}})))
+                       :ui/label :string.charge.tincture-modifier.special/outline}
+            :ui/element :ui.element/cottising})))
 
 (defn add-cottising [context num]
   (let [cottising-context (c/++ context :cottising)]

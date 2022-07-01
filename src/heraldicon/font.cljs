@@ -43,4 +43,4 @@
   {:type :choice
    :choices choices
    :default default
-   :ui {:label :string.option/font}})
+   :ui/label :string.option/font})
