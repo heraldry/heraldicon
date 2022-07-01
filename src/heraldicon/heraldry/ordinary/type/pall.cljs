@@ -32,7 +32,7 @@
                              (options/override-if-exists [:offset :min] 0)
                              (options/override-if-exists [:base-line] nil)
                              (options/override-if-exists [:fimbriation :alignment :default] :outside))
-        origin-point-option {:type :choice
+        origin-point-option {:type :option.type/choice
                              :choices (position/orientation-choices
                                        [:chief
                                         :base
@@ -54,7 +54,7 @@
         current-origin-point (options/get-value
                               (interface/get-raw-data (c/++ context :origin :point))
                               origin-point-option)
-        orientation-point-option {:type :choice
+        orientation-point-option {:type :option.type/choice
                                   :choices (position/orientation-choices
                                             (case current-origin-point
                                               :bottom [:bottom-left
@@ -130,7 +130,7 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :choice
+     {:anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:chief
                                   :base
@@ -153,18 +153,18 @@
                                   :angle])
                        :default :fess
                        :ui/label :string.option/point}
-               :alignment {:type :choice
+               :alignment {:type :option.type/choice
                            :choices position/alignment-choices
                            :default :middle
                            :ui/label :string.option/alignment
                            :ui/element :ui.element/radio-select}
-               :offset-x {:type :range
+               :offset-x {:type :option.type/range
                           :min -45
                           :max 45
                           :default 0
                           :ui/label :string.option/offset-x
                           :ui/step 0.1}
-               :offset-y {:type :range
+               :offset-y {:type :option.type/range
                           :min -45
                           :max 45
                           :default 0
@@ -177,20 +177,20 @@
                        :ui/element :ui.element/position}
 
                 (= current-origin-point
-                   :angle) (assoc :angle {:type :range
+                   :angle) (assoc :angle {:type :option.type/range
                                           :min -180
                                           :max 180
                                           :default 0
                                           :ui/label :string.option/angle})
 
                 (not= current-origin-point
-                      :angle) (assoc :offset-x {:type :range
+                      :angle) (assoc :offset-x {:type :option.type/range
                                                 :min -45
                                                 :max 45
                                                 :default 0
                                                 :ui/label :string.option/offset-x
                                                 :ui/step 0.1}
-                                     :offset-y {:type :range
+                                     :offset-y {:type :option.type/range
                                                 :min -45
                                                 :max 45
                                                 :default 0
@@ -201,25 +201,25 @@
                             :ui/element :ui.element/position}
 
                      (= current-orientation-point
-                        :angle) (assoc :angle {:type :range
+                        :angle) (assoc :angle {:type :option.type/range
                                                :min 0
                                                :max 80
                                                :default 45
                                                :ui/label :string.option/angle})
 
                      (not= current-orientation-point
-                           :angle) (assoc :alignment {:type :choice
+                           :angle) (assoc :alignment {:type :option.type/choice
                                                       :choices position/alignment-choices
                                                       :default :middle
                                                       :ui/label :string.option/alignment
                                                       :ui/element :ui.element/radio-select}
-                                          :offset-x {:type :range
+                                          :offset-x {:type :option.type/range
                                                      :min -45
                                                      :max 45
                                                      :default 0
                                                      :ui/label :string.option/offset-x
                                                      :ui/step 0.1}
-                                          :offset-y {:type :range
+                                          :offset-y {:type :option.type/range
                                                      :min -45
                                                      :max 45
                                                      :default 0
@@ -228,7 +228,7 @@
       :line line-style
       :opposite-line opposite-line-style
       :extra-line extra-line-style
-      :geometry {:size {:type :range
+      :geometry {:size {:type :option.type/range
                         :min 0.1
                         :max 50
                         :default 20

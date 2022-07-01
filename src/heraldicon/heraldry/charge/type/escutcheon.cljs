@@ -14,7 +14,7 @@
 (defmethod charge.interface/display-name charge-type [_] :string.render-options/escutcheon)
 
 (defmethod charge.interface/options charge-type [context]
-  (let [escutcheon-option {:type :choice
+  (let [escutcheon-option {:type :option.type/choice
                            :choices (-> escutcheon/choices
                                         vec
                                         (assoc-in [0 0] :string.escutcheon.type/root)

@@ -21,12 +21,12 @@
         texture (-> context (c/++ :texture) interface/get-raw-data (or :none))
         ;; TODO: path shouldn't be hard-coded
         escutcheon-option (if (-> context :path (= (conj (form/data-path :heraldicon.entity.type/collection) :data :render-options)))
-                            {:type :choice
+                            {:type :option.type/choice
                              :choices escutcheon/choices
                              :default :none
                              :ui/label :string.render-options/escutcheon
                              :ui/element :ui.element/escutcheon-select}
-                            {:type :choice
+                            {:type :option.type/choice
                              :choices (drop 1 escutcheon/choices)
                              :default :heater
                              :ui/label :string.render-options/escutcheon
@@ -35,38 +35,38 @@
                        (or (-> escutcheon-option :choices first second)))]
     (cond-> {:escutcheon escutcheon-option
 
-             :mode {:type :choice
+             :mode {:type :option.type/choice
                     :choices mode/choices
                     :default :colours
                     :ui/label :string.render-options/mode
                     :ui/element :ui.element/radio-select}
 
-             :texture {:type :choice
+             :texture {:type :option.type/choice
                        :choices texture/choices
                        :default :none
                        :ui/label :string.render-options/texture}
 
-             :shiny? {:type :boolean
+             :shiny? {:type :option.type/boolean
                       :default false
                       :ui/label :string.render-options/shiny?}
 
-             :escutcheon-shadow? {:type :boolean
+             :escutcheon-shadow? {:type :option.type/boolean
                                   :default false
                                   :ui/label :string.render-options/escutcheon-shadow?}
 
-             :escutcheon-outline? {:type :boolean
+             :escutcheon-outline? {:type :option.type/boolean
                                    :default false
                                    :ui/label :string.render-options/escutcheon-outline?}
 
-             :outline? {:type :boolean
+             :outline? {:type :option.type/boolean
                         :default false
                         :ui/label :string.render-options/outline?}
 
-             :squiggly? {:type :boolean
+             :squiggly? {:type :option.type/boolean
                          :default false
                          :ui/label :string.render-options/squiggly?}
 
-             :coat-of-arms-angle {:type :range
+             :coat-of-arms-angle {:type :option.type/range
                                   :default 0
                                   :min -45
                                   :max 45
@@ -75,7 +75,7 @@
                                                          [:string.render-options.coat-of-arms-angle-presets/two-thirds 30]
                                                          [:string.render-options.coat-of-arms-angle-presets/full 45]]
                                   :ui/step 1}
-             :scope {:type :choice
+             :scope {:type :option.type/choice
                      :choices scope/choices
                      :default :achievement
                      :ui/label :string.render-options/scope}}
@@ -83,11 +83,11 @@
       (= escutcheon :flag) (merge escutcheon/flag-options)
 
       (not= texture :none) (assoc :texture-displacement?
-                                  {:type :boolean
+                                  {:type :option.type/boolean
                                    :default false
                                    :ui/label :string.render-options/simulate-surface})
 
-      (= mode :colours) (assoc :theme {:type :choice
+      (= mode :colours) (assoc :theme {:type :option.type/choice
                                        :choices theme/choices
                                        :default theme/default
                                        :ui/label :string.render-options/theme

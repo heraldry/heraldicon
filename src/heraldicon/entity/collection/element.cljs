@@ -8,7 +8,7 @@
   #{})
 
 (defmethod interface/options :heraldicon.entity.collection/element [_context]
-  {:name {:type :text
+  {:name {:type :option.type/text
           :ui/label :string.option/name}
    :reference {:ui/label :string.option/arms
                :ui/element :ui.element/arms-reference-select}})

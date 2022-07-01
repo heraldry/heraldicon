@@ -30,7 +30,7 @@
                                               :inherited-options line-style)
                                 (options/override-if-exists [:offset :min] 0)
                                 (options/override-if-exists [:base-line] nil))
-        orientation-point-option {:type :choice
+        orientation-point-option {:type :option.type/choice
                                   :choices (position/orientation-choices
                                             [:top-left
                                              :top
@@ -61,46 +61,46 @@
                            :ui/element :ui.element/position}
 
                     (= current-orientation-point
-                       :angle) (assoc :angle {:type :range
+                       :angle) (assoc :angle {:type :option.type/range
                                               :min 10
                                               :max 170
                                               :default 45
                                               :ui/label :string.option/angle})
 
                     (not= current-orientation-point
-                          :angle) (assoc :offset-x {:type :range
+                          :angle) (assoc :offset-x {:type :option.type/range
                                                     :min -45
                                                     :max 45
                                                     :default 0
                                                     :ui/label :string.option/offset-x
                                                     :ui/step 0.1}
-                                         :offset-y {:type :range
+                                         :offset-y {:type :option.type/range
                                                     :min -45
                                                     :max 45
                                                     :default 0
                                                     :ui/label :string.option/offset-y
                                                     :ui/step 0.1}))
-     :layout {:num-fields-y {:type :range
+     :layout {:num-fields-y {:type :option.type/range
                              :min 1
                              :max 20
                              :default 6
                              :integer? true
                              :ui/label :string.option/subfields-y
                              :ui/element :ui.element/field-layout-num-fields-y}
-              :num-base-fields {:type :range
+              :num-base-fields {:type :option.type/range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
                                 :ui/label :string.option/base-fields
                                 :ui/element :ui.element/field-layout-num-base-fields}
-              :offset-y {:type :range
+              :offset-y {:type :option.type/range
                          :min -3
                          :max 3
                          :default 0
                          :ui/label :string.option/offset-y
                          :ui/step 0.01}
-              :stretch-y {:type :range
+              :stretch-y {:type :option.type/range
                           :min 0.5
                           :max 2
                           :default 1

@@ -18,13 +18,13 @@
 (defmethod ordinary.interface/options ordinary-type [context]
   (let [line-type (or (interface/get-raw-data (c/++ context :line :type))
                       :straight)]
-    {:thickness {:type :range
+    {:thickness {:type :option.type/range
                  :min 0.1
                  :max 35
                  :default 12
                  :ui/label :string.option/thickness
                  :ui/step 0.1}
-     :corner-radius {:type :range
+     :corner-radius {:type :option.type/range
                      :min 0
                      :max 20
                      :default (case line-type
@@ -32,7 +32,7 @@
                                 5)
                      :ui/label :string.option/corner-radius
                      :ui/step 0.1}
-     :smoothing {:type :range
+     :smoothing {:type :option.type/range
                  :min 0
                  :max 20
                  :default 0
@@ -43,7 +43,7 @@
                              :fimbriation? false
                              :corner-dampening? true)
                (dissoc :flipped?)
-               (update-in [:type :choices]
+               (update-in [:type :option.type/choices]
                           (fn [choices]
                             (into []
                                   (remove (fn [[_ line-type]]

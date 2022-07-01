@@ -9,7 +9,7 @@
   #{})
 
 (defmethod interface/options :heraldicon.entity.collection/data [_context]
-  {:num-columns {:type :range
+  {:num-columns {:type :option.type/range
                  :default 6
                  :min 1
                  :max 10

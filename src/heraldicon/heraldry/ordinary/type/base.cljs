@@ -22,7 +22,7 @@
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
      {:line line-style
-      :geometry {:size {:type :range
+      :geometry {:size {:type :option.type/range
                         :min 0.1
                         :max 75
                         :default 25

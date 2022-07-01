@@ -414,7 +414,7 @@
       (:environment escutcheon-data))))
 
 (def flag-options
-  {:flag-aspect-ratio-preset {:type :choice
+  {:flag-aspect-ratio-preset {:type :option.type/choice
                               :choices [[(string/str-tr "--- " :string.escutcheon.type/select-ratio " ---") :none]
                                         ["2:3 (most common)" :preset-2-3]
                                         ["1:2 (common)" :preset-1-2]
@@ -452,35 +452,35 @@
                               :ui/label :string.option/aspect-ratio-preset
                               :ui/element :ui.element/flag-aspect-ratio-preset-select}
 
-   :flag-width {:type :range
+   :flag-width {:type :option.type/range
                 :default 3
                 :min 0.1
                 :max 41
                 :ui/label :string.option/flag-width
                 :ui/step 0.01}
 
-   :flag-height {:type :range
+   :flag-height {:type :option.type/range
                  :default 2
                  :min 0.1
                  :max 41
                  :ui/label :string.option/flag-height
                  :ui/step 0.01}
 
-   :flag-swallow-tail {:type :range
+   :flag-swallow-tail {:type :option.type/range
                        :default 0
                        :min 0
                        :max 100
                        :ui/label :string.option/flag-swallow-tail
                        :ui/step 0.01}
 
-   :flag-tail-point-height {:type :range
+   :flag-tail-point-height {:type :option.type/range
                             :default 0
                             :min 0
                             :max 90
                             :ui/label :string.option/flag-tail-point-height
                             :ui/step 0.01}
 
-   :flag-tail-tongue {:type :range
+   :flag-tail-tongue {:type :option.type/range
                       :default 0
                       :min 0
                       :max 100

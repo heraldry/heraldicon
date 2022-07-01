@@ -14,43 +14,43 @@
   #{})
 
 (defmethod interface/options :heraldry/semy [_context]
-  (-> {:layout {:num-fields-x {:type :range
+  (-> {:layout {:num-fields-x {:type :option.type/range
                                :min 1
                                :max 20
                                :default 6
                                :integer? true
                                :ui/label :string.option/number-of-columns}
-                :num-fields-y {:type :range
+                :num-fields-y {:type :option.type/range
                                :min 1
                                :max 20
                                :default 6
                                :integer? true
                                :ui/label :string.option/number-of-rows}
-                :offset-x {:type :range
+                :offset-x {:type :option.type/range
                            :min -1
                            :max 1
                            :default 0
                            :ui/label :string.option/offset-x
                            :ui/step 0.01}
-                :offset-y {:type :range
+                :offset-y {:type :option.type/range
                            :min -1
                            :max 1
                            :default 0
                            :ui/label :string.option/offset-y
                            :ui/step 0.01}
-                :stretch-x {:type :range
+                :stretch-x {:type :option.type/range
                             :min 0.5
                             :max 2
                             :default 1
                             :ui/label :string.option/stretch-x
                             :ui/step 0.01}
-                :stretch-y {:type :range
+                :stretch-y {:type :option.type/range
                             :min 0.5
                             :max 2
                             :default 1
                             :ui/label :string.option/stretch-y
                             :ui/step 0.01}
-                :rotation {:type :range
+                :rotation {:type :option.type/range
                            :min -90
                            :max 90
                            :default 0
@@ -58,7 +58,7 @@
                 :ui/label :string.option/layout
                 :ui/element :ui.element/semy-layout}
 
-       :rectangular? {:type :boolean
+       :rectangular? {:type :option.type/boolean
                       :default false
                       :ui/label :string.option/rectangular?}
        :manual-blazon options/manual-blazon}))

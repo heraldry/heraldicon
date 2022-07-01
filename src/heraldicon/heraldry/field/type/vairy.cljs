@@ -26,43 +26,43 @@
   (options/choices->map variant-choices))
 
 (defmethod field.interface/options field-type [_context]
-  {:variant {:type :choice
+  {:variant {:type :option.type/choice
              :choices variant-choices
              :default :default
              :ui/label :string.option/variant}
-   :layout {:num-fields-x {:type :range
+   :layout {:num-fields-x {:type :option.type/range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
                            :ui/label :string.option/subfields-x
                            :ui/element :ui.element/field-layout-num-fields-x}
-            :num-fields-y {:type :range
+            :num-fields-y {:type :option.type/range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
                            :ui/label :string.option/subfields-y
                            :ui/element :ui.element/field-layout-num-fields-y}
-            :offset-x {:type :range
+            :offset-x {:type :option.type/range
                        :min -1
                        :max 1
                        :default 0
                        :ui/label :string.option/offset-x
                        :ui/step 0.01}
-            :offset-y {:type :range
+            :offset-y {:type :option.type/range
                        :min -1
                        :max 1
                        :default 0
                        :ui/label :string.option/offset-y
                        :ui/step 0.01}
-            :stretch-x {:type :range
+            :stretch-x {:type :option.type/range
                         :min 0.5
                         :max 2
                         :default 1
                         :ui/label :string.option/stretch-x
                         :ui/step 0.01}
-            :stretch-y {:type :range
+            :stretch-y {:type :option.type/range
                         :min 0.5
                         :max 2
                         :default 1

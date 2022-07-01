@@ -24,7 +24,7 @@
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :choice
+     {:anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:chief
                                   :base
@@ -38,13 +38,13 @@
                                   :center])
                        :default :fess
                        :ui/label :string.option/point}
-               :offset-x {:type :range
+               :offset-x {:type :option.type/range
                           :min -45
                           :max 45
                           :default 0
                           :ui/label :string.option/offset-x
                           :ui/step 0.1}
-               :offset-y {:type :range
+               :offset-y {:type :option.type/range
                           :min -45
                           :max 45
                           :default 0
@@ -53,7 +53,7 @@
                :ui/label :string.option/anchor
                :ui/element :ui.element/position}
       :line line-style
-      :geometry {:size {:type :range
+      :geometry {:size {:type :option.type/range
                         :min 0.1
                         :max 90
                         :default 25

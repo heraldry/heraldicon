@@ -17,7 +17,7 @@
 (defmethod field.interface/part-names field-type [_] ["chief" "base"])
 
 (defmethod field.interface/options field-type [context]
-  {:anchor {:point {:type :choice
+  {:anchor {:point {:type :option.type/choice
                     :choices (position/anchor-choices
                               [:fess
                                :chief
@@ -29,7 +29,7 @@
                                :bottom])
                     :default :fess
                     :ui/label :string.option/point}
-            :offset-y {:type :range
+            :offset-y {:type :option.type/range
                        :min -45
                        :max 45
                        :default 0

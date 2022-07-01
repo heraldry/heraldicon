@@ -21,7 +21,7 @@
          :ui/keys [additional-values]} (or (interface/get-relevant-options context)
                                            default-option)
         display-fn (or display-fn
-                       (when (= type :choice)
+                       (when (= type :option.type/choice)
                          (fn [v]
                            ((options/choices->map choices) v)))
                        identity)

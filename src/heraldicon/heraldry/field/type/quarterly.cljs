@@ -16,52 +16,52 @@
 (defmethod field.interface/part-names field-type [_] nil)
 
 (defmethod field.interface/options field-type [_context]
-  {:layout {:num-fields-x {:type :range
+  {:layout {:num-fields-x {:type :option.type/range
                            :min 1
                            :max 20
                            :default 3
                            :integer? true
                            :ui/label :string.option/subfields-x
                            :ui/element :ui.element/field-layout-num-fields-x}
-            :num-fields-y {:type :range
+            :num-fields-y {:type :option.type/range
                            :min 1
                            :max 20
                            :default 4
                            :integer? true
                            :ui/label :string.option/subfields-y
                            :ui/element :ui.element/field-layout-num-fields-y}
-            :num-base-fields {:type :range
+            :num-base-fields {:type :option.type/range
                               :min 2
                               :max 8
                               :default 2
                               :integer? true
                               :ui/label :string.option/base-fields
                               :ui/element :ui.element/field-layout-num-base-fields}
-            :offset-x {:type :range
+            :offset-x {:type :option.type/range
                        :min -1
                        :max 1
                        :default 0
                        :ui/label :string.option/offset-x
                        :ui/step 0.01}
-            :offset-y {:type :range
+            :offset-y {:type :option.type/range
                        :min -1
                        :max 1
                        :default 0
                        :ui/label :string.option/offset-y
                        :ui/step 0.01}
-            :stretch-x {:type :range
+            :stretch-x {:type :option.type/range
                         :min 0.5
                         :max 2
                         :default 1
                         :ui/label :string.option/stretch-x
                         :ui/step 0.01}
-            :stretch-y {:type :range
+            :stretch-y {:type :option.type/range
                         :min 0.5
                         :max 2
                         :default 1
                         :ui/label :string.option/stretch-y
                         :ui/step 0.01}
-            :rotation {:type :range
+            :rotation {:type :option.type/range
                        :min -90
                        :max 90
                        :default 0

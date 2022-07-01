@@ -17,7 +17,7 @@
 (defmethod field.interface/part-names field-type [_] ["dexter" "sinister"])
 
 (defmethod field.interface/options field-type [context]
-  {:anchor {:point {:type :choice
+  {:anchor {:point {:type :option.type/choice
                     :choices (position/anchor-choices
                               [:fess
                                :dexter
@@ -28,7 +28,7 @@
                                :right])
                     :default :fess
                     :ui/label :string.option/point}
-            :offset-x {:type :range
+            :offset-x {:type :option.type/range
                        :min -45
                        :max 45
                        :default 0

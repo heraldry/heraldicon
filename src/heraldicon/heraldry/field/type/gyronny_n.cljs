@@ -22,7 +22,7 @@
                                      :fimbriation? false)
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil))]
-    {:anchor {:point {:type :choice
+    {:anchor {:point {:type :option.type/choice
                       :choices (position/anchor-choices
                                 [:chief
                                  :base
@@ -36,13 +36,13 @@
                                  :center])
                       :default :fess
                       :ui/label :string.option/point}
-              :offset-x {:type :range
+              :offset-x {:type :option.type/range
                          :min -45
                          :max 45
                          :default 0
                          :ui/label :string.option/offset-x
                          :ui/step 0.1}
-              :offset-y {:type :range
+              :offset-y {:type :option.type/range
                          :min -45
                          :max 45
                          :default 0
@@ -50,21 +50,21 @@
                          :ui/step 0.1}
               :ui/label :string.option/anchor
               :ui/element :ui.element/position}
-     :layout {:num-fields-x {:type :range
+     :layout {:num-fields-x {:type :option.type/range
                              :min 3
                              :max 32
                              :default 6
                              :integer? true
                              :ui/label :string.option/subfields
                              :ui/element :ui.element/field-layout-num-fields-x}
-              :num-base-fields {:type :range
+              :num-base-fields {:type :option.type/range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
                                 :ui/label :string.option/base-fields
                                 :ui/element :ui.element/field-layout-num-base-fields}
-              :offset-x {:type :range
+              :offset-x {:type :option.type/range
                          :min -1
                          :max 1
                          :default -0.5

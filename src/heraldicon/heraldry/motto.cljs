@@ -31,7 +31,7 @@
   (options/choices->map type-choices))
 
 (def ^:private type-option
-  {:type :choice
+  {:type :option.type/choice
    :choices type-choices
    :ui/label :string.option/type})
 
@@ -44,7 +44,7 @@
 (defmethod interface/options :heraldry/motto [context]
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
         motto-type (interface/get-raw-data (c/++ context :type))]
-    (-> {:anchor {:point {:type :choice
+    (-> {:anchor {:point {:type :option.type/choice
                           :choices (position/anchor-choices
                                     [:top
                                      :bottom])
@@ -52,13 +52,13 @@
                                      :heraldry.motto.type/slogan :top
                                      :bottom)
                           :ui/label :string.option/point}
-                  :offset-x {:type :range
+                  :offset-x {:type :option.type/range
                              :min -100
                              :max 100
                              :default 0
                              :ui/label :string.option/offset-x
                              :ui/step 0.1}
-                  :offset-y {:type :range
+                  :offset-y {:type :option.type/range
                              :min -100
                              :max 100
                              :default 0
@@ -67,7 +67,7 @@
                   :ui/label :string.option/anchor
                   :ui/element :ui.element/position}
 
-         :geometry {:size {:type :range
+         :geometry {:size {:type :option.type/range
                            :min 5
                            :max 300
                            :default 100
@@ -79,13 +79,13 @@
          :ribbon-variant {:ui/label :string.entity/ribbon
                           :ui/element :ui.element/ribbon-reference-select}
 
-         :tincture-foreground {:type :choice
+         :tincture-foreground {:type :option.type/choice
                                :choices tinctures-without-furs
                                :default :argent
                                :ui/label (ribbon/segment-type-map :heraldry.ribbon.segment.type/foreground)
                                :ui/element :ui.element/tincture-select}
 
-         :tincture-background {:type :choice
+         :tincture-background {:type :option.type/choice
                                :choices (assoc tinctures-without-furs 0 [:string.option.tincture-background-group/other-or-metal
                                                                          [:string.option.tincture-background-choice/none :none]
                                                                          [(tincture/tincture-map :argent) :argent]
@@ -94,7 +94,7 @@
                                :ui/label (ribbon/segment-type-map :heraldry.ribbon.segment.type/background)
                                :ui/element :ui.element/tincture-select}
 
-         :tincture-text {:type :choice
+         :tincture-text {:type :option.type/choice
                          :choices tinctures-without-furs
                          :default :helmet-dark
                          :ui/label (ribbon/segment-type-map :heraldry.ribbon.segment.type/foreground-with-text)

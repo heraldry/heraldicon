@@ -152,6 +152,6 @@
                           [:td {:style {:padding-left "1em"
                                         :border-left "1px solid #888"}}
                            [checkbox/checkbox (c/<< context :path [:ui :colours :show colour])
-                            :option {:type :boolean}]]])))
+                            :option {:type :option.type/boolean}]]])))
                 (sort-by sort-fn colours))]
          [tr :string.miscellaneous/none])]]]))
