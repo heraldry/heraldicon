@@ -30,7 +30,7 @@
       [tooltip/choice display-name choice]
       choice)))
 
-(defmethod element/element :theme-select [context]
+(defmethod element/element :ui.element/theme-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{:keys [ui inherited default choices]} option
           current-value (interface/get-raw-data context)

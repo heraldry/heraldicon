@@ -21,7 +21,7 @@
                                         (assoc-in [0 1 0] :string.escutcheon.type/root))
                            :default :none
                            :ui {:label :string.render-options/escutcheon
-                                :form-type :escutcheon-select}}
+                                :form-type :ui.element/escutcheon-select}}
         escutcheon (-> context (c/++ :escutcheon) interface/get-raw-data
                        (or (-> escutcheon-option :choices first second)))]
     (-> (charge.shared/options context)

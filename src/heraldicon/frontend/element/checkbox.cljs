@@ -35,5 +35,5 @@
        [tooltip/info tooltip]
        [value-mode-select/value-mode-select context :disabled? disabled?]])))
 
-(defmethod element/element :checkbox [context]
+(defmethod element/element :ui.element/checkbox [context]
   [checkbox context])

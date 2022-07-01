@@ -20,7 +20,7 @@
                  (second value))))
        vec))
 
-(defmethod element/element :colours [{:keys [path] :as context}]
+(defmethod element/element :ui.element/colours [{:keys [path] :as context}]
   (let [colours (interface/get-raw-data context)
         sort-column (or (interface/get-raw-data (c/<< context :path [:ui :colours :sort path]))
                         :colour)

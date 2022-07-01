@@ -40,7 +40,7 @@
                 " "]))
         (sort attributes)))
 
-(defmethod element/element :attributes [{:keys [path] :as context}]
+(defmethod element/element :ui.element/attributes [{:keys [path] :as context}]
   (let [attributes (interface/get-raw-data context)]
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"

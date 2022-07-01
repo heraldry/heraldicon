@@ -73,7 +73,7 @@
        (-> field :layout :num-fields-y)
        value))))
 
-(defmethod element/element :field-layout [context]
+(defmethod element/element :ui.element/field-layout [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)
@@ -95,17 +95,17 @@
            :stretch-y
            :rotation])]]])))
 
-(defmethod element/element :field-layout-num-fields-x [{:keys [path] :as context}]
+(defmethod element/element :ui.element/field-layout-num-fields-x [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [::set-num-fields-x path value]))])
 
-(defmethod element/element :field-layout-num-fields-y [{:keys [path] :as context}]
+(defmethod element/element :ui.element/field-layout-num-fields-y [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [::set-num-fields-y path value]))])
 
-(defmethod element/element :field-layout-num-base-fields [{:keys [path] :as context}]
+(defmethod element/element :ui.element/field-layout-num-base-fields [{:keys [path] :as context}]
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [::num-base-fields path value]))])

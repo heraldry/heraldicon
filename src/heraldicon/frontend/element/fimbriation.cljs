@@ -30,7 +30,7 @@
                    :string.submenu-summary/adjusted)]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(defmethod element/element :fimbriation [context]
+(defmethod element/element :ui.element/fimbriation [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)

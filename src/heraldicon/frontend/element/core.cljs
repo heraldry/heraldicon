@@ -5,10 +5,10 @@
 
 (defn- default-element [type]
   (case type
-    :choice :select
-    :boolean :checkbox
-    :range :range
-    :text :text-field
+    :choice :ui.element/select
+    :boolean :ui.element/checkbox
+    :range :ui.element/range
+    :text :ui.element/text-field
     nil))
 
 (defmulti element (fn [context]

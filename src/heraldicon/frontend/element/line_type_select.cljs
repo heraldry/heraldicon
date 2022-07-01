@@ -24,7 +24,7 @@
       [tooltip/choice display-name choice]
       choice)))
 
-(defmethod element/element :line-type-select [context]
+(defmethod element/element :ui.element/line-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [ui inherited default choices]} option

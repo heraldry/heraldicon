@@ -39,7 +39,7 @@
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
               :ui {:label :string.option/anchor
-                   :form-type :position}}
+                   :form-type :ui.element/position}}
      :layout {:stretch-y {:type :range
                           :min 0.5
                           :max 2
@@ -47,7 +47,7 @@
                           :ui {:label :string.option/stretch-y
                                :step 0.01}}
               :ui {:label :string.option/layout
-                   :form-type :field-layout}}
+                   :form-type :ui.element/field-layout}}
      :line line-style}))
 
 (defmethod field.interface/render-field field-type

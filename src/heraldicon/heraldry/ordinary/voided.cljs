@@ -11,7 +11,7 @@
                        :ui {:label :string.charge.attribute/voided}}
              :ui {:label :string.charge.attribute/voided
                   :tooltip :string.tooltip/humetty-warning
-                  :form-type :voided}}
+                  :form-type :ui.element/voided}}
       voided? (assoc :corner {:type :choice
                               :choices [[:string.option.corner-choice/round :round]
                                         [:string.option.corner-choice/sharp :sharp]

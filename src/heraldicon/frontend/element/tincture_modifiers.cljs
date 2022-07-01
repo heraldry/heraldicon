@@ -16,7 +16,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.options :as options]))
 
-(defmethod element/element :tincture-modifiers [context]
+(defmethod element/element :ui.element/tincture-modifiers [context]
   (let [preview? (interface/get-raw-data (-> context c/-- (c/++ :preview?)))
         variant (interface/get-raw-data (-> context c/-- (c/++ :variant)))]
     (when (or preview?

@@ -56,7 +56,7 @@
                            :default 0
                            :ui {:label :string.option/rotation}}
                 :ui {:label :string.option/layout
-                     :form-type :semy-layout}}
+                     :form-type :ui.element/semy-layout}}
 
        :rectangular? {:type :boolean
                       :default false

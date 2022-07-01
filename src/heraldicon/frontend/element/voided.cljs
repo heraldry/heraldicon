@@ -21,7 +21,7 @@
       (string/upper-case-first (string/combine ", " changes))
       :string.submenu-summary/no)))
 
-(defmethod element/element :voided [context]
+(defmethod element/element :ui.element/voided [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)

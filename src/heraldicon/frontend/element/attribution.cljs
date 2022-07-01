@@ -22,7 +22,7 @@
   (fn [db [_ path data]]
     (update-in db path merge data)))
 
-(defmethod element/element :attribution [{:keys [path] :as context}]
+(defmethod element/element :ui.element/attribution [{:keys [path] :as context}]
   (when-let [options (interface/get-relevant-options context)]
     (let [charge-presets? (->> context :path drop-last last #{:heraldicon.entity.type/charge})
           {:keys [ui]} options

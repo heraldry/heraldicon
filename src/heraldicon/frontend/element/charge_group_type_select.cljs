@@ -23,6 +23,6 @@
                                        new-type)
                                     (-> charge-group :slots not)) (assoc :slots [0 0 0 0 0 0 0 0])))))))
 
-(defmethod element/element :charge-group-type-select [{:keys [path] :as context}]
+(defmethod element/element :ui.element/charge-group-type-select [{:keys [path] :as context}]
   [radio-select/radio-select context
    :on-change #(rf/dispatch [::change (vec (drop-last path)) %])])

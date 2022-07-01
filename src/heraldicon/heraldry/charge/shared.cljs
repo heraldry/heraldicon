@@ -86,10 +86,10 @@
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
               :ui {:label :string.option/anchor
-                   :form-type :position}}
+                   :form-type :ui.element/position}}
      :orientation (cond-> {:point orientation-point-option
                            :ui {:label :string.option/orientation
-                                :form-type :position}}
+                                :form-type :ui.element/position}}
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :range
@@ -130,7 +130,7 @@
                             :default false
                             :ui {:label :string.option/reversed?}}
                 :ui {:label :string.option/geometry
-                     :form-type :geometry}}
+                     :form-type :ui.element/geometry}}
      :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
                       (dissoc :alignment)
                       (options/override-if-exists [:corner :default] :round)

@@ -144,10 +144,10 @@
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
               :ui {:label :string.option/anchor
-                   :form-type :position}}
+                   :form-type :ui.element/position}}
      :origin (cond-> {:point origin-point-option
                       :ui {:label :string.charge.attitude/issuant
-                           :form-type :position}}
+                           :form-type :ui.element/position}}
 
                (= current-origin-point
                   :angle) (assoc :angle {:type :range
@@ -171,7 +171,7 @@
                                                     :step 0.1}}))
      :orientation (cond-> {:point orientation-point-option
                            :ui {:label :string.option/orientation
-                                :form-type :position}}
+                                :form-type :ui.element/position}}
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :range

@@ -43,7 +43,7 @@
                               :choices position/alignment-choices
                               :default :middle
                               :ui {:label :string.option/alignment
-                                   :form-type :radio-select}}
+                                   :form-type :ui.element/radio-select}}
                   :offset-y {:type :range
                              :min -45
                              :max 45
@@ -51,12 +51,12 @@
                              :ui {:label :string.option/offset-y
                                   :step 0.1}}
                   :ui {:label :string.option/anchor
-                       :form-type :position}}
+                       :form-type :ui.element/position}}
          :variant {:type :choice
                    :choices variant-choices
                    :default :full
                    :ui {:label :string.option/variant
-                        :form-type :radio-select}}
+                        :form-type :ui.element/radio-select}}
          :num-points {:type :range
                       :min 1
                       :max 16
@@ -118,7 +118,7 @@
                               :ui {:label :string.option/stretch
                                    :step 0.01}}
                     :ui {:label :string.option/geometry
-                         :form-type :geometry}}
+                         :form-type :ui.element/geometry}}
          :outline? options/plain-outline?-option
          :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
                           (options/override-if-exists [:alignment :default] :outside))}

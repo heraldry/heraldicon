@@ -6,7 +6,7 @@
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
-(defmethod element/element :access [context]
+(defmethod element/element :ui.element/access [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [component-id (uid/generate "access")
           {:keys [ui default]} option

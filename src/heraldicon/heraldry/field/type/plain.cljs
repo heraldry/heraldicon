@@ -17,7 +17,7 @@
                         :choices tincture/choices
                         :default :none
                         :ui {:label :string.option/tincture
-                             :form-type :tincture-select}}}
+                             :form-type :ui.element/tincture-select}}}
       (tincture/furs tincture) (assoc :pattern-scaling {:type :range
                                                         :min 0.1
                                                         :max 3

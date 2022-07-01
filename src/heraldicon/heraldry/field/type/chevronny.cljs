@@ -58,7 +58,7 @@
                                    orientation-point-option)]
     {:orientation (cond-> {:point orientation-point-option
                            :ui {:label :string.option/orientation
-                                :form-type :position}}
+                                :form-type :ui.element/position}}
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :range
@@ -86,14 +86,14 @@
                              :default 6
                              :integer? true
                              :ui {:label :string.option/subfields-y
-                                  :form-type :field-layout-num-fields-y}}
+                                  :form-type :ui.element/field-layout-num-fields-y}}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
                                 :ui {:label :string.option/base-fields
-                                     :form-type :field-layout-num-base-fields}}
+                                     :form-type :ui.element/field-layout-num-base-fields}}
               :offset-y {:type :range
                          :min -3
                          :max 3
@@ -107,7 +107,7 @@
                           :ui {:label :string.option/stretch-y
                                :step 0.01}}
               :ui {:label :string.option/layout
-                   :form-type :field-layout}}
+                   :form-type :ui.element/field-layout}}
      :line line-style
      :opposite-line opposite-line-style}))
 

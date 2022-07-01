@@ -27,7 +27,7 @@
                    :string.submenu-summary/fimbriated)]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(defmethod element/element :line [context]
+(defmethod element/element :ui.element/line [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)

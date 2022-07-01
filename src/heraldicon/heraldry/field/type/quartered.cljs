@@ -55,7 +55,7 @@
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
               :ui {:label :string.option/anchor
-                   :form-type :position}}
+                   :form-type :ui.element/position}}
      :line line-style
      :opposite-line opposite-line-style
      :outline? options/plain-outline?-option}))

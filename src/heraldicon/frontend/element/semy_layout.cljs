@@ -32,7 +32,7 @@
                      :string.submenu-summary/rotated)]]
       (string/upper-case-first (string/combine ", " changes)))))
 
-(defmethod element/element :semy-layout [context]
+(defmethod element/element :ui.element/semy-layout [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)

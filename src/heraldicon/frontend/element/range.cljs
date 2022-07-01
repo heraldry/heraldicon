@@ -66,5 +66,5 @@
              :disabled? disabled?
              :on-change on-change]]])))))
 
-(defmethod element/element :range [context]
+(defmethod element/element :ui.element/range [context]
   [range-input context])

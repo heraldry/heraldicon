@@ -52,7 +52,7 @@
   (fn [db [_ context name]]
     (update-in db (:path context) remove-metadata-name name)))
 
-(defmethod element/element :metadata [context]
+(defmethod element/element :ui.element/metadata [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)

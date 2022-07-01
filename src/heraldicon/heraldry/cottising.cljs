@@ -31,7 +31,7 @@
             :outline? {:type :boolean
                        :default false
                        :ui {:label :string.charge.tincture-modifier.special/outline}}
-            :ui {:form-type :cottising}})))
+            :ui {:form-type :ui.element/cottising}})))
 
 (defn add-cottising [context num]
   (let [cottising-context (c/++ context :cottising)]

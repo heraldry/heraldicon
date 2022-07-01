@@ -450,7 +450,7 @@
                                         ["22:41" :preset-22-41]
                                         ["28:37" :preset-28-37]]
                               :ui {:label :string.option/aspect-ratio-preset
-                                   :form-type :flag-aspect-ratio-preset-select}}
+                                   :form-type :ui.element/flag-aspect-ratio-preset-select}}
 
    :flag-width {:type :range
                 :default 3

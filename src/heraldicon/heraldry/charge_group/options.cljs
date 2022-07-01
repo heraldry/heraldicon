@@ -17,7 +17,7 @@
   {:type {:type :choice
           :choices type-choices
           :ui {:label :string.option/type
-               :form-type :charge-group-type-select}}
+               :form-type :ui.element/charge-group-type-select}}
    :anchor {:point {:type :choice
                     :choices (position/anchor-choices
                               [:fess
@@ -53,7 +53,7 @@
                        :ui {:label :string.option/offset-y
                             :step 0.1}}
             :ui {:label :string.option/anchor
-                 :form-type :position}}
+                 :form-type :ui.element/position}}
    :manual-blazon options/manual-blazon})
 
 (defn- rows-or-columns [_context]
@@ -103,7 +103,7 @@
                   :default 5
                   :integer? true
                   :ui {:label :string.option/number
-                       :form-type :charge-group-slot-number}}
+                       :form-type :ui.element/charge-group-slot-number}}
           :radius {:type :range
                    :min 0
                    :max 100
@@ -141,7 +141,7 @@
                       :default 5
                       :integer? true
                       :ui {:label :string.option/number
-                           :form-type :charge-group-slot-number}}
+                           :form-type :ui.element/charge-group-slot-number}}
               ;; TODO: this should be added at some point, but there are some issues
               ;; around corners, so I'll leave it for now
               #_#_:rotate-charges? {:type :boolean
@@ -165,7 +165,7 @@
            :default 3
            :integer? true
            :ui {:label :string.option/number
-                :form-type :charge-group-slot-number}}
+                :form-type :ui.element/charge-group-slot-number}}
    :stretch {:type :range
              :min 0
              :max 5

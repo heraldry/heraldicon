@@ -64,5 +64,5 @@
                     :none)]
       [raw-select context value label choices :tooltip tooltip :on-change on-change])))
 
-(defmethod element/element :select [context]
+(defmethod element/element :ui.element/select [context]
   [select context])

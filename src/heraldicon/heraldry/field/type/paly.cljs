@@ -25,14 +25,14 @@
                              :default 6
                              :integer? true
                              :ui {:label :string.option/subfields-x
-                                  :form-type :field-layout-num-fields-x}}
+                                  :form-type :ui.element/field-layout-num-fields-x}}
               :num-base-fields {:type :range
                                 :min 2
                                 :max 8
                                 :default 2
                                 :integer? true
                                 :ui {:label :string.option/base-fields
-                                     :form-type :field-layout-num-base-fields}}
+                                     :form-type :ui.element/field-layout-num-base-fields}}
               :offset-x {:type :range
                          :min -1
                          :max 1
@@ -46,7 +46,7 @@
                           :ui {:label :string.option/stretch-x
                                :step 0.01}}
               :ui {:label :string.option/layout
-                   :form-type :field-layout}}
+                   :form-type :ui.element/field-layout}}
      :line line-style}))
 
 (defmethod field.interface/render-field field-type

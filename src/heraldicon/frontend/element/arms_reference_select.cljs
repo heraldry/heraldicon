@@ -10,7 +10,7 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defmethod element/element :arms-reference-select [context]
+(defmethod element/element :ui.element/arms-reference-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [{arms-id :id
            version :version} (interface/get-raw-data context)
