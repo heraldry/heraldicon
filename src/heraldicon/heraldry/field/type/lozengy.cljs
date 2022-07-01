@@ -21,14 +21,14 @@
                            :default 6
                            :integer? true
                            :ui {:label :string.option/subfields-x
-                                :form-type :field-layout-num-fields-x}}
+                                :form-type :ui.element/field-layout-num-fields-x}}
             :num-fields-y {:type :range
                            :min 1
                            :max 20
                            :default 6
                            :integer? true
                            :ui {:label :string.option/subfields-y
-                                :form-type :field-layout-num-fields-y}}
+                                :form-type :ui.element/field-layout-num-fields-y}}
             :offset-x {:type :range
                        :min -1
                        :max 1
@@ -60,7 +60,7 @@
                        :ui {:label :string.option/rotation
                             :step 0.01}}
             :ui {:label :string.option/layout
-                 :form-type :field-layout}}})
+                 :form-type :ui.element/field-layout}}})
 
 (defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]

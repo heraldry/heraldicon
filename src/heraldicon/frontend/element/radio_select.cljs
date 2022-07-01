@@ -45,5 +45,5 @@
               choices)
         [value-mode-select/value-mode-select context]]])))
 
-(defmethod element/element :radio-select [context]
+(defmethod element/element :ui.element/radio-select [context]
   [radio-select context])

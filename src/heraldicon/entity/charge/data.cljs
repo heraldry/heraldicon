@@ -14,7 +14,7 @@
   (cond-> {:charge-type {:type :text
                          :ui {:label :string.option/charge-type
                               :tooltip :string.tooltip/charge-type}}
-           :attributes {:ui {:form-type :attributes}}
+           :attributes {:ui {:form-type :ui.element/attributes}}
            :landscape? {:type :boolean
                         :ui {:label :string.option/landscape?
                              :tooltip :string.tooltip/landscape?}}}
@@ -27,7 +27,7 @@
                      :choices attributes/facing-choices
                      :default :none
                      :ui {:label :string.option/facing}}
-            :colours {:ui {:form-type :colours}}
+            :colours {:ui {:form-type :ui.element/colours}}
             :fixed-tincture {:type :choice
                              :choices tincture/fixed-tincture-choices
                              :default :none

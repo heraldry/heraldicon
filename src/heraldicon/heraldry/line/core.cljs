@@ -158,7 +158,7 @@
    :choices choices
    :default :straight
    :ui {:label :string.option/type
-        :form-type :line-type-select}})
+        :form-type :ui.element/line-type-select}})
 
 (def ^:private base-line-choices
   [[:string.option.alignment-choice/bottom :bottom]
@@ -211,7 +211,7 @@
                :choices base-line-choices
                :default :middle
                :ui {:label :string.option/base-line
-                    :form-type :radio-select}}
+                    :form-type :ui.element/radio-select}}
    :corner-dampening-radius {:type :range
                              :min 0
                              :max 50
@@ -413,7 +413,7 @@
                                :opposite-line :string.entity/opposite-line
                                :extra-line :string.entity/extra-line
                                :string.entity/line)
-                      :form-type :line})))))
+                      :form-type :ui.element/line})))))
 
 (defn- create-raw [{:keys [type] :or {type :straight} :as line} length
                    & {:keys [angle flipped? context seed reversed?] :as line-options}]

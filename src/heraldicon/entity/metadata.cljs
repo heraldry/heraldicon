@@ -16,4 +16,4 @@
 
 (defn options [_context]
   {:ui {:label :string.entity/metadata
-        :form-type :metadata}})
+        :form-type :ui.element/metadata}})

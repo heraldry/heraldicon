@@ -132,7 +132,7 @@
   {:type :choice
    :choices segment-type-choices
    :ui {:label :string.option/type
-        :form-type :radio-select}})
+        :form-type :ui.element/radio-select}})
 
 (derive :heraldry.ribbon/segment :heraldry.options/root)
 

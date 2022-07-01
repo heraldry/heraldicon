@@ -60,5 +60,5 @@
                        group)))
                choices)]]])))
 
-(defmethod element/element :tincture-select [context]
+(defmethod element/element :ui.element/tincture-select [context]
   [tincture-select context])

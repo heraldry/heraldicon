@@ -11,7 +11,7 @@
                         :ui {:label :string.option/humetty}}
              :ui {:label :string.option/humetty
                   :tooltip :string.tooltip/humetty-warning
-                  :form-type :humetty}}
+                  :form-type :ui.element/humetty}}
       humetty? (assoc :corner {:type :choice
                                :choices [[:string.option.corner-choice/round :round]
                                          [:string.option.corner-choice/sharp :sharp]

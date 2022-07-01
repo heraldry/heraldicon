@@ -46,7 +46,7 @@
                                     :ui {:label :string.option/highlight
                                          :step 0.01}}
                         :ui {:label :string.entity/tinctures
-                             :form-type :tincture-modifiers}})
+                             :form-type :ui.element/tincture-modifiers}})
       (assoc :ignore-layer-separator?
              {:type :boolean
               :default (->> context :path (some #{:coat-of-arms}))

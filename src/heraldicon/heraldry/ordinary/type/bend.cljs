@@ -78,7 +78,7 @@
                            :choices position/alignment-choices
                            :default :middle
                            :ui {:label :string.option/alignment
-                                :form-type :radio-select}}
+                                :form-type :ui.element/radio-select}}
                :offset-x {:type :range
                           :min -75
                           :max 75
@@ -92,10 +92,10 @@
                           :ui {:label :string.option/offset-y
                                :step 0.1}}
                :ui {:label :string.option/anchor
-                    :form-type :position}}
+                    :form-type :ui.element/position}}
       :orientation (cond-> {:point orientation-point-option
                             :ui {:label :string.option/orientation
-                                 :form-type :position}}
+                                 :form-type :ui.element/position}}
 
                      (= current-orientation-point
                         :angle) (assoc :angle {:type :range
@@ -109,7 +109,7 @@
                                                       :choices position/alignment-choices
                                                       :default :middle
                                                       :ui {:label :string.option/alignment
-                                                           :form-type :radio-select}}
+                                                           :form-type :ui.element/radio-select}}
                                           :offset-x {:type :range
                                                      :min -75
                                                      :max 75
@@ -131,7 +131,7 @@
                         :ui {:label :string.option/size
                              :step 0.1}}
                  :ui {:label :string.option/geometry
-                      :form-type :geometry}}
+                      :form-type :ui.element/geometry}}
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 

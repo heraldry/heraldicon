@@ -91,7 +91,7 @@
                   :selected? (get selected tag)]))
           sorted-tags)))
 
-(defmethod element/element :tags [{:keys [path] :as context}]
+(defmethod element/element :ui.element/tags [{:keys [path] :as context}]
   (let [value (interface/get-raw-data (c/<< context :path value-path))
         tags (interface/get-raw-data context)
         on-click (fn [event]

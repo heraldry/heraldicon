@@ -65,7 +65,7 @@
                               :border (when variant
                                         "1.5px solid #ddd")}}]]))
 
-(defmethod element/element :charge-type-select [context]
+(defmethod element/element :ui.element/charge-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
     (let [charge-context (c/-- context)
           variant-context (c/++ charge-context :variant)

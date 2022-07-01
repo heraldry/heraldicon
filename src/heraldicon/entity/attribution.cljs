@@ -96,10 +96,10 @@
            :nature {:type :choice
                     :choices nature-choices
                     :default :own-work
-                    :ui {:form-type :radio-select}}
+                    :ui {:form-type :ui.element/radio-select}}
 
            :ui {:label :string.attribution/title
-                :form-type :attribution}}
+                :form-type :ui.element/attribution}}
     (-> context
         (c/++ :license)
         interface/get-raw-data

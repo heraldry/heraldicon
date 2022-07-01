@@ -27,5 +27,5 @@
                                  (on-change value)
                                  (rf/dispatch-sync [:set context value])))}]]])))
 
-(defmethod element/element :text-field [context]
+(defmethod element/element :ui.element/text-field [context]
   [text-field context])

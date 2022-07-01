@@ -27,7 +27,7 @@
       (string/upper-case-first (string/combine ", " changes))
       "Default")))
 
-(defmethod element/element :geometry [context]
+(defmethod element/element :ui.element/geometry [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)

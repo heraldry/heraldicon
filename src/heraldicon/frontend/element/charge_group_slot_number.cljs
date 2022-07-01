@@ -17,7 +17,7 @@
                                 (take num-slots)
                                 vec))))))
 
-(defmethod element/element :charge-group-slot-number [{:keys [path] :as context}]
+(defmethod element/element :ui.element/charge-group-slot-number [{:keys [path] :as context}]
   (let [value (interface/get-list-size context)
         default (:default (interface/get-relevant-options context))]
     [range/range-input context

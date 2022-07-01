@@ -93,7 +93,7 @@
                           :choices size-mode-choices
                           :default :thickness
                           :ui {:label :string.option/size-mode
-                               :form-type :radio-select}}
+                               :form-type :ui.element/radio-select}}
         current-size-mode (options/get-value
                            (interface/get-raw-data (c/++ context :geometry :size-mode))
                            size-mode-option)]
@@ -102,7 +102,7 @@
                           :choices position/alignment-choices
                           :default :middle
                           :ui {:label :string.option/alignment
-                               :form-type :radio-select}}
+                               :form-type :ui.element/radio-select}}
               :offset-x {:type :range
                          :min -45
                          :max 45
@@ -116,10 +116,10 @@
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
               :ui {:label :string.option/anchor
-                   :form-type :position}}
+                   :form-type :ui.element/position}}
      :orientation (cond-> {:point orientation-point-option
                            :ui {:label :string.option/orientation
-                                :form-type :position}}
+                                :form-type :ui.element/position}}
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :range
@@ -155,7 +155,7 @@
                                                 :choices orientation-type-choices
                                                 :default :edge
                                                 :ui {:label :string.render-options/mode
-                                                     :form-type :radio-select}}))
+                                                     :form-type :ui.element/radio-select}}))
      :line line-style
      :opposite-line opposite-line-style
      :geometry {:size-mode size-mode-option
@@ -174,7 +174,7 @@
                           :ui {:label :string.option/stretch
                                :step 0.01}}
                 :ui {:label :string.option/geometry
-                     :form-type :geometry}}}))
+                     :form-type :ui.element/geometry}}}))
 
 (defmethod field.interface/render-field field-type
   [{:keys [environment] :as context}]

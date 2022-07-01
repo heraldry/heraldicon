@@ -33,7 +33,7 @@
             :choices access-choices
             :default :private
             :ui {:label :string.option/is-public
-                 :form-type :access}}
+                 :form-type :ui.element/access}}
    :attribution (attribution/options (c/++ context :attribution))
    :metadata (metadata/options (c/++ context :metadata))
-   :tags {:ui {:form-type :tags}}})
+   :tags {:ui {:form-type :ui.element/tags}}})

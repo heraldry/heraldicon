@@ -56,7 +56,7 @@
   {:type :choice
    :choices choices
    :ui {:label :string.option/type
-        :form-type :ordinary-type-select}})
+        :form-type :ui.element/ordinary-type-select}})
 
 (derive :heraldry/ordinary :heraldry.options/root)
 

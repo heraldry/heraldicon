@@ -20,7 +20,7 @@
                    "aligned")]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(defmethod element/element :position [context]
+(defmethod element/element :ui.element/position [context]
   (when-let [options (interface/get-relevant-options context)]
     (let [{:keys [ui]} options
           label (:label ui)

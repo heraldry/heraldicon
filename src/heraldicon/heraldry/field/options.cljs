@@ -80,7 +80,7 @@
   {:type :choice
    :choices choices
    :ui {:label :string.option/partition
-        :form-type :field-type-select}})
+        :form-type :ui.element/field-type-select}})
 
 (derive :heraldry/field :heraldry.options/root)
 

@@ -25,12 +25,12 @@
                              :choices escutcheon/choices
                              :default :none
                              :ui {:label :string.render-options/escutcheon
-                                  :form-type :escutcheon-select}}
+                                  :form-type :ui.element/escutcheon-select}}
                             {:type :choice
                              :choices (drop 1 escutcheon/choices)
                              :default :heater
                              :ui {:label :string.render-options/escutcheon
-                                  :form-type :escutcheon-select}})
+                                  :form-type :ui.element/escutcheon-select}})
         escutcheon (-> context (c/++ :escutcheon) interface/get-raw-data
                        (or (-> escutcheon-option :choices first second)))]
     (cond-> {:escutcheon escutcheon-option
@@ -39,7 +39,7 @@
                     :choices mode/choices
                     :default :colours
                     :ui {:label :string.render-options/mode
-                         :form-type :radio-select}}
+                         :form-type :ui.element/radio-select}}
 
              :texture {:type :choice
                        :choices texture/choices
@@ -91,4 +91,4 @@
                                        :choices theme/choices
                                        :default theme/default
                                        :ui {:label :string.render-options/theme
-                                            :form-type :theme-select}}))))
+                                            :form-type :ui.element/theme-select}}))))

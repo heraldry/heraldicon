@@ -68,10 +68,10 @@
                          :ui {:label :string.option/offset-y
                               :step 0.1}}
               :ui {:label :string.option/anchor
-                   :form-type :position}}
+                   :form-type :ui.element/position}}
      :orientation (cond-> {:point orientation-point-option
                            :ui {:label :string.option/orientation
-                                :form-type :position}}
+                                :form-type :ui.element/position}}
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :range

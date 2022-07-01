@@ -11,4 +11,4 @@
   {:name {:type :text
           :ui {:label :string.option/name}}
    :reference {:ui {:label :string.option/arms
-                    :form-type :arms-reference-select}}})
+                    :form-type :ui.element/arms-reference-select}}})

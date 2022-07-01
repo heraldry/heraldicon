@@ -35,7 +35,7 @@
                 :choices variant-choices
                 :default :dexter
                 :ui {:label :string.option/variant
-                     :form-type :select}}
+                     :form-type :ui.element/select}}
       :geometry {:width {:type :range
                          :min 10
                          :max 100
@@ -47,7 +47,7 @@
                           :default 50
                           :ui {:label :string.option/height}}
                  :ui {:label :string.option/geometry
-                      :form-type :geometry}}
+                      :form-type :ui.element/geometry}}
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 

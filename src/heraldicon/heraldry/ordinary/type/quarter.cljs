@@ -54,7 +54,7 @@
                            :choices position/alignment-choices
                            :default :middle
                            :ui {:label :string.option/alignment
-                                :form-type :radio-select}}
+                                :form-type :ui.element/radio-select}}
                :offset-y {:type :range
                           :min -45
                           :max 45
@@ -62,14 +62,14 @@
                           :ui {:label :string.option/offset-y
                                :step 0.1}}
                :ui {:label :string.option/anchor
-                    :form-type :position}}
+                    :form-type :ui.element/position}}
       :line line-style
       :opposite-line opposite-line-style
       :variant {:type :choice
                 :choices variant-choices
                 :default :dexter-chief
                 :ui {:label :string.option/variant
-                     :form-type :select}}
+                     :form-type :ui.element/select}}
       :geometry {:size {:type :range
                         :min 10
                         :max 150
@@ -77,7 +77,7 @@
                         :ui {:label :string.option/size
                              :step 0.1}}
                  :ui {:label :string.option/geometry
-                      :form-type :geometry}}
+                      :form-type :ui.element/geometry}}
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 
