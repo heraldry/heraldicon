@@ -115,6 +115,7 @@
     [:string.charge.tincture-modifier/collared :collared]
     [:string.charge.tincture-modifier/erased :erased]
     [:string.charge.tincture-modifier/feathered :feathered]
+    [:string.charge.tincture-modifier/flagged :flagged]
     [:string.charge.tincture-modifier/garnished :garnished]
     [:string.charge.tincture-modifier/handled :handled]
     [:string.charge.tincture-modifier/hilted :hilted]
