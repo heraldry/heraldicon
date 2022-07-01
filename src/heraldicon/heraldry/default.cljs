@@ -62,8 +62,7 @@
    :mode :colours
    :outline? false
    :squiggly? false
-   :escutcheon-shadow? true
-   :ui {:selectable-fields? true}})
+   :escutcheon-shadow? true})
 
 (def helmet
   {:type :heraldry.charge.type/helmet
