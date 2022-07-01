@@ -6,6 +6,7 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.select :as select]
    [heraldicon.frontend.element.submenu :as submenu]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
@@ -33,6 +34,12 @@
                   (= n name)))
         metadata))
 
+(rf/reg-event-db ::clear-fields
+  (fn [db _]
+    (-> db
+        (assoc-in name-path "")
+        (assoc-in value-path ""))))
+
 (macros/reg-event-db ::add-metadata
   (fn [db [_ context name value]]
     (let [name (sanitize/sanitize-string name)]
@@ -40,13 +47,6 @@
                                       (-> metadata
                                           (remove-metadata-name name)
                                           (conj [name value])))))))
-
-(defn- on-add [context]
-  (let [name (interface/get-raw-data {:path name-path})
-        value (interface/get-raw-data {:path value-path})]
-    (rf/dispatch-sync [::add-metadata context name value])
-    (rf/dispatch-sync [:set name-path ""])
-    (rf/dispatch-sync [:set value-path ""])))
 
 (macros/reg-event-db ::remove-metadata
   (fn [db [_ context name]]
@@ -95,7 +95,10 @@
               [:button
                {:disabled (or (-> name-value (or "") s/trim count zero?)
                               (-> value-value (or "") s/trim count zero?))
-                :on-click (partial on-add context)
+                :on-click (js-event/handled
+                           #(do
+                              (rf/dispatch [::add-metadata context name-value value-value])
+                              (rf/dispatch [::clear-fields])))
                 :type "button"}
                [tr :string.button/add]]]]
             [:hr]
@@ -104,13 +107,11 @@
                          ^{:key n}
                          [:div.ui-setting {:style {:margin-top "10px"
                                                    :white-space "nowrap"}}
-                          [:label
-                           n]
+                          [:label n]
                           [:div.option
                            [:input {:value v
-                                    :on-change #(rf/dispatch-sync [::add-metadata context
-                                                                   n
-                                                                   (-> % .-target .-value)])
+                                    :on-change (js-event/stop-propagation
+                                                #(rf/dispatch-sync [::add-metadata context n (-> % .-target .-value)]))
                                     :type "text"
                                     :style {:margin-right "0.5em"}}]
                            [:button
