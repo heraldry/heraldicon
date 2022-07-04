@@ -364,6 +364,12 @@
       "private": "Private",
       "public": "Public"
     },
+    "sorting-filter-choice": {
+      "name": "Name",
+      "creation": "Recent additions",
+      "update": "Recent updates"
+    },
+    "sort-by": "Sort by",
     "alignment": "Alignment",
     "alignment-choice": {
       "left": "Left",

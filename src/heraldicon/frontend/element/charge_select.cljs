@@ -17,10 +17,6 @@
    :charge
    on-select
    refresh-fn
-   :sort-fn (juxt (comp filter/normalize-string-for-sort :name)
-                  #(-> % :data :charge-type)
-                  :id
-                  :version)
    (assoc options
           :page-size 20
           :component-styles (if display-selected-item?

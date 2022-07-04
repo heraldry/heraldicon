@@ -364,6 +364,12 @@
       "private": "Privat",
       "public": "Öffentlich"
     },
+    "sorting-filter-choice": {
+      "name": "Name",
+      "creation": "Frisch angelegt",
+      "update": "Frisch aktualisiert"
+    },
+    "sort-by": "Sortierung",
     "alignment": "Ausrichtung",
     "alignment-choice": {
       "left": "Links",

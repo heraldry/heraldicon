@@ -23,7 +23,7 @@
               :style {:margin-right "10px"}}
       [tr display-name]]]))
 
-(defn radio-select [context & {:keys [on-change option]}]
+(defn radio-select [context & {:keys [on-change option style]}]
   (when-let [option (or option
                         (interface/get-relevant-options context))]
     (let [current-value (interface/get-raw-data context)
@@ -32,7 +32,7 @@
           value (or current-value
                     inherited
                     default)]
-      [:div.ui-setting
+      [:div.ui-setting {:style style}
        (when label
          [:label [tr label]])
        [:div.option

@@ -14,6 +14,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.status :as status]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.frontend.user.session :as session]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
@@ -29,7 +30,7 @@
   (some-> s
           (.normalize "NFD")))
 
-(defn normalize-string-for-sort [s]
+(defn- normalize-string-for-sort [s]
   (some-> s
           normalize-string
           s/lower-case))
@@ -178,12 +179,38 @@
                    :overflow "hidden"
                    :height "25px"}]])]]]))
 
+(def ^:private ownership-default
+  :all)
+
+(def ^:private access-default
+  :all)
+
+(def ^:private sorting-default
+  :creation)
+
+(defn- entity-sort-key-fn [sorting {:keys [name first-version-created-at created-at
+                                           type id version]}]
+  ;; put heraldicon items in front
+  [(case sorting
+     :creation (- (js/Date.)
+                  (js/Date. first-version-created-at))
+     :update (- (js/Date.)
+                (js/Date. created-at))
+     (normalize-string-for-sort name))
+   type
+   id
+   version])
+
+(defn- heraldicon? [{:keys [username]}]
+  (= username "heraldicon"))
+
 (defn- results [id session items-subscription filter-keys kind on-select & {:keys [page-size
-                                                                                   sort-fn
                                                                                    hide-ownership-filter?
                                                                                    hide-access-filter?
                                                                                    selected-item
                                                                                    predicate-fn
+                                                                                   initial-sorting-mode
+                                                                                   favour-heraldicon?
                                                                                    display-selected-item?]}]
   (status/default
    items-subscription
@@ -194,18 +221,22 @@
            filter-string-path (conj filter-path :filter-string)
            filter-tags-path (conj filter-path :filter-tags)
            filter-access-path (conj filter-path :filter-access)
+           filter-sorting-path (conj filter-path :filter-sorting)
            filter-string @(rf/subscribe [:get filter-string-path])
            filter-ownership-path (conj filter-path :filter-ownership)
            filter-tags @(rf/subscribe [:get filter-tags-path])
            filter-ownership (if-not hide-ownership-filter?
                               @(rf/subscribe [:get filter-ownership-path])
-                              :all)
+                              ownership-default)
            consider-filter-access? (and (not hide-access-filter?)
                                         (or (= filter-ownership :mine)
                                             (entity.user/admin? session)))
+           sorting (or @(rf/subscribe [:get filter-sorting-path])
+                       initial-sorting-mode
+                       sorting-default)
            filter-access (if consider-filter-access?
                            @(rf/subscribe [:get filter-access-path])
-                           :all)
+                           access-default)
            all-items (cond->> all-items
                        predicate-fn (filterv predicate-fn))
            filtered-items (filter-items session
@@ -216,13 +247,10 @@
                                         filter-access
                                         filter-ownership)
            tags-to-display (frequencies (mapcat (comp keys :tags) filtered-items))
-           sorted-items (sort-by (fn [item]
-                                ;; put heraldicon items in front
-                                   [(if (-> item :username (= "heraldicon"))
-                                      0
-                                      1)
-                                    (when sort-fn
-                                      (sort-fn item))]) filtered-items)
+           sorted-items (sort-by (partial entity-sort-key-fn sorting) filtered-items)
+           sorted-items (cond->> sorted-items
+                          (and favour-heraldicon?
+                               (= sorting :name)) (sort-by heraldicon?))
            number-of-items-path [:ui :filter id [filter-keys filter-string filter-tags filter-access filter-ownership]]
            crawler? @(rf/subscribe [:get [:ui :crawler?]])
            number-of-items (or (when crawler?
@@ -277,16 +305,18 @@
                                                                                                hide-access-filter?
                                                                                                on-filter-string-change
                                                                                                component-styles
+                                                                                               initial-sorting-mode
                                                                                                selected-item]
                                                                                         :as options}]
   (let [filter-path [:ui :filter id]
         selected-item-path (conj filter-path :selected-item)
         filter-string-path (conj filter-path :filter-string)
         filter-access-path (conj filter-path :filter-access)
+        filter-sorting-path (conj filter-path :filter-sorting)
         filter-ownership-path (conj filter-path :filter-ownership)
         filter-ownership (if-not hide-ownership-filter?
                            @(rf/subscribe [:get filter-ownership-path])
-                           :all)
+                           ownership-default)
         consider-filter-access? (and (not hide-access-filter?)
                                      (or (= filter-ownership :mine)
                                          (entity.user/admin? session)))
@@ -309,22 +339,32 @@
                           (.stopPropagation %))} [:i.fas.fa-sync-alt]])]
      [:div.filter-component-filters
       (when-not hide-ownership-filter?
-        [:div {:style {:border-right (when consider-filter-access? "1px solid #888")}}
-         [radio-select/radio-select {:path filter-ownership-path}
-          :option {:type :option.type/choice
-                   :default :all
-                   :choices (concat [[:string.option.ownership-filter-choice/all :all]
-                                     [:string.option.ownership-filter-choice/mine :mine]]
-                                    (when (#{:charge :ribbon} kind)
-                                      [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
-                                       [:string.option.ownership-filter-choice/community :community]]))}]])
+        [radio-select/radio-select {:path filter-ownership-path}
+         :option {:type :option.type/choice
+                  :default ownership-default
+                  :choices (concat [[:string.option.ownership-filter-choice/all :all]
+                                    [:string.option.ownership-filter-choice/mine :mine]]
+                                   (when (#{:charge :ribbon} kind)
+                                     [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
+                                      [:string.option.ownership-filter-choice/community :community]]))}])
 
       (when consider-filter-access?
         [radio-select/radio-select {:path filter-access-path}
          :option {:type :option.type/choice
-                  :default :all
+                  :default access-default
                   :choices [[:string.option.access-filter-choice/all :all]
                             [:string.option.access-filter-choice/public :public]
-                            [:string.option.access-filter-choice/private :private]]}])]
+                            [:string.option.access-filter-choice/private :private]]}])
+
+      [:div
+       [tr :string.option/sort-by] ":" [radio-select/radio-select {:path filter-sorting-path}
+                                        :option {:type :option.type/choice
+                                                 :default (or initial-sorting-mode
+                                                              sorting-default)
+                                                 :choices [[:string.option.sorting-filter-choice/name :name]
+                                                           [:string.option.sorting-filter-choice/creation :creation]
+                                                           [:string.option.sorting-filter-choice/update :update]]}
+                                        :style {:display "inline-block"
+                                                :margin-left "0.5em"}]]]
 
      [results id session items-subscription filter-keys kind on-select options]]))

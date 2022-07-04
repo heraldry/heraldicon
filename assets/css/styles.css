@@ -1076,6 +1076,21 @@ li.ui-menu-header {
   gap: 10px;
 }
 
+.filter-component-filters {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-component-filters > div {
+  border-right: 1px solid #888;
+}
+
+.filter-component-filters > div:last-child {
+  border-right: none;
+}
+
 .filter-component-results {
   overflow-y: auto;
   padding: 5px;
