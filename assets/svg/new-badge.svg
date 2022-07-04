@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="27.750015"
+   height="28.535393"
+   viewBox="0 0 27.750015 28.535393"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (dc2aeda, 2022-05-15)"
+   sodipodi:docname="new-badge.svg"
+   inkscape:export-filename="../img/new-badge.png"
+   inkscape:export-xdpi="172.97289"
+   inkscape:export-ydpi="172.97289"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="3.5036576"
+     inkscape:cx="23.68953"
+     inkscape:cy="-12.272889"
+     inkscape:window-width="1619"
+     inkscape:window-height="1236"
+     inkscape:window-x="327"
+     inkscape:window-y="99"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-52.882103,-69.375038)">
+    <path
+       id="rect1988"
+       style="fill:#ac0000;stroke-width:0.7;stroke-miterlimit:10;stop-color:#000000"
+       d="M 52.882103,69.375038 H 80.632118 V 97.910431 Z"
+       sodipodi:nodetypes="cccc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:7.49889px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.187473"
+       x="96.298149"
+       y="8.3470888"
+       id="text2141"
+       transform="rotate(45.831952)"><tspan
+         id="tspan2139"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#ffffff;stroke-width:0.187473"
+         x="96.298149"
+         y="8.3470888"
+         sodipodi:role="line">NEW</tspan></text>
+  </g>
+</svg>
