@@ -5,6 +5,7 @@
    [clojure.string :as s]
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.attribution :as attribution]
+   [heraldicon.entity.core :as entity]
    [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.element.radio-select :as radio-select]
    [heraldicon.frontend.element.search-field :as search-field]
@@ -14,6 +15,7 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.user.session :as session]
+   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::filter-toggle-tag
@@ -115,10 +117,16 @@
                       :color "#f6f6f6"}}
    "community"])
 
+(defn- new-badge []
+  [:img.new-badge {:src (static/static-url "/img/new-badge.png")}])
+
+(defn- updated-badge []
+  [:img.updated-badge {:src (static/static-url "/img/updated-badge.png")}])
+
 (defn- result-card [items-path item-id kind on-select selected-item-path & {:keys [selection-placeholder?]}]
-  (let [item @(rf/subscribe [::filtered-item items-path item-id])
+  (let [{:keys [username]
+         :as item} @(rf/subscribe [::filtered-item items-path item-id])
         selected? @(rf/subscribe [::filtered-item-selected? selected-item-path item-id])
-        username (:username item)
         own-username (:username @(rf/subscribe [::session/data]))]
     [:li.filter-result-card-wrapper
      [:div.filter-result-card {:class (when (and item selected?) "selected")
@@ -150,7 +158,11 @@
        (if item
          [preview/image kind item]
          [:div.filter-no-item-selected
-          [tr :string.miscellaneous/no-item-selected]])]
+          [tr :string.miscellaneous/no-item-selected]])
+       (cond
+         (entity/recently-created? item) [new-badge]
+         (entity/recently-updated? item) [updated-badge]
+         :else nil)]
       [:div.filter-result-card-tags
        (when item
          [:<>

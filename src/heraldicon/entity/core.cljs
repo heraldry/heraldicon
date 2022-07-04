@@ -37,3 +37,19 @@
    :attribution (attribution/options (c/++ context :attribution))
    :metadata (metadata/options (c/++ context :metadata))
    :tags {:ui/element :ui.element/tags}})
+
+(defn recently-created? [{:keys [first-version-created-at]}]
+  (when first-version-created-at
+    (let [creation-time (js/Date. first-version-created-at)
+          now (js/Date.)
+          diff (- now creation-time)
+          three-days (* 3 24 60 60 1000)]
+      (< diff three-days))))
+
+(defn recently-updated? [{:keys [created-at]}]
+  (when created-at
+    (let [update-time (js/Date. created-at)
+          now (js/Date.)
+          diff (- now update-time)
+          three-days (* 3 24 60 60 1000)]
+      (< diff three-days))))
