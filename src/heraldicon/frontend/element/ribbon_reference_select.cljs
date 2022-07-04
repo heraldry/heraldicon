@@ -88,5 +88,5 @@
                            .preventDefault
                            .stopPropagation)
                          (rf/dispatch [::set-reference (:path context) ribbon]))})
-          :selected-ribbon entity
+          :selected-item entity
           :display-selected-item? true]]]])))
