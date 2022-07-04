@@ -115,5 +115,7 @@
                                                 :attitude nil
                                                 :facing nil}
                                                (select-keys data [:attitude :facing]))]))})
-           :selected-charge variant
+           :selected-item variant
+           :favour-heraldicon? true
+           :initial-sorting-mode :name
            :display-selected-item? true]]]]])))

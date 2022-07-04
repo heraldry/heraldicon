@@ -89,4 +89,6 @@
                            .stopPropagation)
                          (rf/dispatch [::set-reference (:path context) ribbon]))})
           :selected-item entity
+          :favour-heraldicon? true
+          :initial-sorting-mode :name
           :display-selected-item? true]]]])))
