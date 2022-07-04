@@ -6,32 +6,26 @@
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
-(defn component [charges-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
-                                                                     selected-charge
-                                                                     display-selected-item?
-                                                                     predicate-fn]}]
-  (let [session @(rf/subscribe [::session/data])]
-    [filter/component
-     :charge-list
-     session
-     charges-subscription
-     [:name :username :metadata :tags
-      [:data :charge-type] [:data :attitude] [:data :facing] [:data :attributes] [:data :colours]]
-     :charge
-     on-select
-     refresh-fn
-     :sort-fn (juxt (comp filter/normalize-string-for-sort :name)
-                    #(-> % :data :charge-type)
-                    :id
-                    :version)
-     :page-size 20
-     :hide-ownership-filter? hide-ownership-filter?
-     :component-styles (if display-selected-item?
-                         {:height "75vh"}
-                         {:height "90vh"})
-     :selected-item selected-charge
-     :display-selected-item? display-selected-item?
-     :predicate-fn predicate-fn]))
+(defn component [charges-subscription on-select refresh-fn & {:keys [display-selected-item?]
+                                                              :as options}]
+  [filter/component
+   :charge-list
+   @(rf/subscribe [::session/data])
+   charges-subscription
+   [:name :username :metadata :tags
+    [:data :charge-type] [:data :attitude] [:data :facing] [:data :attributes] [:data :colours]]
+   :charge
+   on-select
+   refresh-fn
+   :sort-fn (juxt (comp filter/normalize-string-for-sort :name)
+                  #(-> % :data :charge-type)
+                  :id
+                  :version)
+   (assoc options
+          :page-size 20
+          :component-styles (if display-selected-item?
+                              {:height "75vh"}
+                              {:height "90vh"}))])
 
 (defn list-charges [on-select & {:as options}]
   [component

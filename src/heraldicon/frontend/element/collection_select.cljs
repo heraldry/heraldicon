@@ -5,10 +5,8 @@
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
-(defn component [collections-subscription on-select refresh-fn & {:keys [hide-ownership-filter?
-                                                                         selected-collection
-                                                                         display-selected-item?
-                                                                         predicate-fn]}]
+(defn component [collections-subscription on-select refresh-fn & {:keys [display-selected-item?]
+                                                                  :as options}]
   [filter/component
    :collection-list
    @(rf/subscribe [::session/data])
@@ -21,14 +19,11 @@
                   :type
                   :id
                   :version)
-   :page-size 20
-   :hide-ownership-filter? hide-ownership-filter?
-   :component-styles (if display-selected-item?
-                       {:height "80vh"}
-                       {:height "90vh"})
-   :selected-item selected-collection
-   :display-selected-item? display-selected-item?
-   :predicate-fn predicate-fn])
+   (assoc options
+          :page-size 20
+          :component-styles (if display-selected-item?
+                              {:height "80vh"}
+                              {:height "90vh"}))])
 
 (defn list-collections [on-select & {:as options}]
   [component

@@ -40,5 +40,5 @@
                                                  .stopPropagation)
                                                (rf/dispatch [:set context {:id id
                                                                            :version 0}]))})
-          :selected-arms entity
+          :selected-item entity
           :display-selected-item? true]]]])))
