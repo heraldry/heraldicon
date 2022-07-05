@@ -361,6 +361,42 @@
                   :bounding-box (bb/BoundingBox. 0 100 0 286.085)
                   :points {:fess (v/Vector. 50 143.0425)}})})
 
+(def ^:private community-heater-bulgy
+  {:environment (environment/create
+                 "m 50,0 c 10,0 20,0 40,5 5,30 10,50 10,70 0,30 -25,45 -50,60 -25,-15 -50,-30 -50,-60
+                 C -0.14921317,56.749847 5,35 10,5 c 20,-5 30,-5 40,-5 z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 135)})})
+
+(def ^:private community-heater-rounded
+  {:environment (environment/create
+                 "m 50,0 c 30,0 50,5 50,5 l 0.21875,34 C 100.21891,74.726721
+                 80.940248,107.13664 50,125 19.059752,107.13664 -1.6239896e-4,74.726721
+                 0,39 V 5 C 0,5 20,0 50,0 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})})
+
+(def ^:private community-heater-pointed
+  {:environment (environment/create
+                 "m 50,0 c 30,5 50,5 50,5 l 0.21875,34 C 100.21891,74.726721 80.940248,107.13664
+                 50,125 19.059752,107.13664 0,74.726721 0,39 V 5 C 0,5 20,5 50,0 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})})
+
+(def ^:private community-angular
+  {:environment (environment/create
+                 "M 0,5 50,0 100,5 95,85 50,125 5,85 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})})
+
+(def ^:private community-scutum
+  {:environment (environment/create
+                 "m 0,15 v 130 c 0,10 30,15 50,15 20,0 50,-5 50,-15
+                 V 15 C 100,5 66.749793,0 50,0 30,0 0,5 0,15 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 160)
+                  :points {:fess (v/Vector. 50 80)}})})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:string.escutcheon.type/heater #'heater]
@@ -386,6 +422,11 @@
     [:string.escutcheon.type/polish-19th-century #'polish-19th-century]]
    [:string.escutcheon.group/community
     ["Square Iberian Engrailed by coinageFission" #'community-square-iberian-engrailed]
+    ["Angular by Korfi2Go" #'community-angular]
+    ["Bulgy Heater by Korfi2Go" #'community-heater-bulgy]
+    ["Pointed Heater by Korfi2Go" #'community-heater-pointed]
+    ["Rounded Heater by Korfi2Go" #'community-heater-rounded]
+    ["Scutum by Korfi2Go" #'community-scutum]
     ["Kalasag by vairy" #'community-kalasag]]])
 
 (def ^:private kinds-map
