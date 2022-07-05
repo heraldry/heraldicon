@@ -325,7 +325,8 @@
   (let [charge-svg-url @(rf/subscribe [:get (conj form-db-path :data :svg-data-url)])
         can-upload? (and @(rf/subscribe [::session/logged-in?])
                          (or (not @(rf/subscribe [::entity/saved? form-db-path]))
-                             @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])))]
+                             @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])
+                             @(rf/subscribe [::session/admin?])))]
     [:<>
      [:label.button {:for "upload"
                      :class (when-not can-upload?

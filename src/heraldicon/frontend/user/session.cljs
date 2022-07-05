@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.user.session
   (:require
+   [heraldicon.entity.user :as user]
    [heraldicon.frontend.repository.core :as repository]
    [hodgepodge.core :as hp]
    [re-frame.core :as rf]))
@@ -84,8 +85,15 @@
   (fn [_ _]
     (rf/subscribe [:get db-path]))
 
-  (fn [logged-in? _]
-    logged-in?))
+  (fn [data _]
+    data))
+
+(rf/reg-sub ::admin?
+  (fn [_ _]
+    (rf/subscribe [:get db-path]))
+
+  (fn [data _]
+    (user/admin? data)))
 
 (rf/reg-event-fx ::logout
   (fn [_ _]
