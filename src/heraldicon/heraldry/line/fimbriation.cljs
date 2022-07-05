@@ -126,19 +126,23 @@
                       {:pointer-events "none"})}]]))
 
 (defn- dilate-recursively [data stroke-width color linejoin]
-  (walk/postwalk #(cond
-                    (and (vector? %)
-                         (-> % first (= :stroke-width))) [(first %) stroke-width]
-                    (and (vector? %)
-                         (-> % first (= :style))) [(first %) (-> %
-                                                                 second
-                                                                 (conj [:stroke-width stroke-width]))]
-                    (and (vector? %)
-                         (-> % first (= :stroke-linejoin))) [(first %) linejoin]
-                    (and (vector? %)
-                         (-> % first #{:stroke :fill :stop-color})
-                         (-> % second (not= "none"))) [(first %) color]
-                    :else %)
+  (walk/postwalk (fn [data]
+                   (cond
+                     (and (vector? data)
+                          (= (count data) 2)) (let [[k v] data]
+                                                (cond
+                                                  (= k :stroke-width) [k stroke-width]
+                                                  (= k :style) [k (conj v [:stroke-width stroke-width])]
+                                                  (= k :stroke-linejoin) [k linejoin]
+                                                  (and (#{:stroke :fill :stop-color} k)
+                                                       (not= v "none")) [k color]
+                                                  :else data))
+                     (map? data) (if (and (:fill data)
+                                          (not= (:fill data) "none")
+                                          (= (:stroke data) "none"))
+                                   (assoc data :stroke color)
+                                   data)
+                     :else data))
                  data))
 
 (defn dilate-and-fill [shape thickness color {:keys [svg-export?]}
