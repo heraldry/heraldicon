@@ -26,8 +26,8 @@
                                                                        {:orbed :argent
                                                                         :eyed :argent
                                                                         :toothed :argent
-                                                                        :secondary :gules
-                                                                        :tertiary :vert
+                                                                        :secondary :or
+                                                                        :tertiary :gules
                                                                         :armed :or
                                                                         :langued :gules
                                                                         :attired :argent
