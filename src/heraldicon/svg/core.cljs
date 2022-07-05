@@ -72,7 +72,8 @@
 
 (defn optimize [data svgo-optimize-fn]
   (go-catch
-   (-> {:removeUnknownsAndDefaults false}
+   (-> {:removeUnknownsAndDefaults false
+        :convertStyleToAttrs false}
        clj->js
        (svgo-optimize-fn data)
        <?
@@ -124,15 +125,30 @@
        selectors tag css-class css-id) (update 1 (fn [attributes]
                                                    (merge declarations attributes))))))
 
+(defn- apply-style-attributes [data]
+  (let [style (-> data second :style)]
+    (if style
+      (loop [[style-attribute & attributes] [:stroke :stroke-width :stroke-dasharray :stroke-miterlimit
+                                             :stroke-opacity :stroke-dashoffset
+                                             :fill :fill-opacity]
+             element data]
+        (if style-attribute
+          (recur attributes
+                 (cond-> element
+                   (get style style-attribute) (assoc-in [1 style-attribute] (get style style-attribute))))
+          element))
+      data)))
+
 (defn- apply-css-rules [data css-rules]
   (if (and (vector? data)
            (-> data second map?))
-    (loop [result data
-           [rule & remaining-rules] css-rules]
-      (let [new-result (apply-css-rule result rule)]
-        (if (seq remaining-rules)
-          (recur new-result remaining-rules)
-          new-result)))
+    (apply-style-attributes
+     (loop [result data
+            [rule & remaining-rules] css-rules]
+       (let [new-result (apply-css-rule result rule)]
+         (if (seq remaining-rules)
+           (recur new-result remaining-rules)
+           new-result))))
     data))
 
 (defn process-style-blocks [svg-data]

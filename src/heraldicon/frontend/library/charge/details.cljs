@@ -180,9 +180,9 @@
                                   hickory/parse-fragment
                                   first
                                   hickory/as-hiccup
+                                  svg/fix-string-style-values
                                   svg/process-style-blocks
                                   svg/strip-unnecessary-parts
-                                  svg/fix-string-style-values
                                   svg/fix-attribute-and-tag-names)]
           (rf/dispatch [::set-svg-data db-path parsed-svg-data raw-svg-data]))
         (catch :default e
