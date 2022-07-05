@@ -11,7 +11,8 @@
   (let [form-db-path (form/data-path entity-type)
         can-save? (and @(rf/subscribe [::session/logged-in?])
                        (or (not @(rf/subscribe [::entity/saved? form-db-path]))
-                           @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])))]
+                           @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])
+                           @(rf/subscribe [::session/admin?])))]
 
     [:button.button.primary {:type "submit"
                              :class (when-not can-save? "disabled")
