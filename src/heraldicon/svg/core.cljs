@@ -126,8 +126,9 @@
   (let [style (-> data second :style)]
     (if style
       (loop [[style-attribute & attributes] [:stroke :stroke-width :stroke-dasharray :stroke-miterlimit
-                                             :stroke-opacity :stroke-dashoffset
-                                             :fill :fill-opacity]
+                                             :stroke-opacity :stroke-dashoffset :stroke-linecap :stroke-linejoin
+                                             :fill :fill-opacity :fill-rule :opacity :color :visibility
+                                             :mask :display]
              element data]
         (if style-attribute
           (recur attributes
