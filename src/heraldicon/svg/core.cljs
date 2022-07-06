@@ -72,10 +72,7 @@
 
 (defn optimize [data svgo-optimize-fn]
   (go-catch
-   (-> {:removeUnknownsAndDefaults false
-        :convertStyleToAttrs false}
-       clj->js
-       (svgo-optimize-fn data)
+   (-> (svgo-optimize-fn data)
        <?
        (js->clj :keywordize-keys true)
        :data)))

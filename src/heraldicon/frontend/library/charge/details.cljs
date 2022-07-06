@@ -170,9 +170,10 @@
     (go
       (try
         (let [parsed-svg-data (-> raw-svg-data
-                                  (svg/optimize (fn [options data]
+                                  (svg/optimize (fn [data]
                                                   (go-catch
-                                                   (-> options
+                                                   (-> (clj->js {:removeUnknownsAndDefaults false
+                                                                 :convertStyleToAttrs false})
                                                        getSvgoInstance
                                                        (.optimize data)
                                                        <p!))))
