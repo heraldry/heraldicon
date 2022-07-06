@@ -2,7 +2,7 @@
   font-family: "SiteDefault";
   font-style: normal;
   font-weight: 400;
-  src: url("../font/gotham/Gotham-Light.otf") format("opentype");
+  src: url("../font/montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
 }
 
 @font-face {
