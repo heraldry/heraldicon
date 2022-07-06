@@ -41,9 +41,9 @@
 
 (defn- setup-svg-loading []
   (svg/optimize minimal-adobe-illustrator-svg
-                (fn [options data]
+                (fn [data]
                   (go
-                    (-> options
+                    (-> (clj->js {})
                         getSvgoInstance
                         (.optimize data)
                         <p!)))))
