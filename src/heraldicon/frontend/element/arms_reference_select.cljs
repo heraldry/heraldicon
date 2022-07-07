@@ -10,7 +10,8 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defn form [context & {:keys [title on-select]}]
+(defn form [context & {:keys [title on-select display-selected-item?]
+                       :or {display-selected-item? true}}]
   (when-let [option (interface/get-relevant-options context)]
     (let [{arms-id :id
            version :version} (interface/get-raw-data context)
@@ -45,7 +46,7 @@
                                                  (rf/dispatch [:set context {:id id
                                                                              :version 0}])))})
           :selected-item entity
-          :display-selected-item? true]]]])))
+          :display-selected-item? display-selected-item?]]]])))
 
 (defmethod element/element :ui.element/arms-reference-select [context]
   (form context))
