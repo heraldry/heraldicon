@@ -10,16 +10,17 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defmethod element/element :ui.element/arms-reference-select [context]
+(defn form [context & {:keys [title on-select]}]
   (when-let [option (interface/get-relevant-options context)]
     (let [{arms-id :id
            version :version} (interface/get-raw-data context)
           {:ui/keys [label]} option
           {:keys [_status entity]} (when arms-id
                                      @(rf/subscribe [::entity-for-rendering/data arms-id version]))
-          arms-title (-> entity
-                         :name
-                         (or :string.miscellaneous/none))]
+          arms-title (or title
+                         (-> entity
+                             :name
+                             (or :string.miscellaneous/none)))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
@@ -38,7 +39,13 @@
                                                (doto event
                                                  .preventDefault
                                                  .stopPropagation)
-                                               (rf/dispatch [:set context {:id id
-                                                                           :version 0}]))})
+                                               (if on-select
+                                                 (on-select (:path context) {:id id
+                                                                             :version 0})
+                                                 (rf/dispatch [:set context {:id id
+                                                                             :version 0}])))})
           :selected-item entity
           :display-selected-item? true]]]])))
+
+(defmethod element/element :ui.element/arms-reference-select [context]
+  (form context))
