@@ -14,7 +14,6 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.status :as status]
-   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.frontend.user.session :as session]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
