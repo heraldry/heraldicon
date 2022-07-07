@@ -110,7 +110,8 @@
     [arms-reference-select/form context
      :title :string.option/load-from-arms
      :on-select #(rf/dispatch [::load-arms %1 %2])
-     :display-selected-item? false]]])
+     :display-selected-item? false
+     :tooltip :string.tooltip/load-field-from-arms]]])
 
 (defn- parent-context [{:keys [path] :as context}]
   (let [index (last path)
