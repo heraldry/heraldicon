@@ -30,7 +30,11 @@
    :orange "#e58a39"
    :copper "#953d02"
    :buff "#ddc595"
-   :white "#ffffff"})
+   :white "#ffffff"
+   ;; special
+   :helmet-light "#d8d8d8"
+   :helmet-medium "#989898"
+   :helmet-dark "#585858"})
 
 (def ^:private theme-web
   {;; metals
