@@ -50,9 +50,9 @@
              (keep (fn [charge]
                      (when (:id charge)
                        ^{:key charge}
-                       [attribution/for-charge
-                        {:path [:context :charge-data]
-                         :charge-data charge}])))
+                       [:li [attribution/for-charge
+                             {:path [:context :charge-data]
+                              :charge-data charge}]])))
              charges-data)])))
 
 (defn- ribbon-attribution [form-db-path]
@@ -65,17 +65,16 @@
              (keep (fn [ribbon]
                      (when (:id ribbon)
                        ^{:key ribbon}
-                       [attribution/for-ribbon
-                        {:path [:context :ribbon-data]
-                         :ribbon-data ribbon}])))
+                       [:li [attribution/for-ribbon
+                             {:path [:context :ribbon-data]
+                              :ribbon-data ribbon}]])))
              ribbons-data)])))
 
 (defn- escutcheon-attribution []
   (let [context (c/++ base-context :data :achievement)]
     [:<>
      [:h3 [tr :string.render-options/escutcheon]]
-     [:ul
-      [attribution/for-escutcheon context]]]))
+     [attribution/for-escutcheon context]]))
 
 (defn- attribution [form-db-path]
   (let [attribution-data (attribution/for-arms {:path form-db-path})]
