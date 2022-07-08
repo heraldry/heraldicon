@@ -86,11 +86,6 @@
    :erminois erminois
    :pean pean})
 
-(def ^:private special
-  {:helmet-light "#d8d8d8"
-   :helmet-medium "#989898"
-   :helmet-dark "#585858"})
-
 (defn pick [tincture {:keys [tincture-mapping] :as context}]
   (let [mode (interface/render-option :mode context)
         theme (interface/render-option :theme context)
@@ -103,7 +98,6 @@
                           (hatching/get-for tincture)
                           "#eee")
       :else (or (theme/lookup-colour tincture theme)
-                (get special tincture)
                 "url(#void)"))))
 
 (defn tinctured-field [{:keys [tincture-mapping
