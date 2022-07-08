@@ -441,6 +441,19 @@
                  :source-creator-name "Godot13"
                  :source-creator-link "https://commons.wikimedia.org/wiki/User:Godot13"}})
 
+(def ^:private community-french-slim
+  {:environment (environment/create
+                 "m 0,0 c -0.051,33.464218 0.2004,86.58878 0.096,100
+                 -0.1042,13.84023 8.933,24.42543 22.1005,24.82399
+                 13.1676,0.39847 20.7982,1.73968 27.8035,13.02397 c
+                 7.0052,-11.28472 14.6354,-12.62588 27.8034,-13.02397
+                 13.168,-0.39808 22.2049,-10.98376 22.1006,-24.82399 C
+                 99.8066,86.590696 100,33.464218 100,0 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 138.279)})
+   :attribution {:license :public-domain
+                 :username "vairy"}})
+
 (def ^:private community-heater-bulgy
   {:environment (environment/create
                  "m 50,0 c 10,0 20,0 40,5 5,30 10,50 10,70 0,30 -25,45 -50,60 -25,-15 -50,-30 -50,-60
@@ -523,6 +536,7 @@
     ["Rounded Heater" #'community-heater-rounded]
     ["Scutum" #'community-scutum]
     ["Kalasag" #'community-kalasag]
+    ["French Slim" #'community-french-slim]
     ["Louisiana" #'community-louisiana]]])
 
 (def ^:private kinds-map
