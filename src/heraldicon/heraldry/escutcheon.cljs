@@ -416,6 +416,31 @@
    :attribution {:license :public-domain
                  :username "vairy"}})
 
+(def ^:private community-louisiana
+  {:environment (environment/create
+                 "M 1.64826,87.810447 C 4.46558,85.281706 7.08513,82.261304
+                 7.06447,76.558245 L 6.90748,33.595381 C 6.87368,24.346329
+                 4.63582,22.134663 0,17.219029 4.3479,13.111909
+                 7.94048,8.4189856 11.55175,3.4256966 21.25678,10.980354
+                 40.09166,9.5735346 50,0 59.90834,9.5733441 78.74322,10.980164
+                 88.44825,3.4256966 92.05961,8.4189856 95.65248,13.112
+                 100,17.219029 c -4.63577,4.915634 -6.87367,7.1273
+                 -6.90748,16.376352 l -0.15699,42.962864 c -0.0208,5.703059
+                 2.5987,8.72332 5.41621,11.252202 C 87.51416,108.53152
+                 61.422,95.64892 49.99796,110 38.5758,95.64892
+                 12.48364,108.53128 1.64419,87.810447 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 110)
+                  :points {:fess (v/Vector. 50 55)}})
+   :attribution {:license :public-domain
+                 :username "vairy"
+                 :nature :derivative
+                 :source-license :public-domain
+                 :source-link "https://en.wikipedia.org/wiki/File:Louisiana_state_coat_of_arms_(illustrated,_1876).jpg"
+                 :source-name "Louisiana state coat of arms (illustrated, 1876)"
+                 :source-creator-name "Godot13"
+                 :source-creator-link "https://commons.wikimedia.org/wiki/User:Godot13"}})
+
 (def ^:private community-heater-bulgy
   {:environment (environment/create
                  "m 50,0 c 10,0 20,0 40,5 5,30 10,50 10,70 0,30 -25,45 -50,60 -25,-15 -50,-30 -50,-60
@@ -497,7 +522,8 @@
     ["Pointed Heater" #'community-heater-pointed]
     ["Rounded Heater" #'community-heater-rounded]
     ["Scutum" #'community-scutum]
-    ["Kalasag" #'community-kalasag]]])
+    ["Kalasag" #'community-kalasag]
+    ["Louisiana" #'community-louisiana]]])
 
 (def ^:private kinds-map
   (into {}
