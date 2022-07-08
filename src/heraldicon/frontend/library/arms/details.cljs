@@ -70,6 +70,13 @@
                          :ribbon-data ribbon}])))
              ribbons-data)])))
 
+(defn- escutcheon-attribution []
+  (let [context (c/++ base-context :data :achievement)]
+    [:<>
+     [:h3 [tr :string.render-options/escutcheon]]
+     [:ul
+      [attribution/for-escutcheon context]]]))
+
 (defn- attribution [form-db-path]
   (let [attribution-data (attribution/for-arms {:path form-db-path})]
     [:div.attribution
@@ -77,7 +84,8 @@
      [:div {:style {:padding-left "1em"}}
       attribution-data]
      [charge-attribution form-db-path]
-     [ribbon-attribution form-db-path]]))
+     [ribbon-attribution form-db-path]
+     [escutcheon-attribution]]))
 
 (defn- render-achievement []
   [achievement/render (c/++ base-context :data :achievement)])

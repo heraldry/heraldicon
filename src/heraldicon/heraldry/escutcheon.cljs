@@ -6,6 +6,11 @@
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
 
+(def ^:private heraldicon-attribution
+  {:nature :own-work
+   :license :public-domain
+   :username "Heraldicon"})
+
 (def ^:private heater
   {;; sqrt(3) / 2 * 6 ~ 5.196152422706632
    :environment (environment/create
@@ -17,7 +22,8 @@
                       "v -2"
                       "z")
                  {:context :root
-                  :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))})})
+                  :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))})
+   :attribution heraldicon-attribution})
 
 (def ^:private square-french
   {:environment (environment/create
@@ -28,7 +34,8 @@
                       "V 0"
                       "z")
                  {:context :root
-                  :bounding-box (bb/BoundingBox. 0 (* 2 12) 0 (+ 15.7 13))})})
+                  :bounding-box (bb/BoundingBox. 0 (* 2 12) 0 (+ 15.7 13))})
+   :attribution heraldicon-attribution})
 
 (def ^:private square-iberian
   {:environment (environment/create
@@ -39,7 +46,8 @@
                       "v -7"
                       "z")
                  {:context :root
-                  :bounding-box (bb/BoundingBox. -5 5 0 (+ 7 5))})})
+                  :bounding-box (bb/BoundingBox. -5 5 0 (+ 7 5))})
+   :attribution heraldicon-attribution})
 
 (def ^:private square-czech
   {:environment (environment/create
@@ -51,7 +59,8 @@
                       "a 24.156226 24.156226 0 0 1 -48,0"
                       "z")
                  {:context :root
-                  :bounding-box (bb/BoundingBox. 0 56 0 56.5)})})
+                  :bounding-box (bb/BoundingBox. 0 56 0 56.5)})
+   :attribution heraldicon-attribution})
 
 (def ^:private french-modern
   {:environment (environment/create
@@ -71,7 +80,8 @@
                   :bounding-box (bb/BoundingBox. -7 7 0 16)
                   :width 14
                   :height 17
-                  :points {:fess (v/Vector. 0 8)}})})
+                  :points {:fess (v/Vector. 0 8)}})
+   :attribution heraldicon-attribution})
 
 (def ^:private lozenge
   {:environment (environment/create
@@ -82,7 +92,8 @@
                       "z")
                  {:context :root
                   :bounding-box (bb/BoundingBox. -5 5 0 13)
-                  :points {:fess (v/Vector. 0 6.5)}})})
+                  :points {:fess (v/Vector. 0 6.5)}})
+   :attribution heraldicon-attribution})
 
 (def ^:private oval
   {:environment (environment/create
@@ -94,7 +105,8 @@
                       "z")
                  {:context :root
                   :bounding-box (bb/BoundingBox. -5 5 0 13)
-                  :points {:fess (v/Vector. 0 6.5)}})})
+                  :points {:fess (v/Vector. 0 6.5)}})
+   :attribution heraldicon-attribution})
 
 (def ^:private roundel
   {:environment (environment/create
@@ -104,7 +116,8 @@
                       "z")
                  {:context :root
                   :bounding-box (bb/BoundingBox. -5 5 0 10)
-                  :points {:fess (v/Vector. 0 5)}})})
+                  :points {:fess (v/Vector. 0 5)}})
+   :attribution heraldicon-attribution})
 
 (def ^:private swiss
   {;; sqrt(3) / 2 * 6 ~ 5.196152422706632
@@ -118,7 +131,8 @@
                       "a 6 6 0 0 0 3,0"
                       "z")
                  {:context :root
-                  :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))})})
+                  :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))})
+   :attribution heraldicon-attribution})
 
 (def ^:private english
   {:environment (environment/create
@@ -141,7 +155,8 @@
                   :width 16
                   :height 17
                   :offset (v/Vector. -1 0)
-                  :points {:fess (v/Vector. 0 8)}})})
+                  :points {:fess (v/Vector. 0 8)}})
+   :attribution heraldicon-attribution})
 
 (def ^:private polish
   {:environment (environment/create
@@ -163,7 +178,14 @@
                       "z")
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 100 0 130)
-                  :points {:fess (v/Vector. 50 60)}})})
+                  :points {:fess (v/Vector. 50 60)}})
+   :attribution (merge heraldicon-attribution
+                       {:nature :derivative
+                        :source-license :public-domain
+                        :source-link "https://commons.wikimedia.org/wiki/File:Polish_Escutcheon.svg"
+                        :source-name "Polish Escutcheon"
+                        :source-creator-name "Masur"
+                        :source-creator-link "https://commons.wikimedia.org/wiki/User:Masur"})})
 
 (def ^:private polish-19th-century
   {:environment (environment/create
@@ -179,7 +201,14 @@
                   "Z")
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 100 0 120)
-                  :points {:fess (v/Vector. 50 60)}})})
+                  :points {:fess (v/Vector. 50 60)}})
+   :attribution (merge heraldicon-attribution
+                       {:nature :derivative
+                        :source-license :public-domain
+                        :source-link "https://commons.wikimedia.org/wiki/File:HerbTarczaPL_XIXc.svg"
+                        :source-name "HerbTarczaPL XIXc"
+                        :source-creator-name "NalesnikLD"
+                        :source-creator-link "https://commons.wikimedia.org/wiki/User:NalesnikLD"})})
 
 (def ^:private renaissance
   {:environment (environment/create
@@ -197,7 +226,13 @@
                   "Z")
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 100 0 117)
-                  :points {:fess (v/Vector. 50 55)}})})
+                  :points {:fess (v/Vector. 50 55)}})
+   :attribution (merge heraldicon-attribution
+                       {:source-license :public-domain
+                        :source-link "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Shield_Renaissance_7.svg"
+                        :source-name "Coa Illustration Shield Renaissance 7"
+                        :source-creator-name "Doc Taxon"
+                        :source-creator-link "https://commons.wikimedia.org/wiki/User:Doc_Taxon"})})
 
 (def ^:private rectangle
   {:environment (environment/create
@@ -209,7 +244,8 @@
                   "z")
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 10 0 12)
-                  :points {:fess (v/Vector. 5 6)}})})
+                  :points {:fess (v/Vector. 5 6)}})
+   :attribution heraldicon-attribution})
 
 (def ^:private flag
   {:function (fn [width height swallow-tail tail-point-height tail-tongue]
@@ -243,7 +279,8 @@
                   "z")
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 5 0 3)
-                  :points {:fess (v/Vector. 2.5 1.5)}})})
+                  :points {:fess (v/Vector. 2.5 1.5)}})
+   :attribution heraldicon-attribution})
 
 (def ^:private wedge
   {;; sqrt(3) / 2 * 6 + 2 ~ 7.196152422706632
@@ -259,7 +296,8 @@
                         "a " hole-x " " hole-y " 0 0 0 " hole-x "," (- hole-y)
                         "z")
                    {:context :root
-                    :bounding-box (bb/BoundingBox. -3 3 0 7.196152422706632)}))})
+                    :bounding-box (bb/BoundingBox. -3 3 0 7.196152422706632)}))
+   :attribution heraldicon-attribution})
 
 (def ^:private kite
   {:environment (let [width 1
@@ -286,7 +324,13 @@
                         "z")
                    {:context :root
                     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
-                    :points {:fess (v/Vector. 0 half-width)}}))})
+                    :points {:fess (v/Vector. 0 half-width)}}))
+   :attribution (merge heraldicon-attribution
+                       {:source-license :public-domain
+                        :source-link "https://commons.wikimedia.org/wiki/File:Kite_shield.svg"
+                        :source-name "Kite shield"
+                        :source-creator-name "Perhelion"
+                        :source-creator-link "https://commons.wikimedia.org/wiki/User:Perhelion"})})
 
 (def ^:private norman
   {:environment (let [width 5
@@ -304,7 +348,8 @@
                         "z")
                    {:context :root
                     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
-                    :points {:fess (v/Vector. 0 half-width)}}))})
+                    :points {:fess (v/Vector. 0 half-width)}}))
+   :attribution heraldicon-attribution})
 
 (def ^:private norman-rounded
   {:environment (let [width 5
@@ -327,7 +372,8 @@
                         "z")
                    {:context :root
                     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
-                    :points {:fess (v/Vector. 0 half-width)}}))})
+                    :points {:fess (v/Vector. 0 half-width)}}))
+   :attribution heraldicon-attribution})
 
 (def ^:private community-square-iberian-engrailed
   {:environment (environment/create
@@ -339,7 +385,14 @@
                       "a 250,250 0 0 1 -250,-250"
                       "z")
                  {:context :root
-                  :bounding-box (bb/BoundingBox. 0 500 0 600)})})
+                  :bounding-box (bb/BoundingBox. 0 500 0 600)})
+   :attribution (merge heraldicon-attribution
+                       {:nature :derivative
+                        :source-license :public-domain
+                        :source-link "https://heraldicon.org"
+                        :source-name "Square Iberian Engrailed"
+                        :source-creator-name "coinageFission#1205"
+                        :source-creator-link "https://discord.com/channels/272117928298676225/272117928298676225"})})
 
 (def ^:private community-kalasag
   {:environment (environment/create
@@ -359,14 +412,19 @@
                  1.612347,0 3.821948,1.24991 4.303754,2.02849 z"
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 100 0 286.085)
-                  :points {:fess (v/Vector. 50 143.0425)}})})
+                  :points {:fess (v/Vector. 50 143.0425)}})
+   :attribution {:license :public-domain
+                 :username "vairy"}})
 
 (def ^:private community-heater-bulgy
   {:environment (environment/create
                  "m 50,0 c 10,0 20,0 40,5 5,30 10,50 10,70 0,30 -25,45 -50,60 -25,-15 -50,-30 -50,-60
                  C -0.14921317,56.749847 5,35 10,5 c 20,-5 30,-5 40,-5 z"
                  {:context :root
-                  :bounding-box (bb/BoundingBox. 0 100 0 135)})})
+                  :bounding-box (bb/BoundingBox. 0 100 0 135)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
 
 (def ^:private community-heater-rounded
   {:environment (environment/create
@@ -374,20 +432,29 @@
                  80.940248,107.13664 50,125 19.059752,107.13664 -1.6239896e-4,74.726721
                  0,39 V 5 C 0,5 20,0 50,0 Z"
                  {:context :root
-                  :bounding-box (bb/BoundingBox. 0 100 0 125)})})
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
 
 (def ^:private community-heater-pointed
   {:environment (environment/create
                  "m 50,0 c 30,5 50,5 50,5 l 0.21875,34 C 100.21891,74.726721 80.940248,107.13664
                  50,125 19.059752,107.13664 0,74.726721 0,39 V 5 C 0,5 20,5 50,0 Z"
                  {:context :root
-                  :bounding-box (bb/BoundingBox. 0 100 0 125)})})
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
 
 (def ^:private community-angular
   {:environment (environment/create
                  "M 0,5 50,0 100,5 95,85 50,125 5,85 Z"
                  {:context :root
-                  :bounding-box (bb/BoundingBox. 0 100 0 125)})})
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
 
 (def ^:private community-scutum
   {:environment (environment/create
@@ -395,7 +462,10 @@
                  V 15 C 100,5 66.749793,0 50,0 30,0 0,5 0,15 Z"
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 100 0 160)
-                  :points {:fess (v/Vector. 50 80)}})})
+                  :points {:fess (v/Vector. 50 80)}})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
 
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
@@ -421,13 +491,13 @@
     [:string.escutcheon.type/polish #'polish]
     [:string.escutcheon.type/polish-19th-century #'polish-19th-century]]
    [:string.escutcheon.group/community
-    ["Square Iberian Engrailed by coinageFission" #'community-square-iberian-engrailed]
-    ["Angular by Korfi2Go" #'community-angular]
-    ["Bulgy Heater by Korfi2Go" #'community-heater-bulgy]
-    ["Pointed Heater by Korfi2Go" #'community-heater-pointed]
-    ["Rounded Heater by Korfi2Go" #'community-heater-rounded]
-    ["Scutum by Korfi2Go" #'community-scutum]
-    ["Kalasag by vairy" #'community-kalasag]]])
+    ["Square Iberian Engrailed" #'community-square-iberian-engrailed]
+    ["Angular" #'community-angular]
+    ["Bulgy Heater" #'community-heater-bulgy]
+    ["Pointed Heater" #'community-heater-pointed]
+    ["Rounded Heater" #'community-heater-rounded]
+    ["Scutum" #'community-scutum]
+    ["Kalasag" #'community-kalasag]]])
 
 (def ^:private kinds-map
   (into {}
@@ -447,6 +517,9 @@
 
 (def escutcheon-map
   (options/choices->map choices))
+
+(defn attribution [escutcheon-type]
+  (:attribution (get kinds-map escutcheon-type)))
 
 (defn field [escutcheon-type flag-width flag-height swallow-tail tail-point-height tail-tongue]
   (let [escutcheon-data (get kinds-map escutcheon-type)]
