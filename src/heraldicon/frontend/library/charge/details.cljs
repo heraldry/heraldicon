@@ -355,9 +355,8 @@
 (defn- attribution [form-db-path]
   (let [attribution-data (attribution/for-charge {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr :string.attribution/title]]
-     [:div {:style {:padding-left "1em"}}
-      attribution-data]]))
+     [:h3 [tr :string.attribution/license]]
+     attribution-data]))
 
 (defn- charge-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default

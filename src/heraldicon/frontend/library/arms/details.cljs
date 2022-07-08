@@ -80,9 +80,8 @@
 (defn- attribution [form-db-path]
   (let [attribution-data (attribution/for-arms {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr :string.attribution/title]]
-     [:div {:style {:padding-left "1em"}}
-      attribution-data]
+     [:h3 [tr :string.attribution/license]]
+     attribution-data
      [charge-attribution form-db-path]
      [ribbon-attribution form-db-path]
      [escutcheon-attribution]]))
