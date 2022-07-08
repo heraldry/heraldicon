@@ -334,9 +334,8 @@
 (defn- attribution [form-db-path]
   (let [attribution-data (attribution/for-ribbon {:path form-db-path})]
     [:div.attribution
-     [:h3 [tr :string.attribution/title]]
-     [:div {:style {:padding-left "1em"}}
-      attribution-data]]))
+     [:h3 [tr :string.attribution/license]]
+     attribution-data]))
 
 (defn- edit-controls []
   (let [edit-mode @(rf/subscribe [::edit-mode])]
