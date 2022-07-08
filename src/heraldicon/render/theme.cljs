@@ -498,6 +498,35 @@
    :tenne "#6c5801" ;; 60% darkened or
    })
 
+(def ^:private theme-community-soft-rage
+  {;; metals
+   :argent "#eeeeee"
+   :or "#eac05d"
+   ;; colours
+   :azure "#2c84cc"
+   :vert "#36af63"
+   :gules "#e02a36"
+   :sable "#3f3f3f"
+   :purpure "#a23bcc"
+   ;; stains
+   :murrey "#dd2a6c"
+   :sanguine "#c63943"
+   :tenne "#e88c3c"
+   ;; other
+   :bleu-celeste "#5ab7ce"
+   :brunatre "#c67533"
+   :buff "#ffe9d6"
+   :carnation "#ffe4d6"
+   :cendree "#707070"
+   :copper "#e5cdc0"
+   :orange "#e88c3c"
+   :rose "#dd7cb1"
+   :white "#ffffff"
+   ;; special
+   :helmet-light "#cccccc"
+   :helmet-medium "#707070"
+   :helmet-dark "#515151"})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:string.theme/wappenwiki :wappenwiki theme-wappenwiki]
@@ -530,7 +559,8 @@
     ["Van Goes Vroem" :community-van-goes-vroem theme-community-van-goes-vroem]
     ["Content Cranium" :community-content-cranium theme-community-content-cranium]
     ["Sodacan by Bananasplit1611" :community-sodacan theme-community-sodacan]
-    ["Custom Philippine by coinageFission" :community-custom-philippine theme-community-custom-philippine]]])
+    ["Custom Philippine by coinageFission" :community-custom-philippine theme-community-custom-philippine]
+    ["Soft Rage by Dughorm" :community-soft-rage theme-community-soft-rage]]])
 
 (def default
   :wappenwiki)
