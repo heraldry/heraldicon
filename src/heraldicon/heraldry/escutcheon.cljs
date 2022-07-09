@@ -505,6 +505,50 @@
                  :license :public-domain
                  :username "korfi2go"}})
 
+(def ^:private community-american
+  {:environment (environment/create
+                 "M 15,0 0,15 c 0,0 10,5 10,15 0,15 -10,25 -10,50 0,15 5,30
+                 25,35 15,3 25,10 25,10 0,0 10,-7 25,-10 20,-5 25,-20 25,-35 C
+                 100,55 90,45 90,30 90,20 100,15 100,15 L 85,0 C 85,0 80,5 70,5
+                 55,5 50,0 50,0 50,0 45,5 30,5 20,5 15,0 15,0 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
+
+(def ^:private community-triangular
+  {:environment (environment/create
+                 "M 50,0 C 80,0 100,10 100,10 100,60 80,90 50,120 20,90
+                 0,60.03607 0,10 0,10 20,0 50,0 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 120)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
+
+(def ^:private community-german
+  {:environment (environment/create
+                 "m 0,20 c 7,-5 20,-5 20,7 0,13 -13,13 -20,8 0,0 7,9 5,15 -2,5
+                 -5,15 -5,30 0,40 40,40 50,40 10,0 50,0 50,-40 C 100,65 97,55
+                 95,50 91,40 90,35 90,30 90,28 90,8 100,0 70,0 55,5 40,10 30,5
+                 25,4 15,5 0,7 0,17 0,20 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
+
+(def ^:private community-african
+  {:environment (environment/create
+                 "M 45,0 C 45,0 0,15 0,80 c 0,65 45,80 45,80 0,0 45,-15 45,-80 C
+                 90,15 45,0 45,0 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 90 0 160)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:string.escutcheon.type/heater #'heater]
@@ -534,10 +578,14 @@
     ["Bulgy Heater" #'community-heater-bulgy]
     ["Pointed Heater" #'community-heater-pointed]
     ["Rounded Heater" #'community-heater-rounded]
+    ["American" #'community-american]
+    ["German" #'community-german]
+    ["African" #'community-african]
+    ["Triangular" #'community-triangular]
     ["Scutum" #'community-scutum]
-    ["Kalasag" #'community-kalasag]
     ["French Slim" #'community-french-slim]
-    ["Louisiana" #'community-louisiana]]])
+    ["Louisiana" #'community-louisiana]
+    ["Kalasag" #'community-kalasag]]])
 
 (def ^:private kinds-map
   (into {}
