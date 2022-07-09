@@ -18,7 +18,8 @@
       (when form
         [form context])]]))
 
-(defn active []
-  (let [selected-component-path @(rf/subscribe [::tree/active-node-path])]
-    [form (when selected-component-path
-            (c/<< tree/node-context :path selected-component-path))]))
+(defn active [context]
+  (let [selected-component-path @(rf/subscribe [::tree/active-node-path])
+        context (or context tree/node-context)]
+    (when selected-component-path
+      [form (c/<< context :path selected-component-path)])))
