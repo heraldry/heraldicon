@@ -123,16 +123,17 @@
                     [:li [node context :title title :parent-buttons buttons]]))
              nodes))]))
 
-(defn tree [paths]
-  [:div.ui-tree
-   (into [:ul]
-         (map-indexed (fn [idx node-path]
-                        ^{:key idx}
-                        [:li
-                         (if (= node-path :spacer)
-                           [:div {:style {:height "1em"}}]
-                           [node (c/<< node-context :path node-path)])]))
-         paths)])
+(defn tree [paths context]
+  (let [context (or context node-context)]
+    [:div.ui-tree
+     (into [:ul]
+           (map-indexed (fn [idx node-path]
+                          ^{:key idx}
+                          [:li
+                           (if (= node-path :spacer)
+                             [:div {:style {:height "1em"}}]
+                             [node (c/<< context :path node-path)])]))
+           paths)]))
 
 (def ^:private active-node-path
   [:ui :component-tree :selected-node])
@@ -216,12 +217,9 @@
           component-type (component/effective-type raw-type)]
       (cond->
         {:db (-> db
-
                  (assoc-in active-node-path path)
                  (open-node (cond-> path
-                              (not open?) drop-last))
-                 (cond->))}
-
+                              (not open?) drop-last)))}
         (= component-type
            :heraldicon.entity.collection/element) (assoc :dispatch [::collection.element/highlight path])))))
 
