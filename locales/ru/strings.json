@@ -16,7 +16,8 @@
   "language": {
     "english": "Английский",
     "german": "Немецкий",
-    "russian": "Русский"
+    "russian": "Русский",
+    "ukrainian": "Ukrainian"
   },
   "ordinary": {
     "type": {
@@ -267,7 +268,9 @@
       "erased": "Erased",
       "eyed": "Eyed",
       "eyed-peacock": "Eyed (peacock)",
+      "feathered": "Feathered",
       "finned": "Finned",
+      "flagged": "Flagged",
       "fructed": "Fructed",
       "garnished": "Garnished",
       "handled": "Handled",
@@ -303,6 +306,9 @@
       "roundel": "Roundel",
       "rustre": "Rustre",
       "star": "Star"
+    },
+    "editor": {
+      "colourize-info": "Give SVG elements a unique colour by clicking on them"
     }
   },
   "render-options": {
@@ -358,6 +364,12 @@
       "private": "Private",
       "public": "Public"
     },
+    "sorting-filter-choice": {
+      "name": "Имя",
+      "creation": "Recent additions",
+      "update": "Recent updates"
+    },
+    "sort-by": "Sort by",
     "alignment": "Alignment",
     "alignment-choice": {
       "left": "Left",
@@ -431,6 +443,7 @@
     "landscape?": "Landscape",
     "layer": "Layer",
     "layout": "Layout",
+    "load-from-arms": "Load arms",
     "manual-blazon": "Ввести блазон вручную",
     "mirrored?": "Mirrored",
     "name": "Имя",
@@ -564,7 +577,12 @@
     "redo": "redo",
     "remove": "удалить",
     "smoothing": "This might smooth out some remaining corners, best used together with corner radius.",
-    "undo": "undo"
+    "undo": "undo",
+    "charge-type": "The English name the charge would be given in blazonry, e.g. lion, flower, staff",
+    "landscape?": "Keep the SVG as-is, embedded graphics also are allowed. This is only a good idea if you want to use images as landscape backgrounds.",
+    "fixed-tincture": "Gives the charge a fixed tincture, which can't be changed by a field. Such charges are not very flexible, so use them only in exceptional cases.",
+    "charge-group-preview": "Click the slots to disable them or cycle through the available charges (added below).",
+    "load-field-from-arms": "Replace the field with existing coat of arms."
   },
   "miscellaneous": {
     "and": "and",
@@ -573,6 +591,7 @@
     "bottom": "bottom",
     "by": "by",
     "extra": "extra",
+    "error": "Error",
     "fields": "fields",
     "general": "General",
     "inherited": "Inherited",
@@ -594,7 +613,8 @@
     "shield-layer": "Shield layer",
     "top": "top",
     "unnamed": "нет имени",
-    "unsaved-data": "несохраненные данные"
+    "unsaved-data": "несохраненные данные",
+    "field-reference": "like"
   },
   "button": {
     "add": "Добавить",
@@ -606,7 +626,11 @@
     "edit": "редактировать",
     "from-blazon": "From blazon",
     "save": "сохранить",
-    "upload-svg": "Загрузить файл SVG"
+    "upload-svg": "Загрузить файл SVG",
+    "colourize": "Colourize",
+    "actions": "Actions",
+    "export": "Export",
+    "share": "Share"
   },
   "user": {
     "message": {
@@ -684,7 +708,9 @@
     "source": "источник",
     "source-license": "Источник лицензии",
     "source-link": "Ссылка на источник",
-    "source-name": "Имя источника"
+    "source-name": "Имя источника",
+    "source-modification": "Source modifications (optional)",
+    "modifications": "modifications"
   },
   "charge-group": {
     "type": {
@@ -826,6 +852,12 @@
     }
   },
   "escutcheon": {
+    "group": {
+      "traditional": "Traditional",
+      "shapes": "Shapes",
+      "decorative": "Decorative",
+      "community": "От сообщества"
+    },
     "type": {
       "english": "Английский",
       "flag": "Flag",

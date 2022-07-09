@@ -34,7 +34,7 @@
       "orle": "Внутрішня облямівка",
       "pale": "Стовп",
       "pall": "Вилоподібний хрест",
-      "pile": "Вістря донизу",
+      "pile": "Вістря",
       "point": "Point",
       "quarter": "Чверть / вільна частина",
       "saltire": "Косий хрест"
@@ -42,33 +42,33 @@
   },
   "field": {
     "type": {
-      "barry": "Перетятий багато разів",
-      "bendy-sinister": "Скошений зліва багато разів",
-      "bendy": "Скошений справа багато разів",
-      "chequy": "Поділений шахово",
-      "chevronny": "Поділений кроквоподібно багато разів",
+      "barry": "Перетяте багато разів",
+      "bendy-sinister": "Скошене зліва багато разів",
+      "bendy": "Скошене справа багато разів",
+      "chequy": "Поділене шахово",
+      "chevronny": "Поділене кроквоподібно багато разів",
       "counterchanged": "В обернених кольорах",
       "fretty": "Косоплетена решітка",
-      "gyronny": "Поділений клинчасто",
-      "gyronny-n": "Поділений клинчасто на N частин",
-      "lozengy": "Поділений косошахово",
-      "masony": "Мурований",
-      "paly": "Розтятий багато разів",
+      "gyronny": "Поділене клинчасто",
+      "gyronny-n": "Поділене клинчасто на N частин",
+      "lozengy": "Поділене косошахово",
+      "masony": "Муроване",
+      "paly": "Розтяте багато разів",
       "papellony": "Papellony",
-      "per-bend-sinister": "Скошений зліва",
-      "per-bend": "Скошений",
-      "per-chevron": "Розділений кроквоподібно",
-      "per-fess": "Перетятий",
-      "per-pale": "Розтятий",
-      "per-pile": "Розділений вістрям",
-      "per-saltire": "Скошений чотиридільно",
+      "per-bend-sinister": "Скошене ліворуч",
+      "per-bend": "Скошене праворуч",
+      "per-chevron": "Розділене кроквоподібно",
+      "per-fess": "Перетяте",
+      "per-pale": "Розтяте",
+      "per-pile": "Розділене вістрям",
+      "per-saltire": "Скошене обабіч",
       "plain": "Без поділу",
       "potenty": "Potenty",
-      "quartered": "Поділений чотиридільно",
-      "quarterly": "Поділено на N*M",
-      "tierced-per-fess": "Двічі перетятий",
-      "tierced-per-pale": "Двічі розтятий",
-      "tierced-per-pall": "Поділений у вилоподібний хрест",
+      "quartered": "Розтяте і перетяте",
+      "quarterly": "Поділене N на M",
+      "tierced-per-fess": "Двічі перетяте",
+      "tierced-per-pale": "Двічі розтяте",
+      "tierced-per-pall": "Поділене у вилоподібний хрест",
       "vairy": "Біляче хутро"
     }
   },
@@ -206,7 +206,7 @@
       "glissant": "Звивається",
       "hauriant": "Спливає",
       "in-her-piety": "Кровоточить",
-      "issuant": "Зростає з іншої фігури",
+      "issuant": "Фігура виходить з іншої",
       "naiant": "Пливе",
       "none": "Немає",
       "nowed": "З вузлом",
@@ -268,7 +268,9 @@
       "erased": "Колір лінії відриву",
       "eyed": "Колір очей",
       "eyed-peacock": "Eyed (peacock)",
+      "feathered": "Колір пір'я",
       "finned": "Колір плавців",
+      "flagged": "Колір прапора",
       "fructed": "Колір плодів",
       "garnished": "Garnished",
       "handled": "Handled",
@@ -304,6 +306,9 @@
       "roundel": "Коло",
       "rustre": "Просвердлений ромб",
       "star": "Зірка"
+    },
+    "editor": {
+      "colourize-info": "Give SVG elements a unique colour by clicking on them"
     }
   },
   "render-options": {
@@ -329,7 +334,7 @@
       "coat-of-arms": "Щит"
     },
     "shiny?": "З відблиском",
-    "simulate-surface": "Імітація текстури",
+    "simulate-surface": "Симуляція поверхні",
     "squiggly?": "Нерівні лінії (може бути повільно)",
     "texture": "Текстура",
     "texture-choice": {
@@ -359,6 +364,12 @@
       "private": "Приватні",
       "public": "Публічні"
     },
+    "sorting-filter-choice": {
+      "name": "За назвою",
+      "creation": "Останні додані",
+      "update": "Останні оновлення"
+    },
+    "sort-by": "Порядок сортування",
     "alignment": "Розміщення",
     "alignment-choice": {
       "left": "Зліва",
@@ -432,6 +443,7 @@
     "landscape?": "Ландшафт",
     "layer": "Layer",
     "layout": "Layout",
+    "load-from-arms": "Завантажити герб",
     "manual-blazon": "Блазон — вручну",
     "mirrored?": "Mirrored",
     "name": "Назва",
@@ -456,7 +468,7 @@
       "heraldicon": "Від Heraldicon",
       "community": "Від спільноти"
     },
-    "partition": "Поділ щита",
+    "partition": "Поділ поля",
     "pattern-scaling": "Pattern scaling",
     "pattern-rotation": "Pattern rotation",
     "pattern-offset-x": "Зміщення візерунка осі X",
@@ -499,7 +511,7 @@
     "select-colour-theme": "Обрати палітру",
     "select-line-type": "Обрати тип ліній",
     "select-ordinary": "Обрати почесну фігуру",
-    "select-partition": "Обрати поділ щита",
+    "select-partition": "Обрати поділ поля",
     "select-preset": "Обрати шаблон",
     "select-ribbon": "Обрати девізну стрічку",
     "select-tincture": "Обрати колір",
@@ -557,7 +569,7 @@
     "alpha-feature-warning": "Роботу над цією функцією ще не завершено. Можливі зміни, користуйтеся з обачністю. :)",
     "dampening-mode": "The way the line is adjusted near corners. Different styles work better with different modes.",
     "dampening-radius": "How far around corners the dampening mode is applied.",
-    "edge-angle": "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully.",
+    "edge-angle": "Може спричинити глюки для деяких вигинів з певними кутами через проблеми з числами. Налаштовуйте обережно.",
     "humetty-warning": "З певними значеннями це може спричинити дивні результати. Спробуйте трохи змістити лінії або налаштувати параметри, якщо таке станеться.",
     "ignore-layer-separator?": "If the charge contains a layer separator for the shield, then this can disable it.",
     "move-up": "посунути вгору",
@@ -565,7 +577,12 @@
     "redo": "повторити дію",
     "remove": "видалити",
     "smoothing": "This might smooth out some remaining corners, best used together with corner radius.",
-    "undo": "відмінити дію"
+    "undo": "відмінити дію",
+    "charge-type": "Назва фігури в англомовному блазоні, наприклад «lion» (лев), «flower» (квітка), «staff» (посох)",
+    "landscape?": "Keep the SVG as-is, embedded graphics also are allowed. This is only a good idea if you want to use images as landscape backgrounds.",
+    "fixed-tincture": "Gives the charge a fixed tincture, which can't be changed by a field. Such charges are not very flexible, so use them only in exceptional cases.",
+    "charge-group-preview": "Натиснувши на чарунки, ви можете їх відключити або проглядати доступні фігури (додані знизу).",
+    "load-field-from-arms": "Замінити поле створеним раніше гербом."
   },
   "miscellaneous": {
     "and": "і",
@@ -574,6 +591,7 @@
     "bottom": "bottom",
     "by": "від автора",
     "extra": "extra",
+    "error": "Помилка",
     "fields": "fields",
     "general": "Загальні",
     "inherited": "Inherited",
@@ -596,7 +614,7 @@
     "top": "top",
     "unnamed": "без назви",
     "unsaved-data": "незбережені дані",
-    "field-reference": "like"
+    "field-reference": "як у"
   },
   "button": {
     "add": "Додати",
@@ -608,7 +626,11 @@
     "edit": "Редагувати",
     "from-blazon": "З блазону",
     "save": "Зберегти",
-    "upload-svg": "Додати файл SVG"
+    "upload-svg": "Додати файл SVG",
+    "colourize": "Colourize",
+    "actions": "Дії",
+    "export": "Експортувати",
+    "share": "Поділитися"
   },
   "user": {
     "message": {
@@ -712,46 +734,46 @@
       "diamond": "Diamond",
       "fesswise": "Fesswise",
       "frame": "Frame",
-      "in-annullo": "In annullo",
-      "in-annullo-follow": "In annullo (follow)",
-      "in-annullo-point-to-center": "In annullo (point to center)",
-      "in-cross": "In cross",
+      "in-annullo": "По колу",
+      "in-annullo-follow": "По колу (за його ходом)",
+      "in-annullo-point-to-center": "По колу (обернені до центру)",
+      "in-cross": "У хрест",
       "in-orle": "In orle",
-      "in-pall": "In pall",
-      "in-saltire": "In saltire",
-      "palewise": "Palewise",
+      "in-pall": "Розділене вилоподібно",
+      "in-saltire": "Навхрест",
+      "palewise": "У стовб",
       "presets": "Шаблони",
-      "select": "Select",
+      "select": "Обрати",
       "semy-columns": "Semy columns",
       "semy-rows": "Semy rows",
-      "sheaf-of": "Sheaf of",
-      "six": "Six",
-      "square": "Square",
-      "three": "Three",
-      "three-above-bend": "Three above bend",
-      "three-below-bend": "Three below bend",
+      "sheaf-of": "В'язка фігур:",
+      "six": "Шість",
+      "square": "У квадрат",
+      "three": "Три",
+      "three-above-bend": "Три над перев'яззю",
+      "three-below-bend": "Три під перев'яззю",
       "three-columns": "Three (columns)",
       "three-columns-inverted": "Three (columns, inverted)",
       "three-inverted": "Three (inverted)"
     },
-    "charge-group-of": "Charge group of",
+    "charge-group-of": "Група фігур:",
     "select-charge-group-preset": "Обрати шаблон групи фігур",
-    "various": "various"
+    "various": "різні"
   },
   "entity": {
     "attributes": "Атрибути",
     "arms": "Герби",
     "blazon": "Блазон",
-    "charge": "Charge",
+    "charge": "Фігура",
     "charges": "Фігури",
     "charge-group": "Група фігур",
     "crest-charge": "Crest charge",
-    "crest-charge-group": "Crest charge group",
+    "crest-charge-group": "Група фігур нашоломника",
     "collection": "Collection",
     "collections": "Колекції",
     "cottising": "Cottising",
     "cottise": "Cottise",
-    "extra-line": "Extra line",
+    "extra-line": "Додаткова лінія",
     "helm": "Helm",
     "helmet": "Колір шолома",
     "helms-and-crests": "Шоломи та нашоломники",
@@ -760,8 +782,8 @@
     "main-line": "Головна лінія",
     "metadata": "Метадані",
     "motto": "Гасло",
-    "opposite-line": "Лінія з іншого боку",
-    "ordinary": "Ordinary",
+    "opposite-line": "Протилежна лінія",
+    "ordinary": "Почесна фігура",
     "ribbon": "Ribbon",
     "semy": "Semy",
     "slogan": "Бойовий клич",
@@ -776,7 +798,7 @@
     "adjusted": "adjusted",
     "base-fields": "base fields",
     "default": "Default",
-    "fimbriated": "fimbriated",
+    "fimbriated": "з облямівкою",
     "flipped": "flipped",
     "mirrored": "mirrored",
     "no": "No",
@@ -830,6 +852,12 @@
     }
   },
   "escutcheon": {
+    "group": {
+      "traditional": "Традиційні",
+      "shapes": "Форми",
+      "decorative": "Декоративні",
+      "community": "Від спільноти"
+    },
     "type": {
       "english": "Англійський",
       "flag": "Прапор",
@@ -844,7 +872,7 @@
       "polish": "Польський",
       "rectangle": "Прямокутний",
       "renaissance": "Ренесансовий",
-      "root": "Root",
+      "root": "Основна форма",
       "rounded-norman-late": "Заокруглений варязький (пізній)",
       "roundel": "Круглий",
       "select-escutcheon": "Вибрати форму щита",
@@ -862,9 +890,9 @@
       "license-required-for-public-objects": "Для публічних робіт необхідно вказати інформацію про ліцензію."
     },
     "partition": {
-      "barry-should-have-even-number-of-fields": "У перетятому багато разів щиті має бути парна кількість секцій. Для непарної кількості використайте балки.",
-      "bendy-should-have-even-number-of-fields": "Bendy should have an even number of fields, for an odd number use bends.",
-      "paly-should-have-even-number-of-fields": "Paly should have an even number of fields, for an odd number use pales."
+      "barry-should-have-even-number-of-fields": "У перетятому багато разів полі має бути парна кількість секцій. Для непарної кількості використайте балки.",
+      "bendy-should-have-even-number-of-fields": "У скошеному багато разів полі має бути парна кількість секцій. Для непарної кількості використайте перев'язи.",
+      "paly-should-have-even-number-of-fields": "У розтятому багато разів полі має бути парна кількість секцій. Для непарної кількості використайте стовпи."
     },
     "rule-of-tincture": {
       "colour-field-on-colour-field": "Емаль (%s) на емалі (%s) — порушення правила тинктур.",
@@ -906,7 +934,7 @@
     },
     "arms-library": {
       "create-and-view-arms": "Тут можна створювати та переглядати герби. Герб необхідно зберегти та додати інформацію про ліцензію перш ніж можна буде ділитися посиланням для перегляду з іншими.",
-      "svg-png-access-info": "Посилання на файли SVG та PNG, щоправда, може переглядати будь-хто."
+      "svg-png-access-info": "Щоправда, посилання на файли SVG та PNG може переглядати будь-хто."
     },
     "charge-library": {
       "create-and-view-charges": "Тут можна переглядати та створювати фігури для подальшого використання у гербах. За замовчуванням створені вами фігури є приватними, тому тільки ви можете бачити й використовувати їх. Для того, щоб зробити їх публічними, необхідно додати інформацію про ліцензію та авторів, якщо фігуру створено на основі існуючої роботи."
