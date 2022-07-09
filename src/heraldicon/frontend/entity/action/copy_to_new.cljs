@@ -33,10 +33,6 @@
   (fn [db [_ entity-type]]
     (get-in db (copy-data-path entity-type))))
 
-(macros/reg-event-db ::set-copy-data
-  (fn [db [_ entity-type data]]
-    (assoc-in db (copy-data-path entity-type) data)))
-
 (macros/reg-event-db ::copy
   (fn [db [_ entity-type target-path]]
     (let [data-path (copy-data-path entity-type)
@@ -66,8 +62,8 @@
     (let [form-db-path (form/data-path entity-type)
           source-entity (get-in db form-db-path)
           new-entity (copy-entity source-entity)]
-      {:fx [[:dispatch [::set-copy-data entity-type new-entity]]
-            [:dispatch [::message/set-success entity-type :string.user.message/created-unsaved-copy]]
+      {:db (assoc-in db (copy-data-path entity-type) new-entity)
+       :fx [[:dispatch [::message/set-success entity-type :string.user.message/created-unsaved-copy]]
             [::set-create-entity-route entity-type]]})))
 
 (defn action [entity-type]
