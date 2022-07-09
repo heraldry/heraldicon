@@ -42,6 +42,8 @@
                                            #(into []
                                                   (map squiggly/squiggly-path)
                                                   %)))
+        {env-width :width
+         env-height :height} environment
         mask-id (uid/generate "mask")
         texture-id (uid/generate "texture")
         shiny-id (uid/generate "shiny")
@@ -72,8 +74,8 @@
                   [:feImage {:href texture-link
                              :x 0
                              :y 0
-                             :width 150
-                             :height 150
+                             :width (max env-width env-height)
+                             :height (max env-width env-height)
                              :preserveAspectRatio "none"
                              :result "image"}]
                   (when texture-displacement?
