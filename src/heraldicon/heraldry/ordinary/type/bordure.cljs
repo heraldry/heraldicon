@@ -43,7 +43,7 @@
                              :fimbriation? false
                              :corner-dampening? true)
                (dissoc :flipped?)
-               (update-in [:type :option.type/choices]
+               (update-in [:type :choices]
                           (fn [choices]
                             (into []
                                   (remove (fn [[_ line-type]]
