@@ -37,9 +37,10 @@
   (fn [db [_ entity-type target-path]]
     (let [data-path (copy-data-path entity-type)
           data (get-in db data-path)]
-      (-> db
-          (assoc-in target-path data)
-          (assoc-in data-path nil)))))
+      (cond-> db
+        data (->
+               (assoc-in target-path data)
+               (assoc-in data-path nil))))))
 
 (defn- copy-entity [source-entity]
   (-> source-entity
