@@ -21,7 +21,7 @@
         opposite-line-type (or (interface/get-raw-data (c/++ context :opposite-line :type))
                                :straight)
         adjust-line-style #(-> %
-                               (update-in [:type :option.type/choices]
+                               (update-in [:type :choices]
                                           (fn [choices]
                                             (into []
                                                   (remove (fn [[_ line-type]]

@@ -119,10 +119,10 @@
       (and (not ref?)
            (or subfield?
                root-field?
-               semy-charge?)) (update-in [:type :option.type/choices] #(->> %
-                                                                            (filter (fn [[_ t]]
-                                                                                      (not= t :heraldry.field.type/counterchanged)))
-                                                                            vec))
+               semy-charge?)) (update-in [:type :choices] #(->> %
+                                                                (filter (fn [[_ t]]
+                                                                          (not= t :heraldry.field.type/counterchanged)))
+                                                                vec))
       (not (or root-field?
                semy-charge?
                counterchanged?
