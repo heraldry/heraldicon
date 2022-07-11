@@ -338,7 +338,7 @@
                                 (uid/generate "mask"))
             highlight-helper-mask-id (when render-highlight?
                                        (uid/generate "mask"))
-            unadjusted-charge (:data charge-data)
+            unadjusted-charge (svg/strip-clip-paths (:data charge-data))
             adjusted-charge (when-not preview-original?
                               (-> unadjusted-charge
                                   (set-layer-separator-opacity

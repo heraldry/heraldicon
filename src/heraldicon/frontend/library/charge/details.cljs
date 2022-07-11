@@ -184,7 +184,6 @@
                                   svg/fix-string-style-values
                                   svg/process-style-blocks
                                   svg/strip-unnecessary-parts
-                                  svg/strip-clip-paths
                                   svg/fix-attribute-and-tag-names)]
           (rf/dispatch [::set-svg-data db-path parsed-svg-data raw-svg-data]))
         (catch :default e
