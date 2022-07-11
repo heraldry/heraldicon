@@ -175,11 +175,23 @@
                           (= (first value) :switch)) last))
                  data))
 
+(defn- strip-currentcolor [data]
+  (walk/postwalk (fn [value]
+                   (if (map? value)
+                     (into {}
+                           (remove (fn [[_ v]]
+                                     (and (string? v)
+                                          (-> v s/lower-case (= "currentcolor")))))
+                           value)
+                     value))
+                 data))
+
 (defn strip-unnecessary-parts [svg-data]
   (-> svg-data
       (strip-elements #{:style :foreignObject :foreign-object :foreignobject})
       strip-switch-elements
-      strip-classes-and-ids))
+      strip-classes-and-ids
+      strip-currentcolor))
 
 (defn add-ids [data]
   (walk/postwalk (fn [value]
