@@ -4,6 +4,7 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as repository.entity]
+   [heraldicon.frontend.repository.query :as query]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
@@ -65,16 +66,21 @@
 
 (defn- fetch [entity-type session & {:keys [on-loaded]}]
   (go
-    (try
-      (let [entities (:items (<? (request/call (fetch-entity-list-api-function entity-type)
-                                               {}
-                                               session)))]
-        (rf/dispatch [::store entity-type entities])
-        (when on-loaded
-          (on-loaded entities)))
-      (catch :default e
-        (log/error e "fetch entity list error")
-        (rf/dispatch [::store-error entity-type e])))))
+    (let [query-id [::fetch entity-type session]]
+      (when-not (query/running? query-id)
+        (query/add query-id)
+        (try
+          (let [entities (:items (<? (request/call (fetch-entity-list-api-function entity-type)
+                                                   {}
+                                                   session)))]
+            (rf/dispatch [::store entity-type entities])
+            (when on-loaded
+              (on-loaded entities)))
+          (catch :default e
+            (log/error e "fetch entity list error")
+            (rf/dispatch [::store-error entity-type e]))
+          (finally
+            (query/remove query-id)))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-type on-loaded]]

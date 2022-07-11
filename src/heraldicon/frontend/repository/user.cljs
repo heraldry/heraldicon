@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.repository.core :as repository]
+   [heraldicon.frontend.repository.query :as query]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
@@ -27,14 +28,19 @@
 
 (defn- fetch [username session]
   (go
-    (try
-      (let [user (<? (request/call :fetch-user {:username username} session))]
-        (when-not user
-          (throw (ex-info "Not found" {} :user-not-found)))
-        (rf/dispatch [::store user]))
-      (catch :default e
-        (log/error e "fetch user error")
-        (rf/dispatch [::store-error username e])))))
+    (let [query-id [::fetch username session]]
+      (when-not (query/running? query-id)
+        (query/add query-id)
+        (try
+          (let [user (<? (request/call :fetch-user {:username username} session))]
+            (when-not user
+              (throw (ex-info "Not found" {} :user-not-found)))
+            (rf/dispatch [::store user]))
+          (catch :default e
+            (log/error e "fetch user error")
+            (rf/dispatch [::store-error username e]))
+          (finally
+            (query/remove query-id)))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ username]]

@@ -6,6 +6,7 @@
    [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as entity]
+   [heraldicon.frontend.repository.query :as query]
    [heraldicon.frontend.user.session :as session]
    [heraldicon.util.core :as util]
    [re-frame.core :as rf]
@@ -43,19 +44,24 @@
 
 (defn- prepare-for-editing [entity]
   (go
-    (try
-      (let [updated-entity (<? (load-editing-data entity))]
-        (rf/dispatch [::store updated-entity]))
-      (catch :default e
-        (log/error e "fetching entity data for editing error")
-        (rf/dispatch [::store-error (:id entity) (:version entity) e])))))
+    (let [query-id [::prepare-for-editing (:id entity) (:version entity)]]
+      (when-not (query/running? query-id)
+        (query/add query-id)
+        (try
+          (let [updated-entity (<? (load-editing-data entity))]
+            (rf/dispatch [::store updated-entity]))
+          (catch :default e
+            (log/error e "fetching entity data for editing error")
+            (rf/dispatch [::store-error (:id entity) (:version entity) e]))
+          (finally
+            (query/remove query-id)))))))
 
 (defn- fetch-entity-for-editing [entity-id version]
-  (let [{:keys [status entity error] :as result} @(rf/subscribe [::entity/data entity-id version])]
+  (let [{:keys [status entity error]} @(rf/subscribe [::entity/data entity-id version])]
     (case status
       :done (prepare-for-editing entity)
       :error (rf/dispatch [::store-error entity-id version error])
-      result)))
+      nil)))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-id version]]
