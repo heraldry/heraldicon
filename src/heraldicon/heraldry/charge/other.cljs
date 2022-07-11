@@ -607,7 +607,7 @@
                    :corner (:corner fimbriation)]]))
 
              (cond
-               preview-original? (cond-> unadjusted-charge
+               preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)
                                    highlight-colours? (replace-colours
                                                        (fn [colour]
                                                          (highlight-colour
