@@ -51,6 +51,7 @@
        (map s/lower-case)
        (map colour/normalize)
        (map s/lower-case)
+       (filter #(re-matches #"^#[a-f0-9]{6}$" %))
        set))
 
 (defn- parse-number-with-unit [s]
