@@ -7,13 +7,10 @@
 
 (defn fetch [url]
   (go-catch
-   (let [response (<? (http/get url))
-         status (:status response)
-         body (:body response)
-         data (if (and (s/ends-with? url ".edn")
-                       (string? body))
-                (reader/read-string body)
-                body)]
+   (let [{:keys [status body]} (<? (http/get url))]
      (if (= status 200)
-       data
+       (if (and (s/ends-with? url ".edn")
+                (string? body))
+         (reader/read-string body)
+         body)
        (throw (ex-info "HTTP request failed" {:error body} :fetch-url-failed))))))
