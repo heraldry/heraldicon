@@ -50,7 +50,7 @@
     (walk/postwalk
      #(if (and (vector? %)
                (-> % second string?)
-               (->> % first (get #{:id :href :stroke :fill})))
+               (-> % first #{:id :href :stroke :fill :mask :clip-path}))
         (if-let [new-ref (->> % second (get prepared-id-map))]
           [(first %) new-ref]
           %)
