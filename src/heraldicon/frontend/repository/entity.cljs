@@ -5,6 +5,7 @@
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity-list :as-alias entity-list]
+   [heraldicon.frontend.repository.query :as query]
    [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
@@ -82,19 +83,24 @@
 
 (defn- fetch [entity-id version session & {:keys [on-loaded]}]
   (go
-    (try
-      (let [entity (<? (request/call (fetch-entity-api-function (id/type-from-id entity-id))
-                                     {:id entity-id
-                                      :version version}
-                                     session))]
-        (when-not entity
-          (throw (ex-info "Not found" {} :entity-not-found)))
-        (rf/dispatch [::store entity])
-        (when on-loaded
-          (on-loaded entity)))
-      (catch :default e
-        (log/error e "fetch entity error")
-        (rf/dispatch [::store-error entity-id version e])))))
+    (let [query-id [::fetch entity-id version session]]
+      (when-not (query/running? query-id)
+        (query/add query-id)
+        (try
+          (let [entity (<? (request/call (fetch-entity-api-function (id/type-from-id entity-id))
+                                         {:id entity-id
+                                          :version version}
+                                         session))]
+            (when-not entity
+              (throw (ex-info "Not found" {} :entity-not-found)))
+            (rf/dispatch [::store entity])
+            (when on-loaded
+              (on-loaded entity)))
+          (catch :default e
+            (log/error e "fetch entity error")
+            (rf/dispatch [::store-error entity-id version e]))
+          (finally
+            (query/remove query-id)))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-id version on-loaded]]
