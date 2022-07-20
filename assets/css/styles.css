@@ -509,7 +509,7 @@ label div {
   flex: 1;
 }
 
-li.nav-menu-item a:hover {
+.nav-menu-item a:hover {
   background-color: #eee;
 }
 
@@ -667,8 +667,9 @@ li.nav-menu-item a:hover {
 
 .ui-component > .ui-component-header {
   background-color: #eee;
-  border: solid 1px #ddd;
+  border: 1px solid #ddd;
   border-radius: 10px 10px 0 0;
+  border-bottom: 0;
   padding: 4px;
 }
 
@@ -734,6 +735,10 @@ li.nav-menu-item a:hover {
   white-space: nowrap;
   line-height: 1.5em;
   color: #1b6690;
+}
+
+.ui-tree .node-name.unselectable {
+  color: #000;
 }
 
 .ui-tree .selected {
@@ -834,6 +839,7 @@ li.nav-menu-item a:hover {
 .ui-hover-menu .ui-menu {
   position: absolute;
   display: none;
+  color: #ccc;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -925,41 +931,6 @@ li.ui-menu-header {
   transform: translate(-50%, 50%) rotate(45deg);
   background-color: #eeeeee;
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
-}
-
-.tree ul {
-  list-style: none;
-  padding-left: 1.3em;
-  margin: 0;
-}
-
-.tree > ul {
-  padding-left: 0;
-}
-
-.tree ul li {
-  vertical-align: top;
-}
-
-.tree .node-name {
-  display: inline-block;
-  white-space: nowrap;
-  line-height: 1.5em;
-}
-
-.tree .selected {
-  font-weight: 600;
-  color: #1b6690;
-}
-
-.tree .node-icon {
-  display: inline-block;
-  width: 1.3em;
-}
-
-.tree .node-name i {
-  width: 1.25em;
-  vertical-align: middle;
 }
 
 .history-buttons {
@@ -1118,9 +1089,20 @@ li.ui-menu-header {
   height: 100%;
 }
 
+.filter-component-search .search-field {
+  display: inline-block;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  padding: 3px 6px;
+  min-width: 10em;
+  max-width: 20em;
+  width: 50%;
+  margin-bottom: 0.5em;
+}
+
 .auto-complete-box {
   position: fixed;
-  border: 1px #777 solid;
+  border: 1px solid #777;
   max-height: 10.5em;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -1200,4 +1182,8 @@ ul.parser-warnings li {
   position: absolute;
   top: 10px;
   left: 10px;
+}
+
+.disabled-item {
+  color: #ccc;
 }

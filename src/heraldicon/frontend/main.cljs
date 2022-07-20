@@ -2,6 +2,7 @@
   (:require
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.core]
+   [heraldicon.frontend.dark-mode :as dark-mode]
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys]
    [heraldicon.frontend.language :as language]
@@ -18,7 +19,7 @@
 (defn app []
   [:<>
    [header/view]
-   [:div.main-content.no-scrollbar
+   [:div.main-content.no-scrollbar {:class (dark-mode/class)}
     [router/view]
     [modal/render]
     [auto-complete/render]]])

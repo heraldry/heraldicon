@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.modal
   (:require
+   [heraldicon.frontend.dark-mode :as dark-mode]
    [heraldicon.frontend.language :refer [tr]]
    [re-frame.core :as rf]))
 
@@ -39,7 +40,7 @@
     (when content
       [:<>
        [:div.modal-background {:on-click #(clear)}]
-       [:div.modal.dialog
+       [:div.modal.dialog {:class (dark-mode/class)}
         [:div.modal-header (if (vector? title)
                              title
                              [tr title])]

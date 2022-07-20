@@ -17,6 +17,9 @@
 (def ^:private local-storage-username-name
   "cl-username")
 
+(def ^:private local-storage-dark-mode-name
+  "cl-dark-mode")
+
 (defn- set-storage-item [key value]
   (if value
     (hp/set-item hp/local-storage key value)
@@ -28,14 +31,12 @@
 (defn read-from-storage []
   (let [session-id (get-storage-item local-storage-session-id-name)
         user-id (get-storage-item local-storage-user-id-name)
-        username (get-storage-item local-storage-username-name)]
-    (rf/dispatch-sync [::store
-                       (when (and session-id
-                                  username
-                                  user-id)
-                         {:username username
-                          :session-id session-id
-                          :user-id user-id})])))
+        username (get-storage-item local-storage-username-name)
+        dark-mode? (= (get-storage-item local-storage-dark-mode-name) "true")]
+    (rf/dispatch-sync [::store {:username username
+                                :session-id session-id
+                                :user-id user-id
+                                :dark-mode? dark-mode?}])))
 
 (rf/reg-fx ::set-cookie
   (fn [[session-id]]
@@ -47,36 +48,40 @@
                                     ";Max-Age=-99999999")))))
 
 (rf/reg-fx ::write-to-local-storage
-  (fn [[session-id username user-id]]
+  (fn [[{:keys [session-id username user-id dark-mode?]}]]
     (set-storage-item local-storage-session-id-name session-id)
     (set-storage-item local-storage-username-name username)
-    (set-storage-item local-storage-user-id-name user-id)))
+    (set-storage-item local-storage-user-id-name user-id)
+    (set-storage-item local-storage-dark-mode-name (when dark-mode?
+                                                     "true"))))
 
 (rf/reg-event-fx ::store
-  (fn [{:keys [db]} [_ {:keys [session-id
-                               username
-                               user-id]}]]
-    {:db (assoc-in db db-path {:username username
-                               :session-id session-id
-                               :user-id user-id
-                               :logged-in? (boolean (and username
-                                                         session-id
-                                                         user-id))})
-     ::set-cookie [session-id]
-     ::write-to-local-storage [session-id username user-id]}))
+  (fn [{:keys [db]} [_ session-data]]
+    {:db (assoc-in db db-path session-data)
+     ::set-cookie [(:session-id session-data)]
+     ::write-to-local-storage [session-data]}))
 
 (rf/reg-event-fx ::clear
   (fn [{:keys [db]} _]
     {:db (assoc-in db db-path nil)
      ::set-cookie [nil]
-     ::write-to-local-storage [nil nil nil]}))
+     ::write-to-local-storage [nil]}))
 
 (rf/reg-sub ::logged-in?
   (fn [_ _]
-    (rf/subscribe [:get (conj db-path :logged-in?)]))
+    [(rf/subscribe [:get (conj db-path :session-id)])
+     (rf/subscribe [:get (conj db-path :username)])
+     (rf/subscribe [:get (conj db-path :user-id)])])
 
-  (fn [logged-in? _]
-    logged-in?))
+  (fn [[session-id username user-id] _]
+    (and session-id username user-id)))
+
+(rf/reg-sub ::dark-mode?
+  (fn [_ _]
+    (rf/subscribe [:get (conj db-path :dark-mode?)]))
+
+  (fn [dark-mode? _]
+    dark-mode?))
 
 (defn data-from-db [db]
   (get-in db db-path))
@@ -100,4 +105,11 @@
     {:dispatch-n [[::clear]
                   [::repository/session-change]]
      ::set-cookie [nil]
-     ::write-to-local-storage [nil nil nil]}))
+     ::write-to-local-storage [nil]}))
+
+(rf/reg-event-fx ::toggle-dark-mode
+  (fn [{:keys [db]} _]
+    (let [new-db (update-in db (conj db-path :dark-mode?) not)
+          session-data (get-in new-db db-path)]
+      {:db new-db
+       ::write-to-local-storage [session-data]})))

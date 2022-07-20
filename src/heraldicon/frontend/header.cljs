@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.header
   (:require
    [heraldicon.entity.user :as entity.user]
+   [heraldicon.frontend.dark-mode :as dark-mode]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :as language :refer [tr]]
    [heraldicon.frontend.router :as router]
@@ -39,8 +40,9 @@
         :on-click on-click} [tr name]]])
 
 (defn view []
-  (let [session @(rf/subscribe [::session/data])]
-    [:div.header
+  (let [session @(rf/subscribe [::session/data])
+        logged-in? @(rf/subscribe [::session/logged-in?])]
+    [:div.header {:class (dark-mode/class)}
      [:div {:style {:flex 1.5
                     :line-height "2em"
                     :padding-left "0.5em"}}
@@ -65,9 +67,11 @@
         [menu-item :route.user/list :string.menu/users])
       [menu-item :route.contact/main :string.menu/contact]
       [:span {:style {:width "5em"}}]
+      [dark-mode/selector]
+      [:span {:style {:width "1em"}}]
       [language/selector]
       [:span {:style {:width "1em"}}]
-      (if (:logged-in? session)
+      (if logged-in?
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
          {:on-mouse-leave #(rf/dispatch [::clear-menu-open? user-menu-open?-path])}
          [:<>

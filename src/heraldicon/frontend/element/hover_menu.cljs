@@ -50,17 +50,16 @@
                                       (.preventDefault %)
                                       (.stopPropagation %)
                                       (handler %)))
-                         color (if (or menu-disabled? disabled?)
-                                 "#ccc"
-                                 "#777")]
+                         disabled (when (or menu-disabled? disabled?)
+                                    "disabled-item")]
                      ^{:key title}
                      [:li.ui-menu-item
-                      {:style {:color color}
+                      {:class disabled
                        :on-click (when-not (or menu-disabled? disabled?) handler)
-                       :title (tr tooltip)}
+                       :title (tr tooltip)
+                       :style {:cursor (when disabled? "not-allowed")}}
                       (when icon
-                        [:i.ui-icon {:class icon
-                                     :style {:margin-right "5px"
-                                             :color color}}])
+                        [:i.ui-icon {:class (str icon " " disabled)
+                                     :style {:margin-right "5px"}}])
                       [tr title]])))
             menu)]]))

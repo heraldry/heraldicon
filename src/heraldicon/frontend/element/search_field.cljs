@@ -5,14 +5,7 @@
 
 (defn search-field [context & {:keys [on-change]}]
   (let [current-value (interface/get-raw-data context)]
-    [:div {:style {:display "inline-block"
-                   :border-radius "999px"
-                   :border "1px solid #ccc"
-                   :padding "3px 6px"
-                   :min-width "10em"
-                   :max-width "20em"
-                   :width "50%"
-                   :margin-bottom "0.5em"}}
+    [:div.search-field
      [:i.fas.fa-search]
      [:input {:name "search"
               :type "text"
