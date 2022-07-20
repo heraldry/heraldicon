@@ -81,8 +81,7 @@
                             :cc-attribution-share-alike
                             :cc-attribution-non-commercial-share-alike}
           :cc-attribution-share-alike #{:none
-                                        :cc-attribution-share-alike
-                                        :cc-attribution-non-commercial-share-alike}
+                                        :cc-attribution-share-alike}
           :cc-attribution-non-commercial-share-alike #{:none
                                                        :cc-attribution-non-commercial-share-alike})]
 
