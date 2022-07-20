@@ -67,10 +67,9 @@
         [menu-item :route.user/list :string.menu/users])
       [menu-item :route.contact/main :string.menu/contact]
       [:span {:style {:width "5em"}}]
-      [dark-mode/selector]
-      [:span {:style {:width "1em"}}]
       [language/selector]
       [:span {:style {:width "1em"}}]
+      [dark-mode/selector]
       (if logged-in?
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
          {:on-mouse-leave #(rf/dispatch [::clear-menu-open? user-menu-open?-path])}
