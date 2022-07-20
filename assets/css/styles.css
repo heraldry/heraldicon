@@ -839,7 +839,7 @@ label div {
 .ui-hover-menu .ui-menu {
   position: absolute;
   display: none;
-  color: #ccc;
+  color: #000;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
