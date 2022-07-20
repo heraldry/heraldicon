@@ -1,0 +1,141 @@
+.dark {
+  color: #999;
+  background-color: #222;
+}
+
+.dark.header {
+  border-bottom: 1px solid #555;
+}
+
+.dark .nav-menu-item {
+  background-color: #222;
+}
+
+.dark .nav-menu-children {
+  border: 1px solid #444;
+}
+
+.dark .nav-menu-item.selected {
+  background-color: #111;
+}
+
+.dark .nav-menu-item.selected {
+  background-color: #111;
+}
+
+.dark .nav-menu-item a:hover {
+  background-color: #111;
+}
+
+.dark .main-content {
+  background-color: #222;
+}
+
+.dark .filter-component-search .search-field {
+  border: 1px solid #555;
+}
+
+.dark input {
+  color: #999;
+  background-color: #222;
+  border-color: #444;
+  outline-color: #555;
+}
+
+.dark input[type="radio"] {
+  border-color: #000;
+}
+
+.dark .ui-component > .ui-component-header {
+  background-color: #333;
+  border: 1px solid #444;
+  border-bottom: 0;
+}
+
+.dark .ui-component > .content {
+  background-color: #222;
+  border: 1px solid #444;
+}
+
+.dark .button {
+  color: rgba(255, 255, 255, 0.8);
+  border: none rgba(255, 255, 255, 0);
+  background-color: #555;
+}
+
+.dark .button.primary {
+  background-color: #359db7;
+  color: #fff;
+}
+
+.dark .ui-hover-menu .ui-menu {
+  color: #999;
+  background-color: #222;
+  border: 1px solid #444;
+}
+
+.dark li.ui-menu-header {
+  color: #aaa;
+  border-bottom: 1px solid #444;
+}
+
+.dark .ui-menu-item:hover {
+  background-color: #000;
+}
+
+.dark .ui-tree .node-name.unselectable {
+  color: #999;
+}
+
+.dark .disabled-item {
+  color: #555;
+}
+
+.dark #void > .light {
+  fill: #111;
+}
+
+.dark #void > .dark {
+  fill: #222;
+}
+
+.dark .modal.dialog {
+  border: 1px solid #444;
+  background-color: #222;
+  box-shadow: 3px 3px 10px 5px #222;
+}
+
+.dark .modal > .modal-header {
+  background-color: #222;
+  border-bottom: 1px solid #444;
+}
+
+.dark .auto-complete-box {
+  border: 1px solid #444;
+}
+
+.dark .auto-complete-box .auto-complete-suggestion {
+  background-color: #222;
+}
+
+.dark .auto-complete-box .auto-complete-suggestion .hint {
+  color: #888;
+}
+
+.dark .auto-complete-box .auto-complete-suggestion:hover {
+  background-color: #111;
+  color: #fff;
+}
+
+.dark .auto-complete-box .auto-complete-suggestion:hover .hint {
+  color: #ccc;
+}
+
+.dark .filter-result-card {
+  background-color: #222;
+  filter: drop-shadow(#888 0px 0px 5px);
+}
+
+.dark table {
+  color: #999;
+}

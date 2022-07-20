@@ -37,8 +37,10 @@
         buttons (concat buttons parent-buttons)]
     [:<>
      [:div.node-name.clickable.no-select
-      {:class (when selected?
-                "selected")
+      {:class (str (when selected?
+                     "selected ")
+                   (when-not selectable?
+                     "unselectable "))
        :on-click #(do
                     (when (or (not open?)
                               (not selectable?)
@@ -46,9 +48,7 @@
                       (rf/dispatch [::toggle-node path]))
                     (when selectable?
                       (rf/dispatch [::select-node path]))
-                    (.stopPropagation %))
-       :style {:color (when-not selectable?
-                        "#000")}}
+                    (.stopPropagation %))}
       (if openable?
         [:span.node-icon.clickable
          {:on-click (js-event/handled #(rf/dispatch [::toggle-node path]))
@@ -86,13 +86,11 @@
                                   (c/++ context idx)
                                   title
                                   menu
-                                  [:i.ui-icon {:class icon
+                                  [:i.ui-icon {:class (str icon (when disabled?
+                                                                  " disabled-item"))
                                                :title (tr title)
                                                :style {:margin-left "0.5em"
                                                        :font-size "0.8em"
-                                                       :color (if disabled?
-                                                                "#ccc"
-                                                                "#777")
                                                        :cursor (when disabled? "not-allowed")}}]
                                   :disabled? disabled?
                                   :require-click? true])))
@@ -105,15 +103,13 @@
                                   {:class (when disabled? "disabled")
                                    :title (tr title)
                                    :style {:margin-left (when (and (pos? idx)
-                                                                   remove?) "0.5em")}}
-                                  [:i.ui-icon {:class icon
+                                                                   remove?) "0.5em")
+                                           :cursor (when disabled? "not-allowed")}}
+                                  [:i.ui-icon {:class (str icon (when disabled?
+                                                                  " disabled-item"))
                                                :on-click (when-not disabled?
                                                            (js-event/handled handler))
-                                               :style {:font-size "0.8em"
-                                                       :color (if disabled?
-                                                                "#ccc"
-                                                                "#777")
-                                                       :cursor (when disabled? "not-allowed")}}]])))
+                                               :style {:font-size "0.8em"}}]])))
             buttons)]
 
      (when open?

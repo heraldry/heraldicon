@@ -58,21 +58,21 @@
     [:pattern#void {:width width
                     :height height
                     :pattern-units "userSpaceOnUse"}
-     [:rect {:x 0
-             :y 0
-             :width width
-             :height height
-             :fill "#fff"}]
-     [:rect {:x 0
-             :y 0
-             :width dx
-             :height dy
-             :fill "#ddd"}]
-     [:rect {:x dx
-             :y dy
-             :width dx
-             :height dy
-             :fill "#ddd"}]]))
+     [:rect.light {:x 0
+                   :y 0
+                   :width width
+                   :height height
+                   :fill "#fff"}]
+     [:rect.dark {:x 0
+                  :y 0
+                  :width dx
+                  :height dy
+                  :fill "#ddd"}]
+     [:rect.dark {:x dx
+                  :y dy
+                  :width dx
+                  :height dy
+                  :fill "#ddd"}]]))
 
 (def ^:private selected
   (let [spacing 2
