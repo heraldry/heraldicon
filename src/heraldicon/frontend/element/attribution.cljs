@@ -43,7 +43,8 @@
               ["WappenWiki" :wappenwiki]
               ["Wikimedia" :wikimedia]
               ["Wikimedia (Sodacan)" :wikimedia-sodacan]
-              ["Encyclopedia Heraldica" :encyclopedia-heraldica]]
+              ["Encyclopedia Heraldica" :encyclopedia-heraldica]
+              ["Heraldic Art" :heraldic-art]]
              :on-change (fn [value]
                           (case value
                             :wappenwiki (rf/dispatch [::merge
@@ -81,6 +82,13 @@
                                                                    :source-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"
                                                                    :source-creator-name "Encyclopedia Heraldica"
                                                                    :source-creator-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"}])
+                            :heraldic-art (rf/dispatch [:set
+                                                        path
+                                                        {:nature :derivative
+                                                         :license :cc-attribution-share-alike
+                                                         :license-version :v4
+                                                         :source-license :cc-attribution-share-alike
+                                                         :source-license-version :v4}])
                             nil))])
 
           (element/elements
