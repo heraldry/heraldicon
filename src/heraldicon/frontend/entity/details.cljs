@@ -118,8 +118,13 @@
                          :on-complete #(modal/stop-loading)
                          :on-success (fn [form-data]
                                        (rf/dispatch-sync [::replace-data form-data])
-                                       (rf/dispatch-sync [::message/set-success
-                                                          entity-type
-                                                          (string/str-tr :string.user.message/arms-saved " " (:version form-data))]))
+                                       (let [message (case entity-type
+                                                       :heraldicon.entity.type/arms :string.user.message/arms-saved
+                                                       :heraldicon.entity.type/charge :string.user.message/charge-saved
+                                                       :heraldicon.entity.type/ribbon :string.user.message/ribbon-saved
+                                                       :heraldicon.entity.type/collection :string.user.message/collection-saved)]
+                                         (rf/dispatch-sync [::message/set-success
+                                                            entity-type
+                                                            (string/str-tr message " " (:version form-data))])))
                          :on-error (fn [error]
                                      (rf/dispatch [::message/set-error entity-type (:message (ex-data error))]))}]]]})))
