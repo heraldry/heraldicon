@@ -123,7 +123,9 @@
 (defn- updated-badge []
   [:img.updated-badge {:src (static/static-url "/img/updated-badge.png")}])
 
-(defn- result-card [items-path item-id kind on-select selected-item-path & {:keys [selection-placeholder?]}]
+(defn- result-card [items-path item-id kind on-select selected-item-path & {:keys [selection-placeholder?
+                                                                                   filter-tags-path
+                                                                                   filter-tags]}]
   (let [{:keys [username]
          :as item} @(rf/subscribe [::filtered-item items-path item-id])
         selected? @(rf/subscribe [::filtered-item-selected? selected-item-path item-id])
@@ -171,6 +173,8 @@
              [heraldicon-tag]
              [community-tag])]
           [tags/tags-view (-> item :tags keys)
+           :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
+           :selected filter-tags
            :style {:display "flex"
                    :flex-flow "row"
                    :flex-wrap "wrap"
@@ -286,11 +290,15 @@
               [:ul.filter-results
                (when display-selected-item?
                  [result-card all-items-path (:id selected-item) kind nil selected-item-path
+                  :filter-tags-path filter-tags-path
+                  :filter-tags filter-tags
                   :selection-placeholder? true])
                (into [:<>]
                      (map (fn [item]
                             ^{:key (:id item)}
-                            [result-card all-items-path (:id item) kind on-select selected-item-path]))
+                            [result-card all-items-path (:id item) kind on-select selected-item-path
+                             :filter-tags-path filter-tags-path
+                             :filter-tags filter-tags]))
                      display-items)
                (when-not (= (count filtered-items)
                             (count display-items))
