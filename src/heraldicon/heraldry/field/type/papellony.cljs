@@ -58,6 +58,12 @@
                         :default 1
                         :ui/label :string.option/stretch-y
                         :ui/step 0.01}
+            :rotation {:type :option.type/range
+                       :min -180
+                       :max 180
+                       :default 0
+                       :ui/label :string.option/rotation
+                       :ui/step 0.01}
             :ui/label :string.option/layout
             :ui/element :ui.element/field-layout}})
 
@@ -166,6 +172,7 @@
         offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
         stretch-x (interface/get-sanitized-data (c/++ context :layout :stretch-x))
         stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
+        rotation (interface/get-sanitized-data (c/++ context :layout :rotation))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         points (:points environment)
@@ -192,7 +199,7 @@
          pattern-height :height
          papellony-pattern :pattern
          papellony-outline :outline} (papellony-default part-width part-height thickness)]
-    [:g
+    [:g {:transform (str "rotate(" (- rotation) ")")}
      [:defs
       (when outline?
         [:pattern {:id (str pattern-id-prefix "-outline")
