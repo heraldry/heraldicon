@@ -1,5 +1,5 @@
 .dark {
-  color: #999;
+  color: #bbb;
   background-color: #222;
 }
 
@@ -36,7 +36,7 @@
 }
 
 .dark input {
-  color: #999;
+  color: #bbb;
   background-color: #222;
   border-color: #444;
   outline-color: #555;
@@ -69,7 +69,7 @@
 }
 
 .dark .ui-hover-menu .ui-menu {
-  color: #999;
+  color: #bbb;
   background-color: #222;
   border: 1px solid #444;
 }
@@ -84,7 +84,7 @@
 }
 
 .dark .ui-tree .node-name.unselectable {
-  color: #999;
+  color: #bbb;
 }
 
 .dark .disabled-item {
@@ -119,7 +119,7 @@
 }
 
 .dark .auto-complete-box .auto-complete-suggestion .hint {
-  color: #888;
+  color: #bbb;
 }
 
 .dark .auto-complete-box .auto-complete-suggestion:hover {
@@ -137,5 +137,29 @@
 }
 
 .dark table {
-  color: #999;
+  color: #bbb;
+}
+
+a,
+a:hover,
+a:focus,
+a:active,
+a:visited {
+  color: #3b86b0 !important;
+}
+
+.ui-tree .node-name {
+  color: #3b86b0;
+}
+
+.ui-tree .selected {
+  color: #3b86b0;
+}
+
+.history-buttons i {
+  color: #3b86b0;
+}
+
+.blazon-example {
+  color: #3b86b0 !important;
 }
