@@ -16,15 +16,11 @@
 }
 
 .dark .nav-menu-item.selected {
-  background-color: #111;
-}
-
-.dark .nav-menu-item.selected {
-  background-color: #111;
+  background-color: #1c1c1c;
 }
 
 .dark .nav-menu-item a:hover {
-  background-color: #111;
+  background-color: #1e1e1e;
 }
 
 .dark .main-content {
