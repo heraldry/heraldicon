@@ -1,5 +1,5 @@
 .dark {
-  color: #bbb;
+  color: #ccc;
   background-color: #222;
 }
 
@@ -36,7 +36,7 @@
 }
 
 .dark input {
-  color: #bbb;
+  color: #ccc;
   background-color: #222;
   border-color: #444;
   outline-color: #555;
@@ -69,13 +69,13 @@
 }
 
 .dark .ui-hover-menu .ui-menu {
-  color: #bbb;
+  color: #ccc;
   background-color: #222;
   border: 1px solid #444;
 }
 
 .dark li.ui-menu-header {
-  color: #aaa;
+  color: #ccc;
   border-bottom: 1px solid #444;
 }
 
@@ -84,7 +84,7 @@
 }
 
 .dark .ui-tree .node-name.unselectable {
-  color: #bbb;
+  color: #ccc;
 }
 
 .dark .disabled-item {
@@ -119,7 +119,7 @@
 }
 
 .dark .auto-complete-box .auto-complete-suggestion .hint {
-  color: #bbb;
+  color: #ccc;
 }
 
 .dark .auto-complete-box .auto-complete-suggestion:hover {
@@ -128,7 +128,7 @@
 }
 
 .dark .auto-complete-box .auto-complete-suggestion:hover .hint {
-  color: #ccc;
+  color: #eee;
 }
 
 .dark .filter-result-card {
@@ -137,29 +137,29 @@
 }
 
 .dark table {
-  color: #bbb;
+  color: #ccc;
 }
 
-a,
-a:hover,
-a:focus,
-a:active,
-a:visited {
-  color: #3b86b0 !important;
+.dark a,
+.dark a:hover,
+.dark a:focus,
+.dark a:active,
+.dark a:visited {
+  color: #5ba6d0 !important;
 }
 
-.ui-tree .node-name {
-  color: #3b86b0;
+.dark .ui-tree .node-name {
+  color: #5ba6d0;
 }
 
-.ui-tree .selected {
-  color: #3b86b0;
+.dark .ui-tree .selected {
+  color: #5ba6d0;
 }
 
-.history-buttons i {
-  color: #3b86b0;
+.dark .history-buttons i {
+  color: #5ba6d0;
 }
 
-.blazon-example {
-  color: #3b86b0 !important;
+.dark .blazon-example {
+  color: #5ba6d0 !important;
 }
