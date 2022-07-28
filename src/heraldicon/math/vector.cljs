@@ -304,3 +304,11 @@
                        (add to (mul direction 1000))
                        environment)]
     [(first intersections) (last intersections)]))
+
+(defn intersections-with-shape [from to shape]
+  (let [direction (normal (sub to from))
+        inf (mul direction 1000)
+        line-path (str "M" (->str (sub from inf))
+                       "L" (->str (add to inf)))
+        intersections (sort-by :t1 (path-intersection line-path shape))]
+    [(first intersections) (last intersections)]))
