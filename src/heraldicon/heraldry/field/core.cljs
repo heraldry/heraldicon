@@ -159,3 +159,12 @@
                  (zero? num-components)))
       blazon
       (string/str-tr "(" blazon ")"))))
+
+(defmethod interface/environment :heraldry/field [context]
+  (interface/get-environment (interface/parent context)))
+
+(defmethod interface/exact-shape :heraldry/field [context]
+  (interface/get-exact-shape (interface/parent context)))
+
+(defmethod interface/render-shape :heraldry/field [context]
+  (interface/get-render-shape (interface/parent context)))

@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.component :as component]
+   [heraldicon.heraldry.field.environment :as field.environment]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.options :as options]
    [re-frame.core :as rf]
@@ -141,3 +142,71 @@
     (if (-> manual-blazon count pos?)
       manual-blazon
       (blazon-component context))))
+
+(defmulti environment effective-component-type)
+
+(defmethod environment nil [context]
+  (log/warn :not-implemented "interface.environment" context))
+
+(rf/reg-sub-raw ::environment
+  (fn [_app-db [_ context]]
+    (reaction
+     (environment context))))
+
+(defn get-environment [context]
+  @(rf/subscribe [::environment context]))
+
+(defn parent [context]
+  (cond
+    (-> context :path last (= :field)) (c/-- context)
+    (-> context :path last int?) (c/-- context 2)
+    :else (do
+            (log/warn :not-implemented "parent-environment" context)
+            context)))
+
+(defmulti properties effective-component-type)
+
+(defmethod properties nil [context]
+  (log/warn :not-implemented "interface.properties" context))
+
+(rf/reg-sub-raw ::properties
+  (fn [_app-db [_ context]]
+    (reaction
+     (properties context))))
+
+(defn get-properties [context]
+  @(rf/subscribe [::properties context]))
+
+(defmulti render-shape effective-component-type)
+
+(defmethod render-shape nil [context]
+  (log/warn :not-implemented "interface.render-shape" context))
+
+(rf/reg-sub-raw ::render-shape
+  (fn [_app-db [_ context]]
+    (reaction
+     (render-shape context))))
+
+(defn get-render-shape [context]
+  @(rf/subscribe [::render-shape context]))
+
+(defmulti exact-shape effective-component-type)
+
+(defn get-exact-shape [context]
+  @(rf/subscribe [::exact-shape context]))
+
+(defn fallback-exact-shape [context]
+  (field.environment/intersect-shapes
+   (:shape (get-render-shape context))
+   (get-exact-shape (parent context))))
+
+(defmethod exact-shape nil [context]
+  (fallback-exact-shape context))
+
+(defmethod exact-shape :heraldry/ordinary [context]
+  (fallback-exact-shape context))
+
+(rf/reg-sub-raw ::exact-shape
+  (fn [_app-db [_ context]]
+    (reaction
+     (exact-shape context))))

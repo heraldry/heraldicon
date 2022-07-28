@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.coat-of-arms
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
@@ -16,3 +17,12 @@
   (interface/blazon (-> context
                         (c/++ :field)
                         (assoc-in [:blazonry :root?] true))))
+
+(defmethod interface/environment :heraldry/coat-of-arms [context]
+  (:environment context))
+
+(defmethod interface/render-shape :heraldry/coat-of-arms [context]
+  (s/join "" (-> context :environment :shape :paths)))
+
+(defmethod interface/exact-shape :heraldry/coat-of-arms [context]
+  (interface/render-shape context))
