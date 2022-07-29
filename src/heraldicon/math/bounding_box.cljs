@@ -58,3 +58,19 @@
                                                middle)
                                         scale) rotation))]]
     (from-points points)))
+
+(defn scale ^BoundingBox [^BoundingBox bb
+                          ^js/Number factor]
+  (-> bb
+      (update :min-x * factor)
+      (update :max-x * factor)
+      (update :min-y * factor)
+      (update :max-y * factor)))
+
+(defn translate ^BoundingBox [^BoundingBox bb
+                              ^v/Vector {:keys [x y]}]
+  (-> bb
+      (update :min-x + x)
+      (update :max-x + x)
+      (update :min-y + y)
+      (update :max-y + y)))
