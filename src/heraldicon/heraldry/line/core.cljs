@@ -28,6 +28,8 @@
    [heraldicon.heraldry.line.type.wolf-toothed :as wolf-toothed]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
+   [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.render.outline :as outline]
@@ -817,3 +819,30 @@
                                   "M" "L") p])))
            path/make-path
            (str "z"))))))
+
+(defn resolve-percentages [line line-percentage-base fimbriation-percentage-base]
+  (-> line
+      (update :width (partial math/percent-of line-percentage-base))
+      (update-in [:fimbriation :thickness-1] (partial math/percent-of fimbriation-percentage-base))
+      (update-in [:fimbriation :thickness-2] (partial math/percent-of fimbriation-percentage-base))))
+
+(defn- extend [start extra bounding-box]
+  (if (bb/surrounds? bounding-box start)
+    (recur (v/add start extra) extra bounding-box)
+    start))
+
+(defn create-with-extension [line from to bounding-box & {:as line-options}]
+  (let [dir (v/normal (v/sub to from))
+        width (or (:width line) 10)
+        extra (v/mul dir width)
+        extended-from (v/add (extend from (v/mul extra -1) bounding-box)
+                             (v/mul extra -3))
+        extended-to (v/add (extend to extra bounding-box)
+                           (v/mul extra 3))
+        real-start (v/abs (v/sub from extended-from))
+        real-end (v/abs (v/sub to extended-from))]
+    (assoc (create line extended-from extended-to (assoc line-options
+                                                         :real-start real-start
+                                                         :real-end real-end))
+           :adjusted-from extended-from
+           :adjusted-to extended-to)))
