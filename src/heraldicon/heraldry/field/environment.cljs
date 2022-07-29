@@ -95,7 +95,11 @@
                                            [key (-> value
                                                     (v/add offset)
                                                     (v/mul scale-factor))]))
-                                    (:points environment))))))
+                                    (:points environment)))
+        (update-in [:meta :bounding-box] (fn [bb]
+                                           (-> bb
+                                               (bb/translate offset)
+                                               (bb/scale scale-factor)))))))
 
 (def ^:private shrink-step
   (memoize
