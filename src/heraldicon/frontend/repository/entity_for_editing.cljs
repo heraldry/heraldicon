@@ -46,7 +46,7 @@
   (go
     (let [query-id [::prepare-for-editing (:id entity) (:version entity)]]
       (when-not (query/running? query-id)
-        (query/add query-id)
+        (query/register query-id)
         (try
           (let [updated-entity (<? (load-editing-data entity))]
             (rf/dispatch [::store updated-entity]))
@@ -54,7 +54,7 @@
             (log/error e "fetching entity data for editing error")
             (rf/dispatch [::store-error (:id entity) (:version entity) e]))
           (finally
-            (query/remove query-id)))))))
+            (query/unregister query-id)))))))
 
 (defn- fetch-entity-for-editing [entity-id version]
   (let [{:keys [status entity error]} @(rf/subscribe [::entity/data entity-id version])]

@@ -30,7 +30,7 @@
   (go
     (let [query-id [::fetch username session]]
       (when-not (query/running? query-id)
-        (query/add query-id)
+        (query/register query-id)
         (try
           (let [user (<? (request/call :fetch-user {:username username} session))]
             (when-not user
@@ -40,7 +40,7 @@
             (log/error e "fetch user error")
             (rf/dispatch [::store-error username e]))
           (finally
-            (query/remove query-id)))))))
+            (query/unregister query-id)))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ username]]

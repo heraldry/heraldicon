@@ -68,7 +68,7 @@
   (go
     (let [query-id [::fetch entity-type session]]
       (when-not (query/running? query-id)
-        (query/add query-id)
+        (query/register query-id)
         (try
           (let [entities (:items (<? (request/call (fetch-entity-list-api-function entity-type)
                                                    {}
@@ -80,7 +80,7 @@
             (log/error e "fetch entity list error")
             (rf/dispatch [::store-error entity-type e]))
           (finally
-            (query/remove query-id)))))))
+            (query/unregister query-id)))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_ entity-type on-loaded]]

@@ -32,7 +32,7 @@
   (go
     (let [query-id [::fetch session]]
       (when-not (query/running? query-id)
-        (query/add query-id)
+        (query/register query-id)
         (try
           (let [users (:items (<? (request/call :fetch-users-all {} session)))]
             (rf/dispatch [::store users]))
@@ -40,7 +40,7 @@
             (log/error e "fetch user list error")
             (rf/dispatch [::store-error e]))
           (finally
-            (query/remove query-id)))))))
+            (query/unregister query-id)))))))
 
 (rf/reg-sub-raw ::data
   (fn [_app-db [_]]
