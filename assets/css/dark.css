@@ -156,6 +156,10 @@
   color: #5ba6d0;
 }
 
+.dark .history-buttons i.disabled {
+  color: #555;
+}
+
 .dark .blazon-example {
   color: #5ba6d0 !important;
 }
