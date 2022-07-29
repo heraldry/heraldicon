@@ -16,10 +16,10 @@
             :fill-rule "evenodd"
             :fill "#fff"}]))
 
-(defn- render-line [context {:keys [line line-data line-start]}]
+(defn- render-line [context {:keys [line line-data line-from]}]
   (let [outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))]
-    [line/render line line-data line-start outline? context]))
+    [line/render line line-data line-from outline? context]))
 
 (defn- edges [context]
   (let [{:keys [lines]} (interface/get-render-shape context)]

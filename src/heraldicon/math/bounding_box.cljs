@@ -74,3 +74,9 @@
       (update :max-x + x)
       (update :min-y + y)
       (update :max-y + y)))
+
+(defn surrounds? ^Boolean [^BoundingBox {:keys [min-x max-x
+                                                min-y max-y]}
+                           ^v/Vector {:keys [x y]}]
+  (and (<= min-x x max-x)
+       (<= min-y y max-y)))

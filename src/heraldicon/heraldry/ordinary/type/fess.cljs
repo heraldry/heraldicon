@@ -78,29 +78,22 @@
                 :right (- (:y anchor-point) band-size)
                 (- (:y anchor-point) (/ band-size 2)))
         lower (+ upper band-size)
-        line (interface/get-sanitized-data (c/++ context :line))
-        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        line (-> line
-                 (update-in [:fimbriation :thickness-1] (partial math/percent-of percentage-base))
-                 (update-in [:fimbriation :thickness-2] (partial math/percent-of percentage-base)))
-        opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (partial math/percent-of percentage-base))
-                          (update-in [:fimbriation :thickness-2] (partial math/percent-of percentage-base)))
         parent-shape (interface/get-exact-shape parent)
-        [upper-left upper-right] (v/intersections-with-shape (v/Vector. 0 upper) (v/Vector. 1 upper) parent-shape)
-        [lower-left lower-right] (v/intersections-with-shape (v/Vector. 0 lower) (v/Vector. 1 lower) parent-shape)
-        upper-left (or upper-left (v/Vector. (:x left) upper))
-        upper-right (or upper-right (v/Vector. (:x right) upper))
-        lower-left (or lower-left (v/Vector. (:x left) lower))
-        lower-right (or lower-right (v/Vector. (:x right) lower))
-        line-height (- (:x upper-right) (:x upper-left))]
-    ;; TODO: :base-line will move upper/lower by line-height / 2, difficult because line-height is based
-    ;; on the unadjusted upper line
-    ;; second thought: maybe the base-line doesn't affect upper/lower at all
+        [upper-left upper-right] (v/intersections-with-shape
+                                  (v/Vector. (:x left) upper) (v/Vector. (:x right) upper)
+                                  parent-shape :default? true)
+        [lower-left lower-right] (v/intersections-with-shape
+                                  (v/Vector. (:x left) lower) (v/Vector. (:x right) lower)
+                                  parent-shape :default? true)
+        line-length (- (:x upper-right) (:x upper-left))
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)
+        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                line-length percentage-base)]
     {:upper [upper-left upper-right]
      :lower [lower-left lower-right]
      :band-size band-size
-     :line-height line-height
+     :line-height line-length
      :line line
      :opposite-line opposite-line}))
 
@@ -119,60 +112,57 @@
 
 (defmethod interface/render-shape ordinary-type
   [context]
-  (let [{[upper-left upper-right] :upper
+  (let [parent (interface/parent context)
+        {:keys [meta]} (interface/get-environment parent)
+        {[upper-left upper-right] :upper
          [lower-left lower-right] :lower
          band-size :band-size
          line :line
          opposite-line :opposite-line} (interface/get-properties context)
         environment (interface/get-environment context)
         width (:width environment)
-        shared-start-x (:x upper-left)
-        shared-end-x (:x upper-right)
-        ;; TODO: not quite right yet
-        upper-left (v/Vector. shared-start-x (:y upper-left))
-        lower-left (v/Vector. shared-start-x (:y lower-left))
-        upper-right (v/Vector. shared-end-x (:y upper-right))
-        lower-right (v/Vector. shared-end-x (:y lower-right))
+        bounding-box (:bounding-box meta)
+        lower-left (assoc lower-left :x (:x upper-left))
         {line-upper :line
          line-upper-start :line-start
-         :as line-upper-data} (line/create line
-                                           upper-left upper-right
-                                           :context context
-                                           :environment environment)
+         line-upper-from :adjusted-from
+         line-upper-to :adjusted-to
+         :as line-upper-data} (line/create-with-extension line
+                                                          upper-left upper-right
+                                                          bounding-box
+                                                          :context context)
         {line-lower :line
          line-lower-start :line-start
-         :as line-lower-data} (line/create opposite-line
-                                           lower-left lower-right
-                                           :reversed? true
-                                           :context context
-                                           :environment environment)
+         line-lower-from :adjusted-from
+         line-lower-to :adjusted-to
+         :as line-lower-data} (line/create-with-extension opposite-line
+                                                          lower-left lower-right
+                                                          bounding-box
+                                                          :reversed? true
+                                                          :context context)
         shape (ordinary.shared/adjust-shape
-               ["M" (v/add upper-left line-upper-start)
+               ["M" (v/add line-upper-from line-upper-start)
                 (path/stitch line-upper)
                 (infinity/path :clockwise
                                [:right :right]
-                               [(v/add upper-right line-upper-start)
-                                (v/add lower-right line-lower-start)])
+                               [(v/add line-upper-to line-upper-start)
+                                (v/add line-lower-to line-lower-start)])
                 (path/stitch line-lower)
                 (infinity/path :clockwise
                                [:left :left]
-                               [(v/add lower-left line-lower-start)
-                                (v/add upper-left line-upper-start)])
+                               [(v/add line-lower-from line-lower-start)
+                                (v/add line-upper-from line-upper-start)])
                 "z"]
                width
                band-size
                context)]
     {:shape shape
-     :lines [{:path (path/make-path ["M" (v/add upper-left line-upper-start) (path/stitch line-upper)])
-              :line line
-              :line-start upper-left
-              :line-data [line-upper-data]
-              :fimbriation-context (c/++ context :line :fimbriation)}
-             {:path (path/make-path ["M" (v/add lower-right line-lower-start) (path/stitch line-lower)])
-              :line opposite-line
-              :line-start lower-right
-              :line-data [line-lower-data]
-              :fimbriation-context (c/++ context :opposite-line :fimbriation)}]}))
+     :lines [{:line line
+              :line-from line-upper-from
+              :line-data [line-upper-data]}
+             {:line opposite-line
+              :line-from line-lower-to
+              :line-data [line-lower-data]}]}))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))

@@ -2,12 +2,15 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
@@ -61,143 +64,107 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment
-           override-real-start
-           override-real-end
-           override-shared-start-y] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
+(defmethod interface/properties ordinary-type [context]
+  (let [parent (interface/parent context)
+        parent-environment (interface/get-environment parent)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        points (:points environment)
-        anchor-point (position/calculate anchor environment :fess)
-        top (assoc (:top points) :x (:x anchor-point))
-        bottom (assoc (:bottom points) :x (:x anchor-point))
-        width (:width environment)
-        band-width (math/percent-of width size)
-        col1 (case (:alignment anchor)
+        {:keys [top bottom]} (:points parent-environment)
+        percentage-base (:width parent-environment)
+        band-size (math/percent-of percentage-base size)
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        anchor-point (position/calculate anchor parent-environment :fess)
+        left (case (:alignment anchor)
                :left (:x anchor-point)
-               :right (- (:x anchor-point) band-width)
-               (- (:x anchor-point) (/ band-width 2)))
-        col2 (+ col1 band-width)
-        first-top (v/Vector. col1 (:y top))
-        first-bottom (v/Vector. col1 (:y bottom))
-        second-top (v/Vector. col2 (:y top))
-        second-bottom (v/Vector. col2 (:y bottom))
-        [first-top first-bottom] (v/environment-intersections
-                                  first-top
-                                  first-bottom
-                                  environment)
-        [second-top second-bottom] (v/environment-intersections
-                                    second-top
-                                    second-bottom
-                                    environment)
-        shared-start-y (or override-shared-start-y
-                           (- (min (:y first-top)
-                                   (:y second-top))
-                              30))
-        real-start (or override-real-start
-                       (min (-> first-top :y (- shared-start-y))
-                            (-> second-top :y (- shared-start-y))))
-        real-end (or override-real-end
-                     (max (-> first-bottom :y (- shared-start-y))
-                          (-> second-bottom :y (- shared-start-y))))
-        shared-end-y (+ real-end 30)
-        first-top (v/Vector. (:x first-top) shared-start-y)
-        second-top (v/Vector. (:x second-top) shared-start-y)
-        first-bottom (v/Vector. (:x first-bottom) shared-end-y)
-        second-bottom (v/Vector. (:x second-bottom) shared-end-y)
-        line (-> line
-                 (update-in [:fimbriation :thickness-1] (partial math/percent-of width))
-                 (update-in [:fimbriation :thickness-2] (partial math/percent-of width)))
-        opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (partial math/percent-of width))
-                          (update-in [:fimbriation :thickness-2] (partial math/percent-of width)))
-        {line-one :line
-         line-one-start :line-start
-         line-one-min :line-min
-         :as line-one-data} (line/create line
-                                         first-top first-bottom
-                                         :reversed? true
-                                         :real-start real-start
-                                         :real-end real-end
-                                         :context context
-                                         :environment environment)
-        {line-reversed :line
-         line-reversed-start :line-start
-         line-reversed-min :line-min
-         :as line-reversed-data} (line/create opposite-line
-                                              second-top second-bottom
-                                              :real-start real-start
-                                              :real-end real-end
-                                              :context context
-                                              :environment environment)
+               :right (- (:x anchor-point) band-size)
+               (- (:x anchor-point) (/ band-size 2)))
+        right (+ left band-size)
+        parent-shape (interface/get-exact-shape parent)
+        [left-upper left-lower] (v/intersections-with-shape
+                                 (v/Vector. left (:y top)) (v/Vector. left (:y bottom))
+                                 parent-shape
+                                 :default? true)
+        [right-upper right-lower] (v/intersections-with-shape
+                                   (v/Vector. right (:y top)) (v/Vector. right (:y bottom))
+                                   parent-shape
+                                   :default? true)
+        line-length (- (:y left-lower) (:y left-upper))
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)
+        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                line-length percentage-base)]
+    {:left [left-upper left-lower]
+     :right [right-upper right-lower]
+     :band-size band-size
+     :line-length line-length
+     :line line
+     :opposite-line opposite-line}))
+
+(defmethod interface/environment ordinary-type [context]
+  (let [parent (interface/parent context)
+        {:keys [meta]} (interface/get-environment parent)
+        {[left-upper left-lower] :left
+         [right-upper right-lower] :right} (interface/get-properties context)
+        bounding-box-points [left-upper left-lower
+                             right-upper right-lower]]
+    (environment/create
+     {:paths nil}
+     (-> meta
+         (dissoc :context)
+         (merge {:bounding-box (bb/from-points bounding-box-points)})))))
+
+(defmethod interface/render-shape ordinary-type
+  [context]
+  (let [parent (interface/parent context)
+        {:keys [meta]} (interface/get-environment parent)
+        {[left-upper left-lower] :left
+         [right-upper right-lower] :right
+         band-size :band-size
+         line :line
+         opposite-line :opposite-line} (interface/get-properties context)
+        environment (interface/get-environment context)
+        width (:width environment)
+        bounding-box (:bounding-box meta)
+        right-upper (assoc right-upper :y (:y left-upper))
+        {line-left :line
+         line-left-start :line-start
+         line-left-from :adjusted-from
+         line-left-to :adjusted-to
+         :as line-left-data} (line/create-with-extension line
+                                                         left-upper left-lower
+                                                         bounding-box
+                                                         :reversed? true
+                                                         :context context)
+        {line-right :line
+         line-right-start :line-start
+         line-right-from :adjusted-from
+         line-right-to :adjusted-to
+         :as line-right-data} (line/create-with-extension opposite-line
+                                                          right-upper right-lower
+                                                          bounding-box
+                                                          :context context)
         shape (ordinary.shared/adjust-shape
-               ["M" (v/add first-bottom
-                           line-one-start)
-                (path/stitch line-one)
+               ["M" (v/add line-left-to line-left-start)
+                (path/stitch line-left)
                 (infinity/path :clockwise
                                [:top :top]
-                               [(v/add first-top
-                                       line-one-start)
-                                (v/add second-top
-                                       line-reversed-start)])
-                (path/stitch line-reversed)
+                               [(v/add line-left-from line-left-start)
+                                (v/add line-right-from line-right-start)])
+                (path/stitch line-right)
                 (infinity/path :clockwise
                                [:bottom :bottom]
-                               [(v/add second-bottom
-                                       line-reversed-start)
-                                (v/add first-bottom
-                                       line-one-start)])
+                               [(v/add line-right-to line-right-start)
+                                (v/add line-left-from line-left-start)])
                 "z"]
                width
-               band-width
-               context)
-        part [shape
-              [(v/Vector. (:x second-top)
-                          (:y top))
-               (v/Vector. (:x first-bottom)
-                          (:y bottom))]]
-        cottise-context (merge
-                         context
-                         {:override-shared-start-y shared-start-y
-                          :override-real-start real-start
-                          :override-real-end real-end})]
-    [:<>
-     [field.shared/make-subfield
-      (c/++ context :field)
-      part
-      :all]
-     (ordinary.shared/adjusted-shape-outline
-      shape outline? context
-      [:<>
-       [line/render line [line-one-data] first-bottom outline? context]
-       [line/render opposite-line [line-reversed-data] second-top outline? context]])
-     [cottising/render-pale-cottise
-      (c/++ cottise-context :cottising :cottise-1)
-      :cottise-2 :cottise-1
-      :offset-x-fn (fn [base distance]
-                     (-> base
-                         (- col1)
-                         (- line-one-min)
-                         (/ width)
-                         (* 100)
-                         (+ distance)
-                         -))
-      :alignment :right]
-     [cottising/render-pale-cottise
-      (c/++ cottise-context :cottising :cottise-opposite-1)
-      :cottise-opposite-2 :cottise-opposite-1
-      :offset-x-fn (fn [base distance]
-                     (-> base
-                         (- col2)
-                         (+ line-reversed-min)
-                         (/ width)
-                         (* 100)
-                         (- distance)
-                         -))
-      :alignment :left
-      :swap-lines? true]]))
+               band-size
+               context)]
+    {:shape shape
+     :lines [{:line line
+              :line-from line-left-to
+              :line-data [line-left-data]}
+             {:line opposite-line
+              :line-from line-right-from
+              :line-data [line-right-data]}]}))
+
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
