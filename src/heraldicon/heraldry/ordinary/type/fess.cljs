@@ -13,7 +13,6 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/fess)
@@ -126,14 +125,12 @@
         {line-upper :line
          line-upper-start :line-start
          line-upper-from :adjusted-from
-         line-upper-to :adjusted-to
          :as line-upper-data} (line/create-with-extension line
                                                           upper-left upper-right
                                                           bounding-box
                                                           :context context)
         {line-lower :line
          line-lower-start :line-start
-         line-lower-from :adjusted-from
          line-lower-to :adjusted-to
          :as line-lower-data} (line/create-with-extension opposite-line
                                                           lower-left lower-right
@@ -143,15 +140,8 @@
         shape (ordinary.shared/adjust-shape
                ["M" (v/add line-upper-from line-upper-start)
                 (path/stitch line-upper)
-                (infinity/path :clockwise
-                               [:right :right]
-                               [(v/add line-upper-to line-upper-start)
-                                (v/add line-lower-to line-lower-start)])
+                "L" (v/add line-lower-to line-lower-start)
                 (path/stitch line-lower)
-                (infinity/path :clockwise
-                               [:left :left]
-                               [(v/add line-lower-from line-lower-start)
-                                (v/add line-upper-from line-upper-start)])
                 "z"]
                width
                band-size

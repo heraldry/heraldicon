@@ -3,7 +3,6 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
-   [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
@@ -14,7 +13,6 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/pale)
@@ -127,7 +125,6 @@
         right-upper (assoc right-upper :y (:y left-upper))
         {line-left :line
          line-left-start :line-start
-         line-left-from :adjusted-from
          line-left-to :adjusted-to
          :as line-left-data} (line/create-with-extension line
                                                          left-upper left-lower
@@ -137,7 +134,6 @@
         {line-right :line
          line-right-start :line-start
          line-right-from :adjusted-from
-         line-right-to :adjusted-to
          :as line-right-data} (line/create-with-extension opposite-line
                                                           right-upper right-lower
                                                           bounding-box
@@ -145,15 +141,8 @@
         shape (ordinary.shared/adjust-shape
                ["M" (v/add line-left-to line-left-start)
                 (path/stitch line-left)
-                (infinity/path :clockwise
-                               [:top :top]
-                               [(v/add line-left-from line-left-start)
-                                (v/add line-right-from line-right-start)])
+                "L" (v/add line-right-from line-right-start)
                 (path/stitch line-right)
-                (infinity/path :clockwise
-                               [:bottom :bottom]
-                               [(v/add line-right-to line-right-start)
-                                (v/add line-left-from line-left-start)])
                 "z"]
                width
                band-size
