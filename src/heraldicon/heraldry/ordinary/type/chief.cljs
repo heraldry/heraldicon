@@ -2,11 +2,13 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
-   [heraldicon.heraldry.field.shared :as field.shared]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
@@ -33,93 +35,72 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment
-           override-real-start
-           override-real-end
-           override-shared-start-x] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
+(defmethod interface/properties ordinary-type [context]
+  (let [parent (interface/parent context)
+        parent-environment (interface/get-environment parent)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        points (:points environment)
-        top (:top points)
-        top-left (:top-left points)
-        left (:left points)
-        right (:right points)
+        {:keys [left right top]} (:points parent-environment)
+        percentage-base (:height parent-environment)
+        band-size (math/percent-of percentage-base size)
+        lower (+ (:y top) band-size)
+        parent-shape (interface/get-exact-shape parent)
+        [lower-left lower-right] (v/intersections-with-shape
+                                  (v/Vector. (:x left) lower) (v/Vector. (:x right) lower)
+                                  parent-shape :default? true)
+        line-length (- (:x lower-right) (:x lower-left))
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)]
+    {:lower [lower-left lower-right]
+     :band-size band-size
+     :line-height line-length
+     :line line}))
+
+(defmethod interface/environment ordinary-type [context]
+  (let [parent (interface/parent context)
+        {:keys [meta points]} (interface/get-environment parent)
+        {:keys [top-left top-right]} points
+        {[lower-left lower-right] :lower} (interface/get-properties context)
+        bounding-box-points [top-left top-right
+                             lower-left lower-right]]
+    (environment/create
+     {:paths nil}
+     (-> meta
+         (dissoc :context)
+         (merge {:bounding-box (bb/from-points bounding-box-points)})))))
+
+(defmethod interface/render-shape ordinary-type
+  [context]
+  (let [parent (interface/parent context)
+        {:keys [meta]} (interface/get-environment parent)
+        {[lower-left lower-right] :lower
+         band-size :band-size
+         line :line} (interface/get-properties context)
+        environment (interface/get-environment context)
         width (:width environment)
-        height (:height environment)
-        band-height (math/percent-of height size)
-        row (+ (:y top) band-height)
-        row-left (v/Vector. (:x left) row)
-        row-right (v/Vector. (:x right) row)
-        [row-real-left _row-real-right] (v/environment-intersections
-                                         row-left
-                                         row-right
-                                         environment)
-        shared-start-x (or override-shared-start-x
-                           (- (:x row-real-left)
-                              30))
-        real-start (or override-real-start
-                       (-> row-left :x (- shared-start-x)))
-        real-end (or override-real-end
-                     (-> row-right :x (- shared-start-x)))
-        shared-end-x (+ real-end 30)
-        row-left (v/Vector. shared-start-x (:y row-left))
-        row-right (v/Vector. shared-end-x (:y row-right))
-        line (-> line
-                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
-        {line-reversed :line
-         line-reversed-start :line-start
-         line-reversed-min :line-min
-         :as line-reversed-data} (line/create line
-                                              row-left row-right
-                                              :reversed? true
-                                              :real-start real-start
-                                              :real-end real-end
-                                              :context context
-                                              :environment environment)
+        bounding-box (:bounding-box meta)
+        {line-lower :line
+         line-lower-start :line-start
+         line-lower-from :adjusted-from
+         line-lower-to :adjusted-to
+         :as line-lower-data} (line/create-with-extension line
+                                                          lower-left lower-right
+                                                          bounding-box
+                                                          :reversed? true
+                                                          :context context)
         shape (ordinary.shared/adjust-shape
-               ["M" (v/add row-right
-                           line-reversed-start)
-                (path/stitch line-reversed)
+               ["M" (v/add line-lower-to line-lower-start)
+                (path/stitch line-lower)
                 (infinity/path :clockwise
                                [:left :right]
-                               [(v/add row-left
-                                       line-reversed-start)
-                                (v/add row-right
-                                       line-reversed-start)])
+                               [line-lower-from line-lower-to])
                 "z"]
                width
-               band-height
-               context)
-        part [shape
-              [top-left
-               (v/Vector. (:x right)
-                          (:y row-right))]]
-        cottise-context (merge
-                         context
-                         {:override-shared-start-x shared-start-x
-                          :override-real-start real-start
-                          :override-real-end real-end})]
-    [:<>
-     [field.shared/make-subfield
-      (c/++ context :field)
-      part
-      :all]
-     (ordinary.shared/adjusted-shape-outline
-      shape outline? context
-      [line/render line [line-reversed-data] row-right outline? context])
-     [cottising/render-fess-cottise
-      (c/++ cottise-context :cottising :cottise-1)
-      :cottise-2 :cottise-opposite-1
-      :offset-y-fn (fn [base distance]
-                     (-> base
-                         (- row)
-                         (+ line-reversed-min)
-                         (/ height)
-                         (* 100)
-                         (- distance)))
-      :alignment :left
-      :swap-lines? true]]))
+               band-size
+               context)]
+    {:shape shape
+     :lines [{:line line
+              :line-from line-lower-to
+              :line-data [line-lower-data]}]}))
+
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
