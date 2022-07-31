@@ -62,9 +62,9 @@
                                             :default :sharp
                                             :ui/label :string.option/corner}
                                    :thickness-1 {:type :option.type/range
-                                                 :min 1
-                                                 :max 30
-                                                 :default 6
+                                                 :min 0.5
+                                                 :max 15
+                                                 :default 3
                                                  :ui/label :string.option/thickness
                                                  :ui/step 0.01}
                                    :tincture-1 {:type :option.type/choice
@@ -73,9 +73,9 @@
                                                 :ui/label :string.option/tincture
                                                 :ui/element :ui.element/tincture-select})
           (= mode :double) (assoc :thickness-2 {:type :option.type/range
-                                                :min 1
-                                                :max 30
-                                                :default 3
+                                                :min 0.5
+                                                :max 15
+                                                :default 1.5
                                                 :ui/label (string/str-tr :string.option/thickness " 2")
                                                 :ui/step 0.01}
                                   :tincture-2 {:type :option.type/choice
@@ -104,14 +104,14 @@
                     shape)
                :fill-rule "evenodd"
                :fill (when fill? "#ffffff")
-               :style {:stroke-width thickness
+               :style {:stroke-width (* thickness 2)
                        :stroke "#ffffff"
                        :stroke-linejoin linejoin-value
                        :stroke-miterlimit 10}}]
        (when negate-shape
          [:path {:d negate-shape
                  :fill "#000000"
-                 :style {:stroke-width thickness
+                 :style {:stroke-width (* thickness 2)
                          :stroke "#ffffff"
                          :stroke-linejoin linejoin-value
                          :stroke-miterlimit 10}}])]]
@@ -131,8 +131,8 @@
                      (and (vector? data)
                           (= (count data) 2)) (let [[k v] data]
                                                 (cond
-                                                  (= k :stroke-width) [k stroke-width]
-                                                  (= k :style) [k (conj v [:stroke-width stroke-width])]
+                                                  (= k :stroke-width) [k (* stroke-width 2)]
+                                                  (= k :style) [k (conj v [:stroke-width (* stroke-width 2)])]
                                                   (= k :stroke-linejoin) [k linejoin]
                                                   (and (#{:stroke :fill :stop-color} k)
                                                        (not= v "none")) [k color]
@@ -153,7 +153,7 @@
      [:defs
       [:mask {:id mask-id}
        [:g {:fill "#ffffff"
-            :style {:stroke-width thickness
+            :style {:stroke-width (* thickness 2)
                     :stroke "#ffffff"
                     :stroke-linejoin linejoin-value
                     :stroke-miterlimit 10}}
@@ -176,13 +176,13 @@
       line-path
       nil
       (+ thickness
-         outline/stroke-width)
+         (/ outline/stroke-width 2))
       (outline/color context)
       context
       :corner corner
       :fill? false])
    (let [effective-thickness (cond-> thickness
-                               outline? (- outline/stroke-width))]
+                               outline? (- (/ outline/stroke-width 2)))]
      (when (pos? effective-thickness)
        [dilate-and-fill-path
         line-path

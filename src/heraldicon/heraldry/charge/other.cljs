@@ -574,14 +574,14 @@
                   (when outline?
                     [fimbriation/dilate-and-fill
                      adjusted-charge-without-shading
-                     (+ thickness outline/stroke-width)
+                     (+ thickness (/ outline/stroke-width 2))
                      (outline/color context) context
                      :transform reverse-transform
                      :corner (:corner fimbriation)])
                   [fimbriation/dilate-and-fill
                    adjusted-charge-without-shading
                    (cond-> thickness
-                     outline? (- outline/stroke-width))
+                     outline? (- (/ outline/stroke-width 2)))
                    (-> fimbriation
                        :tincture-2
                        (tincture/pick context)) context
@@ -593,14 +593,14 @@
                   (when outline?
                     [fimbriation/dilate-and-fill
                      adjusted-charge-without-shading
-                     (+ thickness outline/stroke-width)
+                     (+ thickness (/ outline/stroke-width 2))
                      (outline/color context) context
                      :transform reverse-transform
                      :corner (:corner fimbriation)])
                   [fimbriation/dilate-and-fill
                    adjusted-charge-without-shading
                    (cond-> thickness
-                     outline? (- outline/stroke-width))
+                     outline? (- (/ outline/stroke-width 2)))
                    (-> fimbriation
                        :tincture-1
                        (tincture/pick context)) context
