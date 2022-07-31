@@ -134,10 +134,10 @@
      :fimbriation (-> (fimbriation/options (c/++ context :fimbriation))
                       (dissoc :alignment)
                       (options/override-if-exists [:corner :default] :round)
-                      (options/override-if-exists [:thickness-1 :max :max] 50)
-                      (options/override-if-exists [:thickness-1 :max :default] 10)
-                      (options/override-if-exists [:thickness-2 :max :max] 50)
-                      (options/override-if-exists [:thickness-2 :max :default] 10))
+                      (options/override-if-exists [:thickness-1 :max] 25)
+                      (options/override-if-exists [:thickness-1 :default] 2.5)
+                      (options/override-if-exists [:thickness-2 :max] 25)
+                      (options/override-if-exists [:thickness-2 :default] 1.5))
      :outline-mode {:type :option.type/choice
                     :choices outline-mode-choices
                     :default :keep
@@ -320,14 +320,14 @@
                [fimbriation/dilate-and-fill-path
                 charge-shape
                 nil
-                (+ thickness outline/stroke-width)
+                (+ thickness (/ outline/stroke-width 2))
                 (outline/color context) context
                 :corner (:corner fimbriation)])
              [fimbriation/dilate-and-fill-path
               charge-shape
               nil
               (cond-> thickness
-                outline? (- outline/stroke-width))
+                outline? (- (/ outline/stroke-width 2)))
               (-> fimbriation
                   :tincture-2
                   (tincture/pick context)) context
@@ -339,14 +339,14 @@
                [fimbriation/dilate-and-fill-path
                 charge-shape
                 nil
-                (+ thickness outline/stroke-width)
+                (+ thickness (/ outline/stroke-width 2))
                 (outline/color context) context
                 :corner (:corner fimbriation)])
              [fimbriation/dilate-and-fill-path
               charge-shape
               nil
               (cond-> thickness
-                outline? (- outline/stroke-width))
+                outline? (- (/ outline/stroke-width 2)))
               (-> fimbriation
                   :tincture-1
                   (tincture/pick context)) context
