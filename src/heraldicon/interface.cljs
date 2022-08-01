@@ -143,25 +143,16 @@
       manual-blazon
       (blazon-component context))))
 
-(defmulti environment effective-component-type)
-
-(defmethod environment nil [context]
-  (log/warn :not-implemented "interface.environment" context))
-
-(rf/reg-sub-raw ::environment
-  (fn [_app-db [_ context]]
-    (reaction
-     (environment context))))
-
-(defn get-environment [context]
-  @(rf/subscribe [::environment context]))
+(defn- cottise-context? [context]
+  (-> context :path drop-last last (= :cottising)))
 
 (defn parent [context]
   (cond
     (-> context :path last (= :field)) (c/-- context)
     (-> context :path last int?) (c/-- context 2)
+    (cottise-context? context) (c/-- context 2)
     :else (do
-            (log/warn :not-implemented "parent-environment" context)
+            (log/warn :not-implemented "parent" context)
             context)))
 
 (defmulti properties effective-component-type)
@@ -177,20 +168,39 @@
 (defn get-properties [context]
   @(rf/subscribe [::properties context]))
 
-(defmulti render-shape effective-component-type)
+(defmulti environment (fn [_context properties]
+                        (:type properties)))
 
-(defmethod render-shape nil [context]
-  (log/warn :not-implemented "interface.render-shape" context))
+(defmethod environment nil [_context _properties])
+
+(rf/reg-sub-raw ::environment
+  (fn [_app-db [_ context]]
+    (reaction
+     (environment context (get-properties context)))))
+
+(defn get-environment [context]
+  @(rf/subscribe [::environment context]))
+
+(defn get-parent-environment [context]
+  (if (cottise-context? context)
+    @(rf/subscribe [::environment (parent (parent context))])
+    @(rf/subscribe [::environment (parent context)])))
+
+(defmulti render-shape (fn [_context properties]
+                         (:type properties)))
+
+(defmethod render-shape nil [_context _properties])
 
 (rf/reg-sub-raw ::render-shape
   (fn [_app-db [_ context]]
     (reaction
-     (render-shape context))))
+     (render-shape context (get-properties context)))))
 
 (defn get-render-shape [context]
   @(rf/subscribe [::render-shape context]))
 
-(defmulti exact-shape effective-component-type)
+(defmulti exact-shape (fn [_context properties]
+                        (:type properties)))
 
 (defn get-exact-shape [context]
   @(rf/subscribe [::exact-shape context]))
@@ -200,13 +210,13 @@
    (:shape (get-render-shape context))
    (get-exact-shape (parent context))))
 
-(defmethod exact-shape nil [context]
+(defmethod exact-shape nil [context _properties]
   (fallback-exact-shape context))
 
-(defmethod exact-shape :heraldry/ordinary [context]
+(defmethod exact-shape :heraldry/ordinary [context _properties]
   (fallback-exact-shape context))
 
 (rf/reg-sub-raw ::exact-shape
   (fn [_app-db [_ context]]
     (reaction
-     (exact-shape context))))
+     (exact-shape context (get-properties context)))))
