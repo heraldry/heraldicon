@@ -59,7 +59,8 @@
 
 (defn render [{:keys [svg-export?]
                :as context}]
-  (let [clip-path-id (uid/generate "clip")]
+  (let [clip-path-id (uid/generate "clip")
+        {:keys [transform]} (interface/get-properties context)]
     [:g
      [:defs
       [(if svg-export?
@@ -69,6 +70,8 @@
      [:g {(if svg-export?
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
-      [field.shared/render (c/++ context :field)]]
+      [:g (when transform
+            {:transform transform})
+       [field.shared/render (c/++ context :field)]]]
      [edges context]
      [cottising context]]))
