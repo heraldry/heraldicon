@@ -1,13 +1,16 @@
 (ns heraldicon.heraldry.ordinary.type.bend
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
-   [heraldicon.heraldry.field.shared :as field.shared]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
@@ -135,190 +138,221 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment
-           override-middle-real-start
-           override-middle-real-end
-           override-real-start
-           override-real-end
-           override-center-point] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
-        orientation (interface/get-sanitized-data (c/++ context :orientation))
+(defmethod interface/properties ordinary-type [context]
+  (let [parent (interface/parent context)
+        parent-environment (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        points (:points environment)
-        top (:top points)
-        bottom (:bottom points)
-        width (:width environment)
-        height (:height environment)
-        band-height (math/percent-of height size)
-        {anchor-point :real-anchor
-         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
-                                               environment
-                                               anchor
-                                               orientation
-                                               band-height
-                                               nil)
-        center-point (or override-center-point
-                         (v/line-intersection anchor-point orientation-point
-                                              top bottom))
-        direction (v/sub orientation-point anchor-point)
-        direction (v/normal (v/Vector. (-> direction :x Math/abs)
-                                       (-> direction :y Math/abs)))
-        direction-orthogonal (v/orthogonal direction)
-        [middle-real-start
-         middle-real-end] (if (and override-middle-real-start
-                                   override-middle-real-end)
-                            [override-middle-real-start
-                             override-middle-real-end]
-                            (v/environment-intersections
-                             anchor-point
-                             (v/add anchor-point direction)
-                             environment))
-        band-length (-> (v/sub middle-real-start center-point)
-                        v/abs
-                        (* 2))
-        middle-start (-> direction
-                         (v/mul -30)
-                         (v/add middle-real-start))
-        middle-end (-> direction
-                       (v/mul 30)
-                       (v/add middle-real-end))
-        width-offset (-> direction-orthogonal
-                         (v/mul band-height)
-                         (v/div 2))
-        ordinary-top-left (v/add middle-real-start width-offset)
-        first-start (v/add middle-start width-offset)
-        first-end (v/add middle-end width-offset)
-        second-start (v/sub middle-start width-offset)
-        second-end (v/sub middle-end width-offset)
-        [first-real-start
-         first-real-end] (v/environment-intersections
-                          first-start
-                          first-end
-                          environment)
-        [second-real-start
-         second-real-end] (v/environment-intersections
-                           second-start
-                           second-end
-                           environment)
-        real-start (or override-real-start
-                       (min (v/abs (v/sub first-real-start first-start))
-                            (v/abs (v/sub second-real-start second-start))))
-        real-end (or override-real-end
-                     (max (v/abs (v/sub first-real-start first-start))
-                          (v/abs (v/sub second-real-end second-start))))
-        angle (v/angle-to-point middle-start middle-end)
-        line (-> line
-                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
-        opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
-                          (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
-        {line-one :line
-         line-one-start :line-start
-         line-one-min :line-min
-         :as line-one-data} (line/create line
-                                         first-start
-                                         first-end
-                                         :real-start real-start
-                                         :real-end real-end
-                                         :context context
-                                         :environment environment)
-        {line-reversed :line
-         line-reversed-start :line-start
-         line-reversed-min :line-min
-         :as line-reversed-data} (line/create opposite-line
-                                              second-start
-                                              second-end
-                                              :reversed? true
-                                              :real-start real-start
-                                              :real-end real-end
-                                              :context context
-                                              :environment environment)
         counterchanged? (= (interface/get-sanitized-data (c/++ context :field :type))
                            :heraldry.field.type/counterchanged)
         inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
+        percentage-base (:height parent-environment)
+        band-size (math/percent-of percentage-base size)
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        orientation (interface/get-sanitized-data (c/++ context :orientation))
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
+                                               parent-environment
+                                               anchor
+                                               orientation
+                                               band-size
+                                               nil)
+        direction (v/sub orientation-point anchor-point)
+        direction (v/normal (v/Vector. (-> direction :x Math/abs)
+                                       (-> direction :y Math/abs)))
+        direction-orthogonal (v/orthogonal direction)
+        direction-orthogonal (if (neg? (:y direction-orthogonal))
+                               (v/mul direction-orthogonal -1)
+                               direction-orthogonal)
+        parent-shape (interface/get-exact-shape parent)
+        [middle-start middle-end] (v/intersections-with-shape anchor-point (v/add anchor-point direction)
+                                                              parent-shape :default? true)
+        angle (v/angle-to-point middle-start middle-end)
+        width-offset (-> direction-orthogonal
+                         (v/mul band-size)
+                         (v/div 2))
+        upper-start (v/sub middle-start width-offset)
+        upper-end (v/sub middle-end width-offset)
+        lower-start (v/add middle-start width-offset)
+        lower-end (v/add middle-end width-offset)
+        [upper-left upper-right] (v/intersections-with-shape upper-start upper-end parent-shape :default? true)
+        [lower-left lower-right] (v/intersections-with-shape lower-start lower-end parent-shape :default? true)
+        line-length (max (v/abs (v/sub upper-left upper-right))
+                         (v/abs (v/sub middle-start middle-end))
+                         (v/abs (v/sub lower-left lower-right))
+                         10)
+        ordinary-top-left (first (sort-by
+                                  (fn [v]
+                                    (let [rv (:x (v/rotate v (- angle)))]
+                                      (if (math/close-to-zero? rv)
+                                        0
+                                        rv)))
+                                  [upper-start
+                                   lower-start
+                                   upper-left]))
+        reverse-transform-fn (when-not use-parent-environment?
+                               (fn reverse-transform-fn [v]
+                                 (if (instance? v/Vector v)
+                                   (-> v
+                                       (v/sub ordinary-top-left)
+                                       (v/rotate (- angle)))
+                                   (-> v
+                                       (path/translate (- (:x ordinary-top-left)) (- (:y ordinary-top-left)))
+                                       (path/rotate (- angle))))))
+        lower-left (v/add upper-left (v/mul width-offset 2))
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)
+        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                line-length percentage-base)]
+    {:type ordinary-type
+     :upper [upper-left upper-right]
+     :lower [lower-left lower-right]
+     :angle angle
+     :direction-orthogonal direction-orthogonal
+     :band-size band-size
+     :line-length line-length
+     :percentage-base percentage-base
+     :use-parent-environment? use-parent-environment?
+     :transform (when-not use-parent-environment?
+                  (str "translate(" (v/->str ordinary-top-left) ")"
+                       "rotate(" angle ")"))
+     :reverse-transform-fn reverse-transform-fn
+     :line line
+     :opposite-line opposite-line}))
+
+(defmethod interface/environment ordinary-type [context {:keys [reverse-transform-fn]
+                                                         [upper-left upper-right] :upper
+                                                         [lower-left lower-right] :lower}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        ;; TODO: this should be more accurate
+        bounding-box-points (cond->> [upper-left upper-right
+                                      lower-left lower-right]
+                              reverse-transform-fn (map reverse-transform-fn))]
+    (environment/create
+     {:paths nil}
+     (-> meta
+         (dissoc :context)
+         (merge {:bounding-box (bb/from-points bounding-box-points)})))))
+
+(defmethod interface/render-shape ordinary-type [context {:keys [band-size line opposite-line]
+                                                          [upper-left upper-right] :upper
+                                                          [lower-left lower-right] :lower}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        {:keys [width]} (interface/get-environment context)
+        bounding-box (:bounding-box meta)
+        {line-upper :line
+         line-upper-start :line-start
+         line-upper-from :adjusted-from
+         :as line-upper-data} (line/create-with-extension line
+                                                          upper-left upper-right
+                                                          bounding-box
+                                                          :context context)
+        {line-lower :line
+         line-lower-start :line-start
+         line-lower-to :adjusted-to
+         :as line-lower-data} (line/create-with-extension opposite-line
+                                                          lower-left lower-right
+                                                          bounding-box
+                                                          :reversed? true
+                                                          :context context)
         shape (ordinary.shared/adjust-shape
-               ["M" (v/add first-start
-                           line-one-start)
-                (path/stitch line-one)
-                "L" (v/add second-end
-                           line-reversed-start)
-                (path/stitch line-reversed)
-                "L" (v/add first-start
-                           line-one-start)
+               ["M" (v/add line-upper-from line-upper-start)
+                (path/stitch line-upper)
+                "L" (v/add line-lower-to line-lower-start)
+                (path/stitch line-lower)
                 "z"]
                width
-               band-height
-               context)
-        part [shape
-              (if use-parent-environment?
-                [first-real-start first-real-end
-                 second-real-start second-real-end]
-                [v/zero
-                 (v/Vector. band-length band-height)])]
-        cottise-context (merge
-                         context
-                         {:override-real-start real-start
-                          :override-real-end real-end})]
-    [:<>
-     [field.shared/make-subfield
-      (-> context
-          (c/++ :field)
-          (c/<< :transform (when-not use-parent-environment?
-                             (str "translate(" (v/->str ordinary-top-left) ")"
-                                  "rotate(" angle ")"))))
-      part
-      :all]
-     (ordinary.shared/adjusted-shape-outline
-      shape outline? context
-      [:<>
-       [line/render line [line-one-data] first-start outline? context]
-       [line/render opposite-line [line-reversed-data] second-end outline? context]])
-     [cottising/render-bend-cottise
-      (c/++ cottise-context :cottising :cottise-1)
-      :cottise-2 :cottise-1
-      :distance-fn (fn [distance thickness]
-                     (-> (+ distance)
-                         (+ (/ thickness 2))
-                         (/ 100)
-                         (* height)
-                         (+ (/ band-height 2))
-                         (- line-one-min)))
-      :alignment :right
-      :width width
-      :height height
-      :angle angle
-      :direction-orthogonal direction-orthogonal
-      :center-point center-point
-      :middle-real-start-fn (fn [point-offset]
-                              (v/add middle-real-start point-offset))
-      :middle-real-end-fn (fn [point-offset]
-                            (v/add middle-real-end point-offset))]
-     [cottising/render-bend-cottise
-      (c/++ cottise-context :cottising :cottise-opposite-1)
-      :cottise-opposite-2 :cottise-opposite-1
-      :distance-fn (fn [distance thickness]
-                     (-> (+ distance)
-                         (+ (/ thickness 2))
-                         (/ 100)
-                         (* height)
-                         (+ (/ band-height 2))
-                         (- line-reversed-min)))
-      :alignment :left
-      :width width
-      :height height
-      :angle angle
-      :direction-orthogonal direction-orthogonal
-      :center-point center-point
-      :middle-real-start-fn (fn [point-offset]
-                              (v/sub middle-real-start point-offset))
-      :middle-real-end-fn (fn [point-offset]
-                            (v/sub middle-real-end point-offset))
-      :swap-lines? true]]))
+               band-size
+               context)]
+    {:shape shape
+     :lines [{:line line
+              :line-from line-upper-from
+              :line-data [line-upper-data]}
+             {:line opposite-line
+              :line-from line-lower-to
+              :line-data [line-lower-data]}]}))
+
+(defmethod interface/exact-shape ordinary-type [context {:keys [reverse-transform-fn]}]
+  (let [exact-shape (interface/fallback-exact-shape context)]
+    (if reverse-transform-fn
+      (-> exact-shape
+          path/parse-path
+          reverse-transform-fn
+          path/to-svg)
+      exact-shape)))
+
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
+
+(defmethod cottising/cottise-properties ordinary-type [context
+                                                       {:keys [line-length percentage-base direction-orthogonal
+                                                               angle]
+                                                        real-ordinary-type :type
+                                                        [reference-upper-left reference-upper-right] :upper
+                                                        [reference-lower-left reference-lower-right] :lower
+                                                        reference-upper-line :line
+                                                        reference-lower-line :opposite-line}]
+  (let [kind (cottising/kind context)
+        distance (interface/get-sanitized-data (c/++ context :distance))
+        distance (math/percent-of percentage-base distance)
+        thickness (interface/get-sanitized-data (c/++ context :thickness))
+        band-size (math/percent-of percentage-base thickness)
+        counterchanged? (= (interface/get-sanitized-data (c/++ context :field :type))
+                           :heraldry.field.type/counterchanged)
+        inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
+        use-parent-environment? (or counterchanged?
+                                    inherit-environment?)
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)
+        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                line-length percentage-base)
+        opposite? (-> kind name (s/starts-with? "cottise-opposite"))
+        reference-line (if opposite?
+                         reference-lower-line
+                         reference-upper-line)
+        real-distance (+ (:effective-height reference-line)
+                         distance)
+        [base-left base-right] (if opposite?
+                                 [reference-lower-left reference-lower-right]
+                                 [reference-upper-left reference-upper-right])
+        dist-vector (v/mul direction-orthogonal real-distance)
+        band-size-vector (v/mul direction-orthogonal band-size)
+        add-fn (if opposite?
+                 v/add
+                 v/sub)
+        [first-left first-right] (map #(add-fn % dist-vector) [base-left base-right])
+        [second-left second-right] (map #(add-fn % band-size-vector) [first-left first-right])
+        [upper-left upper-right
+         lower-left lower-right] (if opposite?
+                                   [first-left first-right
+                                    second-left second-right]
+                                   [second-left second-right
+                                    first-left first-right])
+        reverse-transform-fn (when-not use-parent-environment?
+                               (fn reverse-transform-fn [v]
+                                 (if (instance? v/Vector v)
+                                   (-> v
+                                       (v/sub upper-left)
+                                       (v/rotate (- angle)))
+                                   (-> v
+                                       (path/translate (- (:x upper-left)) (- (:y upper-left)))
+                                       (path/rotate (- angle))))))
+        [line opposite-line] (if opposite?
+                               [opposite-line line]
+                               [line opposite-line])]
+    {:type real-ordinary-type
+     :upper [upper-left upper-right]
+     :lower [lower-left lower-right]
+     :angle angle
+     :direction-orthogonal direction-orthogonal
+     :band-size band-size
+     :line-length line-length
+     :percentage-base percentage-base
+     :use-parent-environment? false
+     :transform (when-not use-parent-environment?
+                  (str "translate(" (v/->str upper-left) ")"
+                       "rotate(" angle ")"))
+     :reverse-transform-fn reverse-transform-fn
+     :line line
+     :opposite-line opposite-line}))
