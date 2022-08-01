@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.ordinary.type.base
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
@@ -98,3 +99,31 @@
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
+
+(defmethod cottising/cottise-properties ordinary-type [context
+                                                       {:keys [line-length percentage-base]
+                                                        [reference-upper-left reference-upper-right] :upper
+                                                        reference-upper-line :line}]
+  (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
+    (let [distance (interface/get-sanitized-data (c/++ context :distance))
+          distance (math/percent-of percentage-base distance)
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
+          band-size (math/percent-of percentage-base thickness)
+          line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                         line-length percentage-base)
+          opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                  line-length percentage-base)
+          real-distance (+ (:effective-height reference-upper-line)
+                           distance)
+          dist-vector (v/Vector. 0 real-distance)
+          band-size-vector (v/Vector. 0 band-size)
+          [lower-left lower-right] (map #(v/sub % dist-vector) [reference-upper-left reference-upper-right])
+          [upper-left upper-right] (map #(v/sub % band-size-vector) [lower-left lower-right])]
+      {:type :heraldry.ordinary.type/fess
+       :upper [upper-left upper-right]
+       :lower [lower-left lower-right]
+       :band-size band-size
+       :line-length line-length
+       :percentage-base percentage-base
+       :line line
+       :opposite-line opposite-line})))
