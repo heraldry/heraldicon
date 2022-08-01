@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.ordinary.type.pale
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
@@ -64,7 +65,7 @@
 
 (defmethod interface/properties ordinary-type [context]
   (let [parent (interface/parent context)
-        parent-environment (interface/get-environment parent)
+        parent-environment (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         {:keys [top bottom]} (:points parent-environment)
         percentage-base (:width parent-environment)
@@ -90,18 +91,18 @@
                                        line-length percentage-base)
         opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
                                                 line-length percentage-base)]
-    {:left [left-upper left-lower]
+    {:type ordinary-type
+     :left [left-upper left-lower]
      :right [right-upper right-lower]
      :band-size band-size
      :line-length line-length
+     :percentage-base percentage-base
      :line line
      :opposite-line opposite-line}))
 
-(defmethod interface/environment ordinary-type [context]
-  (let [parent (interface/parent context)
-        {:keys [meta]} (interface/get-environment parent)
-        {[left-upper left-lower] :left
-         [right-upper right-lower] :right} (interface/get-properties context)
+(defmethod interface/environment ordinary-type [context {[left-upper left-lower] :left
+                                                         [right-upper right-lower] :right}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
         bounding-box-points [left-upper left-lower
                              right-upper right-lower]]
     (environment/create
@@ -110,17 +111,11 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type
-  [context]
-  (let [parent (interface/parent context)
-        {:keys [meta]} (interface/get-environment parent)
-        {[left-upper left-lower] :left
-         [right-upper right-lower] :right
-         band-size :band-size
-         line :line
-         opposite-line :opposite-line} (interface/get-properties context)
-        environment (interface/get-environment context)
-        width (:width environment)
+(defmethod interface/render-shape ordinary-type [context {:keys [band-size line opposite-line]
+                                                          [left-upper left-lower] :left
+                                                          [right-upper right-lower] :right}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        {:keys [width]} (interface/get-environment context)
         bounding-box (:bounding-box meta)
         right-upper (assoc right-upper :y (:y left-upper))
         {line-left :line
@@ -157,3 +152,52 @@
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
+
+(defmethod cottising/cottise-properties ordinary-type [context
+                                                       {:keys [line-length percentage-base]
+                                                        [reference-left-upper reference-left-lower] :left
+                                                        [reference-right-upper reference-right-lower] :right
+                                                        reference-left-line :line
+                                                        reference-right-line :opposite-line}]
+  (let [kind (cottising/kind context)
+        distance (interface/get-sanitized-data (c/++ context :distance))
+        distance (math/percent-of percentage-base distance)
+        thickness (interface/get-sanitized-data (c/++ context :thickness))
+        band-size (math/percent-of percentage-base thickness)
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)
+        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                line-length percentage-base)
+        opposite? (-> kind name (s/starts-with? "cottise-opposite"))
+        reference-line (if opposite?
+                         reference-right-line
+                         reference-left-line)
+        real-distance (+ (:effective-height reference-line)
+                         distance)
+        [base-upper base-lower] (if opposite?
+                                  [reference-right-upper reference-right-lower]
+                                  [reference-left-upper reference-left-lower])
+        dist-vector (v/Vector. real-distance 0)
+        band-size-vector (v/Vector. band-size 0)
+        add-fn (if opposite?
+                 v/add
+                 v/sub)
+        [first-upper first-lower] (map #(add-fn % dist-vector) [base-upper base-lower])
+        [second-upper second-lower] (map #(add-fn % band-size-vector) [first-upper first-lower])
+        [left-upper left-lower
+         right-upper right-lower] (if opposite?
+                                    [first-upper first-lower
+                                     second-upper second-lower]
+                                    [second-upper second-lower
+                                     first-upper first-lower])
+        [line opposite-line] (if opposite?
+                               [opposite-line line]
+                               [line opposite-line])]
+    {:type ordinary-type
+     :left [left-upper left-lower]
+     :right [right-upper right-lower]
+     :band-size band-size
+     :line-length line-length
+     :percentage-base percentage-base
+     :line line
+     :opposite-line opposite-line}))

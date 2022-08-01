@@ -37,7 +37,7 @@
 
 (defmethod interface/properties ordinary-type [context]
   (let [parent (interface/parent context)
-        parent-environment (interface/get-environment parent)
+        parent-environment (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         {:keys [left right bottom]} (:points parent-environment)
         percentage-base (:height parent-environment)
@@ -50,16 +50,16 @@
         line-length (- (:x upper-right) (:x upper-left))
         line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
                                        line-length percentage-base)]
-    {:upper [upper-left upper-right]
+    {:type ordinary-type
+     :upper [upper-left upper-right]
      :band-size band-size
-     :line-height line-length
+     :line-length line-length
+     :percentage-base percentage-base
      :line line}))
 
-(defmethod interface/environment ordinary-type [context]
-  (let [parent (interface/parent context)
-        {:keys [meta points]} (interface/get-environment parent)
+(defmethod interface/environment ordinary-type [context {[upper-left upper-right] :upper}]
+  (let [{:keys [meta points]} (interface/get-parent-environment context)
         {:keys [bottom]} points
-        {[upper-left upper-right] :upper} (interface/get-properties context)
         bounding-box-points [upper-left upper-right
                              bottom]]
     (environment/create
@@ -68,15 +68,10 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type
-  [context]
-  (let [parent (interface/parent context)
-        {:keys [meta]} (interface/get-environment parent)
-        {[upper-left upper-right] :upper
-         band-size :band-size
-         line :line} (interface/get-properties context)
-        environment (interface/get-environment context)
-        width (:width environment)
+(defmethod interface/render-shape ordinary-type [context {:keys [band-size line]
+                                                          [upper-left upper-right] :upper}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        {:keys [width]} (interface/get-environment context)
         bounding-box (:bounding-box meta)
         {line-upper :line
          line-upper-start :line-start

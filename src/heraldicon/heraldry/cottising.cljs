@@ -235,3 +235,20 @@
 
 (defmethod interface/options :heraldry/cottise [_context]
   nil)
+
+(defn kind [context]
+  (-> context :path last))
+
+(defmulti cottise-properties (fn [_context reference-properties]
+                               (:type reference-properties)))
+
+(defmethod cottise-properties nil [_context _properties])
+
+(defmethod interface/properties :heraldry/cottise [context]
+  (let [reference-context (case (kind context)
+                            :cottise-2 (-> context c/-- (c/++ :cottise-1))
+                            :cottise-opposite-2 (-> context c/-- (c/++ :cottise-opposite-1))
+                            :cottise-extra-2 (-> context c/-- (c/++ :cottise-extra-1))
+                            (interface/parent context))
+        reference-properties (interface/get-properties reference-context)]
+    (cottise-properties context reference-properties)))

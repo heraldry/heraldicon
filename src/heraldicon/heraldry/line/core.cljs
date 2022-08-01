@@ -821,10 +821,19 @@
            (str "z"))))))
 
 (defn resolve-percentages [line line-percentage-base fimbriation-percentage-base]
-  (-> line
-      (update :width (partial math/percent-of line-percentage-base))
-      (update-in [:fimbriation :thickness-1] (partial math/percent-of fimbriation-percentage-base))
-      (update-in [:fimbriation :thickness-2] (partial math/percent-of fimbriation-percentage-base))))
+  (let [new-line (-> line
+                     (update :width (partial math/percent-of line-percentage-base))
+                     (update-in [:fimbriation :thickness-1] (partial math/percent-of fimbriation-percentage-base))
+                     (update-in [:fimbriation :thickness-2] (partial math/percent-of fimbriation-percentage-base)))
+        fimbriation-alignment (-> line :fimbriation :alignment)
+        fimbriation-thickness (+ (-> new-line :fimbriation :thickness-1 (or 0))
+                                 (-> new-line :fimbriation :thickness-2 (or 0)))]
+    (assoc new-line
+           :effective-height (case fimbriation-alignment
+                               :even (/ fimbriation-thickness 2)
+                               :outside fimbriation-thickness
+                               :inside 0
+                               0))))
 
 (defn- extend [start extra bounding-box]
   (if (bb/surrounds? bounding-box start)

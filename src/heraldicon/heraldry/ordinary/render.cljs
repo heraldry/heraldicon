@@ -4,7 +4,8 @@
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.interface :as interface]
-   [heraldicon.util.uid :as uid]))
+   [heraldicon.util.uid :as uid]
+   [re-frame.core :as rf]))
 
 (defn- shape-path [shape]
   (:shape shape))
@@ -28,6 +29,34 @@
                  [render-line context line]))
           lines)))
 
+(rf/reg-sub ::cottise?
+  (fn [[_ {:keys [path]}] _]
+    (rf/subscribe [:get (conj path :type)]))
+
+  (fn [cottise? _]
+    cottise?))
+
+(declare render)
+
+(defn- cottising [context]
+  (let [cottising-context (c/++ context :cottising)
+        cottise-1? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-1)])
+        cottise-2? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-2)])
+        cottise-opposite-1? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-opposite-1)])
+        cottise-opposite-2? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-opposite-2)])]
+    [:g
+     (when cottise-1?
+       [render (c/++ cottising-context :cottise-1)])
+     (when cottise-opposite-1?
+       [render (c/++ cottising-context :cottise-opposite-1)])
+
+     (when (and cottise-1?
+                cottise-2?)
+       [render (c/++ cottising-context :cottise-2)])
+     (when (and cottise-opposite-1?
+                cottise-opposite-2?)
+       [render (c/++ cottising-context :cottise-opposite-2)])]))
+
 (defn render [{:keys [svg-export?]
                :as context}]
   (let [clip-path-id (uid/generate "clip")]
@@ -41,4 +70,5 @@
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
       [field.shared/render (c/++ context :field)]]
-     [edges context]]))
+     [edges context]
+     [cottising context]]))

@@ -18,11 +18,14 @@
                         (c/++ :field)
                         (assoc-in [:blazonry :root?] true))))
 
-(defmethod interface/environment :heraldry/coat-of-arms [context]
+(defmethod interface/properties :heraldry/coat-of-arms [_context]
+  {:type :heraldry/coat-of-arms})
+
+(defmethod interface/environment :heraldry/coat-of-arms [context _properties]
   (:environment context))
 
-(defmethod interface/render-shape :heraldry/coat-of-arms [context]
+(defmethod interface/render-shape :heraldry/coat-of-arms [context _properties]
   (s/join "" (-> context :environment :shape :paths)))
 
-(defmethod interface/exact-shape :heraldry/coat-of-arms [context]
-  (interface/render-shape context))
+(defmethod interface/exact-shape :heraldry/coat-of-arms [context _properties]
+  (interface/get-render-shape context))
