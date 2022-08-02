@@ -57,4 +57,9 @@
    [heraldicon.frontend.global]
    [heraldicon.frontend.history.state]
    [heraldicon.frontend.state]
+   [heraldicon.frontend.user.form.change-temporary-password]
+   [heraldicon.frontend.user.form.confirmation]
+   [heraldicon.frontend.user.form.login]
+   [heraldicon.frontend.user.form.password-reset-confirmation]
+   [heraldicon.frontend.user.form.register]
    [heraldicon.shared]))
