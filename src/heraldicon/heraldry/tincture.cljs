@@ -127,10 +127,18 @@
     (conj (if mask-id
             [:g {:mask (str "url(#" mask-id ")")}]
             [:<>])
-          [:rect {:x -1000
-                  :y -1000
-                  :width 2000
-                  :height 2000
+          [:rect {:x (if svg-export?
+                       -1000
+                       -200)
+                  :y (if svg-export?
+                       -1000
+                       -200)
+                  :width (if svg-export?
+                           2000
+                           400)
+                  :height (if svg-export?
+                            2000
+                            600)
                   :transform (cond-> transform
                                (and pattern-offset-x
                                     pattern-offset-y) (str "translate("
