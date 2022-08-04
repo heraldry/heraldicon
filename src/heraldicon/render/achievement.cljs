@@ -218,7 +218,7 @@
        [:text {:x margin
                :y (- document-height
                      margin)
-               :text-align "start"
+               :text-anchor "start"
                :fill "#888"
                :style {:font-family (font/css-string short-url-font)
                        :font-size font-size}}
