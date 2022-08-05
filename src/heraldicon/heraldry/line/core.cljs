@@ -840,7 +840,11 @@
     (recur (v/add start extra) extra bounding-box)
     start))
 
-(defn create-with-extension [line from to bounding-box & {:as line-options}]
+(defn create-with-extension [line from to bounding-box & {:keys [extend-from?
+                                                                 extend-to?]
+                                                          :or {extend-from? true
+                                                               extend-to? true}
+                                                          :as line-options}]
   (let [dir (v/normal (v/sub to from))
         dir (if (= dir v/zero)
               (v/Vector. 1 0)
@@ -849,10 +853,11 @@
         extra (v/mul dir width)
         from (or from (v/Vector. -10 -50))
         to (or to (v/Vector. 110 50))
-        extended-from (v/add (extend from (v/mul extra -1) bounding-box)
-                             (v/mul extra -3))
-        extended-to (v/add (extend to extra bounding-box)
-                           (v/mul extra 3))
+        bounding-box (bb/dilate bounding-box 20)
+        extended-from (cond-> from
+                        extend-from? (extend (v/mul extra -1) bounding-box))
+        extended-to (cond-> to
+                      extend-to? (extend extra bounding-box))
         real-start (v/abs (v/sub from extended-from))
         real-end (v/abs (v/sub to extended-from))]
     (assoc (create line extended-from extended-to (assoc line-options

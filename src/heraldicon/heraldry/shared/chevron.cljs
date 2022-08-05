@@ -5,7 +5,7 @@
 (defn arm-diagonals [chevron-angle origin-point anchor-point]
   (let [direction (-> (v/sub anchor-point origin-point)
                       v/normal
-                      (v/mul 200)
+                      (v/mul 50)
                       (v/rotate (- chevron-angle)))
         direction (if (-> direction :y neg?)
                     (v/dot direction (v/Vector. 1 -1))
