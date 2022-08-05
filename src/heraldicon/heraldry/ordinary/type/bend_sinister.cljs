@@ -2,16 +2,13 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
-   [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
-   [heraldicon.math.core :as math]
-   [heraldicon.math.vector :as v]
-   [heraldicon.options :as options]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.options :as options]))
 
 (def ordinary-type :heraldry.ordinary.type/bend-sinister)
 
@@ -137,194 +134,20 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment
-           override-middle-real-start
-           override-middle-real-end
-           override-real-start
-           override-real-end
-           override-center-point] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
-        orientation (interface/get-sanitized-data (c/++ context :orientation))
-        size (interface/get-sanitized-data (c/++ context :geometry :size))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        points (:points environment)
-        top (:top points)
-        bottom (:bottom points)
-        width (:width environment)
-        height (:height environment)
-        band-height (math/percent-of height size)
-        {anchor-point :real-anchor
-         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
-                                               environment
-                                               anchor
-                                               orientation
-                                               band-height
-                                               nil)
-        center-point (or override-center-point
-                         (v/line-intersection anchor-point orientation-point
-                                              top bottom))
-        direction (v/sub orientation-point anchor-point)
-        direction (v/normal (v/Vector. (-> direction :x Math/abs)
-                                       (-> direction :y Math/abs -)))
-        direction-orthogonal (v/orthogonal direction)
-        [middle-real-start
-         middle-real-end] (if (and override-middle-real-start
-                                   override-middle-real-end)
-                            [override-middle-real-start
-                             override-middle-real-end]
-                            (v/environment-intersections
-                             anchor-point
-                             (v/add anchor-point direction)
-                             environment))
-        band-length (-> (v/sub middle-real-end center-point)
-                        v/abs
-                        (* 2))
-        middle-start (-> direction
-                         (v/mul -30)
-                         (v/add middle-real-start))
-        middle-end (-> direction
-                       (v/mul 30)
-                       (v/add middle-real-end))
-        width-offset (-> direction-orthogonal
-                         (v/mul band-height)
-                         (v/div 2))
-        ordinary-top-left (-> middle-real-end
-                              (v/add width-offset)
-                              (v/sub (v/mul direction band-length)))
-        first-start (v/add middle-start width-offset)
-        first-end (v/add middle-end width-offset)
-        second-start (v/sub middle-start width-offset)
-        second-end (v/sub middle-end width-offset)
-        [first-real-start
-         first-real-end] (v/environment-intersections
-                          first-start
-                          first-end
-                          environment)
-        [second-real-start
-         second-real-end] (v/environment-intersections
-                           second-start
-                           second-end
-                           environment)
-        real-start (or override-real-start
-                       (min (v/abs (v/sub first-real-start first-start))
-                            (v/abs (v/sub second-real-start second-start))))
-        real-end (or override-real-end
-                     (max (v/abs (v/sub first-real-start first-start))
-                          (v/abs (v/sub second-real-end second-start))))
-        angle (v/angle-to-point middle-start middle-end)
-        line (-> line
-                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
-        opposite-line (-> opposite-line
-                          (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
-                          (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
-        {line-one :line
-         line-one-start :line-start
-         line-one-min :line-min
-         :as line-one-data} (line/create line
-                                         first-start
-                                         first-end
-                                         :real-start real-start
-                                         :real-end real-end
-                                         :context context
-                                         :environment environment)
-        {line-reversed :line
-         line-reversed-start :line-start
-         line-reversed-min :line-min
-         :as line-reversed-data} (line/create opposite-line
-                                              second-start
-                                              second-end
-                                              :reversed? true
-                                              :real-start real-start
-                                              :real-end real-end
-                                              :context context
-                                              :environment environment)
-        counterchanged? (= (interface/get-sanitized-data (c/++ context :field :type))
-                           :heraldry.field.type/counterchanged)
-        inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
-        use-parent-environment? (or counterchanged?
-                                    inherit-environment?)
-        shape (ordinary.shared/adjust-shape
-               ["M" (v/add first-start
-                           line-one-start)
-                (path/stitch line-one)
-                "L" (v/add second-end
-                           line-reversed-start)
-                (path/stitch line-reversed)
-                "L" (v/add first-start
-                           line-one-start)
-                "z"]
-               width
-               band-height
-               context)
-        part [shape
-              (if use-parent-environment?
-                [first-real-start first-real-end
-                 second-real-start second-real-end]
-                [v/zero
-                 (v/Vector. band-length band-height)])]
-        cottise-context (merge
-                         context
-                         {:override-real-start real-start
-                          :override-real-end real-end})]
-    [:<>
-     [field.shared/make-subfield
-      (-> context
-          (c/++ :field)
-          (c/<< :transform (when-not use-parent-environment?
-                             (str "translate(" (v/->str ordinary-top-left) ")"
-                                  "rotate(" angle ")"))))
-      part
-      :all]
-     (ordinary.shared/adjusted-shape-outline
-      shape outline? context
-      [:<>
-       [line/render line [line-one-data] first-start outline? context]
-       [line/render opposite-line [line-reversed-data] second-end outline? context]])
-     [cottising/render-bend-cottise
-      (c/++ cottise-context :cottising :cottise-1)
-      :cottise-2 :cottise-1
-      :sinister? true
-      :distance-fn (fn [distance thickness]
-                     (-> (+ distance)
-                         (+ (/ thickness 2))
-                         (/ 100)
-                         (* height)
-                         (+ (/ band-height 2))
-                         (- line-one-min)))
-      :alignment :right
-      :width width
-      :height height
-      :angle (- angle)
-      :direction-orthogonal direction-orthogonal
-      :center-point center-point
-      :middle-real-start-fn (fn [point-offset]
-                              (v/add middle-real-start point-offset))
-      :middle-real-end-fn (fn [point-offset]
-                            (v/add middle-real-end point-offset))]
-     [cottising/render-bend-cottise
-      (c/++ cottise-context :cottising :cottise-opposite-1)
-      :cottise-opposite-2 :cottise-opposite-1
-      :sinister? true
-      :distance-fn (fn [distance thickness]
-                     (-> (+ distance)
-                         (+ (/ thickness 2))
-                         (/ 100)
-                         (* height)
-                         (+ (/ band-height 2))
-                         (- line-reversed-min)))
-      :alignment :left
-      :width width
-      :height height
-      :angle (- angle)
-      :direction-orthogonal direction-orthogonal
-      :center-point center-point
-      :middle-real-start-fn (fn [point-offset]
-                              (v/sub middle-real-start point-offset))
-      :middle-real-end-fn (fn [point-offset]
-                            (v/sub middle-real-end point-offset))
-      :swap-lines? true]]))
+(defmethod interface/properties ordinary-type [context]
+  ((get-method interface/properties :heraldry.ordinary.type/bend) context))
+
+(defmethod interface/environment ordinary-type [context properties]
+  ((get-method interface/environment :heraldry.ordinary.type/bend) context properties))
+
+(defmethod interface/render-shape ordinary-type [context properties]
+  ((get-method interface/render-shape :heraldry.ordinary.type/bend) context properties))
+
+(defmethod interface/exact-shape ordinary-type [context properties]
+  ((get-method interface/exact-shape :heraldry.ordinary.type/bend) context properties))
+
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
+
+(defmethod cottising/cottise-properties ordinary-type [context properties]
+  ((get-method cottising/cottise-properties :heraldry.ordinary.type/bend) context properties))

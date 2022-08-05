@@ -141,6 +141,8 @@
 (defmethod interface/properties ordinary-type [context]
   (let [parent (interface/parent context)
         parent-environment (interface/get-parent-environment context)
+        ;; could be a bend-sinister as well
+        real-ordinary-type (interface/get-raw-data (c/++ context :type))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         counterchanged? (= (interface/get-sanitized-data (c/++ context :field :type))
                            :heraldry.field.type/counterchanged)
@@ -159,8 +161,12 @@
                                                band-size
                                                nil)
         direction (v/sub orientation-point anchor-point)
-        direction (v/normal (v/Vector. (-> direction :x Math/abs)
-                                       (-> direction :y Math/abs)))
+        direction (-> (v/Vector. (-> direction :x Math/abs)
+                                 (-> direction :y Math/abs))
+                      v/normal
+                      (cond->
+                        (= real-ordinary-type
+                           :heraldry.ordinary.type/bend-sinister) (v/dot (v/Vector. 1 -1))))
         direction-orthogonal (v/orthogonal direction)
         direction-orthogonal (if (neg? (:y direction-orthogonal))
                                (v/mul direction-orthogonal -1)
