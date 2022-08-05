@@ -80,3 +80,11 @@
                            ^v/Vector {:keys [x y]}]
   (and (<= min-x x max-x)
        (<= min-y y max-y)))
+
+(defn dilate ^BoundingBox [^BoundingBox bb
+                           ^js/Number margin]
+  (-> bb
+      (update :min-x - margin)
+      (update :max-x + margin)
+      (update :min-y - margin)
+      (update :max-y + margin)))

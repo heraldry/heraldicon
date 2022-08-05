@@ -2,9 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.core :as line]
-   [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.interface :as interface]
-   [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
 
 (defn add-cottise-options [options key context]
@@ -45,63 +43,6 @@
       (>= num 3) (->
                    (add-cottise-options :cottise-extra-1 (c/++ cottising-context :cottise-extra-1))
                    (add-cottise-options :cottise-extra-2 (c/++ cottising-context :cottise-extra-2))))))
-
-(defn render-chevron-cottise [{:keys [environment] :as context}
-                              cottise-2-key next-cottise-key
-                              & {:keys [distance-fn
-                                        alignment
-                                        swap-lines?
-                                        width
-                                        height
-                                        joint-angle
-                                        chevron-angle
-                                        corner-point]}]
-  (when (interface/get-raw-data context)
-    (let [line (interface/get-sanitized-data (c/++ context :line))
-          opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-          [line opposite-line] (if swap-lines?
-                                 [opposite-line line]
-                                 [line opposite-line])
-          thickness (interface/get-sanitized-data (c/++ context :thickness))
-          distance (interface/get-sanitized-data (c/++ context :distance))
-          half-joint-angle (/ joint-angle 2)
-          half-joint-angle-rad (-> half-joint-angle
-                                   (/ 180)
-                                   (* Math/PI))
-          effective-distance (distance-fn distance half-joint-angle-rad)
-          point-offset (-> (v/Vector. effective-distance 0)
-                           (v/rotate chevron-angle)
-                           (v/add corner-point))
-          fess-offset (v/sub point-offset (-> environment :points :fess))
-          outline? (interface/get-sanitized-data (c/++ context :outline?))]
-      [ordinary.interface/render-ordinary
-       (-> context
-           (c/<< :path [:context :cottise])
-           (assoc :cottise {:type :heraldry.ordinary.type/chevron
-                            :field (interface/get-raw-data (c/++ context :field))
-                            :line line
-                            :opposite-line opposite-line
-                            :geometry {:size thickness}
-                            :cottising {next-cottise-key (interface/get-raw-data
-                                                          (-> context
-                                                              c/--
-                                                              (c/++ cottise-2-key)))}
-                            :anchor {:point :fess
-                                     :offset-x [:force (-> fess-offset
-                                                           :x
-                                                           (/ width)
-                                                           (* 100))]
-                                     :offset-y [:force (-> fess-offset
-                                                           :y
-                                                           (/ height)
-                                                           (* 100)
-                                                           -)]
-                                     :alignment alignment}
-                            :orientation {:point :angle
-                                          :angle [:force half-joint-angle]}
-                            :origin {:point :angle
-                                     :angle [:force (- chevron-angle 90)]}
-                            :outline? outline?}))])))
 
 ; :heraldry/cottise is a special case, it's a UI component, but not a :heraldry.options/root,
 ; because it is a child of the parent :cottising
