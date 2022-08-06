@@ -46,7 +46,7 @@
 
 (defn- calculate-properties-for-angle [environment anchor orientation
                                        {:keys [size stretch]}
-                                       _thickness-base base-angle]
+                                       _thickness-base base-angle & {:keys [shape]}]
   (let [orientation-type (or (:type orientation)
                              :edge)
         alignment (-> anchor :alignment (or :middle))
@@ -58,8 +58,10 @@
                                               0
                                               base-angle)
         target-point (case orientation-type
-                       :edge (last (v/environment-intersections
-                                    real-anchor real-orientation environment))
+                       :edge (if shape
+                               (v/last-intersection-with-shape real-anchor real-orientation shape :default? true)
+                               (last (v/environment-intersections
+                                      real-anchor real-orientation environment)))
                        real-orientation)
         direction-vector (v/sub target-point real-anchor)
         direction-length (v/abs direction-vector)
@@ -95,7 +97,7 @@
 
 (defn- calculate-properties-for-thickness [environment anchor orientation
                                            {:keys [size stretch]}
-                                           thickness-base base-angle]
+                                           thickness-base base-angle & {:keys [shape]}]
   (let [thickness (math/percent-of thickness-base size)
         orientation-type (or (:type orientation)
                              :edge)
@@ -107,8 +109,10 @@
                                               thickness
                                               base-angle)
         target-point (case orientation-type
-                       :edge (last (v/environment-intersections
-                                    real-anchor real-orientation environment))
+                       :edge (if shape
+                               (v/last-intersection-with-shape real-anchor real-orientation shape :default? true)
+                               (last (v/environment-intersections
+                                      real-anchor real-orientation environment)))
                        real-orientation)
         direction-vector (v/sub target-point real-anchor)
         direction-length (v/abs direction-vector)
@@ -123,10 +127,10 @@
 
 (defn calculate-properties [environment anchor orientation
                             {:keys [size-mode]
-                             :as geometry} thickness-base base-angle]
+                             :as geometry} thickness-base base-angle & {:as options}]
   (let [calculate-properties-fn (case size-mode
                                   :angle calculate-properties-for-angle
                                   calculate-properties-for-thickness)]
     (calculate-properties-fn
      environment anchor orientation
-     geometry thickness-base base-angle)))
+     geometry thickness-base base-angle options)))

@@ -1,14 +1,18 @@
 (ns heraldicon.heraldry.ordinary.type.pile
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
-   [heraldicon.heraldry.field.shared :as field.shared]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.heraldry.shared.pile :as pile]
    [heraldicon.interface :as interface]
+   [heraldicon.math.angle :as angle]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
@@ -178,29 +182,20 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
+(defmethod interface/properties ordinary-type [context]
+  (let [parent (interface/parent context)
+        parent-environment (interface/get-parent-environment context)
+        geometry (interface/get-sanitized-data (c/++ context :geometry))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
-        geometry (interface/get-sanitized-data (c/++ context :geometry))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        points (:points environment)
-        top-left (:top-left points)
-        top-right (:top-right points)
-        bottom-left (:bottom-left points)
-        bottom-right (:bottom-right points)
-        width (:width environment)
-        height (:height environment)
-        thickness-base (if (#{:left :right} (:point anchor))
-                         height
-                         width)
+        percentage-base (if (#{:left :right :dexter :sinister} (:point anchor))
+                          (:height parent-environment)
+                          (:width parent-environment))
+        parent-shape (interface/get-exact-shape parent)
         {anchor-point :anchor
          point :point
          thickness :thickness} (pile/calculate-properties
-                                environment
+                                parent-environment
                                 anchor
                                 (cond-> orientation
                                   (#{:top-right
@@ -208,7 +203,7 @@
                                      :bottom-left} (:point anchor)) (update :angle #(when %
                                                                                       (- %))))
                                 geometry
-                                thickness-base
+                                percentage-base
                                 (case (:point anchor)
                                   :top-left 0
                                   :top 90
@@ -218,76 +213,125 @@
                                   :bottom-left 0
                                   :bottom -90
                                   :bottom-right 180
-                                  0))
-        pile-angle (v/angle-to-point point anchor-point)
+                                  0)
+                                :shape parent-shape)
+        pile-angle (angle/normalize (v/angle-to-point point anchor-point))
         {left-point :left
          right-point :right} (pile/diagonals anchor-point point thickness)
-        intersection-left (last (v/environment-intersections point left-point environment))
-        intersection-right (last (v/environment-intersections point right-point environment))
-        joint-angle (v/angle-between-vectors (v/sub intersection-left point)
-                                             (v/sub intersection-right point))
-        end-left (-> intersection-left
-                     (v/sub point)
-                     v/abs)
-        end-right (-> intersection-right
-                      (v/sub point)
-                      v/abs)
-        end (max end-left end-right)
-        line (-> line
-                 (update-in [:fimbriation :thickness-1] (partial math/percent-of thickness-base))
-                 (update-in [:fimbriation :thickness-2] (partial math/percent-of thickness-base)))
+        intersection-left (v/last-intersection-with-shape point left-point parent-shape :default? true)
+        intersection-right (v/last-intersection-with-shape point right-point parent-shape :default? true)
+        joint-angle (angle/normalize (v/angle-between-vectors (v/sub intersection-left point)
+                                                              (v/sub intersection-right point)))
+        line-length (apply max (map (fn [v]
+                                      (-> v
+                                          (v/sub v point)
+                                          v/abs))
+                                    [intersection-left
+                                     intersection-right]))
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)
+        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                line-length percentage-base)]
+    {:type ordinary-type
+     :upper [intersection-left point intersection-right]
+     :pile-angle pile-angle
+     :joint-angle joint-angle
+     :thickness thickness
+     :line-length line-length
+     :percentage-base percentage-base
+     :line line
+     :opposite-line opposite-line}))
+
+(defmethod interface/environment ordinary-type [context {[left point right] :upper}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        ;; TODO: needs to be improved
+        bounding-box-points [point left right]]
+    (environment/create
+     {:paths nil}
+     (-> meta
+         (dissoc :context)
+         (merge {:bounding-box (bb/from-points bounding-box-points)})))))
+
+(defmethod interface/render-shape ordinary-type [context {:keys [thickness line opposite-line]
+                                                          [left point right] :upper}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        {:keys [width]} (interface/get-environment context)
+        bounding-box (:bounding-box meta)
         {line-left :line
          line-left-start :line-start
-         line-left-min :line-min
-         :as line-left-data} (line/create line
-                                          point left-point
-                                          :reversed? true
-                                          :real-start 0
-                                          :real-end end
-                                          :context context
-                                          :environment environment)
+         line-left-to :adjusted-to
+         :as line-left-data} (line/create-with-extension line
+                                                         point left
+                                                         bounding-box
+                                                         :reversed? true
+                                                         :extend-from? false
+                                                         :context context)
         {line-right :line
-         :as line-right-data} (line/create opposite-line
-                                           point right-point
-                                           :real-start 0
-                                           :real-end end
-                                           :context context
-                                           :environment environment)
+         :as line-right-data} (line/create-with-extension opposite-line
+                                                          point right
+                                                          bounding-box
+                                                          :extend-from? false
+                                                          :context context)
         shape (ordinary.shared/adjust-shape
-               ["M" (v/add left-point
+               ["M" (v/add line-left-to
                            line-left-start)
                 (path/stitch line-left)
                 (path/stitch line-right)
                 "z"]
                width
                thickness
-               context)
-        part [shape
-              [top-left top-right
-               bottom-left bottom-right]]]
-    [:<>
-     [field.shared/make-subfield
-      (c/++ context :field)
-      part
-      :all]
-     (ordinary.shared/adjusted-shape-outline
-      shape outline? context
-      [line/render line [line-left-data
-                         line-right-data] left-point outline? context])
-     [cottising/render-chevron-cottise
-      (c/++ context :cottising :cottise-1)
-      :cottise-2 :cottise-1
-      :distance-fn (fn [distance half-joint-angle-rad]
-                     (-> (- distance)
-                         (/ 100)
-                         (* thickness-base)
-                         (+ line-left-min)
-                         (/ (if (zero? half-joint-angle-rad)
-                              0.00001
-                              (Math/sin half-joint-angle-rad)))))
-      :alignment :left
-      :width width
-      :height height
-      :chevron-angle pile-angle
-      :joint-angle joint-angle
-      :corner-point point]]))
+               context)]
+    {:shape shape
+     :lines [{:line line
+              :line-from line-left-to
+              :line-data [line-left-data line-right-data]}]}))
+
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
+
+(defmethod cottising/cottise-properties ordinary-type [context
+                                                       {:keys [line-length percentage-base
+                                                               pile-angle joint-angle]
+                                                        [reference-left reference-point reference-right] :upper
+                                                        reference-line :line}]
+  (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
+    (let [distance (interface/get-sanitized-data (c/++ context :distance))
+          distance (math/percent-of percentage-base distance)
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
+          band-size (math/percent-of percentage-base thickness)
+          line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                         line-length percentage-base)
+          opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                  line-length percentage-base)
+          [base-corner base-left base-right] [reference-point reference-left reference-right]
+          real-distance (/ (+ (:effective-height reference-line)
+                              distance)
+                           (Math/sin (-> joint-angle
+                                         (* Math/PI)
+                                         (/ 180)
+                                         (/ 2))))
+          delta (/ band-size
+                   (Math/sin (-> joint-angle
+                                 (* Math/PI)
+                                 (/ 180)
+                                 (/ 2))))
+          dist-vector (v/rotate
+                       (v/Vector. real-distance 0)
+                       pile-angle)
+          band-size-vector (v/rotate
+                            (v/Vector. delta 0)
+                            pile-angle)
+          lower-corner (v/sub base-corner dist-vector)
+          upper-corner (v/sub lower-corner band-size-vector)
+          [lower-left lower-right] (map #(v/sub % dist-vector) [base-left base-right])
+          [upper-left upper-right] (map #(v/sub % band-size-vector) [lower-left lower-right])]
+      {:type :heraldry.ordinary.type/chevron
+       :upper [upper-left upper-corner upper-right]
+       :lower [lower-left lower-corner lower-right]
+       :chevron-angle pile-angle
+       :joint-angle joint-angle
+       :band-size band-size
+       :line-length line-length
+       :percentage-base percentage-base
+       :line line
+       :opposite-line opposite-line})))
