@@ -420,6 +420,7 @@
 (defn- create-raw [{:keys [type] :or {type :straight} :as line} length
                    & {:keys [angle flipped? context seed reversed?] :as line-options}]
   (let [pattern-data (get kinds-pattern-map type)
+        line (update line :width #(max % 1))
         line-function (:function pattern-data)
         line-options-values (cond-> line #_(options/sanitize line (options line))
                               (= type :straight) (assoc :width length
@@ -829,6 +830,8 @@
         fimbriation-thickness (+ (-> new-line :fimbriation :thickness-1 (or 0))
                                  (-> new-line :fimbriation :thickness-2 (or 0)))]
     (assoc new-line
+           ;; TODO: calculate this properly, in particular for line styles with
+           ;; middle our bottom alignment this height can differ greatly
            :effective-height (case fimbriation-alignment
                                :even (/ fimbriation-thickness 2)
                                :outside fimbriation-thickness
