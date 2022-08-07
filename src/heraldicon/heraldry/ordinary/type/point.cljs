@@ -1,12 +1,15 @@
 (ns heraldicon.heraldry.ordinary.type.point
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
-   [heraldicon.heraldry.field.shared :as field.shared]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
@@ -51,128 +54,165 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
+(defmethod interface/properties ordinary-type [context]
+  (let [parent (interface/parent context)
+        parent-environment (interface/get-parent-environment context)
         variant (interface/get-sanitized-data (c/++ context :variant))
+        dexter? (= variant :dexter)
         point-width (interface/get-sanitized-data (c/++ context :geometry :width))
         point-height (interface/get-sanitized-data (c/++ context :geometry :height))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        width (:width environment)
-        height (:height environment)
-        points (:points environment)
-        top-left (:top-left points)
-        top-right (:top-right points)
+        {:keys [top-left top-right]} (:points parent-environment)
+        percentage-base (:height parent-environment)
+        real-point-width (math/percent-of percentage-base point-width)
+        real-point-height (math/percent-of percentage-base point-height)
+        corner-point (if dexter?
+                       top-left
+                       top-right)
+        ideal-point-side (v/add corner-point (v/Vector. 0 real-point-height))
+        ideal-point-top ((if dexter?
+                           v/add
+                           v/sub) corner-point (v/Vector. real-point-width 0))
+        parent-shape (interface/get-exact-shape parent)
+        [lower-left lower-right] (v/intersections-with-shape
+                                  ideal-point-top ideal-point-side parent-shape :default? true)
+        [lower-left lower-right] (if dexter?
+                                   [lower-left lower-right]
+                                   [lower-right lower-left])
+        line-length (v/abs (v/sub lower-left lower-right))
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)]
+    {:type ordinary-type
+     :lower [lower-left lower-right]
+     :point-height real-point-height
+     :dexter? dexter?
+     :line-length line-length
+     :percentage-base percentage-base
+     :line line}))
 
-        real-point-width (math/percent-of width point-width)
-        real-point-height (math/percent-of width point-height)
+(defmethod interface/environment ordinary-type [context {:keys [dexter?]
+                                                         [lower-left lower-right] :lower}]
+  (let [{:keys [meta points]} (interface/get-parent-environment context)
+        corner (if dexter?
+                 (:top-left points)
+                 (:top-right points))
+        bounding-box-points [corner
+                             lower-left lower-right]]
+    (environment/create
+     {:paths nil}
+     (-> meta
+         (dissoc :context)
+         (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-        ideal-point-side (v/Vector. (if (= variant :dexter)
-                                      (:x top-left)
-                                      (:x top-right))
-                                    (-> top-left
-                                        :y
-                                        (+ real-point-height)))
-        ideal-point-top (v/Vector. (if (= variant :dexter)
-                                     (-> top-left :x (+ real-point-width))
-                                     (-> top-right :x (- real-point-width)))
-                                   (:y top-left))
+(defmethod interface/render-shape ordinary-type [context {:keys [point-height dexter? line]
+                                                          [lower-left lower-right] :lower}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        {:keys [width]} (interface/get-environment context)
+        bounding-box (:bounding-box meta)
+        {line-lower :line
+         line-lower-start :line-start
+         line-lower-from :adjusted-from
+         line-lower-to :adjusted-to
+         :as line-lower-data} (line/create-with-extension line
+                                                          (if dexter?
+                                                            lower-left
+                                                            lower-right)
+                                                          (if dexter?
+                                                            lower-right
+                                                            lower-left)
+                                                          bounding-box
+                                                          :reversed? (not dexter?)
+                                                          :context context)
+        shape (ordinary.shared/adjust-shape
+               (if dexter?
+                 ["M" (v/add line-lower-from line-lower-start)
+                  (path/stitch line-lower)
+                  (infinity/path :clockwise
+                                 [:left :top]
+                                 [line-lower-to line-lower-from])
+                  "z"]
+                 ["M" (v/add line-lower-to line-lower-start)
+                  (path/stitch line-lower)
+                  (infinity/path :clockwise
+                                 [:top :right]
+                                 [line-lower-from line-lower-to])
+                  "z"])
+               width
+               point-height
+               context)]
+    {:shape shape
+     :lines [{:line line
+              :line-from (if dexter?
+                           line-lower-from
+                           line-lower-to)
+              :line-data [line-lower-data]}]}))
 
-        extra-length 30
-        line-dir (v/sub ideal-point-side ideal-point-top)
-        line-dir-normed (v/normal line-dir)
-        real-point-side (-> line-dir-normed
-                            (v/mul extra-length)
-                            (v/add ideal-point-side))
-        real-point-top (-> line-dir-normed
-                           (v/mul (- extra-length))
-                           (v/add ideal-point-top))
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
 
-        {line-one :line
-         line-one-start :line-start
-         :as line-one-data
-         line-one-min :line-min} (if (= variant :dexter)
-                                   (line/create line
-                                                real-point-top real-point-side
-                                                :real-start (-> ideal-point-top
-                                                                (v/sub real-point-top)
-                                                                v/abs)
-                                                :real-end (-> ideal-point-side
-                                                              (v/sub real-point-top)
-                                                              v/abs)
-                                                :context context
-                                                :environment environment)
-                                   (line/create line
-                                                real-point-side real-point-top
-                                                :real-start (-> ideal-point-side
-                                                                (v/sub real-point-side)
-                                                                v/abs)
-                                                :real-end (-> ideal-point-top
-                                                              (v/sub real-point-side)
-                                                              v/abs)
-                                                :context context
-                                                :environment environment))
-        [shape environment-points] (if (= variant :dexter)
-                                     [["M" (v/add real-point-top
-                                                  line-one-start)
-                                       (path/stitch line-one)
-                                       (infinity/path :clockwise
-                                                      [:left :top]
-                                                      [real-point-side
-                                                       (v/add real-point-top
-                                                              line-one-start)])
-                                       "z"]
-                                      [top-left ideal-point-side ideal-point-top]]
-                                     [["M" (v/add real-point-side
-                                                  line-one-start)
-                                       (path/stitch line-one)
-                                       (infinity/path :clockwise
-                                                      [:top :right]
-                                                      [real-point-top
-                                                       (v/add real-point-side
-                                                              line-one-start)])
-                                       "z"]
-                                      [top-left ideal-point-side ideal-point-top]])
-        shape (ordinary.shared/adjust-shape shape width real-point-height context)
-        part [shape environment-points]]
-    [:<>
-     [field.shared/make-subfield
-      (c/++ context :field)
-      part
-      :all]
-     (ordinary.shared/adjusted-shape-outline
-      shape outline? context
-      [line/render line [line-one-data] (case variant
-                                          :dexter real-point-top
-                                          :sinister real-point-side) outline? context])
-     [cottising/render-bend-cottise
-      (c/++ context :cottising :cottise-1)
-      :cottise-2 :cottise-opposite-1
-      :sinister? (= variant :dexter)
-      :swap-lines? true
-      :distance-fn (fn [distance thickness]
-                     (-> (- distance)
-                         (- (/ thickness 2))
-                         (/ 100)
-                         (* width)
-                         (+ line-one-min)))
-      :alignment :right
-      :width width
-      :height height
-      :angle (if (= variant :dexter)
-               (- (v/angle-to-point ideal-point-side ideal-point-top))
-               (v/angle-to-point ideal-point-top ideal-point-side))
-      :direction-orthogonal (cond-> (v/orthogonal line-dir-normed)
-                              (= variant :sinister) (v/mul -1))
-      :center-point (-> ideal-point-side
-                        (v/add ideal-point-top)
-                        (v/div 2))
-      :middle-real-start-fn (fn [point-offset]
-                              (v/sub (if (= variant :dexter)
-                                       ideal-point-side
-                                       ideal-point-top) point-offset))
-      :middle-real-end-fn (fn [point-offset]
-                            (v/sub (if (= variant :dexter)
-                                     ideal-point-top
-                                     ideal-point-side) point-offset))]]))
+(defmethod cottising/cottise-properties ordinary-type [context
+                                                       {:keys [line-length percentage-base]
+                                                        [reference-lower-left reference-lower-right] :lower
+                                                        dexter? :dexter?
+                                                        reference-lower-line :line}]
+  (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
+    (let [distance (interface/get-sanitized-data (c/++ context :distance))
+          distance (math/percent-of percentage-base distance)
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
+          band-size (math/percent-of percentage-base thickness)
+          counterchanged? (= (interface/get-sanitized-data (c/++ context :field :type))
+                             :heraldry.field.type/counterchanged)
+          inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
+          use-parent-environment? (or counterchanged?
+                                      inherit-environment?)
+          line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                         line-length percentage-base)
+          opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                  line-length percentage-base)
+          real-distance (+ (:effective-height reference-lower-line)
+                           distance)
+          direction (v/sub reference-lower-right reference-lower-left)
+          direction (-> (v/Vector. (-> direction :x Math/abs)
+                                   (-> direction :y Math/abs))
+                        v/normal
+                        (cond->
+                          dexter? (v/dot (v/Vector. 1 -1))))
+          direction-orthogonal (v/orthogonal direction)
+          direction-orthogonal (if (neg? (:y direction-orthogonal))
+                                 (v/mul direction-orthogonal -1)
+                                 direction-orthogonal)
+          angle (v/angle-to-point reference-lower-right reference-lower-left)
+          dist-vector (v/mul direction-orthogonal real-distance)
+          band-size-vector (v/mul direction-orthogonal band-size)
+          [upper-left upper-right] (map #(v/add % dist-vector) [reference-lower-left reference-lower-right])
+          [lower-left lower-right] (map #(v/add % band-size-vector) [upper-left upper-right])
+          ;; swap left and right for cottises
+          [upper-left upper-right] [upper-right upper-left]
+          [lower-left lower-right] [lower-right lower-left]
+          reverse-transform-fn (when-not use-parent-environment?
+                                 (fn reverse-transform-fn [v]
+                                   (if (instance? v/Vector v)
+                                     (-> v
+                                         (v/sub upper-left)
+                                         (v/rotate (- angle)))
+                                     (-> v
+                                         (path/translate (- (:x upper-left)) (- (:y upper-left)))
+                                         (path/rotate (- angle))))))
+          [line opposite-line] [opposite-line line]]
+      {:type (if dexter?
+               :heraldry.ordinary.type/bend-sinister
+               :heraldry.ordinary.type/bend)
+       :upper [upper-left upper-right]
+       :lower [lower-left lower-right]
+       :angle angle
+       :direction-orthogonal direction-orthogonal
+       :band-size band-size
+       :line-length line-length
+       :percentage-base percentage-base
+       :use-parent-environment? false
+       :transform (when-not use-parent-environment?
+                    (str "translate(" (v/->str upper-left) ")"
+                         "rotate(" angle ")"))
+       :reverse-transform-fn reverse-transform-fn
+       :flip-cottise? true
+       :line line
+       :opposite-line opposite-line})))
