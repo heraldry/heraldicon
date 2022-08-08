@@ -1,13 +1,15 @@
 (ns heraldicon.heraldry.ordinary.type.label
   (:require
    [heraldicon.context :as c]
-   [heraldicon.heraldry.field.shared :as field.shared]
-   [heraldicon.heraldry.line.core :as line]
+   [heraldicon.heraldry.cottising :as cottising]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
@@ -125,124 +127,141 @@
         (ordinary.shared/add-humetty-and-voided context)
         (options/override-if-exists [:voided :thickness :default] 25))))
 
-(defn- relative-points [points]
-  (reduce (fn [result point]
-            (conj result (v/add (last result) point))) [(first points)] (rest points)))
+(defn- start-and-end [truncated? y label-start label-width parent-shape left-x right-x]
+  (if truncated?
+    [(v/Vector. label-start y) (v/Vector. (+ label-start label-width) y)]
+    (v/intersections-with-shape
+     (v/Vector. left-x y) (v/Vector. right-x y)
+     parent-shape :default? true)))
 
-(defn- draw-label [variant anchor-point num-points width band-height point-width point-height eccentricity
-                   line environment context]
-  (let [points (:points environment)
-        left (:left points)
-        right (:right points)
-        extra (-> point-width
-                  (/ 2)
-                  (* eccentricity))
-        label-start (-> anchor-point
-                        :x
-                        (- (/ width 2)))
-        label-end (+ label-start width)
-        spacing (-> width
-                    (- (* num-points point-width))
-                    (/ (dec num-points))
-                    (+ (* 2 extra)))
-        row1 (- (:y anchor-point) (/ band-height 2))
-        row2 (+ row1 band-height)
-        first-left (v/Vector. (- (:x left) 20) row1)
-        second-left (v/Vector. (- (:x left) 20) row2)
-        first-right (v/Vector. (+ (:x right) 20) row1)
-        second-right (v/Vector. (+ (:x right) 20) row2)
-        dynamic-points (relative-points
-                        (apply concat
-                               [(v/Vector. (- label-end extra) row2)
-                                (v/Vector. (* 2 extra) point-height)
-                                (v/Vector. (- (+ point-width (* 2 extra))) 0)
-                                (v/Vector. (* 2 extra) (- point-height))]
-                               (repeat (dec num-points)
-                                       [(v/Vector. (- spacing) 0)
-                                        (v/Vector. (* 2 extra) point-height)
-                                        (v/Vector. (- (+ point-width (* 2 extra))) 0)
-                                        (v/Vector. (* 2 extra) (- point-height))])))
-        projected-extra (-> extra
-                            (/ point-height)
-                            (* 2)
-                            (* band-height))
-        fixed-start-points (case variant
-                             :truncated [(v/Vector. (+ label-start extra projected-extra)
-                                                    row1)
-                                         (v/Vector. (- label-end extra projected-extra)
-                                                    row1)]
-                             [first-left
-                              first-right
-                              second-right])
-        fixed-end-points (case variant
-                           :truncated [(v/Vector. (+ label-start extra projected-extra)
-                                                  row1)]
-                           [second-left
-                            first-left])
-        points (concat fixed-start-points
-                       dynamic-points
-                       fixed-end-points)
-        lines (->> points
-                   (partition 2 1)
-                   (mapv (fn [[p1 p2]]
-                           (line/create line
-                                        p1 p2
-                                        :real-start 0
-                                        :real-end (v/abs (v/sub p2 p1))
-                                        :context context
-                                        :environment environment))))]
-    {:points points
-     :environment-points (-> dynamic-points
-                             (conj (v/Vector. label-start row1))
-                             (conj (v/Vector. label-end row1)))
-     :lines lines
-     :shape (conj (into ["M" (v/add (first points)
-                                    (-> lines first :line-start))]
-                        (map (comp path/stitch :line))
-                        lines)
-                  "z")}))
-
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment] :as context}]
-  (let [anchor (interface/get-sanitized-data (c/++ context :anchor))
+(defmethod interface/properties ordinary-type [context]
+  (let [parent (interface/parent context)
+        parent-environment (interface/get-parent-environment context)
+        points (:points parent-environment)
+        {:keys [left right]} points
         variant (interface/get-sanitized-data (c/++ context :variant))
+        truncated? (= variant :truncated)
         num-points (interface/get-sanitized-data (c/++ context :num-points))
-        fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
+        ;; TODO: fimbriation
+        ;;fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
         label-width (interface/get-sanitized-data (c/++ context :geometry :width))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         thickness (interface/get-sanitized-data (c/++ context :geometry :thickness))
         eccentricity (interface/get-sanitized-data (c/++ context :geometry :eccentricity))
         stretch (interface/get-sanitized-data (c/++ context :geometry :stretch))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        line {:type :straight
-              :fimbriation fimbriation}
-        anchor-point (position/calculate anchor environment :fess)
-        band-height (math/percent-of (:width environment) thickness)
-        anchor-point (case (:alignment anchor)
-                       :left (v/add anchor-point (v/Vector. 0 (/ band-height 2)))
-                       :right (v/sub anchor-point (v/Vector. 0 (/ band-height 2)))
-                       anchor-point)
-        point-width (math/percent-of (:width environment) size)
+        percentage-base-height (:height parent-environment)
+        band-size (math/percent-of percentage-base-height thickness)
+        percentage-base-width (:width parent-environment)
+        point-width (math/percent-of percentage-base-width size)
         point-height (* point-width stretch)
-        width (:width environment)
-        {:keys [lines
-                shape
-                points
-                environment-points]} (draw-label variant
-                                                 anchor-point num-points
-                                                 label-width band-height point-width point-height
-                                                 eccentricity
-                                                 line
-                                                 environment
-                                                 context)
-        shape (ordinary.shared/adjust-shape shape width band-height context)
-        part [shape environment-points]]
-    [:<>
-     [field.shared/make-subfield
-      (c/++ context :field)
-      part
-      :all]
-     (ordinary.shared/adjusted-shape-outline
-      shape outline? context
-      [line/render line lines (first points) outline? context])]))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        anchor-point (position/calculate anchor parent-environment :chief)
+        upper (case (:alignment anchor)
+                :left (:y anchor-point)
+                :right (- (:y anchor-point) band-size)
+                (- (:y anchor-point) (/ band-size 2)))
+        label-start (-> anchor-point
+                        :x
+                        (- (/ label-width 2)))
+        point-extra (-> point-width
+                        (/ 2)
+                        (* eccentricity))
+        parent-shape (interface/get-exact-shape parent)
+        [upper-left upper-right] (start-and-end truncated? upper label-start label-width
+                                                parent-shape (:x left) (:x right))
+        projected-extra (-> point-extra
+                            (/ point-height)
+                            (* 2)
+                            (* band-size))
+        [upper-left upper-right] (if truncated?
+                                   [(v/add upper-left (v/Vector. (+ point-extra projected-extra) 0))
+                                    (v/sub upper-right (v/Vector. (+ point-extra projected-extra) 0))]
+                                   [upper-left upper-right])
+        lower (+ upper band-size)
+        [point-left point-right] [(v/Vector. label-start lower) (v/Vector. (+ label-start label-width) lower)]
+        [point-left point-right] (if truncated?
+                                   [(v/add point-left (v/Vector. point-extra 0))
+                                    (v/sub point-right (v/Vector. point-extra 0))]
+                                   [point-left point-right])
+        [lower-left lower-right] (if truncated?
+                                   [point-left point-right]
+                                   (start-and-end truncated? lower label-start label-width
+                                                  parent-shape (:x left) (:x right)))
+        point-distance (/ (- label-width point-width) (max (dec num-points) 1))
+        initial-shift (if (< num-points 2)
+                        (/ label-width 2)
+                        (/ point-width 2))
+        point-centers (mapv (fn [idx]
+                              (+ label-start
+                                 initial-shift
+                                 (* idx point-distance)))
+                            (range num-points))]
+    {:type ordinary-type
+     :upper [upper-left upper-right]
+     :lower [lower-left lower-right]
+     :point-edge [point-left point-right]
+     :truncated? truncated?
+     :num-points num-points
+     :label-width label-width
+     :label-start label-start
+     :eccentricity eccentricity
+     :point-width point-width
+     :point-height point-height
+     :point-centers point-centers
+     :point-extra point-extra
+     :band-size band-size
+     :percentage-base-height percentage-base-height
+     :percentage-base-width percentage-base-width}))
+
+(defmethod interface/environment ordinary-type [context {:keys [point-height]
+                                                         [upper-left upper-right] :upper
+                                                         [lower-left lower-right] :lower}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        bounding-box-points [upper-left upper-right
+                             (v/add lower-left (v/Vector. 0 point-height))
+                             (v/add lower-right (v/Vector. 0 point-height))]]
+    (environment/create
+     {:paths nil}
+     (-> meta
+         (dissoc :context)
+         (merge {:bounding-box (bb/from-points bounding-box-points)})))))
+
+(defmethod interface/render-shape ordinary-type [_context {:keys [truncated? point-width point-height point-centers point-extra]
+                                                           [upper-left upper-right] :upper
+                                                           [lower-left lower-right] :lower
+                                                           [point-left point-right] :point-edge}]
+  (let [point-y (:y point-left)
+        point-width-half (/ point-width 2)
+        [upper-left lower-left] (if-not truncated?
+                                  (map #(v/sub % (v/Vector. 30 0)) [upper-left lower-left])
+                                  [upper-left lower-left])
+        [upper-right lower-right] (if-not truncated?
+                                    (map #(v/add % (v/Vector. 30 0)) [upper-right lower-right])
+                                    [upper-right lower-right])
+        shape-points (concat [point-left
+                              lower-left
+                              upper-left
+                              upper-right
+                              lower-right
+                              point-right]
+                             (mapcat (fn [point-x]
+                                       [(v/Vector. (-> point-x (+ point-width-half) (- point-extra)) point-y)
+                                        (v/Vector. (-> point-x (+ point-width-half) (+ point-extra)) (+ point-y point-height))
+                                        (v/Vector. (-> point-x (- point-width-half) (- point-extra)) (+ point-y point-height))
+                                        (v/Vector. (-> point-x (- point-width-half) (+ point-extra)) point-y)])
+                                     (reverse point-centers))
+                             [point-left])
+        shape (path/make-path
+               (-> (into ["M" point-left]
+                         (mapcat (fn [p]
+                                   ["L" p])
+                                 shape-points))
+                   (conj "z")))]
+    {:shape shape
+     :lines [{:edge-paths [shape]}]}))
+
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
+
+(defmethod cottising/cottise-properties ordinary-type [_context _properties]
+  nil)
