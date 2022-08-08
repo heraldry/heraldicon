@@ -4,11 +4,14 @@
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.interface :as interface]
+   [heraldicon.render.outline :as outline]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
 (defn- shape-path [shape]
-  (:shape shape))
+  (let [shape-path (:shape shape)]
+    (cond->> shape-path
+      (vector? shape-path) (apply str))))
 
 (defn- shape-mask [context]
   (let [render-shape (interface/get-render-shape context)]
@@ -17,10 +20,16 @@
             :fill-rule "evenodd"
             :fill "#fff"}]))
 
-(defn- render-line [context {:keys [line line-data line-from]}]
+(defn- render-line [context {:keys [line line-data line-from edge-paths]}]
   (let [outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))]
-    [line/render line line-data line-from outline? context]))
+    (if edge-paths
+      (when outline?
+        (into [:g (outline/style context)]
+              (map (fn [edge-path]
+                     [:path {:d edge-path}]))
+              edge-paths))
+      [line/render line line-data line-from outline? context])))
 
 (defn- edges [context]
   (let [{:keys [lines]} (interface/get-render-shape context)]

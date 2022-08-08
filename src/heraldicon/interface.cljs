@@ -206,9 +206,13 @@
   @(rf/subscribe [::exact-shape context]))
 
 (defn fallback-exact-shape [context]
-  (field.environment/intersect-shapes
-   (:shape (get-render-shape context))
-   (get-exact-shape (parent context))))
+  (let [shape-path (:shape (get-render-shape context))
+        shape-path (if (vector? shape-path)
+                     (first shape-path)
+                     shape-path)]
+    (field.environment/intersect-shapes
+     shape-path
+     (get-exact-shape (parent context)))))
 
 (defmethod exact-shape nil [context _properties]
   (fallback-exact-shape context))
