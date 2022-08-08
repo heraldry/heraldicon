@@ -1,14 +1,14 @@
 (ns heraldicon.heraldry.ordinary.type.orle
   (:require
    [heraldicon.context :as c]
+   [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
-   [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
    [heraldicon.options :as options]
-   [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/orle)
@@ -59,7 +59,6 @@
                  :ui/step 0.1}
      :line (adjust-line-style
             (line/options (c/++ context :line)
-                          :fimbriation? false
                           :corner-dampening? true))
      :opposite-line (adjust-line-style
                      (line/options (c/++ context :opposite-line)
@@ -67,44 +66,51 @@
                                    :corner-dampening? true))
      :outline? options/plain-outline?-option}))
 
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment] :as context}]
-  (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
+(defmethod interface/properties ordinary-type [context]
+  (let [parent (interface/parent context)
+        parent-environment (interface/get-parent-environment context)
         distance (interface/get-sanitized-data (c/++ context :distance))
+        thickness (interface/get-sanitized-data (c/++ context :thickness))
         corner-radius (interface/get-sanitized-data (c/++ context :corner-radius))
         smoothing (interface/get-sanitized-data (c/++ context :smoothing))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        line-type (interface/get-sanitized-data (c/++ context :line :type))
-        opposite-line-type (interface/get-sanitized-data (c/++ context :opposite-line :type))
-        points (:points environment)
-        width (:width environment)
-        distance (math/percent-of width distance)
-        thickness (math/percent-of width thickness)
-        environment-shape (-> environment
-                              (update-in [:shape :paths] (partial take 1))
-                              environment/effective-shape)
-        outer-shape (environment/shrink-shape environment-shape distance :round)
-        outer-shape (cond-> (path/round-corners outer-shape corner-radius smoothing)
-                      (not= opposite-line-type :straight) (line/modify-path (interface/get-sanitized-data
-                                                                             (c/++ context :opposite-line))
-                                                                            environment
-                                                                            :outer-shape? true))
-        inner-shape (environment/shrink-shape environment-shape (+ distance thickness) :round)
-        inner-shape (cond-> (path/round-corners inner-shape corner-radius smoothing)
-                      (not= line-type :straight) (line/modify-path (interface/get-sanitized-data
-                                                                    (c/++ context :line))
-                                                                   environment))
-        part [{:paths [outer-shape
-                       inner-shape]}
-              [(:top-left points)
-               (:bottom-right points)]]]
-    [:<>
-     [field.shared/make-subfield
-      (c/++ context :field)
-      part
-      :all]
-     (when outline?
-       [:g (outline/style context)
-        [:path {:d outer-shape}]
-        [:path {:d inner-shape}]])]))
+        percentage-base (:width parent-environment)
+        parent-shape (interface/get-exact-shape parent)
+        line-length percentage-base
+        distance (math/percent-of percentage-base distance)
+        thickness (math/percent-of percentage-base thickness)
+        outer-edge (-> parent-shape
+                       (environment/shrink-shape distance :round)
+                       (path/round-corners corner-radius smoothing))
+        inner-edge (-> parent-shape
+                       (environment/shrink-shape (+ distance thickness) :round)
+                       (path/round-corners corner-radius smoothing))
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)
+        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                line-length percentage-base)]
+    {:type ordinary-type
+     :outer-edge outer-edge
+     :inner-edge inner-edge
+     :line-length line-length
+     :percentage-base percentage-base
+     :line line
+     :opposite-line opposite-line}))
+
+(defmethod interface/environment ordinary-type [context _properties]
+  (interface/get-parent-environment context))
+
+(defmethod interface/render-shape ordinary-type [context {:keys [outer-edge inner-edge line opposite-line]}]
+  (let [parent-environment (interface/get-parent-environment context)
+        outer-shape (cond-> outer-edge
+                      (not= (:type opposite-line) :straight) (line/modify-path opposite-line parent-environment
+                                                                               :outer-shape? true))
+        inner-shape (cond-> inner-edge
+                      (not= (:type line) :straight) (line/modify-path line parent-environment))]
+    {:shape [outer-shape inner-shape]
+     :lines [{:edge-paths [outer-shape inner-shape]}]}))
+
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
+
+(defmethod cottising/cottise-properties ordinary-type [_context _properties]
+  nil)
