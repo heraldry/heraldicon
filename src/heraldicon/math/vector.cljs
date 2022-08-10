@@ -318,14 +318,20 @@
       [from to]
       [first-intersection last-intersection])))
 
-(defn last-intersection-with-shape [from to shape & {:keys [default?]}]
-  (let [direction (normal (sub to from))
+(defn last-intersection-with-shape [from to shape & {:keys [default?
+                                                            relative?]}]
+  (let [direction (if relative?
+                    to
+                    (sub to from))
+        direction (normal direction)
         inf (mul direction 1000)
         line-path (str "M" (->str from)
-                       "L" (->str (add to inf)))
+                       "L" (->str (add from inf)))
         intersections (sort-by :t1 (filter (comp pos? :t1) (path-intersection line-path shape)))
         last-intersection (last intersections)]
     (if (and default?
              (not last-intersection))
-      to
+      (if relative?
+        (add to from)
+        to)
       last-intersection)))

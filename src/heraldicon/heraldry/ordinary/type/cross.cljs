@@ -1,17 +1,19 @@
 (ns heraldicon.heraldry.ordinary.type.cross
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
-   [heraldicon.heraldry.field.shared :as field.shared]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/cross)
@@ -64,237 +66,259 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 1)} context)))
 
-(defmethod ordinary.interface/render-ordinary ordinary-type
-  [{:keys [environment] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
+(defmethod interface/properties ordinary-type [context]
+  (let [parent (interface/parent context)
+        parent-environment (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        points (:points environment)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
-        anchor-point (position/calculate anchor environment :fess)
-        top (assoc (:top points) :x (:x anchor-point))
-        bottom (assoc (:bottom points) :x (:x anchor-point))
-        left (assoc (:left points) :y (:y anchor-point))
-        right (assoc (:right points) :y (:y anchor-point))
+        percentage-base (min (:width parent-environment)
+                             (:height parent-environment))
+        band-size (math/percent-of percentage-base size)
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        anchor-point (position/calculate anchor parent-environment :fess)
+        parent-shape (interface/get-exact-shape parent)
+        upper (- (:y anchor-point) (/ band-size 2))
+        lower (+ upper band-size)
+        first (- (:x anchor-point) (/ band-size 2))
+        second (+ first band-size)
+        corner-top-left (v/Vector. first upper)
+        corner-top-right (v/Vector. second upper)
+        corner-bottom-left (v/Vector. first lower)
+        corner-bottom-right (v/Vector. second lower)
+        left-1 (v/last-intersection-with-shape corner-top-left (v/Vector. -30 0)
+                                               parent-shape :default? true :relative? true)
+        right-1 (v/last-intersection-with-shape corner-top-right (v/Vector. 30 0)
+                                                parent-shape :default? true :relative? true)
+        left-2 (v/last-intersection-with-shape corner-bottom-left (v/Vector. -30 0)
+                                               parent-shape :default? true :relative? true)
+        right-2 (v/last-intersection-with-shape corner-bottom-right (v/Vector. 30 0)
+                                                parent-shape :default? true :relative? true)
+        top-1 (v/last-intersection-with-shape corner-top-left (v/Vector. 0 -30)
+                                              parent-shape :default? true :relative? true)
+        bottom-1 (v/last-intersection-with-shape corner-bottom-left (v/Vector. 0 30)
+                                                 parent-shape :default? true :relative? true)
+        top-2 (v/last-intersection-with-shape corner-top-right (v/Vector. 0 -30)
+                                              parent-shape :default? true :relative? true)
+        bottom-2 (v/last-intersection-with-shape corner-bottom-right (v/Vector. 0 30)
+                                                 parent-shape :default? true :relative? true)
+        line-length (->> (concat (map (fn [v]
+                                        (v/sub v corner-top-left))
+                                      [top-1 left-1])
+                                 (map (fn [v]
+                                        (v/sub v corner-top-right))
+                                      [top-2 right-1])
+                                 (map (fn [v]
+                                        (v/sub v corner-bottom-left))
+                                      [bottom-1 left-2])
+                                 (map (fn [v]
+                                        (v/sub v corner-bottom-right))
+                                      [bottom-2 right-2]))
+                         (map v/abs)
+                         (apply max))
+        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                       line-length percentage-base)]
+    {:type ordinary-type
+     :edge-top-left [left-1 corner-top-left top-1]
+     :edge-top-right [top-2 corner-top-right right-1]
+     :edge-bottom-left [bottom-1 corner-bottom-left left-2]
+     :edge-bottom-right [right-2 corner-bottom-right bottom-2]
+     :band-size band-size
+     :line-length line-length
+     :percentage-base percentage-base
+     :line line
+     :num-cottise-parts 4}))
+
+(defmethod interface/environment ordinary-type [context {[left-1 corner-top-left top-1] :edge-top-left
+                                                         [top-2 corner-top-right right-1] :edge-top-right
+                                                         [bottom-1 corner-bottom-left left-2] :edge-bottom-left
+                                                         [right-2 corner-bottom-right bottom-2] :edge-bottom-right}]
+  (let [{:keys [meta points]} (interface/get-parent-environment context)
+        bounding-box-points [top-1 top-2
+                             bottom-1 bottom-2
+                             left-1 left-2
+                             right-1 right-2
+                             (:bottom points)
+                             (:top points)
+                             (:left points)
+                             (:right points)]]
+    ;; TODO: maybe best to inherit the parent environment, unless the cross is couped
+    (environment/create
+     {:paths nil}
+     (-> meta
+         (dissoc :context)
+         (merge {:bounding-box (bb/from-points bounding-box-points)
+                 :points {:fess (v/div (v/add corner-top-left
+                                              corner-top-right
+                                              corner-bottom-left
+                                              corner-bottom-right)
+                                       4)}})))))
+
+(defmethod interface/render-shape ordinary-type [context {:keys [band-size line]
+                                                          [left-1 corner-top-left top-1] :edge-top-left
+                                                          [top-2 corner-top-right right-1] :edge-top-right
+                                                          [bottom-1 corner-bottom-left left-2] :edge-bottom-left
+                                                          [right-2 corner-bottom-right bottom-2] :edge-bottom-right}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        environment (interface/get-environment context)
         width (:width environment)
-        height (:height environment)
-        band-width (math/percent-of width size)
-        col1 (- (:x anchor-point) (/ band-width 2))
-        col2 (+ col1 band-width)
-        pale-top-left (v/Vector. col1 (-> top :y (- 10)))
-        pale-bottom-left (v/Vector. col1 (-> bottom :y (+ 10)))
-        pale-top-right (v/Vector. col2 (-> top :y (- 10)))
-        pale-bottom-right (v/Vector. col2 (-> bottom :y (+ 10)))
-        row1 (- (:y anchor-point) (/ band-width 2))
-        row2 (+ row1 band-width)
-        fess-top-left (v/Vector. (-> left :x (- 10)) row1)
-        fess-top-right (v/Vector. (-> right :x (+ 10)) row1)
-        fess-bottom-left (v/Vector. (-> left :x (- 10)) row2)
-        fess-bottom-right (v/Vector. (-> right :x (+ 10)) row2)
-        corner-top-left (v/Vector. col1 row1)
-        corner-top-right (v/Vector. col2 row1)
-        corner-bottom-left (v/Vector. col1 row2)
-        corner-bottom-right (v/Vector. col2 row2)
-        intersection-pale-top-left (v/find-first-intersection-of-ray corner-top-left pale-top-left environment)
-        intersection-pale-top-right (v/find-first-intersection-of-ray corner-top-right pale-top-right environment)
-        intersection-pale-bottom-left (v/find-first-intersection-of-ray corner-bottom-left pale-bottom-left environment)
-        intersection-pale-bottom-right (v/find-first-intersection-of-ray corner-bottom-right pale-bottom-right environment)
-        intersection-fess-top-left (v/find-first-intersection-of-ray corner-top-left fess-top-left environment)
-        intersection-fess-top-right (v/find-first-intersection-of-ray corner-top-right fess-top-right environment)
-        intersection-fess-bottom-left (v/find-first-intersection-of-ray corner-bottom-left fess-bottom-left environment)
-        intersection-fess-bottom-right (v/find-first-intersection-of-ray corner-bottom-right fess-bottom-right environment)
-        end-pale-top-left (-> intersection-pale-top-left
-                              (v/sub corner-top-left)
-                              v/abs)
-        end-pale-top-right (-> intersection-pale-top-right
-                               (v/sub corner-top-right)
-                               v/abs)
-        end-pale-bottom-left (-> intersection-pale-bottom-left
-                                 (v/sub corner-bottom-left)
-                                 v/abs)
-        end-pale-bottom-right (-> intersection-pale-bottom-right
-                                  (v/sub corner-bottom-right)
-                                  v/abs)
-        end-fess-top-left (-> intersection-fess-top-left
-                              (v/sub corner-top-left)
-                              v/abs)
-        end-fess-top-right (-> intersection-fess-top-right
-                               (v/sub corner-top-right)
-                               v/abs)
-        end-fess-bottom-left (-> intersection-fess-bottom-left
-                                 (v/sub corner-bottom-left)
-                                 v/abs)
-        end-fess-bottom-right (-> intersection-fess-bottom-right
-                                  (v/sub corner-bottom-right)
-                                  v/abs)
-        end (max end-pale-top-left
-                 end-pale-top-right
-                 end-pale-bottom-left
-                 end-pale-bottom-right
-                 end-fess-top-left
-                 end-fess-top-right
-                 end-fess-bottom-left
-                 end-fess-bottom-right)
-        line (-> line
-                 (update-in [:fimbriation :thickness-1] (partial math/percent-of height))
-                 (update-in [:fimbriation :thickness-2] (partial math/percent-of height)))
-        {line-pale-top-left :line
-         line-pale-top-left-start :line-start
-         line-pale-top-left-min :line-min
-         :as line-pale-top-left-data} (line/create line
-                                                   corner-top-left pale-top-left
-                                                   :real-start 0
-                                                   :real-end end
-                                                   :context context
-                                                   :environment environment)
-        {line-pale-top-right :line
-         line-pale-top-right-start :line-start
-         :as line-pale-top-right-data} (line/create line
-                                                    corner-top-right pale-top-right
-                                                    :reversed? true
-                                                    :real-start 0
-                                                    :real-end end
-                                                    :context context
-                                                    :environment environment)
-        {line-fess-top-right :line
-         line-fess-top-right-start :line-start
-         :as line-fess-top-right-data} (line/create line
-                                                    corner-top-right fess-top-right
-                                                    :real-start 0
-                                                    :real-end end
-                                                    :context context
-                                                    :environment environment)
-        {line-fess-bottom-right :line
-         line-fess-bottom-right-start :line-start
-         :as line-fess-bottom-right-data} (line/create line
-                                                       corner-bottom-right fess-bottom-right
-                                                       :reversed? true
-                                                       :real-start 0
-                                                       :real-end end
-                                                       :context context
-                                                       :environment environment)
-        {line-pale-bottom-right :line
-         line-pale-bottom-right-start :line-start
-         :as line-pale-bottom-right-data} (line/create line
-                                                       corner-bottom-right pale-bottom-right
-                                                       :real-start 0
-                                                       :real-end end
-                                                       :context context
-                                                       :environment environment)
-        {line-pale-bottom-left :line
-         line-pale-bottom-left-start :line-start
-         :as line-pale-bottom-left-data} (line/create line
-                                                      corner-bottom-left pale-bottom-left
-                                                      :reversed? true
-                                                      :real-start 0
-                                                      :real-end end
-                                                      :context context
-                                                      :environment environment)
-        {line-fess-bottom-left :line
-         line-fess-bottom-left-start :line-start
-         :as line-fess-bottom-left-data} (line/create line
-                                                      corner-bottom-left fess-bottom-left
-                                                      :real-start 0
-                                                      :real-end end
-                                                      :context context
-                                                      :environment environment)
-        {line-fess-top-left :line
-         line-fess-top-left-start :line-start
-         :as line-fess-top-left-data} (line/create line
-                                                   corner-top-left fess-top-left
-                                                   :reversed? true
-                                                   :real-start 0
-                                                   :real-end end
-                                                   :context context
-                                                   :environment environment)
+        bounding-box (:bounding-box meta)
+        {line-edge-top-left-first :line
+         line-edge-top-left-first-start :line-start
+         line-edge-top-left-first-to :adjusted-to
+         :as line-edge-top-left-first-data} (line/create-with-extension line
+                                                                        corner-top-left left-1
+                                                                        bounding-box
+                                                                        :reversed? true
+                                                                        :extend-from? false
+                                                                        :context context)
+        {line-edge-top-left-second :line
+         :as line-edge-top-left-second-data} (line/create-with-extension line
+                                                                         corner-top-left top-1
+                                                                         bounding-box
+                                                                         :extend-from? false
+                                                                         :context context)
+        {line-edge-top-right-first :line
+         line-edge-top-right-first-start :line-start
+         line-edge-top-right-first-to :adjusted-to
+         :as line-edge-top-right-first-data} (line/create-with-extension line
+                                                                         corner-top-right top-2
+                                                                         bounding-box
+                                                                         :reversed? true
+                                                                         :extend-from? false
+                                                                         :context context)
+        {line-edge-top-right-second :line
+         :as line-edge-top-right-second-data} (line/create-with-extension line
+                                                                          corner-top-right right-1
+                                                                          bounding-box
+                                                                          :extend-from? false
+                                                                          :context context)
+        {line-edge-bottom-left-first :line
+         line-edge-bottom-left-first-start :line-start
+         line-edge-bottom-left-first-to :adjusted-to
+         :as line-edge-bottom-left-first-data} (line/create-with-extension line
+                                                                           corner-bottom-left bottom-1
+                                                                           bounding-box
+                                                                           :reversed? true
+                                                                           :extend-from? false
+                                                                           :context context)
+        {line-edge-bottom-left-second :line
+         :as line-edge-bottom-left-second-data} (line/create-with-extension line
+                                                                            corner-bottom-left left-2
+                                                                            bounding-box
+                                                                            :extend-from? false
+                                                                            :context context)
+        {line-edge-bottom-right-first :line
+         line-edge-bottom-right-first-start :line-start
+         line-edge-bottom-right-first-to :adjusted-to
+         :as line-edge-bottom-right-first-data} (line/create-with-extension line
+                                                                            corner-bottom-right right-2
+                                                                            bounding-box
+                                                                            :reversed? true
+                                                                            :extend-from? false
+                                                                            :context context)
+        {line-edge-bottom-right-second :line
+         :as line-edge-bottom-right-second-data} (line/create-with-extension line
+                                                                             corner-bottom-right bottom-2
+                                                                             bounding-box
+                                                                             :extend-from? false
+                                                                             :context context)
         shape (ordinary.shared/adjust-shape
-               ["M" (v/add corner-top-left
-                           line-pale-top-left-start)
-                (path/stitch line-pale-top-left)
-                (infinity/path :clockwise
-                               [:top :top]
-                               [(v/add pale-top-left
-                                       line-pale-top-left-start)
-                                (v/add pale-top-right
-                                       line-pale-top-right-start)])
-                (path/stitch line-pale-top-right)
-                "L" (v/add corner-top-right
-                           line-fess-top-right-start)
-                (path/stitch line-fess-top-right)
-                (infinity/path :clockwise
-                               [:right :right]
-                               [(v/add fess-top-right
-                                       line-fess-top-right-start)
-                                (v/add fess-bottom-right
-                                       line-fess-bottom-right-start)])
-                (path/stitch line-fess-bottom-right)
-                "L" (v/add corner-bottom-right
-                           line-pale-bottom-right-start)
-                (path/stitch line-pale-bottom-right)
-                (infinity/path :clockwise
-                               [:bottom :bottom]
-                               [(v/add pale-bottom-right
-                                       line-pale-bottom-right-start)
-                                (v/add pale-bottom-left
-                                       line-pale-bottom-left-start)])
-                (path/stitch line-pale-bottom-left)
-                "L" (v/add corner-bottom-left
-                           line-fess-bottom-left-start)
-                (path/stitch line-fess-bottom-left)
-                (infinity/path :clockwise
-                               [:left :left]
-                               [(v/add fess-bottom-left
-                                       line-fess-bottom-left-start)
-                                (v/add fess-top-left
-                                       line-fess-top-left-start)])
-                (path/stitch line-fess-top-left)
+               ["M" (v/add line-edge-top-left-first-to line-edge-top-left-first-start)
+                (path/stitch line-edge-top-left-first)
+                (path/stitch line-edge-top-left-second)
+                "L" (v/add line-edge-top-right-first-to line-edge-top-right-first-start)
+                (path/stitch line-edge-top-right-first)
+                (path/stitch line-edge-top-right-second)
+                "L" (v/add line-edge-bottom-right-first-to line-edge-bottom-right-first-start)
+                (path/stitch line-edge-bottom-right-first)
+                (path/stitch line-edge-bottom-right-second)
+                "L" (v/add line-edge-bottom-left-first-to line-edge-bottom-left-first-start)
+                (path/stitch line-edge-bottom-left-first)
+                (path/stitch line-edge-bottom-left-second)
                 "z"]
                width
-               band-width
-               context)
-        part [shape
-              [top-left bottom-right]]]
-    [:<>
-     [field.shared/make-subfield
-      (c/++ context :field)
-      part
-      :all]
-     (ordinary.shared/adjusted-shape-outline
-      shape outline? context
-      [:<>
-       [line/render line [line-fess-top-left-data
-                          line-pale-top-left-data] fess-top-left outline? context]
-       [line/render line [line-pale-top-right-data
-                          line-fess-top-right-data] pale-top-right outline? context]
-       [line/render line [line-fess-bottom-right-data
-                          line-pale-bottom-right-data] fess-bottom-right outline? context]
-       [line/render line [line-pale-bottom-left-data
-                          line-fess-bottom-left-data] pale-bottom-left outline? context]])
-     (into [:<>]
-           (map (fn [[chevron-angle corner-point]]
-                  ^{:key chevron-angle}
-                  [cottising/render-chevron-cottise
-                   (c/++ context :cottising :cottise-1)
-                   :cottise-2 :cottise-opposite-1
-                   :distance-fn (fn [distance half-joint-angle-rad]
-                                  (-> (+ distance)
-                                      (/ 100)
-                                      (* width)
-                                      (- line-pale-top-left-min)
-                                      (/ (if (zero? half-joint-angle-rad)
-                                           0.00001
-                                           (Math/sin half-joint-angle-rad)))))
-                   :alignment :right
-                   :width width
-                   :height height
-                   :chevron-angle chevron-angle
-                   :joint-angle 90
-                   :corner-point corner-point
-                   :swap-lines? true]))
-           [[225 corner-top-left]
-            [315 corner-top-right]
-            [135 corner-bottom-left]
-            [45 corner-bottom-right]])]))
+               band-size
+               context)]
+    {:shape shape
+     :lines [{:line line
+              :line-from line-edge-top-left-first-to
+              :line-data [line-edge-top-left-first-data
+                          line-edge-top-left-second-data]}
+             {:line line
+              :line-from line-edge-top-right-first-to
+              :line-data [line-edge-top-right-first-data
+                          line-edge-top-right-second-data]}
+             {:line line
+              :line-from line-edge-bottom-left-first-to
+              :line-data [line-edge-bottom-left-first-data
+                          line-edge-bottom-left-second-data]}
+             {:line line
+              :line-from line-edge-bottom-right-first-to
+              :line-data [line-edge-bottom-right-first-data
+                          line-edge-bottom-right-second-data]}]}))
+
+(defmethod ordinary.interface/render-ordinary ordinary-type [context]
+  (ordinary.render/render context))
+
+(defn- cottise-part-properties [variant [base-left base-point base-right] distance band-size reference-line]
+  (let [joint-angle 90
+        real-distance (/ (+ (:effective-height reference-line)
+                            distance)
+                         (Math/sin (-> joint-angle
+                                       (* Math/PI)
+                                       (/ 180)
+                                       (/ 2))))
+        edge-angle (case variant
+                     :top-left 225
+                     :top-right 315
+                     :bottom-left 135
+                     :bottom-right 45)
+        delta (/ band-size
+                 (Math/sin (-> joint-angle
+                               (* Math/PI)
+                               (/ 180)
+                               (/ 2))))
+        dist-vector (v/rotate
+                     (v/Vector. real-distance 0)
+                     edge-angle)
+        band-size-vector (v/rotate
+                          (v/Vector. delta 0)
+                          edge-angle)
+        upper-corner (v/add base-point dist-vector)
+        lower-corner (v/add upper-corner band-size-vector)
+        [upper-right upper-left] (map #(v/add % dist-vector) [base-left base-right])
+        [lower-left lower-right] (map #(v/add % band-size-vector) [upper-left upper-right])]
+    {:type :heraldry.ordinary.type/chevron
+     :upper [upper-left upper-corner upper-right]
+     :lower [lower-left lower-corner lower-right]
+     :flip-cottise? true
+     :chevron-angle edge-angle
+     :joint-angle joint-angle
+     :band-size band-size}))
+
+(defmethod cottising/cottise-properties ordinary-type [{:keys [cottise-parts path]
+                                                        :as context}
+                                                       {:keys [line-length percentage-base
+                                                               edge-top-left edge-top-right edge-bottom-left edge-bottom-right]
+                                                        reference-line :line}]
+  (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
+    (let [distance (interface/get-sanitized-data (c/++ context :distance))
+          distance (math/percent-of percentage-base distance)
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
+          band-size (math/percent-of percentage-base thickness)
+          line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
+                                         line-length percentage-base)
+          opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                  line-length percentage-base)
+          [line opposite-line] [opposite-line line]
+          part (get cottise-parts path 0)
+          [variant edge] (case part
+                           0 [:top-left edge-top-left]
+                           1 [:top-right edge-top-right]
+                           2 [:bottom-left edge-bottom-left]
+                           3 [:bottom-right edge-bottom-right])
+          cottise-properties (-> (cottise-part-properties variant edge distance band-size reference-line)
+                                 (assoc :line-length line-length
+                                        :percentage-base percentage-base
+                                        :line line
+                                        :opposite-line opposite-line))]
+      cottise-properties)))
