@@ -3,6 +3,8 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.core :as line]
+   [heraldicon.heraldry.line.fimbriation :as fimbriation]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.outline :as outline]
    [heraldicon.util.uid :as uid]
@@ -31,12 +33,57 @@
               edge-paths))
       [line/render line line-data line-from outline? context])))
 
+(defn- fimbriation [context]
+  ;; TODO: this should move elsewhere and be merged with charge.other
+  (let [render-shape (interface/get-render-shape context)
+        fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
+        fimbriation-shape [:path {:d (shape-path render-shape)}]
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (c/++ context :outline?)))]
+    [:g
+     (when (-> fimbriation :mode #{:double})
+       (let [thickness (+ (:thickness-1 fimbriation)
+                          (:thickness-2 fimbriation))]
+         [:<>
+          (when outline?
+            [fimbriation/dilate-and-fill
+             fimbriation-shape
+             (+ thickness (/ outline/stroke-width 2))
+             (outline/color context) context
+             :corner (:corner fimbriation)])
+          [fimbriation/dilate-and-fill
+           fimbriation-shape
+           (cond-> thickness
+             outline? (- (/ outline/stroke-width 2)))
+           (-> fimbriation
+               :tincture-2
+               (tincture/pick context)) context
+           :corner (:corner fimbriation)]]))
+     (when (-> fimbriation :mode #{:single :double})
+       (let [thickness (:thickness-1 fimbriation)]
+         [:<>
+          (when outline?
+            [fimbriation/dilate-and-fill
+             fimbriation-shape
+             (+ thickness (/ outline/stroke-width 2))
+             (outline/color context) context
+             :corner (:corner fimbriation)])
+          [fimbriation/dilate-and-fill
+           fimbriation-shape
+           (cond-> thickness
+             outline? (- (/ outline/stroke-width 2)))
+           (-> fimbriation
+               :tincture-1
+               (tincture/pick context)) context
+           :corner (:corner fimbriation)]]))]))
+
 (defn- edges [context]
-  (let [{:keys [lines]} (interface/get-render-shape context)]
-    (into [:g]
-          (map (fn [line]
-                 [render-line context line]))
-          lines)))
+  (let [{:keys [lines fimbriation]} (interface/get-render-shape context)]
+    (when (= (or (:mode fimbriation) :none) :none)
+      (into [:g]
+            (map (fn [line]
+                   [render-line context line]))
+            lines))))
 
 (rf/reg-sub ::cottise?
   (fn [[_ {:keys [path]}] _]
@@ -76,6 +123,7 @@
          :mask
          :clipPath) {:id clip-path-id}
        [shape-mask context]]]
+     [fimbriation context]
      [:g {(if svg-export?
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
