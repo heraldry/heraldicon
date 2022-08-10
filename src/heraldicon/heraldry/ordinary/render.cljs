@@ -94,6 +94,27 @@
 
 (declare render)
 
+(defn- set-cottise-part [context part]
+  (let [cottising-path (-> context c/-- :path)
+        cottise-parts (into {}
+                            (map (fn [cottise]
+                                   [(conj cottising-path cottise) part]))
+                            [:cottise-1
+                             :cottise-2
+                             :cottise-opposite-1
+                             :cottise-opposite-2])]
+    (update context :cottise-parts merge cottise-parts)))
+
+(defn- render-cottise [context]
+  (let [{:keys [num-cottise-parts]
+         :or {num-cottise-parts 1}} (interface/get-properties (c/-- context 2))]
+    (into [:g]
+          (keep (fn [part]
+                  (let [part-context (set-cottise-part context part)]
+                    (when (interface/get-properties part-context)
+                      [render part-context]))))
+          (range num-cottise-parts))))
+
 (defn- cottising [context]
   (let [cottising-context (c/++ context :cottising)
         cottise-1? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-1)])
@@ -102,16 +123,16 @@
         cottise-opposite-2? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-opposite-2)])]
     [:g
      (when cottise-1?
-       [render (c/++ cottising-context :cottise-1)])
+       [render-cottise (c/++ cottising-context :cottise-1)])
      (when cottise-opposite-1?
-       [render (c/++ cottising-context :cottise-opposite-1)])
+       [render-cottise (c/++ cottising-context :cottise-opposite-1)])
 
      (when (and cottise-1?
                 cottise-2?)
-       [render (c/++ cottising-context :cottise-2)])
+       [render-cottise (c/++ cottising-context :cottise-2)])
      (when (and cottise-opposite-1?
                 cottise-opposite-2?)
-       [render (c/++ cottising-context :cottise-opposite-2)])]))
+       [render-cottise (c/++ cottising-context :cottise-opposite-2)])]))
 
 (defn render [{:keys [svg-export?]
                :as context}]

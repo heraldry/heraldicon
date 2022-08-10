@@ -398,7 +398,7 @@
 
 (defmethod cottising/cottise-properties ordinary-type [context
                                                        {:keys [line-length percentage-base
-                                                               chevron-angle joint-angle]
+                                                               chevron-angle joint-angle flip-cottise?]
                                                         [reference-upper-left reference-upper-corner reference-upper-right] :upper
                                                         [reference-lower-left reference-lower-corner reference-lower-right] :lower
                                                         reference-upper-line :line
@@ -412,7 +412,8 @@
                                        line-length percentage-base)
         opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
                                                 line-length percentage-base)
-        opposite? (-> kind name (s/starts-with? "cottise-opposite"))
+        opposite? (or flip-cottise?
+                      (-> kind name (s/starts-with? "cottise-opposite")))
         reference-line (if opposite?
                          reference-lower-line
                          reference-upper-line)
