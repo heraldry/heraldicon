@@ -142,8 +142,6 @@
         variant (interface/get-sanitized-data (c/++ context :variant))
         truncated? (= variant :truncated)
         num-points (interface/get-sanitized-data (c/++ context :num-points))
-        ;; TODO: fimbriation
-        ;;fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
         label-width (interface/get-sanitized-data (c/++ context :geometry :width))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         thickness (interface/get-sanitized-data (c/++ context :geometry :thickness))
