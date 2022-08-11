@@ -304,7 +304,7 @@
         offset-right (v/rotate
                       (v/Vector. (- dy) (- dx))
                       pall-angle)
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         corner-bottom (v/add anchor-point offset-bottom)
         corner-left (v/add anchor-point offset-left)
         corner-right (v/add anchor-point offset-right)

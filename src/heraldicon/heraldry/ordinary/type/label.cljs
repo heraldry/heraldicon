@@ -135,8 +135,7 @@
      parent-shape :default? true)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         points (:points parent-environment)
         {:keys [left right]} points
         variant (interface/get-sanitized-data (c/++ context :variant))
@@ -164,7 +163,7 @@
         point-extra (-> point-width
                         (/ 2)
                         (* eccentricity))
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         [upper-left upper-right] (start-and-end truncated? upper label-start label-width
                                                 parent-shape (:x left) (:x right))
         projected-extra (-> point-extra
