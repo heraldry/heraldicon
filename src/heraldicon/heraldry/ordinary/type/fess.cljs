@@ -6,6 +6,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
+   [heraldicon.heraldry.ordinary.humetty :as humetty]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
@@ -86,10 +87,13 @@
                                   (v/Vector. (:x left) lower) (v/Vector. (:x right) lower)
                                   parent-shape :default? true)
         line-length (- (:x upper-right) (:x upper-left))
+        humetty (-> (interface/get-sanitized-data (c/++ context :humetty))
+                    (update :distance (partial math/percent-of (:width parent-environment))))
         line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
                                        line-length percentage-base)
-        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                line-length percentage-base)]
+        opposite-line (cond-> (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
+                                                        line-length percentage-base)
+                        (:humetty? humetty) (merge (select-keys line [:fimbriation :effective-height])))]
     {:type ordinary-type
      :upper [upper-left upper-right]
      :lower [lower-left lower-right]
@@ -97,7 +101,9 @@
      :line-length line-length
      :percentage-base percentage-base
      :line line
-     :opposite-line opposite-line}))
+     :opposite-line opposite-line
+     :voided (interface/get-sanitized-data (c/++ context :voided))
+     :humetty humetty}))
 
 (defmethod interface/environment ordinary-type [context {[upper-left upper-right] :upper
                                                          [lower-left lower-right] :lower}]
@@ -110,11 +116,10 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [band-size line opposite-line]
+(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line humetty]
                                                           [upper-left upper-right] :upper
                                                           [lower-left lower-right] :lower}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
-        {:keys [width]} (interface/get-environment context)
         bounding-box (:bounding-box meta)
         lower-left (assoc lower-left :x (:x upper-left))
         {line-upper :line
@@ -132,28 +137,30 @@
                                                           bounding-box
                                                           :reversed? true
                                                           :context context)
-        shape (ordinary.shared/adjust-shape
-               ["M" (v/add line-upper-from line-upper-start)
-                (path/stitch line-upper)
-                "L" (v/add line-lower-to line-lower-start)
-                (path/stitch line-lower)
-                "z"]
-               width
-               band-size
-               context)]
+        parent-shape (interface/get-exact-parent-shape context)
+        shape (-> ["M" (v/add line-upper-from line-upper-start)
+                   (path/stitch line-upper)
+                   "L" (v/add line-lower-to line-lower-start)
+                   (path/stitch line-lower)
+                   "z"]
+                  path/make-path
+                  vector
+                  (humetty/coup-2 parent-shape humetty))]
     {:shape shape
-     :lines [{:line line
-              :line-from line-upper-from
-              :line-data [line-upper-data]}
-             {:line opposite-line
-              :line-from line-lower-to
-              :line-data [line-lower-data]}]}))
+     :lines (if (:humetty? humetty)
+              [{:edge-paths shape}]
+              [{:line line
+                :line-from line-upper-from
+                :line-data [line-upper-data]}
+               {:line opposite-line
+                :line-from line-lower-to
+                :line-data [line-lower-data]}])}))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
 
 (defmethod cottising/cottise-properties ordinary-type [context
-                                                       {:keys [line-length percentage-base flip-cottise?]
+                                                       {:keys [line-length percentage-base flip-cottise? humetty]
                                                         [reference-upper-left reference-upper-right] :upper
                                                         [reference-lower-left reference-lower-right] :lower
                                                         reference-upper-line :line
@@ -200,4 +207,5 @@
      :line-length line-length
      :percentage-base percentage-base
      :line line
-     :opposite-line opposite-line}))
+     :opposite-line opposite-line
+     :humetty humetty}))

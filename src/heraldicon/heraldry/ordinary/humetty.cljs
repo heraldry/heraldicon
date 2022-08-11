@@ -40,3 +40,16 @@
                           shrunken-environment-shape)]
         (assoc shape :paths [couped-shape]))
       shape)))
+
+(defn coup-2 [shape parent-shape {:keys [humetty? distance corner]}]
+  (if humetty?
+    (let [shape (if (vector? shape)
+                  shape
+                  [shape])
+          shrunken-environment-shape (environment/shrink-shape parent-shape distance corner)
+          shrink (fn shrink [path]
+                   (environment/intersect-shapes path shrunken-environment-shape))]
+      (if (vector? shape)
+        (mapv shrink shape)
+        (shrink shape)))
+    shape))
