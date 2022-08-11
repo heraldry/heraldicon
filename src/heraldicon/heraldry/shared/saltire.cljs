@@ -5,7 +5,7 @@
 (defn arm-diagonals [anchor-point orientation-point]
   (let [direction (-> (v/sub orientation-point anchor-point)
                       v/normal
-                      (v/mul 200))
+                      (v/mul 30))
         direction (v/Vector. (-> direction :x Math/abs -)
                              (-> direction :y Math/abs -))]
 
