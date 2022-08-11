@@ -86,8 +86,7 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         variant (interface/get-sanitized-data (c/++ context :variant))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
@@ -114,7 +113,7 @@
                          (v/sub corner-point)
                          (v/mul (/ size 100))
                          (v/add corner-point))
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         first-point (v/last-intersection-with-shape
                      anchor-point
                      (v/add anchor-point (v/mul first-dir 50))

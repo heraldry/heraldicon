@@ -96,12 +96,11 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         percentage-base (:width parent-environment)
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                parent-environment

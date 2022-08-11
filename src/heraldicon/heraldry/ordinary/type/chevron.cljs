@@ -223,8 +223,7 @@
       :cottising (cottising/add-cottising context 2)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         percentage-base (:height parent-environment)
         band-size (math/percent-of percentage-base size)
@@ -291,7 +290,7 @@
         lower-left (v/add diagonal-left offset-lower)
         upper-right (v/add diagonal-right offset-upper)
         lower-right (v/add diagonal-right offset-lower)
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         intersection-upper-left (v/last-intersection-with-shape upper-corner upper-left parent-shape :default? true)
         intersection-upper-right (v/last-intersection-with-shape upper-corner upper-right parent-shape :default? true)
         intersection-lower-left (v/last-intersection-with-shape lower-corner lower-left parent-shape :default? true)

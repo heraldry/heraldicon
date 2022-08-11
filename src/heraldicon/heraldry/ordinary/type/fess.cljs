@@ -66,8 +66,7 @@
       :cottising (cottising/add-cottising context 2)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         {:keys [left right]} (:points parent-environment)
         percentage-base (:height parent-environment)
@@ -79,7 +78,7 @@
                 :right (- (:y anchor-point) band-size)
                 (- (:y anchor-point) (/ band-size 2)))
         lower (+ upper band-size)
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         [upper-left upper-right] (v/intersections-with-shape
                                   (v/Vector. (:x left) upper) (v/Vector. (:x right) upper)
                                   parent-shape :default? true)

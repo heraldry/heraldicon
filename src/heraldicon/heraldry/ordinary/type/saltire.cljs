@@ -111,8 +111,7 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         percentage-base (min (:width parent-environment)
                              (:height parent-environment))
@@ -128,7 +127,7 @@
                                                nil)
         [relative-top-left relative-top-right
          relative-bottom-left relative-bottom-right] (saltire/arm-diagonals anchor-point orientation-point)
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         angle-bottom-right (v/angle-to-point v/zero relative-bottom-right)
         angle (-> angle-bottom-right (* Math/PI) (/ 180))
         dx (/ band-size 2 (Math/sin angle))

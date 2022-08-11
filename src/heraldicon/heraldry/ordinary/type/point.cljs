@@ -55,8 +55,7 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         variant (interface/get-sanitized-data (c/++ context :variant))
         dexter? (= variant :dexter)
         point-width (interface/get-sanitized-data (c/++ context :geometry :width))
@@ -72,7 +71,7 @@
         ideal-point-top ((if dexter?
                            v/add
                            v/sub) corner-point (v/Vector. real-point-width 0))
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         [lower-left lower-right] (v/intersections-with-shape
                                   ideal-point-top ideal-point-side parent-shape :default? true)
         [lower-left lower-right] (if dexter?

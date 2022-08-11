@@ -139,8 +139,7 @@
       :cottising (cottising/add-cottising context 2)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         ;; could be a bend-sinister as well
         real-ordinary-type (interface/get-raw-data (c/++ context :type))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
@@ -171,7 +170,7 @@
         direction-orthogonal (if (neg? (:y direction-orthogonal))
                                (v/mul direction-orthogonal -1)
                                direction-orthogonal)
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         [middle-start middle-end] (v/intersections-with-shape anchor-point (v/add anchor-point direction)
                                                               parent-shape :default? true)
         angle (v/angle-to-point middle-start middle-end)

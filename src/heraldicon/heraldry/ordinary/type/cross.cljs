@@ -67,15 +67,14 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         percentage-base (min (:width parent-environment)
                              (:height parent-environment))
         band-size (math/percent-of percentage-base size)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         anchor-point (position/calculate anchor parent-environment :fess)
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         upper (- (:y anchor-point) (/ band-size 2))
         lower (+ upper band-size)
         first (- (:x anchor-point) (/ band-size 2))

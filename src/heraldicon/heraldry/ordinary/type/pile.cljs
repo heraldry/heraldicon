@@ -183,15 +183,14 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent (interface/parent context)
-        parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-environment context)
         geometry (interface/get-sanitized-data (c/++ context :geometry))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         percentage-base (if (#{:left :right :dexter :sinister} (:point anchor))
                           (:height parent-environment)
                           (:width parent-environment))
-        parent-shape (interface/get-exact-shape parent)
+        parent-shape (interface/get-exact-parent-shape context)
         {anchor-point :anchor
          point :point
          thickness :thickness} (pile/calculate-properties
