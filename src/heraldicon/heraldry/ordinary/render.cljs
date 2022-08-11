@@ -37,7 +37,15 @@
   ;; TODO: this should move elsewhere and be merged with charge.other
   (let [render-shape (interface/get-render-shape context)
         fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
-        fimbriation-shape [:path {:d (shape-path render-shape)}]
+        line-fimbriation (interface/get-sanitized-data (c/++ context :line :fimbriation))
+        fimbriation (if (and (-> render-shape :lines (get 0) :edge-paths)
+                             (-> fimbriation :mode (or :none) (= :none))
+                             (-> line-fimbriation :mode (or :none) (not= :none)))
+                      line-fimbriation
+                      fimbriation)
+        fimbriation-shape [:path {:d (shape-path render-shape)
+                                  :clip-rule "evenodd"
+                                  :fill-rule "evenodd"}]
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))]
     [:g

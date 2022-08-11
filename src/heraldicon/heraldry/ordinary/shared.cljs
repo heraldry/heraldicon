@@ -15,7 +15,6 @@
                :humetty (humetty/options (c/++ context :humetty)))
         (cond->
           humetty? (->
-                     (update :line dissoc :fimbriation)
                      (update :opposite-line dissoc :fimbriation)
                      (update :extra-line dissoc :fimbriation)
                      (dissoc :fimbriation))))))

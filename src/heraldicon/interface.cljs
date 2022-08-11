@@ -205,6 +205,11 @@
 (defn get-exact-shape [context]
   @(rf/subscribe [::exact-shape context]))
 
+(defn get-exact-parent-shape [context]
+  (if (cottise-context? context)
+    @(rf/subscribe [::exact-shape (parent (parent context))])
+    @(rf/subscribe [::exact-shape (parent context)])))
+
 (defn fallback-exact-shape [context]
   (let [shape-path (:shape (get-render-shape context))
         shape-path (if (vector? shape-path)
