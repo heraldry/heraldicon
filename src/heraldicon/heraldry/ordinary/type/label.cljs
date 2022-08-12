@@ -6,6 +6,7 @@
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
@@ -193,22 +194,26 @@
                                  initial-shift
                                  (* idx point-distance)))
                             (range num-points))]
-    {:type ordinary-type
-     :upper [upper-left upper-right]
-     :lower [lower-left lower-right]
-     :point-edge [point-left point-right]
-     :truncated? truncated?
-     :num-points num-points
-     :label-width label-width
-     :label-start label-start
-     :eccentricity eccentricity
-     :point-width point-width
-     :point-height point-height
-     :point-centers point-centers
-     :point-extra point-extra
-     :band-size band-size
-     :percentage-base-height percentage-base-height
-     :percentage-base-width percentage-base-width}))
+    (post-process/properties
+     {:type ordinary-type
+      :upper [upper-left upper-right]
+      :lower [lower-left lower-right]
+      :point-edge [point-left point-right]
+      :truncated? truncated?
+      :num-points num-points
+      :label-width label-width
+      :label-start label-start
+      :eccentricity eccentricity
+      :point-width point-width
+      :point-height point-height
+      :point-centers point-centers
+      :point-extra point-extra
+      :band-size band-size
+      :percentage-base-height percentage-base-height
+      :percentage-base-width percentage-base-width
+      :humetty-percentage-base (:width parent-environment)
+      :voided-percentage-base (min band-size point-width)}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {:keys [point-height]
                                                          [upper-left upper-right] :upper
@@ -223,10 +228,12 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [_context {:keys [truncated? point-width point-height point-centers point-extra]
-                                                           [upper-left upper-right] :upper
-                                                           [lower-left lower-right] :lower
-                                                           [point-left point-right] :point-edge}]
+(defmethod interface/render-shape ordinary-type [context {:keys [truncated? point-width point-height
+                                                                 point-centers point-extra]
+                                                          [upper-left upper-right] :upper
+                                                          [lower-left lower-right] :lower
+                                                          [point-left point-right] :point-edge
+                                                          :as properties}]
   (let [point-y (:y point-left)
         point-width-half (/ point-width 2)
         [upper-left lower-left] (if-not truncated?
@@ -254,8 +261,11 @@
                                    ["L" p])
                                  shape-points))
                    (conj "z")))]
-    {:shape shape
-     :lines [{:edge-paths [shape]}]}))
+    (post-process/shape
+     {:shape [shape]
+      :lines [{:edge-paths [shape]}]}
+     context
+     properties)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))

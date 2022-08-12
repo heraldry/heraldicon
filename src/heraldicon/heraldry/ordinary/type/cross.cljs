@@ -7,6 +7,7 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
@@ -112,19 +113,21 @@
                                         (v/sub v corner-bottom-right))
                                       [bottom-2 right-2]))
                          (map v/abs)
-                         (apply max))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)]
-    {:type ordinary-type
-     :edge-top-left [left-1 corner-top-left top-1]
-     :edge-top-right [top-2 corner-top-right right-1]
-     :edge-bottom-left [bottom-1 corner-bottom-left left-2]
-     :edge-bottom-right [right-2 corner-bottom-right bottom-2]
-     :band-size band-size
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line
-     :num-cottise-parts 4}))
+                         (apply max))]
+    (post-process/properties
+     {:type ordinary-type
+      :edge-top-left [left-1 corner-top-left top-1]
+      :edge-top-right [top-2 corner-top-right right-1]
+      :edge-bottom-left [bottom-1 corner-bottom-left left-2]
+      :edge-bottom-right [right-2 corner-bottom-right bottom-2]
+      :band-size band-size
+      :line-length line-length
+      :percentage-base percentage-base
+      :humetty-percentage-base (min (:width parent-environment)
+                                    (:height parent-environment))
+      :voided-percentage-base band-size
+      :num-cottise-parts 4}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {[left-1 corner-top-left top-1] :edge-top-left
                                                          [top-2 corner-top-right right-1] :edge-top-right
@@ -151,14 +154,13 @@
                                               corner-bottom-right)
                                        4)}})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [band-size line]
+(defmethod interface/render-shape ordinary-type [context {:keys [line]
                                                           [left-1 corner-top-left top-1] :edge-top-left
                                                           [top-2 corner-top-right right-1] :edge-top-right
                                                           [bottom-1 corner-bottom-left left-2] :edge-bottom-left
-                                                          [right-2 corner-bottom-right bottom-2] :edge-bottom-right}]
+                                                          [right-2 corner-bottom-right bottom-2] :edge-bottom-right
+                                                          :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
-        environment (interface/get-environment context)
-        width (:width environment)
         bounding-box (:bounding-box meta)
         {line-edge-top-left-first :line
          line-edge-top-left-first-start :line-start
@@ -219,8 +221,9 @@
                                                                              corner-bottom-right bottom-2
                                                                              bounding-box
                                                                              :extend-from? false
-                                                                             :context context)
-        shape (ordinary.shared/adjust-shape
+                                                                             :context context)]
+    (post-process/shape
+     {:shape [(path/make-path
                ["M" (v/add line-edge-top-left-first-to line-edge-top-left-first-start)
                 (path/stitch line-edge-top-left-first)
                 (path/stitch line-edge-top-left-second)
@@ -233,27 +236,25 @@
                 "L" (v/add line-edge-bottom-left-first-to line-edge-bottom-left-first-start)
                 (path/stitch line-edge-bottom-left-first)
                 (path/stitch line-edge-bottom-left-second)
-                "z"]
-               width
-               band-size
-               context)]
-    {:shape shape
-     :lines [{:line line
-              :line-from line-edge-top-left-first-to
-              :line-data [line-edge-top-left-first-data
-                          line-edge-top-left-second-data]}
-             {:line line
-              :line-from line-edge-top-right-first-to
-              :line-data [line-edge-top-right-first-data
-                          line-edge-top-right-second-data]}
-             {:line line
-              :line-from line-edge-bottom-left-first-to
-              :line-data [line-edge-bottom-left-first-data
-                          line-edge-bottom-left-second-data]}
-             {:line line
-              :line-from line-edge-bottom-right-first-to
-              :line-data [line-edge-bottom-right-first-data
-                          line-edge-bottom-right-second-data]}]}))
+                "z"])]
+      :lines [{:line line
+               :line-from line-edge-top-left-first-to
+               :line-data [line-edge-top-left-first-data
+                           line-edge-top-left-second-data]}
+              {:line line
+               :line-from line-edge-top-right-first-to
+               :line-data [line-edge-top-right-first-data
+                           line-edge-top-right-second-data]}
+              {:line line
+               :line-from line-edge-bottom-left-first-to
+               :line-data [line-edge-bottom-left-first-data
+                           line-edge-bottom-left-second-data]}
+              {:line line
+               :line-from line-edge-bottom-right-first-to
+               :line-data [line-edge-bottom-right-first-data
+                           line-edge-bottom-right-second-data]}]}
+     context
+     properties)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
@@ -297,7 +298,9 @@
 (defmethod cottising/cottise-properties ordinary-type [{:keys [cottise-parts path]
                                                         :as context}
                                                        {:keys [line-length percentage-base
-                                                               edge-top-left edge-top-right edge-bottom-left edge-bottom-right]
+                                                               edge-top-left edge-top-right
+                                                               edge-bottom-left edge-bottom-right
+                                                               humetty]
                                                         reference-line :line}]
   (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
     (let [distance (interface/get-sanitized-data (c/++ context :distance))
@@ -314,10 +317,12 @@
                            0 [:top-left edge-top-left]
                            1 [:top-right edge-top-right]
                            2 [:bottom-left edge-bottom-left]
-                           3 [:bottom-right edge-bottom-right])
-          cottise-properties (-> (cottise-part-properties variant edge distance band-size reference-line)
-                                 (assoc :line-length line-length
-                                        :percentage-base percentage-base
-                                        :line line
-                                        :opposite-line opposite-line))]
-      cottise-properties)))
+                           3 [:bottom-right edge-bottom-right])]
+      (post-process/properties
+       (-> (cottise-part-properties variant edge distance band-size reference-line)
+           (assoc :line-length line-length
+                  :percentage-base percentage-base
+                  :line line
+                  :opposite-line opposite-line
+                  :humetty humetty))
+       context))))

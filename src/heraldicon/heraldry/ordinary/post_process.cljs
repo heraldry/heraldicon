@@ -8,20 +8,22 @@
    [heraldicon.math.core :as math]))
 
 (defn process-humetty-properties [{:keys [line opposite-line extra-line
-                                          humetty-percentage-base]
+                                          humetty-percentage-base humetty]
                                    :as properties} context]
-  (let [humetty (some-> (interface/get-sanitized-data (c/++ context :humetty))
-                        (update :distance (partial math/percent-of humetty-percentage-base)))]
+  (let [humetty (or humetty
+                    (some-> (interface/get-sanitized-data (c/++ context :humetty))
+                            (update :distance (partial math/percent-of humetty-percentage-base))))]
     (if (:humetty? humetty)
       (cond-> (assoc properties :humetty humetty)
         opposite-line (update :opposite-line merge (select-keys line [:fimbriation :effective-height]))
         extra-line (update :extra-line merge (select-keys line [:fimbriation :effective-height])))
       properties)))
 
-(defn process-voided-properties [{:keys [voided-percentage-base]
+(defn process-voided-properties [{:keys [voided-percentage-base voided]
                                   :as properties} context]
-  (let [voided (some-> (interface/get-sanitized-data (c/++ context :voided))
-                       (update :thickness (partial math/percent-of voided-percentage-base)))]
+  (let [voided (or voided
+                   (some-> (interface/get-sanitized-data (c/++ context :voided))
+                           (update :thickness (partial math/percent-of voided-percentage-base))))]
     (if (:voided? voided)
       (assoc properties :voided voided)
       properties)))
@@ -29,12 +31,17 @@
 (defn properties [{:keys [line-length percentage-base]
                    :as properties} context]
   (-> properties
-      (assoc :line (some-> (interface/get-sanitized-data (c/++ context :line))
-                           (line/resolve-percentages line-length percentage-base))
-             :opposite-line (some-> (interface/get-sanitized-data (c/++ context :opposite-line))
-                                    (line/resolve-percentages line-length percentage-base))
-             :extra-line (some-> (interface/get-sanitized-data (c/++ context :extra-line))
-                                 (line/resolve-percentages line-length percentage-base)))
+      (update :line (fn [line]
+                      (or line (some-> (interface/get-sanitized-data (c/++ context :line))
+                                       (line/resolve-percentages line-length percentage-base)))))
+      (update :opposite-line (fn [line]
+                               (or line
+                                   (some-> (interface/get-sanitized-data (c/++ context :opposite-line))
+                                           (line/resolve-percentages line-length percentage-base)))))
+      (update :extra-line (fn [line]
+                            (or line
+                                (some-> (interface/get-sanitized-data (c/++ context :extra-line))
+                                        (line/resolve-percentages line-length percentage-base)))))
       (process-humetty-properties context)
       (process-voided-properties context)))
 

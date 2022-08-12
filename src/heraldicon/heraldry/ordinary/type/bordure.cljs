@@ -5,6 +5,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
@@ -62,14 +63,13 @@
         thickness (math/percent-of percentage-base thickness)
         edge (-> parent-shape
                  (environment/shrink-shape thickness :round)
-                 (path/round-corners corner-radius smoothing))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)]
-    {:type ordinary-type
-     :edge edge
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line}))
+                 (path/round-corners corner-radius smoothing))]
+    (post-process/properties
+     {:type ordinary-type
+      :edge edge
+      :line-length line-length
+      :percentage-base percentage-base}
+     context)))
 
 (defmethod interface/environment ordinary-type [context _properties]
   (interface/get-parent-environment context))

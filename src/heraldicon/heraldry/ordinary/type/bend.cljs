@@ -7,6 +7,7 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
@@ -205,26 +206,25 @@
                                    (-> v
                                        (path/translate (- (:x ordinary-top-left)) (- (:y ordinary-top-left)))
                                        (path/rotate (- angle))))))
-        lower-left (v/add upper-left (v/mul width-offset 2))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)
-        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                line-length percentage-base)]
-    {:type ordinary-type
-     :upper [upper-left upper-right]
-     :lower [lower-left lower-right]
-     :angle angle
-     :direction-orthogonal direction-orthogonal
-     :band-size band-size
-     :line-length line-length
-     :percentage-base percentage-base
-     :use-parent-environment? use-parent-environment?
-     :transform (when-not use-parent-environment?
-                  (str "translate(" (v/->str ordinary-top-left) ")"
-                       "rotate(" angle ")"))
-     :reverse-transform-fn reverse-transform-fn
-     :line line
-     :opposite-line opposite-line}))
+        lower-left (v/add upper-left (v/mul width-offset 2))]
+    (post-process/properties
+     {:type ordinary-type
+      :upper [upper-left upper-right]
+      :lower [lower-left lower-right]
+      :angle angle
+      :direction-orthogonal direction-orthogonal
+      :band-size band-size
+      :line-length line-length
+      :percentage-base percentage-base
+      :use-parent-environment? use-parent-environment?
+      :transform (when-not use-parent-environment?
+                   (str "translate(" (v/->str ordinary-top-left) ")"
+                        "rotate(" angle ")"))
+      :reverse-transform-fn reverse-transform-fn
+      :humetty-percentage-base (min (:width parent-environment)
+                                    (:height parent-environment))
+      :voided-percentage-base band-size}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {:keys [reverse-transform-fn]
                                                          [upper-left upper-right] :upper
@@ -240,11 +240,11 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [band-size line opposite-line]
+(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [upper-left upper-right] :upper
-                                                          [lower-left lower-right] :lower}]
+                                                          [lower-left lower-right] :lower
+                                                          :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
-        {:keys [width]} (interface/get-environment context)
         bounding-box (:bounding-box meta)
         {line-upper :line
          line-upper-start :line-start
@@ -260,23 +260,22 @@
                                                           lower-left lower-right
                                                           bounding-box
                                                           :reversed? true
-                                                          :context context)
-        shape (ordinary.shared/adjust-shape
+                                                          :context context)]
+    (post-process/shape
+     {:shape [(path/make-path
                ["M" (v/add line-upper-from line-upper-start)
                 (path/stitch line-upper)
                 "L" (v/add line-lower-to line-lower-start)
                 (path/stitch line-lower)
-                "z"]
-               width
-               band-size
-               context)]
-    {:shape shape
-     :lines [{:line line
-              :line-from line-upper-from
-              :line-data [line-upper-data]}
-             {:line opposite-line
-              :line-from line-lower-to
-              :line-data [line-lower-data]}]}))
+                "z"])]
+      :lines [{:line line
+               :line-from line-upper-from
+               :line-data [line-upper-data]}
+              {:line opposite-line
+               :line-from line-lower-to
+               :line-data [line-lower-data]}]}
+     context
+     properties)))
 
 (defmethod interface/exact-shape ordinary-type [context {:keys [reverse-transform-fn]}]
   (let [exact-shape (interface/fallback-exact-shape context)]
@@ -292,7 +291,7 @@
 
 (defmethod cottising/cottise-properties ordinary-type [context
                                                        {:keys [line-length percentage-base direction-orthogonal
-                                                               angle flip-cottise?]
+                                                               angle flip-cottise? humetty]
                                                         real-ordinary-type :type
                                                         [reference-upper-left reference-upper-right] :upper
                                                         [reference-lower-left reference-lower-right] :lower
@@ -347,18 +346,21 @@
         [line opposite-line] (if opposite?
                                [opposite-line line]
                                [line opposite-line])]
-    {:type real-ordinary-type
-     :upper [upper-left upper-right]
-     :lower [lower-left lower-right]
-     :angle angle
-     :direction-orthogonal direction-orthogonal
-     :band-size band-size
-     :line-length line-length
-     :percentage-base percentage-base
-     :use-parent-environment? false
-     :transform (when-not use-parent-environment?
-                  (str "translate(" (v/->str upper-left) ")"
-                       "rotate(" angle ")"))
-     :reverse-transform-fn reverse-transform-fn
-     :line line
-     :opposite-line opposite-line}))
+    (post-process/properties
+     {:type real-ordinary-type
+      :upper [upper-left upper-right]
+      :lower [lower-left lower-right]
+      :angle angle
+      :direction-orthogonal direction-orthogonal
+      :band-size band-size
+      :line-length line-length
+      :percentage-base percentage-base
+      :use-parent-environment? false
+      :transform (when-not use-parent-environment?
+                   (str "translate(" (v/->str upper-left) ")"
+                        "rotate(" angle ")"))
+      :reverse-transform-fn reverse-transform-fn
+      :line line
+      :opposite-line opposite-line
+      :humetty humetty}
+     context)))
