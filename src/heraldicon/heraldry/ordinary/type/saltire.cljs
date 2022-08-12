@@ -7,6 +7,7 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.heraldry.shared.saltire :as saltire]
@@ -165,19 +166,21 @@
                                         (v/sub v corner-right))
                                       [right-1 right-2]))
                          (map v/abs)
-                         (apply max))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)]
-    {:type ordinary-type
-     :edge-top [top-1 corner-top top-2]
-     :edge-bottom [bottom-1 corner-bottom bottom-2]
-     :edge-left [left-1 corner-left left-2]
-     :edge-right [right-1 corner-right right-2]
-     :band-size band-size
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line
-     :num-cottise-parts 4}))
+                         (apply max))]
+    (post-process/properties
+     {:type ordinary-type
+      :edge-top [top-1 corner-top top-2]
+      :edge-bottom [bottom-1 corner-bottom bottom-2]
+      :edge-left [left-1 corner-left left-2]
+      :edge-right [right-1 corner-right right-2]
+      :band-size band-size
+      :line-length line-length
+      :percentage-base percentage-base
+      :humetty-percentage-base (min (:width parent-environment)
+                                    (:height parent-environment))
+      :voided-percentage-base band-size
+      :num-cottise-parts 4}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {[top-1 corner-top top-2] :edge-top
                                                          [bottom-1 corner-bottom bottom-2] :edge-bottom
@@ -204,14 +207,13 @@
                                               corner-right)
                                        4)}})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [band-size line]
+(defmethod interface/render-shape ordinary-type [context {:keys [line]
                                                           [top-1 corner-top top-2] :edge-top
                                                           [bottom-1 corner-bottom bottom-2] :edge-bottom
                                                           [left-1 corner-left left-2] :edge-left
-                                                          [right-1 corner-right right-2] :edge-right}]
+                                                          [right-1 corner-right right-2] :edge-right
+                                                          :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
-        environment (interface/get-environment context)
-        width (:width environment)
         bounding-box (:bounding-box meta)
         {line-edge-top-first :line
          line-edge-top-first-start :line-start
@@ -272,9 +274,10 @@
                                                                        corner-bottom bottom-2
                                                                        bounding-box
                                                                        :extend-from? false
-                                                                       :context context)
-        ;; TODO: seems to work fine without it, but maybe infinity patching would improve this
-        shape (ordinary.shared/adjust-shape
+                                                                       :context context)]
+    ;; TODO: seems to work fine without it, but maybe infinity patching would improve this
+    (post-process/shape
+     {:shape [(path/make-path
                ["M" (v/add line-edge-top-first-to line-edge-top-first-start)
                 (path/stitch line-edge-top-first)
                 (path/stitch line-edge-top-second)
@@ -287,27 +290,25 @@
                 "L" (v/add line-edge-left-first-to line-edge-left-first-start)
                 (path/stitch line-edge-left-first)
                 (path/stitch line-edge-left-second)
-                "z"]
-               width
-               band-size
-               context)]
-    {:shape shape
-     :lines [{:line line
-              :line-from line-edge-top-first-to
-              :line-data [line-edge-top-first-data
-                          line-edge-top-second-data]}
-             {:line line
-              :line-from line-edge-left-first-to
-              :line-data [line-edge-left-first-data
-                          line-edge-left-second-data]}
-             {:line line
-              :line-from line-edge-right-first-to
-              :line-data [line-edge-right-first-data
-                          line-edge-right-second-data]}
-             {:line line
-              :line-from line-edge-bottom-first-to
-              :line-data [line-edge-bottom-first-data
-                          line-edge-bottom-second-data]}]}))
+                "z"])]
+      :lines [{:line line
+               :line-from line-edge-top-first-to
+               :line-data [line-edge-top-first-data
+                           line-edge-top-second-data]}
+              {:line line
+               :line-from line-edge-left-first-to
+               :line-data [line-edge-left-first-data
+                           line-edge-left-second-data]}
+              {:line line
+               :line-from line-edge-right-first-to
+               :line-data [line-edge-right-first-data
+                           line-edge-right-second-data]}
+              {:line line
+               :line-from line-edge-bottom-first-to
+               :line-data [line-edge-bottom-first-data
+                           line-edge-bottom-second-data]}]}
+     context
+     properties)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
@@ -352,7 +353,8 @@
 (defmethod cottising/cottise-properties ordinary-type [{:keys [cottise-parts path]
                                                         :as context}
                                                        {:keys [line-length percentage-base
-                                                               edge-top edge-left edge-right edge-bottom]
+                                                               edge-top edge-left edge-right edge-bottom
+                                                               humetty]
                                                         reference-line :line}]
   (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
     (let [distance (interface/get-sanitized-data (c/++ context :distance))
@@ -369,10 +371,12 @@
                            0 [:top edge-top]
                            1 [:right edge-right]
                            2 [:bottom edge-bottom]
-                           3 [:left edge-left])
-          cottise-properties (-> (cottise-part-properties variant edge distance band-size reference-line)
-                                 (assoc :line-length line-length
-                                        :percentage-base percentage-base
-                                        :line line
-                                        :opposite-line opposite-line))]
-      cottise-properties)))
+                           3 [:left edge-left])]
+      (post-process/properties
+       (-> (cottise-part-properties variant edge distance band-size reference-line)
+           (assoc :line-length line-length
+                  :percentage-base percentage-base
+                  :line line
+                  :opposite-line opposite-line
+                  :humetty humetty))
+       context))))

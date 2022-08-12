@@ -7,6 +7,7 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
@@ -85,19 +86,17 @@
                                    (v/Vector. right (:y top)) (v/Vector. right (:y bottom))
                                    parent-shape
                                    :default? true)
-        line-length (- (:y left-lower) (:y left-upper))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)
-        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                line-length percentage-base)]
-    {:type ordinary-type
-     :left [left-upper left-lower]
-     :right [right-upper right-lower]
-     :band-size band-size
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line
-     :opposite-line opposite-line}))
+        line-length (- (:y left-lower) (:y left-upper))]
+    (post-process/properties
+     {:type ordinary-type
+      :left [left-upper left-lower]
+      :right [right-upper right-lower]
+      :band-size band-size
+      :line-length line-length
+      :percentage-base percentage-base
+      :humetty-percentage-base (:height parent-environment)
+      :voided-percentage-base band-size}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {[left-upper left-lower] :left
                                                          [right-upper right-lower] :right}]
@@ -110,11 +109,11 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [band-size line opposite-line]
+(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [left-upper left-lower] :left
-                                                          [right-upper right-lower] :right}]
+                                                          [right-upper right-lower] :right
+                                                          :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
-        {:keys [width]} (interface/get-environment context)
         bounding-box (:bounding-box meta)
         right-upper (assoc right-upper :y (:y left-upper))
         {line-left :line
@@ -131,29 +130,28 @@
          :as line-right-data} (line/create-with-extension opposite-line
                                                           right-upper right-lower
                                                           bounding-box
-                                                          :context context)
-        shape (ordinary.shared/adjust-shape
+                                                          :context context)]
+    (post-process/shape
+     {:shape [(path/make-path
                ["M" (v/add line-left-to line-left-start)
                 (path/stitch line-left)
                 "L" (v/add line-right-from line-right-start)
                 (path/stitch line-right)
-                "z"]
-               width
-               band-size
-               context)]
-    {:shape shape
-     :lines [{:line line
-              :line-from line-left-to
-              :line-data [line-left-data]}
-             {:line opposite-line
-              :line-from line-right-from
-              :line-data [line-right-data]}]}))
+                "z"])]
+      :lines [{:line line
+               :line-from line-left-to
+               :line-data [line-left-data]}
+              {:line opposite-line
+               :line-from line-right-from
+               :line-data [line-right-data]}]}
+     context
+     properties)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
 
 (defmethod cottising/cottise-properties ordinary-type [context
-                                                       {:keys [line-length percentage-base]
+                                                       {:keys [line-length percentage-base humetty]
                                                         [reference-left-upper reference-left-lower] :left
                                                         [reference-right-upper reference-right-lower] :right
                                                         reference-left-line :line
@@ -192,11 +190,14 @@
         [line opposite-line] (if opposite?
                                [opposite-line line]
                                [line opposite-line])]
-    {:type ordinary-type
-     :left [left-upper left-lower]
-     :right [right-upper right-lower]
-     :band-size band-size
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line
-     :opposite-line opposite-line}))
+    (post-process/properties
+     {:type ordinary-type
+      :left [left-upper left-lower]
+      :right [right-upper right-lower]
+      :band-size band-size
+      :line-length line-length
+      :percentage-base percentage-base
+      :line line
+      :opposite-line opposite-line
+      :humetty humetty}
+     context)))

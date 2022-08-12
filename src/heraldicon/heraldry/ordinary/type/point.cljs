@@ -6,6 +6,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
@@ -77,16 +78,17 @@
         [lower-left lower-right] (if dexter?
                                    [lower-left lower-right]
                                    [lower-right lower-left])
-        line-length (v/abs (v/sub lower-left lower-right))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)]
-    {:type ordinary-type
-     :lower [lower-left lower-right]
-     :point-height real-point-height
-     :dexter? dexter?
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line}))
+        line-length (v/abs (v/sub lower-left lower-right))]
+    (post-process/properties
+     {:type ordinary-type
+      :lower [lower-left lower-right]
+      :point-height real-point-height
+      :dexter? dexter?
+      :line-length line-length
+      :percentage-base percentage-base
+      :humetty-percentage-base (:width parent-environment)
+      :voided-percentage-base real-point-height}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {:keys [dexter?]
                                                          [lower-left lower-right] :lower}]
@@ -102,10 +104,10 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [point-height dexter? line]
-                                                          [lower-left lower-right] :lower}]
+(defmethod interface/render-shape ordinary-type [context {:keys [dexter? line]
+                                                          [lower-left lower-right] :lower
+                                                          :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
-        {:keys [width]} (interface/get-environment context)
         bounding-box (:bounding-box meta)
         {line-lower :line
          line-lower-start :line-start
@@ -120,8 +122,9 @@
                                                             lower-left)
                                                           bounding-box
                                                           :reversed? (not dexter?)
-                                                          :context context)
-        shape (ordinary.shared/adjust-shape
+                                                          :context context)]
+    (post-process/shape
+     {:shape [(path/make-path
                (if dexter?
                  ["M" (v/add line-lower-from line-lower-start)
                   (path/stitch line-lower)
@@ -134,22 +137,20 @@
                   (infinity/path :clockwise
                                  [:top :right]
                                  [line-lower-from line-lower-to])
-                  "z"])
-               width
-               point-height
-               context)]
-    {:shape shape
-     :lines [{:line line
-              :line-from (if dexter?
-                           line-lower-from
-                           line-lower-to)
-              :line-data [line-lower-data]}]}))
+                  "z"]))]
+      :lines [{:line line
+               :line-from (if dexter?
+                            line-lower-from
+                            line-lower-to)
+               :line-data [line-lower-data]}]}
+     context
+     properties)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
 
 (defmethod cottising/cottise-properties ordinary-type [context
-                                                       {:keys [line-length percentage-base]
+                                                       {:keys [line-length percentage-base humetty]
                                                         [reference-lower-left reference-lower-right] :lower
                                                         dexter? :dexter?
                                                         reference-lower-line :line}]
@@ -197,21 +198,24 @@
                                          (path/translate (- (:x upper-left)) (- (:y upper-left)))
                                          (path/rotate (- angle))))))
           [line opposite-line] [opposite-line line]]
-      {:type (if dexter?
-               :heraldry.ordinary.type/bend-sinister
-               :heraldry.ordinary.type/bend)
-       :upper [upper-left upper-right]
-       :lower [lower-left lower-right]
-       :angle angle
-       :direction-orthogonal direction-orthogonal
-       :band-size band-size
-       :line-length line-length
-       :percentage-base percentage-base
-       :use-parent-environment? false
-       :transform (when-not use-parent-environment?
-                    (str "translate(" (v/->str upper-left) ")"
-                         "rotate(" angle ")"))
-       :reverse-transform-fn reverse-transform-fn
-       :flip-cottise? true
-       :line line
-       :opposite-line opposite-line})))
+      (post-process/properties
+       {:type (if dexter?
+                :heraldry.ordinary.type/bend-sinister
+                :heraldry.ordinary.type/bend)
+        :upper [upper-left upper-right]
+        :lower [lower-left lower-right]
+        :angle angle
+        :direction-orthogonal direction-orthogonal
+        :band-size band-size
+        :line-length line-length
+        :percentage-base percentage-base
+        :use-parent-environment? false
+        :transform (when-not use-parent-environment?
+                     (str "translate(" (v/->str upper-left) ")"
+                          "rotate(" angle ")"))
+        :reverse-transform-fn reverse-transform-fn
+        :flip-cottise? true
+        :line line
+        :opposite-line opposite-line
+        :humetty humetty}
+       context))))

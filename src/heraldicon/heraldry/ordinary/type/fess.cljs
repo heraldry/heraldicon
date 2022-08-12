@@ -190,12 +190,14 @@
         [line opposite-line] (if opposite?
                                [opposite-line line]
                                [line opposite-line])]
-    {:type ordinary-type
-     :upper [upper-left upper-right]
-     :lower [lower-left lower-right]
-     :band-size band-size
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line
-     :opposite-line opposite-line
-     :humetty humetty}))
+    (post-process/properties
+     {:type ordinary-type
+      :upper [upper-left upper-right]
+      :lower [lower-left lower-right]
+      :band-size band-size
+      :line-length line-length
+      :percentage-base percentage-base
+      :line line
+      :opposite-line opposite-line
+      :humetty humetty}
+     context)))

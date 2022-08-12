@@ -7,6 +7,7 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
@@ -128,23 +129,22 @@
                                           v/abs))
                                     [first-point
                                      second-point]))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)
-        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                line-length percentage-base)]
-    {:type ordinary-type
-     :edge [first-point anchor-point second-point]
-     :corner-point corner-point
-     :x-size (case variant
-               :dexter-chief (-> (v/sub anchor-point second-point) :y Math/abs)
-               :sinister-chief (-> (v/sub anchor-point first-point) :y Math/abs)
-               :dexter-base (-> (v/sub anchor-point first-point) :y Math/abs)
-               :sinister-base (-> (v/sub anchor-point second-point) :y Math/abs))
-     :variant variant
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line
-     :opposite-line opposite-line}))
+        x-size (case variant
+                 :dexter-chief (-> (v/sub anchor-point second-point) :y Math/abs)
+                 :sinister-chief (-> (v/sub anchor-point first-point) :y Math/abs)
+                 :dexter-base (-> (v/sub anchor-point first-point) :y Math/abs)
+                 :sinister-base (-> (v/sub anchor-point second-point) :y Math/abs))]
+    (post-process/properties
+     {:type ordinary-type
+      :edge [first-point anchor-point second-point]
+      :corner-point corner-point
+      :x-size x-size
+      :variant variant
+      :line-length line-length
+      :percentage-base percentage-base
+      :humetty-percentage-base (:width parent-environment)
+      :voided-percentage-base x-size}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {:keys [corner-point]
                                                          [first-point anchor-point second-point] :edge}]
@@ -157,10 +157,10 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [x-size variant line opposite-line]
-                                                          [first-point anchor-point second-point] :edge}]
+(defmethod interface/render-shape ordinary-type [context {:keys [variant line opposite-line]
+                                                          [first-point anchor-point second-point] :edge
+                                                          :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
-        {:keys [width]} (interface/get-environment context)
         bounding-box (:bounding-box meta)
         {line-one :line
          line-one-start :line-start
@@ -178,8 +178,9 @@
                                                         anchor-point second-point
                                                         bounding-box
                                                         :extend-from? false
-                                                        :context context)
-        shape (ordinary.shared/adjust-shape
+                                                        :context context)]
+    (post-process/shape
+     {:shape [(path/make-path
                ["M" (v/add line-one-to line-one-start)
                 (path/stitch line-one)
                 (path/stitch line-two)
@@ -190,20 +191,18 @@
                                  :dexter-base [:bottom :left]
                                  :sinister-base [:right :bottom])
                                [line-two-to line-one-from])
-                "z"]
-               width
-               x-size
-               context)]
-    {:shape shape
-     :lines [{:line line
-              :line-from line-one-to
-              :line-data [line-one-data line-two-data]}]}))
+                "z"])]
+      :lines [{:line line
+               :line-from line-one-to
+               :line-data [line-one-data line-two-data]}]}
+     context
+     properties)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
 
 (defmethod cottising/cottise-properties ordinary-type [context
-                                                       {:keys [line-length percentage-base]
+                                                       {:keys [line-length percentage-base humetty]
                                                         [reference-first reference-point reference-second] :edge
                                                         variant :variant
                                                         reference-line :line}]
@@ -244,13 +243,16 @@
           upper-corner (v/sub lower-corner band-size-vector)
           [lower-left lower-right] (map #(v/sub % dist-vector) [base-left base-right])
           [upper-left upper-right] (map #(v/sub % band-size-vector) [lower-left lower-right])]
-      {:type :heraldry.ordinary.type/chevron
-       :upper [upper-left upper-corner upper-right]
-       :lower [lower-left lower-corner lower-right]
-       :chevron-angle quarter-angle
-       :joint-angle joint-angle
-       :band-size band-size
-       :line-length line-length
-       :percentage-base percentage-base
-       :line line
-       :opposite-line opposite-line})))
+      (post-process/properties
+       {:type :heraldry.ordinary.type/chevron
+        :upper [upper-left upper-corner upper-right]
+        :lower [lower-left lower-corner lower-right]
+        :chevron-angle quarter-angle
+        :joint-angle joint-angle
+        :band-size band-size
+        :line-length line-length
+        :percentage-base percentage-base
+        :line line
+        :opposite-line opposite-line
+        :humetty humetty}
+       context))))

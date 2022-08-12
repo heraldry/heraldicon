@@ -6,6 +6,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
@@ -47,15 +48,16 @@
         [lower-left lower-right] (v/intersections-with-shape
                                   (v/Vector. (:x left) lower) (v/Vector. (:x right) lower)
                                   parent-shape :default? true)
-        line-length (- (:x lower-right) (:x lower-left))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)]
-    {:type ordinary-type
-     :lower [lower-left lower-right]
-     :band-size band-size
-     :line-length line-length
-     :percentage-base percentage-base
-     :line line}))
+        line-length (- (:x lower-right) (:x lower-left))]
+    (post-process/properties
+     {:type ordinary-type
+      :lower [lower-left lower-right]
+      :band-size band-size
+      :line-length line-length
+      :percentage-base percentage-base
+      :humetty-percentage-base (:width parent-environment)
+      :voided-percentage-base band-size}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {[lower-left lower-right] :lower}]
   (let [{:keys [meta points]} (interface/get-parent-environment context)
@@ -68,10 +70,10 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [band-size line]
-                                                          [lower-left lower-right] :lower}]
+(defmethod interface/render-shape ordinary-type [context {:keys [line]
+                                                          [lower-left lower-right] :lower
+                                                          :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
-        {:keys [width]} (interface/get-environment context)
         bounding-box (:bounding-box meta)
         {line-lower :line
          line-lower-start :line-start
@@ -81,27 +83,26 @@
                                                           lower-left lower-right
                                                           bounding-box
                                                           :reversed? true
-                                                          :context context)
-        shape (ordinary.shared/adjust-shape
+                                                          :context context)]
+    (post-process/shape
+     {:shape [(path/make-path
                ["M" (v/add line-lower-to line-lower-start)
                 (path/stitch line-lower)
                 (infinity/path :clockwise
                                [:left :right]
                                [line-lower-from line-lower-to])
-                "z"]
-               width
-               band-size
-               context)]
-    {:shape shape
-     :lines [{:line line
-              :line-from line-lower-to
-              :line-data [line-lower-data]}]}))
+                "z"])]
+      :lines [{:line line
+               :line-from line-lower-to
+               :line-data [line-lower-data]}]}
+     context
+     properties)))
 
 (defmethod ordinary.interface/render-ordinary ordinary-type [context]
   (ordinary.render/render context))
 
 (defmethod cottising/cottise-properties ordinary-type [context
-                                                       {:keys [line-length percentage-base]
+                                                       {:keys [line-length percentage-base humetty]
                                                         [reference-lower-left reference-lower-right] :lower
                                                         reference-lower-line :line}]
   (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
@@ -120,12 +121,15 @@
           [upper-left upper-right] (map #(v/add % dist-vector) [reference-lower-left reference-lower-right])
           [lower-left lower-right] (map #(v/add % band-size-vector) [upper-left upper-right])
           [line opposite-line] [opposite-line line]]
-      {:type :heraldry.ordinary.type/fess
-       :upper [upper-left upper-right]
-       :lower [lower-left lower-right]
-       :flip-cottise? true
-       :band-size band-size
-       :line-length line-length
-       :percentage-base percentage-base
-       :line line
-       :opposite-line opposite-line})))
+      (post-process/properties
+       {:type :heraldry.ordinary.type/fess
+        :upper [upper-left upper-right]
+        :lower [lower-left lower-right]
+        :flip-cottise? true
+        :band-size band-size
+        :line-length line-length
+        :percentage-base percentage-base
+        :line line
+        :opposite-line opposite-line
+        :humetty humetty}
+       context))))
