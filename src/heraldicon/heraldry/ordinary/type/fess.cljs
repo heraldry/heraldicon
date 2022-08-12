@@ -88,6 +88,8 @@
         line-length (- (:x upper-right) (:x upper-left))
         humetty (-> (interface/get-sanitized-data (c/++ context :humetty))
                     (update :distance (partial math/percent-of (:width parent-environment))))
+        voided (-> (interface/get-sanitized-data (c/++ context :voided))
+                   (update :thickness (partial math/percent-of band-size)))
         line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
                                        line-length percentage-base)
         opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
@@ -101,6 +103,7 @@
       :percentage-base percentage-base
       :line line
       :opposite-line opposite-line
+      :voided voided
       :humetty humetty})))
 
 (defmethod interface/environment ordinary-type [context {[upper-left upper-right] :upper
@@ -137,12 +140,12 @@
                                                           :reversed? true
                                                           :context context)]
     (post-process/shape
-     {:shape (path/make-path
-              ["M" (v/add line-upper-from line-upper-start)
-               (path/stitch line-upper)
-               "L" (v/add line-lower-to line-lower-start)
-               (path/stitch line-lower)
-               "z"])
+     {:shape [(path/make-path
+               ["M" (v/add line-upper-from line-upper-start)
+                (path/stitch line-upper)
+                "L" (v/add line-lower-to line-lower-start)
+                (path/stitch line-lower)
+                "z"])]
       :lines [{:line line
                :line-from line-upper-from
                :line-data [line-upper-data]}

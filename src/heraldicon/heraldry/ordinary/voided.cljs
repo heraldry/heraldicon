@@ -38,3 +38,10 @@
             inner-shape (environment/shrink-shape environment-shape thickness corner)]
         (update shape :paths conj inner-shape))
       shape)))
+
+(defn void-2 [shape parent-shape {:keys [voided? thickness corner]}]
+  (if voided?
+    (let [exact-shape (environment/intersect-shapes (first shape) parent-shape)
+          inner-shape (environment/shrink-shape exact-shape thickness corner)]
+      (conj shape inner-shape))
+    shape))
