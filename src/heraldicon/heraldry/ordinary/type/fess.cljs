@@ -85,15 +85,7 @@
         [lower-left lower-right] (v/intersections-with-shape
                                   (v/Vector. (:x left) lower) (v/Vector. (:x right) lower)
                                   parent-shape :default? true)
-        line-length (- (:x upper-right) (:x upper-left))
-        humetty (-> (interface/get-sanitized-data (c/++ context :humetty))
-                    (update :distance (partial math/percent-of (:width parent-environment))))
-        voided (-> (interface/get-sanitized-data (c/++ context :voided))
-                   (update :thickness (partial math/percent-of band-size)))
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)
-        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                line-length percentage-base)]
+        line-length (- (:x upper-right) (:x upper-left))]
     (post-process/properties
      {:type ordinary-type
       :upper [upper-left upper-right]
@@ -101,10 +93,9 @@
       :band-size band-size
       :line-length line-length
       :percentage-base percentage-base
-      :line line
-      :opposite-line opposite-line
-      :voided voided
-      :humetty humetty})))
+      :humetty-percentage-base (:width parent-environment)
+      :voided-percentage-base band-size}
+     context)))
 
 (defmethod interface/environment ordinary-type [context {[upper-left upper-right] :upper
                                                          [lower-left lower-right] :lower}]
