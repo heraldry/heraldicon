@@ -8,7 +8,6 @@
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.post-process :as post-process]
-   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.heraldry.shared.chevron :as chevron]
    [heraldicon.interface :as interface]
@@ -390,9 +389,6 @@
                :line-data [line-lower-right-data line-lower-left-data]}]}
      context
      properties)))
-
-(defmethod ordinary.interface/render-ordinary ordinary-type [context]
-  (ordinary.render/render context))
 
 (defmethod cottising/cottise-properties ordinary-type [context
                                                        {:keys [line-length percentage-base

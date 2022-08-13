@@ -100,8 +100,6 @@
   (fn [cottise? _]
     cottise?))
 
-(declare render)
-
 (defn- set-cottise-part [context part]
   (let [cottising-path (-> context c/-- :path)
         cottise-parts (into {}
@@ -120,8 +118,11 @@
           (keep (fn [part]
                   (let [part-context (set-cottise-part context part)]
                     (when (interface/get-properties part-context)
-                      [render part-context]))))
+                      [interface/render-component part-context]))))
           (range num-cottise-parts))))
+
+(defmethod interface/render-component :heraldry/cottise [context]
+  ((get-method interface/render-component :heraldry/ordinary) context))
 
 (defn- cottising [context]
   (let [cottising-context (c/++ context :cottising)
@@ -142,8 +143,8 @@
                 cottise-opposite-2?)
        [render-cottise (c/++ cottising-context :cottise-opposite-2)])]))
 
-(defn render [{:keys [svg-export?]
-               :as context}]
+(defmethod interface/render-component :heraldry/ordinary [{:keys [svg-export?]
+                                                           :as context}]
   (let [clip-path-id (uid/generate "clip")
         {:keys [transform]} (interface/get-properties context)]
     [:g

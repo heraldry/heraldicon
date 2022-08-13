@@ -8,7 +8,6 @@
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.post-process :as post-process]
-   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
@@ -255,9 +254,6 @@
                            line-edge-bottom-right-second-data]}]}
      context
      properties)))
-
-(defmethod ordinary.interface/render-ordinary ordinary-type [context]
-  (ordinary.render/render context))
 
 (defn- cottise-part-properties [variant [base-left base-point base-right] distance band-size reference-line]
   (let [joint-angle 90

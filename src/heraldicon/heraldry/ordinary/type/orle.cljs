@@ -6,7 +6,6 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.post-process :as post-process]
-   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
    [heraldicon.options :as options]
@@ -104,9 +103,6 @@
                       (not= (:type line) :straight) (line/modify-path line parent-environment))]
     {:shape [outer-shape inner-shape]
      :lines [{:edge-paths [outer-shape inner-shape]}]}))
-
-(defmethod ordinary.interface/render-ordinary ordinary-type [context]
-  (ordinary.render/render context))
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
   nil)
