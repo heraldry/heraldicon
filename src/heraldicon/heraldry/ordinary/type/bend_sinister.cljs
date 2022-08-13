@@ -5,7 +5,6 @@
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
-   [heraldicon.heraldry.ordinary.render :as ordinary.render]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
@@ -145,9 +144,6 @@
 
 (defmethod interface/exact-shape ordinary-type [context properties]
   ((get-method interface/exact-shape :heraldry.ordinary.type/bend) context properties))
-
-(defmethod ordinary.interface/render-ordinary ordinary-type [context]
-  (ordinary.render/render context))
 
 (defmethod cottising/cottise-properties ordinary-type [context properties]
   ((get-method cottising/cottise-properties :heraldry.ordinary.type/bend) context properties))

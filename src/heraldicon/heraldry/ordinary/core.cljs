@@ -3,13 +3,9 @@
    [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
-   [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]))
-
-(defmethod interface/render-component :heraldry/ordinary [context]
-  (ordinary.interface/render-ordinary context))
 
 (defmethod interface/blazon-component :heraldry/ordinary [context]
   (let [ordinary-type (interface/get-sanitized-data (c/++ context :type))
