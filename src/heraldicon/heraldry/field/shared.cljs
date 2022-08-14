@@ -5,6 +5,7 @@
    [heraldicon.frontend.counterchange :as counterchange]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.interface :as field.interface]
+   [heraldicon.heraldry.field.render :as render]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.svg.path :as path]
@@ -98,39 +99,43 @@
                       transform
                       component-of-counterchanged-field?
                       previous-tincture-mapping] :as context}]
-  (let [field-context (-> (effective-field-context context)
-                          (dissoc :component-of-counterchanged-field?
-                                  :previous-tincture-map
-                                  :previous-counterchanged-paths))
-        inherit-environment? (interface/get-sanitized-data
-                              (c/++ field-context :inherit-environment?))
-        counterchanged? (= (interface/get-raw-data (c/++ field-context :type))
-                           :heraldry.field.type/counterchanged)
-        field-context (cond-> field-context
-                        (or inherit-environment?
-                            counterchanged?) (assoc :environment
-                                                    (-> environment :meta :parent-environment)))]
-    (if counterchanged?
-      (render-counterchanged-field field-context)
-      (let [selected? false
-            field-context (cond-> field-context
-                            component-of-counterchanged-field? (assoc :tincture-mapping previous-tincture-mapping))]
-        [:<>
-         [:g {:style (when-not (or svg-export?
-                                   charge-preview?)
-                       {:pointer-events "visiblePainted"
-                        :cursor "pointer"})
-              :transform transform}
-          [field.interface/render-field field-context]
-          [render-components
-           (assoc field-context
-                  :parent-field-path path
-                  :parent-field-environment environment)]]
-         (when selected?
-           [:path {:d (s/join "" (-> environment :shape :paths))
-                   :fill-rule "evenodd"
-                   :style {:opacity 0.25}
-                   :fill "url(#selected)"}])]))))
+  (if (-> (interface/get-sanitized-data (c/++ context :type))
+          name keyword #{:plain
+                         :per-fess})
+    [render/render context render-components]
+    (let [field-context (-> (effective-field-context context)
+                            (dissoc :component-of-counterchanged-field?
+                                    :previous-tincture-map
+                                    :previous-counterchanged-paths))
+          inherit-environment? (interface/get-sanitized-data
+                                (c/++ field-context :inherit-environment?))
+          counterchanged? (= (interface/get-raw-data (c/++ field-context :type))
+                             :heraldry.field.type/counterchanged)
+          field-context (cond-> field-context
+                          (or inherit-environment?
+                              counterchanged?) (assoc :environment
+                                                      (-> environment :meta :parent-environment)))]
+      (if counterchanged?
+        (render-counterchanged-field field-context)
+        (let [selected? false
+              field-context (cond-> field-context
+                              component-of-counterchanged-field? (assoc :tincture-mapping previous-tincture-mapping))]
+          [:<>
+           [:g {:style (when-not (or svg-export?
+                                     charge-preview?)
+                         {:pointer-events "visiblePainted"
+                          :cursor "pointer"})
+                :transform transform}
+            [field.interface/render-field field-context]
+            [render-components
+             (assoc field-context
+                    :parent-field-path path
+                    :parent-field-environment environment)]]
+           (when selected?
+             [:path {:d (s/join "" (-> environment :shape :paths))
+                     :fill-rule "evenodd"
+                     :style {:opacity 0.25}
+                     :fill "url(#selected)"}])])))))
 
 (defn- make-subfields* [{:keys [svg-export?] :as context} paths parts mask-overlaps parent-environment]
   (into [:<>]

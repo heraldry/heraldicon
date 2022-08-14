@@ -2,36 +2,13 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.shared :as field.shared]
-   [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
+   [heraldicon.heraldry.render :as render]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.outline :as outline]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
-
-(defn- shape-path [shape]
-  (let [shape-path (:shape shape)]
-    (cond->> shape-path
-      (vector? shape-path) (apply str))))
-
-(defn- shape-mask [context]
-  (let [render-shape (interface/get-render-shape context)]
-    [:path {:d (shape-path render-shape)
-            :clip-rule "evenodd"
-            :fill-rule "evenodd"
-            :fill "#fff"}]))
-
-(defn- render-line [context {:keys [line line-data line-from edge-paths]}]
-  (let [outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))]
-    (if edge-paths
-      (when outline?
-        (into [:g (outline/style context)]
-              (map (fn [edge-path]
-                     [:path {:d edge-path}]))
-              edge-paths))
-      [line/render line line-data line-from outline? context])))
 
 (defn- fimbriation [context]
   ;; TODO: this should move elsewhere and be merged with charge.other
@@ -43,7 +20,7 @@
                              (-> line-fimbriation :mode (or :none) (not= :none)))
                       line-fimbriation
                       fimbriation)
-        fimbriation-shape [:path {:d (shape-path render-shape)
+        fimbriation-shape [:path {:d (render/shape-path render-shape)
                                   :clip-rule "evenodd"
                                   :fill-rule "evenodd"}]
         outline? (or (interface/render-option :outline? context)
@@ -84,14 +61,6 @@
                :tincture-1
                (tincture/pick context)) context
            :corner (:corner fimbriation)]]))]))
-
-(defn- edges [context]
-  (let [{:keys [lines fimbriation]} (interface/get-render-shape context)]
-    (when (= (or (:mode fimbriation) :none) :none)
-      (into [:g]
-            (map (fn [line]
-                   [render-line context line]))
-            lines))))
 
 (rf/reg-sub ::cottise?
   (fn [[_ {:keys [path]}] _]
@@ -152,7 +121,7 @@
       [(if svg-export?
          :mask
          :clipPath) {:id clip-path-id}
-       [shape-mask context]]]
+       [render/shape-mask context]]]
      [fimbriation context]
      [:g {(if svg-export?
             :mask
@@ -160,5 +129,5 @@
       [:g (when transform
             {:transform transform})
        [field.shared/render (c/++ context :field)]]]
-     [edges context]
+     [render/ordinary-edges context]
      [cottising context]]))

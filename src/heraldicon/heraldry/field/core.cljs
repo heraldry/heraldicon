@@ -160,9 +160,6 @@
       blazon
       (string/str-tr "(" blazon ")"))))
 
-(defmethod interface/properties :heraldry/field [_context]
-  {:type :heraldry/field})
-
 (defmethod interface/environment :heraldry/field [context _properties]
   (interface/get-parent-environment context))
 
