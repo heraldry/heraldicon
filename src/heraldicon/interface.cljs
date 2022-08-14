@@ -173,13 +173,29 @@
 
 (defmethod environment nil [_context _properties])
 
+(defmulti subfield-environments (fn [_context properties]
+                                  (:type properties)))
+
+(defmethod subfield-environments nil [_context _properties])
+(defmethod subfield-environments :default [context _properties]
+  (log/warn :not-implemented 'subfield-environments context))
+
+(defn- subfield-context [context]
+  (let [subfield-index (-> context :path last)
+        subfield? (and (isa? (effective-component-type context) :heraldry/field)
+                       (int? subfield-index))]
+    (when subfield?
+      {:parent-context (c/-- context 2)
+       :index subfield-index})))
+
 (rf/reg-sub-raw ::environment
   (fn [_app-db [_ context]]
     (reaction
-     (environment context (get-properties context)))))
-
-(defn get-environment [context]
-  @(rf/subscribe [::environment context]))
+     (if-let [subfield (subfield-context context)]
+       (-> (subfield-environments (:parent-context subfield) (get-properties (:parent-context subfield)))
+           :subfields
+           (get (:index subfield)))
+       (environment context (get-properties context))))))
 
 (defn get-parent-environment [context]
   (if (cottise-context? context)
@@ -191,10 +207,21 @@
 
 (defmethod render-shape nil [_context _properties])
 
+(defmulti subfield-render-shapes (fn [_context properties]
+                                   (:type properties)))
+
+(defmethod subfield-render-shapes nil [_context _properties])
+(defmethod subfield-render-shapes :default [context _properties]
+  (log/warn :not-implemented 'subfield-render-shapes context))
+
 (rf/reg-sub-raw ::render-shape
   (fn [_app-db [_ context]]
     (reaction
-     (render-shape context (get-properties context)))))
+     (if-let [subfield (subfield-context context)]
+       (-> (subfield-render-shapes (:parent-context subfield) (get-properties (:parent-context subfield)))
+           :subfields
+           (get (:index subfield)))
+       (render-shape context (get-properties context))))))
 
 (defn get-render-shape [context]
   @(rf/subscribe [::render-shape context]))
@@ -228,4 +255,14 @@
 (rf/reg-sub-raw ::exact-shape
   (fn [_app-db [_ context]]
     (reaction
-     (exact-shape context (get-properties context)))))
+     (if (subfield-context context)
+       (fallback-exact-shape context)
+       (exact-shape context (get-properties context))))))
+
+(rf/reg-sub-raw ::field-edges
+  (fn [_app-db [_ context]]
+    (reaction
+     (:lines (subfield-render-shapes context (get-properties context))))))
+
+(defn get-field-edges [context]
+  @(rf/subscribe [::field-edges context]))

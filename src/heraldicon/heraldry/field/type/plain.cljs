@@ -43,6 +43,9 @@
                                                          :ui/label :string.option/pattern-offset-y
                                                          :ui/step 0.01}))))
 
-(defmethod field.interface/render-field field-type
-  [context]
-  (tincture/tinctured-field context))
+(defmethod interface/properties field-type [_context]
+  {:type field-type})
+
+(defmethod interface/subfield-environments field-type [_context _properties])
+
+(defmethod interface/subfield-render-shapes field-type [_context _properties])
