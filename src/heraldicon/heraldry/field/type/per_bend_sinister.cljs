@@ -2,14 +2,10 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
-   [heraldicon.math.vector :as v]
-   [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.options :as options]))
 
 (def field-type :heraldry.field.type/per-bend-sinister)
 
@@ -111,86 +107,11 @@
                                                     :ui/step 0.1}))
      :line line-style}))
 
-(defmethod field.interface/render-field field-type
-  [{:keys [environment] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
-        orientation (interface/get-sanitized-data (c/++ context :orientation))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
+(defmethod interface/properties field-type [context]
+  ((get-method interface/properties :heraldry.field.type/per-bend) context))
 
-        points (:points environment)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
-        {anchor-point :real-anchor
-         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
-                                               environment
-                                               anchor
-                                               orientation
-                                               0
-                                               nil)
-        direction (v/sub orientation-point anchor-point)
-        direction (v/normal (v/Vector. (-> direction :x Math/abs)
-                                       (-> direction :y Math/abs -)))
-        initial-diagonal-start (-> direction
-                                   (v/mul -1000)
-                                   (v/add anchor-point))
-        initial-diagonal-end (-> direction
-                                 (v/mul 1000)
-                                 (v/add anchor-point))
-        [real-diagonal-start
-         real-diagonal-end] (v/environment-intersections
-                             initial-diagonal-start
-                             initial-diagonal-end
-                             environment)
-        effective-width (or (:width line) 1)
-        effective-width (cond-> effective-width
-                          (:spacing line) (+ (* (:spacing line) effective-width)))
-        required-extra-length (-> 30
-                                  (/ effective-width)
-                                  Math/ceil
-                                  inc
-                                  (* effective-width))
-        extra-dir (v/mul direction required-extra-length)
-        diagonal-start (v/sub real-diagonal-start extra-dir)
-        diagonal-end (v/add real-diagonal-end extra-dir)
-        {line-one :line
-         line-one-start :line-start
-         line-one-end :line-end
-         :as line-one-data} (line/create line
-                                         diagonal-start diagonal-end
-                                         :context context
-                                         :environment environment)
-        parts [[["M" (v/add diagonal-start
-                            line-one-start)
-                 (path/stitch line-one)
-                 (infinity/path :counter-clockwise
-                                [:top :left]
-                                [(v/add diagonal-end
-                                        line-one-end)
-                                 (v/add diagonal-start
-                                        line-one-start)])
-                 "z"]
-                [real-diagonal-start
-                 top-left
-                 real-diagonal-end]]
+(defmethod interface/subfield-environments field-type [context properties]
+  ((get-method interface/subfield-environments :heraldry.field.type/per-bend) context properties))
 
-               [["M" (v/add diagonal-start
-                            line-one-start)
-                 (path/stitch line-one)
-                 (infinity/path :clockwise
-                                [:top :left]
-                                [(v/add diagonal-end
-                                        line-one-end)
-                                 (v/add diagonal-start
-                                        line-one-start)])
-                 "z"]
-                [real-diagonal-start
-                 bottom-right
-                 real-diagonal-end]]]]
-    [:<>
-     [shared/make-subfields
-      context parts
-      [:all nil]
-      environment]
-     [line/render line [line-one-data] diagonal-start outline? context]]))
+(defmethod interface/subfield-render-shapes field-type [context properties]
+  ((get-method interface/subfield-render-shapes :heraldry.field.type/per-bend) context properties))
