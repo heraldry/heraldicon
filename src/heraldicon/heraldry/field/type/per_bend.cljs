@@ -184,27 +184,23 @@
                            ["M" (v/add line-edge-from line-edge-start)
                             (path/stitch line-edge)
                             (if sinister?
-                              (infinity/path :counter-clockwise
-                                             [:top :bottom]
-                                             [line-edge-to
-                                              (v/add line-edge-from line-edge-start)])
-                              (infinity/path :counter-clockwise
-                                             [:bottom :top]
-                                             [line-edge-to
-                                              (v/add line-edge-from line-edge-start)]))
+                              (infinity/counter-clockwise
+                               line-edge-to
+                               (v/add line-edge-from line-edge-start))
+                              (infinity/counter-clockwise
+                               line-edge-to
+                               (v/add line-edge-from line-edge-start)))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-from line-edge-start)
                             (path/stitch line-edge)
                             (if sinister?
-                              (infinity/path :clockwise
-                                             [:top :bottom]
-                                             [line-edge-to
-                                              (v/add line-edge-from line-edge-start)])
-                              (infinity/path :clockwise
-                                             [:bottom :top]
-                                             [line-edge-to
-                                              (v/add line-edge-from line-edge-start)]))
+                              (infinity/clockwise
+                               line-edge-to
+                               (v/add line-edge-from line-edge-start))
+                              (infinity/clockwise
+                               line-edge-to
+                               (v/add line-edge-from line-edge-start)))
                             "z"])]}]
      :lines [{:line line
               :line-from line-edge-from

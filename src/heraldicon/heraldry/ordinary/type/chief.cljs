@@ -87,9 +87,7 @@
      {:shape [(path/make-path
                ["M" (v/add line-lower-to line-lower-start)
                 (path/stitch line-lower)
-                (infinity/path :clockwise
-                               [:left :right]
-                               [line-lower-from line-lower-to])
+                (infinity/clockwise line-lower-from (v/add line-lower-to line-lower-start))
                 "z"])]
       :lines [{:line line
                :line-from line-lower-to
