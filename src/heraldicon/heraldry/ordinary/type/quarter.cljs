@@ -156,14 +156,13 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [variant line opposite-line]
+(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [first-point anchor-point second-point] :edge
                                                           :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
         bounding-box (:bounding-box meta)
         {line-one :line
          line-one-start :line-start
-         line-one-from :adjusted-from
          line-one-to :adjusted-to
          :as line-one-data} (line/create-with-extension line
                                                         anchor-point first-point
@@ -183,13 +182,7 @@
                ["M" (v/add line-one-to line-one-start)
                 (path/stitch line-one)
                 (path/stitch line-two)
-                (infinity/path :clockwise
-                               (case variant
-                                 :dexter-chief [:left :top]
-                                 :sinister-chief [:top :right]
-                                 :dexter-base [:bottom :left]
-                                 :sinister-base [:right :bottom])
-                               [line-two-to line-one-from])
+                (infinity/clockwise line-two-to line-one-to)
                 "z"])]
       :lines [{:line line
                :line-from line-one-to

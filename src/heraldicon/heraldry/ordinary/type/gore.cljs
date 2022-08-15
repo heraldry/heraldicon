@@ -145,7 +145,7 @@
          (dissoc :context)
          (merge {:bounding-box (bb/from-points bounding-box-points)})))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [sinister? line opposite-line]
+(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [left point right] :edge
                                                           :as properties}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
@@ -168,15 +168,10 @@
                                                           :context context)]
     (post-process/shape
      {:shape [(path/make-path
-               ["M" (v/add line-left-to
-                           line-left-start)
+               ["M" (v/add line-left-to line-left-start)
                 (path/stitch line-left)
                 (path/stitch line-right)
-                (infinity/path :clockwise
-                               (if sinister?
-                                 [:right :bottom]
-                                 [:bottom :left])
-                               [line-right-to line-left-to])
+                (infinity/clockwise line-right-to line-left-to)
                 "z"])]
       :lines [{:line line
                :line-from line-left-to

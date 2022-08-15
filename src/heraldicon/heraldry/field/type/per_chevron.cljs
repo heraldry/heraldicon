@@ -287,11 +287,6 @@
                                                                  [edge-left edge-corner edge-right] :edge}]
   (let [{:keys [meta]} (interface/get-parent-environment context)
         bounding-box (:bounding-box meta)
-        infinity-points (cond
-                          (<= 45 chevron-angle 135) [:right :left]
-                          (<= 135 chevron-angle 225) [:bottom :top]
-                          (<= 225 chevron-angle 315) [:left :right]
-                          :else [:top :bottom])
         {line-edge-left :line
          line-edge-left-start :line-start
          line-edge-left-to :adjusted-to
@@ -313,19 +308,17 @@
                            ["M" (v/add line-edge-left-to line-edge-left-start)
                             (path/stitch line-edge-left)
                             (path/stitch line-edge-right)
-                            (infinity/path :counter-clockwise
-                                           infinity-points
-                                           [line-edge-right-to
-                                            (v/add line-edge-left-to line-edge-left-start)])
+                            (infinity/counter-clockwise
+                             line-edge-right-to
+                             (v/add line-edge-left-to line-edge-left-start))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-left-to line-edge-left-start)
                             (path/stitch line-edge-left)
                             (path/stitch line-edge-right)
-                            (infinity/path :clockwise
-                                           infinity-points
-                                           [line-edge-right-to
-                                            (v/add line-edge-left-to line-edge-left-start)])
+                            (infinity/clockwise
+                             line-edge-right-to
+                             (v/add line-edge-left-to line-edge-left-start))
                             "z"])]}]
      :lines [{:line line
               :line-from line-edge-left-to

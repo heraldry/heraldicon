@@ -92,18 +92,16 @@
     {:subfields [{:shape [(path/make-path
                            ["M" (v/add line-edge-from line-edge-start)
                             (path/stitch line-edge)
-                            (infinity/path :clockwise
-                                           [:bottom :top]
-                                           [line-edge-to
-                                            (v/add line-edge-from line-edge-start)])
+                            (infinity/clockwise
+                             line-edge-to
+                             (v/add line-edge-from line-edge-start))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-from line-edge-start)
                             (path/stitch line-edge)
-                            (infinity/path :counter-clockwise
-                                           [:bottom :top]
-                                           [line-edge-to
-                                            (v/add line-edge-from line-edge-start)])
+                            (infinity/counter-clockwise
+                             line-edge-to
+                             (v/add line-edge-from line-edge-start))
                             "z"])]}]
      :lines [{:line line
               :line-from line-edge-from
