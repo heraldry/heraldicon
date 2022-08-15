@@ -207,7 +207,7 @@
                                        (path/rotate (- angle))))))
         lower-left (v/add upper-left (v/mul width-offset 2))]
     (post-process/properties
-     {:type ordinary-type
+     {:type real-ordinary-type
       :upper [upper-left upper-right]
       :lower [lower-left lower-right]
       :angle angle
