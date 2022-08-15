@@ -102,7 +102,9 @@
   (if (-> (interface/get-sanitized-data (c/++ context :type))
           name keyword #{:plain
                          :per-fess
-                         :per-pale})
+                         :per-pale
+                         :per-bend
+                         :per-bend-sinister})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
                             (dissoc :component-of-counterchanged-field?
