@@ -289,6 +289,11 @@
         angle-rad (Math/atan2 (:y d) (:x d))]
     (angle/to-deg angle-rad)))
 
+(defn arc-angle-between-vectors ^js/Number [^Vector v1 ^Vector v2]
+  (let [a1 (angle-to-point zero v1)
+        a2 (angle-to-point zero v2)]
+    (angle/normalize (- a2 a1))))
+
 (defn angle-between-vectors ^js/Number [^Vector v1 ^Vector v2]
   (let [a1 (angle-to-point zero v1)
         a2 (angle-to-point zero v2)
