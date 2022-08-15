@@ -8,20 +8,29 @@
 
 (declare render)
 
+(defn- effective-field-context [context]
+  (let [field-type (interface/get-raw-data (c/++ context :type))]
+    (if (= field-type :heraldry.field.type/ref)
+      (let [index (interface/get-raw-data (c/++ context :index))
+            source-context (-> context c/-- (c/++ index))]
+        (assoc-in source-context [:path-map (:path source-context)] (:path context)))
+      context)))
+
 (defn- render-subfield [{:keys [svg-export?]
                          :as context} render-components]
-  (let [clip-path-id (uid/generate "clip")]
+  (let [clip-path-id (uid/generate "clip")
+        subfield-context (effective-field-context context)]
     [:g
      [:defs
       [(if svg-export?
          :mask
          :clipPath) {:id clip-path-id}
        ;; TODO: edge overlap strategy
-       [render/shape-mask context]]]
+       [render/shape-mask subfield-context]]]
      [:g {(if svg-export?
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
-      [render context render-components]]]))
+      [render subfield-context render-components]]]))
 
 (defn- render-subfields [context render-components]
   (let [{:keys [num-subfields]} (interface/get-properties context)]

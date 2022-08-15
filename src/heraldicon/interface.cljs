@@ -155,6 +155,14 @@
             (log/warn :not-implemented "parent" context)
             context)))
 
+(defn- resolve-context [{:keys [path-map path]
+                         :as context}]
+  (if-let [real-path (get path-map path)]
+    (-> context
+        (c/<< :path real-path)
+        (update :path-map dissoc path))
+    context))
+
 (defmulti properties effective-component-type)
 
 (defmethod properties nil [context]
@@ -191,11 +199,12 @@
 (rf/reg-sub-raw ::environment
   (fn [_app-db [_ context]]
     (reaction
-     (if-let [subfield (subfield-context context)]
-       (-> (subfield-environments (:parent-context subfield) (get-properties (:parent-context subfield)))
-           :subfields
-           (get (:index subfield)))
-       (environment context (get-properties context))))))
+     (let [context (resolve-context context)]
+       (if-let [subfield (subfield-context context)]
+         (-> (subfield-environments (:parent-context subfield) (get-properties (:parent-context subfield)))
+             :subfields
+             (get (:index subfield)))
+         (environment context (get-properties context)))))))
 
 (defn get-parent-environment [context]
   (if (cottise-context? context)
@@ -217,11 +226,12 @@
 (rf/reg-sub-raw ::render-shape
   (fn [_app-db [_ context]]
     (reaction
-     (if-let [subfield (subfield-context context)]
-       (-> (subfield-render-shapes (:parent-context subfield) (get-properties (:parent-context subfield)))
-           :subfields
-           (get (:index subfield)))
-       (render-shape context (get-properties context))))))
+     (let [context (resolve-context context)]
+       (if-let [subfield (subfield-context context)]
+         (-> (subfield-render-shapes (:parent-context subfield) (get-properties (:parent-context subfield)))
+             :subfields
+             (get (:index subfield)))
+         (render-shape context (get-properties context)))))))
 
 (defn get-render-shape [context]
   @(rf/subscribe [::render-shape context]))
@@ -255,9 +265,10 @@
 (rf/reg-sub-raw ::exact-shape
   (fn [_app-db [_ context]]
     (reaction
-     (if (subfield-context context)
-       (fallback-exact-shape context)
-       (exact-shape context (get-properties context))))))
+     (let [context (resolve-context context)]
+       (if (subfield-context context)
+         (fallback-exact-shape context)
+         (exact-shape context (get-properties context)))))))
 
 (rf/reg-sub-raw ::field-edges
   (fn [_app-db [_ context]]

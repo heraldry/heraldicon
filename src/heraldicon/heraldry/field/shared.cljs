@@ -105,7 +105,8 @@
                          :per-pale
                          :per-bend
                          :per-bend-sinister
-                         :per-chevron})
+                         :per-chevron
+                         :per-saltire})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
                             (dissoc :component-of-counterchanged-field?
