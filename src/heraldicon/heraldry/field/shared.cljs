@@ -101,7 +101,8 @@
                       previous-tincture-mapping] :as context}]
   (if (-> (interface/get-sanitized-data (c/++ context :type))
           name keyword #{:plain
-                         :per-fess})
+                         :per-fess
+                         :per-pale})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
                             (dissoc :component-of-counterchanged-field?
