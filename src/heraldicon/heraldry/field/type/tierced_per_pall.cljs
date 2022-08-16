@@ -1,16 +1,17 @@
 (ns heraldicon.heraldry.field.type.tierced-per-pall
   (:require
    [heraldicon.context :as c]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.shared.chevron :as chevron]
    [heraldicon.interface :as interface]
    [heraldicon.math.angle :as angle]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.render.outline :as outline]
    [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
@@ -220,16 +221,12 @@
      :opposite-line opposite-line-style
      :extra-line extra-line-style}))
 
-(defmethod field.interface/render-field field-type
-  [{:keys [environment] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        extra-line (interface/get-sanitized-data (c/++ context :extra-line))
+(defmethod interface/properties field-type [context]
+  (let [{:keys [width height]
+         :as parent-environment} (interface/get-parent-environment context)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
-        orientation (interface/get-sanitized-data (c/++ context :orientation))
         origin (interface/get-sanitized-data (c/++ context :origin))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
+        orientation (interface/get-sanitized-data (c/++ context :orientation))
         raw-origin (interface/get-raw-data (c/++ context :origin))
         origin (cond-> origin
                  (-> origin
@@ -241,11 +238,9 @@
                                                       (:offset-x anchor))
                                         :offset-y (or (:offset-y raw-origin)
                                                       (:offset-y anchor))))
-        points (:points environment)
-        unadjusted-anchor-point (position/calculate anchor environment)
         {direction-anchor-point :real-anchor
          origin-point :real-orientation} (position/calculate-anchor-and-orientation
-                                          environment
+                                          parent-environment
                                           anchor
                                           origin
                                           0
@@ -255,134 +250,119 @@
                                       origin-point))
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
-                                               environment
+                                               parent-environment
                                                anchor
                                                orientation
                                                0
                                                pall-angle)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
-        [mirrored-anchor mirrored-orientation] [(chevron/mirror-point pall-angle unadjusted-anchor-point anchor-point)
-                                                (chevron/mirror-point pall-angle unadjusted-anchor-point orientation-point)]
-        anchor-point (v/line-intersection anchor-point orientation-point
-                                          mirrored-anchor mirrored-orientation)
-        [relative-right relative-left] (chevron/arm-diagonals pall-angle anchor-point orientation-point)
-        diagonal-left (v/add anchor-point relative-left)
-        diagonal-right (v/add anchor-point relative-right)
-        direction-three (v/add anchor-point (v/mul (v/add relative-left relative-right) -1))
-        intersection-left (v/find-first-intersection-of-ray anchor-point diagonal-left environment)
-        intersection-right (v/find-first-intersection-of-ray anchor-point diagonal-right environment)
-        intersection-three (v/find-first-intersection-of-ray anchor-point direction-three environment)
-        end-left (-> intersection-left
-                     (v/sub anchor-point)
-                     v/abs)
-        end-right (-> intersection-right
-                      (v/sub anchor-point)
-                      v/abs)
-        end (max end-left end-right)
-        {line-left :line
-         line-left-start :line-start} (line/create line
-                                                   anchor-point diagonal-left
-                                                   :reversed? true
-                                                   :real-start 0
-                                                   :real-end end
-                                                   :context context
-                                                   :environment environment)
-        {line-right :line
-         line-right-end :line-end} (line/create opposite-line
-                                                anchor-point diagonal-right
-                                                :flipped? true
-                                                :mirrored? true
-                                                :real-start 0
-                                                :real-end end
-                                                :context context
-                                                :environment environment)
-        {line-three :line
-         line-three-start :line-start} (line/create extra-line
-                                                    anchor-point intersection-three
-                                                    :flipped? true
-                                                    :mirrored? true
-                                                    :context context
-                                                    :environment environment)
-        {line-three-reversed :line
-         line-three-reversed-start :line-start} (line/create extra-line
-                                                             anchor-point intersection-three
-                                                             :reversed? true
-                                                             :context context
-                                                             :environment environment)
-        fork-infinity-points (cond
-                               (<= 45 pall-angle 135) [:left :right]
-                               (<= 135 pall-angle 225) [:left :left]
-                               (<= 225 pall-angle 315) [:top :top]
-                               :else [:right :right])
-        side-infinity-points (cond
-                               (<= 45 pall-angle 135) [:bottom :top]
-                               (<= 135 pall-angle 225) [:left :right]
-                               (<= 225 pall-angle 315) [:top :bottom]
-                               :else [:right :left])
-        parts [[["M" (v/add diagonal-left
-                            line-left-start)
-                 (path/stitch line-left)
-                 "L" anchor-point
-                 (path/stitch line-right)
-                 (infinity/path :counter-clockwise
-                                fork-infinity-points
-                                [(v/add diagonal-right
-                                        line-right-end)
-                                 (v/add diagonal-left
-                                        line-left-start)])
-                 "z"]
-                [top-left
-                 bottom-right]]
+        ;; left/right are based on the chevron view
+        [relative-left relative-right] (chevron/arm-diagonals pall-angle anchor-point orientation-point)
+        relative-bottom (v/mul (v/add relative-left relative-right) -1)
+        parent-shape (interface/get-exact-parent-shape context)
+        edge-bottom-end (v/last-intersection-with-shape anchor-point relative-bottom
+                                                        parent-shape :default? true :relative? true)
+        edge-left-end (v/last-intersection-with-shape anchor-point relative-left
+                                                      parent-shape :default? true :relative? true)
+        edge-right-end (v/last-intersection-with-shape anchor-point relative-right
+                                                       parent-shape :default? true :relative? true)
+        line-length (->> (map (fn [v]
+                                (v/abs (v/sub v anchor-point)))
+                              [edge-bottom-end edge-left-end edge-right-end])
+                         (apply max))]
+    (post-process/properties
+     {:type field-type
+      :edge-start anchor-point
+      :edge-bottom-end edge-bottom-end
+      :edge-left-end edge-left-end
+      :edge-right-end edge-right-end
+      :line-length line-length
+      :percentage-base (min width height)
+      :num-subfields 3}
+     context)))
 
-               [["M" (v/add intersection-three
-                            line-three-reversed-start)
-                 (path/stitch line-three-reversed)
-                 "L" anchor-point
-                 (path/stitch line-right)
-                 (infinity/path :clockwise
-                                side-infinity-points
-                                [(v/add diagonal-right
-                                        line-right-end)
-                                 (v/add direction-three
-                                        line-three-reversed-start)])
-                 "z"]
-                [top-left
-                 bottom-right]]
+(defmethod interface/subfield-environments field-type [context {:keys [edge-start edge-bottom-end
+                                                                       edge-left-end edge-right-end]}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)]
+    ;; TODO: include outer environment points, based on rotation
+    {:subfields [(environment/create
+                  {:paths nil}
+                  (-> meta
+                      (dissoc :context)
+                      (assoc :bounding-box (bb/from-points [edge-start edge-left-end edge-right-end]))))
+                 (environment/create
+                  {:paths nil}
+                  (-> meta
+                      (dissoc :context)
+                      (assoc :bounding-box (bb/from-points [edge-start edge-left-end edge-bottom-end]))))
+                 (environment/create
+                  {:paths nil}
+                  (-> meta
+                      (dissoc :context)
+                      (assoc :bounding-box (bb/from-points [edge-start edge-right-end edge-bottom-end]))))]}))
 
-               [["M" (v/add diagonal-left
-                            line-left-start)
-                 (path/stitch line-left)
-                 "L" anchor-point
-                 (path/stitch line-three)
-                 (infinity/path :clockwise
-                                (reverse side-infinity-points)
-                                [(v/add direction-three
-                                        line-three-start)
-                                 (v/add diagonal-left
-                                        line-left-start)])
-                 "z"]
-                [top-left
-                 bottom-right]]]]
-    [:<>
-     [shared/make-subfields
-      context parts
-      [:all
-       [(path/make-path
-         ["M" (v/add direction-three
-                     line-three-reversed-start)
-          (path/stitch line-three-reversed)])]
-       nil]
-      environment]
-     (when outline?
-       [:g (outline/style context)
-        [:path {:d (path/make-path
-                    ["M" (v/add diagonal-left
-                                line-left-start)
-                     (path/stitch line-left)])}]
-        [:path {:d (path/make-path
-                    ["M" anchor-point
-                     (path/stitch line-right)])}]
-        [:path {:d (path/make-path
-                    ["M" anchor-point
-                     (path/stitch line-three)])}]])]))
+(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line extra-line
+                                                                        edge-start edge-bottom-end
+                                                                        edge-left-end edge-right-end]}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        bounding-box (:bounding-box meta)
+        {line-edge-left :line
+         line-edge-left-start :line-start
+         line-edge-left-to :adjusted-to
+         :as line-edge-left-data} (line/create-with-extension line
+                                                              edge-start edge-left-end
+                                                              bounding-box
+                                                              :reversed? true
+                                                              :extend-from? false
+                                                              :context context)
+        {line-edge-right :line
+         line-edge-right-from :adjusted-from
+         line-edge-right-to :adjusted-to
+         :as line-edge-right-data} (line/create-with-extension opposite-line
+                                                               edge-start edge-right-end
+                                                               bounding-box
+                                                               :flipped? true
+                                                               :mirrored? true
+                                                               :extend-from? false
+                                                               :context context)
+        {line-edge-bottom :line
+         line-edge-bottom-to :adjusted-to
+         line-edge-bottom-start :line-start
+         :as line-edge-bottom-data} (line/create-with-extension extra-line
+                                                                edge-start edge-bottom-end
+                                                                bounding-box
+                                                                :reversed? true
+                                                                :extend-from? false
+                                                                :context context)]
+    {:subfields [{:shape [(path/make-path
+                           ["M" (v/add line-edge-left-to line-edge-left-start)
+                            (path/stitch line-edge-left)
+                            (path/stitch line-edge-right)
+                            (infinity/clockwise
+                             line-edge-right-to
+                             (v/add line-edge-left-to line-edge-left-start))
+                            "z"])]}
+                 {:shape [(path/make-path
+                           ["M" (v/add line-edge-left-to line-edge-left-start)
+                            (path/stitch line-edge-left)
+                            (path/stitch (line/reversed-path line-edge-bottom))
+                            (infinity/counter-clockwise
+                             line-edge-bottom-to
+                             (v/add line-edge-left-to line-edge-left-start))
+                            "z"])]}
+                 {:shape [(path/make-path
+                           ["M" (v/add line-edge-bottom-to line-edge-bottom-start)
+                            (path/stitch line-edge-bottom)
+                            (path/stitch line-edge-right)
+                            (infinity/counter-clockwise
+                             line-edge-right-to
+                             (v/add line-edge-bottom-to line-edge-bottom-start))
+                            "z"])]}]
+     :lines [{:line line
+              :line-from line-edge-left-to
+              :line-data [line-edge-left-data]}
+             {:line opposite-line
+              :line-from line-edge-right-from
+              :line-data [line-edge-right-data]}
+             {:line extra-line
+              :line-from line-edge-bottom-to
+              :line-data [line-edge-bottom-data]}]}))
