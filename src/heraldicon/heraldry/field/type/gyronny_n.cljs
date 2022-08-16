@@ -1,14 +1,16 @@
 (ns heraldicon.heraldry.field.type.gyronny-n
   (:require
    [heraldicon.context :as c]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.render.outline :as outline]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def field-type :heraldry.field.type/gyronny-n)
@@ -74,135 +76,132 @@
               :ui/element :ui.element/field-layout}
      :line line-style}))
 
-(defmethod field.interface/render-field field-type
-  [{:keys [environment] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
+(defmethod interface/properties field-type [context]
+  (let [parent-environment (interface/get-parent-environment context)
         num-fields (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         offset (interface/get-sanitized-data (c/++ context :layout :offset-x))
-        anchor-point (position/calculate anchor environment)
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        anchor-point (position/calculate anchor parent-environment)
         angle-step (/ 360 num-fields)
         start-angle (* offset angle-step)
-        arm-angles (map #(-> %
-                             (* angle-step)
-                             (+ start-angle))
-                        (range num-fields))
-        arm-intersections (mapv (fn [angle]
-                                  (v/find-first-intersection-of-ray
-                                   anchor-point
-                                   (v/add anchor-point
-                                          (v/rotate (v/Vector. 0 -1) angle))
-                                   environment))
-                                arm-angles)
-        arm-length (->> arm-intersections
-                        (map #(-> %
-                                  (v/sub anchor-point)
-                                  v/abs))
-                        (apply max))
-        full-arm-length (+ arm-length 30)
-        line (dissoc line :fimbriation)
-        arm-points (mapv (fn [angle]
-                           (-> (v/Vector. 0 -1)
-                               (v/rotate angle)
-                               (v/mul full-arm-length)
-                               (v/add anchor-point)))
-                         arm-angles)
+        edge-angles (map #(-> %
+                              (* angle-step)
+                              (+ start-angle))
+                         (range num-fields))
+        parent-shape (interface/get-exact-parent-shape context)
+        edge-ends (mapv (fn [angle]
+                          (v/last-intersection-with-shape
+                           anchor-point (v/rotate (v/Vector. 0 -1) angle)
+                           parent-shape
+                           :default? true
+                           :relative? true))
+                        edge-angles)
+        line-length (->> edge-ends
+                         (map #(-> %
+                                   (v/sub anchor-point)
+                                   v/abs))
+                         (apply max))
         fess-points (mapv (fn [angle]
-                            (-> (v/find-first-intersection-of-ray
-                                 anchor-point
-                                 (v/add anchor-point
-                                        (v/rotate (v/Vector. 0 -1)
-                                                  (+ angle
-                                                     (/ angle-step 2))))
-                                 environment)
+                            (-> (v/last-intersection-with-shape
+                                 anchor-point (v/rotate (v/Vector. 0 (- line-length))
+                                                        (+ angle
+                                                           (/ angle-step 2)))
+                                 parent-shape
+                                 :default? true
+                                 :relative? true)
                                 (v/sub anchor-point)
                                 (v/mul 0.6)
                                 (v/add anchor-point)))
-                          arm-angles)
-        infinity-points (vec (mapcat (fn [angle]
-                                       [(-> (v/Vector. 0 -1)
-                                            (v/rotate angle)
-                                            (v/mul full-arm-length)
-                                            (v/mul 2)
-                                            (v/add anchor-point))
-                                        (-> (v/Vector. 0 -1)
-                                            (v/rotate (+ angle (/ angle-step 2)))
-                                            (v/mul full-arm-length)
-                                            (v/mul 2)
-                                            (v/add anchor-point))])
-                                     arm-angles))
-        lines (mapv (fn [arm-point]
-                      (line/create line
-                                   anchor-point
-                                   arm-point
-                                   :flipped? true
-                                   :mirrored? true
-                                   :real-start 0
-                                   :real-end arm-length
-                                   :context context
-                                   :environment environment))
-                    arm-points)
-        reverse-lines (mapv (fn [arm-point]
-                              (line/create line
-                                           anchor-point
-                                           arm-point
-                                           :reversed? true
-                                           :real-start 0
-                                           :real-end arm-length
-                                           :context context
-                                           :environment environment))
-                            arm-points)
-        parts (mapv (fn [index]
-                      (let [next-index (-> index
-                                           inc
-                                           (mod num-fields))
-                            [index-1 index-2] (if (even? index)
-                                                [index next-index]
-                                                [next-index index])
-                            [arm-point-1
-                             {line-1 :line
-                              line-1-start :line-start}] [(nth arm-points index-1)
-                                                          (nth reverse-lines index-1)]
-                            [arm-point-2
-                             {line-2 :line}] [(nth arm-points index-2)
-                                              (nth lines index-2)]]
-                        [["M" (v/add arm-point-1
-                                     line-1-start)
-                          (path/stitch line-1)
-                          "L" anchor-point
-                          (path/stitch line-2)
-                          "L" (nth infinity-points (* 2 index-2))
-                          "L" (nth infinity-points (-> index
-                                                       (* 2)
-                                                       inc))
-                          "L" (nth infinity-points (* 2 index-1))
-                          "z"]
-                         [arm-point-1
-                          anchor-point
-                          arm-point-2]
-                         {:points {:fess (nth fess-points index)}}]))
-                    (range num-fields))
-        arm-outlines (mapv (fn [index]
-                             (let [next-index (-> index
-                                                  inc
-                                                  (mod num-fields))
-                                   arm-line (nth lines next-index)]
-                               (path/make-path
-                                ["M" anchor-point
-                                 (path/stitch (:line arm-line))])))
-                           (range num-fields))]
-    [:<>
-     [shared/make-subfields
-      context parts
-      (conj (into [:all]
-                  (map vector)
-                  (drop-last (drop 1 arm-outlines)))
-            nil)
-      environment]
-     (when outline?
-       (into [:g (outline/style context)]
-             (map (fn [arm-line]
-                    [:path {:d arm-line}]))
-             arm-outlines))]))
+                          edge-angles)]
+    (post-process/properties
+     {:type field-type
+      :line-length line-length
+      :num-fields num-fields
+      :fess-points fess-points
+      :edge-start anchor-point
+      :edge-ends edge-ends
+      :num-subfields num-fields}
+     context)))
+
+(defmethod interface/subfield-environments field-type [context {:keys [edge-start edge-ends
+                                                                       fess-points num-fields]}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)]
+    {:subfields (mapv
+                 (fn [index]
+                   (environment/create
+                    {:paths nil}
+                    (-> meta
+                        (dissoc :context)
+                        (assoc :bounding-box (bb/from-points [(get edge-ends index)
+                                                              edge-start
+                                                              (get edge-ends (mod (inc index) num-fields))])
+                               :points {:fess (get fess-points index)}))))
+                 (range num-fields))}))
+
+(defmethod interface/subfield-render-shapes field-type [context {:keys [edge-start edge-ends line num-fields]}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)
+        bounding-box (:bounding-box meta)
+        lines (vec (map-indexed
+                    (fn [index edge-end]
+                      (if (even? index)
+                        (line/create-with-extension line
+                                                    edge-start edge-end
+                                                    bounding-box
+                                                    :reversed? true
+                                                    :extend-from? false
+                                                    :context context)
+                        (line/create-with-extension line
+                                                    edge-start edge-end
+                                                    bounding-box
+                                                    :flipped? true
+                                                    :mirrored? true
+                                                    :extend-from? false
+                                                    :context context)))
+                    edge-ends))]
+    {:subfields (into []
+                      (comp (map (fn [index]
+                                   (let [line-1 (get lines index)
+                                         line-2 (get lines (mod (inc index) num-fields))]
+                                     (if (and (odd? num-fields)
+                                              (= index (dec num-fields)))
+                                       (if (even? index)
+                                         ["M" (v/add (:adjusted-to line-1) (:line-start line-1))
+                                          (path/stitch (:line line-1))
+                                          (path/stitch (line/reversed-path (:line line-2)))
+                                          (infinity/counter-clockwise
+                                           (:adjusted-from line-2)
+                                           (v/add (:adjusted-to line-1) (:line-start line-1)))
+                                          "z"]
+                                         ["M" (v/add (:adjusted-to line-2) (:line-start line-2))
+                                          (path/stitch (:line line-2))
+                                          (path/stitch (line/reversed-path (:line line-1)))
+                                          (infinity/clockwise
+                                           (:adjusted-from line-1)
+                                           (v/add (:adjusted-to line-2) (:line-start line-2)))
+                                          "z"])
+                                       (if (even? index)
+                                         ["M" (v/add (:adjusted-to line-1) (:line-start line-1))
+                                          (path/stitch (:line line-1))
+                                          (path/stitch (:line line-2))
+                                          (infinity/counter-clockwise
+                                           (:adjusted-to line-2)
+                                           (v/add (:adjusted-to line-1) (:line-start line-1)))
+                                          "z"]
+                                         ["M" (v/add (:adjusted-to line-2) (:line-start line-2))
+                                          (path/stitch (:line line-2))
+                                          (path/stitch (:line line-1))
+                                          (infinity/clockwise
+                                           (:adjusted-to line-1)
+                                           (v/add (:adjusted-to line-2) (:line-start line-2)))
+                                          "z"])))))
+                            (map (fn [path]
+                                   {:shape [(path/make-path path)]})))
+                      (range num-fields))
+     :lines (vec (map-indexed (fn [index line]
+                                (if (even? index)
+                                  {:line (:line line)
+                                   :line-from (:adjusted-to line)
+                                   :line-data [line]}
+                                  {:line (:line line)
+                                   :line-from (:adjusted-from line)
+                                   :line-data [line]})) lines))}))

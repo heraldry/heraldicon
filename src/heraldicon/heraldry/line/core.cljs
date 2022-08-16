@@ -868,3 +868,9 @@
                                                          :real-end real-end))
            :adjusted-from extended-from
            :adjusted-to extended-to)))
+
+(defn reversed-path [line-path]
+  (-> line-path
+      path/parse-path
+      path/reverse
+      (path/to-svg :relative? true)))
