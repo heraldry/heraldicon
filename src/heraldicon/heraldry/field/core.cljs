@@ -45,7 +45,7 @@
                                    :index 1}
                                   {:type :heraldry.field.type/ref
                                    :index 0}])
-      (= :quarterly type) (let [effective-num-base-fields (min num-fields-x num-base-fields)]
+      (= :quarterly type) (let [effective-num-base-fields (min (* num-fields-x num-fields-y) num-base-fields)]
                             (into []
                                   (for [j (range num-fields-y)
                                         i (range num-fields-x)]
