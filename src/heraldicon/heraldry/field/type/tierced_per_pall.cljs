@@ -154,11 +154,6 @@
                                  :bottom-right])
                       :default :fess
                       :ui/label :string.option/point}
-              :alignment {:type :option.type/choice
-                          :choices position/alignment-choices
-                          :default :middle
-                          :ui/label :string.option/alignment
-                          :ui/element :ui.element/radio-select}
               :offset-x {:type :option.type/range
                          :min -45
                          :max 45
@@ -209,12 +204,7 @@
                                               :ui/label :string.option/angle})
 
                     (not= current-orientation-point
-                          :angle) (assoc :alignment {:type :option.type/choice
-                                                     :choices position/alignment-choices
-                                                     :default :middle
-                                                     :ui/label :string.option/alignment
-                                                     :ui/element :ui.element/radio-select}
-                                         :offset-x {:type :option.type/range
+                          :angle) (assoc :offset-x {:type :option.type/range
                                                     :min -45
                                                     :max 45
                                                     :default 0
