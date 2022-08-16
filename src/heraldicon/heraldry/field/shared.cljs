@@ -108,7 +108,8 @@
                          :per-chevron
                          :per-saltire
                          :quartered
-                         :quarterly})
+                         :quarterly
+                         :gyronny})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
                             (dissoc :component-of-counterchanged-field?
