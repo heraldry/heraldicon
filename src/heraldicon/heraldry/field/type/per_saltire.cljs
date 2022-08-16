@@ -149,30 +149,30 @@
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [top
-                                                             edge-top-left-1 edge-top-left-2
-                                                             edge-top-right-1 edge-top-right-2])})))
+                      (assoc :bounding-box (bb/from-points [top
+                                                            edge-top-left-1 edge-top-left-2
+                                                            edge-top-right-1 edge-top-right-2]))))
                  (environment/create
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [left
-                                                             edge-top-left-1 edge-top-left-2
-                                                             edge-bottom-left-1 edge-bottom-left-2])})))
+                      (assoc :bounding-box (bb/from-points [left
+                                                            edge-top-left-1 edge-top-left-2
+                                                            edge-bottom-left-1 edge-bottom-left-2]))))
                  (environment/create
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [right
-                                                             edge-top-right-1 edge-top-right-2
-                                                             edge-bottom-right-1 edge-bottom-right-2])})))
+                      (assoc :bounding-box (bb/from-points [right
+                                                            edge-top-right-1 edge-top-right-2
+                                                            edge-bottom-right-1 edge-bottom-right-2]))))
                  (environment/create
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [bottom
-                                                             edge-bottom-left-1 edge-bottom-left-2
-                                                             edge-bottom-right-1 edge-bottom-right-2])})))]}))
+                      (assoc :bounding-box (bb/from-points [bottom
+                                                            edge-bottom-left-1 edge-bottom-left-2
+                                                            edge-bottom-right-1 edge-bottom-right-2]))))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-top-left-1 edge-top-left-2] :edge-top-left
