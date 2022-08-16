@@ -155,18 +155,18 @@
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [(if sinister?
-                                                               top-left
-                                                               top-right)
-                                                             edge-start edge-end])})))
+                      (assoc :bounding-box (bb/from-points [(if sinister?
+                                                              top-left
+                                                              top-right)
+                                                            edge-start edge-end]))))
                  (environment/create
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [(if sinister?
-                                                               bottom-right
-                                                               bottom-left)
-                                                             top-right bottom-right])})))]}))
+                      (assoc :bounding-box (bb/from-points [(if sinister?
+                                                              bottom-right
+                                                              bottom-left)
+                                                            top-right bottom-right]))))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line sinister?]
                                                                  [edge-start edge-end] :edge}]

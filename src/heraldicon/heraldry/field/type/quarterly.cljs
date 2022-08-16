@@ -124,7 +124,7 @@
                               {:paths nil}
                               (-> meta
                                   (dissoc :context)
-                                  (merge {:bounding-box (bb/from-points [part-top-left part-bottom-right])})))))
+                                  (assoc :bounding-box (bb/from-points [part-top-left part-bottom-right]))))))
                       parts)}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [parts num-fields-x num-fields-y

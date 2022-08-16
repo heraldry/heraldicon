@@ -146,12 +146,11 @@
      {:paths nil}
      (-> meta
          (dissoc :context)
-         (merge {:bounding-box (bb/from-points bounding-box-points)
-                 :points {:fess (v/div (v/add corner-top-left
-                                              corner-top-right
-                                              corner-bottom-left
-                                              corner-bottom-right)
-                                       4)}})))))
+         (assoc :bounding-box (bb/from-points bounding-box-points)
+                :points {:fess (v/avg corner-top-left
+                                      corner-top-right
+                                      corner-bottom-left
+                                      corner-bottom-right)})))))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line]
                                                           [left-1 corner-top-left top-1] :edge-top-left

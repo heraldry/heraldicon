@@ -104,26 +104,26 @@
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [top-left edge-top-1
-                                                             edge-left-2 edge-top-2])})))
+                      (assoc :bounding-box (bb/from-points [top-left edge-top-1
+                                                            edge-left-2 edge-top-2]))))
                  (environment/create
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [top-right edge-top-1
-                                                             edge-top-2 edge-right-2])})))
+                      (assoc :bounding-box (bb/from-points [top-right edge-top-1
+                                                            edge-top-2 edge-right-2]))))
                  (environment/create
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [bottom-left edge-top-1
-                                                             edge-left-2 edge-bottom-2])})))
+                      (assoc :bounding-box (bb/from-points [bottom-left edge-top-1
+                                                            edge-left-2 edge-bottom-2]))))
                  (environment/create
                   {:paths nil}
                   (-> meta
                       (dissoc :context)
-                      (merge {:bounding-box (bb/from-points [bottom-right edge-top-1
-                                                             edge-right-2 edge-bottom-2])})))]}))
+                      (assoc :bounding-box (bb/from-points [bottom-right edge-top-1
+                                                            edge-right-2 edge-bottom-2]))))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-top-1 edge-top-2] :edge-top

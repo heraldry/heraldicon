@@ -225,7 +225,7 @@
      {:paths nil}
      (-> meta
          (dissoc :context)
-         (merge {:bounding-box (bb/from-points bounding-box-points)})))))
+         (assoc :bounding-box (bb/from-points bounding-box-points))))))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [truncated? point-width point-height
                                                                  point-centers point-extra]

@@ -363,8 +363,8 @@
      {:paths nil}
      (-> meta
          (dissoc :context)
-         (merge {:bounding-box (bb/from-points bounding-box-points)
-                 :points {:fess fess}})))))
+         (assoc :bounding-box (bb/from-points bounding-box-points)
+                :points {:fess fess})))))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line extra-line]
                                                           [bottom-1 corner-bottom bottom-2] :edge-bottom
