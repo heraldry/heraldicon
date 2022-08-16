@@ -112,7 +112,8 @@
                          :gyronny
                          :gyronny-n
                          :tierced-per-pale
-                         :tierced-per-fess})
+                         :tierced-per-fess
+                         :tierced-per-pall})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
                             (dissoc :component-of-counterchanged-field?
