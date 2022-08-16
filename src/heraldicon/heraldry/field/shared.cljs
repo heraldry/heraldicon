@@ -107,7 +107,8 @@
                          :per-bend-sinister
                          :per-chevron
                          :per-saltire
-                         :quartered})
+                         :quartered
+                         :quarterly})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
                             (dissoc :component-of-counterchanged-field?
