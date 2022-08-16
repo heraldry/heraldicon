@@ -61,8 +61,9 @@
       (div v d)
       v)))
 
-(defn avg ^Vector [^Vector v1 ^Vector v2]
-  (div (add v1 v2) 2))
+(defn avg ^Vector
+  ([^Vector v1 ^Vector v2] (div (add v1 v2) 2))
+  ([& vs] (div (apply add vs) (count vs))))
 
 (defn rotate ^Vector [{:keys [x y]} ^js/Number angle]
   (let [rad (angle/to-rad angle)]
