@@ -150,12 +150,7 @@
                                                     :max 45
                                                     :default 0
                                                     :ui/label :string.option/offset-y
-                                                    :ui/step 0.1}
-                                         :type {:type :option.type/choice
-                                                :choices orientation-type-choices
-                                                :default :edge
-                                                :ui/label :string.render-options/mode
-                                                :ui/element :ui.element/radio-select}))
+                                                    :ui/step 0.1}))
      :line line-style
      :opposite-line opposite-line-style
      :geometry {:size-mode size-mode-option
