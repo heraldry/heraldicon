@@ -114,7 +114,8 @@
                          :tierced-per-pale
                          :tierced-per-fess
                          :tierced-per-pall
-                         :per-pile})
+                         :per-pile
+                         :chequy})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
                             (dissoc :component-of-counterchanged-field?

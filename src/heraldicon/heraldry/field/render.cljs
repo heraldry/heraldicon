@@ -40,11 +40,14 @@
           (range num-subfields))))
 
 (defn render [context render-components]
-  (let [{field-type :type} (interface/get-properties context)]
+  (let [{:keys [render-fn]
+         field-type :type
+         :as properties} (interface/get-properties context)]
     [:<>
-     (case field-type
-       :heraldry.field.type/plain (tincture/tinctured-field context)
-       [render-subfields context render-components])
+     (cond
+       (= field-type :heraldry.field.type/plain) (tincture/tinctured-field context)
+       render-fn [render-fn context properties]
+       :else [render-subfields context render-components])
 
      [render/field-edges context]
 
