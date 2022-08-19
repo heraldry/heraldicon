@@ -46,6 +46,7 @@
     [:<>
      (cond
        (= field-type :heraldry.field.type/plain) (tincture/tinctured-field context)
+       ;; TODO: simplify once render-components doesn't have to be passed along anymore
        render-fn [render-fn context properties]
        :else [render-subfields context render-components])
 
