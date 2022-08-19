@@ -122,7 +122,8 @@
                          :papellony
                          :masony
                          :fretty
-                         :paly})
+                         :paly
+                         :barry})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
                             (dissoc :component-of-counterchanged-field?
