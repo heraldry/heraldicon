@@ -38,12 +38,11 @@
            :transform transform}
        [render subfield-context]]]]))
 
-(defn- render-subfields [context]
-  (let [{:keys [num-subfields transform]} (interface/get-properties context)]
-    (into [:g]
-          (map (fn [idx]
-                 [render-subfield (c/++ context :fields idx) transform]))
-          (range num-subfields))))
+(defn- render-subfields [context {:keys [num-subfields transform]}]
+  (into [:g]
+        (map (fn [idx]
+               [render-subfield (c/++ context :fields idx) transform]))
+        (range num-subfields)))
 
 (defn- field-path-allowed? [{:keys [path counterchanged-paths]}]
   (let [component-path (->> path
@@ -76,14 +75,14 @@
 (defn render [context]
   (let [{:keys [render-fn]
          field-type :type
-         :as properties} (interface/get-properties context)]
+         :as properties} (interface/get-properties context)
+        render-fn (or render-fn
+                      render-subfields)]
     [:<>
      (cond
        (= field-type :heraldry.field.type/plain) (tincture/tinctured-field context)
        (= field-type :heraldry.field.type/counterchanged) [:<>]
-       ;; TODO: simplify once render-components doesn't have to be passed along anymore
-       render-fn [render-fn context properties]
-       :else [render-subfields context])
+       :else [render-fn context properties])
 
      [render/field-edges context]
 
