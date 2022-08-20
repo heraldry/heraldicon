@@ -2,12 +2,9 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.heraldry.field.shared :as shared]
-   [heraldicon.heraldry.field.type.barry :as barry]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
-   [heraldicon.math.vector :as v]
    [heraldicon.options :as options]))
 
 (def field-type :heraldry.field.type/bendy-sinister)
@@ -139,44 +136,11 @@
               :ui/element :ui.element/field-layout}
      :line line-style}))
 
-(defmethod field.interface/render-field field-type
-  [{:keys [environment] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
-        orientation (interface/get-sanitized-data (c/++ context :orientation))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        points (:points environment)
-        top-left (:top-left points)
-        top-right (:top-right points)
-        top (:top points)
-        bottom (:bottom points)
-        {anchor-point :real-anchor
-         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
-                                               environment
-                                               anchor
-                                               (update orientation :angle #(when %
-                                                                             (- %)))
-                                               0
-                                               nil)
-        center-point (v/line-intersection anchor-point orientation-point
-                                          top bottom)
-        direction (v/sub orientation-point anchor-point)
-        direction (v/Vector. (-> direction :x Math/abs)
-                             (-> direction :y Math/abs -))
-        direction-orthogonal (v/orthogonal direction)
-        angle (v/angle-to-point v/zero direction)
-        required-half-width (v/distance-point-to-line top-right center-point (v/add center-point direction-orthogonal))
-        required-half-height (v/distance-point-to-line top-left center-point (v/add center-point direction))
-        [parts overlap outlines] (barry/barry-parts
-                                  (v/Vector. (- required-half-width) (- required-half-height))
-                                  (v/Vector. required-half-width required-half-height)
-                                  line outline? context)]
-    [:g {:transform (str "translate(" (v/->str center-point) ")"
-                         "rotate(" angle ")")}
-     [shared/make-subfields
-      context
-      parts
-      overlap
-      environment]
-     outlines]))
+(defmethod interface/properties field-type [context]
+  ((get-method interface/properties :heraldry.field.type/bendy) context))
+
+(defmethod interface/subfield-environments field-type [context properties]
+  ((get-method interface/subfield-environments :heraldry.field.type/bendy) context properties))
+
+(defmethod interface/subfield-render-shapes field-type [context properties]
+  ((get-method interface/subfield-render-shapes :heraldry.field.type/bendy) context properties))

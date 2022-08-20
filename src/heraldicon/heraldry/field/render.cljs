@@ -17,7 +17,7 @@
       context)))
 
 (defn- render-subfield [{:keys [svg-export?]
-                         :as context} render-components]
+                         :as context} transform render-components]
   (let [clip-path-id (uid/generate "clip")
         subfield-context (effective-field-context context)]
     [:g
@@ -30,13 +30,15 @@
      [:g {(if svg-export?
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
-      [render subfield-context render-components]]]))
+      [:g (when transform
+            {:transform transform})
+       [render subfield-context render-components]]]]))
 
 (defn- render-subfields [context render-components]
-  (let [{:keys [num-subfields]} (interface/get-properties context)]
+  (let [{:keys [num-subfields transform]} (interface/get-properties context)]
     (into [:g]
           (map (fn [idx]
-                 [render-subfield (c/++ context :fields idx) render-components]))
+                 [render-subfield (c/++ context :fields idx) transform render-components]))
           (range num-subfields))))
 
 (defn render [context render-components]

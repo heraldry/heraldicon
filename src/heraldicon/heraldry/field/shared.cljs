@@ -124,6 +124,8 @@
                          :fretty
                          :paly
                          :barry
+                         :bendy
+                         :bendy-sinister
                          :chevronny})
     [render/render context render-components]
     (let [field-context (-> (effective-field-context context)
