@@ -1,7 +1,7 @@
 (ns heraldicon.heraldry.ordinary.render
   (:require
    [heraldicon.context :as c]
-   [heraldicon.heraldry.field.shared :as field.shared]
+   [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.render :as render]
    [heraldicon.heraldry.tincture :as tincture]
@@ -128,6 +128,6 @@
             :clip-path) (str "url(#" clip-path-id ")")}
       [:g (when transform
             {:transform transform})
-       [field.shared/render (c/++ context :field)]]]
+       [field.render/render (c/++ context :field)]]]
      [render/ordinary-edges context]
      [cottising context]]))

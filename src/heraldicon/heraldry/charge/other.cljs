@@ -7,7 +7,7 @@
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
    [heraldicon.heraldry.field.environment :as environment]
-   [heraldicon.heraldry.field.shared :as field.shared]
+   [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.option.position :as position]
@@ -632,7 +632,7 @@
                       (when render-field?
                         [:g {:mask (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}
-                          [field.shared/render (-> context
+                          [field.render/render (-> context
                                                    (c/++ :field)
                                                    (assoc :environment charge-environment))]]])
                       [:g {:mask (str "url(#" mask-id ")")}
