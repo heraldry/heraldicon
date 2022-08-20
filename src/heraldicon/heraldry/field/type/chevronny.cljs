@@ -1,16 +1,16 @@
 (ns heraldicon.heraldry.field.type.chevronny
   (:require
    [heraldicon.context :as c]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.interface :as field.interface]
-   [heraldicon.heraldry.field.shared :as shared]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.shared.chevron :as chevron]
    [heraldicon.interface :as interface]
-   [heraldicon.math.angle :as angle]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.render.outline :as outline]
    [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
@@ -111,18 +111,18 @@
      :line line-style
      :opposite-line opposite-line-style}))
 
-(defn- chevronny-parts [top-left bottom-right line opposite-line outline? context]
-  (let [environment (:environment context)
+(defmethod interface/properties field-type [context]
+  (let [{:keys [height points]
+         :as parent-environment} (interface/get-parent-environment context)
+        {:keys [center]} points
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
         offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
         stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
-        height (- (:y bottom-right)
-                  (:y top-left))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         chevron-angle 90
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
-                                               environment
+                                               parent-environment
                                                {:point :fess
                                                 :offset-x 0
                                                 :offset-y 0}
@@ -130,143 +130,130 @@
                                                0 ;; ignored, since there's no alignment
                                                chevron-angle)
         [relative-left relative-right] (chevron/arm-diagonals chevron-angle anchor-point orientation-point)
-        diagonal-left (v/add anchor-point relative-left)
-        diagonal-right (v/add anchor-point relative-right)
-        angle-left (angle/normalize (v/angle-to-point anchor-point diagonal-left))
-        angle-right (angle/normalize (v/angle-to-point anchor-point diagonal-right))
-        joint-angle (angle/normalize (- angle-left angle-right))
-        chevron-middle-height (-> height
-                                  (/ (dec num-fields-y))
-                                  (* stretch-y))
-        required-height (* chevron-middle-height
+        part-height (-> height
+                        (/ (dec num-fields-y))
+                        (* stretch-y))
+        required-height (* part-height
                            (dec num-fields-y))
-        middle (-> height
-                   (/ 2)
-                   (+ (:y top-left)))
-        y0 (-> middle
+        y0 (-> (:y center)
                (- (/ required-height 2))
                (+ (* offset-y
-                     chevron-middle-height)))
-        x (:x anchor-point)
-        left-x (:x top-left)
-        right-x (:x bottom-right)
-        start v/zero
-        end-left (v/rotate (v/Vector. (* 2 height) 0)
-                           (+ 90 (/ joint-angle 2)))
-        end-right (v/rotate (v/Vector. (* 2 height) 0)
-                            (- 90 (/ joint-angle 2)))
-        {line-left-upper :line
-         line-left-upper-start :line-start} (line/create line
-                                                         start end-left
-                                                         :reversed? true
-                                                         :context context
-                                                         :environment environment)
+                     part-height)))
+        corner-x (:x anchor-point)
+        parent-shape (interface/get-exact-parent-shape context)
+        edges (mapv (fn [i]
+                      (let [corner-y (+ y0 (* (dec i) part-height))
+                            corner-point (v/Vector. corner-x corner-y)
+                            edge-start (v/last-intersection-with-shape corner-point relative-left parent-shape
+                                                                       :default? true :relative? true)
+                            edge-end (v/last-intersection-with-shape corner-point relative-right parent-shape
+                                                                     :default? true :relative? true)]
+                        [edge-start corner-point edge-end]))
+                    (range num-fields-y))
+        line-length (apply max (mapcat (fn [[edge-start corner-point edge-end]]
+                                         [(v/abs (v/sub edge-start corner-point))
+                                          (v/abs (v/sub edge-end corner-point))])
+                                       edges))]
+    (post-process/properties
+     {:type field-type
+      :edges edges
+      :part-height part-height
+      :line-length line-length
+      :num-subfields num-fields-y}
+     context)))
 
-        {line-right-upper :line} (line/create opposite-line
-                                              start end-right
-                                              :context context
-                                              :environment environment)
-        {line-left-lower :line} (line/create line
-                                             start end-left
-                                             :flipped? true
-                                             :mirrored? true
-                                             :context context
-                                             :environment environment)
-        {line-right-lower :line
-         line-right-lower-start :line-start} (line/create opposite-line
-                                                          start end-right
-                                                          :reversed? true
-                                                          :context context
-                                                          :environment environment)
-        parts (->> (range num-fields-y)
-                   (map (fn [i]
-                          (let [y1 (+ y0 (* (dec i) chevron-middle-height))
-                                y2 (+ y1 chevron-middle-height)
-                                last-part? (-> i inc (= num-fields-y))
-                                line-corner-upper (v/Vector. x y1)
-                                line-corner-lower (v/Vector. x y2)]
-                            [(cond
-                               (and (zero? i)
-                                    last-part?) ["M" -1000 -1000
-                                                 "h" 2000
-                                                 "v" 2000
-                                                 "h" -2000
-                                                 "z"]
-                               (zero? i) ["M" line-corner-lower
-                                          (path/stitch line-right-upper)
-                                          (infinity/path :counter-clockwise
-                                                         [:right :left]
-                                                         [(v/add line-corner-lower
-                                                                 end-right)
-                                                          (v/add line-corner-lower
-                                                                 end-left
-                                                                 line-left-upper-start)])
-                                          (path/stitch line-left-upper)]
-                               :else (concat ["M" line-corner-upper
-                                              (path/stitch line-right-upper)]
-                                             (cond
-                                               last-part? [(infinity/path :clockwise
-                                                                          [:right :left]
-                                                                          [(v/add line-corner-upper
-                                                                                  end-right)
-                                                                           (v/add line-corner-upper
-                                                                                  end-left
-                                                                                  line-left-upper-start)])
-                                                           (path/stitch line-left-upper)]
-                                               :else [(infinity/path :clockwise
-                                                                     [:right :right]
-                                                                     [(v/add line-corner-upper
-                                                                             end-right)
-                                                                      (v/add line-corner-lower
-                                                                             end-right
-                                                                             line-right-lower-start)])
-                                                      (path/stitch line-right-lower)
-                                                      (path/stitch line-left-lower)
-                                                      (infinity/path :clockwise
-                                                                     [:left :left]
-                                                                     [(v/add line-corner-lower
-                                                                             end-left)
-                                                                      (v/add line-corner-upper
-                                                                             end-left
-                                                                             line-left-upper-start)])
-                                                      (path/stitch line-left-upper)])))
-                             [(assoc line-corner-upper :x left-x)
-                              (assoc line-corner-lower :x right-x)]])))
-                   vec)
-        edges (->> num-fields-y
-                   dec
-                   range
-                   (map (fn [i]
-                          (let [y1 (+ y0 (* i chevron-middle-height))
-                                line-corner-lower (v/Vector. x y1)]
-                            (path/make-path ["M" (v/add line-corner-lower
-                                                        end-left
-                                                        line-left-upper-start)
-                                             (path/stitch line-left-upper)
-                                             (path/stitch line-right-upper)]))))
-                   vec)
-        overlap (conj (mapv vector edges) nil)
-        outlines (when outline?
-                   (into [:g (outline/style context)]
-                         (map (fn [i]
-                                ^{:key i}
-                                [:path {:d (nth edges i)}]))
-                         (range (dec num-fields-y))))]
-    [parts overlap outlines]))
+(defmethod interface/subfield-environments field-type [context {:keys [edges part-height]}]
+  (let [{:keys [meta points]} (interface/get-parent-environment context)
+        {:keys [left right]} points
+        offset (v/Vector. 0 part-height)]
+    ;; TODO: needs to be improved
+    {:subfields (into []
+                      (map (fn [[edge-start corner-point edge-end]]
+                             (environment/create
+                              {:paths nil}
+                              (-> meta
+                                  (dissoc :context)
+                                  (assoc :bounding-box (bb/from-points [corner-point (v/add corner-point offset)
+                                                                        (assoc edge-start :x (:x left))
+                                                                        (assoc (v/add edge-start offset) :x (:x right))
+                                                                        (assoc edge-end :x (:x left))
+                                                                        (assoc (v/add edge-end offset) :x (:x right))]))))))
+                      edges)}))
 
-(defmethod field.interface/render-field field-type
-  [{:keys [environment] :as context}]
-  (let [line (interface/get-sanitized-data (c/++ context :line))
-        opposite-line (interface/get-sanitized-data (c/++ context :opposite-line))
-        outline? (or (interface/render-option :outline? context)
-                     (interface/get-sanitized-data (c/++ context :outline?)))
-        points (:points environment)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
-        [parts overlap outlines] (chevronny-parts top-left bottom-right line opposite-line outline? context)]
-    [:<>
-     [shared/make-subfields
-      context parts
-      overlap
-      environment]
-     outlines]))
+(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line edges num-subfields]}]
+  (let [{:keys [meta points]} (interface/get-parent-environment context)
+        {:keys [top-left bottom-right]} points
+        bounding-box (:bounding-box meta)
+        outside-1 (v/sub top-left (v/Vector. 50 50))
+        outside-2 (v/add bottom-right (v/Vector. 50 50))
+        lines (mapv (fn [[edge-start corner-point edge-end]]
+                      [(line/create-with-extension line
+                                                   corner-point edge-start
+                                                   bounding-box
+                                                   :reversed? true
+                                                   :extend-from? false
+                                                   :context context)
+                       (line/create-with-extension opposite-line
+                                                   corner-point edge-end
+                                                   bounding-box
+                                                   :reversed? true
+                                                   :flipped? true
+                                                   :mirrored? true
+                                                   :extend-from? false
+                                                   :context context)])
+                    (drop 1 edges))]
+    {:subfields (into []
+                      (comp
+                       (map (fn [i]
+                              (let [first? (zero? i)
+                                    last? (= i (dec num-subfields))]
+                                (cond
+                                  (and first?
+                                       last?) ["M" outside-1
+                                               ;; do this in two steps, because using the same point
+                                               ;; wouldn't use the large arc
+                                               (infinity/clockwise outside-1 outside-2)
+                                               (infinity/clockwise outside-2 outside-1)
+                                               "z"]
+                                  first? (let [[line-1-left line-1-right] (get lines i)
+                                               line-1-start (v/add (:adjusted-to line-1-left) (:line-start line-1-left))
+                                               line-1-end (:adjusted-to line-1-right)]
+                                           ["M" line-1-start
+                                            (path/stitch (:line line-1-left))
+                                            (path/stitch (line/reversed-path (:line line-1-right)))
+                                            (infinity/counter-clockwise line-1-end line-1-start)
+                                            "z"])
+                                  last? (let [[line-1-left line-1-right] (get lines (dec i))
+                                              [line-1-start line-1-end] [(v/add (:adjusted-to line-1-left) (:line-start line-1-left))
+                                                                         (:adjusted-to line-1-right)]]
+                                          ["M" line-1-start
+                                           (path/stitch (:line line-1-left))
+                                           (path/stitch (line/reversed-path (:line line-1-right)))
+                                           (infinity/clockwise line-1-end line-1-start)
+                                           "z"])
+                                  :else (let [[line-1-left line-1-right] (get lines (dec i))
+                                              ;; swap arms for the lower line
+                                              [line-2-right line-2-left] (get lines i)
+                                              line-1-start (v/add (:adjusted-to line-1-left) (:line-start line-1-left))
+                                              line-1-end (:adjusted-to line-1-right)
+                                              line-2-start (v/add (:adjusted-to line-2-left) (:line-start line-2-left))
+                                              line-2-end (:adjusted-to line-2-right)]
+                                          ["M" line-1-start
+                                           (path/stitch (:line line-1-left))
+                                           (path/stitch (line/reversed-path (:line line-1-right)))
+                                           (infinity/clockwise line-1-end line-2-start)
+                                           (path/stitch (:line line-2-left))
+                                           (path/stitch (line/reversed-path (:line line-2-right)))
+                                           (infinity/clockwise line-2-end line-1-start)
+                                           "z"])))))
+                       (map (fn [path]
+                              {:shape [(path/make-path path)]})))
+                      (range num-subfields))
+     :lines (vec (mapcat (fn [[line-left line-right]]
+                           [{:line (:line line-left)
+                             :line-from (:adjusted-to line-left)
+                             :line-data [line-left]}
+                            {:line (:line line-right)
+                             :line-from (:adjusted-to line-right)
+                             :line-data [line-right]}])
+                         lines))}))
