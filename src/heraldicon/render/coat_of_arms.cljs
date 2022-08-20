@@ -4,7 +4,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.field.environment :as environment]
-   [heraldicon.heraldry.field.shared :as field.shared]
+   [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.interface :as interface]
    [heraldicon.render.hatching :as hatching]
    [heraldicon.render.outline :as outline]
@@ -118,7 +118,7 @@
                  [:path {:d (s/join "" (-> environment :shape :paths))
                          :fill-rule "evenodd"
                          :fill "#f0f0f0"}]
-                 [field.shared/render (-> context
+                 [field.render/render (-> context
                                           (c/++ :field)
                                           (assoc :environment environment)
                                           (dissoc :metadata-path))]]]]

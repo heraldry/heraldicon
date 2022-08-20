@@ -2,7 +2,6 @@
   (:require
    [clojure.string :as s]
    [heraldicon.context :as c]
-   [heraldicon.heraldry.field.shared :as field.shared]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.tincture :as tincture]
@@ -352,10 +351,10 @@
                   (tincture/pick context)) context
               :corner (:corner fimbriation)]]))
         [:g {:id charge-id}
-         [field.shared/make-subfield
-          (c/++ context :field)
-          part
-          :all]
+         #_[field.shared/make-subfield
+            (c/++ context :field)
+            part
+            :all]
          (when outline?
            [:g (outline/style context)
             [:path {:d (s/join "" (:paths charge-shape))}]])]]])
