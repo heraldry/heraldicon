@@ -18,9 +18,10 @@
                    (attribution/license-display-name license license-version))]]
     (string/upper-case-first (string/combine ", " changes))))
 
-(macros/reg-event-db ::merge
+(macros/reg-event-db ::set-preset
   (fn [db [_ path data]]
-    (update-in db path merge data)))
+    (let [source-modification (get-in db (conj path :source-modification))]
+      (assoc-in db path (assoc data :source-modification source-modification)))))
 
 (defmethod element/element :ui.element/attribution [{:keys [path] :as context}]
   (when-let [options (interface/get-relevant-options context)]
@@ -47,7 +48,7 @@
               ["Heraldic Art" :heraldic-art]]
              :on-change (fn [value]
                           (case value
-                            :wappenwiki (rf/dispatch [::merge
+                            :wappenwiki (rf/dispatch [::set-preset
                                                       path
                                                       {:nature :derivative
                                                        :license :cc-attribution-non-commercial-share-alike
@@ -56,14 +57,14 @@
                                                        :source-license-version :v3
                                                        :source-creator-name "WappenWiki"
                                                        :source-creator-link "http://wappenwiki.org"}])
-                            :wikimedia (rf/dispatch [::merge
+                            :wikimedia (rf/dispatch [::set-preset
                                                      path
                                                      {:nature :derivative
                                                       :license :cc-attribution-share-alike
                                                       :license-version :v4
                                                       :source-license :cc-attribution-share-alike
                                                       :source-license-version :v3}])
-                            :wikimedia-sodacan (rf/dispatch [::merge
+                            :wikimedia-sodacan (rf/dispatch [::set-preset
                                                              path
                                                              {:nature :derivative
                                                               :license :cc-attribution-share-alike
@@ -72,7 +73,7 @@
                                                               :source-license-version :v3
                                                               :source-creator-name "Sodacan"
                                                               :source-creator-link "https://commons.wikimedia.org/wiki/User:Sodacan"}])
-                            :encyclopedia-heraldica (rf/dispatch [:set
+                            :encyclopedia-heraldica (rf/dispatch [::set-preset
                                                                   path
                                                                   {:nature :derivative
                                                                    :license :cc-attribution-share-alike
@@ -82,7 +83,7 @@
                                                                    :source-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"
                                                                    :source-creator-name "Encyclopedia Heraldica"
                                                                    :source-creator-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"}])
-                            :heraldic-art (rf/dispatch [:set
+                            :heraldic-art (rf/dispatch [::set-preset
                                                         path
                                                         {:nature :derivative
                                                          :license :cc-attribution-share-alike
