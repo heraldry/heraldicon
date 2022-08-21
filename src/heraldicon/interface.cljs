@@ -154,7 +154,7 @@
     (cottise-context? context) (c/-- context 2)
     :else (do
             (log/warn :not-implemented "parent" context)
-            context)))
+            nil)))
 
 (defn- resolve-context [{:keys [path-map path]
                          :as context}]
@@ -166,7 +166,7 @@
 
 (defmulti properties effective-component-type)
 
-(defmethod properties nil [context]
+(defmethod properties :default [context]
   (log/warn :not-implemented "interface.properties" context))
 
 (rf/reg-sub-raw ::properties
@@ -180,7 +180,7 @@
 (defmulti environment (fn [_context properties]
                         (:type properties)))
 
-(defmethod environment nil [_context _properties])
+(defmethod environment :default [_context _properties])
 
 (defmulti subfield-environments (fn [_context properties]
                                   (:type properties)))

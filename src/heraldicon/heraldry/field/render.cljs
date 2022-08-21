@@ -1,6 +1,7 @@
 (ns heraldicon.heraldry.field.render
   (:require
    [heraldicon.context :as c]
+   [heraldicon.frontend.counterchange :as counterchange]
    [heraldicon.heraldry.render :as render]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
@@ -72,18 +73,47 @@
           ^{:key idx}
           [interface/render-component (c/++ context :components idx)])))
 
+(defn- add-tinctures-to-mapping [context counterchange-tinctures]
+  (if (-> counterchange-tinctures count (= 2))
+    (let [[t1 t2] counterchange-tinctures
+          tincture-replacer {t1 t2
+                             t2 t1}]
+      (update context
+              :tincture-mapping
+              (fn [tincture-mapping]
+                (let [new-mapping (into {}
+                                        (map (fn [[k v]]
+                                               [k (get tincture-replacer v v)]))
+                                        tincture-mapping)]
+                  (cond-> new-mapping
+                    (not (contains? new-mapping t1)) (assoc t1 t2)
+                    (not (contains? new-mapping t2)) (assoc t2 t1))))))
+    context))
+
+(declare render)
+
+(defn- render-counterchanged-field [{:keys [path]
+                                     :as context} _properties]
+  (when-let [parent-field-context (some-> context interface/parent interface/parent)]
+    (let [counterchange-tinctures (counterchange/tinctures parent-field-context)
+          counterchanged-context (-> parent-field-context
+                                     (update :counterchanged-paths conj path)
+                                     (add-tinctures-to-mapping counterchange-tinctures))]
+      [render counterchanged-context])))
+
+(defn- render-plain-field [context _properties]
+  [tincture/tinctured-field context])
+
 (defn render [context]
   (let [{:keys [render-fn]
          field-type :type
          :as properties} (interface/get-properties context)
-        render-fn (or render-fn
-                      render-subfields)]
+        render-fn (case field-type
+                    :heraldry.field.type/plain render-plain-field
+                    :heraldry.field.type/counterchanged render-counterchanged-field
+                    (or render-fn
+                        render-subfields))]
     [:<>
-     (cond
-       (= field-type :heraldry.field.type/plain) (tincture/tinctured-field context)
-       (= field-type :heraldry.field.type/counterchanged) [:<>]
-       :else [render-fn context properties])
-
+     [render-fn context properties]
      [render/field-edges context]
-
      [render-components context]]))
