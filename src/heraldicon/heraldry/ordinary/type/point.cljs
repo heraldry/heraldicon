@@ -55,13 +55,14 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width height]
+         :as parent-environment} (interface/get-parent-environment context)
         variant (interface/get-sanitized-data (c/++ context :variant))
         dexter? (= variant :dexter)
         point-width (interface/get-sanitized-data (c/++ context :geometry :width))
         point-height (interface/get-sanitized-data (c/++ context :geometry :height))
         {:keys [top-left top-right]} (:points parent-environment)
-        percentage-base (:height parent-environment)
+        percentage-base (min width height)
         real-point-width (math/percent-of percentage-base point-width)
         real-point-height (math/percent-of percentage-base point-height)
         corner-point (if dexter?

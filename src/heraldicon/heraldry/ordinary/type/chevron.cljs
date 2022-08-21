@@ -223,9 +223,10 @@
       :cottising (cottising/add-cottising context 2)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width height]
+         :as parent-environment} (interface/get-parent-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
-        percentage-base (:height parent-environment)
+        percentage-base (min width height)
         band-size (math/percent-of percentage-base size)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))

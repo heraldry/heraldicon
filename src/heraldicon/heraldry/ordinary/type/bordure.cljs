@@ -52,11 +52,11 @@
      :outline? options/plain-outline?-option}))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width height]} (interface/get-parent-environment context)
         thickness (interface/get-sanitized-data (c/++ context :thickness))
         corner-radius (interface/get-sanitized-data (c/++ context :corner-radius))
         smoothing (interface/get-sanitized-data (c/++ context :smoothing))
-        percentage-base (:width parent-environment)
+        percentage-base (min width height)
         parent-shape (interface/get-exact-parent-shape context)
         line-length percentage-base
         thickness (math/percent-of percentage-base thickness)

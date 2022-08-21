@@ -139,7 +139,8 @@
       :cottising (cottising/add-cottising context 2)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width height]
+         :as parent-environment} (interface/get-parent-environment context)
         real-ordinary-type (interface/get-raw-data (c/++ context :type))
         sinister? (= real-ordinary-type
                      :heraldry.ordinary.type/bend-sinister)
@@ -149,7 +150,7 @@
         inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
-        percentage-base (:height parent-environment)
+        percentage-base (min width height)
         band-size (math/percent-of percentage-base size)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
