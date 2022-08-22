@@ -8,19 +8,31 @@
 
 (defmethod interface/render-component :heraldry/charge [{:keys [svg-export?]
                                                          :as context}]
-  (let [clip-path-id (uid/generate "clip")
-        {:keys [transform]} (interface/get-properties context)]
+  (let [shape-clip-path-id (uid/generate "clip")
+        vertical-mask-clip-path-id (uid/generate "clip")
+        {:keys [vertical-mask-shape]} (interface/get-properties context)]
     [:g
-     [:defs
-      [(if svg-export?
-         :mask
-         :clipPath) {:id clip-path-id}
-       [render/shape-mask context]]]
-     [render/shape-fimbriation context]
-     [:g {(if svg-export?
-            :mask
-            :clip-path) (str "url(#" clip-path-id ")")}
-      [:g (when transform
-            {:transform transform})
-       [field.render/render (c/++ context :field)]]]
-     [render/charge-edges context]]))
+     (when vertical-mask-shape
+       [:defs
+        [(if svg-export?
+           :mask
+           :clipPath) {:id vertical-mask-clip-path-id}
+         [:path {:d vertical-mask-shape
+                 :clip-rule "evenodd"
+                 :fill-rule "evenodd"
+                 :fill "#fff"}]]])
+     [:g (when vertical-mask-shape
+           {(if svg-export?
+              :mask
+              :clip-path) (str "url(#" vertical-mask-clip-path-id ")")})
+      [:defs
+       [(if svg-export?
+          :mask
+          :clipPath) {:id shape-clip-path-id}
+        [render/shape-mask context]]]
+      [render/shape-fimbriation context]
+      [:g {(if svg-export?
+             :mask
+             :clip-path) (str "url(#" shape-clip-path-id ")")}
+       [field.render/render (c/++ context :field)]]
+      [render/charge-edges context]]]))
