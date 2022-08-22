@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.interface :as interface]))
 
 (def charge-type :heraldry.charge.type/rustre)
 
@@ -13,26 +13,23 @@
       (update :geometry dissoc :mirrored?)
       (update :geometry dissoc :reversed?)))
 
-(defmethod charge.interface/render-charge charge-type
-  [context]
-  (charge.shared/make-charge
-   context
-   :height
-   (fn [height]
-     (let [width (/ height 1.3)
-           width-half (/ width 2)
-           height-half (/ height 2)
-           hole-radius (/ width 4)]
-       {:shape {:paths [["m" (v/Vector. 0 (- height-half))
-                         "l" (v/Vector. width-half height-half)
-                         "l " (v/Vector. (- width-half) height-half)
-                         "l" (v/Vector. (- width-half) (- height-half))
-                         "z"]
-                        ["m" (v/Vector. hole-radius 0)
-                         ["a" hole-radius hole-radius
-                          0 0 0 (v/Vector. (* hole-radius -2) 0)]
-                         ["a" hole-radius hole-radius
-                          0 0 0 (* hole-radius 2) 0]
-                         "z"]]}
-        :charge-width width
-        :charge-height height}))))
+(def ^:private base
+  (let [height 100
+        width (/ height 1.3)
+        width-half (/ width 2)
+        height-half (/ height 2)
+        hole-radius (/ width 4)]
+    {:base-shape [["M" 0 (- height-half)
+                   "l" width-half height-half
+                   "l " (- width-half) height-half
+                   "l" (- width-half) (- height-half)
+                   "z"]
+                  ["M" hole-radius 0
+                   "a" hole-radius hole-radius 0 0 0 (* hole-radius -2) 0
+                   "a" hole-radius hole-radius 0 0 0 (* hole-radius 2) 0
+                   "z"]]
+     :base-width width
+     :base-height height}))
+
+(defmethod interface/properties charge-type [context]
+  (charge.shared/process-shape context base))
