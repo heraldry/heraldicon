@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.interface :as interface]))
 
 (def charge-type :heraldry.charge.type/lozenge)
 
@@ -13,19 +13,18 @@
       (update :geometry dissoc :mirrored?)
       (update :geometry dissoc :reversed?)))
 
-(defmethod charge.interface/render-charge charge-type
-  [context]
-  (charge.shared/make-charge
-   context
-   :height
-   (fn [height]
-     (let [width (/ height 1.3)
-           width-half (/ width 2)
-           height-half (/ height 2)]
-       {:shape ["m" (v/Vector. 0 (- height-half))
-                "l" (v/Vector. width-half height-half)
-                "l " (v/Vector. (- width-half) height-half)
-                "l" (v/Vector. (- width-half) (- height-half))
-                "z"]
-        :charge-width width
-        :charge-height height}))))
+(def ^:private base
+  (let [height 100
+        width (/ height 1.3)
+        width-half (/ width 2)
+        height-half (/ height 2)]
+    {:base-shape [["M" 0 (- height-half)
+                   "l" width-half height-half
+                   "l " (- width-half) height-half
+                   "l" (- width-half) (- height-half)
+                   "z"]]
+     :base-width width
+     :base-height height}))
+
+(defmethod interface/properties charge-type [context]
+  (charge.shared/process-shape context base))
