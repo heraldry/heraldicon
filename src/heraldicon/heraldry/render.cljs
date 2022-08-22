@@ -5,6 +5,7 @@
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.render.outline :as outline]))
 
 (defn shape-path [shape]
@@ -59,7 +60,11 @@
 
 (defn shape-fimbriation [context]
   (let [render-shape (interface/get-render-shape context)
-        fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
+        {:keys [width height]} (interface/get-parent-environment context)
+        fimbriation-percentage-base (min width height)
+        fimbriation (some-> (interface/get-sanitized-data (c/++ context :fimbriation))
+                            (update :thickness-1 (partial math/percent-of fimbriation-percentage-base))
+                            (update :thickness-2 (partial math/percent-of fimbriation-percentage-base)))
         line-fimbriation (interface/get-sanitized-data (c/++ context :line :fimbriation))
         fimbriation (if (and (-> render-shape :lines (get 0) :edge-paths)
                              (-> fimbriation :mode (or :none) (= :none))
