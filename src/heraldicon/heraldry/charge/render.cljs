@@ -16,7 +16,7 @@
          :mask
          :clipPath) {:id clip-path-id}
        [render/shape-mask context]]]
-     #_[fimbriation context]
+     [render/shape-fimbriation context]
      [:g {(if svg-export?
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
