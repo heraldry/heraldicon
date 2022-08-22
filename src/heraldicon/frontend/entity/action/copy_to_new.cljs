@@ -4,30 +4,33 @@
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
+   [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
 (defn- copy-data-path [entity-type]
   [:copy-data entity-type])
 
-(defn- set-attribution [entity source-entity]
+(defn- set-attribution [entity source-entity set-attribution?]
   (let [{source-id :id
          source-version :version} source-entity
         {:keys [license license-version]} (:attribution source-entity)
-        {creator :username
+        {:keys [attribution]
+         creator :username
          source-name :name} source-entity]
-    (cond-> entity
-      source-id (update :attribution
-                        assoc
-                        :nature :derivative
-                        :license license
-                        :license-version license-version
-                        :source-name source-name
-                        :source-link (attribution/full-url-for-entity source-id source-version)
-                        :source-license license
-                        :source-license-version license-version
-                        :source-creator-name creator
-                        :source-creator-link (attribution/full-url-for-username creator)))))
+    (assoc entity :attribution
+           (if (and set-attribution?
+                    source-id)
+             {:nature :derivative
+              :license license
+              :license-version license-version
+              :source-name source-name
+              :source-link (attribution/full-url-for-entity source-id source-version)
+              :source-license license
+              :source-license-version license-version
+              :source-creator-name creator
+              :source-creator-link (attribution/full-url-for-username creator)}
+             (dissoc attribution :source-modification)))))
 
 (rf/reg-sub ::copy-data
   (fn [db [_ entity-type]]
@@ -42,10 +45,10 @@
                (assoc-in target-path data)
                (assoc-in data-path nil))))))
 
-(defn- copy-entity [source-entity]
+(defn- copy-entity [source-entity set-attribution?]
   (-> source-entity
       (select-keys [:type :name :tags :metadata :data])
-      (set-attribution source-entity)))
+      (set-attribution source-entity set-attribution?)))
 
 (defn- create-route [entity-type]
   (case entity-type
@@ -62,7 +65,9 @@
   (fn [{:keys [db]} [_ entity-type]]
     (let [form-db-path (form/data-path entity-type)
           source-entity (get-in db form-db-path)
-          new-entity (copy-entity source-entity)]
+          session (session/data-from-db db)
+          set-attribution? (not= (:user-id source-entity) (:user-id session))
+          new-entity (copy-entity source-entity set-attribution?)]
       {:db (assoc-in db (copy-data-path entity-type) new-entity)
        :fx [[:dispatch [::message/set-success entity-type :string.user.message/created-unsaved-copy]]
             [::set-create-entity-route entity-type]]})))
