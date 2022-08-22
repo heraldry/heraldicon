@@ -2,7 +2,7 @@
   (:require
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.interface :as interface]))
 
 (def charge-type :heraldry.charge.type/roundel)
 
@@ -13,18 +13,15 @@
       (update :geometry dissoc :mirrored?)
       (update :geometry dissoc :reversed?)))
 
-(defmethod charge.interface/render-charge charge-type
-  [context]
-  (charge.shared/make-charge
-   context
-   :width
-   (fn [width]
-     (let [radius (/ width 2)]
-       {:shape ["m" (v/Vector. radius 0)
-                ["a" radius radius
-                 0 0 0 (v/Vector. (- width) 0)]
-                ["a" radius radius
-                 0 0 0 width 0]
-                "z"]
-        :charge-width width
-        :charge-height width}))))
+(def ^:private base
+  (let [width 100
+        radius (/ width 2)]
+    {:base-shape [["M" radius 0
+                   "a" radius radius 0 0 0 (- width) 0
+                   "a" radius radius 0 0 0 width 0
+                   "z"]]
+     :base-width width
+     :base-height width}))
+
+(defmethod interface/properties charge-type [context]
+  (charge.shared/process-shape context base))
