@@ -41,35 +41,33 @@
                             :default false
                             :ui/label :string.option/wavy-rays?}))))
 
-(defmethod charge.interface/render-charge charge-type
-  [context]
+(defmethod interface/properties charge-type [context]
   (let [eccentricity (interface/get-sanitized-data (c/++ context :eccentricity))
         num-points (interface/get-sanitized-data (c/++ context :num-points))
         wavy-rays? (interface/get-sanitized-data (c/++ context :wavy-rays?))
         angle-step (/ 360 num-points)
-        rayonny-eccentricity 0.3]
-    (charge.shared/make-charge
+        rayonny-eccentricity 0.3
+        width 100
+        radius (/ width 2)
+        small-radius (* radius (- 1 eccentricity))
+        first-point (v/Vector. 0 (- radius))
+        first-valley (v/rotate (v/Vector. 0 (- small-radius))
+                               (/ angle-step 2))]
+    (charge.shared/process-shape
      context
-     :width
-     (fn [width]
-       (let [radius (/ width 2)
-             small-radius (* radius (- 1 eccentricity))
-             first-point (v/Vector. 0 (- radius))
-             first-valley (v/rotate (v/Vector. 0 (- small-radius))
-                                    (/ angle-step 2))]
-         {:shape (conj (into ["M" first-point]
-                             (mapcat (fn [i]
-                                       (let [point (v/rotate first-point (* angle-step i))
-                                             next-point (v/rotate first-point (* angle-step (inc i)))
-                                             valley (v/rotate first-valley (* angle-step i))]
-                                         (if wavy-rays?
-                                           [(rayonny-flaming/curvy-line
-                                             (v/sub valley point) rayonny-eccentricity false)
-                                            (rayonny-flaming/curvy-line
-                                             (v/sub next-point valley) rayonny-eccentricity true)]
-                                           ["L" valley
-                                            "L" next-point]))))
-                             (range num-points))
-                       "z")
-          :charge-width width
-          :charge-height width})))))
+     {:base-shape [(conj (into ["M" first-point]
+                               (mapcat (fn [i]
+                                         (let [point (v/rotate first-point (* angle-step i))
+                                               next-point (v/rotate first-point (* angle-step (inc i)))
+                                               valley (v/rotate first-valley (* angle-step i))]
+                                           (if wavy-rays?
+                                             [(rayonny-flaming/curvy-line
+                                               (v/sub valley point) rayonny-eccentricity false)
+                                              (rayonny-flaming/curvy-line
+                                               (v/sub next-point valley) rayonny-eccentricity true)]
+                                             ["L" valley
+                                              "L" next-point]))))
+                               (range num-points))
+                         "z")]
+      :base-width width
+      :base-height width})))
