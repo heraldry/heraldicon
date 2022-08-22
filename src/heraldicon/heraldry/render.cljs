@@ -2,6 +2,8 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.core :as line]
+   [heraldicon.heraldry.line.fimbriation :as fimbriation]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.outline :as outline]))
 
@@ -54,3 +56,54 @@
           (map (fn [line]
                  [render-line context line]))
           lines)))
+
+(defn shape-fimbriation [context]
+  (let [render-shape (interface/get-render-shape context)
+        fimbriation (interface/get-sanitized-data (c/++ context :fimbriation))
+        line-fimbriation (interface/get-sanitized-data (c/++ context :line :fimbriation))
+        fimbriation (if (and (-> render-shape :lines (get 0) :edge-paths)
+                             (-> fimbriation :mode (or :none) (= :none))
+                             (-> line-fimbriation :mode (or :none) (not= :none)))
+                      line-fimbriation
+                      fimbriation)
+        fimbriation-shape [:path {:d (shape-path render-shape)
+                                  :clip-rule "evenodd"
+                                  :fill-rule "evenodd"}]
+        outline? (or (interface/render-option :outline? context)
+                     (interface/get-sanitized-data (c/++ context :outline?)))]
+    [:g
+     (when (-> fimbriation :mode #{:double})
+       (let [thickness (+ (:thickness-1 fimbriation)
+                          (:thickness-2 fimbriation))]
+         [:<>
+          (when outline?
+            [fimbriation/dilate-and-fill
+             fimbriation-shape
+             (+ thickness (/ outline/stroke-width 2))
+             (outline/color context) context
+             :corner (:corner fimbriation)])
+          [fimbriation/dilate-and-fill
+           fimbriation-shape
+           (cond-> thickness
+             outline? (- (/ outline/stroke-width 2)))
+           (-> fimbriation
+               :tincture-2
+               (tincture/pick context)) context
+           :corner (:corner fimbriation)]]))
+     (when (-> fimbriation :mode #{:single :double})
+       (let [thickness (:thickness-1 fimbriation)]
+         [:<>
+          (when outline?
+            [fimbriation/dilate-and-fill
+             fimbriation-shape
+             (+ thickness (/ outline/stroke-width 2))
+             (outline/color context) context
+             :corner (:corner fimbriation)])
+          [fimbriation/dilate-and-fill
+           fimbriation-shape
+           (cond-> thickness
+             outline? (- (/ outline/stroke-width 2)))
+           (-> fimbriation
+               :tincture-1
+               (tincture/pick context)) context
+           :corner (:corner fimbriation)]]))]))
