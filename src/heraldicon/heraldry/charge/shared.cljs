@@ -464,13 +464,35 @@
                             :min-y min-y
                             :max-y max-y)
         real-width (- max-x min-x)
-        real-height (- max-y min-y)]
+        real-height (- max-y min-y)
+        vertical-mask-shape (when-not (zero? vertical-mask)
+                              (let [fimbriation-percentage-base (min width height)
+                                    {:keys [mode
+                                            thickness-1
+                                            thickness-2]} (some-> (interface/get-sanitized-data (c/++ context :fimbriation))
+                                                                  (update :thickness-1 (partial math/percent-of fimbriation-percentage-base))
+                                                                  (update :thickness-2 (partial math/percent-of fimbriation-percentage-base)))
+                                    margin (+ 3
+                                              (case mode
+                                                :double (+ thickness-1 thickness-2)
+                                                :single thickness-1
+                                                0))
+                                    [mask-min-x mask-max-x] [(- min-x margin) (+ max-x margin)]
+                                    [mask-min-y mask-max-y] (if (pos? vertical-mask)
+                                                              [(- min-y margin) max-y]
+                                                              [min-y (+ max-y margin)])]
+                                (path/make-path
+                                 ["M" mask-min-x mask-min-y
+                                  "H" mask-max-x
+                                  "V" mask-max-y
+                                  "H" mask-min-x
+                                  "z"])))]
     {:type (interface/get-raw-data (c/++ context :type))
      :bounding-box bounding-box
      :width real-width
      :height real-height
      :shape charge-shape
-     :vertical-mask vertical-mask}))
+     :vertical-mask-shape vertical-mask-shape}))
 
 (defmethod interface/environment :heraldry/charge [context {:keys [bounding-box]}]
   (let [{:keys [meta]} (interface/get-parent-environment context)]
