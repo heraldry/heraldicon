@@ -4,7 +4,6 @@
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
    [heraldicon.heraldry.escutcheon :as escutcheon]
-   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
@@ -30,38 +29,32 @@
         (cond->
           (= escutcheon :flag) (merge escutcheon/flag-options)))))
 
-(defmethod charge.interface/render-charge charge-type
-  [context]
-  (let [escutcheon (interface/get-sanitized-data (c/++ context :escutcheon))]
-    (charge.shared/make-charge
+(defmethod interface/properties charge-type [context]
+  (let [escutcheon (interface/get-sanitized-data (c/++ context :escutcheon))
+        env (if (= escutcheon :none)
+              (escutcheon/field
+               (interface/render-option :escutcheon context)
+               (interface/render-option :flag-width context)
+               (interface/render-option :flag-height context)
+               (interface/render-option :flag-swallow-tail context)
+               (interface/render-option :flag-tail-point-height context)
+               (interface/render-option :flag-tail-tongue context))
+              (escutcheon/field
+               escutcheon
+               (interface/get-sanitized-data (c/++ context :flag-width))
+               (interface/get-sanitized-data (c/++ context :flag-height))
+               (interface/get-sanitized-data (c/++ context :flag-swallow-tail))
+               (interface/get-sanitized-data (c/++ context :flag-tail-point-height))
+               (interface/get-sanitized-data (c/++ context :flag-tail-tongue))))
+        env-fess (-> env :points :fess)
+        offset (v/mul env-fess -1)]
+    (charge.shared/process-shape
      context
-     :width
-     (fn [width]
-       (let [env (environment/transform-to-width
-                  (if (= escutcheon :none)
-                    (escutcheon/field
-                     (interface/render-option :escutcheon context)
-                     (interface/render-option :flag-width context)
-                     (interface/render-option :flag-height context)
-                     (interface/render-option :flag-swallow-tail context)
-                     (interface/render-option :flag-tail-point-height context)
-                     (interface/render-option :flag-tail-tongue context))
-                    (escutcheon/field
-                     escutcheon
-                     (interface/get-sanitized-data (c/++ context :flag-width))
-                     (interface/get-sanitized-data (c/++ context :flag-height))
-                     (interface/get-sanitized-data (c/++ context :flag-swallow-tail))
-                     (interface/get-sanitized-data (c/++ context :flag-tail-point-height))
-                     (interface/get-sanitized-data (c/++ context :flag-tail-tongue))))
-                  width)
-             env-fess (-> env :points :fess)
-             offset (v/mul env-fess -1)]
-         {:shape {:paths (into []
-                               (map #(-> %
-                                         path/parse-path
-                                         (path/translate (:x offset) (:y offset))
-                                         path/to-svg))
-                               (-> env :shape :paths))}
-          :charge-top-left offset
-          :charge-width (:width env)
-          :charge-height (:height env)})))))
+     {:base-shape (mapv #(-> %
+                             path/parse-path
+                             (path/translate (:x offset) (:y offset))
+                             path/to-svg)
+                        (-> env :shape :paths))
+      :base-top-left offset
+      :basr-width (:width env)
+      :base-height (:height env)})))
