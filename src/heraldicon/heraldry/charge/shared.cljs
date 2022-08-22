@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as s]
    [heraldicon.context :as c]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.heraldry.tincture :as tincture]
@@ -359,3 +360,125 @@
            [:g (outline/style context)
             [:path {:d (s/join "" (:paths charge-shape))}]])]]])
     [:<>]))
+
+(defn process-shape [{:keys [size-default
+                             anchor-override
+                             charge-group
+                             auto-resize?]
+                      :or {auto-resize? true}
+                      :as context}
+                     {:keys [base-shape base-width base-height base-top-left]}]
+  (let [{:keys [width height points]
+         :as parent-environment} (interface/get-parent-environment context)
+        {:keys [left right top bottom]} points
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        orientation (interface/get-sanitized-data (c/++ context :orientation))
+        vertical-mask (interface/get-sanitized-data (c/++ context :vertical-mask))
+        size (if (interface/get-raw-data (c/++ context :geometry :size))
+               (interface/get-sanitized-data (c/++ context :geometry :size))
+               (if auto-resize?
+                 size-default
+                 nil))
+        stretch (interface/get-sanitized-data (c/++ context :geometry :stretch))
+        mirrored? (interface/get-sanitized-data (c/++ context :geometry :mirrored?))
+        reversed? (interface/get-sanitized-data (c/++ context :geometry :reversed?))
+        squiggly? (interface/render-option :squiggly? context)
+        {:keys [slot-spacing
+                slot-angle]} charge-group
+        environment-for-anchor (if anchor-override
+                                 (assoc-in parent-environment [:points :special] anchor-override)
+                                 parent-environment)
+        anchor (if anchor-override
+                 {:point :special
+                  :offset-x 0
+                  :offset-y 0}
+                 anchor)
+        {anchor-point :real-anchor
+         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
+                                               environment-for-anchor
+                                               anchor
+                                               orientation
+                                               0
+                                               -90)
+        angle (+ (v/angle-to-point anchor-point orientation-point)
+                 90)
+        min-x-distance (or (some-> slot-spacing :width (/ 2) (/ 0.9))
+                           (min (- (:x anchor-point) (:x left))
+                                (- (:x right) (:x anchor-point))))
+        min-y-distance (or (some-> slot-spacing :height (/ 2) (/ 0.8))
+                           (min (- (:y anchor-point) (:y top))
+                                (- (:y bottom) (:y anchor-point))))
+        target-width (if size
+                       (math/percent-of width size)
+                       (* min-x-distance 2 0.8))
+        target-height (/ (if size
+                           (math/percent-of height size)
+                           (* min-y-distance 2 0.7))
+                         stretch)
+        angle (if (and (-> orientation :point (= :angle))
+                       slot-angle)
+                (if (< base-height base-width)
+                  (+ angle slot-angle 90)
+                  (+ angle slot-angle))
+                angle)
+        scale-x (* (if mirrored? -1 1)
+                   (min (/ target-width base-width)
+                        (/ target-height base-height)))
+        scale-y (* (if reversed? -1 1)
+                   (Math/abs scale-x)
+                   stretch)
+        base-top-left (or base-top-left
+                          (v/div (v/Vector. base-width base-height)
+                                 -2))
+        charge-shape (into []
+                           (map #(-> %
+                                     path/make-path
+                                     path/parse-path
+                                     (path/scale scale-x scale-y)
+                                     (cond->
+                                       squiggly? (->
+                                                   path/to-svg
+                                                   squiggly/squiggly-path
+                                                   path/parse-path)
+                                       (not= angle 0) (.rotate angle))
+                                     (path/translate (:x anchor-point) (:y anchor-point))
+                                     path/to-svg))
+                           base-shape)
+        {:keys [min-x max-x
+                min-y max-y]
+         :as bounding-box} (bb/translate
+                            (bb/rotate base-top-left
+                                       (v/add base-top-left
+                                              (v/Vector. base-width
+                                                         base-height))
+                                       angle
+                                       :middle v/zero
+                                       :scale (v/Vector. scale-x scale-y))
+                            anchor-point)
+        unmasked-height (- max-y min-y)
+        mask-height (math/percent-of unmasked-height (Math/abs vertical-mask))
+        [min-y max-y] (if (pos? vertical-mask)
+                        [min-y (max min-y (- max-y mask-height))]
+                        [(min max-y (+ min-y mask-height)) max-y])
+        bounding-box (assoc bounding-box
+                            :min-y min-y
+                            :max-y max-y)
+        real-width (- max-x min-x)
+        real-height (- max-y min-y)]
+    {:type (interface/get-raw-data (c/++ context :type))
+     :bounding-box bounding-box
+     :width real-width
+     :height real-height
+     :shape charge-shape
+     :vertical-mask vertical-mask}))
+
+(defmethod interface/environment :heraldry/charge [context {:keys [bounding-box]}]
+  (let [{:keys [meta]} (interface/get-parent-environment context)]
+    (environment/create
+     {:paths nil}
+     (-> meta
+         (dissoc :context)
+         (assoc :bounding-box bounding-box)))))
+
+(defmethod interface/render-shape :heraldry/charge [_context {:keys [shape]}]
+  {:shape shape})

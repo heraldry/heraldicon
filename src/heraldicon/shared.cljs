@@ -10,6 +10,7 @@
    [heraldicon.heraldry.charge.core]
    [heraldicon.heraldry.charge.options]
    [heraldicon.heraldry.charge.other]
+   [heraldicon.heraldry.charge.render]
    [heraldicon.heraldry.coat-of-arms]
    [heraldicon.heraldry.cottising]
    [heraldicon.heraldry.field.core]

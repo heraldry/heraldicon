@@ -141,7 +141,6 @@
         variant (interface/get-sanitized-data (c/++ context :variant))
         truncated? (= variant :truncated)
         num-points (interface/get-sanitized-data (c/++ context :num-points))
-        label-width (interface/get-sanitized-data (c/++ context :geometry :width))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         thickness (interface/get-sanitized-data (c/++ context :geometry :thickness))
         eccentricity (interface/get-sanitized-data (c/++ context :geometry :eccentricity))
@@ -149,6 +148,8 @@
         percentage-base-height (:height parent-environment)
         band-size (math/percent-of percentage-base-height thickness)
         percentage-base-width (:width parent-environment)
+        label-width (math/percent-of percentage-base-width
+                                     (interface/get-sanitized-data (c/++ context :geometry :width)))
         point-width (math/percent-of percentage-base-width size)
         point-height (* point-width stretch)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
