@@ -585,6 +585,15 @@
                  :license :public-domain
                  :username "Azure"}})
 
+(def ^:private community-octolozenge
+  {:environment (environment/create
+                 "M 100,50 C 90.735009,54.857758 80.576139,71.934914 83.497312,83.456671 72.00358,80.528445 54.967999,90.712116 50.121912,100 45.27583,90.712116 28.240723,80.528491 16.6246,83.456671 19.423765,71.934914 9.2649914,54.857758 0,50 9.2649914,45.142242 19.423861,28.065088 16.502686,16.54333 27.996418,19.471604 45.032001,9.2878843 49.999998,0 54.967999,9.2878843 72.003104,19.471509 83.497312,16.54333 80.576184,28.065088 90.735009,45.142242 100,50 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 100)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "Azure"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:string.escutcheon.type/heater #'heater]
@@ -625,7 +634,8 @@
     ["African" #'community-african]
     ["Scutum" #'community-scutum]
     ["Rhombus" #'community-rhombus]
-    ["Queen's Consort" #'community-queens-consort]]])
+    ["Queen's Consort" #'community-queens-consort]
+    ["Octolozenge" #'community-octolozenge]]])
 
 (def ^:private kinds-map
   (into {}
