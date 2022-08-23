@@ -38,8 +38,7 @@
                            :fill "#ffffff"}]]]
                  [:g {:transform (str "translate(" margin "," margin ")")}
                   [tincture/tinctured-field tincture-context
-                   :mask-id mask-id
-                   :transform (str "translate(" (- margin) "," (- margin) ")")]
+                   :mask-id mask-id]
                   [:rect {:width width
                           :height height
                           :stroke "#0f0f0f"
