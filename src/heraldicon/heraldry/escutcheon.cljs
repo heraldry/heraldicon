@@ -549,6 +549,15 @@
                  :license :public-domain
                  :username "korfi2go"}})
 
+(def ^:private community-rhombus
+  {:environment (environment/create
+                 "M 50,0 L 100,50 L 50,100 L 0,50 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 100)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "Bananasplit1611"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:string.escutcheon.type/heater #'heater]
@@ -585,7 +594,8 @@
     ["Scutum" #'community-scutum]
     ["French Slim" #'community-french-slim]
     ["Louisiana" #'community-louisiana]
-    ["Kalasag" #'community-kalasag]]])
+    ["Kalasag" #'community-kalasag]
+    ["Rhombus" #'community-rhombus]]])
 
 (def ^:private kinds-map
   (into {}
