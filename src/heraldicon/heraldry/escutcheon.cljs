@@ -641,20 +641,20 @@
     ["Pointed Heater" #'community-heater-pointed]
     ["Rounded Heater" #'community-heater-rounded]
     ["Triangular" #'community-triangular]
+    ["French Slim" #'community-french-slim]
+    ["NRW" #'community-nrw]
     ["American" #'community-american]
-    ["Italian" #'community-italian]
+    ["Louisiana" #'community-louisiana]
     ["German" #'community-german]
     ["Innsbruck" #'community-innsbruck]
-    ["NRW" #'community-nrw]
-    ["French Slim" #'community-french-slim]
-    ["Louisiana" #'community-louisiana]
-    ["Kalasag" #'community-kalasag]
-    ["African" #'community-african]
-    ["Scutum" #'community-scutum]
-    ["Rhombus" #'community-rhombus]
     ["Queen's Consort" #'community-queens-consort]
     ["Queen's Consort Modern" #'community-queens-consort-modern]
-    ["Octolozenge" #'community-octolozenge]]])
+    ["Octolozenge" #'community-octolozenge]
+    ["Rhombus" #'community-rhombus]
+    ["Italian" #'community-italian]
+    ["African" #'community-african]
+    ["Kalasag" #'community-kalasag]
+    ["Scutum" #'community-scutum]]])
 
 (def ^:private kinds-map
   (into {}
