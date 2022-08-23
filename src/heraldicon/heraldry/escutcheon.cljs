@@ -454,6 +454,14 @@
    :attribution {:license :public-domain
                  :username "vairy"}})
 
+(def ^:private community-innsbruck
+  {:environment (environment/create
+                 "M 91.010471,0.47464845 C 66.714491,-1.6621576 0.810543,2.9581254 0,23.749 25.532311,4.7047164 29.708341,35.4882 5.304801,30.89755 c 3.7562,2.19452 2.60989,8.7176 0.99465,22.11063 -5.305876,43.99443 38.6147,49.50558 42.60417,68.99182 13.01009,-22.07717 49.70929,-24.11915 51.0587,-69.15807 0.513209,-17.12945 -4.30604,-41.002575 -8.95185,-52.36728155 z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 122)})
+   :attribution {:license :public-domain
+                 :username "vairy"}})
+
 (def ^:private community-heater-bulgy
   {:environment (environment/create
                  "m 50,0 c 10,0 20,0 40,5 5,30 10,50 10,70 0,30 -25,45 -50,60 -25,-15 -50,-30 -50,-60
@@ -627,6 +635,7 @@
     ["American" #'community-american]
     ["Italian" #'community-italian]
     ["German" #'community-german]
+    ["Innsbruck" #'community-innsbruck]
     ["NRW" #'community-nrw]
     ["French Slim" #'community-french-slim]
     ["Louisiana" #'community-louisiana]
