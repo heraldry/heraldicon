@@ -549,6 +549,24 @@
                  :license :public-domain
                  :username "korfi2go"}})
 
+(def ^:private community-italian
+  {:environment (environment/create
+                 "M 50,0 C 35,0 25,10 25,10 15,20 0,20 0,20 c 0,60 15,70 15,70 0,0 15,15 15,35 0,35 20,35 20,35 0,0 20,0 20,-35 0,-20 15,-35 15,-35 0,0 15,-10 15,-70 0,0 -15,0 -25,-10 C 75,10 65,0 50,0 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 160)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
+
+(def ^:private community-nrw
+  {:environment (environment/create
+                 "M 10,7 C 5,7 0,5 0,5 0,5 2,10 2,15 v 65 c 0,15 13,25 23,30 20,10 25,15 25,15 0,0 5,-5 25,-15 10,-5 23,-15 23,-30 V 15 C 98,10 100,5 100,5 100,5 95,7 90,7 80,7 70,0 60,0 50,0 50,5 50,5 50,5 50,0 40,0 30,0 20,7 10,7 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 125)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "korfi2go"}})
+
 (def ^:private community-rhombus
   {:environment (environment/create
                  "M 50,0 L 100,50 L 50,100 L 0,50 Z"
@@ -587,14 +605,16 @@
     ["Bulgy Heater" #'community-heater-bulgy]
     ["Pointed Heater" #'community-heater-pointed]
     ["Rounded Heater" #'community-heater-rounded]
-    ["American" #'community-american]
-    ["German" #'community-german]
-    ["African" #'community-african]
     ["Triangular" #'community-triangular]
-    ["Scutum" #'community-scutum]
+    ["American" #'community-american]
+    ["Italian" #'community-italian]
+    ["German" #'community-german]
+    ["NRW" #'community-nrw]
     ["French Slim" #'community-french-slim]
     ["Louisiana" #'community-louisiana]
     ["Kalasag" #'community-kalasag]
+    ["African" #'community-african]
+    ["Scutum" #'community-scutum]
     ["Rhombus" #'community-rhombus]]])
 
 (def ^:private kinds-map
