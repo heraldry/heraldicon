@@ -584,11 +584,20 @@
                  :license :public-domain
                  :username "Bananasplit1611"}})
 
-(def ^:private community-queens-consort
+(def ^:private community-queens-consort-modern
   {:environment (environment/create
                  "m 50,0 c 0,0 -9.494151,12.643461 -22.473589,10.987261 0,0 -4.767819,10.401769 -27.526411,6.654218 0,0 14.196854,35.081974 3.7934578,71.435548 0,0 16.0784912,1.395807 23.6211622,16.054983 0,0 12.815277,-3.15411 22.58538,4.86799 9.770103,-8.0221 22.58538,-4.86799 22.58538,-4.86799 C 80.12805,90.472834 96.206541,89.077027 96.206541,89.077027 85.803143,52.723453 100,17.641479 100,17.641479 77.24141,21.38903 72.473589,10.987261 72.473589,10.987261 59.494151,12.643461 50,0 50,0 Z"
                  {:context :root
                   :bounding-box (bb/BoundingBox. 0 100 0 110)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "Azure"}})
+
+(def ^:private community-queens-consort
+  {:environment (environment/create
+                 "M 27.525575,85.776231 C 8.76938,89.100699 1.1734521,78.586662 1.3765338,69.266866 1.7505414,52.102977 16.672696,31.57301 0,17.721581 l 5.9022079,-6.29239 C 13.617952,12.076602 15.659962,2.0017698 27.60419,9.4773365 33.733164,-1.4890056 44.445825,3.1114914 49.999999,0 55.554174,3.1114914 66.266836,-1.4890056 72.39581,9.4773365 84.340038,2.0017698 86.382048,12.076602 94.097791,11.429191 L 100,17.721581 C 83.327303,31.57301 98.249458,52.102977 98.623465,69.266866 98.826546,78.586662 91.230619,89.100699 72.474424,85.776231 71.1126,96.076868 54.053414,94.72803 49.999999,99.999996 45.946585,94.72803 28.8874,96.076868 27.525575,85.776231 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 100)})
    :attribution {:nature :own-work
                  :license :public-domain
                  :username "Azure"}})
@@ -644,6 +653,7 @@
     ["Scutum" #'community-scutum]
     ["Rhombus" #'community-rhombus]
     ["Queen's Consort" #'community-queens-consort]
+    ["Queen's Consort Modern" #'community-queens-consort-modern]
     ["Octolozenge" #'community-octolozenge]]])
 
 (def ^:private kinds-map
