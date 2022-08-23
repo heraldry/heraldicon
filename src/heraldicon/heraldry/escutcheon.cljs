@@ -576,6 +576,15 @@
                  :license :public-domain
                  :username "Bananasplit1611"}})
 
+(def ^:private community-queens-consort
+  {:environment (environment/create
+                 "m 50,0 c 0,0 -9.494151,12.643461 -22.473589,10.987261 0,0 -4.767819,10.401769 -27.526411,6.654218 0,0 14.196854,35.081974 3.7934578,71.435548 0,0 16.0784912,1.395807 23.6211622,16.054983 0,0 12.815277,-3.15411 22.58538,4.86799 9.770103,-8.0221 22.58538,-4.86799 22.58538,-4.86799 C 80.12805,90.472834 96.206541,89.077027 96.206541,89.077027 85.803143,52.723453 100,17.641479 100,17.641479 77.24141,21.38903 72.473589,10.987261 72.473589,10.987261 59.494151,12.643461 50,0 50,0 Z"
+                 {:context :root
+                  :bounding-box (bb/BoundingBox. 0 100 0 110)})
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "Azure"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:string.escutcheon.type/heater #'heater]
@@ -615,7 +624,8 @@
     ["Kalasag" #'community-kalasag]
     ["African" #'community-african]
     ["Scutum" #'community-scutum]
-    ["Rhombus" #'community-rhombus]]])
+    ["Rhombus" #'community-rhombus]
+    ["Queen's Consort" #'community-queens-consort]]])
 
 (def ^:private kinds-map
   (into {}
