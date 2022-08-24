@@ -656,3 +656,25 @@
                                  :fill "#ffffe8"
                                  :style {:opacity (:highlight tincture)}}]])])])]])
       [:<>])))
+
+(derive :heraldry.charge.type/other :heraldry/charge)
+
+(defmethod interface/properties :heraldry.charge.type/other [{:keys [load-charge-data] :as context}]
+  (let [data (interface/get-raw-data (c/++ context :data))
+        variant (interface/get-raw-data (c/++ context :variant))
+        full-entity-data (or data (when variant (load-charge-data variant)))
+        full-charge-data (:data full-entity-data)
+        charge-data (:edn-data full-charge-data)
+        base-width (js/parseFloat (-> charge-data :width (or "1")))
+        base-height (js/parseFloat (-> charge-data :height (or "1")))
+        unadjusted-charge (svg/strip-clip-paths (:data charge-data))]
+    (charge.shared/process-shape
+     context
+     {:base-shape [["M" (- (/ base-width 2)) (- (/ base-height 2))
+                    "h" base-width
+                    "v" base-height
+                    "h" (- base-width)
+                    "z"]]
+      :base-width base-width
+      :base-height base-height
+      :unadjusted-charge unadjusted-charge})))

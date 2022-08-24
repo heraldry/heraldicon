@@ -23,7 +23,18 @@
     :else @(rf/subscribe [:get path])))
 
 (defn effective-component-type [context]
-  (component/effective-type (get-raw-data (c/++ context :type))))
+  (let [component-type (component/effective-type (get-raw-data (c/++ context :type)))]
+    (if (some-> component-type namespace (= "heraldry.charge.type"))
+      (let [data (get-raw-data (c/++ context :data))
+            variant (get-raw-data (c/++ context :variant))]
+        ;; TODO: this would fail if there's ever a charge-type for which no render method
+        ;; exists and no variant is given
+        (if (or data
+                (seq variant)
+                (= component-type :heraldry.charge.type/preview))
+          :heraldry.charge.type/other
+          component-type))
+      component-type)))
 
 (defmulti options (fn [{:keys [dispatch-value] :as context}]
                     (or dispatch-value
