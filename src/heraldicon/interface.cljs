@@ -218,10 +218,12 @@
              (get (:index subfield)))
          (environment context (get-properties context)))))))
 
-(defn get-parent-environment [context]
-  (if (cottise-context? context)
-    @(rf/subscribe [::environment (parent (parent context))])
-    @(rf/subscribe [::environment (parent context)])))
+(defn get-parent-environment [{:keys [parent-environment]
+                               :as context}]
+  (or parent-environment
+      (if (cottise-context? context)
+        @(rf/subscribe [::environment (parent (parent context))])
+        @(rf/subscribe [::environment (parent context)]))))
 
 (defmulti render-shape (fn [_context properties]
                          (:type properties)))
