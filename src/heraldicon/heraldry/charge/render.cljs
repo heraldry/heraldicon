@@ -1,6 +1,7 @@
 (ns heraldicon.heraldry.charge.render
   (:require
    [heraldicon.context :as c]
+   [heraldicon.heraldry.charge.other :as other]
    [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.heraldry.render :as render]
    [heraldicon.interface :as interface]
@@ -10,7 +11,9 @@
                                                          :as context}]
   (let [shape-clip-path-id (uid/generate "clip")
         vertical-mask-clip-path-id (uid/generate "clip")
-        {:keys [vertical-mask-shape]} (interface/get-properties context)]
+        {:keys [vertical-mask-shape
+                other?]
+         :as properties} (interface/get-properties context)]
     [:g
      (when vertical-mask-shape
        [:defs
@@ -25,14 +28,17 @@
            {(if svg-export?
               :mask
               :clip-path) (str "url(#" vertical-mask-clip-path-id ")")})
-      [:defs
-       [(if svg-export?
-          :mask
-          :clipPath) {:id shape-clip-path-id}
-        [render/shape-mask context]]]
-      [render/shape-fimbriation context]
-      [:g {(if svg-export?
+      (if other?
+        [other/render context properties]
+        [:<>
+         [:defs
+          [(if svg-export?
              :mask
-             :clip-path) (str "url(#" shape-clip-path-id ")")}
-       [field.render/render (c/++ context :field)]]
-      [render/charge-edges context]]]))
+             :clipPath) {:id shape-clip-path-id}
+           [render/shape-mask context]]]
+         [render/shape-fimbriation context]
+         [:g {(if svg-export?
+                :mask
+                :clip-path) (str "url(#" shape-clip-path-id ")")}
+          [field.render/render (c/++ context :field)]]
+         [render/charge-edges context]])]]))
