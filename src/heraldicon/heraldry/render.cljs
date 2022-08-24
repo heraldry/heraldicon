@@ -58,8 +58,10 @@
                  [render-line context line]))
           lines)))
 
-(defn shape-fimbriation [context]
-  (let [render-shape (interface/get-render-shape context)
+(defn shape-fimbriation [context & {:keys [fimbriation-shape transform scale]
+                                    :or {scale 1}}]
+  (let [render-shape (when-not fimbriation-shape
+                       (interface/get-render-shape context))
         {:keys [width height]} (interface/get-parent-environment context)
         fimbriation-percentage-base (min width height)
         fimbriation (some-> (interface/get-sanitized-data (c/++ context :fimbriation))
@@ -71,9 +73,10 @@
                              (-> line-fimbriation :mode (or :none) (not= :none)))
                       line-fimbriation
                       fimbriation)
-        fimbriation-shape [:path {:d (shape-path render-shape)
-                                  :clip-rule "evenodd"
-                                  :fill-rule "evenodd"}]
+        fimbriation-shape (or fimbriation-shape
+                              [:path {:d (shape-path render-shape)
+                                      :clip-rule "evenodd"
+                                      :fill-rule "evenodd"}])
         outline? (edge-outline? context)]
     [:g
      (when (-> fimbriation :mode #{:double})
@@ -85,6 +88,8 @@
              fimbriation-shape
              (+ thickness (/ outline/stroke-width 2))
              (outline/color context) context
+             :scale scale
+             :transform transform
              :corner (:corner fimbriation)])
           [fimbriation/dilate-and-fill
            fimbriation-shape
@@ -93,6 +98,8 @@
            (-> fimbriation
                :tincture-2
                (tincture/pick context)) context
+           :scale scale
+           :transform transform
            :corner (:corner fimbriation)]]))
      (when (-> fimbriation :mode #{:single :double})
        (let [thickness (:thickness-1 fimbriation)]
@@ -102,6 +109,8 @@
              fimbriation-shape
              (+ thickness (/ outline/stroke-width 2))
              (outline/color context) context
+             :scale scale
+             :transform transform
              :corner (:corner fimbriation)])
           [fimbriation/dilate-and-fill
            fimbriation-shape
@@ -110,4 +119,6 @@
            (-> fimbriation
                :tincture-1
                (tincture/pick context)) context
+           :scale scale
+           :transform transform
            :corner (:corner fimbriation)]]))]))

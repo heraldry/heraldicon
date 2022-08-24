@@ -146,9 +146,11 @@
                  data))
 
 (defn dilate-and-fill [shape thickness color {:keys [svg-export?]}
-                       & {:keys [transform corner]}]
+                       & {:keys [transform corner scale]
+                          :or {scale 1}}]
   (let [mask-id (uid/generate "mask")
-        linejoin-value (linejoin corner)]
+        linejoin-value (linejoin corner)
+        thickness (* scale thickness)]
     [:<>
      [:defs
       [:mask {:id mask-id}

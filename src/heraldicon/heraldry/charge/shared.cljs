@@ -194,7 +194,8 @@
                              auto-resize?]
                       :or {auto-resize? true}
                       :as context}
-                     {:keys [base-shape base-width base-height base-top-left]}]
+                     {:keys [base-shape base-width base-height base-top-left]
+                      :as base-properties}]
   (let [{:keys [width height points]
          :as parent-environment} (interface/get-parent-environment context)
         {:keys [left right top bottom]} points
@@ -280,11 +281,17 @@
                                (bb/translate anchor-point))]
     (apply-vertical-mask
      context
-     {:type (interface/get-raw-data (c/++ context :type))
-      :bounding-box bounding-box
-      :width (- max-x min-x)
-      :height (- max-y min-y)
-      :shape charge-shape})))
+     (merge base-properties
+            {:type (interface/get-raw-data (c/++ context :type))
+             :bounding-box bounding-box
+             :width (- max-x min-x)
+             :height (- max-y min-y)
+             :shape charge-shape
+             :anchor-point anchor-point
+             :scale-x scale-x
+             :scale-y scale-y
+             :angle angle
+             :top-left base-top-left}))))
 
 (defmethod interface/environment :heraldry/charge [context {:keys [bounding-box]}]
   (let [{:keys [meta]} (interface/get-parent-environment context)]
