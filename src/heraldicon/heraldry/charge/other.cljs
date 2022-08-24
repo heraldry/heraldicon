@@ -397,8 +397,7 @@
                       (v/sub))
             {:keys [min-x max-x
                     min-y max-y]} (bb/rotate
-                                   shift
-                                   (v/dot shift (v/Vector. -1 -1))
+                                   (bb/from-points [shift (v/dot shift (v/Vector. -1 -1))])
                                    angle
                                    :scale (v/Vector. scale-x scale-y))
             extra-margin (-> (case (:mode fimbriation)

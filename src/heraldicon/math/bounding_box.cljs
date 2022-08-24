@@ -23,6 +23,9 @@
 (defn from-vector ^BoundingBox [^v/Vector {x :x y :y}]
   (BoundingBox. x x y y))
 
+(defn from-vector-and-size ^BoundingBox [^v/Vector {x :x y :y} width height]
+  (BoundingBox. x (+ x width) y (+ y height)))
+
 (defn from-points ^BoundingBox [[^v/Vector v & more]]
   (reduce combine (from-vector v) (map from-vector more)))
 
@@ -34,11 +37,11 @@
                 paths)]
     (from-points points)))
 
-(defn rotate ^BoundingBox [^v/Vector {x1 :x y1 :y :as v1}
-                           ^v/Vector {x2 :x y2 :y :as v2}
+(defn rotate ^BoundingBox [^BoundingBox {x1 :min-x x2 :max-x
+                                         y1 :min-y y2 :max-y}
                            ^js/Number rotation & {:keys [^v/Vector middle ^v/Vector scale]}]
   (let [middle (or middle
-                   (v/avg v1 v2))
+                   (v/avg (v/Vector. x1 y1) (v/Vector. x2 y2)))
         scale (or scale
                   (v/Vector. 1 1))
         points [(v/add middle
