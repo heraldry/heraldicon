@@ -272,15 +272,12 @@
                            base-shape)
         {:keys [min-x max-x
                 min-y max-y]
-         :as bounding-box} (bb/translate
-                            (bb/rotate base-top-left
-                                       (v/add base-top-left
-                                              (v/Vector. base-width
-                                                         base-height))
-                                       angle
-                                       :middle v/zero
-                                       :scale (v/Vector. scale-x scale-y))
-                            anchor-point)]
+         :as bounding-box} (-> (bb/from-vector-and-size
+                                base-top-left base-width base-height)
+                               (bb/rotate angle
+                                          :middle v/zero
+                                          :scale (v/Vector. scale-x scale-y))
+                               (bb/translate anchor-point))]
     (apply-vertical-mask
      context
      {:type (interface/get-raw-data (c/++ context :type))
