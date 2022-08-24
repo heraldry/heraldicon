@@ -1,7 +1,6 @@
 (ns heraldicon.heraldry.semy
   (:require
    [heraldicon.context :as c]
-   [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.math.vector :as v]
@@ -71,30 +70,20 @@
                                  [k (v/add v point)]))
                           points))))
 
-(defmethod interface/render-component :heraldry/semy [context]
-  (let [environment (:environment context)
-        points (:points environment)
-        top-left (:top-left points)
-        bottom-right (:bottom-right points)
+(defmethod interface/properties :heraldry/semy [context]
+  (let [{:keys [points width height]} (interface/get-parent-environment context)
+        {:keys [top-left]} points
         rectangular? (interface/get-sanitized-data (c/++ context :rectangular?))
         num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
         raw-num-fields-y (interface/get-raw-data (c/++ context :layout :num-fields-y))
-        offset-x (interface/get-sanitized-data (c/++ context :layout :offset-x))
-        offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
-        stretch-x (interface/get-sanitized-data (c/++ context :layout :stretch-x))
-        stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
+        offset-x (or (interface/get-sanitized-data (c/++ context :layout :offset-x)) 0)
+        offset-y (or (interface/get-sanitized-data (c/++ context :layout :offset-y)) 0)
+        stretch-x (or (interface/get-sanitized-data (c/++ context :layout :stretch-x)) 0)
+        stretch-y (or (interface/get-sanitized-data (c/++ context :layout :stretch-y)) 0)
         rotation (interface/get-sanitized-data (c/++ context :layout :rotation))
-        offset-x (or offset-x 0)
-        stretch-x (or stretch-x 1)
-        width (- (:x bottom-right)
-                 (:x top-left))
         unstretched-part-width (/ width num-fields-x)
         part-width (* unstretched-part-width stretch-x)
-        offset-y (or offset-y 0)
-        stretch-y (or stretch-y 1)
-        height (- (:y bottom-right)
-                  (:y top-left))
         unstretched-part-height (if raw-num-fields-y
                                   (/ height num-fields-y)
                                   part-width)
@@ -104,7 +93,23 @@
         shift-x (- middle-x
                    (* middle-x stretch-x))
         shift-y (- middle-y
-                   (* middle-y stretch-y))
+                   (* middle-y stretch-y))]
+    {:type :heraldry/semy
+     :rectangular? rectangular?
+     :top-left (v/add top-left
+                      (v/dot (v/Vector. offset-x offset-y)
+                             (v/Vector. part-width part-height))
+                      (v/Vector. shift-x shift-y))
+     :part-width part-width
+     :part-height part-height
+     :rotation rotation
+     :num-fields-x num-fields-x
+     :num-fields-y num-fields-y}))
+
+(defmethod interface/render-component :heraldry/semy [context]
+  (let [{:keys [rectangular? top-left
+                part-width part-height
+                rotation]} (interface/get-properties context)
         pattern-id (uid/generate "semy")
         part-width-half (/ part-width 2)
         part-height-half (/ part-height 2)
@@ -122,25 +127,22 @@
         charge-context (-> context
                            (c/++ :charge)
                            (assoc :size-default 50
-                                  :environment charge-environment))]
+                                  :parent-environment charge-environment))]
+    ;; TODO: reverse transform inside charge
     [:g
      [:defs
       (into [:pattern {:id pattern-id
                        :width part-width
                        :height part-height
-                       :x (+ (:x top-left)
-                             (* part-width offset-x)
-                             shift-x)
-                       :y (+ (:y top-left)
-                             (* part-height offset-y)
-                             shift-y)
+                       :x (:x top-left)
+                       :y (:y top-left)
                        :pattern-units "userSpaceOnUse"}]
             (map-indexed (fn [idx shift]
                            ^{:key idx}
-                           [charge.interface/render-charge
+                           [interface/render-component
                             (-> charge-context
                                 (assoc :anchor-override shift)
-                                (update :environment shift-environment shift))]))
+                                (update :parent-environment shift-environment shift))]))
             (cond->
               [v/zero
                (v/Vector. part-width 0)
