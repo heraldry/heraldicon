@@ -20,7 +20,6 @@
    [heraldicon.frontend.title :as title]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
-   [heraldicon.render.coat-of-arms :as coat-of-arms]
    [re-frame.core :as rf]))
 
 (defn- render-add-arms [x y size]
@@ -75,29 +74,27 @@
         {:keys [_status entity]} (when arms-id
                                    @(rf/subscribe [::entity-for-rendering/data arms-id version]))
         collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
-        {:keys [result
-                environment]} (coat-of-arms/render
-                               (-> shared/coa-select-option-context
-                                   (c/<< :path [:context :coat-of-arms])
-                                   (c/<< :render-options (merge-with
-                                                          (fn [old new]
-                                                            (if (nil? new)
-                                                              old
-                                                              new))
-                                                          (:render-options shared/coa-select-option-context)
-                                                          (-> entity :data :achievement :render-options)
-                                                          collection-render-options))
-                                   (c/<< :coat-of-arms
-                                         (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
-                                           coat-of-arms
-                                           default/coat-of-arms)))
-                               size)
-        {:keys [width height]} environment]
+        context (-> shared/coa-select-option-context
+                    (c/<< :target-width size)
+                    (c/<< :path [:context :coat-of-arms])
+                    (c/<< :render-options (merge-with
+                                           (fn [old new]
+                                             (if (nil? new)
+                                               old
+                                               new))
+                                           (:render-options shared/coa-select-option-context)
+                                           (-> entity :data :achievement :render-options)
+                                           collection-render-options))
+                    (c/<< :coat-of-arms
+                          (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
+                            coat-of-arms
+                            default/coat-of-arms)))
+        {:keys [width height]} (interface/get-environment context)]
     [:g
      [:title (:name data)]
      [arms-highlight path x y width height]
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
-      result
+      [interface/render-component context]
       [:text {:x (/ width 2)
               :y (+ height 10 font-size)
               :text-anchor "middle"
@@ -189,24 +186,21 @@
           collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})]
       (when (or (not arms-id)
                 (= status :done))
-        (let [{:keys [result
-                      environment]} (coat-of-arms/render
-                                     (-> shared/coa-select-option-context
-                                         (c/<< :path [:context :coat-of-arms])
-                                         (c/<< :render-options (merge-with
-                                                                (fn [old new]
-                                                                  (if (nil? new)
-                                                                    old
-                                                                    new))
-                                                                (:render-options shared/coa-select-option-context)
-                                                                (-> entity :data :achievement :render-options)
-                                                                collection-render-options))
-                                         (c/<< :coat-of-arms
-                                               (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
-                                                 coat-of-arms
-                                                 default/coat-of-arms)))
-                                     100)
-              {:keys [width height]} environment]
+        (let [context (-> shared/coa-select-option-context
+                          (c/<< :path [:context :coat-of-arms])
+                          (c/<< :render-options (merge-with
+                                                 (fn [old new]
+                                                   (if (nil? new)
+                                                     old
+                                                     new))
+                                                 (:render-options shared/coa-select-option-context)
+                                                 (-> entity :data :achievement :render-options)
+                                                 collection-render-options))
+                          (c/<< :coat-of-arms
+                                (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
+                                  coat-of-arms
+                                  default/coat-of-arms)))
+              {:keys [width height]} (interface/get-environment context)]
           [:<>
            (when arms-id
              [:div.attribution
@@ -217,7 +211,7 @@
                   :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
                   :preserveAspectRatio "xMidYMin meet"}
             [:g {:transform "translate(10,10) scale(5,5)"}
-             result]]])))))
+             [interface/render-component context]]]])))))
 
 (defn- collection-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default
