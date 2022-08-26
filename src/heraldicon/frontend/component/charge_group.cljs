@@ -162,16 +162,13 @@
 (def ^:private preview-tinctures
   [:azure :or :vert :gules :purpure :sable])
 
-(defn- preview-form [path]
-  (let [context {:path path
-                 :render-options-path [:example-coa :render-options]
-                 :environment {:width 200
-                               :height 200
-                               :points {:fess v/zero
-                                        :top (v/Vector. 0 -100)}
-                               :shape {:paths ["M-100,-100 h200 v200 h-200 z"]}}}
-        {:keys [slot-positions
-                slot-spacing]} (charge-group/calculate-points context)
+(defn- preview-form [context]
+  (let [{:keys [slot-positions
+                slot-spacing]} (charge-group/calculate-points
+                                (assoc context
+                                       :parent-environment {:width 200
+                                                            :height 200}
+                                       :parent-shape "M-100,-100 h200 v200 h-200 z"))
         num-charges (interface/get-list-size (c/++ context :charges))
         dot-size (/ (min (:width slot-spacing)
                          (:height slot-spacing))
@@ -237,7 +234,7 @@
         :stretch
         :offset])]]))
 
-(defn- form [{:keys [path] :as context}]
+(defn- form [context]
   (let [charge-group-type (interface/get-raw-data (c/++ context :type))
         strip-type? (#{:heraldry.charge-group.type/rows
                        :heraldry.charge-group.type/columns}
@@ -256,7 +253,7 @@
 
      [element/element (c/++ context :anchor)]
 
-     [preview-form path]
+     [preview-form context]
 
      (element/elements
       context

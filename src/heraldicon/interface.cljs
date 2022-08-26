@@ -161,6 +161,7 @@
 (defn parent [context]
   (cond
     (-> context :path last (= :field)) (c/-- context)
+    (-> context :path drop-last last (= :charges)) (c/-- context 4)
     (-> context :path last int?) (c/-- context 2)
     (cottise-context? context) (c/-- context 2)
     :else (do
@@ -256,10 +257,12 @@
 (defn get-exact-shape [context]
   @(rf/subscribe [::exact-shape context]))
 
-(defn get-exact-parent-shape [context]
-  (if (cottise-context? context)
-    @(rf/subscribe [::exact-shape (parent (parent context))])
-    @(rf/subscribe [::exact-shape (parent context)])))
+(defn get-exact-parent-shape [{:keys [parent-shape]
+                               :as context}]
+  (or parent-shape
+      (if (cottise-context? context)
+        @(rf/subscribe [::exact-shape (parent (parent context))])
+        @(rf/subscribe [::exact-shape (parent context)]))))
 
 (defn fallback-exact-shape [context]
   (let [shape-path (:shape (get-render-shape context))

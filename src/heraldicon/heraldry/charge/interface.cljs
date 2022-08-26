@@ -18,12 +18,6 @@
       :heraldry.charge.type/other
       charge-type)))
 
-(defmulti render-charge effective-type)
-
-(defmethod render-charge nil [context]
-  (log/warn :not-implemented "render-charge" context)
-  [:<>])
-
 (defmulti options effective-type)
 
 (defmethod options nil [context]
