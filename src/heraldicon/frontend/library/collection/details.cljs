@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.library.collection.details
   (:require
    [cljs.core.async :refer [go]]
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.frontend.attribution :as attribution]
@@ -89,7 +90,10 @@
                           (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
                             coat-of-arms
                             default/coat-of-arms)))
-        {:keys [width height]} (interface/get-environment context)]
+        {:keys [min-x max-x
+                min-y max-y]} (interface/get-bounding-box context)
+        width (- max-x min-x)
+        height (- max-y min-y)]
     [:g
      [:title (:name data)]
      [arms-highlight path x y width height]
@@ -200,7 +204,8 @@
                                 (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
                                   coat-of-arms
                                   default/coat-of-arms)))
-              {:keys [width height]} (interface/get-environment context)]
+              {:keys [min-x max-x
+                      min-y max-y]} (interface/get-bounding-box context)]
           [:<>
            (when arms-id
              [:div.attribution
@@ -208,9 +213,14 @@
                                      :arms entity}]])
            [:svg {:id "svg"
                   :style {:width "100%"}
-                  :viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
+                  :viewBox (s/join " "
+                                   (map str
+                                        [(- min-x 10)
+                                         (- min-y 10)
+                                         (-> (- max-x min-x) (* 5) (+ 20))
+                                         (-> (- max-y min-y) (* 5) (+ 20))]))
                   :preserveAspectRatio "xMidYMin meet"}
-            [:g {:transform "translate(10,10) scale(5,5)"}
+            [:g {:transform "scale(5,5)"}
              [interface/render-component context]]]])))))
 
 (defn- collection-form [form-db-path]

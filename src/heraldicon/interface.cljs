@@ -316,3 +316,17 @@
 
 (defn get-field-edges [context]
   @(rf/subscribe [::field-edges context]))
+
+(defmulti bounding-box (fn [_context properties]
+                         (:type properties)))
+
+(defmethod bounding-box :default [_context _properties])
+
+(rf/reg-sub-raw ::bounding-box
+  (fn [_app-db [_ context]]
+    (reaction
+     (let [context (resolve-context context)]
+       (bounding-box context (get-properties context))))))
+
+(defn get-bounding-box [context]
+  @(rf/subscribe [::bounding-box context]))
