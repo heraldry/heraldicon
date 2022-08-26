@@ -11,7 +11,8 @@
 (def ^:private db-defaults
   {:example-coa {:render-options (assoc default/render-options
                                         :escutcheon :rectangle)
-                 :coat-of-arms {:field {:type :heraldry.field.type/plain
+                 :coat-of-arms {:type :heraldry/coat-of-arms
+                                :field {:type :heraldry.field.type/plain
                                         :tincture :argent
                                         :components [{:type :heraldry.charge.type/preview
                                                       :preview? true
