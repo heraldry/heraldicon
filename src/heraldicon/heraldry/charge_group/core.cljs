@@ -1,7 +1,6 @@
 (ns heraldicon.heraldry.charge-group.core
   (:require
    [heraldicon.context :as c]
-   [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
@@ -46,11 +45,12 @@
       :heraldry.charge-group.type/arc :arc
       :heraldry.charge-group.type/in-orle :in-orle)))
 
-(defmethod calculate-points :strips [{:keys [environment] :as context}]
-  (let [charge-group-type (interface/get-sanitized-data (c/++ context :type))
+(defmethod calculate-points :strips [context]
+  (let [{:keys [width height]} (interface/get-parent-environment context)
+        charge-group-type (interface/get-sanitized-data (c/++ context :type))
         reference-length (case charge-group-type
-                           :heraldry.charge-group.type/rows (:width environment)
-                           :heraldry.charge-group.type/columns (:height environment))
+                           :heraldry.charge-group.type/rows width
+                           :heraldry.charge-group.type/columns height)
         spacing (interface/get-sanitized-data (c/++ context :spacing))
         stretch (interface/get-sanitized-data (c/++ context :stretch))
         strip-angle (interface/get-sanitized-data (c/++ context :strip-angle))
@@ -89,15 +89,16 @@
                      :heraldry.charge-group.type/columns {:width strip-spacing
                                                           :height spacing})}))
 
-(defmethod calculate-points :arc [{:keys [environment] :as context}]
-  (let [radius (interface/get-sanitized-data (c/++ context :radius))
+(defmethod calculate-points :arc [context]
+  (let [{:keys [width]} (interface/get-parent-environment context)
+        radius (interface/get-sanitized-data (c/++ context :radius))
         start-angle (interface/get-sanitized-data (c/++ context :start-angle))
         arc-angle (interface/get-sanitized-data (c/++ context :arc-angle))
         arc-stretch (interface/get-sanitized-data (c/++ context :arc-stretch))
         slots (interface/get-raw-data (c/++ context :slots))
         num-charges (interface/get-list-size (c/++ context :charges))
         num-slots (interface/get-list-size (c/++ context :slots))
-        radius (math/percent-of (:width environment) radius)
+        radius (math/percent-of width radius)
         stretch-vector (if (> arc-stretch 1)
                          (v/Vector. (/ 1 arc-stretch) 1)
                          (v/Vector. 1 arc-stretch))
@@ -128,19 +129,17 @@
      :slot-spacing {:width (/ distance 1.2)
                     :height (/ distance 1.2)}}))
 
-(defmethod calculate-points :in-orle [{:keys [environment] :as context}]
-  (let [distance (interface/get-sanitized-data (c/++ context :distance))
+(defmethod calculate-points :in-orle [context]
+  (let [{:keys [width height points]} (interface/get-parent-environment context)
+        percentage-base (min width height)
+        distance (interface/get-sanitized-data (c/++ context :distance))
         offset (interface/get-sanitized-data (c/++ context :offset))
         slots (interface/get-raw-data (c/++ context :slots))
         num-charges (interface/get-list-size (c/++ context :charges))
         num-slots (interface/get-list-size (c/++ context :slots))
-        environment-shape (-> environment
-                              (update-in [:shape :paths] (partial take 1))
-                              environment/effective-shape)
-        width (:width environment)
-        distance (math/percent-of width distance)
-        bordure-shape (environment/shrink-shape environment-shape distance :round)
-        points (:points environment)
+        parent-shape (interface/get-exact-parent-shape context)
+        distance (math/percent-of percentage-base distance)
+        bordure-shape (environment/shrink-shape parent-shape distance :round)
         shape-path (path/parse-path bordure-shape)
         path-length (.-length shape-path)
         step-t (/ path-length (max num-slots 1))
@@ -175,25 +174,37 @@
      :slot-spacing {:width (/ charge-space 1.2)
                     :height (/ charge-space 1.2)}}))
 
-(defmethod interface/render-component :heraldry/charge-group [{:keys [path environment] :as context}]
-  (let [anchor (interface/get-sanitized-data (c/++ context :anchor))
+(defmethod interface/properties :heraldry/charge-group [context]
+  (let [parent-environment (interface/get-parent-environment context)
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        anchor-point (position/calculate anchor parent-environment)
         rotate-charges? (interface/get-sanitized-data (c/++ context :rotate-charges?))
-        anchor-point (position/calculate anchor environment)
         {:keys [slot-positions
                 slot-spacing]} (calculate-points context)
         num-charges (interface/get-list-size (c/++ context :charges))]
+    {:type :heraldry/charge-group
+     :anchor-point anchor-point
+     :rotate-charges? rotate-charges?
+     :num-charges num-charges
+     :slot-positions slot-positions
+     :slot-spacing slot-spacing}))
 
+(defmethod interface/render-component :heraldry/charge-group [context]
+  (let [{:keys [num-charges
+                rotate-charges?
+                slot-positions
+                slot-spacing
+                anchor-point]} (interface/get-properties context)]
     (into [:g]
           (for [[idx {:keys [point charge-index angle]}] (map-indexed vector slot-positions)
                 :when (and charge-index
                            (< charge-index num-charges))]
             ^{:key idx}
-            [charge.interface/render-charge
+            [interface/render-component
              (-> context
                  (c/++ :charges charge-index)
                  (assoc :anchor-override (v/add anchor-point point)
-                        :charge-group {:charge-group-path path
-                                       :slot-spacing slot-spacing
+                        :charge-group {:slot-spacing slot-spacing
                                        :slot-angle (when rotate-charges?
                                                      angle)}))]))))
 
@@ -201,9 +212,9 @@
   ;; TODO: no need to calculate all positions here
   (let [{:keys [slot-positions]} (calculate-points
                                   (assoc context
-                                         :environment {:width 200
-                                                       :height 200
-                                                       :shape {:paths ["M-100,-100 h200 v200 h-200 z"]}}))
+                                         :parent-environment {:width 200
+                                                              :height 200}
+                                         :parent-shape "M-100,-100 h200 v200 h-200 z"))
         charge-group-type (interface/get-raw-data (c/++ context :type))
         used-charges (->> (group-by :charge-index slot-positions)
                           (map (fn [[k v]]
