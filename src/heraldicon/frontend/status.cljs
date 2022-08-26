@@ -8,14 +8,15 @@
 (defn not-found []
   [:div [tr :string.miscellaneous/not-found]])
 
-(defn error-display []
+(defn error-display [_error]
   [:div [tr :string.miscellaneous/error]])
 
-(defn default [subscription on-done & {:keys [on-error]}]
+(defn default [subscription on-done & {:keys [on-error
+                                              on-default]
+                                       :or {on-error error-display
+                                            on-default loading}}]
   (let [{:keys [status error] :as result} @subscription]
     (case status
       :done [on-done result]
-      :error (if on-error
-               [on-error error]
-               [error-display])
-      [loading])))
+      :error [on-error error]
+      [on-default])))
