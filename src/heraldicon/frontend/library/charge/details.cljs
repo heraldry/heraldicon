@@ -26,7 +26,7 @@
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.session :as session]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.render.coat-of-arms :as coat-of-arms]
+   [heraldicon.interface :as interface]
    [heraldicon.svg.core :as svg]
    [heraldicon.util.colour :as colour]
    [hickory.core :as hickory]
@@ -285,31 +285,28 @@
                                  (cond->
                                    original? (prepare-for-preview form-db-path)))
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
-        {:keys [result
-                environment]} (coat-of-arms/render
-                               (-> shared/coa-select-option-context
-                                   (c/<< :path [:context :coat-of-arms])
-                                   (c/<< :ui-show-colours
-                                         (->> @(rf/subscribe [:get show-colours-path])
-                                              (keep (fn [value]
-                                                      (when (second value)
-                                                        (first value))))
-                                              set))
-                                   (c/<< :render-options-path
-                                         (conj example-coa-db-path :render-options))
-                                   (c/<< :coat-of-arms
-                                         (assoc-in coat-of-arms
-                                                   [:field :components 0 :data] prepared-charge-data))
-                                   (c/<< :charge-preview? true)
-                                   (c/<< :preview-original? original?))
-                               100)
-        {:keys [width height]} environment]
+        context (-> shared/coa-select-option-context
+                    (c/<< :path [:context :coat-of-arms])
+                    (c/<< :ui-show-colours
+                          (->> @(rf/subscribe [:get show-colours-path])
+                               (keep (fn [value]
+                                       (when (second value)
+                                         (first value))))
+                               set))
+                    (c/<< :render-options-path
+                          (conj example-coa-db-path :render-options))
+                    (c/<< :coat-of-arms
+                          (assoc-in coat-of-arms
+                                    [:field :components 0 :data] prepared-charge-data))
+                    (c/<< :charge-preview? true)
+                    (c/<< :preview-original? original?))
+        {:keys [width height]} (interface/get-environment context)]
     [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
            :preserveAspectRatio "xMidYMid meet"
            :style {:width "100%"}}
      [:g {:transform "translate(10,10)"}
       [:g {:transform "scale(5,5)"}
-       result]]]))
+       [interface/render-component context]]]]))
 
 (defn- upload-file [form-db-path event]
   (modal/start-loading)
