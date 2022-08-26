@@ -72,7 +72,8 @@
                (update-in state-path state/highlight-unknown-string index)
                (assoc-in last-parsed-path text)
                (cond->
-                 hdn (assoc-in (conj hdn-path :coat-of-arms) {:field hdn})))
+                 hdn (assoc-in (conj hdn-path :coat-of-arms) {:type :heraldry/coat-of-arms
+                                                              :field hdn})))
        :dispatch [::suggestions/set (dom/caret-position index) suggestions substring-since-error
                   (fn [choice]
                     (rf/dispatch [::auto-completion-clicked index cursor-index choice]))]})))
