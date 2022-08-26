@@ -226,6 +226,9 @@
         @(rf/subscribe [::environment (parent (parent context))])
         @(rf/subscribe [::environment (parent context)]))))
 
+(defn get-environment [context]
+  @(rf/subscribe [::environment context]))
+
 (defmulti render-shape (fn [_context properties]
                          (:type properties)))
 
