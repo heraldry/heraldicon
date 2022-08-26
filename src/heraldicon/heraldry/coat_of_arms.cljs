@@ -55,7 +55,7 @@
                   (-> environment :shape :paths))}))
 
 (defmethod interface/exact-shape :heraldry/coat-of-arms [context _properties]
-  (interface/get-render-shape context))
+  (-> (interface/get-render-shape context) :shape first))
 
 (defmethod interface/render-component :heraldry/coat-of-arms [{:keys
                                                                [svg-export?
