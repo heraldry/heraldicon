@@ -49,7 +49,7 @@
                                :as shape-data} context {:keys [humetty]}]
   (if (:humetty? humetty)
     (let [parent-shape (interface/get-exact-parent-shape context)
-          adjusted-shape (humetty/coup-2 shape parent-shape humetty)]
+          adjusted-shape (humetty/coup shape parent-shape humetty)]
       (assoc shape-data
              :shape adjusted-shape
              :lines [{:edge-paths adjusted-shape}]))
@@ -59,7 +59,7 @@
                               :as shape-data} context {:keys [voided]}]
   (if (:voided? voided)
     (let [parent-shape (interface/get-exact-parent-shape context)
-          adjusted-shape (voided/void-2 shape parent-shape voided)]
+          adjusted-shape (voided/void shape parent-shape voided)]
       (-> shape-data
           (assoc :shape adjusted-shape)
           ;; TODO: bit hacky, the code here needs to know the last shape path was

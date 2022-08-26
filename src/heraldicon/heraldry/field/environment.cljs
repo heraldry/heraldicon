@@ -145,19 +145,3 @@
   (-> (new Path shape1)
       (.intersect (new Path shape2))
       .-pathData))
-
-(defn effective-shape [environment & {:keys [additional-shape]}]
-  (let [shapes (->> environment
-                    (tree-seq map? (comp list :parent-environment :meta))
-                    (map :shape)
-                    (filter identity))
-        shapes (cond-> shapes
-                 additional-shape (conj additional-shape))]
-    (reduce
-     (fn [result shape]
-       (let [combined-path (s/join "" (:paths shape))]
-         (if result
-           (intersect-shapes result combined-path)
-           combined-path)))
-     nil
-     shapes)))
