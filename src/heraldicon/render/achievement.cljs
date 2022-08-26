@@ -5,7 +5,6 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
-   [heraldicon.render.coat-of-arms :as coat-of-arms]
    [heraldicon.render.helms :as helms]
    [heraldicon.render.ornaments :as ornaments]))
 
@@ -69,12 +68,9 @@
                               (/ 180))
         coa-angle-counter-rad-abs (- (/ Math/PI 2)
                                      coa-angle-rad-abs)
-        {coat-of-arms :result
-         environment :environment} (coat-of-arms/render
-                                    (c/++ context :coat-of-arms)
-                                    100)
+        coat-of-arms-context (c/++ context :coat-of-arms)
         {coat-of-arms-width :width
-         coat-of-arms-height :height} environment
+         coat-of-arms-height :height} (interface/get-environment coat-of-arms-context)
         {helms-result-below-shield :result-below-shield
          helms-result-above-shield :result-above-shield
          helms-width :width
@@ -85,7 +81,6 @@
                                  (helms/render
                                   (c/++ context :helms)
                                   100))
-
         short-arm (* coat-of-arms-width (Math/cos coa-angle-rad-abs))
         long-arm (* coat-of-arms-height (Math/cos coa-angle-counter-rad-abs))
         [rotated-min-x
@@ -203,7 +198,7 @@
                                                          "translate(" (- coat-of-arms-width) "," 0 ")")
                           :else nil)
              :style {:transition "transform 0.5s"}}
-         coat-of-arms]
+         [interface/render-component coat-of-arms-context]]
 
         (when helms-result-above-shield
           [:g {:transform (str "translate(" (v/->str helm-position) ")")
