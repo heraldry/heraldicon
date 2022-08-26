@@ -69,8 +69,9 @@
         coa-angle-counter-rad-abs (- (/ Math/PI 2)
                                      coa-angle-rad-abs)
         coat-of-arms-context (c/++ context :coat-of-arms)
-        {coat-of-arms-width :width
-         coat-of-arms-height :height} (interface/get-environment coat-of-arms-context)
+        coat-of-arms-bounding-box (interface/get-bounding-box coat-of-arms-context)
+        coat-of-arms-width (- (:max-x coat-of-arms-bounding-box) (:min-x coat-of-arms-bounding-box))
+        coat-of-arms-height (- (:max-y coat-of-arms-bounding-box) (:min-y coat-of-arms-bounding-box))
         {helms-result-below-shield :result-below-shield
          helms-result-above-shield :result-above-shield
          helms-width :width

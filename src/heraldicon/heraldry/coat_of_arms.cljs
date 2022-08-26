@@ -6,6 +6,8 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
+   [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.render.hatching :as hatching]
    [heraldicon.render.outline :as outline]
@@ -54,6 +56,10 @@
                     identity)
                   (-> environment :shape :paths))}))
 
+(defmethod interface/bounding-box :heraldry/coat-of-arms [context _properties]
+  (let [{:keys [width height]} (interface/get-environment context)]
+    (bb/from-vector-and-size v/zero width height)))
+
 (defmethod interface/exact-shape :heraldry/coat-of-arms [context _properties]
   (-> (interface/get-render-shape context) :shape first))
 
@@ -61,7 +67,10 @@
                                                                [svg-export?
                                                                 metadata-path
                                                                 texture-link] :as context}]
-  (let [{:keys [width height]} (interface/get-environment context)
+  (let [{:keys [min-x max-x
+                min-y max-y]} (interface/get-bounding-box context)
+        width (- max-x min-x)
+        height (- max-y min-y)
         shape-paths (:shape (interface/get-render-shape context))
         mode (interface/render-option :mode context)
         escutcheon-shadow? (when-not svg-export?
@@ -100,8 +109,8 @@
       (when texture-link
         [:filter {:id texture-id}
          [:feImage {:href texture-link
-                    :x 0
-                    :y 0
+                    :x min-x
+                    :y min-y
                     :width (max width height)
                     :height (max width height)
                     :preserveAspectRatio "none"

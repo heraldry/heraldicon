@@ -300,13 +300,18 @@
                                     [:field :components 0 :data] prepared-charge-data))
                     (c/<< :charge-preview? true)
                     (c/<< :preview-original? original?))
-        {:keys [width height]} (interface/get-environment context)]
-    [:svg {:viewBox (str "0 0 " (-> width (* 5) (+ 20)) " " (-> height (* 5) (+ 20) (+ 20)))
+        {:keys [min-x max-x
+                min-y max-y]} (interface/get-bounding-box context)]
+    [:svg {:viewBox (s/join " "
+                            (map str
+                                 [(- min-x 10)
+                                  (- min-y 10)
+                                  (-> (- max-x min-x) (* 5) (+ 20))
+                                  (-> (- max-y min-y) (* 5) (+ 20))]))
            :preserveAspectRatio "xMidYMid meet"
            :style {:width "100%"}}
-     [:g {:transform "translate(10,10)"}
-      [:g {:transform "scale(5,5)"}
-       [interface/render-component context]]]]))
+     [:g {:transform "scale(5,5)"}
+      [interface/render-component context]]]))
 
 (defn- upload-file [form-db-path event]
   (modal/start-loading)
