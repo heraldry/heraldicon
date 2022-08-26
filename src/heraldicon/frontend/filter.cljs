@@ -207,6 +207,47 @@
 (defn- heraldicon? [{:keys [username]}]
   (= username "heraldicon"))
 
+(defn- results-count [id session items-subscription filter-keys & {:keys [hide-ownership-filter?
+                                                                          hide-access-filter?
+                                                                          predicate-fn]}]
+  (status/default
+   items-subscription
+   (fn [{all-items :entities}]
+     (let [filter-path [:ui :filter id]
+           filter-string-path (conj filter-path :filter-string)
+           filter-tags-path (conj filter-path :filter-tags)
+           filter-access-path (conj filter-path :filter-access)
+           filter-string @(rf/subscribe [:get filter-string-path])
+           filter-ownership-path (conj filter-path :filter-ownership)
+           filter-tags @(rf/subscribe [:get filter-tags-path])
+           filter-ownership (if-not hide-ownership-filter?
+                              @(rf/subscribe [:get filter-ownership-path])
+                              ownership-default)
+           consider-filter-access? (and (not hide-access-filter?)
+                                        (or (= filter-ownership :mine)
+                                            (entity.user/admin? session)))
+           filter-access (if consider-filter-access?
+                           @(rf/subscribe [:get filter-access-path])
+                           access-default)
+           all-items (cond->> all-items
+                       predicate-fn (filterv predicate-fn))
+           filtered-items (filter-items session
+                                        all-items
+                                        filter-keys
+                                        filter-string
+                                        filter-tags
+                                        filter-access
+                                        filter-ownership)
+           total-count (count all-items)
+           filtered-count (count filtered-items)]
+       [:div {:style {:display "inline"
+                      :margin-left "0.5em"}}
+        (if (= filtered-count total-count)
+          (str total-count)
+          (str filtered-count "/" total-count))]))
+   :on-error (fn [_])
+   :on-default (fn [_])))
+
 (defn- results [id session items-subscription filter-keys kind on-select & {:keys [page-size
                                                                                    hide-ownership-filter?
                                                                                    hide-access-filter?
@@ -261,7 +302,8 @@
                                @(rf/subscribe [:get number-of-items-path])
                                page-size)
            display-items (cond->> sorted-items
-                           page-size (take number-of-items))]
+                           page-size (take number-of-items))
+           results-id (str "filter-results-" id)]
        [:<>
         [:div.filter-component-tags
          [tags/tags-view tags-to-display
@@ -274,39 +316,38 @@
                   :overflow "hidden"
                   :height "25px"}]]
 
-        (let [results-id (str "filter-results-" id)]
-          [:div.filter-component-results {:id results-id}
-           (if (empty? display-items)
-             [:div [tr :string.miscellaneous/none]]
-             [:> InfiniteScroll
-              {:dataLength (count display-items)
-               :hasMore (not= (count filtered-items)
-                              (count display-items))
-               :next #(rf/dispatch [::show-more
-                                    number-of-items-path
-                                    page-size])
-               :scrollableTarget results-id
-               :style {:overflow "visible"}}
-              [:ul.filter-results
-               (when display-selected-item?
-                 [result-card all-items-path (:id selected-item) kind nil selected-item-path
-                  :filter-tags-path filter-tags-path
-                  :filter-tags filter-tags
-                  :selection-placeholder? true])
-               (into [:<>]
-                     (map (fn [item]
-                            ^{:key (:id item)}
-                            [result-card all-items-path (:id item) kind on-select selected-item-path
-                             :filter-tags-path filter-tags-path
-                             :filter-tags filter-tags]))
-                     display-items)
-               (when-not (= (count filtered-items)
+        [:div.filter-component-results {:id results-id}
+         (if (empty? display-items)
+           [:div [tr :string.miscellaneous/none]]
+           [:> InfiniteScroll
+            {:dataLength (count display-items)
+             :hasMore (not= (count filtered-items)
                             (count display-items))
-                 [:li.filter-result-card-wrapper.filter-component-show-more
-                  [:button.button {:on-click #(rf/dispatch [::show-more
-                                                            number-of-items-path
-                                                            page-size])}
-                   [tr :string.miscellaneous/show-more]]])]])])]))))
+             :next #(rf/dispatch [::show-more
+                                  number-of-items-path
+                                  page-size])
+             :scrollableTarget results-id
+             :style {:overflow "visible"}}
+            [:ul.filter-results
+             (when display-selected-item?
+               [result-card all-items-path (:id selected-item) kind nil selected-item-path
+                :filter-tags-path filter-tags-path
+                :filter-tags filter-tags
+                :selection-placeholder? true])
+             (into [:<>]
+                   (map (fn [item]
+                          ^{:key (:id item)}
+                          [result-card all-items-path (:id item) kind on-select selected-item-path
+                           :filter-tags-path filter-tags-path
+                           :filter-tags filter-tags]))
+                   display-items)
+             (when-not (= (count filtered-items)
+                          (count display-items))
+               [:li.filter-result-card-wrapper.filter-component-show-more
+                [:button.button {:on-click #(rf/dispatch [::show-more
+                                                          number-of-items-path
+                                                          page-size])}
+                 [tr :string.miscellaneous/show-more]]])]])]]))))
 
 (defn component [id session items-subscription filter-keys kind on-select refresh-fn & {:keys [hide-ownership-filter?
                                                                                                hide-access-filter?
@@ -343,7 +384,8 @@
         [:a {:style {:margin-left "0.5em"}
              :on-click #(do
                           (refresh-fn)
-                          (.stopPropagation %))} [:i.fas.fa-sync-alt]])]
+                          (.stopPropagation %))} [:i.fas.fa-sync-alt]])
+      [results-count id session items-subscription filter-keys options]]
      [:div.filter-component-filters
       (when-not hide-ownership-filter?
         [radio-select/radio-select {:path filter-ownership-path}
