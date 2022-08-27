@@ -300,5 +300,8 @@
          (dissoc :context)
          (assoc :bounding-box bounding-box)))))
 
+(defmethod interface/bounding-box :heraldry/charge [_context {:keys [bounding-box]}]
+  bounding-box)
+
 (defmethod interface/render-shape :heraldry/charge [_context {:keys [shape]}]
   {:shape shape})
