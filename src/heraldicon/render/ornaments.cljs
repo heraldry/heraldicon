@@ -3,8 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
-   [heraldicon.math.bounding-box :as bb]
-   [heraldicon.render.motto :as motto]))
+   [heraldicon.math.bounding-box :as bb]))
 
 (defn- elements [context & {:keys [below-shield?]}]
   (into [:<>]
@@ -13,13 +12,9 @@
                                          (c/++ idx)
                                          (assoc :auto-resize? false
                                                 :self-below-shield? self-below-shield?
-                                                :render-pass-below-shield? below-shield?))
-                     motto? (interface/motto? updated-context)]
+                                                :render-pass-below-shield? below-shield?))]
                  ^{:key idx}
-                 [:<>
-                  (if motto?
-                    (:result (motto/render updated-context))
-                    [interface/render-component updated-context])])))
+                 [interface/render-component updated-context])))
         (interface/get-element-indices context)))
 
 (defn render [context coa-bounding-box]
@@ -45,7 +40,7 @@
                      {:bounding-box coa-bounding-box})
         updated-context (-> context
                             (c/++ :elements)
-                            (assoc :environment environment))]
+                            (assoc :parent-environment environment))]
     (if (pos? num-ornaments)
       {:result-below-shield [elements updated-context :below-shield? true]
        :result-above-shield [elements updated-context :below-shield? false]

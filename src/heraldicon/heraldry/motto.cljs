@@ -5,7 +5,12 @@
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.options :as options]))
+   [heraldicon.math.bounding-box :as bb]
+   [heraldicon.math.core :as math]
+   [heraldicon.math.vector :as v]
+   [heraldicon.options :as options]
+   [heraldicon.render.outline :as outline]
+   [heraldicon.render.ribbon :as render.ribbon]))
 
 ;; TODO: this appears to be broken
 (def tinctures-without-furs
@@ -102,3 +107,54 @@
         (cond->
           ribbon-variant (assoc :ribbon (ribbon/options (c/++ context :ribbon))))
         (assoc :type type-option))))
+
+(defmethod interface/properties :heraldry/motto [context]
+  (let [{:keys [width]
+         :as parent-environment} (interface/get-parent-environment context)
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        anchor-point (position/calculate anchor parent-environment :fess)
+        size (interface/get-sanitized-data (c/++ context :geometry :size))
+        target-width (math/percent-of width size)
+        ribbon-bounding-box (interface/get-bounding-box (c/++ context :ribbon))
+        ribbon-scale (if ribbon-bounding-box
+                       (/ target-width (bb/width ribbon-bounding-box))
+                       1)]
+    {:type :heraldry/motto
+     :anchor-point anchor-point
+     :target-width target-width
+     :ribbon-bounding-box ribbon-bounding-box
+     :ribbon-offset (v/mul (bb/center ribbon-bounding-box) -1)
+     :ribbon-scale ribbon-scale}))
+
+(defmethod interface/bounding-box :heraldry/motto [_context {:keys [anchor-point
+                                                                    ribbon-bounding-box
+                                                                    ribbon-offset
+                                                                    ribbon-scale]}]
+  (-> ribbon-bounding-box
+      (bb/translate ribbon-offset)
+      (bb/scale ribbon-scale)
+      (bb/translate anchor-point)))
+
+(defmethod interface/render-component :heraldry/motto [{:keys [self-below-shield?
+                                                               render-pass-below-shield?]
+                                                        :as context}]
+  (when (= (boolean self-below-shield?)
+           (boolean render-pass-below-shield?))
+    (let [{:keys [anchor-point
+                  ribbon-offset
+                  ribbon-scale]} (interface/get-properties context)
+          tincture-foreground (interface/get-sanitized-data (c/++ context :tincture-foreground))
+          tincture-background (interface/get-sanitized-data (c/++ context :tincture-background))
+          tincture-text (interface/get-sanitized-data (c/++ context :tincture-text))
+          outline-thickness (/ outline/stroke-width
+                               2
+                               ribbon-scale)]
+      [:g {:transform (str "translate(" (v/->str anchor-point) ")"
+                           "scale(" ribbon-scale "," ribbon-scale ")"
+                           "translate(" (v/->str ribbon-offset) ")")}
+       [render.ribbon/render
+        (c/++ context :ribbon)
+        tincture-foreground
+        tincture-background
+        tincture-text
+        :outline-thickness outline-thickness]])))
