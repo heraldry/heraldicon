@@ -158,8 +158,7 @@
         bounding-box (assoc bounding-box
                             :min-y min-y
                             :max-y max-y)
-        real-width (- max-x min-x)
-        real-height (- max-y min-y)
+        [real-width real-height] (bb/size bounding-box)
         vertical-mask-shape (when-not (zero? vertical-mask)
                               (let [fimbriation-percentage-base (min width height)
                                     {:keys [mode
