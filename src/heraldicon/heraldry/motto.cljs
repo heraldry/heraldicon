@@ -52,6 +52,7 @@
     (-> {:anchor {:point {:type :option.type/choice
                           :choices (position/anchor-choices
                                     [:top
+                                     :center
                                      :bottom])
                           :default (case motto-type
                                      :heraldry.motto.type/slogan :top
