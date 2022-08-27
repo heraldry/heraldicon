@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.curve.bezier :as bezier]
    [heraldicon.math.curve.catmullrom :as catmullrom]
@@ -235,3 +236,19 @@
                  end-point (v/add start-point edge-vector)]
              [(project-path-to curve2 split-point start-point :reverse? true)
               (project-path-to curve2 split-point end-point)]))))
+
+(defmethod interface/properties :heraldry/ribbon [context]
+  (let [points (interface/get-raw-data (c/++ context :points))
+        thickness (interface/get-sanitized-data (c/++ context :thickness))
+        bounding-box (when points
+                       (bb/from-points (into points
+                                             (map (partial v/add (v/Vector. 0 thickness)))
+                                             points)))]
+    {:type :heraldry/ribbon
+     ;; TODO: not ideal, need the thickness here and need to know that the edge-vector (here
+     ;; assumed to be (0, thickness) as a max) needs to be added to every point for the correct
+     ;; height, the edge-angle also is ignored, which can affect the width
+     :bounding-box bounding-box}))
+
+(defmethod interface/bounding-box :heraldry/ribbon [_context {:keys [bounding-box]}]
+  bounding-box)
