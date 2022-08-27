@@ -8,10 +8,10 @@
    [heraldicon.render.helms :as helms]
    [heraldicon.render.ornaments :as ornaments]))
 
-(defn- transform-bounding-box [^BoundingBox {:keys [min-x max-x min-y max-y]}
+(defn- transform-bounding-box [^BoundingBox {:keys [min-x min-y]
+                                             :as bounding-box}
                                ^js/Number target-width & {:keys [^js/Number max-aspect-ratio]}]
-  (let [total-width (- max-x min-x)
-        total-height (- max-y min-y)
+  (let [[total-width total-height] (bb/size bounding-box)
         target-height (-> target-width
                           (/ total-width)
                           (* total-height))
@@ -70,8 +70,7 @@
                                      coa-angle-rad-abs)
         coat-of-arms-context (c/++ context :coat-of-arms)
         coat-of-arms-bounding-box (interface/get-bounding-box coat-of-arms-context)
-        coat-of-arms-width (- (:max-x coat-of-arms-bounding-box) (:min-x coat-of-arms-bounding-box))
-        coat-of-arms-height (- (:max-y coat-of-arms-bounding-box) (:min-y coat-of-arms-bounding-box))
+        [coat-of-arms-width coat-of-arms-height] (bb/size coat-of-arms-bounding-box)
         {helms-result-below-shield :result-below-shield
          helms-result-above-shield :result-above-shield
          helms-width :width

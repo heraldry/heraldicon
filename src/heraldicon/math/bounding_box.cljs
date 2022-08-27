@@ -99,6 +99,9 @@
 (defn height ^js/Number [^BoundingBox {:keys [min-y max-y]}]
   (- max-y min-y))
 
+(defn size ^vector [^BoundingBox bounding-box]
+  [(width bounding-box) (height bounding-box)])
+
 (defn ->viewbox [{:keys [min-x min-y]
                   :as bounding-box} & {:keys [margin]
                                        :or {margin 0}}]

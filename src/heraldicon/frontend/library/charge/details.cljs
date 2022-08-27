@@ -27,6 +27,7 @@
    [heraldicon.frontend.user.session :as session]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.svg.core :as svg]
    [heraldicon.util.colour :as colour]
    [hickory.core :as hickory]
@@ -300,14 +301,10 @@
                                     [:field :components 0 :data] prepared-charge-data))
                     (c/<< :charge-preview? true)
                     (c/<< :preview-original? original?))
-        {:keys [min-x max-x
-                min-y max-y]} (interface/get-bounding-box context)]
-    [:svg {:viewBox (s/join " "
-                            (map str
-                                 [(- min-x 10)
-                                  (- min-y 10)
-                                  (-> (- max-x min-x) (* 5) (+ 20))
-                                  (-> (- max-y min-y) (* 5) (+ 20))]))
+        bounding-box (interface/get-bounding-box context)]
+    [:svg {:viewBox (-> bounding-box
+                        (bb/scale 5)
+                        (bb/->viewbox :margin 10))
            :preserveAspectRatio "xMidYMid meet"
            :style {:width "100%"}}
      [:g {:transform "scale(5,5)"}

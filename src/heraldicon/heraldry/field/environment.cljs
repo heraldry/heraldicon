@@ -2,7 +2,6 @@
   (:require
    ["paper" :refer [Path]]
    ["paperjs-offset" :refer [PaperOffset]]
-   [clojure.string :as s]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
@@ -22,9 +21,9 @@
         bottom-left (v/Vector. min-x max-y)
         bottom-right (v/Vector. max-x max-y)
         width (or width
-                  (- max-x min-x))
+                  (bb/width bounding-box))
         height (or height
-                   (- max-y min-y))
+                   (bb/height bounding-box))
         top (v/avg top-left top-right)
         bottom (v/avg bottom-left bottom-right)
         ;; not actually center, but chosen such that bend lines at 45° run together in it

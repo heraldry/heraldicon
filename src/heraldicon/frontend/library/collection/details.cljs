@@ -1,7 +1,6 @@
 (ns heraldicon.frontend.library.collection.details
   (:require
    [cljs.core.async :refer [go]]
-   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.frontend.attribution :as attribution]
@@ -21,6 +20,7 @@
    [heraldicon.frontend.title :as title]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
    [re-frame.core :as rf]))
 
 (defn- render-add-arms [x y size]
@@ -90,10 +90,8 @@
                           (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
                             coat-of-arms
                             default/coat-of-arms)))
-        {:keys [min-x max-x
-                min-y max-y]} (interface/get-bounding-box context)
-        width (- max-x min-x)
-        height (- max-y min-y)]
+        bounding-box (interface/get-bounding-box context)
+        [width height] (bb/size bounding-box)]
     [:g
      [:title (:name data)]
      [arms-highlight path x y width height]
@@ -204,8 +202,7 @@
                                 (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
                                   coat-of-arms
                                   default/coat-of-arms)))
-              {:keys [min-x max-x
-                      min-y max-y]} (interface/get-bounding-box context)]
+              bounding-box (interface/get-bounding-box context)]
           [:<>
            (when arms-id
              [:div.attribution
@@ -213,12 +210,9 @@
                                      :arms entity}]])
            [:svg {:id "svg"
                   :style {:width "100%"}
-                  :viewBox (s/join " "
-                                   (map str
-                                        [(- min-x 10)
-                                         (- min-y 10)
-                                         (-> (- max-x min-x) (* 5) (+ 20))
-                                         (-> (- max-y min-y) (* 5) (+ 20))]))
+                  :viewBox (-> bounding-box
+                               (bb/scale 5)
+                               (bb/->viewbox :margin 10))
                   :preserveAspectRatio "xMidYMin meet"}
             [:g {:transform "scale(5,5)"}
              [interface/render-component context]]]])))))

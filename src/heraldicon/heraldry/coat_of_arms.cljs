@@ -67,10 +67,9 @@
                                                                [svg-export?
                                                                 metadata-path
                                                                 texture-link] :as context}]
-  (let [{:keys [min-x max-x
-                min-y max-y]} (interface/get-bounding-box context)
-        width (- max-x min-x)
-        height (- max-y min-y)
+  (let [{:keys [min-x min-y]
+         :as bounding-box} (interface/get-bounding-box context)
+        [width height] (bb/size bounding-box)
         shape-paths (:shape (interface/get-render-shape context))
         mode (interface/render-option :mode context)
         escutcheon-shadow? (when-not svg-export?
