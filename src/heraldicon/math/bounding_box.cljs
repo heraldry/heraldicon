@@ -1,5 +1,6 @@
 (ns heraldicon.math.bounding-box
   (:require
+   [clojure.string :as s]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
 
@@ -91,3 +92,19 @@
       (update :max-x + margin)
       (update :min-y - margin)
       (update :max-y + margin)))
+
+(defn width ^js/Number [^BoundingBox {:keys [min-x max-x]}]
+  (- max-x min-x))
+
+(defn height ^js/Number [^BoundingBox {:keys [min-y max-y]}]
+  (- max-y min-y))
+
+(defn ->viewbox [{:keys [min-x min-y]
+                  :as bounding-box} & {:keys [margin]
+                                       :or {margin 0}}]
+  (s/join " "
+          (map str
+               [(- min-x margin)
+                (- min-y margin)
+                (+ (width bounding-box) (* 2 margin))
+                (+ (height bounding-box) (* 2 margin))])))
