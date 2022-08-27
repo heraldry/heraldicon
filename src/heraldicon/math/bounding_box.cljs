@@ -107,12 +107,8 @@
   (v/Vector. (/ (+ min-x max-x) 2)
              (/ (+ min-y max-y) 2)))
 
-(defn ->viewbox [{:keys [min-x min-y]
-                  :as bounding-box} & {:keys [margin]
-                                       :or {margin 0}}]
-  (s/join " "
-          (map str
-               [(- min-x margin)
-                (- min-y margin)
-                (+ (width bounding-box) (* 2 margin))
-                (+ (height bounding-box) (* 2 margin))])))
+(defn ->viewbox [bounding-box & {:keys [margin]
+                                 :or {margin 0}}]
+  (let [{:keys [min-x min-y]
+         :as dilated} (dilate bounding-box margin)]
+    (s/join " " (map str [min-x min-y (width dilated) (height dilated)]))))
