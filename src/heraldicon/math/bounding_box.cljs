@@ -102,6 +102,11 @@
 (defn size ^vector [^BoundingBox bounding-box]
   [(width bounding-box) (height bounding-box)])
 
+(defn center ^v/Vector [^BoundingBox {:keys [min-x max-x
+                                             min-y max-y]}]
+  (v/Vector. (/ (+ min-x max-x) 2)
+             (/ (+ min-y max-y) 2)))
+
 (defn ->viewbox [{:keys [min-x min-y]
                   :as bounding-box} & {:keys [margin]
                                        :or {margin 0}}]

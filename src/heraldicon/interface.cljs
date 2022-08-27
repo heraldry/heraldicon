@@ -72,14 +72,6 @@
                    @(rf/subscribe [:get path]))]
     (shield-separator/element-indices-with-position elements)))
 
-;; TODO: this needs to be improved
-(defn motto? [{:keys [path] :as context}]
-  (-> (if (-> path first (= :context))
-        (get-in context (drop 1 path))
-        @(rf/subscribe [:get path]))
-      :type
-      (isa? :heraldry/motto)))
-
 (rf/reg-sub ::sanitized-data
   (fn [[_ path] _]
     [(rf/subscribe [:get path])
