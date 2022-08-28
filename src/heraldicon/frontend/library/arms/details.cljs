@@ -23,7 +23,6 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.render.achievement :as achievement]
    [re-frame.core :as rf]))
 
 (rf/reg-sub ::used-charge-variants
@@ -85,9 +84,6 @@
      [ribbon-attribution form-db-path]
      [escutcheon-attribution]]))
 
-(defn- render-achievement []
-  [achievement/render (c/++ base-context :data :achievement)])
-
 (defn- blazonry [form-db-path]
   [:div.blazonry
    [:h3
@@ -107,7 +103,7 @@
                 :string.text.title/create-arms])
   (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path]])
   (layout/three-columns
-   [render-achievement]
+   [interface/render-component (c/++ base-context :data :achievement)]
    [:<>
     [form/active component-context]
     [message/display entity-type]

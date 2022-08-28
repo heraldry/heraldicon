@@ -13,8 +13,8 @@
    [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.default :as default]
+   [heraldicon.interface :as interface]
    [heraldicon.reader.blazonry.result :as result]
-   [heraldicon.render.achievement :as achievement]
    [re-frame.core :as rf]))
 
 (def ^:private hdn-path
@@ -81,10 +81,9 @@
            [editor/editor]]
           [:div {:style {:width "15em"
                          :height "100%"}}
-           [achievement/render
-            (assoc context/default
-                   :path hdn-path
-                   :render-options-path (conj hdn-path :render-options))]]]
+           [interface/render-component (assoc context/default
+                                              :path hdn-path
+                                              :render-options-path (conj hdn-path :render-options))]]]
          [:div {:style {:height "100%"
                         :margin-top "10px"
                         :overflow-y "scroll"}}

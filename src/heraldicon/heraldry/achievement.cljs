@@ -1,5 +1,6 @@
-(ns heraldicon.render.achievement
+(ns heraldicon.heraldry.achievement
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.heraldry.field.environment :as environment]
@@ -20,14 +21,14 @@
                         target-height)
         scale (min (/ target-width total-width)
                    (/ target-height total-height))]
-    {:target-width target-width
-     :target-height target-height
-     :transform (str
-                 "translate(" (/ target-width 2) "," (/ target-height 2) ")"
-                 "scale(" scale "," scale ")"
-                 "translate("
-                 (- 0 (/ total-width 2) min-x) ","
-                 (- 0 (/ total-height 2) min-y) ")")}))
+    {:result-width target-width
+     :result-height target-height
+     :result-transform (str
+                        "translate(" (/ target-width 2) "," (/ target-height 2) ")"
+                        "scale(" scale "," scale ")"
+                        "translate("
+                        (- 0 (/ total-width 2) min-x) ","
+                        (- 0 (/ total-height 2) min-y) ")")}))
 
 (defn- get-used-fonts [context]
   (let [num-ornaments (interface/get-list-size (c/++ context :ornaments :elements))]
@@ -53,11 +54,11 @@
                                                   j
                                                   :font))))))
 
-(defn render [{:keys [short-url
-                      svg-export?
-                      target-width
-                      target-height
-                      embed-fonts] :as context}]
+(defmethod interface/render-component :heraldry/achievement [{:keys [short-url
+                                                                     svg-export?
+                                                                     target-width
+                                                                     target-height
+                                                                     embed-fonts] :as context}]
   (let [short-url-font :deja-vu-sans
         coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
@@ -91,7 +92,8 @@
                         (neg? coat-of-arms-angle) (v/Vector. (- (/ coat-of-arms-width 2)) 0)
                         (pos? coat-of-arms-angle) (v/Vector. (/ coat-of-arms-width 2) 0)
                         :else v/zero)
-        helms-bounding-box (bb/translate helms-bounding-box helm-position)
+        helms-bounding-box (when helms-bounding-box
+                             (bb/translate helms-bounding-box helm-position))
         coat-of-arms-bounding-box (if rotated?
                                     (bb/BoundingBox. rotated-min-x rotated-max-x
                                                      0 rotated-height)
@@ -111,43 +113,36 @@
 
         achievement-bounding-box (bb/combine ornaments-bounding-box coa-and-helms-bounding-box)
 
-        achievement-width 1000
-        {achievement-width :target-width
-         achievement-height :target-height
-         achievement-transform :transform} (transform-bounding-box
-                                            achievement-bounding-box
-                                            achievement-width
-                                            :max-aspect-ratio 1.5)
+        result-width 1000
+        {:keys [result-width
+                result-height
+                result-transform]} (transform-bounding-box
+                                    achievement-bounding-box
+                                    result-width
+                                    :max-aspect-ratio 1.5)
         margin 10
         font-size 20
-        result-width (+ achievement-width (* 2 margin))
-        result-height (-> (+ achievement-height
-                             (* 2 margin)
-                             20)
+        result-width (+ result-width (* 2 margin))
+        result-height (-> (+ result-height (* 2 margin))
                           (cond->
                             short-url (+ font-size margin)))
 
-        [document-width
-         document-height
-         document-scale] (if (and svg-export?
-                                  (or target-width
-                                      target-height))
-                           (let [scale-width (when target-width
-                                               (/ target-width result-width))
-                                 scale-height (when target-height
-                                                (/ target-height result-height))
-                                 scale (or (when (and scale-width scale-height)
-                                             (min scale-width scale-height))
-                                           scale-width
-                                           scale-height)]
-                             [(* result-width scale)
-                              (* result-height scale)
-                              scale])
-                           [result-width
-                            result-height
-                            1])]
+        scale (if (and svg-export?
+                       (or target-width
+                           target-height))
+                (let [scale-width (when target-width
+                                    (/ target-width result-width))
+                      scale-height (when target-height
+                                     (/ target-height result-height))]
+                  (or (when (and scale-width scale-height)
+                        (min scale-width scale-height))
+                      scale-width
+                      scale-height))
+                1)
+        [document-width document-height] [(* result-width scale) (* result-height scale)]]
     [:svg (merge
-           {:viewBox (str "0 0 " document-width " " document-height)}
+           {:viewBox (s/join " " (map str [(- margin) (- margin)
+                                           result-width result-height]))}
            (if svg-export?
              {:xmlns "http://www.w3.org/2000/svg"
               :version "1.1"
@@ -158,40 +153,37 @@
      (when (and svg-export?
                 embed-fonts)
        [embed-fonts used-fonts])
-     [:g {:transform (str "scale(" document-scale "," document-scale ")")}
-      [:g {:transform (str "translate(" margin "," margin ")")}
-       [:g {:transform achievement-transform
-            :style {:transition "transform 0.5s"}}
+     [:g {:transform result-transform
+          :style {:transition "transform 0.5s"}}
 
-        (when render-ornaments?
-          [interface/render-component (c/<< ornaments-context :render-pass-below-shield? true)])
+      (when render-ornaments?
+        [interface/render-component (c/<< ornaments-context :render-pass-below-shield? true)])
 
-        (when render-helms?
-          [:g {:transform (str "translate(" (v/->str helm-position) ")")
-               :style {:transition "transform 0.5s"}}
-           [interface/render-component (c/<< helms-context :render-pass-below-shield? true)]])
-
-        [:g {:transform (cond
-                          (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
-                          (pos? coat-of-arms-angle) (str "translate(" coat-of-arms-width "," 0 ")"
-                                                         "rotate(" (- coat-of-arms-angle) ")"
-                                                         "translate(" (- coat-of-arms-width) "," 0 ")")
-                          :else nil)
+      (when render-helms?
+        [:g {:transform (str "translate(" (v/->str helm-position) ")")
              :style {:transition "transform 0.5s"}}
-         [interface/render-component coat-of-arms-context]]
+         [interface/render-component (c/<< helms-context :render-pass-below-shield? true)]])
 
-        (when render-helms?
-          [:g {:transform (str "translate(" (v/->str helm-position) ")")
-               :style {:transition "transform 0.5s"}}
-           [interface/render-component (c/<< helms-context :render-pass-below-shield? false)]])
+      [:g {:transform (cond
+                        (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
+                        (pos? coat-of-arms-angle) (str "translate(" coat-of-arms-width "," 0 ")"
+                                                       "rotate(" (- coat-of-arms-angle) ")"
+                                                       "translate(" (- coat-of-arms-width) "," 0 ")")
+                        :else nil)
+           :style {:transition "transform 0.5s"}}
+       [interface/render-component coat-of-arms-context]]
 
-        (when render-ornaments?
-          [interface/render-component (c/<< ornaments-context :render-pass-below-shield? false)])]]]
+      (when render-helms?
+        [:g {:transform (str "translate(" (v/->str helm-position) ")")
+             :style {:transition "transform 0.5s"}}
+         [interface/render-component (c/<< helms-context :render-pass-below-shield? false)]])
+
+      (when render-ornaments?
+        [interface/render-component (c/<< ornaments-context :render-pass-below-shield? false)])]
 
      (when short-url
-       [:text {:x margin
-               :y (- document-height
-                     margin)
+       [:text {:x 0
+               :y (- result-height margin (/ font-size 2))
                :text-anchor "start"
                :fill "#888"
                :style {:font-family (font/css-string short-url-font)
