@@ -116,16 +116,10 @@
      :part-size part-size
      :num-subfields (* num-fields-x num-fields-y)}))
 
-(defmethod interface/subfield-environments field-type [context {:keys [parts]}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)]
-    {:subfields (into []
-                      (map (fn [[part-top-left part-bottom-right]]
-                             (environment/create
-                              {:paths nil}
-                              (-> meta
-                                  (dissoc :context)
-                                  (assoc :bounding-box (bb/from-points [part-top-left part-bottom-right]))))))
-                      parts)}))
+(defmethod interface/subfield-environments field-type [_context {:keys [parts]}]
+  {:subfields (mapv (fn [[part-top-left part-bottom-right]]
+                      (environment/create (bb/from-points [part-top-left part-bottom-right])))
+                    parts)})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [parts num-fields-x num-fields-y
                                                                         x-values y-values]}]

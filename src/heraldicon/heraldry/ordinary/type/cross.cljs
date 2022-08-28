@@ -132,7 +132,7 @@
                                                          [top-2 corner-top-right right-1] :edge-top-right
                                                          [bottom-1 corner-bottom-left left-2] :edge-bottom-left
                                                          [right-2 corner-bottom-right bottom-2] :edge-bottom-right}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-environment context)
         bounding-box-points [top-1 top-2
                              bottom-1 bottom-2
                              left-1 left-2
@@ -142,15 +142,11 @@
                              (:left points)
                              (:right points)]]
     ;; TODO: maybe best to inherit the parent environment, unless the cross is couped
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box (bb/from-points bounding-box-points)
-                :points {:fess (v/avg corner-top-left
+    (environment/create (bb/from-points bounding-box-points)
+                        {:fess (v/avg corner-top-left
                                       corner-top-right
                                       corner-bottom-left
-                                      corner-bottom-right)})))))
+                                      corner-bottom-right)})))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line]
                                                           [left-1 corner-top-left top-1] :edge-top-left
@@ -158,8 +154,7 @@
                                                           [bottom-1 corner-bottom-left left-2] :edge-bottom-left
                                                           [right-2 corner-bottom-right bottom-2] :edge-bottom-right
                                                           :as properties}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-edge-top-left-first :line
          line-edge-top-left-first-start :line-start
          line-edge-top-left-first-to :adjusted-to

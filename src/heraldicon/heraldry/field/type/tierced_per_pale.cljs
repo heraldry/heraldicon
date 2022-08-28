@@ -90,30 +90,17 @@
 
 (defmethod interface/subfield-environments field-type [context {[edge-1-top edge-1-bottom] :edge-1
                                                                 [edge-2-top edge-2-bottom] :edge-2}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-environment context)
         {:keys [top-left top-right]} points]
-    {:subfields [(environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [top-left edge-1-top edge-1-bottom]))))
-                 (environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [edge-1-top edge-1-bottom
-                                                            edge-2-top edge-2-bottom]))))
-                 (environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [top-right edge-2-top edge-2-bottom]))))]}))
+    {:subfields [(environment/create (bb/from-points [top-left edge-1-top edge-1-bottom]))
+                 (environment/create (bb/from-points [edge-1-top edge-1-bottom
+                                                      edge-2-top edge-2-bottom]))
+                 (environment/create (bb/from-points [top-right edge-2-top edge-2-bottom]))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-1-top edge-1-bottom] :edge-1
                                                                  [edge-2-top edge-2-bottom] :edge-2}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-edge-1 :line
          line-edge-1-start :line-start
          line-edge-1-from :adjusted-from

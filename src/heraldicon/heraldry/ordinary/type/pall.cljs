@@ -350,7 +350,7 @@
                                                          [bottom-1 _corner-top bottom-2] :edge-bottom
                                                          [left-1 _corner-left left-2] :edge-left
                                                          [right-1 _corner-right right-2] :edge-right}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-environment context)
         bounding-box-points [bottom-1 bottom-2
                              left-1 left-2
                              right-1 right-2
@@ -359,20 +359,15 @@
                              (:left points)
                              (:right points)]]
     ;; TODO: maybe best to inherit the parent environment, unless the pall is couped
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box (bb/from-points bounding-box-points)
-                :points {:fess fess})))))
+    (environment/create (bb/from-points bounding-box-points)
+                        {:fess fess})))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line extra-line]
                                                           [bottom-1 corner-bottom bottom-2] :edge-bottom
                                                           [left-1 corner-left left-2] :edge-left
                                                           [right-1 corner-right right-2] :edge-right
                                                           :as properties}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-edge-bottom-first :line
          line-edge-bottom-first-start :line-start
          line-edge-bottom-first-to :adjusted-to

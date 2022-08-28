@@ -148,30 +148,21 @@
 
 (defmethod interface/subfield-environments field-type [context {:keys [sinister?]
                                                                 [edge-start edge-end] :edge}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
-    {:subfields [(environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [(if sinister?
-                                                              top-left
-                                                              top-right)
-                                                            edge-start edge-end]))))
-                 (environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [(if sinister?
-                                                              bottom-right
-                                                              bottom-left)
-                                                            top-right bottom-right]))))]}))
+    {:subfields [(environment/create (bb/from-points [(if sinister?
+                                                        top-left
+                                                        top-right)
+                                                      edge-start edge-end]))
+                 (environment/create (bb/from-points [(if sinister?
+                                                        bottom-right
+                                                        bottom-left)
+                                                      top-right bottom-right]))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line sinister?]
                                                                  [edge-start edge-end] :edge}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-edge :line
          line-edge-start :line-start
          line-edge-from :adjusted-from

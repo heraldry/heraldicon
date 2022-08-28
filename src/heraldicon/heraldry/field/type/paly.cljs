@@ -91,24 +91,17 @@
       :num-subfields num-fields-x}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {:keys [edges start-y max-y part-width]}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)]
-    {:subfields (into []
-                      (map (fn [[edge-start _edge-end]]
-                             (environment/create
-                              {:paths nil}
-                              (-> meta
-                                  (dissoc :context)
-                                  (assoc :bounding-box (bb/from-points [(assoc edge-start :y start-y)
-                                                                        (assoc edge-start
-                                                                               :x (+ (:x edge-start) part-width)
-                                                                               :y max-y)]))))))
-                      edges)}))
+(defmethod interface/subfield-environments field-type [_context {:keys [edges start-y max-y part-width]}]
+  {:subfields (mapv (fn [[edge-start _edge-end]]
+                      (environment/create (bb/from-points [(assoc edge-start :y start-y)
+                                                           (assoc edge-start
+                                                                  :x (+ (:x edge-start) part-width)
+                                                                  :y max-y)])))
+                    edges)})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line edges num-subfields]}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box points]} (interface/get-parent-environment context)
         {:keys [top-left bottom-right]} points
-        bounding-box (:bounding-box meta)
         outside-1 (v/sub top-left (v/Vector. 50 50))
         outside-2 (v/add bottom-right (v/Vector. 50 50))
         lines (vec (map-indexed

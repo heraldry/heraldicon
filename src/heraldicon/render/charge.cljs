@@ -2,15 +2,14 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.escutcheon :as escutcheon]
-   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]))
 
 (defn render-standalone [{:keys [svg-export?
                                  target-width
                                  target-height] :as context}]
-  (let [shield (escutcheon/field :rectangle nil nil nil nil nil)
-        environment (environment/transform-to-width shield 100)
+  (let [escutcheon-data (escutcheon/data :rectangle nil nil nil nil nil)
+        {:keys [environment]} (escutcheon/transform-to-width escutcheon-data 100)
         charge-context (c/set-parent-environment context environment)
         bounding-box (interface/get-bounding-box charge-context)
         [width height] (bb/size bounding-box)

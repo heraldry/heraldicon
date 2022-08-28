@@ -97,23 +97,17 @@
       :voided-percentage-base band-size}
      context)))
 
-(defmethod interface/environment ordinary-type [context {[left-upper left-lower] :left
-                                                         [right-upper right-lower] :right}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box-points [left-upper left-lower
+(defmethod interface/environment ordinary-type [_context {[left-upper left-lower] :left
+                                                          [right-upper right-lower] :right}]
+  (let [bounding-box-points [left-upper left-lower
                              right-upper right-lower]]
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box (bb/from-points bounding-box-points))))))
+    (environment/create (bb/from-points bounding-box-points))))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [left-upper left-lower] :left
                                                           [right-upper right-lower] :right
                                                           :as properties}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         right-upper (assoc right-upper :y (:y left-upper))
         {line-left :line
          line-left-start :line-start

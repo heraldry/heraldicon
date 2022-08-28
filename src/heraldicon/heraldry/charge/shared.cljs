@@ -292,13 +292,8 @@
              :angle angle
              :top-left base-top-left}))))
 
-(defmethod interface/environment :heraldry/charge [context {:keys [bounding-box]}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)]
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box bounding-box)))))
+(defmethod interface/environment :heraldry/charge [_context {:keys [bounding-box]}]
+  (environment/create bounding-box))
 
 (defmethod interface/bounding-box :heraldry/charge [_context {:keys [bounding-box]}]
   bounding-box)
