@@ -145,22 +145,16 @@
       :voided-percentage-base x-size}
      context)))
 
-(defmethod interface/environment ordinary-type [context {:keys [corner-point]
-                                                         [first-point anchor-point second-point] :edge}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box-points [corner-point
+(defmethod interface/environment ordinary-type [_context {:keys [corner-point]
+                                                          [first-point anchor-point second-point] :edge}]
+  (let [bounding-box-points [corner-point
                              first-point anchor-point second-point]]
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box (bb/from-points bounding-box-points))))))
+    (environment/create (bb/from-points bounding-box-points))))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [first-point anchor-point second-point] :edge
                                                           :as properties}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-one :line
          line-one-start :line-start
          line-one-to :adjusted-to

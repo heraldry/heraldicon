@@ -267,26 +267,17 @@
      context)))
 
 (defmethod interface/subfield-environments field-type [context {[edge-left edge-corner edge-right] :edge}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-environment context)
         {:keys [top bottom]} points]
     ;; TODO: needs to be smarter with chevron-angle
-    {:subfields [(environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [edge-corner top
-                                                            edge-left edge-right]))))
-                 (environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [edge-corner bottom
-                                                            edge-left edge-right]))))]}))
+    {:subfields [(environment/create (bb/from-points [edge-corner top
+                                                      edge-left edge-right]))
+                 (environment/create (bb/from-points [edge-corner bottom
+                                                      edge-left edge-right]))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-left edge-corner edge-right] :edge}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-edge-left :line
          line-edge-left-start :line-start
          line-edge-left-to :adjusted-to

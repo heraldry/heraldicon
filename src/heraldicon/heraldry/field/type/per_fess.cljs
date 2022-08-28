@@ -62,26 +62,17 @@
      context)))
 
 (defmethod interface/subfield-environments field-type [context {[edge-left edge-right] :edge}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
-    {:subfields [(environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [top-left top-right
-                                                            edge-left edge-right]))))
-                 (environment/create
-                  {:paths nil}
-                  (-> meta
-                      (dissoc :context)
-                      (assoc :bounding-box (bb/from-points [edge-left edge-right
-                                                            bottom-left bottom-right]))))]}))
+    {:subfields [(environment/create (bb/from-points [top-left top-right
+                                                      edge-left edge-right]))
+                 (environment/create (bb/from-points [edge-left edge-right
+                                                      bottom-left bottom-right]))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line]
                                                                  [edge-left edge-right] :edge}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-edge :line
          line-edge-start :line-start
          line-edge-from :adjusted-from

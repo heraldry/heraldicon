@@ -48,13 +48,11 @@
                              gap (/ helm-width gap-part)
                              helm-width-with-gap (+ helm-width gap)]
                          (mapv (fn [idx]
-                                 (environment/create
-                                  nil
-                                  {:bounding-box (bb/from-vector-and-size
-                                                  (v/Vector. (+ (* idx helm-width-with-gap) gap)
-                                                             (- helm-height))
-                                                  helm-width
-                                                  helm-height)}))
+                                 (environment/create (bb/from-vector-and-size
+                                                      (v/Vector. (+ (* idx helm-width-with-gap) gap)
+                                                                 (- helm-height))
+                                                      helm-width
+                                                      helm-height)))
                                (range num-elements))))]
     {:type :heraldry/helms
      :environments environments}))

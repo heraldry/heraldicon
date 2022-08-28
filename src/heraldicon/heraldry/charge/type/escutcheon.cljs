@@ -31,30 +31,29 @@
 
 (defmethod interface/properties charge-type [context]
   (let [escutcheon (interface/get-sanitized-data (c/++ context :escutcheon))
-        env (if (= escutcheon :none)
-              (escutcheon/field
-               (interface/render-option :escutcheon context)
-               (interface/render-option :flag-width context)
-               (interface/render-option :flag-height context)
-               (interface/render-option :flag-swallow-tail context)
-               (interface/render-option :flag-tail-point-height context)
-               (interface/render-option :flag-tail-tongue context))
-              (escutcheon/field
-               escutcheon
-               (interface/get-sanitized-data (c/++ context :flag-width))
-               (interface/get-sanitized-data (c/++ context :flag-height))
-               (interface/get-sanitized-data (c/++ context :flag-swallow-tail))
-               (interface/get-sanitized-data (c/++ context :flag-tail-point-height))
-               (interface/get-sanitized-data (c/++ context :flag-tail-tongue))))
-        env-fess (-> env :points :fess)
+        {:keys [shape environment]} (if (= escutcheon :none)
+                                      (escutcheon/data
+                                       (interface/render-option :escutcheon context)
+                                       (interface/render-option :flag-width context)
+                                       (interface/render-option :flag-height context)
+                                       (interface/render-option :flag-swallow-tail context)
+                                       (interface/render-option :flag-tail-point-height context)
+                                       (interface/render-option :flag-tail-tongue context))
+                                      (escutcheon/data
+                                       escutcheon
+                                       (interface/get-sanitized-data (c/++ context :flag-width))
+                                       (interface/get-sanitized-data (c/++ context :flag-height))
+                                       (interface/get-sanitized-data (c/++ context :flag-swallow-tail))
+                                       (interface/get-sanitized-data (c/++ context :flag-tail-point-height))
+                                       (interface/get-sanitized-data (c/++ context :flag-tail-tongue))))
+        env-fess (-> environment :points :fess)
         offset (v/mul env-fess -1)]
     (charge.shared/process-shape
      context
-     {:base-shape (mapv #(-> %
-                             path/parse-path
-                             (path/translate (:x offset) (:y offset))
-                             path/to-svg)
-                        (-> env :shape :paths))
+     {:base-shape [(-> shape
+                       path/parse-path
+                       (path/translate (:x offset) (:y offset))
+                       path/to-svg)]
       :base-top-left offset
-      :basr-width (:width env)
-      :base-height (:height env)})))
+      :base-width (:width environment)
+      :base-height (:height environment)})))

@@ -59,21 +59,16 @@
      context)))
 
 (defmethod interface/environment ordinary-type [context {[upper-left upper-right] :upper}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-environment context)
         {:keys [bottom]} points
         bounding-box-points [upper-left upper-right
                              bottom]]
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box (bb/from-points bounding-box-points))))))
+    (environment/create (bb/from-points bounding-box-points))))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line]
                                                           [upper-left upper-right] :upper
                                                           :as properties}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-upper :line
          line-upper-start :line-start
          line-upper-from :adjusted-from

@@ -320,25 +320,19 @@
       :voided-percentage-base band-size}
      context)))
 
-(defmethod interface/environment ordinary-type [context {[upper-left upper-corner upper-right] :upper
-                                                         [lower-left lower-corner lower-right] :lower}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        ;; TODO: needs to be improved
+(defmethod interface/environment ordinary-type [_context {[upper-left upper-corner upper-right] :upper
+                                                          [lower-left lower-corner lower-right] :lower}]
+  (let [;; TODO: needs to be improved
         bounding-box-points [upper-corner lower-corner
                              upper-left upper-right
                              lower-left lower-right]]
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box (bb/from-points bounding-box-points))))))
+    (environment/create (bb/from-points bounding-box-points))))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [upper-left upper-corner upper-right] :upper
                                                           [lower-left lower-corner lower-right] :lower
                                                           :as properties}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         line (dissoc line :base-line)
         opposite-line (dissoc opposite-line :base-line)
         {line-upper-left :line

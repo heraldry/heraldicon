@@ -215,18 +215,13 @@
       :voided-percentage-base (min band-size point-width)}
      context)))
 
-(defmethod interface/environment ordinary-type [context {:keys [point-height]
-                                                         [upper-left upper-right] :upper
-                                                         [lower-left lower-right] :lower}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box-points [upper-left upper-right
+(defmethod interface/environment ordinary-type [_context {:keys [point-height]
+                                                          [upper-left upper-right] :upper
+                                                          [lower-left lower-right] :lower}]
+  (let [bounding-box-points [upper-left upper-right
                              (v/add lower-left (v/Vector. 0 point-height))
                              (v/add lower-right (v/Vector. 0 point-height))]]
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box (bb/from-points bounding-box-points))))))
+    (environment/create (bb/from-points bounding-box-points))))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [truncated? point-width point-height
                                                                  point-centers point-extra]

@@ -218,26 +218,19 @@
       :num-subfields num-fields-y}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {:keys [edges start-x max-x part-height
-                                                                       reverse-transform-fn]}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)]
-    {:subfields (into []
-                      (map (fn [[edge-start _edge-end]]
-                             (let [real-edge-start (reverse-transform-fn edge-start)]
-                               (environment/create
-                                {:paths nil}
-                                (-> meta
-                                    (dissoc :context)
-                                    (assoc :bounding-box (bb/from-points [(assoc real-edge-start :x start-x)
-                                                                          (assoc real-edge-start
-                                                                                 :x max-x
-                                                                                 :y (+ (:y real-edge-start) part-height))])))))))
-                      edges)}))
+(defmethod interface/subfield-environments field-type [_context {:keys [edges start-x max-x part-height
+                                                                        reverse-transform-fn]}]
+  {:subfields (mapv (fn [[edge-start _edge-end]]
+                      (let [real-edge-start (reverse-transform-fn edge-start)]
+                        (environment/create (bb/from-points [(assoc real-edge-start :x start-x)
+                                                             (assoc real-edge-start
+                                                                    :x max-x
+                                                                    :y (+ (:y real-edge-start) part-height))]))))
+                    edges)})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line edges num-subfields]}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box points]} (interface/get-parent-environment context)
         {:keys [top-left bottom-right]} points
-        bounding-box (:bounding-box meta)
         outside-1 (v/sub top-left (v/Vector. 50 50))
         outside-2 (v/add bottom-right (v/Vector. 50 50))
         lines (vec (map-indexed

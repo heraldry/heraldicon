@@ -151,71 +151,30 @@
       :num-subfields 8}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {[middle edge-top-2] :edge-top
-                                                                [_middle edge-bottom-2] :edge-bottom
-                                                                [_middle edge-left-2] :edge-left
-                                                                [_middle edge-right-2] :edge-right
-                                                                [_middle edge-top-left-2] :edge-top-left
-                                                                [_middle edge-top-right-2] :edge-top-right
-                                                                [_middle edge-bottom-left-2] :edge-bottom-left
-                                                                [_middle edge-bottom-right-2] :edge-bottom-right}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)]
-    {:subfields [(let [points [middle edge-top-left-2 edge-top-2]]
-                   (environment/create
-                    {:paths nil}
-                    (-> meta
-                        (dissoc :context)
-                        (assoc :bounding-box (bb/from-points points)
-                               :points {:fess (apply v/avg points)}))))
-                 (let [points [middle edge-top-right-2 edge-top-2]]
-                   (environment/create
-                    {:paths nil}
-                    (-> meta
-                        (dissoc :context)
-                        (assoc :bounding-box (bb/from-points points)
-                               :points {:fess (apply v/avg points)}))))
-                 (let [points [middle edge-top-left-2 edge-left-2]]
-                   (environment/create
-                    {:paths nil}
-                    (-> meta
-                        (dissoc :context)
-                        (assoc :bounding-box (bb/from-points points)
-                               :points {:fess (apply v/avg points)}))))
-                 (let [points [middle edge-top-right-2 edge-right-2]]
-                   (environment/create
-                    {:paths nil}
-                    (-> meta
-                        (dissoc :context)
-                        (assoc :bounding-box (bb/from-points points)
-                               :points {:fess (apply v/avg points)}))))
-                 (let [points [middle edge-bottom-left-2 edge-left-2]]
-                   (environment/create
-                    {:paths nil}
-                    (-> meta
-                        (dissoc :context)
-                        (assoc :bounding-box (bb/from-points points)
-                               :points {:fess (apply v/avg points)}))))
-                 (let [points [middle edge-bottom-right-2 edge-right-2]]
-                   (environment/create
-                    {:paths nil}
-                    (-> meta
-                        (dissoc :context)
-                        (assoc :bounding-box (bb/from-points points)
-                               :points {:fess (apply v/avg points)}))))
-                 (let [points [middle edge-bottom-left-2 edge-bottom-2]]
-                   (environment/create
-                    {:paths nil}
-                    (-> meta
-                        (dissoc :context)
-                        (assoc :bounding-box (bb/from-points points)
-                               :points {:fess (apply v/avg points)}))))
-                 (let [points [middle edge-bottom-right-2 edge-bottom-2]]
-                   (environment/create
-                    {:paths nil}
-                    (-> meta
-                        (dissoc :context)
-                        (assoc :bounding-box (bb/from-points points)
-                               :points {:fess (apply v/avg points)}))))]}))
+(defmethod interface/subfield-environments field-type [_context {[middle edge-top-2] :edge-top
+                                                                 [_middle edge-bottom-2] :edge-bottom
+                                                                 [_middle edge-left-2] :edge-left
+                                                                 [_middle edge-right-2] :edge-right
+                                                                 [_middle edge-top-left-2] :edge-top-left
+                                                                 [_middle edge-top-right-2] :edge-top-right
+                                                                 [_middle edge-bottom-left-2] :edge-bottom-left
+                                                                 [_middle edge-bottom-right-2] :edge-bottom-right}]
+  {:subfields [(let [points [middle edge-top-left-2 edge-top-2]]
+                 (environment/create (bb/from-points points) {:fess (apply v/avg points)}))
+               (let [points [middle edge-top-right-2 edge-top-2]]
+                 (environment/create (bb/from-points points) {:fess (apply v/avg points)}))
+               (let [points [middle edge-top-left-2 edge-left-2]]
+                 (environment/create (bb/from-points points) {:fess (apply v/avg points)}))
+               (let [points [middle edge-top-right-2 edge-right-2]]
+                 (environment/create (bb/from-points points) {:fess (apply v/avg points)}))
+               (let [points [middle edge-bottom-left-2 edge-left-2]]
+                 (environment/create (bb/from-points points) {:fess (apply v/avg points)}))
+               (let [points [middle edge-bottom-right-2 edge-right-2]]
+                 (environment/create (bb/from-points points) {:fess (apply v/avg points)}))
+               (let [points [middle edge-bottom-left-2 edge-bottom-2]]
+                 (environment/create (bb/from-points points) {:fess (apply v/avg points)}))
+               (let [points [middle edge-bottom-right-2 edge-bottom-2]]
+                 (environment/create (bb/from-points points) {:fess (apply v/avg points)}))]})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-top-1 edge-top-2] :edge-top
@@ -226,8 +185,7 @@
                                                                  [edge-top-right-1 edge-top-right-2] :edge-top-right
                                                                  [edge-bottom-left-1 edge-bottom-left-2] :edge-bottom-left
                                                                  [edge-bottom-right-1 edge-bottom-right-2] :edge-bottom-right}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-edge-top-left :line
          line-edge-top-left-start :line-start
          line-edge-top-left-to :adjusted-to

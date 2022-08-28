@@ -185,7 +185,7 @@
                                                          [bottom-1 corner-bottom bottom-2] :edge-bottom
                                                          [left-1 corner-left left-2] :edge-left
                                                          [right-1 corner-right right-2] :edge-right}]
-  (let [{:keys [meta points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-environment context)
         bounding-box-points [top-1 top-2
                              bottom-1 bottom-2
                              left-1 left-2
@@ -195,15 +195,11 @@
                              (:left points)
                              (:right points)]]
     ;; TODO: maybe best to inherit the parent environment, unless the saltire is couped
-    (environment/create
-     {:paths nil}
-     (-> meta
-         (dissoc :context)
-         (assoc :bounding-box (bb/from-points bounding-box-points)
-                :points {:fess (v/avg corner-top
+    (environment/create (bb/from-points bounding-box-points)
+                        {:fess (v/avg corner-top
                                       corner-bottom
                                       corner-left
-                                      corner-right)})))))
+                                      corner-right)})))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line]
                                                           [top-1 corner-top top-2] :edge-top
@@ -211,8 +207,7 @@
                                                           [left-1 corner-left left-2] :edge-left
                                                           [right-1 corner-right right-2] :edge-right
                                                           :as properties}]
-  (let [{:keys [meta]} (interface/get-parent-environment context)
-        bounding-box (:bounding-box meta)
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         {line-edge-top-first :line
          line-edge-top-first-start :line-start
          line-edge-top-first-to :adjusted-to

@@ -3,7 +3,6 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.escutcheon :as escutcheon]
-   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
@@ -31,11 +30,8 @@
                         (c/++ :field)
                         (assoc-in [:blazonry :root?] true))))
 
-(defmethod interface/properties :heraldry/coat-of-arms [_context]
-  {:type :heraldry/coat-of-arms})
-
-(defmethod interface/environment :heraldry/coat-of-arms [{:keys [target-width]
-                                                          :as context} _properties]
+(defmethod interface/properties :heraldry/coat-of-arms [{:keys [target-width]
+                                                         :as context}]
   (let [target-width (or target-width 100)
         escutcheon (interface/render-option :escutcheon context)
         flag-width (interface/render-option :flag-width context)
@@ -43,18 +39,18 @@
         flag-swallow-tail (interface/render-option :flag-swallow-tail context)
         flag-tail-point-height (interface/render-option :flag-tail-point-height context)
         flag-tail-tongue (interface/render-option :flag-tail-tongue context)
-        shield (escutcheon/field escutcheon flag-width flag-height flag-swallow-tail
-                                 flag-tail-point-height flag-tail-tongue)
-        environment (environment/transform-to-width shield target-width)]
-    environment))
+        escutcheon-data (escutcheon/data escutcheon flag-width flag-height flag-swallow-tail
+                                         flag-tail-point-height flag-tail-tongue)]
+    {:type :heraldry/coat-of-arms
+     :escutcheon-data (escutcheon/transform-to-width escutcheon-data target-width)}))
 
-(defmethod interface/render-shape :heraldry/coat-of-arms [context _properties]
-  (let [environment (interface/get-environment context)
-        squiggly? (interface/render-option :squiggly? context)]
-    {:shape (mapv (if squiggly?
-                    squiggly/squiggly-path
-                    identity)
-                  (-> environment :shape :paths))}))
+(defmethod interface/environment :heraldry/coat-of-arms [_context {:keys [escutcheon-data]}]
+  (:environment escutcheon-data))
+
+(defmethod interface/render-shape :heraldry/coat-of-arms [context {:keys [escutcheon-data]}]
+  (let [squiggly? (interface/render-option :squiggly? context)]
+    {:shape [(cond-> (:shape escutcheon-data)
+               squiggly? squiggly/squiggly-path)]}))
 
 (defmethod interface/bounding-box :heraldry/coat-of-arms [context _properties]
   (let [{:keys [width height]} (interface/get-environment context)]

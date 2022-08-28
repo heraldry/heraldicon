@@ -3,102 +3,65 @@
    ["paper" :refer [Path]]
    ["paperjs-offset" :refer [PaperOffset]]
    [heraldicon.math.bounding-box :as bb]
-   [heraldicon.math.vector :as v]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.math.vector :as v]))
 
-(defn create [shape {:keys [bounding-box context
-                            width height] :as meta}]
-  (let [shape (cond
-                (nil? shape) nil
-                (map? shape) shape
-                :else {:paths [shape]})
-        {:keys [min-x max-x
-                min-y max-y]} (or bounding-box
-                                  (bb/from-paths
-                                   (:paths shape)))
-        top-left (v/Vector. min-x min-y)
-        top-right (v/Vector. max-x min-y)
-        bottom-left (v/Vector. min-x max-y)
-        bottom-right (v/Vector. max-x max-y)
-        width (or width
-                  (bb/width bounding-box))
-        height (or height
-                   (bb/height bounding-box))
-        top (v/avg top-left top-right)
-        bottom (v/avg bottom-left bottom-right)
-        ;; not actually center, but chosen such that bend lines at 45° run together in it
-        ;; TODO: this needs to be fixed to work with sub-fields, especially those where
-        ;; the fess point calculated like this isn't even included in the field
-        ;; update: for now only the root environment gets the "smart" fess point, the others
-        ;; just get the middle, even if that'll break saltire-like divisions
-        fess (or (-> meta :points :fess)
-                 (if (= context :root)
-                   (v/Vector. (:x top) (+ min-y (/ (- max-x min-x) 2)))
-                   (v/avg top-left bottom-right)))
-        left (v/Vector. min-x (:y fess))
-        center (v/Vector. (/ (+ min-x max-x) 2)
-                          (/ (+ min-y max-y) 2))
-        right (v/Vector. max-x (:y fess))
-        honour (v/avg top fess)
-        nombril (v/avg honour bottom)
-        chief (v/avg top honour)
-        base (v/avg bottom nombril)
-        dexter (v/avg left (v/avg left fess))
-        sinister (v/avg right (v/avg right fess))
-        hoist (v/Vector. (min (+ min-x (/ (- max-y min-y) 2))
-                              (:x center)) (:y center))
-        fly (v/Vector. (max (- max-x (/ (- max-y min-y) 2))
-                            (:x center)) (:y center))]
-    {:shape shape
-     :width width
-     :height height
-     :meta meta
-     :points {:top-left top-left
-              :top-right top-right
-              :bottom-left bottom-left
-              :bottom-right bottom-right
-              :top top
-              :bottom bottom
-              :fess fess
-              :left left
-              :center center
-              :right right
-              :honour honour
-              :nombril nombril
-              :chief chief
-              :base base
-              :dexter dexter
-              :sinister sinister
-              :hoist hoist
-              :fly fly}}))
+(defn create
+  ([bounding-box] (create bounding-box nil))
 
-(defn transform-to-width [environment target-width]
-  (let [width (:width environment)
-        top-left (v/add (get-in environment [:points :top-left])
-                        (or (get-in environment [:meta :offset])
-                            v/zero))
-        offset (v/sub top-left)
-        scale-factor (/ target-width width)]
-    (-> environment
-        (assoc :shape {:paths (into []
-                                    (map #(-> %
-                                              path/parse-path
-                                              (path/translate (:x offset) (:y offset))
-                                              (path/scale scale-factor scale-factor)
-                                              path/to-svg))
-                                    (-> environment :shape :paths))})
-        (update :width * scale-factor)
-        (update :height * scale-factor)
-        (update :points merge (into {}
-                                    (map (fn [[key value]]
-                                           [key (-> value
-                                                    (v/add offset)
-                                                    (v/mul scale-factor))]))
-                                    (:points environment)))
-        (update-in [:meta :bounding-box] (fn [bb]
-                                           (-> bb
-                                               (bb/translate offset)
-                                               (bb/scale scale-factor)))))))
+  ([{:keys [min-x max-x
+            min-y max-y]
+     :as bounding-box} points & {:keys [root?]}]
+   (let [top-left (v/Vector. min-x min-y)
+         top-right (v/Vector. max-x min-y)
+         bottom-left (v/Vector. min-x max-y)
+         bottom-right (v/Vector. max-x max-y)
+         [width height] (bb/size bounding-box)
+         top (v/avg top-left top-right)
+         bottom (v/avg bottom-left bottom-right)
+         ;; not actually center, but chosen such that bend lines at 45° run together in it
+         ;; TODO: this needs to be fixed to work with sub-fields, especially those where
+         ;; the fess point calculated like this isn't even included in the field
+         ;; update: for now only the root environment gets the "smart" fess point, the others
+         ;; just get the middle, even if that'll break saltire-like divisions
+         fess (or (:fess points)
+                  (if root?
+                    (v/Vector. (:x top) (+ min-y (/ (- max-x min-x) 2)))
+                    (v/avg top-left bottom-right)))
+         left (v/Vector. min-x (:y fess))
+         center (v/Vector. (/ (+ min-x max-x) 2)
+                           (/ (+ min-y max-y) 2))
+         right (v/Vector. max-x (:y fess))
+         honour (v/avg top fess)
+         nombril (v/avg honour bottom)
+         chief (v/avg top honour)
+         base (v/avg bottom nombril)
+         dexter (v/avg left (v/avg left fess))
+         sinister (v/avg right (v/avg right fess))
+         hoist (v/Vector. (min (+ min-x (/ (- max-y min-y) 2))
+                               (:x center)) (:y center))
+         fly (v/Vector. (max (- max-x (/ (- max-y min-y) 2))
+                             (:x center)) (:y center))]
+     {:bounding-box bounding-box
+      :width width
+      :height height
+      :points {:top-left top-left
+               :top-right top-right
+               :bottom-left bottom-left
+               :bottom-right bottom-right
+               :top top
+               :bottom bottom
+               :fess fess
+               :left left
+               :center center
+               :right right
+               :honour honour
+               :nombril nombril
+               :chief chief
+               :base base
+               :dexter dexter
+               :sinister sinister
+               :hoist hoist
+               :fly fly}})))
 
 (def ^:private shrink-step
   (memoize
