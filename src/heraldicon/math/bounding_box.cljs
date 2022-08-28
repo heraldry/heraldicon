@@ -118,3 +118,6 @@
   (let [{:keys [min-x min-y]
          :as dilated} (dilate bounding-box margin)]
     (s/join " " (map str [min-x min-y (width dilated) (height dilated)]))))
+
+(defn top-left ^v/Vector [^BoundingBox {:keys [min-x min-y]}]
+  (v/Vector. min-x min-y))
