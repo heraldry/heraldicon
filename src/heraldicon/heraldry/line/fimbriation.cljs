@@ -1,6 +1,5 @@
 (ns heraldicon.heraldry.line.fimbriation
   (:require
-   [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldicon.context :as c]
    [heraldicon.heraldry.tincture :as tincture]
@@ -99,9 +98,7 @@
     [:<>
      [:defs
       [:mask {:id mask-id}
-       [:path {:d (if (map? shape)
-                    (s/join "" (:paths shape))
-                    shape)
+       [:path {:d shape
                :fill-rule "evenodd"
                :fill (when fill? "#ffffff")
                :style {:stroke-width (* thickness 2)
