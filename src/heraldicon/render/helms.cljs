@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.environment :as environment]
+   [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]))
 
@@ -15,7 +16,7 @@
                     (assoc :auto-resize? false
                            :self-below-shield? self-below-shield?
                            :render-pass-below-shield? below-shield?))])
-             (interface/get-element-indices (c/++ context :components)))))
+             (shield-separator/get-element-indices (c/++ context :components)))))
 
 (defn render [context width]
   (let [num-helms (interface/get-list-size (c/++ context :elements))]

@@ -19,6 +19,7 @@
    [heraldicon.heraldry.ordinary.core]
    [heraldicon.heraldry.ordinary.options]
    [heraldicon.heraldry.ordinary.render]
+   [heraldicon.heraldry.ornaments]
    [heraldicon.heraldry.ribbon]
    [heraldicon.heraldry.semy]
    [heraldicon.heraldry.tincture]

@@ -3,7 +3,6 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.field.environment :as field.environment]
-   [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.options :as options]
    [heraldicon.svg.path :as path]
    [re-frame.core :as rf]
@@ -65,12 +64,6 @@
                                            first)
                                       [nil nil])]
       (get-in options relative-path))))
-
-(defn get-element-indices [{:keys [path] :as context}]
-  (let [elements (if (-> path first (= :context))
-                   (get-in context (drop 1 path))
-                   @(rf/subscribe [:get path]))]
-    (shield-separator/element-indices-with-position elements)))
 
 (rf/reg-sub ::sanitized-data
   (fn [[_ path] _]
@@ -153,6 +146,7 @@
 (defn parent [context]
   (cond
     (-> context :path last (= :field)) (c/-- context)
+    (-> context :path drop-last last (= :elements)) (c/-- context 2)
     (-> context :path drop-last last (= :charges)) (c/-- context 4)
     (-> context :path last int?) (c/-- context 2)
     (cottise-context? context) (c/-- context 2)
