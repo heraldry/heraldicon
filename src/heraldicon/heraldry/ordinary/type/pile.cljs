@@ -195,6 +195,7 @@
          point :point
          thickness :thickness} (pile/calculate-properties
                                 parent-environment
+                                parent-shape
                                 anchor
                                 (cond-> orientation
                                   (#{:top-right
@@ -212,8 +213,7 @@
                                   :bottom-left 0
                                   :bottom -90
                                   :bottom-right 180
-                                  0)
-                                :shape parent-shape)
+                                  0))
         pile-angle (angle/normalize (v/angle-to-point point anchor-point))
         {left-point :left
          right-point :right} (pile/diagonals anchor-point point thickness)

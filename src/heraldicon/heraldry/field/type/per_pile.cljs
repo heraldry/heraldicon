@@ -183,10 +183,12 @@
         percentage-base (if (#{:left :right} (:point anchor))
                           height
                           width)
+        parent-shape (interface/get-exact-parent-shape context)
         {anchor-point :anchor
          edge-start :point
          thickness :thickness} (pile/calculate-properties
                                 parent-environment
+                                parent-shape
                                 anchor
                                 (cond-> orientation
                                   (#{:top-right
