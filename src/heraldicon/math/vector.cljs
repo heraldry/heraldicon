@@ -181,17 +181,6 @@
 (defn ->str ^js/String [^Vector {:keys [x y]}]
   (str x "," y))
 
-(defn- prune-duplicates [intersections]
-  (->> intersections
-       (group-by (juxt :x :y))
-       (map (comp first second))))
-
-(defn- prune-point [intersections point]
-  (let [check (select-keys point [:x :y])]
-    (filter #(not= (select-keys % [:x :y])
-                   check)
-            intersections)))
-
 (def ^:private path-intersection
   (memoize
    (fn path-intersection [path1 path2]
@@ -204,71 +193,6 @@
                            :t1 (/ (.. location -offset) (.-length p1))
                            :t2 (/ (.. location -intersection -offset) (.-length p2)))))
              (.getIntersections p1 p2))))))
-
-(defn- inside-shape? [point shape]
-  (let [ray (str "M" (->str point) "l" 10000 "," 9000)
-        intersections (into []
-                            (map #(-> (path-intersection ray %)
-                                      prune-duplicates
-                                      (prune-point point)))
-                            (:paths shape))]
-    (-> intersections
-        count
-        odd?)))
-
-(defn- close-to-single-path? [point path]
-  (let [radius 0.0001
-        left (sub point (Vector. radius 0))
-        right (add point (Vector. radius 0))
-        neighbourhood (str "M" (->str left)
-                           "A" radius " " radius " 0 0 0 " (->str right)
-                           "A" radius " " radius " 0 0 1 " (->str left))
-        intersections (path-intersection neighbourhood path)]
-    (-> intersections count pos?)))
-
-(defn- close-to-edge? [point {:keys [paths] :as _shape}]
-  (->> paths
-       (map (partial close-to-single-path? point))
-       (some true?)))
-
-(defn- inside-environment? [point environment]
-  (->> environment
-       (tree-seq map? (comp list :parent-environment :meta))
-       (map :shape)
-       (filter identity)
-       (map-indexed (fn [parent-idx shape]
-                      ;; there's some inaccuracy, where a point that previously was found
-                      ;; as intersection won't be considered inside a shape when tested on
-                      ;; its own, so for those cases check whether it was detected as an
-                      ;; intersection for this parent index
-                      ;; for other cases check whether a neighbourhood around the point
-                      ;; intersects with the shape, then we consider the point close enough
-                      ;; and "on" the edge
-                      (or (-> point :parent-index (= parent-idx))
-                          (close-to-edge? point shape)
-                          (inside-shape? point shape))))
-       (every? true?)))
-
-(defn find-intersections [from to environment]
-  (let [shapes (->> environment
-                    (tree-seq map? (comp list :parent-environment :meta))
-                    (map :shape)
-                    (filter identity))
-        line-path (str "M" (->str from)
-                       "L" (->str to))
-        intersections (->> shapes
-                           (map-indexed (fn [parent-idx shape]
-                                          (into []
-                                                (mapcat (fn [path]
-                                                          (map #(assoc % :parent-index parent-idx)
-                                                               (path-intersection line-path path))))
-                                                (:paths shape))))
-                           (apply concat)
-                           (filter #(inside-environment? % environment))
-                           vec)]
-    (->> intersections
-         prune-duplicates
-         (sort-by :t1))))
 
 (defn angle-to-point ^js/Number [^Vector v1 ^Vector v2]
   (let [d (sub v2 v1)

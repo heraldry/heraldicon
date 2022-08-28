@@ -478,44 +478,12 @@
            :up (v/rotate (v/Vector. 0 -50) angle)
            :down (v/rotate (v/Vector. 0 50) angle))))
 
-(defn- get-intersections-before-and-after [t intersections]
-  (let [before (or (-> intersections
-                       (->> (filter #(<= (:t1 %) t)))
-                       last
-                       :t1)
-                   0)
-        after (or (-> intersections
-                      (->> (filter #(> (:t1 %) t)))
-                      first
-                      :t1)
-                  1)]
-    [before after]))
-
-(defn- find-real-start-and-end [from to {:keys [environment reversed?
-                                                real-start real-end]}]
-  (if (and real-start real-end)
-    [real-start real-end]
-    (let [[from to] (if reversed?
-                      [to from]
-                      [from to])
-          direction (v/sub to from)
-          length (v/abs direction)
-          intersections (v/find-intersections from to environment)
-          [start-t end-t] (get-intersections-before-and-after 0.5 intersections)
-          [start-t end-t] (if reversed?
-                            [(- 1 end-t) (- 1 start-t)]
-                            [start-t end-t])
-          real-start (* length start-t)
-          real-end (* length end-t)]
-      [real-start real-end])))
-
-(defn create [line from to & {:keys [reversed?] :as line-options}]
+(defn- create [line from to & {:keys [reversed? real-start real-end] :as line-options}]
   (let [[from to] (if reversed?
                     [to from]
                     [from to])
         direction (v/sub to from)
         length (v/abs direction)
-        [real-start real-end] (find-real-start-and-end from to line-options)
         angle (v/angle-to-point from to)]
     (create-raw line length
                 (merge {:real-start real-start
