@@ -13,3 +13,6 @@
 
 (defn << [context key value]
   (assoc context key value))
+
+(defn set-parent-environment [context environment]
+  (assoc-in context [:parent-environment (:path context)] environment))

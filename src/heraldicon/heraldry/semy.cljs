@@ -126,8 +126,7 @@
                                      :bottom-right (v/Vector. part-width-half part-height-half)}}
         charge-context (-> context
                            (c/++ :charge)
-                           (assoc :size-default 50
-                                  :parent-environment charge-environment))]
+                           (c/<< :size-default 50))]
     ;; TODO: reverse transform inside charge
     [:g
      [:defs
@@ -141,8 +140,8 @@
                            ^{:key idx}
                            [interface/render-component
                             (-> charge-context
-                                (assoc :anchor-override shift)
-                                (update :parent-environment shift-environment shift))]))
+                                (c/<< :anchor-override shift)
+                                (c/set-parent-environment (shift-environment charge-environment shift)))]))
             (cond->
               [v/zero
                (v/Vector. part-width 0)
