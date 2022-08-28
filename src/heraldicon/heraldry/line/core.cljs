@@ -765,9 +765,7 @@
                       (* pattern-width))
            fess (-> environment :points :fess)
            top (-> environment :points :top)
-           intersection (v/find-first-intersection-of-ray
-                         fess top
-                         {:shape {:paths [guiding-path]}})
+           intersection (v/last-intersection-with-shape fess top guiding-path)
            start-offset (-> intersection
                             :t2
                             (* full-length)
