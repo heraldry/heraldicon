@@ -72,9 +72,9 @@
              (+ (* x (Math/sin rad))
                 (* y (Math/cos rad))))))
 
-(defn distance-point-to-line ^js/Number [^Vector {x0 :x y0 :y}
-                                         ^Vector {x1 :x y1 :y :as v1}
-                                         ^Vector {x2 :x y2 :y :as v2}]
+(defn ^:export distance-point-to-line ^js/Number [^Vector {x0 :x y0 :y}
+                                                  ^Vector {x1 :x y1 :y :as v1}
+                                                  ^Vector {x2 :x y2 :y :as v2}]
   (/ (Math/abs (- (* (- x2 x1)
                      (- y1 y0))
                   (* (- x1 x0)
