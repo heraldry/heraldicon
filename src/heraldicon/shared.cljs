@@ -5,6 +5,7 @@
    [heraldicon.entity.collection.data]
    [heraldicon.entity.collection.element]
    [heraldicon.entity.core]
+   [heraldicon.heraldry.achievement]
    [heraldicon.heraldry.charge-group.core]
    [heraldicon.heraldry.charge-group.options]
    [heraldicon.heraldry.charge.core]
