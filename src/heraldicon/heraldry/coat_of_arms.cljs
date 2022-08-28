@@ -6,7 +6,6 @@
    [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
-   [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.render.hatching :as hatching]
    [heraldicon.render.outline :as outline]
