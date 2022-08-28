@@ -2,11 +2,11 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.font :as font]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
-   [heraldicon.render.helms :as helms]
-   [heraldicon.render.ornaments :as ornaments]))
+   [heraldicon.render.helms :as helms]))
 
 (defn- transform-bounding-box [^BoundingBox {:keys [min-x min-y]
                                              :as bounding-box}
@@ -113,22 +113,17 @@
         coa-and-helms-bounding-box (cond-> coat-of-arms-bounding-box
                                      helms-result-below-shield (bb/combine helms-bounding-box))
 
-        {ornaments-result-below-shield :result-below-shield
-         ornaments-result-above-shield :result-above-shield
-         ornaments-bounding-box :bounding-box} (if (#{:coat-of-arms
-                                                      :coat-of-arms-and-helm} scope)
-                                                 {:bounding-box (bb/BoundingBox. 0 0 0 0)}
-                                                 (ornaments/render
-                                                  (c/++ context :ornaments)
-                                                  coat-of-arms-bounding-box))
+        ornaments-context (-> (c/++ context :ornaments)
+                              (c/<< :parent-environment
+                                    (environment/create nil {:bounding-box coat-of-arms-bounding-box})))
+        render-ornaments? (= scope :achievement)
+        ornaments-bounding-box (when render-ornaments?
+                                 (interface/get-bounding-box ornaments-context))
 
         used-fonts (cond-> (get-used-fonts context)
                      short-url (conj short-url-font))
 
-        achievement-bounding-box (cond-> coa-and-helms-bounding-box
-                                   ;; TODO: restore this functionality, resize the achievement based on mottos
-                                   ;; mottos-result-below-shield (bb/combine mottos-bounding-box)
-                                   ornaments-result-below-shield (bb/combine ornaments-bounding-box))
+        achievement-bounding-box (bb/combine ornaments-bounding-box coa-and-helms-bounding-box)
 
         achievement-width 1000
         {achievement-width :target-width
@@ -182,9 +177,8 @@
        [:g {:transform achievement-transform
             :style {:transition "transform 0.5s"}}
 
-        (when ornaments-result-below-shield
-          [:g
-           ornaments-result-below-shield])
+        (when render-ornaments?
+          [interface/render-component (c/<< ornaments-context :render-pass-below-shield? true)])
 
         (when helms-result-below-shield
           [:g {:transform (str "translate(" (v/->str helm-position) ")")
@@ -205,9 +199,8 @@
                :style {:transition "transform 0.5s"}}
            helms-result-above-shield])
 
-        (when ornaments-result-above-shield
-          [:g
-           ornaments-result-above-shield])]]]
+        (when render-ornaments?
+          [interface/render-component (c/<< ornaments-context :render-pass-below-shield? false)])]]]
 
      (when short-url
        [:text {:x margin

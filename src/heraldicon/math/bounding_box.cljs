@@ -11,13 +11,19 @@
 
 (defn combine
   (^BoundingBox [^BoundingBox {min-x1 :min-x max-x1 :max-x
-                               min-y1 :min-y max-y1 :max-y}
+                               min-y1 :min-y max-y1 :max-y
+                               :as bounding-box-1}
                  ^BoundingBox {min-x2 :min-x max-x2 :max-x
-                               min-y2 :min-y max-y2 :max-y}]
-   (BoundingBox. (min min-x1 min-x2)
-                 (max max-x1 max-x2)
-                 (min min-y1 min-y2)
-                 (max max-y1 max-y2)))
+                               min-y2 :min-y max-y2 :max-y
+                               :as bounding-box-2}]
+   (if (and bounding-box-1
+            bounding-box-2)
+     (BoundingBox. (min min-x1 min-x2)
+                   (max max-x1 max-x2)
+                   (min min-y1 min-y2)
+                   (max max-y1 max-y2))
+     (or bounding-box-1
+         bounding-box-2)))
   (^BoundingBox [^BoundingBox b1 ^BoundingBox b2 & more]
    (reduce combine (combine b1 b2) more)))
 
