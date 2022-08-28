@@ -147,6 +147,7 @@
   (cond
     (-> context :path last (= :field)) (c/-- context)
     (-> context :path drop-last last (= :elements)) (c/-- context 2)
+    (-> context :path drop-last last (= :components)) (c/-- context 2)
     (-> context :path drop-last last (= :charges)) (c/-- context 4)
     (-> context :path last int?) (c/-- context 2)
     (cottise-context? context) (c/-- context 2)

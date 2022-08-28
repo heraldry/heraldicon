@@ -5,8 +5,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
-   [heraldicon.math.vector :as v]
-   [heraldicon.render.helms :as helms]))
+   [heraldicon.math.vector :as v]))
 
 (defn- transform-bounding-box [^BoundingBox {:keys [min-x min-y]
                                              :as bounding-box}
@@ -71,16 +70,12 @@
         coat-of-arms-context (c/++ context :coat-of-arms)
         coat-of-arms-bounding-box (interface/get-bounding-box coat-of-arms-context)
         [coat-of-arms-width coat-of-arms-height] (bb/size coat-of-arms-bounding-box)
-        {helms-result-below-shield :result-below-shield
-         helms-result-above-shield :result-above-shield
-         helms-width :width
-         helms-height :height} (if (= scope :coat-of-arms)
-                                 {:width 0
-                                  :height 0
-                                  :result nil}
-                                 (helms/render
-                                  (c/++ context :helms)
-                                  100))
+        render-helms? (#{:achievement :coat-of-arms-and-helm} scope)
+        helms-context (-> (c/++ context :helms)
+                          (c/set-parent-environment (environment/create
+                                                     nil {:bounding-box coat-of-arms-bounding-box})))
+        helms-bounding-box (when render-helms?
+                             (interface/get-bounding-box helms-context))
         short-arm (* coat-of-arms-width (Math/cos coa-angle-rad-abs))
         long-arm (* coat-of-arms-height (Math/cos coa-angle-counter-rad-abs))
         [rotated-min-x
@@ -96,22 +91,13 @@
                         (neg? coat-of-arms-angle) (v/Vector. (- (/ coat-of-arms-width 2)) 0)
                         (pos? coat-of-arms-angle) (v/Vector. (/ coat-of-arms-width 2) 0)
                         :else v/zero)
-        helms-bounding-box (bb/from-points
-                            [(-> helm-position
-                                 (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
-                                 (v/add (v/Vector. (- (/ helms-width 2))
-                                                   (- helms-height))))
-                             (-> helm-position
-                                 (v/add (v/Vector. (/ coat-of-arms-width 2) 0))
-                                 (v/add (v/Vector. (/ helms-width 2)
-                                                   0)))])
+        helms-bounding-box (bb/translate helms-bounding-box helm-position)
         coat-of-arms-bounding-box (if rotated?
                                     (bb/BoundingBox. rotated-min-x rotated-max-x
                                                      0 rotated-height)
                                     (bb/BoundingBox. 0 coat-of-arms-width
                                                      0 coat-of-arms-height))
-        coa-and-helms-bounding-box (cond-> coat-of-arms-bounding-box
-                                     helms-result-below-shield (bb/combine helms-bounding-box))
+        coa-and-helms-bounding-box (bb/combine coat-of-arms-bounding-box helms-bounding-box)
 
         ornaments-context (-> (c/++ context :ornaments)
                               (c/set-parent-environment (environment/create
@@ -180,10 +166,10 @@
         (when render-ornaments?
           [interface/render-component (c/<< ornaments-context :render-pass-below-shield? true)])
 
-        (when helms-result-below-shield
+        (when render-helms?
           [:g {:transform (str "translate(" (v/->str helm-position) ")")
                :style {:transition "transform 0.5s"}}
-           helms-result-below-shield])
+           [interface/render-component (c/<< helms-context :render-pass-below-shield? true)]])
 
         [:g {:transform (cond
                           (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
@@ -194,10 +180,10 @@
              :style {:transition "transform 0.5s"}}
          [interface/render-component coat-of-arms-context]]
 
-        (when helms-result-above-shield
+        (when render-helms?
           [:g {:transform (str "translate(" (v/->str helm-position) ")")
                :style {:transition "transform 0.5s"}}
-           helms-result-above-shield])
+           [interface/render-component (c/<< helms-context :render-pass-below-shield? false)]])
 
         (when render-ornaments?
           [interface/render-component (c/<< ornaments-context :render-pass-below-shield? false)])]]]
