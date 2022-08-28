@@ -165,10 +165,10 @@
 (defn- preview-form [context]
   (let [{:keys [slot-positions
                 slot-spacing]} (charge-group/calculate-points
-                                (assoc context
-                                       :parent-environment {:width 200
-                                                            :height 200}
-                                       :parent-shape "M-100,-100 h200 v200 h-200 z"))
+                                (-> context
+                                    (c/set-parent-environment {:width 200
+                                                               :height 200})
+                                    (c/<< :parent-shape "M-100,-100 h200 v200 h-200 z")))
         num-charges (interface/get-list-size (c/++ context :charges))
         dot-size (/ (min (:width slot-spacing)
                          (:height slot-spacing))

@@ -8,6 +8,9 @@
 (defmethod interface/properties :heraldry/ornaments [_context]
   {:type :heraldry/ornaments})
 
+(defmethod interface/environment :heraldry/ornaments [context _properties]
+  (interface/get-parent-environment context))
+
 (defmethod interface/bounding-box :heraldry/ornaments [context _properties]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]

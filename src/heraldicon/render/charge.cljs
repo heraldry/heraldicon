@@ -1,5 +1,6 @@
 (ns heraldicon.render.charge
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
@@ -10,7 +11,7 @@
                                  target-height] :as context}]
   (let [shield (escutcheon/field :rectangle nil nil nil nil nil)
         environment (environment/transform-to-width shield 100)
-        charge-context (assoc context :parent-environment environment)
+        charge-context (c/set-parent-environment context environment)
         bounding-box (interface/get-bounding-box charge-context)
         [width height] (bb/size bounding-box)
         target-width (or target-width 1000)

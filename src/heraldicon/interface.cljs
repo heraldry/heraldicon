@@ -205,9 +205,10 @@
              (get (:index subfield)))
          (environment context (get-properties context)))))))
 
-(defn get-parent-environment [{:keys [parent-environment]
+(defn get-parent-environment [{:keys [parent-environment
+                                      path]
                                :as context}]
-  (or parent-environment
+  (or (get parent-environment path)
       (if (cottise-context? context)
         @(rf/subscribe [::environment (parent (parent context))])
         @(rf/subscribe [::environment (parent context)]))))

@@ -114,8 +114,8 @@
                                      helms-result-below-shield (bb/combine helms-bounding-box))
 
         ornaments-context (-> (c/++ context :ornaments)
-                              (c/<< :parent-environment
-                                    (environment/create nil {:bounding-box coat-of-arms-bounding-box})))
+                              (c/set-parent-environment (environment/create
+                                                         nil {:bounding-box coat-of-arms-bounding-box})))
         render-ornaments? (= scope :achievement)
         ornaments-bounding-box (when render-ornaments?
                                  (interface/get-bounding-box ornaments-context))
