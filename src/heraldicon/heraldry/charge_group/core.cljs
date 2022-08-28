@@ -146,9 +146,7 @@
         offset-t (* offset step-t)
         fess (:fess points)
         top (:top points)
-        intersection (v/find-first-intersection-of-ray
-                      fess top
-                      {:shape {:paths [bordure-shape]}})
+        intersection (v/last-intersection-with-shape fess top bordure-shape :default? true)
         start-t (-> intersection
                     :t2
                     (* path-length)

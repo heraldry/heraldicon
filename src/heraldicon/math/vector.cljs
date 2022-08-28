@@ -270,21 +270,6 @@
          prune-duplicates
          (sort-by :t1))))
 
-(defn find-first-intersection-of-ray [anchor orientation environment]
-  (let [direction-vector (sub orientation anchor)
-        line-end (-> direction-vector
-                     normal
-                     (mul 1000)
-                     (add anchor))
-        intersections (find-intersections anchor line-end environment)
-        anchor-inside? (inside-environment? anchor environment)
-        select-fn (if anchor-inside?
-                    first
-                    second)]
-    (-> (filter (comp pos? :t1) intersections)
-        select-fn
-        (select-keys [:x :y :t1 :t2]))))
-
 (defn angle-to-point ^js/Number [^Vector v1 ^Vector v2]
   (let [d (sub v2 v1)
         angle-rad (Math/atan2 (:y d) (:x d))]
