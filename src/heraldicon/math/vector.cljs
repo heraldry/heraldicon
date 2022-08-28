@@ -303,14 +303,6 @@
       (- angle 180)
       angle)))
 
-(defn environment-intersections [from to environment]
-  (let [direction (normal (sub to from))
-        intersections (find-intersections
-                       (sub from (mul direction 1000))
-                       (add to (mul direction 1000))
-                       environment)]
-    [(first intersections) (last intersections)]))
-
 (defn intersections-with-shape [from to shape & {:keys [default?]}]
   (let [direction (normal (sub to from))
         inf (mul direction 1000)
