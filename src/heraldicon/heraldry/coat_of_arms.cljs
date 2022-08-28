@@ -52,9 +52,8 @@
     {:shape [(cond-> (:shape escutcheon-data)
                squiggly? squiggly/squiggly-path)]}))
 
-(defmethod interface/bounding-box :heraldry/coat-of-arms [context _properties]
-  (let [{:keys [width height]} (interface/get-environment context)]
-    (bb/from-vector-and-size v/zero width height)))
+(defmethod interface/bounding-box :heraldry/coat-of-arms [_context {:keys [escutcheon-data]}]
+  (:shape-bounding-box escutcheon-data))
 
 (defmethod interface/exact-shape :heraldry/coat-of-arms [context _properties]
   (-> (interface/get-render-shape context) :shape first))

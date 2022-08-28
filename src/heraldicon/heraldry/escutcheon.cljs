@@ -68,9 +68,7 @@
                "v -15"
                "h 7"
                "z")
-   ;; TODO: real bounding box
-   :width 14
-   :height 15
+   :shape-bounding-box (bb/BoundingBox. -7 7 0 17)
    :bounding-box (bb/BoundingBox. -7 7 0 16)
    :points {:fess (v/Vector. 0 8)}
    :attribution heraldicon-attribution})
@@ -133,11 +131,8 @@
                "a 1 1 0 0 0 -1,-1"
                "h 8"
                "z")
+   :shape-bounding-box (bb/BoundingBox. -8 8 0 17)
    :bounding-box (bb/BoundingBox. -7 7 0 16)
-   ;; TODO: real bounding box
-   :width 16
-   :height 17
-   :offset (v/Vector. -1 0)
    :points {:fess (v/Vector. 0 8)}
    :attribution heraldicon-attribution})
 
@@ -622,24 +617,30 @@
 
 (defn data [escutcheon-type flag-width flag-height swallow-tail tail-point-height tail-tongue]
   (let [escutcheon-data (get kinds-map escutcheon-type)
-        {:keys [bounding-box points shape offset]} (if (= escutcheon-type :flag)
-                                                     ((:function escutcheon-data) flag-width flag-height swallow-tail tail-point-height tail-tongue)
-                                                     escutcheon-data)]
+        {:keys [bounding-box
+                shape-bounding-box
+                points shape]} (if (= escutcheon-type :flag)
+                                 ((:function escutcheon-data) flag-width flag-height swallow-tail tail-point-height tail-tongue)
+                                 escutcheon-data)]
     {:shape shape
-     :offset offset
-     :environment (environment/create bounding-box points)}))
+     :shape-bounding-box (or shape-bounding-box bounding-box)
+     :environment (environment/create bounding-box points :root? true)}))
 
-(defn transform-to-width [{:keys [shape environment offset]} target-width]
+(defn transform-to-width [{:keys [shape environment shape-bounding-box]} target-width]
   (let [width (:width environment)
-        top-left (v/add (get-in environment [:points :top-left])
-                        (or offset v/zero))
-        effective-offset (v/sub top-left)
-        scale-factor (/ target-width width)]
+        top-left-shape (bb/top-left shape-bounding-box)
+        effective-offset (v/sub top-left-shape)
+        scale-factor (/ target-width width)
+        transform-bb (fn [bb]
+                       (-> bb
+                           (bb/translate effective-offset)
+                           (bb/scale scale-factor)))]
     {:shape (-> shape
                 path/parse-path
                 (path/translate (:x effective-offset) (:y effective-offset))
                 (path/scale scale-factor scale-factor)
                 path/to-svg)
+     :shape-bounding-box (transform-bb shape-bounding-box)
      :environment (-> environment
                       (update :width * scale-factor)
                       (update :height * scale-factor)
@@ -650,10 +651,7 @@
                                                               (v/add effective-offset)
                                                               (v/mul scale-factor))]))
                                               points)))
-                      (update :bounding-box (fn [bb]
-                                              (-> bb
-                                                  (bb/translate effective-offset)
-                                                  (bb/scale scale-factor)))))}))
+                      (update :bounding-box transform-bb))}))
 
 (def flag-options
   {:flag-aspect-ratio-preset {:type :option.type/choice
