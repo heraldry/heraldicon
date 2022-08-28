@@ -14,6 +14,7 @@
    [heraldicon.heraldry.coat-of-arms]
    [heraldicon.heraldry.cottising]
    [heraldicon.heraldry.field.core]
+   [heraldicon.heraldry.helms]
    [heraldicon.heraldry.motto]
    [heraldicon.heraldry.option.attributes]
    [heraldicon.heraldry.ordinary.core]
