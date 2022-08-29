@@ -76,6 +76,17 @@
                        %)
                     data))))
 
+(def ^:private remove-layer-separator
+  (memoize
+   (fn remove-layer-separator [data placeholder-colours]
+     (walk/postwalk #(cond
+                       (and (vector? %)
+                            (->> % first (get #{:stroke :fill :stop-color}))
+                            (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) #{:layer-separator}))
+                       [(first %) "none"]
+                       :else %)
+                    data))))
+
 ;; TODO: the function here prevents efficient memoization, because the calling
 ;; context uses anonymous functions that use closures
 (defn- replace-colours [data function]
@@ -288,6 +299,9 @@
             adjusted-charge-without-shading (when-not preview-original?
                                               (cond-> adjusted-charge
                                                 (not highlight-colours?) (remove-shading placeholder-colours)))
+            fimbriation-shape (-> unadjusted-charge
+                                  (remove-shading placeholder-colours)
+                                  (remove-layer-separator placeholder-colours))
             hide-lower-layer? (and (seq layer-separator-colours)
                                    (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
@@ -431,7 +445,7 @@
                                        "translate(" (-> anchor-point (v/mul -1) v/->str) ")")]
             [:g {:transform transform}
              [render/shape-fimbriation context
-              :fimbriation-shape adjusted-charge-without-shading
+              :fimbriation-shape fimbriation-shape
               :reverse-transform reverse-transform
               :scale (/ 1 scale-x)]
              (cond
