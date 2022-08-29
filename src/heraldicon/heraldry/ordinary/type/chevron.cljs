@@ -373,10 +373,12 @@
                ["M" (v/add line-upper-left-to line-upper-left-start)
                 (path/stitch line-upper-left)
                 (path/stitch line-upper-right)
-                (infinity/clockwise line-upper-right-to (v/add line-lower-right-to line-lower-right-start))
+                (infinity/clockwise line-upper-right-to (v/add line-lower-right-to line-lower-right-start)
+                                    :shortest? true)
                 (path/stitch line-lower-right)
                 (path/stitch line-lower-left)
-                (infinity/clockwise line-lower-left-to (v/add line-upper-left-to line-upper-left-start))
+                (infinity/clockwise line-lower-left-to (v/add line-upper-left-to line-upper-left-start)
+                                    :shortest? true)
                 "z"])]
       :lines [{:line line
                :line-from line-upper-left-to

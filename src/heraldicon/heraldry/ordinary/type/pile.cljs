@@ -271,7 +271,7 @@
                ["M" (v/add line-left-to line-left-start)
                 (path/stitch line-left)
                 (path/stitch line-right)
-                (infinity/clockwise line-right-to (v/add line-left-to line-left-start))
+                (infinity/clockwise line-right-to (v/add line-left-to line-left-start) :shortest? true)
                 "z"])]
       :lines [{:line line
                :line-from line-left-to
