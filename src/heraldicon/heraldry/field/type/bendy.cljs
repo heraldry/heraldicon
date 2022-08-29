@@ -175,8 +175,7 @@
                                  reverse-transform-fn
                                  path/to-svg)
         bounding-box (bb/from-paths [rotated-parent-shape])
-        available-height (- (:max-y bounding-box)
-                            (:min-y bounding-box))
+        available-height (bb/height bounding-box)
         part-height (-> available-height
                         (/ (or num-fields-y 1))
                         (* stretch-y))
@@ -193,15 +192,12 @@
                         (v/Vector. (:min-x bounding-box) edge-y) (v/Vector. (:max-x bounding-box) edge-y)
                         rotated-parent-shape :default? true)))
                    (range num-fields-y))
-        longest-edge (first (sort-by (fn [[edge-start edge-end]]
-                                       (- (v/abs (v/sub edge-end edge-start))))
-                                     edges))
-        line-length (v/abs (v/sub (first longest-edge) (second longest-edge)))
-        start-x (:x (first longest-edge))
-        max-x (:x (second longest-edge))
+        start-x (apply min (map (comp :x first) edges))
+        end-x (apply max (map (comp :x second) edges))
+        line-length (- end-x start-x)
         edges (map (fn [[edge-start edge-end]]
                      [(assoc edge-start :x start-x)
-                      (assoc edge-end :x max-x)])
+                      (assoc edge-end :x end-x)])
                    edges)
         edges (mapv (fn [[edge-start edge-end]]
                       [(v/rotate edge-start angle)
@@ -212,20 +208,20 @@
       :edges edges
       :part-height part-height
       :start-x start-x
-      :max-x max-x
+      :end-x end-x
       :line-length line-length
       :transform (str "rotate(" angle ")")
       :reverse-transform-fn reverse-transform-fn
       :num-subfields num-fields-y}
      context)))
 
-(defmethod interface/subfield-environments field-type [_context {:keys [edges start-x max-x part-height
+(defmethod interface/subfield-environments field-type [_context {:keys [edges start-x end-x part-height
                                                                         reverse-transform-fn]}]
   {:subfields (mapv (fn [[edge-start _edge-end]]
                       (let [real-edge-start (reverse-transform-fn edge-start)]
                         (environment/create (bb/from-points [(assoc real-edge-start :x start-x)
                                                              (assoc real-edge-start
-                                                                    :x max-x
+                                                                    :x end-x
                                                                     :y (+ (:y real-edge-start) part-height))]))))
                     edges)})
 
