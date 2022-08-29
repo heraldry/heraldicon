@@ -185,29 +185,32 @@
         lower-end (v/add middle-end width-offset)
         [upper-left upper-right] (v/intersections-with-shape upper-start upper-end parent-shape :default? true)
         [lower-left lower-right] (v/intersections-with-shape lower-start lower-end parent-shape :default? true)
-        line-length (max (v/abs (v/sub upper-left upper-right))
-                         (v/abs (v/sub middle-start middle-end))
-                         (v/abs (v/sub lower-left lower-right))
-                         10)
-        ordinary-top-left (first (sort-by
-                                  (fn [v]
-                                    (let [rv (:x (v/rotate v (- angle)))]
-                                      (if (math/close-to-zero? rv)
-                                        0
-                                        rv)))
-                                  [upper-start
-                                   lower-start
-                                   upper-left]))
+        rotated-upper-left (v/rotate upper-left (- angle))
+        rotated-upper-right (v/rotate upper-right (- angle))
+        rotated-middle-start (v/rotate middle-start (- angle))
+        rotated-middle-end (v/rotate middle-end (- angle))
+        rotated-lower-left (v/rotate lower-left (- angle))
+        rotated-lower-right (v/rotate lower-right (- angle))
+        start-x (apply min (map :x [rotated-upper-left
+                                    rotated-middle-start
+                                    rotated-lower-left]))
+        end-x (apply max (map :x [rotated-upper-right
+                                  rotated-middle-end
+                                  rotated-lower-right]))
+        upper-left (v/rotate (assoc rotated-upper-left :x start-x) angle)
+        upper-right (v/rotate (assoc rotated-upper-right :x end-x) angle)
+        lower-left (v/rotate (assoc rotated-lower-left :x start-x) angle)
+        lower-right (v/rotate (assoc rotated-lower-right :x end-x) angle)
+        line-length (max (- end-x start-x) 10)
         reverse-transform-fn (when-not use-parent-environment?
                                (fn reverse-transform-fn [v]
                                  (if (instance? v/Vector v)
                                    (-> v
-                                       (v/sub ordinary-top-left)
+                                       (v/sub upper-left)
                                        (v/rotate (- angle)))
                                    (-> v
-                                       (path/translate (- (:x ordinary-top-left)) (- (:y ordinary-top-left)))
-                                       (path/rotate (- angle))))))
-        lower-left (v/add upper-left (v/mul width-offset 2))]
+                                       (path/translate (- (:x upper-left)) (- (:y upper-left)))
+                                       (path/rotate (- angle))))))]
     (post-process/properties
      {:type real-ordinary-type
       :upper [upper-left upper-right]
@@ -219,7 +222,7 @@
       :percentage-base percentage-base
       :use-parent-environment? use-parent-environment?
       :transform (when-not use-parent-environment?
-                   (str "translate(" (v/->str ordinary-top-left) ")"
+                   (str "translate(" (v/->str upper-left) ")"
                         "rotate(" angle ")"))
       :reverse-transform-fn reverse-transform-fn
       :humetty-percentage-base (min (:width parent-environment)
