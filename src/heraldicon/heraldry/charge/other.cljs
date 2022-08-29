@@ -432,7 +432,7 @@
             [:g {:transform transform}
              [render/shape-fimbriation context
               :fimbriation-shape adjusted-charge-without-shading
-              :transform reverse-transform
+              :reverse-transform reverse-transform
               :scale (/ 1 scale-x)]
              (cond
                preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)

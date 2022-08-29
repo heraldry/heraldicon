@@ -143,7 +143,7 @@
                  data))
 
 (defn dilate-and-fill [shape thickness color {:keys [svg-export?]}
-                       & {:keys [transform corner scale]
+                       & {:keys [reverse-transform corner scale]
                           :or {scale 1}}]
   (let [mask-id (uid/generate "mask")
         linejoin-value (linejoin corner)
@@ -158,7 +158,7 @@
                     :stroke-miterlimit 10}}
         (dilate-recursively shape thickness "#ffffff" linejoin-value)]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [:g {:transform transform}
+      [:g {:transform reverse-transform}
        [:rect {:x -500
                :y -500
                :width 1100

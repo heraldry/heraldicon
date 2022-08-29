@@ -58,7 +58,7 @@
                  [render-line context line]))
           lines)))
 
-(defn shape-fimbriation [context & {:keys [fimbriation-shape transform scale]
+(defn shape-fimbriation [context & {:keys [fimbriation-shape reverse-transform scale]
                                     :or {scale 1}}]
   (let [render-shape (when-not fimbriation-shape
                        (interface/get-render-shape context))
@@ -89,7 +89,7 @@
              (+ thickness (/ outline/stroke-width 2))
              (outline/color context) context
              :scale scale
-             :transform transform
+             :reverse-transform reverse-transform
              :corner (:corner fimbriation)])
           [fimbriation/dilate-and-fill
            fimbriation-shape
@@ -99,7 +99,7 @@
                :tincture-2
                (tincture/pick context)) context
            :scale scale
-           :transform transform
+           :reverse-transform reverse-transform
            :corner (:corner fimbriation)]]))
      (when (-> fimbriation :mode #{:single :double})
        (let [thickness (:thickness-1 fimbriation)]
@@ -110,7 +110,7 @@
              (+ thickness (/ outline/stroke-width 2))
              (outline/color context) context
              :scale scale
-             :transform transform
+             :reverse-transform reverse-transform
              :corner (:corner fimbriation)])
           [fimbriation/dilate-and-fill
            fimbriation-shape
@@ -120,5 +120,5 @@
                :tincture-1
                (tincture/pick context)) context
            :scale scale
-           :transform transform
+           :reverse-transform reverse-transform
            :corner (:corner fimbriation)]]))]))
