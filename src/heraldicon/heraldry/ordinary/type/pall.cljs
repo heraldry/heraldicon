@@ -423,15 +423,15 @@
                ["M" (v/add line-edge-bottom-first-to line-edge-bottom-first-start)
                 (path/stitch line-edge-bottom-first)
                 (path/stitch line-edge-bottom-second)
-                (infinity/clockwise line-edge-bottom-second-to (v/add line-edge-left-first-to line-edge-left-first-start)
+                (infinity/clockwise bounding-box line-edge-bottom-second-to (v/add line-edge-left-first-to line-edge-left-first-start)
                                     :shortest? true)
                 (path/stitch line-edge-left-first)
                 (path/stitch line-edge-left-second)
-                (infinity/clockwise line-edge-left-second-to (v/add line-edge-right-first-to line-edge-right-first-start)
+                (infinity/clockwise bounding-box line-edge-left-second-to (v/add line-edge-right-first-to line-edge-right-first-start)
                                     :shortest? true)
                 (path/stitch line-edge-right-first)
                 (path/stitch line-edge-right-second)
-                (infinity/clockwise line-edge-right-second-to (v/add line-edge-bottom-first-to line-edge-bottom-first-start)
+                (infinity/clockwise bounding-box line-edge-right-second-to (v/add line-edge-bottom-first-to line-edge-bottom-first-start)
                                     :shortest? true)
                 "z"])]
       :lines [{:line extra-line

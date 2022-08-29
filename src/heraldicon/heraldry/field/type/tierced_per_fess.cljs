@@ -127,27 +127,27 @@
     {:subfields [{:shape [(path/make-path
                            ["M" (v/add line-edge-1-from line-edge-1-start)
                             (path/stitch line-edge-1)
-                            (infinity/counter-clockwise
-                             line-edge-1-to
-                             (v/add line-edge-1-from line-edge-1-start))
+                            (infinity/counter-clockwise bounding-box
+                                                        line-edge-1-to
+                                                        (v/add line-edge-1-from line-edge-1-start))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-1-from line-edge-1-start)
                             (path/stitch line-edge-1)
-                            (infinity/clockwise
-                             line-edge-1-to
-                             (v/add line-edge-2-to line-edge-2-start))
+                            (infinity/clockwise bounding-box
+                                                line-edge-1-to
+                                                (v/add line-edge-2-to line-edge-2-start))
                             (path/stitch line-edge-2)
-                            (infinity/clockwise
-                             line-edge-2-from
-                             (v/add line-edge-1-from line-edge-1-start))
+                            (infinity/clockwise bounding-box
+                                                line-edge-2-from
+                                                (v/add line-edge-1-from line-edge-1-start))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-2-to line-edge-2-start)
                             (path/stitch line-edge-2)
-                            (infinity/counter-clockwise
-                             line-edge-2-from
-                             (v/add line-edge-2-to line-edge-2-start))
+                            (infinity/counter-clockwise bounding-box
+                                                        line-edge-2-from
+                                                        (v/add line-edge-2-to line-edge-2-start))
                             "z"])]}]
      :lines [{:line line
               :line-from line-edge-1-from

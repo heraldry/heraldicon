@@ -1,15 +1,14 @@
 (ns heraldicon.svg.infinity
   (:require
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]))
-
-(def ^:private center
-  (v/Vector. 50 60))
 
 (def ^:private radius
   600)
 
-(defn clockwise [from to & {:keys [shortest?]}]
-  (let [from-ray (v/sub from center)
+(defn clockwise [bounding-box from to & {:keys [shortest?]}]
+  (let [center (bb/center bounding-box)
+        from-ray (v/sub from center)
         to-ray (v/sub to center)
         projected-from (-> from-ray
                            (v/mul (/ radius (v/abs from-ray)))
@@ -26,8 +25,9 @@
      "A" radius radius 0 large-arc? clockwise? projected-to
      "L" to]))
 
-(defn counter-clockwise [from to & {:keys [shortest?]}]
-  (let [from-ray (v/sub from center)
+(defn counter-clockwise [bounding-box from to & {:keys [shortest?]}]
+  (let [center (bb/center bounding-box)
+        from-ray (v/sub from center)
         to-ray (v/sub to center)
         projected-from (-> from-ray
                            (v/mul (/ radius (v/abs from-ray)))

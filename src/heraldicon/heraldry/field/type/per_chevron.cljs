@@ -299,17 +299,17 @@
                            ["M" (v/add line-edge-left-to line-edge-left-start)
                             (path/stitch line-edge-left)
                             (path/stitch line-edge-right)
-                            (infinity/counter-clockwise
-                             line-edge-right-to
-                             (v/add line-edge-left-to line-edge-left-start))
+                            (infinity/counter-clockwise bounding-box
+                                                        line-edge-right-to
+                                                        (v/add line-edge-left-to line-edge-left-start))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-left-to line-edge-left-start)
                             (path/stitch line-edge-left)
                             (path/stitch line-edge-right)
-                            (infinity/clockwise
-                             line-edge-right-to
-                             (v/add line-edge-left-to line-edge-left-start))
+                            (infinity/clockwise bounding-box
+                                                line-edge-right-to
+                                                (v/add line-edge-left-to line-edge-left-start))
                             "z"])]}]
      :lines [{:line line
               :line-from line-edge-left-to

@@ -206,8 +206,8 @@
                                        last?) ["M" outside-1
                                                ;; do this in two steps, because using the same point
                                                ;; wouldn't use the large arc
-                                               (infinity/clockwise outside-1 outside-2)
-                                               (infinity/clockwise outside-2 outside-1)
+                                               (infinity/clockwise bounding-box outside-1 outside-2)
+                                               (infinity/clockwise bounding-box outside-2 outside-1)
                                                "z"]
                                   first? (let [[line-1-left line-1-right] (get lines i)
                                                line-1-start (v/add (:adjusted-to line-1-left) (:line-start line-1-left))
@@ -215,7 +215,7 @@
                                            ["M" line-1-start
                                             (path/stitch (:line line-1-left))
                                             (path/stitch (line/reversed-path (:line line-1-right)))
-                                            (infinity/counter-clockwise line-1-end line-1-start :shortest? true)
+                                            (infinity/counter-clockwise bounding-box line-1-end line-1-start :shortest? true)
                                             "z"])
                                   last? (let [[line-1-left line-1-right] (get lines (dec i))
                                               [line-1-start line-1-end] [(v/add (:adjusted-to line-1-left) (:line-start line-1-left))
@@ -223,7 +223,7 @@
                                           ["M" line-1-start
                                            (path/stitch (:line line-1-left))
                                            (path/stitch (line/reversed-path (:line line-1-right)))
-                                           (infinity/clockwise line-1-end line-1-start :shortest? true)
+                                           (infinity/clockwise bounding-box line-1-end line-1-start :shortest? true)
                                            "z"])
                                   :else (let [[line-1-left line-1-right] (get lines (dec i))
                                               ;; swap arms for the lower line
@@ -235,10 +235,10 @@
                                           ["M" line-1-start
                                            (path/stitch (:line line-1-left))
                                            (path/stitch (line/reversed-path (:line line-1-right)))
-                                           (infinity/clockwise line-1-end line-2-start :shortest? true)
+                                           (infinity/clockwise bounding-box line-1-end line-2-start :shortest? true)
                                            (path/stitch (:line line-2-left))
                                            (path/stitch (line/reversed-path (:line line-2-right)))
-                                           (infinity/clockwise line-2-end line-1-start :shortest? true)
+                                           (infinity/clockwise bounding-box line-2-end line-1-start :shortest? true)
                                            "z"])))))
                        (map (fn [path]
                               {:shape [(path/make-path path)]})))
