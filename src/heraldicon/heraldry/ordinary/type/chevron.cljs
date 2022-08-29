@@ -16,6 +16,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/chevron)
@@ -345,6 +346,7 @@
                                                                :extend-from? false
                                                                :context context)
         {line-upper-right :line
+         line-upper-right-to :adjusted-to
          :as line-upper-right-data} (line/create-with-extension line
                                                                 upper-corner upper-right
                                                                 bounding-box
@@ -360,6 +362,7 @@
                                                                 :extend-from? false
                                                                 :context context)
         {line-lower-left :line
+         line-lower-left-to :adjusted-to
          :as line-lower-left-data} (line/create-with-extension opposite-line
                                                                lower-corner lower-left
                                                                bounding-box
@@ -367,14 +370,13 @@
                                                                :context context)]
     (post-process/shape
      {:shape [(path/make-path
-               ["M" (v/add line-upper-left-to
-                           line-upper-left-start)
+               ["M" (v/add line-upper-left-to line-upper-left-start)
                 (path/stitch line-upper-left)
                 (path/stitch line-upper-right)
-                "L" (v/add line-lower-right-to
-                           line-lower-right-start)
+                (infinity/clockwise line-upper-right-to (v/add line-lower-right-to line-lower-right-start))
                 (path/stitch line-lower-right)
                 (path/stitch line-lower-left)
+                (infinity/clockwise line-lower-left-to (v/add line-upper-left-to line-upper-left-start))
                 "z"])]
       :lines [{:line line
                :line-from line-upper-left-to
