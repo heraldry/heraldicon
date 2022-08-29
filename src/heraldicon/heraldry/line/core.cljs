@@ -805,9 +805,10 @@
                                0))))
 
 (defn- extend [start extra bounding-box]
-  (if (bb/surrounds? bounding-box start)
-    (recur (v/add start extra) extra bounding-box)
-    start))
+  (let [next (v/add start extra)]
+    (if (bb/surrounds? bounding-box next)
+      (recur next extra bounding-box)
+      next)))
 
 (defn create-with-extension [line from to bounding-box & {:keys [extend-from?
                                                                  extend-to?]
