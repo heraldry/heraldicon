@@ -86,7 +86,11 @@
                                    (v/Vector. right (:y top)) (v/Vector. right (:y bottom))
                                    parent-shape
                                    :default? true)
-        line-length (- (:y left-lower) (:y left-upper))]
+        start-y (min (:y left-upper) (:y right-upper))
+        left-upper (assoc left-upper :y start-y)
+        right-upper (assoc right-upper :y start-y)
+        line-length (max (v/abs (v/sub left-upper left-lower))
+                         (v/abs (v/sub left-lower right-lower)))]
     (post-process/properties
      {:type ordinary-type
       :left [left-upper left-lower]
@@ -109,7 +113,6 @@
                                                           [right-upper right-lower] :right
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        right-upper (assoc right-upper :y (:y left-upper))
         {line-left :line
          line-left-start :line-start
          line-left-from :adjusted-from
