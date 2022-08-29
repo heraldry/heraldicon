@@ -71,12 +71,15 @@
                          (v/Vector. (:x left) edge-y) (v/Vector. (:x right) edge-y)
                          parent-shape :default? true)))
                     (range num-fields-y))
-        ;; the second edge is the first one visible, it dictates the line style start
-        start-x (-> edges second first :x)
+        ;; the second edge is the first one visible, so drop the first
+        start-x (->> (drop 1 edges)
+                     (map (comp :x first))
+                     (apply min))
+        end-x (apply max (map (comp :x second) edges))
         edges (mapv (fn [[edge-start edge-end]]
-                      [(assoc edge-start :x start-x) edge-end])
+                      [(assoc edge-start :x start-x)
+                       (assoc edge-end :x end-x)])
                     edges)
-        max-x (apply max (map (comp :x second) edges))
         line-length (apply max (map (fn [[edge-start edge-end]]
                                       (v/abs (v/sub edge-end edge-start)))
                                     edges))]
@@ -85,16 +88,16 @@
       :edges edges
       :part-height part-height
       :start-x start-x
-      :max-x max-x
+      :end-x end-x
       :line-length line-length
       :num-subfields num-fields-y}
      context)))
 
-(defmethod interface/subfield-environments field-type [_context {:keys [edges start-x max-x part-height]}]
+(defmethod interface/subfield-environments field-type [_context {:keys [edges start-x end-x part-height]}]
   {:subfields (mapv (fn [[edge-start _edge-end]]
                       (environment/create (bb/from-points [(assoc edge-start :x start-x)
                                                            (assoc edge-start
-                                                                  :x max-x
+                                                                  :x end-x
                                                                   :y (+ (:y edge-start) part-height))])))
                     edges)})
 

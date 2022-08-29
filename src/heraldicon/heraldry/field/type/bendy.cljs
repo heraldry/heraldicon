@@ -200,7 +200,8 @@
         start-x (:x (first longest-edge))
         max-x (:x (second longest-edge))
         edges (map (fn [[edge-start edge-end]]
-                     [(assoc edge-start :x start-x) edge-end])
+                     [(assoc edge-start :x start-x)
+                      (assoc edge-end :x max-x)])
                    edges)
         edges (mapv (fn [[edge-start edge-end]]
                       [(v/rotate edge-start angle)

@@ -77,8 +77,11 @@
         [edge-2-top edge-2-bottom] (v/intersections-with-shape
                                     (v/Vector. edge-2-x (:y top)) (v/Vector. edge-2-x (:y bottom))
                                     parent-shape :default? true)
-        edge-2-top (assoc edge-2-top :y (:y edge-1-top))
-        line-length (- (:y edge-1-bottom) (:y edge-1-top))]
+        start-y (min (:y edge-1-top) (:y edge-2-top))
+        edge-1-top (assoc edge-1-top :y start-y)
+        edge-2-top (assoc edge-2-top :y start-y)
+        line-length (max (v/abs (v/sub edge-1-top edge-1-bottom))
+                         (v/abs (v/sub edge-2-top edge-2-bottom)))]
     (post-process/properties
      {:type field-type
       :edge-1 [edge-1-top edge-1-bottom]
