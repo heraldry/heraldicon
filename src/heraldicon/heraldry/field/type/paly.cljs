@@ -132,15 +132,15 @@
                                        last?) ["M" outside-1
                                                ;; do this in two steps, because using the same point
                                                ;; wouldn't use the large arc
-                                               (infinity/clockwise outside-1 outside-2)
-                                               (infinity/clockwise outside-2 outside-1)
+                                               (infinity/clockwise bounding-box outside-1 outside-2)
+                                               (infinity/clockwise bounding-box outside-2 outside-1)
                                                "z"]
                                   first? (let [line-1 (get lines i)
                                                line-start (v/add (:adjusted-from line-1) (:line-start line-1))
                                                line-end (:adjusted-to line-1)]
                                            ["M" line-start
                                             (path/stitch (:line line-1))
-                                            (infinity/clockwise line-end line-start :shortest? true)
+                                            (infinity/clockwise bounding-box line-end line-start :shortest? true)
                                             "z"])
                                   last? (let [line-1 (get lines (dec i))
                                               even-line? (even? (dec i))
@@ -153,7 +153,7 @@
                                            (path/stitch (:line line-1))
                                            ((if even-line?
                                               infinity/counter-clockwise
-                                              infinity/clockwise) line-end line-start :shortest? true)
+                                              infinity/clockwise) bounding-box line-end line-start :shortest? true)
                                            "z"])
                                   :else (let [even-part? (even? i)
                                               line-1 (get lines (dec i))
@@ -165,9 +165,9 @@
                                                   line-2-end (:adjusted-to line-2)]
                                               ["M" line-1-start
                                                (path/stitch (:line line-1))
-                                               (infinity/clockwise line-1-end line-2-start :shortest? true)
+                                               (infinity/clockwise bounding-box line-1-end line-2-start :shortest? true)
                                                (path/stitch (:line line-2))
-                                               (infinity/clockwise line-2-end line-1-start :shortest? true)
+                                               (infinity/clockwise bounding-box line-2-end line-1-start :shortest? true)
                                                "z"])
                                             (let [line-1-start (v/add (:adjusted-from line-1) (:line-start line-1))
                                                   line-1-end (:adjusted-to line-1)
@@ -175,9 +175,9 @@
                                                   line-2-end (:adjusted-from line-2)]
                                               ["M" line-1-start
                                                (path/stitch (:line line-1))
-                                               (infinity/counter-clockwise line-1-end line-2-start :shortest? true)
+                                               (infinity/counter-clockwise bounding-box line-1-end line-2-start :shortest? true)
                                                (path/stitch (:line line-2))
-                                               (infinity/counter-clockwise line-2-end line-1-start :shortest? true)
+                                               (infinity/counter-clockwise bounding-box line-2-end line-1-start :shortest? true)
                                                "z"])))))))
                        (map (fn [path]
                               {:shape [(path/make-path path)]})))

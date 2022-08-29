@@ -123,11 +123,11 @@
                (if dexter?
                  ["M" (v/add line-lower-from line-lower-start)
                   (path/stitch line-lower)
-                  (infinity/clockwise line-lower-to line-lower-from)
+                  (infinity/clockwise bounding-box line-lower-to line-lower-from)
                   "z"]
                  ["M" (v/add line-lower-to line-lower-start)
                   (path/stitch line-lower)
-                  (infinity/clockwise line-lower-from line-lower-to)
+                  (infinity/clockwise bounding-box line-lower-from line-lower-to)
                   "z"]))]
       :lines [{:line line
                :line-from (if dexter?

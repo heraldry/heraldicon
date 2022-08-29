@@ -162,31 +162,31 @@
                                          ["M" (v/add (:adjusted-to line-1) (:line-start line-1))
                                           (path/stitch (:line line-1))
                                           (path/stitch (line/reversed-path (:line line-2)))
-                                          (infinity/counter-clockwise
-                                           (:adjusted-from line-2)
-                                           (v/add (:adjusted-to line-1) (:line-start line-1)))
+                                          (infinity/counter-clockwise bounding-box
+                                                                      (:adjusted-from line-2)
+                                                                      (v/add (:adjusted-to line-1) (:line-start line-1)))
                                           "z"]
                                          ["M" (v/add (:adjusted-to line-2) (:line-start line-2))
                                           (path/stitch (:line line-2))
                                           (path/stitch (line/reversed-path (:line line-1)))
-                                          (infinity/clockwise
-                                           (:adjusted-from line-1)
-                                           (v/add (:adjusted-to line-2) (:line-start line-2)))
+                                          (infinity/clockwise bounding-box
+                                                              (:adjusted-from line-1)
+                                                              (v/add (:adjusted-to line-2) (:line-start line-2)))
                                           "z"])
                                        (if (even? index)
                                          ["M" (v/add (:adjusted-to line-1) (:line-start line-1))
                                           (path/stitch (:line line-1))
                                           (path/stitch (:line line-2))
-                                          (infinity/counter-clockwise
-                                           (:adjusted-to line-2)
-                                           (v/add (:adjusted-to line-1) (:line-start line-1)))
+                                          (infinity/counter-clockwise bounding-box
+                                                                      (:adjusted-to line-2)
+                                                                      (v/add (:adjusted-to line-1) (:line-start line-1)))
                                           "z"]
                                          ["M" (v/add (:adjusted-to line-2) (:line-start line-2))
                                           (path/stitch (:line line-2))
                                           (path/stitch (:line line-1))
-                                          (infinity/clockwise
-                                           (:adjusted-to line-1)
-                                           (v/add (:adjusted-to line-2) (:line-start line-2)))
+                                          (infinity/clockwise bounding-box
+                                                              (:adjusted-to line-1)
+                                                              (v/add (:adjusted-to line-2) (:line-start line-2)))
                                           "z"])))))
                             (map (fn [path]
                                    {:shape [(path/make-path path)]})))

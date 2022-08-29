@@ -134,9 +134,9 @@
      {:shape [(path/make-path
                ["M" (v/add line-left-to line-left-start)
                 (path/stitch line-left)
-                (infinity/clockwise line-left-from (v/add line-right-from line-right-start) :shortest? true)
+                (infinity/clockwise bounding-box line-left-from (v/add line-right-from line-right-start) :shortest? true)
                 (path/stitch line-right)
-                (infinity/clockwise line-right-to (v/add line-left-to line-left-start) :shortest? true)
+                (infinity/clockwise bounding-box line-right-to (v/add line-left-to line-left-start) :shortest? true)
                 "z"])]
       :lines [{:line line
                :line-from line-left-to

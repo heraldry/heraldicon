@@ -206,33 +206,33 @@
                            ["M" (v/add line-edge-top-left-to line-edge-top-left-start)
                             (path/stitch line-edge-top-left)
                             (path/stitch line-edge-top-right)
-                            (infinity/counter-clockwise
-                             line-edge-top-right-to
-                             (v/add line-edge-top-left-to line-edge-top-left-start))
+                            (infinity/counter-clockwise bounding-box
+                                                        line-edge-top-right-to
+                                                        (v/add line-edge-top-left-to line-edge-top-left-start))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-top-left-to line-edge-top-left-start)
                             (path/stitch line-edge-top-left)
                             (path/stitch line-edge-bottom-left)
-                            (infinity/clockwise
-                             line-edge-bottom-left-to
-                             (v/add line-edge-top-left-to line-edge-top-left-start))
+                            (infinity/clockwise bounding-box
+                                                line-edge-bottom-left-to
+                                                (v/add line-edge-top-left-to line-edge-top-left-start))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-bottom-right-to line-edge-bottom-right-start)
                             (path/stitch line-edge-bottom-right)
                             (path/stitch line-edge-top-right)
-                            (infinity/clockwise
-                             line-edge-top-right-to
-                             (v/add line-edge-bottom-right-to line-edge-bottom-right-start))
+                            (infinity/clockwise bounding-box
+                                                line-edge-top-right-to
+                                                (v/add line-edge-bottom-right-to line-edge-bottom-right-start))
                             "z"])]}
                  {:shape [(path/make-path
                            ["M" (v/add line-edge-bottom-right-to line-edge-bottom-right-start)
                             (path/stitch line-edge-bottom-right)
                             (path/stitch line-edge-bottom-left)
-                            (infinity/counter-clockwise
-                             line-edge-bottom-left-to
-                             (v/add line-edge-bottom-right-to line-edge-bottom-right-start))
+                            (infinity/counter-clockwise bounding-box
+                                                        line-edge-bottom-left-to
+                                                        (v/add line-edge-bottom-right-to line-edge-bottom-right-start))
                             "z"])]}]
      :lines [{:line line
               :line-from line-edge-top-left-to

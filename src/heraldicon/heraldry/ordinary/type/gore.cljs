@@ -166,7 +166,7 @@
                ["M" (v/add line-left-to line-left-start)
                 (path/stitch line-left)
                 (path/stitch line-right)
-                (infinity/clockwise line-right-to line-left-to)
+                (infinity/clockwise bounding-box line-right-to line-left-to)
                 "z"])]
       :lines [{:line line
                :line-from line-left-to
