@@ -14,6 +14,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/pale)
@@ -111,6 +112,7 @@
         right-upper (assoc right-upper :y (:y left-upper))
         {line-left :line
          line-left-start :line-start
+         line-left-from :adjusted-from
          line-left-to :adjusted-to
          :as line-left-data} (line/create-with-extension line
                                                          left-upper left-lower
@@ -120,6 +122,7 @@
         {line-right :line
          line-right-start :line-start
          line-right-from :adjusted-from
+         line-right-to :adjusted-to
          :as line-right-data} (line/create-with-extension opposite-line
                                                           right-upper right-lower
                                                           bounding-box
@@ -128,8 +131,9 @@
      {:shape [(path/make-path
                ["M" (v/add line-left-to line-left-start)
                 (path/stitch line-left)
-                "L" (v/add line-right-from line-right-start)
+                (infinity/clockwise line-left-from (v/add line-right-from line-right-start))
                 (path/stitch line-right)
+                (infinity/clockwise line-right-to (v/add line-left-to line-left-start))
                 "z"])]
       :lines [{:line line
                :line-from line-left-to

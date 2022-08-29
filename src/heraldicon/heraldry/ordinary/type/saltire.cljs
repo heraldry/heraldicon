@@ -15,6 +15,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/saltire)
@@ -218,6 +219,7 @@
                                                                    :extend-from? false
                                                                    :context context)
         {line-edge-top-second :line
+         line-edge-top-second-to :adjusted-to
          :as line-edge-top-second-data} (line/create-with-extension line
                                                                     corner-top top-2
                                                                     bounding-box
@@ -233,6 +235,7 @@
                                                                     :extend-from? false
                                                                     :context context)
         {line-edge-left-second :line
+         line-edge-left-second-to :adjusted-to
          :as line-edge-left-second-data} (line/create-with-extension line
                                                                      corner-left left-2
                                                                      bounding-box
@@ -248,6 +251,7 @@
                                                                      :extend-from? false
                                                                      :context context)
         {line-edge-right-second :line
+         line-edge-right-second-to :adjusted-to
          :as line-edge-right-second-data} (line/create-with-extension line
                                                                       corner-right right-2
                                                                       bounding-box
@@ -263,26 +267,27 @@
                                                                       :extend-from? false
                                                                       :context context)
         {line-edge-bottom-second :line
+         line-edge-bottom-second-to :adjusted-to
          :as line-edge-bottom-second-data} (line/create-with-extension line
                                                                        corner-bottom bottom-2
                                                                        bounding-box
                                                                        :extend-from? false
                                                                        :context context)]
-    ;; TODO: seems to work fine without it, but maybe infinity patching would improve this
     (post-process/shape
      {:shape [(path/make-path
                ["M" (v/add line-edge-top-first-to line-edge-top-first-start)
                 (path/stitch line-edge-top-first)
                 (path/stitch line-edge-top-second)
-                "L" (v/add line-edge-right-first-to line-edge-right-first-start)
+                (infinity/clockwise line-edge-top-second-to (v/add line-edge-right-first-to line-edge-right-first-start))
                 (path/stitch line-edge-right-first)
                 (path/stitch line-edge-right-second)
-                "L" (v/add line-edge-bottom-first-to line-edge-bottom-first-start)
+                (infinity/clockwise line-edge-right-second-to (v/add line-edge-bottom-first-to line-edge-bottom-first-start))
                 (path/stitch line-edge-bottom-first)
                 (path/stitch line-edge-bottom-second)
-                "L" (v/add line-edge-left-first-to line-edge-left-first-start)
+                (infinity/clockwise line-edge-bottom-second-to (v/add line-edge-left-first-to line-edge-left-first-start))
                 (path/stitch line-edge-left-first)
                 (path/stitch line-edge-left-second)
+                (infinity/clockwise line-edge-left-second-to (v/add line-edge-top-first-to line-edge-top-first-start))
                 "z"])]
       :lines [{:line line
                :line-from line-edge-top-first-to

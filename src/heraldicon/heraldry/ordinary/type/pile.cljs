@@ -16,6 +16,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/pile)
@@ -259,6 +260,7 @@
                                                          :extend-from? false
                                                          :context context)
         {line-right :line
+         line-right-to :adjusted-to
          :as line-right-data} (line/create-with-extension opposite-line
                                                           point right
                                                           bounding-box
@@ -266,10 +268,10 @@
                                                           :context context)]
     (post-process/shape
      {:shape [(path/make-path
-               ["M" (v/add line-left-to
-                           line-left-start)
+               ["M" (v/add line-left-to line-left-start)
                 (path/stitch line-left)
                 (path/stitch line-right)
+                (infinity/clockwise line-right-to (v/add line-left-to line-left-start))
                 "z"])]
       :lines [{:line line
                :line-from line-left-to

@@ -14,6 +14,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def ordinary-type :heraldry.ordinary.type/cross)
@@ -165,6 +166,7 @@
                                                                         :extend-from? false
                                                                         :context context)
         {line-edge-top-left-second :line
+         line-edge-top-left-second-to :adjusted-to
          :as line-edge-top-left-second-data} (line/create-with-extension line
                                                                          corner-top-left top-1
                                                                          bounding-box
@@ -180,6 +182,7 @@
                                                                          :extend-from? false
                                                                          :context context)
         {line-edge-top-right-second :line
+         line-edge-top-right-second-to :adjusted-to
          :as line-edge-top-right-second-data} (line/create-with-extension line
                                                                           corner-top-right right-1
                                                                           bounding-box
@@ -195,6 +198,7 @@
                                                                            :extend-from? false
                                                                            :context context)
         {line-edge-bottom-left-second :line
+         line-edge-bottom-left-second-to :adjusted-to
          :as line-edge-bottom-left-second-data} (line/create-with-extension line
                                                                             corner-bottom-left left-2
                                                                             bounding-box
@@ -210,6 +214,7 @@
                                                                             :extend-from? false
                                                                             :context context)
         {line-edge-bottom-right-second :line
+         line-edge-bottom-right-second-to :adjusted-to
          :as line-edge-bottom-right-second-data} (line/create-with-extension line
                                                                              corner-bottom-right bottom-2
                                                                              bounding-box
@@ -220,15 +225,16 @@
                ["M" (v/add line-edge-top-left-first-to line-edge-top-left-first-start)
                 (path/stitch line-edge-top-left-first)
                 (path/stitch line-edge-top-left-second)
-                "L" (v/add line-edge-top-right-first-to line-edge-top-right-first-start)
+                (infinity/clockwise line-edge-top-left-second-to (v/add line-edge-top-right-first-to line-edge-top-right-first-start))
                 (path/stitch line-edge-top-right-first)
                 (path/stitch line-edge-top-right-second)
-                "L" (v/add line-edge-bottom-right-first-to line-edge-bottom-right-first-start)
+                (infinity/clockwise line-edge-top-right-second-to (v/add line-edge-bottom-right-first-to line-edge-bottom-right-first-start))
                 (path/stitch line-edge-bottom-right-first)
                 (path/stitch line-edge-bottom-right-second)
-                "L" (v/add line-edge-bottom-left-first-to line-edge-bottom-left-first-start)
+                (infinity/clockwise line-edge-bottom-right-second-to (v/add line-edge-bottom-left-first-to line-edge-bottom-left-first-start))
                 (path/stitch line-edge-bottom-left-first)
                 (path/stitch line-edge-bottom-left-second)
+                (infinity/clockwise line-edge-bottom-left-second-to (v/add line-edge-top-left-first-to line-edge-top-left-first-start))
                 "z"])]
       :lines [{:line line
                :line-from line-edge-top-left-first-to
