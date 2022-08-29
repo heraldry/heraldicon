@@ -192,9 +192,7 @@
 
 (defn validate-cottise [context]
   (let [field-context (c/++ context :field)
-        parent-field-context (-> context
-                                 (c/-- 2)
-                                 (c/++ :field))
+        parent-field-context (interface/parent (interface/parent context))
         main-validation (validate-tinctures field-context parent-field-context (c/++ context :fimbriation))
         other-validations [(validate-tinctures field-context parent-field-context (c/++ context :line :fimbriation))
                            (validate-tinctures field-context parent-field-context (c/++ context :opposite-line :fimbriation))]
