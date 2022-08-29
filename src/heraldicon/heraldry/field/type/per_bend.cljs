@@ -151,14 +151,16 @@
   (let [{:keys [points]} (interface/get-parent-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
-    {:subfields [(environment/create (bb/from-points [(if sinister?
-                                                        top-left
-                                                        top-right)
-                                                      edge-start edge-end]))
-                 (environment/create (bb/from-points [(if sinister?
-                                                        bottom-right
-                                                        bottom-left)
-                                                      top-right bottom-right]))]}))
+    {:subfields [(let [points [(if sinister?
+                                 top-left
+                                 top-right)
+                               edge-start edge-end]]
+                   (environment/create (bb/from-points points) {:fess (apply v/avg points)}))
+                 (let [points [(if sinister?
+                                 bottom-right
+                                 bottom-left)
+                               edge-start edge-end]]
+                   (environment/create (bb/from-points points) {:fess (apply v/avg points)}))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line sinister?]
                                                                  [edge-start edge-end] :edge}]
