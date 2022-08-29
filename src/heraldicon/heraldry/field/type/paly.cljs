@@ -72,12 +72,15 @@
                          (v/Vector. edge-x (:y top)) (v/Vector. edge-x (:y bottom))
                          parent-shape :default? true)))
                     (range num-fields-x))
-        ;; the second edge is the first one visible, it dictates the line style start
-        start-y (-> edges second :y)
+        ;; the second edge is the first one visible, so drop the first
+        start-y (->> (drop 1 edges)
+                     (map (comp :y first))
+                     (apply min))
+        end-y (apply max (map (comp :y second) edges))
         edges (mapv (fn [[edge-start edge-end]]
-                      [(assoc edge-start :y start-y) edge-end])
+                      [(assoc edge-start :y start-y)
+                       (assoc edge-end :y end-y)])
                     edges)
-        max-y (apply max (map (comp :y second) edges))
         line-length (apply max (map (fn [[edge-start edge-end]]
                                       (v/abs (v/sub edge-end edge-start)))
                                     edges))]
@@ -86,17 +89,17 @@
       :edges edges
       :part-width part-width
       :start-y start-y
-      :max-y max-y
+      :end-y end-y
       :line-length line-length
       :num-subfields num-fields-x}
      context)))
 
-(defmethod interface/subfield-environments field-type [_context {:keys [edges start-y max-y part-width]}]
+(defmethod interface/subfield-environments field-type [_context {:keys [edges start-y end-y part-width]}]
   {:subfields (mapv (fn [[edge-start _edge-end]]
                       (environment/create (bb/from-points [(assoc edge-start :y start-y)
                                                            (assoc edge-start
                                                                   :x (+ (:x edge-start) part-width)
-                                                                  :y max-y)])))
+                                                                  :y end-y)])))
                     edges)})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line edges num-subfields]}]
