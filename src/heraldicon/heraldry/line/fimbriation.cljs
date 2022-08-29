@@ -158,14 +158,14 @@
                     :stroke-miterlimit 10}}
         (dilate-recursively shape thickness "#ffffff" linejoin-value)]]]
      [:g {:mask (str "url(#" mask-id ")")}
-      [:g {:transform reverse-transform}
-       [:rect {:x -500
-               :y -500
-               :width 1100
-               :height 1100
-               :fill color
-               :style (when (not svg-export?)
-                        {:pointer-events "none"})}]]]]))
+      [:rect {:transform reverse-transform
+              :x -500
+              :y -500
+              :width 1100
+              :height 1100
+              :fill color
+              :style (when (not svg-export?)
+                       {:pointer-events "none"})}]]]))
 
 (defn render [line-path mask-id thickness color outline? corner context]
   [:g {:mask (when mask-id
