@@ -28,22 +28,24 @@
       (assoc properties :voided voided)
       properties)))
 
-(defn properties [{:keys [line-length percentage-base]
+(defn properties [{:keys [line-length]
                    :as properties} context]
-  (-> properties
-      (update :line (fn [line]
-                      (or line (some-> (interface/get-sanitized-data (c/++ context :line))
-                                       (line/resolve-percentages line-length percentage-base)))))
-      (update :opposite-line (fn [line]
-                               (or line
-                                   (some-> (interface/get-sanitized-data (c/++ context :opposite-line))
-                                           (line/resolve-percentages line-length percentage-base)))))
-      (update :extra-line (fn [line]
-                            (or line
-                                (some-> (interface/get-sanitized-data (c/++ context :extra-line))
-                                        (line/resolve-percentages line-length percentage-base)))))
-      (process-humetty-properties context)
-      (process-voided-properties context)))
+  (let [{:keys [width height]} (interface/get-parent-environment context)
+        fimbriation-percentage-base (min width height)]
+    (-> properties
+        (update :line (fn [line]
+                        (or line (some-> (interface/get-sanitized-data (c/++ context :line))
+                                         (line/resolve-percentages line-length fimbriation-percentage-base)))))
+        (update :opposite-line (fn [line]
+                                 (or line
+                                     (some-> (interface/get-sanitized-data (c/++ context :opposite-line))
+                                             (line/resolve-percentages line-length fimbriation-percentage-base)))))
+        (update :extra-line (fn [line]
+                              (or line
+                                  (some-> (interface/get-sanitized-data (c/++ context :extra-line))
+                                          (line/resolve-percentages line-length fimbriation-percentage-base)))))
+        (process-humetty-properties context)
+        (process-voided-properties context))))
 
 (defn- process-shape-humetty [{:keys [shape]
                                :as shape-data} context {:keys [humetty]}]
