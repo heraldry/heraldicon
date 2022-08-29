@@ -85,7 +85,11 @@
         [lower-left lower-right] (v/intersections-with-shape
                                   (v/Vector. (:x left) lower) (v/Vector. (:x right) lower)
                                   parent-shape :default? true)
-        line-length (- (:x upper-right) (:x upper-left))]
+        start-x (min (:x upper-left) (:x lower-left))
+        upper-left (assoc upper-left :x start-x)
+        lower-left (assoc lower-left :x start-x)
+        line-length (max (v/abs (v/sub upper-left upper-right))
+                         (v/abs (v/sub lower-left lower-right)))]
     (post-process/properties
      {:type ordinary-type
       :upper [upper-left upper-right]
@@ -108,7 +112,6 @@
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        lower-left (assoc lower-left :x (:x upper-left))
         {line-upper :line
          line-upper-start :line-start
          line-upper-to :adjusted-to
