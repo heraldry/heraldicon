@@ -588,7 +588,7 @@
                                              outline? corner context]
                                             [fimbriation/render line-path mask-id-bottom
                                              (cond-> (/ combined-thickness 2)
-                                               outline? (- outline/stroke-width))
+                                               outline? (- (/ outline/stroke-width 2)))
                                              (tincture/pick tincture-1 context)
                                              false corner context]]
                (= thickness-1 thickness-2) [:<>
@@ -613,7 +613,7 @@
                                              outline? corner context]
                                             [fimbriation/render line-path mask-id-top
                                              (cond-> (/ combined-thickness 2)
-                                               outline? (- outline/stroke-width))
+                                               outline? (- (/ outline/stroke-width 2)))
                                              (tincture/pick tincture-2 context)
                                              false corner context]]))]
           [:g {:mask (case alignment
