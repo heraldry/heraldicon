@@ -134,11 +134,12 @@
                                                   (and (#{:stroke :fill :stop-color} k)
                                                        (not= v "none")) [k color]
                                                   :else data))
-                     (map? data) (if (and (:fill data)
-                                          (not= (:fill data) "none")
-                                          (= (:stroke data) "none"))
-                                   (assoc data :stroke color)
-                                   data)
+                     (map? data) (cond
+                                   (and (:fill data)
+                                        (not= (:fill data) "none")
+                                        (= (:stroke data) "none")) (assoc data :stroke color)
+                                   (= (:fill data) "none") (assoc data :stroke "none")
+                                   :else data)
                      :else data))
                  data))
 
