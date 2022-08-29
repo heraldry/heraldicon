@@ -796,6 +796,7 @@
         fimbriation-thickness (+ (-> new-line :fimbriation :thickness-1 (or 0))
                                  (-> new-line :fimbriation :thickness-2 (or 0)))]
     (assoc new-line
+           :line-length line-percentage-base
            ;; TODO: calculate this properly, in particular for line styles with
            ;; middle our bottom alignment this height can differ greatly
            :effective-height (case fimbriation-alignment
@@ -810,11 +811,12 @@
       (recur next extra bounding-box)
       next)))
 
-(defn create-with-extension [line from to bounding-box & {:keys [extend-from?
-                                                                 extend-to?]
-                                                          :or {extend-from? true
-                                                               extend-to? true}
-                                                          :as line-options}]
+(defn create-with-extension [{:keys [line-length]
+                              :as line} from to bounding-box & {:keys [extend-from?
+                                                                       extend-to?]
+                                                                :or {extend-from? true
+                                                                     extend-to? true}
+                                                                :as line-options}]
   (let [dir (v/normal (v/sub to from))
         dir (if (= dir v/zero)
               (v/Vector. 1 0)
@@ -828,8 +830,13 @@
                         extend-from? (extend (v/mul extra -1) bounding-box))
         extended-to (cond-> to
                       extend-to? (extend extra bounding-box))
+        extended-to (if (and line-length
+                             (< (v/abs (v/sub from extended-to)) line-length))
+                      (v/add from (v/mul dir line-length))
+                      extended-to)
         real-start (v/abs (v/sub from extended-from))
-        real-end (v/abs (v/sub to extended-from))]
+        real-end (or (+ real-start line-length)
+                     (v/abs (v/sub to extended-from)))]
     (assoc (create line extended-from extended-to (assoc line-options
                                                          :real-start real-start
                                                          :real-end real-end))
