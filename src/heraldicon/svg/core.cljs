@@ -37,7 +37,10 @@
            :lineargradient :linearGradient
            :radialgradient :radialGradient
            :preserveaspectratio :preserveAspectRatio
-           :xml:space :xmlSpace} v v))
+           :xml:space :xmlSpace
+           :calcmode :calcMode
+           :repeatcount :repeatCount
+           :attributename :attributeName} v v))
    data))
 
 (defn- replace-id-references [data id-map]
