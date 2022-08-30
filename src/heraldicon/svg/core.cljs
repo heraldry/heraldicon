@@ -40,7 +40,10 @@
            :xml:space :xmlSpace
            :calcmode :calcMode
            :repeatcount :repeatCount
-           :attributename :attributeName} v v))
+           :attributename :attributeName
+           :filterunits :filterUnits
+           :primitiveunits :primitiveUnits
+           :stddeviation :stdDeviation} v v))
    data))
 
 (defn- replace-id-references [data id-map]
