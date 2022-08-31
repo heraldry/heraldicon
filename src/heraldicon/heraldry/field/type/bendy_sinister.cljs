@@ -143,4 +143,4 @@
   ((get-method interface/subfield-environments :heraldry.field.type/bendy) context properties))
 
 (defmethod interface/subfield-render-shapes field-type [context properties]
-  ((get-method interface/subfield-render-shapes :heraldry.field.type/bendy) context properties))
+  ((get-method interface/subfield-render-shapes :heraldry.field.type/barry) context properties))
