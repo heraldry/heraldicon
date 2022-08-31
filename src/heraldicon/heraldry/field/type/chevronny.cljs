@@ -11,8 +11,7 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def field-type :heraldry.field.type/chevronny)
 
@@ -175,79 +174,50 @@
                                                              (assoc (v/add edge-end offset) :x (:x right))])))
                       edges)}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line edges num-subfields]}]
-  (let [{:keys [bounding-box points]} (interface/get-parent-environment context)
-        {:keys [top-left bottom-right]} points
-        outside-1 (v/sub top-left (v/Vector. 50 50))
-        outside-2 (v/add bottom-right (v/Vector. 50 50))
-        lines (mapv (fn [[edge-start corner-point edge-end]]
-                      [(line/create-with-extension line
-                                                   corner-point edge-start
-                                                   bounding-box
-                                                   :reversed? true
-                                                   :extend-from? false
-                                                   :context context)
-                       (line/create-with-extension opposite-line
-                                                   corner-point edge-end
-                                                   bounding-box
-                                                   :reversed? true
-                                                   :flipped? true
-                                                   :mirrored? true
-                                                   :extend-from? false
-                                                   :context context)])
+(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line edges]}]
+  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+        ;; first line isn't needed
+        lines (into [[nil nil]]
+                    (map (fn [[edge-start corner-point edge-end]]
+                           [(line/create-with-extension line
+                                                        corner-point edge-start
+                                                        bounding-box
+                                                        :reversed? true
+                                                        :extend-from? false
+                                                        :context context)
+                            (line/create-with-extension opposite-line
+                                                        corner-point edge-end
+                                                        bounding-box
+                                                        :reversed? true
+                                                        :flipped? true
+                                                        :mirrored? true
+                                                        :extend-from? false
+                                                        :context context)]))
                     (drop 1 edges))]
     {:subfields (into []
                       (comp
-                       (map (fn [i]
-                              (let [first? (zero? i)
-                                    last? (= i (dec num-subfields))]
-                                (cond
-                                  (and first?
-                                       last?) ["M" outside-1
-                                               ;; do this in two steps, because using the same point
-                                               ;; wouldn't use the large arc
-                                               (infinity/clockwise bounding-box outside-1 outside-2)
-                                               (infinity/clockwise bounding-box outside-2 outside-1)
-                                               "z"]
-                                  first? (let [[line-1-left line-1-right] (get lines i)
-                                               line-1-start (v/add (:adjusted-to line-1-left) (:line-start line-1-left))
-                                               line-1-end (:adjusted-to line-1-right)]
-                                           ["M" line-1-start
-                                            (path/stitch (:line line-1-left))
-                                            (path/stitch (line/reversed-path (:line line-1-right)))
-                                            (infinity/counter-clockwise bounding-box line-1-end line-1-start :shortest? true)
-                                            "z"])
-                                  last? (let [[line-1-left line-1-right] (get lines (dec i))
-                                              [line-1-start line-1-end] [(v/add (:adjusted-to line-1-left) (:line-start line-1-left))
-                                                                         (:adjusted-to line-1-right)]]
-                                          ["M" line-1-start
-                                           (path/stitch (:line line-1-left))
-                                           (path/stitch (line/reversed-path (:line line-1-right)))
-                                           (infinity/clockwise bounding-box line-1-end line-1-start :shortest? true)
-                                           "z"])
-                                  :else (let [[line-1-left line-1-right] (get lines (dec i))
-                                              ;; swap arms for the lower line
-                                              [line-2-right line-2-left] (get lines i)
-                                              line-1-start (v/add (:adjusted-to line-1-left) (:line-start line-1-left))
-                                              line-1-end (:adjusted-to line-1-right)
-                                              line-2-start (v/add (:adjusted-to line-2-left) (:line-start line-2-left))
-                                              line-2-end (:adjusted-to line-2-right)]
-                                          ["M" line-1-start
-                                           (path/stitch (:line line-1-left))
-                                           (path/stitch (line/reversed-path (:line line-1-right)))
-                                           (infinity/clockwise bounding-box line-1-end line-2-start :shortest? true)
-                                           (path/stitch (:line line-2-left))
-                                           (path/stitch (line/reversed-path (:line line-2-right)))
-                                           (infinity/clockwise bounding-box line-2-end line-1-start :shortest? true)
-                                           "z"])))))
+                       (map (fn [[[line-1-left line-1-right]
+                                  [line-2-left line-2-right]]]
+                              (cond
+                                (and line-1-left
+                                     line-2-left) [line-1-left
+                                                   [:reverse line-1-right]
+                                                   :clockwise-shortest
+                                                   line-2-right
+                                                   [:reverse line-2-left]
+                                                   :clockwise-shortest]
+                                line-1-left [line-1-left
+                                             [:reverse line-1-right]
+                                             :clockwise]
+                                line-2-left [line-2-left
+                                             [:reverse line-2-right]
+                                             :counter-clockwise]
+                                :else [:full])))
+                       (map #(apply shape/build-shape context %))
                        (map (fn [path]
-                              {:shape [(path/make-path path)]})))
-                      (range num-subfields))
+                              {:shape [path]})))
+                      (partition 2 1 [[nil nil]] lines))
      :lines (vec (mapcat (fn [[line-left line-right]]
-                           [{:line (:line line-left)
-                             :line-from (:adjusted-to line-left)
-                             :line-data [line-left]}
-                            {:line (:line line-right)
-                             :line-from (:adjusted-to line-right)
-                             :line-data [line-right]}])
-                         lines))}))
+                           [{:segments [line-left]}
+                            {:segments [line-right]}])
+                         (drop 1 lines)))}))
