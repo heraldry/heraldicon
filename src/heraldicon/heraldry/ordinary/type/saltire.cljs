@@ -15,8 +15,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def ordinary-type :heraldry.ordinary.type/saltire)
 
@@ -209,106 +208,73 @@
                                                           [right-1 corner-right right-2] :edge-right
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-edge-top-first :line
-         line-edge-top-first-start :line-start
-         line-edge-top-first-to :adjusted-to
-         :as line-edge-top-first-data} (line/create-with-extension line
-                                                                   corner-top top-1
-                                                                   bounding-box
-                                                                   :reversed? true
-                                                                   :extend-from? false
-                                                                   :context context)
-        {line-edge-top-second :line
-         line-edge-top-second-to :adjusted-to
-         :as line-edge-top-second-data} (line/create-with-extension line
-                                                                    corner-top top-2
-                                                                    bounding-box
-                                                                    :extend-from? false
-                                                                    :context context)
-        {line-edge-left-first :line
-         line-edge-left-first-start :line-start
-         line-edge-left-first-to :adjusted-to
-         :as line-edge-left-first-data} (line/create-with-extension line
-                                                                    corner-left left-1
-                                                                    bounding-box
-                                                                    :reversed? true
-                                                                    :extend-from? false
-                                                                    :context context)
-        {line-edge-left-second :line
-         line-edge-left-second-to :adjusted-to
-         :as line-edge-left-second-data} (line/create-with-extension line
-                                                                     corner-left left-2
-                                                                     bounding-box
-                                                                     :extend-from? false
-                                                                     :context context)
-        {line-edge-right-first :line
-         line-edge-right-first-start :line-start
-         line-edge-right-first-to :adjusted-to
-         :as line-edge-right-first-data} (line/create-with-extension line
-                                                                     corner-right right-1
-                                                                     bounding-box
-                                                                     :reversed? true
-                                                                     :extend-from? false
-                                                                     :context context)
-        {line-edge-right-second :line
-         line-edge-right-second-to :adjusted-to
-         :as line-edge-right-second-data} (line/create-with-extension line
-                                                                      corner-right right-2
-                                                                      bounding-box
-                                                                      :extend-from? false
-                                                                      :context context)
-        {line-edge-bottom-first :line
-         line-edge-bottom-first-start :line-start
-         line-edge-bottom-first-to :adjusted-to
-         :as line-edge-bottom-first-data} (line/create-with-extension line
-                                                                      corner-bottom bottom-1
-                                                                      bounding-box
-                                                                      :reversed? true
-                                                                      :extend-from? false
-                                                                      :context context)
-        {line-edge-bottom-second :line
-         line-edge-bottom-second-to :adjusted-to
-         :as line-edge-bottom-second-data} (line/create-with-extension line
-                                                                       corner-bottom bottom-2
-                                                                       bounding-box
-                                                                       :extend-from? false
-                                                                       :context context)]
+        line-edge-top-first (line/create-with-extension line
+                                                        corner-top top-1
+                                                        bounding-box
+                                                        :reversed? true
+                                                        :extend-from? false
+                                                        :context context)
+        line-edge-top-second (line/create-with-extension line
+                                                         corner-top top-2
+                                                         bounding-box
+                                                         :extend-from? false
+                                                         :context context)
+        line-edge-left-first (line/create-with-extension line
+                                                         corner-left left-1
+                                                         bounding-box
+                                                         :reversed? true
+                                                         :extend-from? false
+                                                         :context context)
+        line-edge-left-second (line/create-with-extension line
+                                                          corner-left left-2
+                                                          bounding-box
+                                                          :extend-from? false
+                                                          :context context)
+        line-edge-right-first (line/create-with-extension line
+                                                          corner-right right-1
+                                                          bounding-box
+                                                          :reversed? true
+                                                          :extend-from? false
+                                                          :context context)
+        line-edge-right-second (line/create-with-extension line
+                                                           corner-right right-2
+                                                           bounding-box
+                                                           :extend-from? false
+                                                           :context context)
+        line-edge-bottom-first (line/create-with-extension line
+                                                           corner-bottom bottom-1
+                                                           bounding-box
+                                                           :reversed? true
+                                                           :extend-from? false
+                                                           :context context)
+        line-edge-bottom-second (line/create-with-extension line
+                                                            corner-bottom bottom-2
+                                                            bounding-box
+                                                            :extend-from? false
+                                                            :context context)]
     (post-process/shape
-     {:shape [(path/make-path
-               ["M" (v/add line-edge-top-first-to line-edge-top-first-start)
-                (path/stitch line-edge-top-first)
-                (path/stitch line-edge-top-second)
-                (infinity/clockwise bounding-box line-edge-top-second-to (v/add line-edge-right-first-to line-edge-right-first-start)
-                                    :shortest? true)
-                (path/stitch line-edge-right-first)
-                (path/stitch line-edge-right-second)
-                (infinity/clockwise bounding-box line-edge-right-second-to (v/add line-edge-bottom-first-to line-edge-bottom-first-start)
-                                    :shortest? true)
-                (path/stitch line-edge-bottom-first)
-                (path/stitch line-edge-bottom-second)
-                (infinity/clockwise bounding-box line-edge-bottom-second-to (v/add line-edge-left-first-to line-edge-left-first-start)
-                                    :shortest? true)
-                (path/stitch line-edge-left-first)
-                (path/stitch line-edge-left-second)
-                (infinity/clockwise bounding-box line-edge-left-second-to (v/add line-edge-top-first-to line-edge-top-first-start)
-                                    :shortest? true)
-                "z"])]
-      :lines [{:line line
-               :line-from line-edge-top-first-to
-               :line-data [line-edge-top-first-data
-                           line-edge-top-second-data]}
-              {:line line
-               :line-from line-edge-left-first-to
-               :line-data [line-edge-left-first-data
-                           line-edge-left-second-data]}
-              {:line line
-               :line-from line-edge-right-first-to
-               :line-data [line-edge-right-first-data
-                           line-edge-right-second-data]}
-              {:line line
-               :line-from line-edge-bottom-first-to
-               :line-data [line-edge-bottom-first-data
-                           line-edge-bottom-second-data]}]}
+     {:shape [(shape/build-shape
+               context
+               line-edge-top-first
+               line-edge-top-second
+               :clockwise-shortest
+               line-edge-right-first
+               line-edge-right-second
+               :clockwise-shortest
+               line-edge-bottom-first
+               line-edge-bottom-second
+               :clockwise-shortest
+               line-edge-left-first
+               line-edge-left-second
+               :clockwise-shortest)]
+      :lines [{:segments [line-edge-top-first
+                          line-edge-top-second]}
+              {:segments [line-edge-left-first
+                          line-edge-left-second]}
+              {:segments [line-edge-right-first
+                          line-edge-right-second]}
+              {:segments [line-edge-bottom-first
+                          line-edge-bottom-second]}]}
      context
      properties)))
 
