@@ -6,6 +6,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
+   [heraldicon.math.vector :as v]
    [heraldicon.render.outline :as outline]))
 
 (defn- edge-outline? [context]
@@ -26,7 +27,7 @@
             :fill-rule "evenodd"
             :fill "#fff"}]))
 
-(defn- render-line [context {:keys [line line-data line-from edge-paths]}]
+(defn- render-line [context {:keys [line line-data line-from segments edge-paths]}]
   (let [outline? (edge-outline? context)]
     (if edge-paths
       (when outline?
@@ -34,7 +35,13 @@
               (map (fn [edge-path]
                      [:path {:d edge-path}]))
               edge-paths))
-      [line/render line line-data line-from outline? context])))
+      (if segments
+        (let [line (first segments)
+              line-from (line/line-start line)
+              ;; TODO: address this once all lines have been migrated, this is added inside line/render
+              line-from (v/sub line-from (:line-start line))]
+          [line/render line segments line-from outline? context])
+        [line/render line line-data line-from outline? context]))))
 
 (defn ordinary-edges [context]
   (let [{:keys [lines]} (interface/get-render-shape context)]
