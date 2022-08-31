@@ -142,7 +142,7 @@
      :line line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-effective-environment context)
         sinister? (= (interface/get-raw-data (c/++ context :type))
                      :heraldry.field.type/bendy-sinister)
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))

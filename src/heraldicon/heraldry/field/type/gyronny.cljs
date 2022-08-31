@@ -97,7 +97,7 @@
      :opposite-line opposite-line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-effective-environment context)
         percentage-base (:height parent-environment)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
@@ -184,7 +184,7 @@
                                                                  [edge-top-right-1 edge-top-right-2] :edge-top-right
                                                                  [edge-bottom-left-1 edge-bottom-left-2] :edge-bottom-left
                                                                  [edge-bottom-right-1 edge-bottom-right-2] :edge-bottom-right}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-effective-environment context)
         line-edge-top-left (line/create-with-extension line
                                                        edge-top-left-1 edge-top-left-2
                                                        bounding-box

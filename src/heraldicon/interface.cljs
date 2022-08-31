@@ -321,3 +321,13 @@
 
 (defn get-bounding-box [context]
   @(rf/subscribe [::bounding-box context]))
+
+(defn get-effective-environment [context]
+  (if (get-sanitized-data (c/++ context :inherit-environment?))
+    (get-parent-environment (parent context))
+    (get-parent-environment context)))
+
+(defn get-effective-shape [context]
+  (if (get-sanitized-data (c/++ context :inherit-environment?))
+    (get-exact-shape (parent (parent context)))
+    (get-exact-shape (parent context))))

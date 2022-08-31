@@ -50,7 +50,7 @@
      :line line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [{:keys [width points]} (interface/get-parent-environment context)
+  (let [{:keys [width points]} (interface/get-effective-environment context)
         {:keys [center top bottom]} points
         num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         offset-x (interface/get-sanitized-data (c/++ context :layout :offset-x))
@@ -102,7 +102,7 @@
                     edges)})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line edges]}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-effective-environment context)
         lines (vec (map-indexed
                     (fn [index [edge-start edge-end]]
                       ;; first line isn't needed

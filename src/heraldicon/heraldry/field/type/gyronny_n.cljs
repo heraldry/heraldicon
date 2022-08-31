@@ -76,7 +76,7 @@
      :line line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-effective-environment context)
         num-fields (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         offset (interface/get-sanitized-data (c/++ context :layout :offset-x))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
@@ -133,7 +133,7 @@
                (range num-fields))})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [edge-start edge-ends line num-fields]}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-effective-environment context)
         lines (vec (map-indexed
                     (fn [index edge-end]
                       (if (even? index)
