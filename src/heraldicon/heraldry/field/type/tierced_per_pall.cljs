@@ -325,6 +325,6 @@
                            line-edge-bottom
                            line-edge-right
                            :counter-clockwise)]}]
-     :lines [{:segments [line-edge-left]}
-             {:segments [line-edge-right]}
-             {:segments [line-edge-bottom]}]}))
+     :edges [{:lines [line-edge-left]}
+             {:lines [line-edge-right]}
+             {:lines [line-edge-bottom]}]}))

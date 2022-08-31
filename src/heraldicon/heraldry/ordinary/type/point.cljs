@@ -119,7 +119,7 @@
               context
               line-lower
               :clockwise)
-      :lines [{:segments [line-lower]}]}
+      :edges [{:lines [line-lower]}]}
      context
      properties)))
 

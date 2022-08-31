@@ -102,7 +102,7 @@
         inner-shape (cond-> inner-edge
                       (not= (:type line) :straight) (line/modify-path line parent-environment))]
     {:shape [outer-shape inner-shape]
-     :lines [{:edge-paths [outer-shape inner-shape]}]}))
+     :edges [{:paths [outer-shape inner-shape]}]}))
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
   nil)

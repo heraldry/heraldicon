@@ -137,6 +137,6 @@
                            (partition 2 1 [nil] lines)
                            (cycle [:clockwise :counter-clockwise])
                            (cycle [:clockwise-shortest :counter-clockwise-shortest])))
-     :lines (mapv (fn [line]
-                    {:segments [line]})
+     :edges (mapv (fn [line]
+                    {:lines [line]})
                   (drop 1 lines))}))

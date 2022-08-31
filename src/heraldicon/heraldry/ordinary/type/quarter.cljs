@@ -171,7 +171,7 @@
                line-one
                line-two
                :clockwise)]
-      :lines [{:segments [line-one line-two]}]}
+      :edges [{:lines [line-one line-two]}]}
      context
      properties)))
 

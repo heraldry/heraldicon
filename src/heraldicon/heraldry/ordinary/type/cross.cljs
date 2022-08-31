@@ -214,14 +214,14 @@
                line-edge-bottom-left-first
                line-edge-bottom-left-second
                :clockwise-shortest)]
-      :lines [{:segments [line-edge-top-left-first
-                          line-edge-top-left-second]}
-              {:segments [line-edge-top-right-first
-                          line-edge-top-right-second]}
-              {:segments [line-edge-bottom-left-first
-                          line-edge-bottom-left-second]}
-              {:segments [line-edge-bottom-right-first
-                          line-edge-bottom-right-second]}]}
+      :edges [{:lines [line-edge-top-left-first
+                       line-edge-top-left-second]}
+              {:lines [line-edge-top-right-first
+                       line-edge-top-right-second]}
+              {:lines [line-edge-bottom-left-first
+                       line-edge-bottom-left-second]}
+              {:lines [line-edge-bottom-right-first
+                       line-edge-bottom-right-second]}]}
      context
      properties)))
 

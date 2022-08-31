@@ -277,11 +277,11 @@
                            line-edge-bottom-right
                            line-edge-bottom
                            :counter-clockwise)]}]
-     :lines [{:segments [line-edge-top-left]}
-             {:segments [line-edge-bottom-right]}
-             {:segments [line-edge-bottom-left]}
-             {:segments [line-edge-top-right]}
-             {:segments [line-edge-top]}
-             {:segments [line-edge-bottom]}
-             {:segments [line-edge-left]}
-             {:segments [line-edge-right]}]}))
+     :edges [{:lines [line-edge-top-left]}
+             {:lines [line-edge-bottom-right]}
+             {:lines [line-edge-bottom-left]}
+             {:lines [line-edge-top-right]}
+             {:lines [line-edge-top]}
+             {:lines [line-edge-bottom]}
+             {:lines [line-edge-left]}
+             {:lines [line-edge-right]}]}))

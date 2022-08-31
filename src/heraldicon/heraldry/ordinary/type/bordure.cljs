@@ -79,7 +79,7 @@
         shape (cond-> edge
                 (not= (:type line) :straight) (line/modify-path line parent-environment))]
     {:shape [parent-shape shape]
-     :lines [{:edge-paths [shape]}]}))
+     :edges [{:paths [shape]}]}))
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
   nil)

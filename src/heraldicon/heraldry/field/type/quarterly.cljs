@@ -150,14 +150,14 @@
                                                   "H" (:x part-top-left)
                                                   "z"])]})))
                       parts)
-     :lines (-> []
+     :edges (-> []
                 (into (map (fn [x]
-                             {:edge-paths [(path/make-path
-                                            ["M" (v/Vector. x min-y)
-                                             "V" max-y])]}))
+                             {:paths [(path/make-path
+                                       ["M" (v/Vector. x min-y)
+                                        "V" max-y])]}))
                       x-values)
                 (into (map (fn [y]
-                             {:edge-paths [(path/make-path
-                                            ["M" (v/Vector. min-x y)
-                                             "H" max-x])]}))
+                             {:paths [(path/make-path
+                                       ["M" (v/Vector. min-x y)
+                                        "H" max-x])]}))
                       y-values))}))

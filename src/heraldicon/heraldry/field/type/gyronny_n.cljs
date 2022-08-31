@@ -170,5 +170,5 @@
                       (map vector
                            (partition 2 1 [nil] lines)
                            (cycle [:counter-clockwise :clockwise])))
-     :lines (mapv (fn [line]
-                    {:segments [line]}) lines)}))
+     :edges (mapv (fn [line]
+                    {:lines [line]}) lines)}))
