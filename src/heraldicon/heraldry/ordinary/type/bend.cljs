@@ -14,8 +14,8 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.path :as path]
+   [heraldicon.svg.shape :as shape]))
 
 (def ordinary-type :heraldry.ordinary.type/bend)
 
@@ -244,37 +244,24 @@
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-upper :line
-         line-upper-start :line-start
-         line-upper-from :adjusted-from
-         line-upper-to :adjusted-to
-         :as line-upper-data} (line/create-with-extension line
-                                                          upper-left upper-right
-                                                          bounding-box
-                                                          :context context)
-        {line-lower :line
-         line-lower-start :line-start
-         line-lower-from :adjusted-from
-         line-lower-to :adjusted-to
-         :as line-lower-data} (line/create-with-extension opposite-line
-                                                          lower-left lower-right
-                                                          bounding-box
-                                                          :reversed? true
-                                                          :context context)]
+        line-upper (line/create-with-extension line
+                                               upper-left upper-right
+                                               bounding-box
+                                               :context context)
+        line-lower (line/create-with-extension opposite-line
+                                               lower-left lower-right
+                                               bounding-box
+                                               :reversed? true
+                                               :context context)]
     (post-process/shape
-     {:shape [(path/make-path
-               ["M" (v/add line-upper-from line-upper-start)
-                (path/stitch line-upper)
-                (infinity/clockwise bounding-box line-upper-to (v/add line-lower-to line-lower-start) :shortest? true)
-                (path/stitch line-lower)
-                (infinity/clockwise bounding-box line-lower-from (v/add line-upper-from line-upper-start) :shortest? true)
-                "z"])]
-      :lines [{:line line
-               :line-from line-upper-from
-               :line-data [line-upper-data]}
-              {:line opposite-line
-               :line-from line-lower-to
-               :line-data [line-lower-data]}]}
+     {:shape [(shape/build-shape
+               context
+               line-upper
+               :clockwise-shortest
+               line-lower
+               :clockwise-shortest)]
+      :lines [{:segments [line-upper]}
+              {:segments [line-lower]}]}
      context
      properties)))
 
