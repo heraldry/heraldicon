@@ -310,6 +310,9 @@
 
 (defmethod bounding-box :default [_context _properties])
 
+(defmethod bounding-box :heraldry/ordinary [context _properties]
+  (:bounding-box (get-environment context)))
+
 (rf/reg-sub-raw ::bounding-box
   (fn [_app-db [_ context]]
     (reaction
