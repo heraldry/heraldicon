@@ -10,8 +10,7 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def field-type :heraldry.field.type/gyronny-n)
 
@@ -159,43 +158,29 @@
                                      (if (and (odd? num-fields)
                                               (= index (dec num-fields)))
                                        (if (even? index)
-                                         ["M" (v/add (:adjusted-to line-1) (:line-start line-1))
-                                          (path/stitch (:line line-1))
-                                          (path/stitch (line/reversed-path (:line line-2)))
-                                          (infinity/counter-clockwise bounding-box
-                                                                      (:adjusted-from line-2)
-                                                                      (v/add (:adjusted-to line-1) (:line-start line-1)))
-                                          "z"]
-                                         ["M" (v/add (:adjusted-to line-2) (:line-start line-2))
-                                          (path/stitch (:line line-2))
-                                          (path/stitch (line/reversed-path (:line line-1)))
-                                          (infinity/clockwise bounding-box
-                                                              (:adjusted-from line-1)
-                                                              (v/add (:adjusted-to line-2) (:line-start line-2)))
-                                          "z"])
+                                         (shape/build-shape
+                                          context
+                                          line-1
+                                          [:reverse line-2]
+                                          :counter-clockwise)
+                                         (shape/build-shape
+                                          context
+                                          line-2
+                                          [:reverse line-1]
+                                          :clockwise))
                                        (if (even? index)
-                                         ["M" (v/add (:adjusted-to line-1) (:line-start line-1))
-                                          (path/stitch (:line line-1))
-                                          (path/stitch (:line line-2))
-                                          (infinity/counter-clockwise bounding-box
-                                                                      (:adjusted-to line-2)
-                                                                      (v/add (:adjusted-to line-1) (:line-start line-1)))
-                                          "z"]
-                                         ["M" (v/add (:adjusted-to line-2) (:line-start line-2))
-                                          (path/stitch (:line line-2))
-                                          (path/stitch (:line line-1))
-                                          (infinity/clockwise bounding-box
-                                                              (:adjusted-to line-1)
-                                                              (v/add (:adjusted-to line-2) (:line-start line-2)))
-                                          "z"])))))
+                                         (shape/build-shape
+                                          context
+                                          line-1
+                                          line-2
+                                          :counter-clockwise)
+                                         (shape/build-shape
+                                          context
+                                          line-2
+                                          line-1
+                                          :clockwise))))))
                             (map (fn [path]
-                                   {:shape [(path/make-path path)]})))
+                                   {:shape [path]})))
                       (range num-fields))
-     :lines (vec (map-indexed (fn [index line]
-                                (if (even? index)
-                                  {:line (:line line)
-                                   :line-from (:adjusted-to line)
-                                   :line-data [line]}
-                                  {:line (:line line)
-                                   :line-from (:adjusted-from line)
-                                   :line-data [line]})) lines))}))
+     :lines (mapv (fn [line]
+                    {:segments [line]}) lines)}))
