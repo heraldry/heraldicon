@@ -9,8 +9,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def field-type :heraldry.field.type/per-fess)
 
@@ -73,28 +72,16 @@
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line]
                                                                  [edge-left edge-right] :edge}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-edge :line
-         line-edge-start :line-start
-         line-edge-from :adjusted-from
-         line-edge-to :adjusted-to
-         :as line-edge-data} (line/create-with-extension line
-                                                         edge-left edge-right
-                                                         bounding-box
-                                                         :context context)]
-    {:subfields [{:shape [(path/make-path
-                           ["M" (v/add line-edge-from line-edge-start)
-                            (path/stitch line-edge)
-                            (infinity/counter-clockwise bounding-box
-                                                        line-edge-to
-                                                        (v/add line-edge-from line-edge-start))
-                            "z"])]}
-                 {:shape [(path/make-path
-                           ["M" (v/add line-edge-from line-edge-start)
-                            (path/stitch line-edge)
-                            (infinity/clockwise bounding-box
-                                                line-edge-to
-                                                (v/add line-edge-from line-edge-start))
-                            "z"])]}]
-     :lines [{:line line
-              :line-from line-edge-from
-              :line-data [line-edge-data]}]}))
+        line-edge (line/create-with-extension line
+                                              edge-left edge-right
+                                              bounding-box
+                                              :context context)]
+    {:subfields [{:shape [(shape/build-shape
+                           context
+                           line-edge
+                           :counter-clockwise)]}
+                 {:shape [(shape/build-shape
+                           context
+                           line-edge
+                           :clockwise)]}]
+     :lines [{:segments [line-edge]}]}))
