@@ -45,7 +45,7 @@
 
 (defn build-shape [context & parts]
   (let [center (bb/center (interface/get-bounding-box context))]
-    (->> (partition 2 1 (concat parts (take 1 parts)))
+    (->> (partition 2 1 parts parts)
          (reduce (fn [state [part next-part]]
                    (let [part (inspect-part part)
                          next-part (inspect-part next-part)]
