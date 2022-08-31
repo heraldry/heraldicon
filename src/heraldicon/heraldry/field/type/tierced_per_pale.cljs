@@ -10,8 +10,7 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def field-type :heraldry.field.type/tierced-per-pale)
 
@@ -104,53 +103,30 @@
                                                                  [edge-1-top edge-1-bottom] :edge-1
                                                                  [edge-2-top edge-2-bottom] :edge-2}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-edge-1 :line
-         line-edge-1-start :line-start
-         line-edge-1-from :adjusted-from
-         line-edge-1-to :adjusted-to
-         :as line-edge-1-data} (line/create-with-extension line
-                                                           edge-1-top edge-1-bottom
-                                                           bounding-box
-                                                           :context context)
-        {line-edge-2 :line
-         line-edge-2-start :line-start
-         line-edge-2-from :adjusted-from
-         line-edge-2-to :adjusted-to
-         :as line-edge-2-data} (line/create-with-extension opposite-line
-                                                           edge-2-top edge-2-bottom
-                                                           bounding-box
-                                                           :reversed? true
-                                                           :flipped? true
-                                                           :mirrored? true
-                                                           :context context)]
-    {:subfields [{:shape [(path/make-path
-                           ["M" (v/add line-edge-1-from line-edge-1-start)
-                            (path/stitch line-edge-1)
-                            (infinity/clockwise bounding-box
-                                                line-edge-1-to
-                                                (v/add line-edge-1-from line-edge-1-start))
-                            "z"])]}
-                 {:shape [(path/make-path
-                           ["M" (v/add line-edge-1-from line-edge-1-start)
-                            (path/stitch line-edge-1)
-                            (infinity/counter-clockwise bounding-box
-                                                        line-edge-1-to
-                                                        (v/add line-edge-2-to line-edge-2-start))
-                            (path/stitch line-edge-2)
-                            (infinity/counter-clockwise bounding-box
-                                                        line-edge-2-from
-                                                        (v/add line-edge-1-from line-edge-1-start))
-                            "z"])]}
-                 {:shape [(path/make-path
-                           ["M" (v/add line-edge-2-to line-edge-2-start)
-                            (path/stitch line-edge-2)
-                            (infinity/clockwise bounding-box
-                                                line-edge-2-from
-                                                (v/add line-edge-2-to line-edge-2-start))
-                            "z"])]}]
-     :lines [{:line line
-              :line-from line-edge-1-from
-              :line-data [line-edge-1-data]}
-             {:line opposite-line
-              :line-from line-edge-2-to
-              :line-data [line-edge-2-data]}]}))
+        line-edge-1 (line/create-with-extension line
+                                                edge-1-top edge-1-bottom
+                                                bounding-box
+                                                :context context)
+        line-edge-2 (line/create-with-extension opposite-line
+                                                edge-2-top edge-2-bottom
+                                                bounding-box
+                                                :reversed? true
+                                                :flipped? true
+                                                :mirrored? true
+                                                :context context)]
+    {:subfields [{:shape [(shape/build-shape
+                           context
+                           line-edge-1
+                           :clockwise)]}
+                 {:shape [(shape/build-shape
+                           context
+                           line-edge-1
+                           :counter-clockwise-shortest
+                           line-edge-2
+                           :counter-clockwise-shortest)]}
+                 {:shape [(shape/build-shape
+                           context
+                           line-edge-2
+                           :clockwise)]}]
+     :lines [{:segments [line-edge-1]}
+             {:segments [line-edge-2]}]}))
