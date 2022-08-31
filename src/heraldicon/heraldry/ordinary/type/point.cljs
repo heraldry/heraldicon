@@ -13,8 +13,8 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.path :as path]
+   [heraldicon.svg.shape :as shape]))
 
 (def ordinary-type :heraldry.ordinary.type/point)
 
@@ -104,36 +104,22 @@
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-lower :line
-         line-lower-start :line-start
-         line-lower-from :adjusted-from
-         line-lower-to :adjusted-to
-         :as line-lower-data} (line/create-with-extension line
-                                                          (if dexter?
-                                                            lower-left
-                                                            lower-right)
-                                                          (if dexter?
-                                                            lower-right
-                                                            lower-left)
-                                                          bounding-box
-                                                          :reversed? (not dexter?)
-                                                          :context context)]
+        line-lower (line/create-with-extension line
+                                               (if dexter?
+                                                 lower-left
+                                                 lower-right)
+                                               (if dexter?
+                                                 lower-right
+                                                 lower-left)
+                                               bounding-box
+                                               :reversed? (not dexter?)
+                                               :context context)]
     (post-process/shape
-     {:shape [(path/make-path
-               (if dexter?
-                 ["M" (v/add line-lower-from line-lower-start)
-                  (path/stitch line-lower)
-                  (infinity/clockwise bounding-box line-lower-to line-lower-from)
-                  "z"]
-                 ["M" (v/add line-lower-to line-lower-start)
-                  (path/stitch line-lower)
-                  (infinity/clockwise bounding-box line-lower-from line-lower-to)
-                  "z"]))]
-      :lines [{:line line
-               :line-from (if dexter?
-                            line-lower-from
-                            line-lower-to)
-               :line-data [line-lower-data]}]}
+     {:shape (shape/build-shape
+              context
+              line-lower
+              :clockwise)
+      :lines [{:segments [line-lower]}]}
      context
      properties)))
 
