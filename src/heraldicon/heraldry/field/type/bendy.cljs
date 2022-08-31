@@ -10,7 +10,6 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
    [heraldicon.svg.path :as path]))
 
 (def field-type :heraldry.field.type/bendy)
@@ -225,93 +224,5 @@
                                                                     :y (+ (:y real-edge-start) part-height))]))))
                     edges)})
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line edges num-subfields]}]
-  (let [{:keys [bounding-box points]} (interface/get-parent-environment context)
-        {:keys [top-left bottom-right]} points
-        outside-1 (v/sub top-left (v/Vector. 50 50))
-        outside-2 (v/add bottom-right (v/Vector. 50 50))
-        lines (vec (map-indexed
-                    (fn [index [edge-start edge-end]]
-                      (if (even? index)
-                        (line/create-with-extension line
-                                                    edge-start edge-end
-                                                    bounding-box
-                                                    :context context)
-                        (line/create-with-extension line
-                                                    edge-start edge-end
-                                                    bounding-box
-                                                    :reversed? true
-                                                    :flipped? true
-                                                    :mirrored? true
-                                                    :context context)))
-                    (drop 1 edges)))]
-    {:subfields (into []
-                      (comp
-                       (map (fn [i]
-                              (let [first? (zero? i)
-                                    last? (= i (dec num-subfields))]
-                                (cond
-                                  (and first?
-                                       last?) ["M" outside-1
-                                               ;; do this in two steps, because using the same point
-                                               ;; wouldn't use the large arc
-                                               (infinity/clockwise bounding-box outside-1 outside-2)
-                                               (infinity/clockwise bounding-box outside-2 outside-1)
-                                               "z"]
-                                  first? (let [line-1 (get lines i)
-                                               line-start (v/add (:adjusted-from line-1) (:line-start line-1))
-                                               line-end (:adjusted-to line-1)]
-                                           ["M" line-start
-                                            (path/stitch (:line line-1))
-                                            (infinity/counter-clockwise bounding-box line-end line-start :shortest? true)
-                                            "z"])
-                                  last? (let [line-1 (get lines (dec i))
-                                              even-line? (even? (dec i))
-                                              [line-start line-end] (if even-line?
-                                                                      [(v/add (:adjusted-from line-1) (:line-start line-1))
-                                                                       (:adjusted-to line-1)]
-                                                                      [(v/add (:adjusted-to line-1) (:line-start line-1))
-                                                                       (:adjusted-from line-1)])]
-                                          ["M" line-start
-                                           (path/stitch (:line line-1))
-                                           ((if even-line?
-                                              infinity/clockwise
-                                              infinity/counter-clockwise) bounding-box line-end line-start :shortest? true)
-                                           "z"])
-                                  :else (let [even-part? (even? i)
-                                              line-1 (get lines (dec i))
-                                              line-2 (get lines i)]
-                                          (if even-part?
-                                            (let [line-1-start (v/add (:adjusted-to line-1) (:line-start line-1))
-                                                  line-1-end (:adjusted-from line-1)
-                                                  line-2-start (v/add (:adjusted-from line-2) (:line-start line-2))
-                                                  line-2-end (:adjusted-to line-2)]
-                                              ["M" line-1-start
-                                               (path/stitch (:line line-1))
-                                               (infinity/counter-clockwise bounding-box line-1-end line-2-start :shortest? true)
-                                               (path/stitch (:line line-2))
-                                               (infinity/counter-clockwise bounding-box line-2-end line-1-start :shortest? true)
-                                               "z"])
-                                            (let [line-1-start (v/add (:adjusted-from line-1) (:line-start line-1))
-                                                  line-1-end (:adjusted-to line-1)
-                                                  line-2-start (v/add (:adjusted-to line-2) (:line-start line-2))
-                                                  line-2-end (:adjusted-from line-2)]
-
-                                              ["M" line-1-start
-                                               (path/stitch (:line line-1))
-                                               (infinity/clockwise bounding-box line-1-end line-2-start :shortest? true)
-                                               (path/stitch (:line line-2))
-                                               (infinity/clockwise bounding-box line-2-end line-1-start :shortest? true)
-                                               "z"])))))))
-                       (map (fn [path]
-                              {:shape [(path/make-path path)]})))
-                      (range num-subfields))
-     :lines (vec (map-indexed (fn [index line]
-                                (if (even? index)
-                                  {:line (:line line)
-                                   :line-from (:adjusted-from line)
-                                   :line-data [line]}
-                                  {:line (:line line)
-                                   :line-from (:adjusted-to line)
-                                   :line-data [line]}))
-                              lines))}))
+(defmethod interface/subfield-render-shapes field-type [context properties]
+  ((get-method interface/subfield-render-shapes :heraldry.field.type/barry) context properties))
