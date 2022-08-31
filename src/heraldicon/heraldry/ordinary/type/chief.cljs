@@ -13,8 +13,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def ordinary-type :heraldry.ordinary.type/chief)
 
@@ -69,24 +68,17 @@
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-lower :line
-         line-lower-start :line-start
-         line-lower-from :adjusted-from
-         line-lower-to :adjusted-to
-         :as line-lower-data} (line/create-with-extension line
-                                                          lower-left lower-right
-                                                          bounding-box
-                                                          :reversed? true
-                                                          :context context)]
+        line-lower (line/create-with-extension line
+                                               lower-left lower-right
+                                               bounding-box
+                                               :reversed? true
+                                               :context context)]
     (post-process/shape
-     {:shape [(path/make-path
-               ["M" (v/add line-lower-to line-lower-start)
-                (path/stitch line-lower)
-                (infinity/clockwise bounding-box line-lower-from (v/add line-lower-to line-lower-start))
-                "z"])]
-      :lines [{:line line
-               :line-from line-lower-to
-               :line-data [line-lower-data]}]}
+     {:shape [(shape/build-shape
+               context
+               line-lower
+               :clockwise)]
+      :lines [{:segments [line-lower]}]}
      context
      properties)))
 
