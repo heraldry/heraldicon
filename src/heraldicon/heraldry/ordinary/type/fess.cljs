@@ -122,7 +122,7 @@
                                                :context context)]
     (post-process/shape
      {:shape [(shape/build-shape
-               (v/avg upper-left upper-right lower-left lower-right)
+               context
                line-upper
                :clockwise-shortest
                line-lower

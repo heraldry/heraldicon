@@ -1,7 +1,10 @@
 (ns heraldicon.svg.shape
-  (:require [heraldicon.heraldry.line.core :as line]
-            [heraldicon.svg.infinity :as infinity]
-            [heraldicon.svg.path :as path]))
+  (:require
+   [heraldicon.heraldry.line.core :as line]
+   [heraldicon.interface :as interface]
+   [heraldicon.math.bounding-box :as bb]
+   [heraldicon.svg.infinity :as infinity]
+   [heraldicon.svg.path :as path]))
 
 (defn- inspect-part [part]
   (cond
@@ -40,14 +43,15 @@
                {:path (conj path (infinity center current next-point :shortest? shortest?))
                 :current next-point})))
 
-(defn build-shape [center & parts]
-  (->> (partition 2 1 (concat parts (take 1 parts)))
-       (reduce (fn [state [part next-part]]
-                 (let [part (inspect-part part)
-                       next-part (inspect-part next-part)]
-                   (add-part center state part next-part)))
-               {:path []
-                :current nil})
-       :path
-       close-path
-       path/make-path))
+(defn build-shape [context & parts]
+  (let [center (bb/center (interface/get-bounding-box context))]
+    (->> (partition 2 1 (concat parts (take 1 parts)))
+         (reduce (fn [state [part next-part]]
+                   (let [part (inspect-part part)
+                         next-part (inspect-part next-part)]
+                     (add-part center state part next-part)))
+                 {:path []
+                  :current nil})
+         :path
+         close-path
+         path/make-path)))
