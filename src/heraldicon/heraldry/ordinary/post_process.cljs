@@ -54,7 +54,7 @@
           adjusted-shape (humetty/coup shape parent-shape humetty)]
       (assoc shape-data
              :shape adjusted-shape
-             :lines [{:edge-paths adjusted-shape}]))
+             :edges [{:paths adjusted-shape}]))
     shape-data))
 
 (defn- process-shape-voided [{:keys [shape]
@@ -66,7 +66,7 @@
           (assoc :shape adjusted-shape)
           ;; TODO: bit hacky, the code here needs to know the last shape path was
           ;; added and then add it as an additional line
-          (update :lines conj {:edge-paths [(last adjusted-shape)]})))
+          (update :edges conj {:paths [(last adjusted-shape)]})))
     shape-data))
 
 (defn shape [shape-data context properties]

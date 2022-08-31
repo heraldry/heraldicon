@@ -260,5 +260,5 @@
                            context
                            line-edge-left
                            :counter-clockwise)]}]
-     :lines [{:segments [line-edge-left]}
-             {:segments [line-edge-right]}]}))
+     :edges [{:lines [line-edge-left]}
+             {:lines [line-edge-right]}]}))

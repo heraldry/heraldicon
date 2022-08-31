@@ -258,7 +258,7 @@
                    (conj "z")))]
     (post-process/shape
      {:shape [shape]
-      :lines [{:edge-paths [shape]}]}
+      :edges [{:paths [shape]}]}
      context
      properties)))
 

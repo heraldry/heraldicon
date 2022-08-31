@@ -209,7 +209,7 @@
                            line-edge-bottom-right
                            line-edge-bottom-left
                            :counter-clockwise)]}]
-     :lines [{:segments [line-edge-top-left]}
-             {:segments [line-edge-bottom-right]}
-             {:segments [line-edge-bottom-left]}
-             {:segments [line-edge-top-right]}]}))
+     :edges [{:lines [line-edge-top-left]}
+             {:lines [line-edge-bottom-right]}
+             {:lines [line-edge-bottom-left]}
+             {:lines [line-edge-top-right]}]}))

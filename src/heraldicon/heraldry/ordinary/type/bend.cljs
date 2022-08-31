@@ -260,8 +260,8 @@
                :clockwise-shortest
                line-lower
                :clockwise-shortest)]
-      :lines [{:segments [line-upper]}
-              {:segments [line-lower]}]}
+      :edges [{:lines [line-upper]}
+              {:lines [line-lower]}]}
      context
      properties)))
 

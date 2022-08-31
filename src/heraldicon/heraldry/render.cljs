@@ -26,22 +26,22 @@
             :fill-rule "evenodd"
             :fill "#fff"}]))
 
-(defn- render-line [context {:keys [segments edge-paths]}]
+(defn- render-edge [context {:keys [lines paths]}]
   (let [outline? (edge-outline? context)]
-    (if edge-paths
+    (if paths
       (when outline?
         (into [:g (outline/style context)]
               (map (fn [edge-path]
                      [:path {:d edge-path}]))
-              edge-paths))
-      [line/render segments outline? context])))
+              paths))
+      [line/render lines outline? context])))
 
 (defn ordinary-edges [context]
-  (let [{:keys [lines]} (interface/get-render-shape context)]
+  (let [{:keys [edges]} (interface/get-render-shape context)]
     (into [:g]
-          (map (fn [line]
-                 [render-line context line]))
-          lines)))
+          (map (fn [edge]
+                 [render-edge context edge]))
+          edges)))
 
 (defn charge-edges [context]
   (when (edge-outline? context)
@@ -52,11 +52,11 @@
             shape))))
 
 (defn field-edges [context]
-  (let [lines (interface/get-field-edges context)]
+  (let [edges (interface/get-field-edges context)]
     (into [:g]
-          (map (fn [line]
-                 [render-line context line]))
-          lines)))
+          (map (fn [edge]
+                 [render-edge context edge]))
+          edges)))
 
 (defn shape-fimbriation [context & {:keys [fimbriation-shape reverse-transform scale]
                                     :or {scale 1}}]
@@ -68,7 +68,7 @@
                             (update :thickness-1 (partial math/percent-of fimbriation-percentage-base))
                             (update :thickness-2 (partial math/percent-of fimbriation-percentage-base)))
         line-fimbriation (interface/get-sanitized-data (c/++ context :line :fimbriation))
-        fimbriation (if (and (-> render-shape :lines (get 0) :edge-paths)
+        fimbriation (if (and (-> render-shape :edges (get 0) :paths)
                              (-> fimbriation :mode (or :none) (= :none))
                              (-> line-fimbriation :mode (or :none) (not= :none)))
                       line-fimbriation

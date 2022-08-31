@@ -366,8 +366,8 @@
                line-lower-right
                line-lower-left
                :clockwise-shortest)]
-      :lines [{:segments [line-upper-left line-upper-right]}
-              {:segments [line-lower-right line-lower-left]}]}
+      :edges [{:lines [line-upper-left line-upper-right]}
+              {:lines [line-lower-right line-lower-left]}]}
      context
      properties)))
 

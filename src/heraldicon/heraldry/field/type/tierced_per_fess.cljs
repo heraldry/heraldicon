@@ -129,5 +129,5 @@
                            context
                            line-edge-2
                            :counter-clockwise)]}]
-     :lines [{:segments [line-edge-1]}
-             {:segments [line-edge-2]}]}))
+     :edges [{:lines [line-edge-1]}
+             {:lines [line-edge-2]}]}))

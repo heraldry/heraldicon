@@ -83,4 +83,4 @@
                            context
                            line-edge
                            :counter-clockwise)]}]
-     :lines [{:segments [line-edge]}]}))
+     :edges [{:lines [line-edge]}]}))

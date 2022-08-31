@@ -77,7 +77,7 @@
                context
                line-upper
                :clockwise)]
-      :lines [{:segments [line-upper]}]}
+      :edges [{:lines [line-upper]}]}
      context
      properties)))
 

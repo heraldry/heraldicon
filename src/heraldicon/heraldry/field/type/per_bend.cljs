@@ -176,4 +176,4 @@
                            context
                            line-edge
                            :clockwise)]}]
-     :lines [{:segments [line-edge]}]}))
+     :edges [{:lines [line-edge]}]}))

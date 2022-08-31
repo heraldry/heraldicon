@@ -217,7 +217,7 @@
                        (map (fn [path]
                               {:shape [path]})))
                       (partition 2 1 [[nil nil]] lines))
-     :lines (vec (mapcat (fn [[line-left line-right]]
-                           [{:segments [line-left]}
-                            {:segments [line-right]}])
+     :edges (vec (mapcat (fn [[line-left line-right]]
+                           [{:lines [line-left]}
+                            {:lines [line-right]}])
                          (drop 1 lines)))}))

@@ -300,7 +300,7 @@
 (rf/reg-sub-raw ::field-edges
   (fn [_app-db [_ context]]
     (reaction
-     (:lines (subfield-render-shapes context (get-properties context))))))
+     (:edges (subfield-render-shapes context (get-properties context))))))
 
 (defn get-field-edges [context]
   @(rf/subscribe [::field-edges context]))
