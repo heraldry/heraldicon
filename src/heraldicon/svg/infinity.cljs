@@ -47,3 +47,14 @@
     ["L" projected-from
      "A" radius radius 0 large-arc? clockwise? projected-to
      "L" to]))
+
+(defn full [bounding-box]
+  (let [center (if (instance? v/Vector bounding-box)
+                 bounding-box
+                 (bb/center bounding-box))
+        up (v/add center (v/Vector. 0 radius))
+        down (v/add center (v/Vector. 0 (- radius)))]
+    ["M" up
+     "A" radius radius 0 0 1 down
+     "A" radius radius 0 0 1 up
+     "z"]))
