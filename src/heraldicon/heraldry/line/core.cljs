@@ -491,8 +491,8 @@
                         :angle angle}
                        line-options))))
 
-(defn- mask-intersection-points [start line-datas direction]
-  (->> line-datas
+(defn- mask-intersection-points [start line-segments direction]
+  (->> line-segments
        (map (fn [{:keys [line-end up down]}]
               (let [dv (case direction
                          :up up
@@ -512,13 +512,30 @@
                   {start2 :start end2 :end}]]
               (v/line-intersection start1 end1 start2 end2)))))
 
-(defn render [line line-datas start outline? context]
-  (let [{:keys [fimbriation]} line
-        line-start (-> line-datas first :line-start)
-        base-path (into ["M" (v/add start line-start)]
+(defn line-start [{:keys [adjusted-to adjusted-from line-start
+                          reversed?]} & {:keys [reverse?]}]
+  (cond-> (if (or (and (not reversed?) reverse?)
+                  (and reversed? (not reverse?)))
+            adjusted-to
+            adjusted-from)
+    (not reverse?) (v/add line-start)))
+
+(defn line-end [{:keys [adjusted-to adjusted-from reversed?]} & {:keys [reverse?]}]
+  (if (or (and (not reversed?) reverse?)
+          (and reversed? (not reverse?)))
+    adjusted-from
+    adjusted-to))
+
+(defn render [line-segments outline? context]
+  (let [first-segment (first line-segments)
+        last-segment (last line-segments)
+        fimbriation (-> first-segment :line-data :fimbriation)
+        line-from (line-start first-segment)
+        base-line-start (v/sub line-from (:line-start first-segment))
+        base-path (into ["M" line-from]
                         (map (fn [{line-path-snippet :line}]
                                (path/stitch line-path-snippet)))
-                        line-datas)
+                        line-segments)
         line-path (path/make-path base-path)
         {:keys [mode
                 alignment
@@ -535,19 +552,19 @@
                                   [thickness-1 thickness-2
                                    tincture-1 tincture-2])
         mask-shape-top (when (#{:even :outside} alignment)
-                         (let [mask-points (into [(v/add start line-start (-> line-datas first :up))]
-                                                 (mask-intersection-points start line-datas :up))]
+                         (let [mask-points (into [(v/add line-from (:up first-segment))]
+                                                 (mask-intersection-points base-line-start line-segments :up))]
                            (path/make-path [base-path
-                                            "l" (-> line-datas last :up)
+                                            "l" (:up last-segment)
                                             (map (fn [mask-point]
                                                    ["L" mask-point])
                                                  (reverse mask-points))
                                             "z"])))
         mask-shape-bottom (when (#{:even :inside} alignment)
-                            (let [mask-points (into [(v/add start line-start (-> line-datas first :down))]
-                                                    (mask-intersection-points start line-datas :down))]
+                            (let [mask-points (into [(v/add line-from (:down first-segment))]
+                                                    (mask-intersection-points base-line-start line-segments :down))]
                               (path/make-path [base-path
-                                               "l" (-> line-datas last :down)
+                                               "l" (:down last-segment)
                                                (map (fn [mask-point]
                                                       ["L" mask-point])
                                                     (reverse mask-points))
@@ -841,6 +858,7 @@
     (assoc (create line extended-from extended-to (assoc line-options
                                                          :real-start real-start
                                                          :real-end real-end))
+           :line-data line
            :reversed? reversed?
            :adjusted-from extended-from
            :adjusted-to extended-to)))
@@ -850,17 +868,3 @@
       path/parse-path
       path/reverse
       (path/to-svg :relative? true)))
-
-(defn line-start [{:keys [adjusted-to adjusted-from line-start
-                          reversed?]} & {:keys [reverse?]}]
-  (cond-> (if (or (and (not reversed?) reverse?)
-                  (and reversed? (not reverse?)))
-            adjusted-to
-            adjusted-from)
-    (not reverse?) (v/add line-start)))
-
-(defn line-end [{:keys [adjusted-to adjusted-from reversed?]} & {:keys [reverse?]}]
-  (if (or (and (not reversed?) reverse?)
-          (and reversed? (not reverse?)))
-    adjusted-from
-    adjusted-to))
