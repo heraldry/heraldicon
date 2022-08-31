@@ -13,6 +13,8 @@
          (= (first part) :reverse)) {:line (second part)
                                      :reverse? true}
     (= part
+       :full) {:infinity infinity/full}
+    (= part
        :clockwise) {:infinity infinity/clockwise}
     (= part
        :clockwise-shortest) {:infinity infinity/clockwise
