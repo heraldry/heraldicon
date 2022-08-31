@@ -14,8 +14,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def ordinary-type :heraldry.ordinary.type/quarter)
 
@@ -155,32 +154,24 @@
                                                           [first-point anchor-point second-point] :edge
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-one :line
-         line-one-start :line-start
-         line-one-to :adjusted-to
-         :as line-one-data} (line/create-with-extension line
-                                                        anchor-point first-point
-                                                        bounding-box
-                                                        :reversed? true
-                                                        :extend-from? false
-                                                        :context context)
-        {line-two :line
-         line-two-to :adjusted-to
-         :as line-two-data} (line/create-with-extension opposite-line
-                                                        anchor-point second-point
-                                                        bounding-box
-                                                        :extend-from? false
-                                                        :context context)]
+        line-one (line/create-with-extension line
+                                             anchor-point first-point
+                                             bounding-box
+                                             :reversed? true
+                                             :extend-from? false
+                                             :context context)
+        line-two (line/create-with-extension opposite-line
+                                             anchor-point second-point
+                                             bounding-box
+                                             :extend-from? false
+                                             :context context)]
     (post-process/shape
-     {:shape [(path/make-path
-               ["M" (v/add line-one-to line-one-start)
-                (path/stitch line-one)
-                (path/stitch line-two)
-                (infinity/clockwise bounding-box line-two-to line-one-to)
-                "z"])]
-      :lines [{:line line
-               :line-from line-one-to
-               :line-data [line-one-data line-two-data]}]}
+     {:shape [(shape/build-shape
+               context
+               line-one
+               line-two
+               :clockwise)]
+      :lines [{:segments [line-one line-two]}]}
      context
      properties)))
 
