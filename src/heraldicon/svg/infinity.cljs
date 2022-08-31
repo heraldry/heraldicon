@@ -7,7 +7,9 @@
   600)
 
 (defn clockwise [bounding-box from to & {:keys [shortest?]}]
-  (let [center (bb/center bounding-box)
+  (let [center (if (instance? v/Vector bounding-box)
+                 bounding-box
+                 (bb/center bounding-box))
         from-ray (v/sub from center)
         to-ray (v/sub to center)
         projected-from (-> from-ray
@@ -26,7 +28,9 @@
      "L" to]))
 
 (defn counter-clockwise [bounding-box from to & {:keys [shortest?]}]
-  (let [center (bb/center bounding-box)
+  (let [center (if (instance? v/Vector bounding-box)
+                 bounding-box
+                 (bb/center bounding-box))
         from-ray (v/sub from center)
         to-ray (v/sub to center)
         projected-from (-> from-ray

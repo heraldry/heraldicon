@@ -813,7 +813,8 @@
 
 (defn create-with-extension [{:keys [line-length]
                               :as line} from to bounding-box & {:keys [extend-from?
-                                                                       extend-to?]
+                                                                       extend-to?
+                                                                       reversed?]
                                                                 :or {extend-from? true
                                                                      extend-to? true}
                                                                 :as line-options}]
@@ -840,6 +841,7 @@
     (assoc (create line extended-from extended-to (assoc line-options
                                                          :real-start real-start
                                                          :real-end real-end))
+           :reversed? reversed?
            :adjusted-from extended-from
            :adjusted-to extended-to)))
 
@@ -848,3 +850,17 @@
       path/parse-path
       path/reverse
       (path/to-svg :relative? true)))
+
+(defn line-start [{:keys [adjusted-to adjusted-from line-start
+                          reversed?]} & {:keys [reverse?]}]
+  (cond-> (if (or (and (not reversed?) reverse?)
+                  (and reversed? (not reverse?)))
+            adjusted-to
+            adjusted-from)
+    (not reverse?) (v/add line-start)))
+
+(defn line-end [{:keys [adjusted-to adjusted-from reversed?]} & {:keys [reverse?]}]
+  (if (or (and (not reversed?) reverse?)
+          (and reversed? (not reverse?)))
+    adjusted-from
+    adjusted-to))
