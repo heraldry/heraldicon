@@ -222,7 +222,7 @@
 
 (defmethod interface/properties field-type [context]
   (let [{:keys [width height]
-         :as parent-environment} (interface/get-parent-environment context)
+         :as parent-environment} (interface/get-effective-environment context)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         origin (interface/get-sanitized-data (c/++ context :origin))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
@@ -289,7 +289,7 @@
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line extra-line
                                                                         edge-start edge-bottom-end
                                                                         edge-left-end edge-right-end]}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-effective-environment context)
         line-edge-left (line/create-with-extension line
                                                    edge-start edge-left-end
                                                    bounding-box

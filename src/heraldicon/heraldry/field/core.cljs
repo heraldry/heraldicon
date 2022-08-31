@@ -161,14 +161,10 @@
       (string/str-tr "(" blazon ")"))))
 
 (defmethod interface/environment :heraldry/field [context _properties]
-  (if (interface/get-sanitized-data (c/++ context :inherit-environment?))
-    (interface/get-parent-environment (interface/parent context))
-    (interface/get-parent-environment context)))
+  (interface/get-effective-environment context))
 
 (defmethod interface/exact-shape :heraldry/field [context _properties]
-  (if (interface/get-sanitized-data (c/++ context :inherit-environment?))
-    (interface/get-exact-shape (interface/parent (interface/parent context)))
-    (interface/get-exact-shape (interface/parent context))))
+  (interface/get-effective-shape context))
 
 (defmethod interface/render-shape :heraldry/field [context _properties]
   (interface/get-render-shape (interface/parent context)))

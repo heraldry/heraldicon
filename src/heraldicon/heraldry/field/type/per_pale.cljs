@@ -40,7 +40,7 @@
    :line (line/options (c/++ context :line))})
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-effective-environment context)
         {:keys [top bottom]} (:points parent-environment)
         percentage-base (:height parent-environment)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
@@ -60,7 +60,7 @@
      context)))
 
 (defmethod interface/subfield-environments field-type [context {[edge-top edge-bottom] :edge}]
-  (let [{:keys [points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-effective-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(environment/create (bb/from-points [top-left bottom-left
@@ -70,7 +70,7 @@
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line]
                                                                  [edge-top edge-bottom] :edge}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-effective-environment context)
         line-edge (line/create-with-extension line
                                               edge-top edge-bottom
                                               bounding-box
