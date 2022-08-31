@@ -13,8 +13,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def ordinary-type :heraldry.ordinary.type/base)
 
@@ -69,23 +68,16 @@
                                                           [upper-left upper-right] :upper
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-upper :line
-         line-upper-start :line-start
-         line-upper-from :adjusted-from
-         line-upper-to :adjusted-to
-         :as line-upper-data} (line/create-with-extension line
-                                                          upper-left upper-right
-                                                          bounding-box
-                                                          :context context)]
+        line-upper (line/create-with-extension line
+                                               upper-left upper-right
+                                               bounding-box
+                                               :context context)]
     (post-process/shape
-     {:shape [(path/make-path
-               ["M" (v/add line-upper-from line-upper-start)
-                (path/stitch line-upper)
-                (infinity/clockwise bounding-box line-upper-to line-upper-from)
-                "z"])]
-      :lines [{:line line
-               :line-from line-upper-from
-               :line-data [line-upper-data]}]}
+     {:shape [(shape/build-shape
+               context
+               line-upper
+               :clockwise)]
+      :lines [{:segments [line-upper]}]}
      context
      properties)))
 
