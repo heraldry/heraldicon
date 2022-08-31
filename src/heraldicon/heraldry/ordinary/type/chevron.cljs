@@ -16,8 +16,7 @@
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def ordinary-type :heraldry.ordinary.type/chevron)
 
@@ -336,56 +335,39 @@
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         line (dissoc line :base-line)
         opposite-line (dissoc opposite-line :base-line)
-        {line-upper-left :line
-         line-upper-left-start :line-start
-         line-upper-left-to :adjusted-to
-         :as line-upper-left-data} (line/create-with-extension line
-                                                               upper-corner upper-left
-                                                               bounding-box
-                                                               :reversed? true
-                                                               :extend-from? false
-                                                               :context context)
-        {line-upper-right :line
-         line-upper-right-to :adjusted-to
-         :as line-upper-right-data} (line/create-with-extension line
-                                                                upper-corner upper-right
-                                                                bounding-box
-                                                                :extend-from? false
-                                                                :context context)
-        {line-lower-right :line
-         line-lower-right-start :line-start
-         line-lower-right-to :adjusted-to
-         :as line-lower-right-data} (line/create-with-extension opposite-line
-                                                                lower-corner lower-right
-                                                                bounding-box
-                                                                :reversed? true
-                                                                :extend-from? false
-                                                                :context context)
-        {line-lower-left :line
-         line-lower-left-to :adjusted-to
-         :as line-lower-left-data} (line/create-with-extension opposite-line
-                                                               lower-corner lower-left
-                                                               bounding-box
-                                                               :extend-from? false
-                                                               :context context)]
+        line-upper-left (line/create-with-extension line
+                                                    upper-corner upper-left
+                                                    bounding-box
+                                                    :reversed? true
+                                                    :extend-from? false
+                                                    :context context)
+        line-upper-right (line/create-with-extension line
+                                                     upper-corner upper-right
+                                                     bounding-box
+                                                     :extend-from? false
+                                                     :context context)
+        line-lower-right (line/create-with-extension opposite-line
+                                                     lower-corner lower-right
+                                                     bounding-box
+                                                     :reversed? true
+                                                     :extend-from? false
+                                                     :context context)
+        line-lower-left (line/create-with-extension opposite-line
+                                                    lower-corner lower-left
+                                                    bounding-box
+                                                    :extend-from? false
+                                                    :context context)]
     (post-process/shape
-     {:shape [(path/make-path
-               ["M" (v/add line-upper-left-to line-upper-left-start)
-                (path/stitch line-upper-left)
-                (path/stitch line-upper-right)
-                (infinity/clockwise bounding-box line-upper-right-to (v/add line-lower-right-to line-lower-right-start)
-                                    :shortest? true)
-                (path/stitch line-lower-right)
-                (path/stitch line-lower-left)
-                (infinity/clockwise bounding-box line-lower-left-to (v/add line-upper-left-to line-upper-left-start)
-                                    :shortest? true)
-                "z"])]
-      :lines [{:line line
-               :line-from line-upper-left-to
-               :line-data [line-upper-left-data line-upper-right-data]}
-              {:line opposite-line
-               :line-from line-lower-right-to
-               :line-data [line-lower-right-data line-lower-left-data]}]}
+     {:shape [(shape/build-shape
+               context
+               line-upper-left
+               line-upper-right
+               :clockwise-shortest
+               line-lower-right
+               line-lower-left
+               :clockwise-shortest)]
+      :lines [{:segments [line-upper-left line-upper-right]}
+              {:segments [line-lower-right line-lower-left]}]}
      context
      properties)))
 
