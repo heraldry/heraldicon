@@ -11,8 +11,7 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
-   [heraldicon.svg.infinity :as infinity]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.shape :as shape]))
 
 (def field-type :heraldry.field.type/per-saltire)
 
@@ -164,85 +163,53 @@
                                                                  [edge-bottom-left-1 edge-bottom-left-2] :edge-bottom-left
                                                                  [edge-bottom-right-1 edge-bottom-right-2] :edge-bottom-right}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        {line-edge-top-left :line
-         line-edge-top-left-start :line-start
-         line-edge-top-left-to :adjusted-to
-         :as line-edge-top-left-data} (line/create-with-extension line
-                                                                  edge-top-left-1 edge-top-left-2
-                                                                  bounding-box
-                                                                  :reversed? true
-                                                                  :extend-from? false
-                                                                  :context context)
-        {line-edge-bottom-right :line
-         line-edge-bottom-right-start :line-start
-         line-edge-bottom-right-to :adjusted-to
-         :as line-edge-bottom-right-data} (line/create-with-extension line
-                                                                      edge-bottom-right-1 edge-bottom-right-2
-                                                                      bounding-box
-                                                                      :reversed? true
-                                                                      :extend-from? false
-                                                                      :context context)
-        {line-edge-bottom-left :line
-         line-edge-bottom-left-from :adjusted-from
-         line-edge-bottom-left-to :adjusted-to
-         :as line-edge-bottom-left-data} (line/create-with-extension opposite-line
-                                                                     edge-bottom-left-1 edge-bottom-left-2
-                                                                     bounding-box
-                                                                     :mirrored? true
-                                                                     :flipped? true
-                                                                     :extend-from? false
-                                                                     :context context)
-        {line-edge-top-right :line
-         line-edge-top-right-from :adjusted-from
-         line-edge-top-right-to :adjusted-to
-         :as line-edge-top-right-data} (line/create-with-extension opposite-line
-                                                                   edge-top-right-1 edge-top-right-2
-                                                                   bounding-box
-                                                                   :mirrored? true
-                                                                   :flipped? true
-                                                                   :extend-from? false
-                                                                   :context context)]
-    {:subfields [{:shape [(path/make-path
-                           ["M" (v/add line-edge-top-left-to line-edge-top-left-start)
-                            (path/stitch line-edge-top-left)
-                            (path/stitch line-edge-top-right)
-                            (infinity/counter-clockwise bounding-box
-                                                        line-edge-top-right-to
-                                                        (v/add line-edge-top-left-to line-edge-top-left-start))
-                            "z"])]}
-                 {:shape [(path/make-path
-                           ["M" (v/add line-edge-top-left-to line-edge-top-left-start)
-                            (path/stitch line-edge-top-left)
-                            (path/stitch line-edge-bottom-left)
-                            (infinity/clockwise bounding-box
-                                                line-edge-bottom-left-to
-                                                (v/add line-edge-top-left-to line-edge-top-left-start))
-                            "z"])]}
-                 {:shape [(path/make-path
-                           ["M" (v/add line-edge-bottom-right-to line-edge-bottom-right-start)
-                            (path/stitch line-edge-bottom-right)
-                            (path/stitch line-edge-top-right)
-                            (infinity/clockwise bounding-box
-                                                line-edge-top-right-to
-                                                (v/add line-edge-bottom-right-to line-edge-bottom-right-start))
-                            "z"])]}
-                 {:shape [(path/make-path
-                           ["M" (v/add line-edge-bottom-right-to line-edge-bottom-right-start)
-                            (path/stitch line-edge-bottom-right)
-                            (path/stitch line-edge-bottom-left)
-                            (infinity/counter-clockwise bounding-box
-                                                        line-edge-bottom-left-to
-                                                        (v/add line-edge-bottom-right-to line-edge-bottom-right-start))
-                            "z"])]}]
-     :lines [{:line line
-              :line-from line-edge-top-left-to
-              :line-data [line-edge-top-left-data]}
-             {:line line
-              :line-from line-edge-bottom-right-to
-              :line-data [line-edge-bottom-right-data]}
-             {:line opposite-line
-              :line-from line-edge-bottom-left-from
-              :line-data [line-edge-bottom-left-data]}
-             {:line opposite-line
-              :line-from line-edge-top-right-from
-              :line-data [line-edge-top-right-data]}]}))
+        line-edge-top-left (line/create-with-extension line
+                                                       edge-top-left-1 edge-top-left-2
+                                                       bounding-box
+                                                       :reversed? true
+                                                       :extend-from? false
+                                                       :context context)
+        line-edge-bottom-right (line/create-with-extension line
+                                                           edge-bottom-right-1 edge-bottom-right-2
+                                                           bounding-box
+                                                           :reversed? true
+                                                           :extend-from? false
+                                                           :context context)
+        line-edge-bottom-left (line/create-with-extension opposite-line
+                                                          edge-bottom-left-1 edge-bottom-left-2
+                                                          bounding-box
+                                                          :mirrored? true
+                                                          :flipped? true
+                                                          :extend-from? false
+                                                          :context context)
+        line-edge-top-right (line/create-with-extension opposite-line
+                                                        edge-top-right-1 edge-top-right-2
+                                                        bounding-box
+                                                        :mirrored? true
+                                                        :flipped? true
+                                                        :extend-from? false
+                                                        :context context)]
+    {:subfields [{:shape [(shape/build-shape
+                           context
+                           line-edge-top-left
+                           line-edge-top-right
+                           :counter-clockwise)]}
+                 {:shape [(shape/build-shape
+                           context
+                           line-edge-top-left
+                           line-edge-bottom-left
+                           :clockwise)]}
+                 {:shape [(shape/build-shape
+                           context
+                           line-edge-top-right
+                           line-edge-bottom-right
+                           :clockwise)]}
+                 {:shape [(shape/build-shape
+                           context
+                           line-edge-bottom-right
+                           line-edge-bottom-left
+                           :counter-clockwise)]}]
+     :lines [{:segments [line-edge-top-left]}
+             {:segments [line-edge-bottom-right]}
+             {:segments [line-edge-bottom-left]}
+             {:segments [line-edge-top-right]}]}))
