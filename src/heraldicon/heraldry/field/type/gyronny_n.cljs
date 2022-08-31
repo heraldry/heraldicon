@@ -152,35 +152,23 @@
                                                     :context context)))
                     edge-ends))]
     {:subfields (into []
-                      (comp (map (fn [index]
-                                   (let [line-1 (get lines index)
-                                         line-2 (get lines (mod (inc index) num-fields))]
-                                     (if (and (odd? num-fields)
-                                              (= index (dec num-fields)))
-                                       (if (even? index)
-                                         (shape/build-shape
-                                          context
-                                          line-1
-                                          [:reverse line-2]
-                                          :counter-clockwise)
-                                         (shape/build-shape
-                                          context
-                                          line-2
-                                          [:reverse line-1]
-                                          :clockwise))
-                                       (if (even? index)
-                                         (shape/build-shape
-                                          context
-                                          line-1
-                                          line-2
-                                          :counter-clockwise)
-                                         (shape/build-shape
-                                          context
-                                          line-2
-                                          line-1
-                                          :clockwise))))))
-                            (map (fn [path]
-                                   {:shape [path]})))
-                      (range num-fields))
+                      (comp
+                       (map (fn [[[line-1 line-2] glue]]
+                              (let [last? (not line-2)
+                                    line-2 (or line-2 (first lines))]
+                                (if (and (odd? num-fields)
+                                         last?)
+                                  (if (= glue :counter-clockwise)
+                                    [line-1 [:reverse line-2] glue]
+                                    [line-2 [:reverse line-1] glue])
+                                  (if (= glue :counter-clockwise)
+                                    [line-1 line-2 glue]
+                                    [line-2 line-1 glue])))))
+                       (map #(apply shape/build-shape context %))
+                       (map (fn [path]
+                              {:shape [path]})))
+                      (map vector
+                           (partition 2 1 [nil] lines)
+                           (cycle [:counter-clockwise :clockwise])))
      :lines (mapv (fn [line]
                     {:segments [line]}) lines)}))
