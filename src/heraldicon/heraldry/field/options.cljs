@@ -125,7 +125,6 @@
                                                                 vec))
       (not (or root-field?
                semy-charge?
-               counterchanged?
                ref?)) (assoc :inherit-environment?
                              {:type :option.type/boolean
                               :default false
