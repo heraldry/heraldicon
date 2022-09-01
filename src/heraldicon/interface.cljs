@@ -9,6 +9,9 @@
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
+(defn- scrub-context [context]
+  (dissoc context :tincture-mapping :counterchanged-paths))
+
 (defn get-raw-data [{:keys [path subscriptions] :as context}]
   (cond
     subscriptions (let [{:keys [base-path data]} subscriptions
@@ -174,7 +177,7 @@
      (properties context))))
 
 (defn get-properties [context]
-  @(rf/subscribe [::properties context]))
+  @(rf/subscribe [::properties (scrub-context context)]))
 
 (defmulti environment (fn [_context properties]
                         (:type properties)))
@@ -211,11 +214,11 @@
                                :as context}]
   (or (get parent-environment path)
       (if (cottise-context? context)
-        @(rf/subscribe [::environment (parent (parent context))])
-        @(rf/subscribe [::environment (parent context)]))))
+        @(rf/subscribe [::environment (scrub-context (parent (parent context)))])
+        @(rf/subscribe [::environment (scrub-context (parent context))]))))
 
 (defn get-environment [context]
-  @(rf/subscribe [::environment context]))
+  @(rf/subscribe [::environment (scrub-context context)]))
 
 (defmulti render-shape (fn [_context properties]
                          (:type properties)))
@@ -240,20 +243,20 @@
          (render-shape context (get-properties context)))))))
 
 (defn get-render-shape [context]
-  @(rf/subscribe [::render-shape context]))
+  @(rf/subscribe [::render-shape (scrub-context context)]))
 
 (defmulti exact-shape (fn [_context properties]
                         (:type properties)))
 
 (defn get-exact-shape [context]
-  @(rf/subscribe [::exact-shape context]))
+  @(rf/subscribe [::exact-shape (scrub-context context)]))
 
 (defn get-exact-parent-shape [{:keys [parent-shape]
                                :as context}]
   (or parent-shape
       (if (cottise-context? context)
-        @(rf/subscribe [::exact-shape (parent (parent context))])
-        @(rf/subscribe [::exact-shape (parent context)]))))
+        @(rf/subscribe [::exact-shape (scrub-context (parent (parent context)))])
+        @(rf/subscribe [::exact-shape (scrub-context (parent context))]))))
 
 (defn fallback-exact-shape [context]
   (let [shape-path (:shape (get-render-shape context))
@@ -303,7 +306,7 @@
      (:edges (subfield-render-shapes context (get-properties context))))))
 
 (defn get-field-edges [context]
-  @(rf/subscribe [::field-edges context]))
+  @(rf/subscribe [::field-edges (scrub-context context)]))
 
 (defmulti bounding-box (fn [_context properties]
                          (:type properties)))
@@ -318,7 +321,7 @@
        (bounding-box context (get-properties context))))))
 
 (defn get-bounding-box [context]
-  @(rf/subscribe [::bounding-box context]))
+  @(rf/subscribe [::bounding-box (scrub-context context)]))
 
 (defn get-effective-parent-environment [context]
   (if (get-sanitized-data (c/++ context :inherit-environment?))
