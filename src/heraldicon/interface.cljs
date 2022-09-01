@@ -308,9 +308,7 @@
 (defmulti bounding-box (fn [_context properties]
                          (:type properties)))
 
-(defmethod bounding-box :default [_context _properties])
-
-(defmethod bounding-box :heraldry/ordinary [context _properties]
+(defmethod bounding-box :default [context _properties]
   (:bounding-box (get-environment context)))
 
 (rf/reg-sub-raw ::bounding-box
