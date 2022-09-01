@@ -69,7 +69,7 @@
     :commit commit
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}
-    :maintenance-mode? false
+    :maintenance-mode? true
     (or (some-> setting
                 name
                 s/upper-case
