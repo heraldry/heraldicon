@@ -129,16 +129,16 @@
             [:<>])
           [:rect {:x (if svg-export?
                        -1000
-                       -200)
+                       -500)
                   :y (if svg-export?
                        -1000
-                       -200)
+                       -500)
                   :width (if svg-export?
                            2000
-                           400)
+                           1100)
                   :height (if svg-export?
                             2000
-                            600)
+                            1100)
                   :transform (cond-> transform
                                (and pattern-offset-x
                                     pattern-offset-y) (str "translate("
