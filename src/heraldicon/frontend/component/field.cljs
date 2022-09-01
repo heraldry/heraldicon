@@ -72,6 +72,9 @@
     context
     [:inherit-environment?
      :type
+     :origin
+     :anchor
+     :orientation
      :tincture
      :pattern-scaling
      :pattern-rotation
@@ -83,9 +86,6 @@
      :variant
      :thickness
      :gap
-     :origin
-     :anchor
-     :orientation
      :geometry
      :layout
      :outline?
