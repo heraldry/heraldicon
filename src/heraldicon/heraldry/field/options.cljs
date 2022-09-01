@@ -38,8 +38,8 @@
 
 (def ^:private fields
   [plain/field-type
-   per-pale/field-type
    per-fess/field-type
+   per-pale/field-type
    per-bend/field-type
    per-bend-sinister/field-type
    per-chevron/field-type
@@ -48,12 +48,12 @@
    quarterly/field-type
    gyronny/field-type
    gyronny-n/field-type
-   tierced-per-pale/field-type
    tierced-per-fess/field-type
+   tierced-per-pale/field-type
    tierced-per-pall/field-type
    per-pile/field-type
-   paly/field-type
    barry/field-type
+   paly/field-type
    bendy/field-type
    bendy-sinister/field-type
    chevronny/field-type

@@ -24,8 +24,8 @@
 (derive :heraldry.ordinary/type :heraldry/ordinary)
 
 (def ^:private ordinaries
-  [pale/ordinary-type
-   fess/ordinary-type
+  [fess/ordinary-type
+   pale/ordinary-type
    chief/ordinary-type
    base/ordinary-type
    bend/ordinary-type
