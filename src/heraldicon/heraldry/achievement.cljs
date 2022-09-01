@@ -60,8 +60,10 @@
                                                                      target-height
                                                                      embed-fonts] :as context}]
   (let [short-url-font :deja-vu-sans
-        coat-of-arms-angle (interface/render-option :coat-of-arms-angle context)
         scope (interface/render-option :scope context)
+        coat-of-arms-angle (if (= scope :coat-of-arms)
+                             0
+                             (interface/render-option :coat-of-arms-angle context))
         coa-angle-rad-abs (-> coat-of-arms-angle
                               Math/abs
                               (* Math/PI)
