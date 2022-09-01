@@ -290,7 +290,7 @@
 (defmethod exact-shape :heraldry/charge [context _properties]
   ;; the charge dictates its own field, the parent field's shape does
   ;; not affect it like it does for ordinaries
-  (:shape (get-render-shape context)))
+  (-> (get-render-shape context) :shape first))
 
 (rf/reg-sub-raw ::exact-shape
   (fn [_app-db [_ context]]
