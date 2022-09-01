@@ -42,9 +42,10 @@
          (element/elements
           context
           [:type
-           :eccentricity
-           :height
+           :size-reference
            :width
+           :height
+           :eccentricity
            :spacing
            :offset
            :base-line

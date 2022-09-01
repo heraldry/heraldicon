@@ -522,6 +522,12 @@
       "angle": "Winkel",
       "thickness": "Dicke"
     },
+    "size-reference": "Size reference",
+    "size-reference-choice": {
+      "line-length": "Linienlänge",
+      "field-width": "Feldbreite",
+      "field-height": "Feldhöhe"
+    },
     "shadow": "Schattierung",
     "smoothing": "Glättung",
     "spacing": "Abstände",
@@ -582,7 +588,8 @@
     "landscape?": "Übernimmmt die SVG wie sie ist, eingebettete Bilder sind erlaubt. Das ist nur nützlich wenn bestimmte Bilder als Landschaft/Hintergrundbild benutzt werden sollen.",
     "fixed-tincture": "Gibt der Figur eine fest gelegte Tinktur, die nicht geändert werden kann. Solche Wappenfiguren sind nicht sehr flexibel, die Option sollte also nur in Ausnahmefällen benutzt werden.",
     "charge-group-preview": "Klicke die Slots um zwischen den hinzugefügten Wappenfiguren umzuschalten oder den Slot abzuschalten.",
-    "load-field-from-arms": "Ersetzt das Feld durch ein existierendes Wappen."
+    "load-field-from-arms": "Ersetzt das Feld durch ein existierendes Wappen.",
+    "size-reference": "The value used as a base reference when size options are percentages, e.g. line width"
   },
   "miscellaneous": {
     "and": "und",

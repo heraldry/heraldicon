@@ -523,6 +523,12 @@
       "angle": "Angle",
       "thickness": "Thickness"
     },
+    "size-reference": "Size reference",
+    "size-reference-choice": {
+      "line-length": "Line length",
+      "field-width": "Field width",
+      "field-height": "Field height"
+    },
     "shadow": "Shadow",
     "smoothing": "Smoothing",
     "spacing": "Spacing",
@@ -583,7 +589,8 @@
     "landscape?": "Keep the SVG as-is, embedded graphics also are allowed. This is only a good idea if you want to use images as landscape backgrounds.",
     "fixed-tincture": "Gives the charge a fixed tincture, which can't be changed by a field. Such charges are not very flexible, so use them only in exceptional cases.",
     "charge-group-preview": "Click the slots to disable them or cycle through the available charges (added below).",
-    "load-field-from-arms": "Replace the field with existing coat of arms."
+    "load-field-from-arms": "Replace the field with existing coat of arms.",
+    "size-reference": "The value used as a base reference when size options are percentages, e.g. line width"
   },
   "miscellaneous": {
     "and": "and",

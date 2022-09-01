@@ -28,7 +28,9 @@
 
     {:mirrored? false}
 
-    {:fimbriation (tu/example :heraldry/fimbriation)}))
+    {:fimbriation (tu/example :heraldry/fimbriation)}
+
+    {:size-reference (tu/example :heraldry.line/size-reference)}))
 
 (deftest invalid-line
   (are [form] (tu/invalid? :heraldry/line form)
@@ -52,4 +54,6 @@
 
     {:mirrored? :wrong}
 
-    {:fimbriation :wrong}))
+    {:fimbriation :wrong}
+
+    {:size-reference :wrong}))
