@@ -135,7 +135,8 @@
       :edge-bottom-right [anchor-point bottom-right-end]
       :line-length line-length
       :percentage-base percentage-base
-      :num-subfields 4}
+      :num-subfields 4
+      :overlap?-fn #{0 3}}
      context)))
 
 (defmethod interface/subfield-environments field-type [context {[edge-top-left-1 edge-top-left-2] :edge-top-left
