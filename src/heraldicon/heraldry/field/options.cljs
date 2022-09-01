@@ -38,7 +38,6 @@
 
 (def ^:private fields
   [plain/field-type
-   counterchanged/field-type
    per-pale/field-type
    per-fess/field-type
    per-bend/field-type
@@ -64,7 +63,8 @@
    potenty/field-type
    papellony/field-type
    masony/field-type
-   fretty/field-type])
+   fretty/field-type
+   counterchanged/field-type])
 
 (def choices
   (->> fields
