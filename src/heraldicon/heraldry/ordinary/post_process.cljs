@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.ordinary.post-process
   (:require
+   [clojure.set :as set]
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.ordinary.humetty :as humetty]
@@ -28,7 +29,7 @@
       (assoc properties :voided voided)
       properties)))
 
-(defn properties [{:keys [line-length]
+(defn properties [{:keys [line-length swap-lines?]
                    :as properties} context]
   (let [{:keys [width height]} (interface/get-parent-environment context)
         fimbriation-percentage-base (min width height)]
@@ -44,6 +45,9 @@
                               (or line
                                   (some-> (interface/get-sanitized-data (c/++ context :extra-line))
                                           (line/resolve-percentages line-length fimbriation-percentage-base)))))
+        (cond->
+          swap-lines? (set/rename-keys {:line :opposite-line
+                                        :opposite-line :line}))
         (process-humetty-properties context)
         (process-voided-properties context))))
 

@@ -185,10 +185,6 @@
           distance (math/percent-of percentage-base distance)
           thickness (interface/get-sanitized-data (c/++ context :thickness))
           band-size (math/percent-of percentage-base thickness)
-          line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                         line-length percentage-base)
-          opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                  line-length percentage-base)
           [base-corner base-left base-right] [reference-point reference-first reference-second]
           joint-angle 90
           real-distance (/ (+ (:effective-height reference-line)
@@ -226,7 +222,5 @@
         :band-size band-size
         :line-length line-length
         :percentage-base percentage-base
-        :line line
-        :opposite-line opposite-line
         :humetty humetty}
        context))))

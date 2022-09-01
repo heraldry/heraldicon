@@ -138,10 +138,6 @@
           inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
           use-parent-environment? (or counterchanged?
                                       inherit-environment?)
-          line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                         line-length percentage-base)
-          opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                  line-length percentage-base)
           real-distance (+ (:effective-height reference-lower-line)
                            distance)
           direction (v/sub reference-lower-right reference-lower-left)
@@ -170,8 +166,7 @@
                                          (v/rotate (- angle)))
                                      (-> v
                                          (path/translate (- (:x upper-left)) (- (:y upper-left)))
-                                         (path/rotate (- angle))))))
-          [line opposite-line] [opposite-line line]]
+                                         (path/rotate (- angle))))))]
       (post-process/properties
        {:type (if dexter?
                 :heraldry.ordinary.type/bend-sinister
@@ -189,7 +184,6 @@
                           "rotate(" angle ")"))
         :reverse-transform-fn reverse-transform-fn
         :flip-cottise? true
-        :line line
-        :opposite-line opposite-line
+        :swap-lines? true
         :humetty humetty}
        context))))

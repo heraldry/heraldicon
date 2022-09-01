@@ -292,10 +292,6 @@
         inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
-        line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                       line-length percentage-base)
-        opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                line-length percentage-base)
         opposite? (or flip-cottise?
                       (-> kind name (s/starts-with? "cottise-opposite")))
         reference-line (if opposite?
@@ -327,10 +323,7 @@
                                        (v/rotate (- angle)))
                                    (-> v
                                        (path/translate (- (:x upper-left)) (- (:y upper-left)))
-                                       (path/rotate (- angle))))))
-        [line opposite-line] (if opposite?
-                               [opposite-line line]
-                               [line opposite-line])]
+                                       (path/rotate (- angle))))))]
     (post-process/properties
      {:type real-ordinary-type
       :upper [upper-left upper-right]
@@ -345,7 +338,6 @@
                    (str "translate(" (v/->str upper-left) ")"
                         "rotate(" angle ")"))
       :reverse-transform-fn reverse-transform-fn
-      :line line
-      :opposite-line opposite-line
+      :swap-lines? opposite?
       :humetty humetty}
      context)))
