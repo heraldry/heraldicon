@@ -470,11 +470,6 @@
           distance (math/percent-of percentage-base distance)
           thickness (interface/get-sanitized-data (c/++ context :thickness))
           band-size (math/percent-of percentage-base thickness)
-          line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :line))
-                                         line-length percentage-base)
-          opposite-line (line/resolve-percentages (interface/get-sanitized-data (c/++ context :opposite-line))
-                                                  line-length percentage-base)
-          [line opposite-line] [opposite-line line]
           part (get cottise-parts path 0)
           [edge ref-line] (case part
                             0 [edge-right reference-line]
@@ -484,7 +479,6 @@
        (-> (cottise-part-properties edge distance band-size ref-line)
            (assoc :line-length line-length
                   :percentage-base percentage-base
-                  :line line
-                  :opposite-line opposite-line
+                  :swap-lines? true
                   :humetty humetty))
        context))))
