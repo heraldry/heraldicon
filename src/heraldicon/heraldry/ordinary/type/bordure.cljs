@@ -58,6 +58,7 @@
         smoothing (interface/get-sanitized-data (c/++ context :smoothing))
         percentage-base (min width height)
         parent-shape (interface/get-exact-parent-shape context)
+        ;; TODO: calculate the actual line length?
         line-length percentage-base
         thickness (math/percent-of percentage-base thickness)
         edge (-> parent-shape
