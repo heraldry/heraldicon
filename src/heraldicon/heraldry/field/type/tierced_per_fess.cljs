@@ -59,7 +59,7 @@
 
 (defmethod interface/properties field-type [context]
   (let [{:keys [height]
-         :as parent-environment} (interface/get-effective-environment context)
+         :as parent-environment} (interface/get-effective-parent-environment context)
         {:keys [left right]} (:points parent-environment)
         stretch-y (interface/get-sanitized-data (c/++ context :layout :stretch-y))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
@@ -92,7 +92,7 @@
 
 (defmethod interface/subfield-environments field-type [context {[edge-1-left edge-1-right] :edge-1
                                                                 [edge-2-left edge-2-right] :edge-2}]
-  (let [{:keys [points]} (interface/get-effective-environment context)
+  (let [{:keys [points]} (interface/get-effective-parent-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(environment/create (bb/from-points [top-left top-right edge-1-left edge-1-right]))
@@ -103,7 +103,7 @@
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-1-left edge-1-right] :edge-1
                                                                  [edge-2-left edge-2-right] :edge-2}]
-  (let [{:keys [bounding-box]} (interface/get-effective-environment context)
+  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
         line-edge-1 (line/create-with-extension line
                                                 edge-1-left edge-1-right
                                                 bounding-box

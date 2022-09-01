@@ -61,7 +61,7 @@
      :outline? options/plain-outline?-option}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-effective-environment context)
+  (let [parent-environment (interface/get-effective-parent-environment context)
         {:keys [top bottom left right]} (:points parent-environment)
         percentage-base (:height parent-environment)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
@@ -96,7 +96,7 @@
                                                                 [_edge-bottom-1 edge-bottom-2] :edge-bottom
                                                                 [_edge-left-1 edge-left-2] :edge-left
                                                                 [_edge-right-1 edge-right-2] :edge-right}]
-  (let [{:keys [points]} (interface/get-effective-environment context)
+  (let [{:keys [points]} (interface/get-effective-parent-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(environment/create (bb/from-points [top-left edge-top-1
@@ -113,7 +113,7 @@
                                                                  [edge-bottom-1 edge-bottom-2] :edge-bottom
                                                                  [edge-left-1 edge-left-2] :edge-left
                                                                  [edge-right-1 edge-right-2] :edge-right}]
-  (let [{:keys [bounding-box]} (interface/get-effective-environment context)
+  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
         line-edge-top (line/create-with-extension line
                                                   edge-top-1 edge-top-2
                                                   bounding-box

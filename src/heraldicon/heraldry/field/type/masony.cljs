@@ -180,7 +180,7 @@
                :fill (str "url(#" pattern-id "-outline)")}])]))
 
 (defmethod interface/properties field-type [context]
-  (let [{:keys [width height points]} (interface/get-effective-environment context)
+  (let [{:keys [width height points]} (interface/get-effective-parent-environment context)
         {:keys [top-left]} points
         num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
