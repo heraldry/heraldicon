@@ -178,6 +178,14 @@
 (def corner-dampening-mode-map
   (options/choices->map corner-dampening-mode-choices))
 
+(def ^:private size-reference-choices
+  [[:string.option.size-reference-choice/line-length :line-length]
+   [:string.option.size-reference-choice/field-width :field-width]
+   [:string.option.size-reference-choice/field-height :field-height]])
+
+(def size-reference-map
+  (options/choices->map size-reference-choices))
+
 (def ^:private default-options
   {:eccentricity {:type :option.type/range
                   :min 0
@@ -191,6 +199,11 @@
             :default 1
             :ui/label :string.option/height
             :ui/step 0.01}
+   :size-reference {:type :option.type/choice
+                    :choices size-reference-choices
+                    :default :line-length
+                    :ui/label :string.option/size-reference
+                    :ui/tooltip :string.tooltip/size-reference}
    :width {:type :option.type/range
            :min 2
            :max 100
@@ -251,6 +264,7 @@
             :invected (options/pick default-options
                                     [[:eccentricity]
                                      [:height]
+                                     [:size-reference]
                                      [:width]
                                      [:offset]
                                      [:flipped?]
@@ -258,18 +272,21 @@
             :engrailed (options/pick default-options
                                      [[:eccentricity]
                                       [:height]
+                                      [:size-reference]
                                       [:width]
                                       [:offset]
                                       [:flipped?]
                                       [:base-line]])
             :indented (options/pick default-options
                                     [[:height]
+                                     [:size-reference]
                                      [:width]
                                      [:offset]
                                      [:flipped?]
                                      [:base-line]])
             :embattled (options/pick default-options
                                      [[:height]
+                                      [:size-reference]
                                       [:width]
                                       [:spacing]
                                       [:offset]
@@ -277,6 +294,7 @@
                                       [:base-line]])
             :embattled-grady (options/pick default-options
                                            [[:height]
+                                            [:size-reference]
                                             [:width]
                                             [:spacing]
                                             [:offset]
@@ -285,6 +303,7 @@
             :embattled-in-crosses (options/pick default-options
                                                 [[:eccentricity]
                                                  [:height]
+                                                 [:size-reference]
                                                  [:width]
                                                  [:spacing]
                                                  [:offset]
@@ -293,6 +312,7 @@
             :potenty (options/pick default-options
                                    [[:eccentricity]
                                     [:height]
+                                    [:size-reference]
                                     [:width]
                                     [:spacing]
                                     [:offset]
@@ -301,6 +321,7 @@
             :dovetailed (options/pick default-options
                                       [[:eccentricity]
                                        [:height]
+                                       [:size-reference]
                                        [:width]
                                        [:spacing]
                                        [:offset]
@@ -309,6 +330,7 @@
             :raguly (options/pick default-options
                                   [[:eccentricity]
                                    [:height]
+                                   [:size-reference]
                                    [:width]
                                    [:spacing]
                                    [:offset]
@@ -318,6 +340,7 @@
             :thorny (options/pick default-options
                                   [[:eccentricity]
                                    [:height]
+                                   [:size-reference]
                                    [:width]
                                    [:spacing]
                                    [:offset]
@@ -326,6 +349,7 @@
                                    [:base-line]])
             :dancetty (options/pick default-options
                                     [[:height]
+                                     [:size-reference]
                                      [:width]
                                      [:offset]
                                      [:flipped?]
@@ -334,6 +358,7 @@
             :wavy (options/pick default-options
                                 [[:eccentricity]
                                  [:height]
+                                 [:size-reference]
                                  [:width]
                                  [:offset]
                                  [:mirrored?]
@@ -343,12 +368,14 @@
             :urdy (options/pick default-options
                                 [[:eccentricity]
                                  [:height]
+                                 [:size-reference]
                                  [:width]
                                  [:offset]
                                  [:flipped?]
                                  [:base-line]])
             :fir-twigged (options/pick default-options
                                        [[:height]
+                                        [:size-reference]
                                         [:width]
                                         [:offset]
                                         [:flipped?]
@@ -356,6 +383,7 @@
             :fir-tree-topped (options/pick default-options
                                            [[:eccentricity]
                                             [:height]
+                                            [:size-reference]
                                             [:width]
                                             [:offset]
                                             [:flipped?]
@@ -363,6 +391,7 @@
             :wolf-toothed (options/pick default-options
                                         [[:eccentricity]
                                          [:height]
+                                         [:size-reference]
                                          [:width]
                                          [:spacing]
                                          [:offset]
@@ -372,12 +401,14 @@
                                         {[:eccentricity :default] 0.5})
             :angled (options/pick default-options
                                   [[:eccentricity]
+                                   [:size-reference]
                                    [:width]
                                    [:flipped?]
                                    [:base-line]])
             :bevilled (options/pick default-options
                                     [[:eccentricity]
                                      [:height]
+                                     [:size-reference]
                                      [:width]
                                      [:flipped?]
                                      [:base-line]]
@@ -385,6 +416,7 @@
             :enarched (options/pick default-options
                                     [[:eccentricity]
                                      [:height]
+                                     [:size-reference]
                                      [:width]
                                      [:flipped?]
                                      [:base-line]]
@@ -397,6 +429,7 @@
             (options/pick default-options
                           [[:eccentricity]
                            [:height]
+                           [:size-reference]
                            [:width]
                            [:offset]
                            [:mirrored?]
@@ -804,8 +837,12 @@
            path/make-path
            (str "z"))))))
 
-(defn resolve-percentages [line line-percentage-base fimbriation-percentage-base]
-  (let [new-line (-> line
+(defn resolve-percentages [line line-length field-width field-height fimbriation-percentage-base]
+  (let [line-percentage-base (case (:size-reference line)
+                               :field-width field-width
+                               :field-height field-height
+                               line-length)
+        new-line (-> line
                      (update :width (partial math/percent-of line-percentage-base))
                      (update-in [:fimbriation :thickness-1] (partial math/percent-of fimbriation-percentage-base))
                      (update-in [:fimbriation :thickness-2] (partial math/percent-of fimbriation-percentage-base)))
@@ -813,7 +850,7 @@
         fimbriation-thickness (+ (-> new-line :fimbriation :thickness-1 (or 0))
                                  (-> new-line :fimbriation :thickness-2 (or 0)))]
     (assoc new-line
-           :line-length line-percentage-base
+           :line-length line-length
            ;; TODO: calculate this properly, in particular for line styles with
            ;; middle our bottom alignment this height can differ greatly
            :effective-height (case fimbriation-alignment

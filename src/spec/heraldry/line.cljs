@@ -18,6 +18,7 @@
 (s/def :heraldry.line/flipped? boolean?)
 (s/def :heraldry.line/mirrored? boolean?)
 (s/def :heraldry.line/fimbriation :heraldry/fimbriation)
+(s/def :heraldry.line/size-reference (su/key-in? line/size-reference-map))
 
 (s/def :heraldry/line (s/keys :opt-un [:heraldry.line/type
                                        :heraldry.line/eccentricity
@@ -30,4 +31,5 @@
                                        :heraldry.line/offset
                                        :heraldry.line/mirrored?
                                        :heraldry.line/flipped?
-                                       :heraldry.line/fimbriation]))
+                                       :heraldry.line/fimbriation
+                                       :heraldry.line/size-reference]))

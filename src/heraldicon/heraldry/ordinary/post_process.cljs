@@ -36,15 +36,15 @@
     (-> properties
         (update :line (fn [line]
                         (or line (some-> (interface/get-sanitized-data (c/++ context :line))
-                                         (line/resolve-percentages line-length fimbriation-percentage-base)))))
+                                         (line/resolve-percentages line-length width height fimbriation-percentage-base)))))
         (update :opposite-line (fn [line]
                                  (or line
                                      (some-> (interface/get-sanitized-data (c/++ context :opposite-line))
-                                             (line/resolve-percentages line-length fimbriation-percentage-base)))))
+                                             (line/resolve-percentages line-length width height fimbriation-percentage-base)))))
         (update :extra-line (fn [line]
                               (or line
                                   (some-> (interface/get-sanitized-data (c/++ context :extra-line))
-                                          (line/resolve-percentages line-length fimbriation-percentage-base)))))
+                                          (line/resolve-percentages line-length width height fimbriation-percentage-base)))))
         (cond->
           swap-lines? (set/rename-keys {:line :opposite-line
                                         :opposite-line :line}))
