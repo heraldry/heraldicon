@@ -27,6 +27,40 @@
     [:p [tr :string.text.home/release-news-info-1]]
     [:p [tr :string.text.home/release-news-info-2]]]
 
+   [:h3 "2022-09-01 - New rendering engine and various improvements"]
+   [:div.release-row
+    [:div.info
+     [:p "There have been various new small features over the past few months and a large rewrite of the rendering system, which improves some existing conditions and will allow many planned features that weren't possible in the previous version."]
+     [:p "New features and changes:"]
+     [:ul
+      [:li [:strong "new rendering engine"] " - this is the biggest change, albeit largely invisible, some immediate differences are:"
+       [:ul
+        [:li "components are much more aware of their surrounding field's environment and shape"]
+        [:li "line styles now detect the exact intersection with the shape and by default use the line length as a base for their width option; a new 'Size reference' option for lines allows configuration of this"]
+        [:li "exact bounding boxes for all components can now be calculated, which allows more precise resizing of the achievement, based on its helms, ornaments, etc."]
+        [:li "cottises inherit the parent ordinary's properties, synching their line styles with the ordinary"]
+        [:li "couped/voided ordinaries can now be fimbriated"]
+        [:li [:strong "some of these changes are not fully backwards compatible"] ", so if you see changes in your arms, especially in partitions, ordinaries, cottises, line styles, or fimbriation, then that may be why; I try to migrate data, but sometimes that's not feasible... and hopefully these cases can be fixed easily"]]]
+      [:li "a 'Gyronny N' field partition for an arbitrary number of subfields"]
+      [:li "a mechanism to load arms into a field (in the top right of the field form), e.g. to use existing arms in subfields"]
+      [:li "many new escutcheons and some new themes, mostly provided by the community on the Discord server, thanks!"]
+      [:li "sort options for lists, as well as a counter of accessible and filtered items"]
+      [:li "'Copy to new', exporting, and sharing are now grouped in a new action button"]
+      [:li "'Copy to new' now also works with items of other users, automatically filling in the appropriate source attribution"]
+      [:li "improved licensing and attribution, also fixed a bug where BY-NC-SA and BY-SA were compatible"]
+      [:li "new anchor/orientation points:"
+       [:ul
+        [:li [:stron "center"] " - the exact middle of the field's bounding box, often coincides with 'fess' on subfields"]
+        [:li [:stron "hoist"] " - a point left of the center for flags, similar to 'fess' in arms"]
+        [:li [:stron "fly"] " - a point right of the center for flags, opposite 'hoist'"]]]
+      [:li "allow fimbriation for cottises"]
+      [:li "new charge detail view, separating the original SVG view from the preview"]
+      [:li "improved blazonry editor, it understands more concepts now and there's a Discord bot that can use it"]
+      [:li "a few new tincture modifiers: flagged, feathered"]
+      [:li "a few more tooltips to help with the UI"]
+      [:li "some modals for login/logout/confirmation were buggy, that has been fixed"]
+      [:li "various bugfixes"]]]]
+
    [:h3 "2022-04-14 - Change of 'origin'/'anchor' naming"]
    [:div.release-row
     [:div.info
