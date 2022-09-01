@@ -198,7 +198,7 @@
      :opposite-line opposite-line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-effective-environment context)
+  (let [parent-environment (interface/get-effective-parent-environment context)
         sinister? (= (interface/get-raw-data (c/++ context :type))
                      :heraldry.field.type/per-bend-sinister)
         percentage-base (:height parent-environment)
@@ -266,7 +266,7 @@
      context)))
 
 (defmethod interface/subfield-environments field-type [context {[edge-left edge-corner edge-right] :edge}]
-  (let [{:keys [points]} (interface/get-effective-environment context)
+  (let [{:keys [points]} (interface/get-effective-parent-environment context)
         {:keys [top bottom]} points]
     ;; TODO: needs to be smarter with chevron-angle
     {:subfields [(environment/create (bb/from-points [edge-corner top
@@ -276,7 +276,7 @@
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-left edge-corner edge-right] :edge}]
-  (let [{:keys [bounding-box]} (interface/get-effective-environment context)
+  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
         line-edge-left (line/create-with-extension line
                                                    edge-corner edge-left
                                                    bounding-box

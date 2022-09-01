@@ -161,10 +161,10 @@
       (string/str-tr "(" blazon ")"))))
 
 (defmethod interface/environment :heraldry/field [context _properties]
-  (interface/get-effective-environment context))
+  (interface/get-effective-parent-environment context))
 
 (defmethod interface/exact-shape :heraldry/field [context _properties]
-  (interface/get-effective-shape context))
+  (interface/get-effective-parent-shape context))
 
 (defmethod interface/render-shape :heraldry/field [context _properties]
   (interface/get-render-shape (interface/parent context)))
