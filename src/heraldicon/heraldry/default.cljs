@@ -11,7 +11,7 @@
    :tincture :none})
 
 (def ordinary
-  {:type :heraldry.ordinary.type/pale
+  {:type :heraldry.ordinary.type/fess
    :line line
    :field field
    :outline? true})
