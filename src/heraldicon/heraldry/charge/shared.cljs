@@ -193,7 +193,7 @@
                              auto-resize?]
                       :or {auto-resize? true}
                       :as context}
-                     {:keys [base-shape base-width base-height base-top-left]
+                     {:keys [base-shape base-width base-height]
                       :as base-properties}]
   (let [{:keys [width height points]
          :as parent-environment} (interface/get-parent-environment context)
@@ -253,9 +253,8 @@
         scale-y (* (if reversed? -1 1)
                    (Math/abs scale-x)
                    stretch)
-        base-top-left (or base-top-left
-                          (v/div (v/Vector. base-width base-height)
-                                 -2))
+        base-top-left (v/div (v/Vector. base-width base-height)
+                             -2)
         charge-shape (into []
                            (map #(-> %
                                      path/make-path
@@ -292,8 +291,8 @@
              :angle angle
              :top-left base-top-left}))))
 
-(defmethod interface/environment :heraldry/charge [_context {:keys [bounding-box]}]
-  (environment/create bounding-box))
+(defmethod interface/environment :heraldry/charge [_context {:keys [bounding-box anchor-point]}]
+  (environment/create bounding-box {:fess anchor-point}))
 
 (defmethod interface/bounding-box :heraldry/charge [_context {:keys [bounding-box]}]
   bounding-box)

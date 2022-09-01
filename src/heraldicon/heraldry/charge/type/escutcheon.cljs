@@ -50,10 +50,9 @@
         offset (v/mul env-fess -1)]
     (charge.shared/process-shape
      context
-     {:base-shape [(-> shape
-                       path/parse-path
-                       (path/translate (:x offset) (:y offset))
-                       path/to-svg)]
-      :base-top-left offset
+     {:base-shape [[(-> shape
+                        path/parse-path
+                        (path/translate (:x offset) (:y offset))
+                        path/to-svg)]]
       :base-width (:width environment)
       :base-height (:height environment)})))
