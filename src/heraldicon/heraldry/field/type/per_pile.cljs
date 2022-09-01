@@ -182,7 +182,7 @@
         percentage-base (if (#{:left :right} (:point anchor))
                           height
                           width)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-effective-shape context)
         {anchor-point :anchor
          edge-start :point
          thickness :thickness} (pile/calculate-properties
@@ -208,7 +208,6 @@
                                   0))
         {left-point :left
          right-point :right} (pile/diagonals anchor-point edge-start thickness)
-        parent-shape (interface/get-exact-parent-shape context)
         edge-left-end (v/last-intersection-with-shape edge-start left-point
                                                       parent-shape :default? true)
         edge-right-end (v/last-intersection-with-shape edge-start right-point
