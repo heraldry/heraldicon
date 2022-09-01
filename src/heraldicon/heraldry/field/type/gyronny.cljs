@@ -147,7 +147,8 @@
       :edge-bottom-right [anchor-point bottom-right-end]
       :line-length line-length
       :percentage-base percentage-base
-      :num-subfields 8}
+      :num-subfields 8
+      :overlap?-fn #{0 3 4 7}}
      context)))
 
 (defmethod interface/subfield-environments field-type [_context {[middle edge-top-2] :edge-top

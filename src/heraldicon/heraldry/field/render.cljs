@@ -19,7 +19,7 @@
 
 (defn- render-subfield [{:keys [svg-export?
                                 charge-preview?]
-                         :as context} transform]
+                         :as context} transform overlap?]
   (let [clip-path-id (uid/generate "clip")
         subfield-context (effective-field-context context)]
     [:g
@@ -27,8 +27,7 @@
       [(if svg-export?
          :mask
          :clipPath) {:id clip-path-id}
-       ;; TODO: edge overlap strategy
-       [render/shape-mask subfield-context]]]
+       [render/shape-mask subfield-context overlap?]]]
      [:g {(if svg-export?
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
@@ -39,11 +38,13 @@
            :transform transform}
        [render subfield-context]]]]))
 
-(defn- render-subfields [context {:keys [num-subfields transform]}]
+(defn- render-subfields [context {:keys [num-subfields transform overlap?-fn]
+                                  :or {overlap?-fn even?}}]
   (into [:g]
         (map (fn [idx]
-               [render-subfield (c/++ context :fields idx) transform]))
-        (range num-subfields)))
+               ^{:key idx}
+               [render-subfield (c/++ context :fields idx) transform (overlap?-fn idx)]))
+        (sort-by overlap?-fn > (range num-subfields))))
 
 (defn- field-path-allowed? [{:keys [path counterchanged-paths]}]
   (let [component-path (->> path

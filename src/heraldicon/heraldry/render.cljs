@@ -8,6 +8,9 @@
    [heraldicon.math.core :as math]
    [heraldicon.render.outline :as outline]))
 
+(def ^:private overlap-width
+  0.1)
+
 (defn- edge-outline? [context]
   (or (interface/render-option :outline? context)
       (= (interface/render-option :mode context) :hatching)
@@ -19,12 +22,14 @@
     (cond->> shape-path
       (vector? shape-path) (apply str))))
 
-(defn shape-mask [context]
+(defn shape-mask [context overlap?]
   (let [render-shape (interface/get-render-shape context)]
-    [:path {:d (shape-path render-shape)
-            :clip-rule "evenodd"
-            :fill-rule "evenodd"
-            :fill "#fff"}]))
+    [:path (cond-> {:d (shape-path render-shape)
+                    :clip-rule "evenodd"
+                    :fill-rule "evenodd"
+                    :fill "#fff"}
+             overlap? (assoc :stroke "#fff"
+                             :stroke-width overlap-width))]))
 
 (defn- render-edge [context {:keys [lines paths]}]
   (let [outline? (edge-outline? context)]
