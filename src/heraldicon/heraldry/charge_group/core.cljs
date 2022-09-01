@@ -5,6 +5,7 @@
    [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
@@ -187,24 +188,31 @@
      :slot-positions slot-positions
      :slot-spacing slot-spacing}))
 
+(defn- iterate-charge-contexts [context {:keys [anchor-point
+                                                slot-positions slot-spacing
+                                                rotate-charges?
+                                                num-charges]}]
+  (for [{:keys [point charge-index angle]} slot-positions
+        :when (and charge-index
+                   (< charge-index num-charges))]
+    (-> context
+        (c/++ :charges charge-index)
+        (assoc :anchor-override (v/add anchor-point point)
+               :charge-group {:slot-spacing slot-spacing
+                              :slot-angle (when rotate-charges?
+                                            angle)}))))
+
+(defmethod interface/bounding-box :heraldry/charge-group [context properties]
+  (->> (iterate-charge-contexts context properties)
+       (map interface/get-bounding-box)
+       (reduce bb/combine)))
+
 (defmethod interface/render-component :heraldry/charge-group [context]
-  (let [{:keys [num-charges
-                rotate-charges?
-                slot-positions
-                slot-spacing
-                anchor-point]} (interface/get-properties context)]
+  (let [properties (interface/get-properties context)]
     (into [:g]
-          (for [[idx {:keys [point charge-index angle]}] (map-indexed vector slot-positions)
-                :when (and charge-index
-                           (< charge-index num-charges))]
+          (for [[idx charge-context] (map-indexed vector (iterate-charge-contexts context properties))]
             ^{:key idx}
-            [interface/render-component
-             (-> context
-                 (c/++ :charges charge-index)
-                 (assoc :anchor-override (v/add anchor-point point)
-                        :charge-group {:slot-spacing slot-spacing
-                                       :slot-angle (when rotate-charges?
-                                                     angle)}))]))))
+            [interface/render-component charge-context]))))
 
 (defmethod interface/blazon-component :heraldry/charge-group [context]
   ;; TODO: no need to calculate all positions here
