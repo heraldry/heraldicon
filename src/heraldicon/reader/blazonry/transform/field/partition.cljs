@@ -186,7 +186,7 @@
       (if-let [reference (-> fields (get index) :index)]
         (let [real-reference (first (get reference-map reference))]
           (if (int? real-reference)
-            (recur (assoc fields index {:type :heraldry.field.type/ref
+            (recur (assoc fields index {:type :heraldry.subfield.type/reference
                                         :index real-reference})
                    rest)
             (recur fields rest)))
@@ -200,7 +200,7 @@
      (if index
        (let [new-field (first (get reference-map index))
              new-field (if (int? new-field)
-                         {:type :heraldry.field.type/ref
+                         {:type :heraldry.subfield.type/reference
                           :index new-field}
                          new-field)]
          (if new-field
@@ -300,7 +300,13 @@
                        num-mandatory-fields)
         fields (populate-field-references default-fields reference-map)]
     (-> {:type field-type
-         :fields fields}
+         :fields (mapv (fn [{:keys [type]
+                             :as subfield}]
+                         (if (isa? type :heraldry.subfield/type)
+                           subfield
+                           {:type :heraldry.subfield.type/field
+                            :field subfield}))
+                       fields)}
         (add-field-reference-warnings reference-map (count fields) num-mandatory-fields)
         (add-lines nodes)
         (cond->

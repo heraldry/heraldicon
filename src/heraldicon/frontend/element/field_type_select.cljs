@@ -46,9 +46,7 @@
                          (assoc prepared-field
                                 :fields (->> (map vector merged previous-default default)
                                              (map (fn [[cur old-def def]]
-                                                    (if (and (-> cur
-                                                                 :type
-                                                                 (not= :heraldry.field.type/ref))
+                                                    (if (and (= (:type cur) :heraldry.subfield.type/field)
                                                              (not= cur old-def))
                                                       cur
                                                       def)))

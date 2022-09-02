@@ -3,47 +3,17 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.counterchange :as counterchange]
    [heraldicon.heraldry.render :as render]
+   [heraldicon.heraldry.subfield :as subfield]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.interface :as interface]
-   [heraldicon.util.uid :as uid]))
-
-(declare render)
-
-(defn- effective-field-context [context]
-  (let [field-type (interface/get-raw-data (c/++ context :type))]
-    (if (= field-type :heraldry.field.type/ref)
-      (let [index (interface/get-raw-data (c/++ context :index))
-            source-context (-> context c/-- (c/++ index))]
-        (assoc-in source-context [:path-map (:path source-context)] (:path context)))
-      context)))
-
-(defn- render-subfield [{:keys [svg-export?
-                                charge-preview?]
-                         :as context} transform overlap?]
-  (let [clip-path-id (uid/generate "clip")
-        subfield-context (effective-field-context context)]
-    [:g
-     [:defs
-      [(if svg-export?
-         :mask
-         :clipPath) {:id clip-path-id}
-       [render/shape-mask subfield-context overlap?]]]
-     [:g {(if svg-export?
-            :mask
-            :clip-path) (str "url(#" clip-path-id ")")}
-      [:g {:style (when-not (or svg-export?
-                                charge-preview?)
-                    {:pointer-events "visiblePainted"
-                     :cursor "pointer"})
-           :transform transform}
-       [render subfield-context]]]]))
+   [heraldicon.interface :as interface]))
 
 (defn- render-subfields [context {:keys [num-subfields transform overlap?-fn]
                                   :or {overlap?-fn even?}}]
+  ;; TODO: overlap should move into subfield/render
   (into [:g]
         (map (fn [idx]
                ^{:key idx}
-               [render-subfield (c/++ context :fields idx) transform (overlap?-fn idx)]))
+               [subfield/render (c/++ context :fields idx) transform (overlap?-fn idx)]))
         (sort-by overlap?-fn > (range num-subfields))))
 
 (defn- field-path-allowed? [{:keys [path counterchanged-paths]}]
@@ -91,8 +61,6 @@
                     (not (contains? new-mapping t2)) (assoc t2 t1))))))
     context))
 
-(declare render)
-
 (defn- render-counterchanged-field [{:keys [path]
                                      :as context} _properties]
   (when-let [parent-field-context (some-> context interface/parent interface/parent)]
@@ -100,12 +68,12 @@
           counterchanged-context (-> parent-field-context
                                      (update :counterchanged-paths conj path)
                                      (add-tinctures-to-mapping counterchange-tinctures))]
-      [render counterchanged-context])))
+      [interface/render-component counterchanged-context])))
 
 (defn- render-plain-field [context _properties]
   [tincture/tinctured-field context])
 
-(defn render [context]
+(defmethod interface/render-component :heraldry/field [context]
   (let [{:keys [render-fn]
          field-type :type
          :as properties} (interface/get-properties context)

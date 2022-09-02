@@ -14,7 +14,8 @@
    [spec.heraldry.line]
    [spec.heraldry.ordinary]
    [spec.heraldry.position]
-   [spec.heraldry.semy]))
+   [spec.heraldry.semy]
+   [spec.heraldry.subfield]))
 
 (s/def :heraldry.field/type (su/key-in? field.options/field-map))
 
@@ -29,14 +30,8 @@
 (s/def :heraldry.field/geometry (s/keys :opt-un [:heraldry.field.geometry/size-mode
                                                  :heraldry.field.geometry/size
                                                  :heraldry.field.geometry/stretch]))
-(s/def :heraldry.field.ref/type #{:heraldry.field.type/ref})
-(s/def :heraldry.field.ref/index su/pos-number?)
 
-(s/def :heraldry.field/subfield-or-ref (s/or :subfield :heraldry/field
-                                             :ref (s/keys :req-un [:heraldry.field.ref/type
-                                                                   :heraldry.field.ref/index])))
-
-(s/def :heraldry.field/fields (s/coll-of :heraldry.field/subfield-or-ref :into []))
+(s/def :heraldry.field/fields (s/coll-of :heraldry/subfield :into []))
 (s/def :heraldry.field/outline? boolean?)
 (s/def :heraldry.field/inherit-environment? boolean?)
 (s/def :heraldry.field/component (s/or :ordinary :heraldry/ordinary

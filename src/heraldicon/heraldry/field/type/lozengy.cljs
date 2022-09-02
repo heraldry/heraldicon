@@ -123,7 +123,7 @@
                                :height 1100
                                :fill (str "url(#" pattern-id "-" idx ")")}]]
                       [tincture/tinctured-field
-                       (c/++ context :fields idx)
+                       (c/++ context :fields idx :field)
                        :mask-id mask-id
                        :transform (str "rotate(" rotation ")")]])))
             (range 2))

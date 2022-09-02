@@ -19,6 +19,7 @@
    [heraldicon.frontend.component.render-options]
    [heraldicon.frontend.component.semy]
    [heraldicon.frontend.component.shield-separator]
+   [heraldicon.frontend.component.subfield]
    [heraldicon.frontend.element.access]
    [heraldicon.frontend.element.arms-reference-select]
    [heraldicon.frontend.element.attributes]

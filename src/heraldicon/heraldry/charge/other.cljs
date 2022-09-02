@@ -6,7 +6,6 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
-   [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.heraldry.render :as render]
    [heraldicon.heraldry.tincture :as tincture]
@@ -473,7 +472,7 @@
                       (when render-field?
                         [:g {:mask (str "url(#" mask-inverted-id ")")}
                          [:g {:transform reverse-transform}
-                          [field.render/render (c/++ context :field)]]])
+                          [interface/render-component (c/++ context :field)]]])
                       [:g {:mask (str "url(#" mask-id ")")}
                        (svg/make-unique-ids coloured-charge)]
                       (when render-shadow?

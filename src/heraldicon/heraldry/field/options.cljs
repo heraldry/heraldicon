@@ -33,7 +33,6 @@
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
 
-(derive :heraldry.field.type/ref :heraldry.field/type)
 (derive :heraldry.field/type :heraldry/field)
 
 (def ^:private fields
@@ -107,25 +106,20 @@
         semy-charge? (->> path (take-last 2) (= [:charge :field]))
         field-type (interface/get-raw-data (c/++ context :type))
         plain? (= field-type :heraldry.field.type/plain)
-        counterchanged? (= field-type :heraldry.field.type/counterchanged)
-        ref? (= field-type :heraldry.field.type/ref)]
-    (cond-> {:manual-blazon options/manual-blazon}
+        counterchanged? (= field-type :heraldry.field.type/counterchanged)]
+    (cond-> (assoc (field.interface/options context)
+                   :type type-option
+                   :manual-blazon options/manual-blazon)
       (not (or counterchanged?
-               plain?
-               ref?)) (assoc :outline? options/plain-outline?-option)
-      (not ref?) (->
-                   (merge (field.interface/options context))
-                   (assoc :type type-option))
-      (and (not ref?)
-           (or subfield?
-               root-field?
-               semy-charge?)) (update-in [:type :choices] #(->> %
-                                                                (filter (fn [[_ t]]
-                                                                          (not= t :heraldry.field.type/counterchanged)))
-                                                                vec))
+               plain?)) (assoc :outline? options/plain-outline?-option)
+      (or subfield?
+          root-field?
+          semy-charge?) (update-in [:type :choices] #(->> %
+                                                          (filter (fn [[_ t]]
+                                                                    (not= t :heraldry.field.type/counterchanged)))
+                                                          vec))
       (not (or root-field?
-               semy-charge?
-               ref?)) (assoc :inherit-environment?
-                             {:type :option.type/boolean
-                              :default false
-                              :ui/label :string.option/inherit-environment?}))))
+               semy-charge?)) (assoc :inherit-environment?
+                                     {:type :option.type/boolean
+                                      :default false
+                                      :ui/label :string.option/inherit-environment?}))))

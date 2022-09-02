@@ -8,6 +8,7 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
+   [heraldicon.svg.path :as path]
    [heraldicon.util.number :as number]))
 
 (defn mandatory-part-count [context]
@@ -23,27 +24,33 @@
           :per-pile 3
           2))))
 
+(defn- make-subfield [field]
+  {:type :heraldry.subfield.type/field
+   :field field})
+
 (defn raw-default-fields [type num-fields-x num-fields-y num-base-fields]
   (let [type (-> type name keyword)
-        defaults [default/field
-                  (assoc default/field :tincture :azure)
-                  (assoc default/field :tincture :sable)
-                  (assoc default/field :tincture :gules)
-                  (assoc default/field :tincture :or)
-                  (assoc default/field :tincture :vert)
-                  (assoc default/field :tincture :purpure)
-                  (assoc default/field :tincture :tenne)
-                  (assoc default/field :tincture :sanguine)
-                  (assoc default/field :tincture :rose)
-                  (assoc default/field :tincture :murrey)
-                  (assoc default/field :tincture :bleu-celeste)]]
+        defaults (mapv
+                  make-subfield
+                  [default/field
+                   (assoc default/field :tincture :azure)
+                   (assoc default/field :tincture :sable)
+                   (assoc default/field :tincture :gules)
+                   (assoc default/field :tincture :or)
+                   (assoc default/field :tincture :vert)
+                   (assoc default/field :tincture :purpure)
+                   (assoc default/field :tincture :tenne)
+                   (assoc default/field :tincture :sanguine)
+                   (assoc default/field :tincture :rose)
+                   (assoc default/field :tincture :murrey)
+                   (assoc default/field :tincture :bleu-celeste)])]
     (cond
       (#{:plain :counterchanged} type) []
       (#{:per-saltire
          :quartered} type) (into (subvec defaults 0 2)
-                                 [{:type :heraldry.field.type/ref
+                                 [{:type :heraldry.subfield.type/reference
                                    :index 1}
-                                  {:type :heraldry.field.type/ref
+                                  {:type :heraldry.subfield.type/reference
                                    :index 0}])
       (= :quarterly type) (let [effective-num-base-fields (min (* num-fields-x num-fields-y) num-base-fields)]
                             (into []
@@ -52,27 +59,27 @@
                                     (let [idx (+ (* j num-fields-x) i)]
                                       (if (< idx effective-num-base-fields)
                                         (nth defaults idx)
-                                        {:type :heraldry.field.type/ref
+                                        {:type :heraldry.subfield.type/reference
                                          :index (mod (+ i j) effective-num-base-fields)})))))
       (= :gyronny type) (into (subvec defaults 0 2)
-                              [{:type :heraldry.field.type/ref
+                              [{:type :heraldry.subfield.type/reference
                                 :index 1}
-                               {:type :heraldry.field.type/ref
+                               {:type :heraldry.subfield.type/reference
                                 :index 0}
-                               {:type :heraldry.field.type/ref
+                               {:type :heraldry.subfield.type/reference
                                 :index 0}
-                               {:type :heraldry.field.type/ref
+                               {:type :heraldry.subfield.type/reference
                                 :index 1}
-                               {:type :heraldry.field.type/ref
+                               {:type :heraldry.subfield.type/reference
                                 :index 1}
-                               {:type :heraldry.field.type/ref
+                               {:type :heraldry.subfield.type/reference
                                 :index 0}])
       (#{:gyronny-n
          :paly} type) (into []
                             (map (fn [i]
                                    (if (< i num-base-fields)
                                      (nth defaults i)
-                                     {:type :heraldry.field.type/ref
+                                     {:type :heraldry.subfield.type/reference
                                       :index (mod i num-base-fields)})))
                             (range num-fields-x))
       (#{:barry
@@ -82,15 +89,15 @@
                                       (map (fn [i]
                                              (if (< i num-base-fields)
                                                (nth defaults i)
-                                               {:type :heraldry.field.type/ref
+                                               {:type :heraldry.subfield.type/reference
                                                 :index (mod i num-base-fields)})))
                                       (range num-fields-y))
       (= :chequy type) (subvec defaults 0 num-base-fields)
       (#{:vairy
          :potenty
          :papellony
-         :masony} type) [(assoc default/field :tincture :azure)
-                         (assoc default/field :tincture :argent)]
+         :masony} type) [(make-subfield (assoc default/field :tincture :azure))
+                         (make-subfield (assoc default/field :tincture :argent))]
       (#{:tierced-per-pale
          :tierced-per-fess
          :tierced-per-pall
@@ -141,11 +148,11 @@
                                         (cond
                                           (< index mandatory-part-count) (interface/blazon subfield-context)
                                           (not= (interface/get-raw-data (c/++ subfield-context :type))
-                                                :heraldry.field.type/ref) (string/combine
-                                                                           " "
-                                                                           [(when (> num-fields 3)
-                                                                              (string/str-tr (part-name field-type index) ":"))
-                                                                            (interface/blazon subfield-context)])))))))])))
+                                                :heraldry.subfield.type/reference) (string/combine
+                                                                                    " "
+                                                                                    [(when (> num-fields 3)
+                                                                                       (string/str-tr (part-name field-type index) ":"))
+                                                                                     (interface/blazon subfield-context)])))))))])))
         components-description (string/combine
                                 ", "
                                 (map (fn [index]
@@ -164,7 +171,12 @@
   (interface/get-effective-parent-environment context))
 
 (defmethod interface/exact-shape :heraldry/field [context _properties]
-  (interface/get-effective-parent-shape context))
+  (let [{:keys [reverse-transform-fn]} (interface/get-properties (interface/parent context))]
+    (cond-> (interface/get-effective-parent-shape context)
+      reverse-transform-fn (->
+                             path/parse-path
+                             reverse-transform-fn
+                             path/to-svg))))
 
 (defmethod interface/render-shape :heraldry/field [context _properties]
   (interface/get-render-shape (interface/parent context)))

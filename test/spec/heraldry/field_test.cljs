@@ -10,13 +10,15 @@
      :tincture :azure}
 
     {:type :heraldry.field.type/quartered
-     :fields [{:type :heraldry.field.type/plain
-               :tincture :azure}
-              {:type :heraldry.field.type/plain
-               :tincture :or}
-              {:type :heraldry.field.type/ref
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}
+              {:type :heraldry.subfield.type/reference
                :index 0}
-              {:type :heraldry.field.type/ref
+              {:type :heraldry.subfield.type/reference
                :index 1}]}
 
     {:type :heraldry.field.type/plain
@@ -82,10 +84,6 @@
   (are [form] (tu/invalid? :heraldry/field form)
     {}
 
-    ;; refs are only valid as subfields
-    {:type :heraldry.field.type/ref
-     :index 0}
-
     {:type :heraldry.field.type/wrong}
 
     {:type :heraldry.charge.type/roundel
@@ -94,22 +92,34 @@
     {:type :heraldry.field.type/per-pale
      :tincture :azure}
 
+    {:type :heraldry.field.type/per-pale
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}
+              {:type :heraldry.subfield.type/not-valid
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}]}
+
     {:type :heraldry.field.type/plain
-     :fields [{:type :heraldry.field.type/plain
-               :tincture :azure}
-              {:type :heraldry.field.type/plain
-               :tincture :or}
-              {:type :heraldry.field.type/ref
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}
+              {:type :heraldry.subfield.type/reference
                :index 1}]}
 
     {:type :heraldry.field.type/per-saltire
-     :fields [{:type :heraldry.field.type/plain
-               :tincture :azure}
-              {:type :heraldry.field.type/plain
-               :tincture :or}
-              {:type :heraldry.field.type/ref
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}
+              {:type :heraldry.subfield.type/reference
                :not-index 0}
-              {:type :heraldry.field.type/ref
+              {:type :heraldry.subfield.type/reference
                :index 1}]}
 
     {:type :wrong}

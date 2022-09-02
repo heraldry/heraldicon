@@ -2,7 +2,6 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.charge.other :as other]
-   [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.heraldry.render :as render]
    [heraldicon.interface :as interface]
    [heraldicon.util.uid :as uid]))
@@ -40,5 +39,5 @@
          [:g {(if svg-export?
                 :mask
                 :clip-path) (str "url(#" shape-clip-path-id ")")}
-          [field.render/render (c/++ context :field)]]
+          [interface/render-component (c/++ context :field)]]
          [render/charge-edges context]])]]))
