@@ -25,7 +25,7 @@
    [re-frame.core :as rf]))
 
 (def ^:private preview-width
-  500)
+  700)
 
 (def ^:private preview-height
   600)
@@ -356,18 +356,16 @@
                 (conj form-db-path :name)
                 :string.text.title/create-ribbon])
   (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path]])
-  (layout/three-columns
+  (layout/two-columns
    [:<>
     [preview form-db-path]
     [edit-controls]]
    [:<>
+    [history/buttons form-db-path]
     [form/active]
     [message/display entity-type]
     [buttons/buttons entity-type]
-    [attribution form-db-path]]
-   [:<>
-    [history/buttons form-db-path]
-    [tree/tree [form-db-path]]]))
+    [attribution form-db-path]]))
 
 (defn create-view []
   [details/create-view entity-type ribbon-form #(go default/ribbon-entity)])

@@ -23,3 +23,20 @@
                                :padding-top "5px"
                                :position "relative"}}
     right]])
+
+(defn two-columns [left right]
+  [:div {:style {:display "grid"
+                 :grid-gap "10px"
+                 :grid-template-columns "[start] auto [first] minmax(26em, 33%) [end]"
+                 :grid-template-rows "[top] 100% [bottom]"
+                 :grid-template-areas "'left right'"
+                 :padding-right "10px"
+                 :height "100%"}
+         :on-click #(rf/dispatch [::submenu/close-all])}
+   [:div.no-scrollbar {:style {:grid-area "left"
+                               :position "relative"}}
+    left]
+   [:div.no-scrollbar {:style {:grid-area "right"
+                               :padding-top "5px"
+                               :position "relative"}}
+    right]])
