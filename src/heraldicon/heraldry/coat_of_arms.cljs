@@ -28,9 +28,9 @@
                         (c/++ :field)
                         (assoc-in [:blazonry :root?] true))))
 
-(defmethod interface/properties :heraldry/coat-of-arms [{:keys [target-width]
+(defmethod interface/properties :heraldry/coat-of-arms [{:keys [coat-of-arms-target-width]
                                                          :as context}]
-  (let [target-width (or target-width 100)
+  (let [coat-of-arms-target-width (or coat-of-arms-target-width 100)
         escutcheon (interface/render-option :escutcheon context)
         flag-width (interface/render-option :flag-width context)
         flag-height (interface/render-option :flag-height context)
@@ -40,7 +40,7 @@
         escutcheon-data (escutcheon/data escutcheon flag-width flag-height flag-swallow-tail
                                          flag-tail-point-height flag-tail-tongue)]
     {:type :heraldry/coat-of-arms
-     :escutcheon-data (escutcheon/transform-to-width escutcheon-data target-width)}))
+     :escutcheon-data (escutcheon/transform-to-width escutcheon-data coat-of-arms-target-width)}))
 
 (defmethod interface/environment :heraldry/coat-of-arms [_context {:keys [escutcheon-data]}]
   (:environment escutcheon-data))

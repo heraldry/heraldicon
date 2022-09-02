@@ -76,7 +76,7 @@
                                    @(rf/subscribe [::entity-for-rendering/data arms-id version]))
         collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
         context (-> shared/coa-select-option-context
-                    (c/<< :target-width size)
+                    (c/<< :coat-of-arms-target-width size)
                     (c/<< :path [:context :coat-of-arms])
                     (c/<< :render-options (merge-with
                                            (fn [old new]
