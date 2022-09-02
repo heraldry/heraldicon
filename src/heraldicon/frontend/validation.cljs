@@ -11,10 +11,10 @@
 (defn- field-tinctures-for-validation [context]
   (let [field-type (interface/get-sanitized-data (c/++ context :type))
         tincture (interface/get-sanitized-data (c/++ context :tincture))
-        subfield-1-type (interface/get-sanitized-data (c/++ context :fields 0 :type))
-        subfield-1-tincture (interface/get-sanitized-data (c/++ context :fields 0 :tincture))
-        subfield-2-type (interface/get-sanitized-data (c/++ context :fields 1 :type))
-        subfield-2-tincture (interface/get-sanitized-data (c/++ context :fields 1 :tincture))
+        subfield-1-type (interface/get-sanitized-data (c/++ context :fields 0 :field :type))
+        subfield-1-tincture (interface/get-sanitized-data (c/++ context :fields 0 :field :tincture))
+        subfield-2-type (interface/get-sanitized-data (c/++ context :fields 1 :field :type))
+        subfield-2-tincture (interface/get-sanitized-data (c/++ context :fields 1 :field :tincture))
         field-type (some-> field-type name keyword)
         subfield-1-type (some-> subfield-1-type name keyword)
         subfield-2-type (some-> subfield-2-type name keyword)]

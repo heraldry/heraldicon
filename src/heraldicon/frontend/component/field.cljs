@@ -4,7 +4,6 @@
    [heraldicon.frontend.blazonry-editor.core :as blazonry-editor]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.element :as component.element]
-   [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.arms-reference-select :as arms-reference-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.tincture-select :as tincture-select]
@@ -15,26 +14,8 @@
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.localization.string :as string]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
-
-(macros/reg-event-fx ::override-part-reference
-  (fn [{:keys [db]} [_ path]]
-    (let [{:keys [index]} (get-in db path)
-          referenced-part (get-in db (-> path
-                                         drop-last
-                                         vec
-                                         (conj index)))]
-      {:db (assoc-in db path referenced-part)
-       :dispatch [::tree/select-node path true]})))
-
-(macros/reg-event-db ::reset-part-reference
-  (fn [db [_ {:keys [path] :as context}]]
-    (let [index (last path)
-          parent-context (c/-- context 2)
-          default-fields (field/default-fields parent-context)]
-      (assoc-in db path (get default-fields index)))))
 
 (defn- show-tinctures-only? [field-type]
   (-> field-type name keyword
@@ -97,11 +78,11 @@
            (map (fn [idx]
                   ^{:key idx}
                   [:<>
-                   [tincture-select/tincture-select (c/++ context :fields idx :tincture)]
-                   [element/element (c/++ context :fields idx :pattern-scaling)]
-                   [element/element (c/++ context :fields idx :pattern-rotation)]
-                   [element/element (c/++ context :fields idx :pattern-offset-x)]
-                   [element/element (c/++ context :fields idx :pattern-offset-y)]]))
+                   [tincture-select/tincture-select (c/++ context :fields idx :field :tincture)]
+                   [element/element (c/++ context :fields idx :field :pattern-scaling)]
+                   [element/element (c/++ context :fields idx :field :pattern-rotation)]
+                   [element/element (c/++ context :fields idx :field :pattern-offset-x)]
+                   [element/element (c/++ context :fields idx :field :pattern-offset-y)]]))
            (range (interface/get-list-size (c/++ context :fields)))))
 
    [:div {:style {:position "absolute"
@@ -113,43 +94,13 @@
      :display-selected-item? false
      :tooltip :string.tooltip/load-field-from-arms]]])
 
-(defn- parent-context [{:keys [path] :as context}]
-  (let [index (last path)
-        parent-context (c/-- context 2)
-        parent-type (interface/get-raw-data (c/++ parent-context :type))]
-    (when (and (int? index)
-               (-> parent-type (or :dummy) namespace (= "heraldry.field.type")))
-      parent-context)))
-
-(defn- name-prefix-for-part [{:keys [path] :as context}]
-  (when-let [parent-context (parent-context context)]
-    (let [parent-type (interface/get-raw-data (c/++ parent-context :type))]
-      (string/upper-case-first (field/part-name parent-type (last path))))))
-
-(defn- non-mandatory-part-of-parent? [{:keys [path] :as context}]
-  (let [index (last path)]
-    (when (int? index)
-      (when-let [parent-context (parent-context context)]
-        (>= index (field/mandatory-part-count parent-context))))))
-
-(defmethod component/node :heraldry/field [{:keys [path] :as context}]
+(defmethod component/node :heraldry/field [context]
   (let [field-type (interface/get-raw-data (c/++ context :type))
-        ref? (= field-type :heraldry.field.type/ref)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
         components-context (c/++ context :components)
         num-components (interface/get-list-size components-context)
         charge-preview? (-> context :path (= [:example-coa :coat-of-arms :field :components 0 :field]))]
-    {:title (string/combine ": "
-                            [(name-prefix-for-part context)
-                             (if ref?
-                               (string/str-tr :string.miscellaneous/field-reference
-                                              " "
-                                              (name-prefix-for-part
-                                               (-> context
-                                                   c/--
-                                                   (c/++ (interface/get-raw-data
-                                                          (c/++ context :index))))))
-                               (field/title context))])
+    {:title (field/title context)
      :icon (case field-type
              :heraldry.field.type/plain (let [[scale-x
                                                scale-y
@@ -188,35 +139,25 @@
                                                              :fill "none"}]]]]
                                           {:default icon
                                            :selected icon})
-             :heraldry.field.type/ref {:default [:span {:style {:display "inline-block"}}]
-                                       :selected [:span {:style {:display "inline-block"}}]}
              {:default (static/static-url
                         (str "/svg/field-type-" (name field-type) "-unselected.svg"))
               :selected (static/static-url
                          (str "/svg/field-type-" (name field-type) "-selected.svg"))})
      :validation (validation/validate-field context)
      :buttons (when-not charge-preview?
-                (if ref?
-                  [{:icon "fas fa-sliders-h"
-                    :title :string.user.button/change
-                    :handler #(rf/dispatch [::override-part-reference path])}]
-                  (cond-> [{:icon "fas fa-plus"
-                            :title :string.button/add
-                            :menu [{:title :string.entity/ordinary
-                                    :handler #(rf/dispatch [::component.element/add components-context default/ordinary])}
-                                   {:title :string.entity/charge
-                                    :handler #(rf/dispatch [::component.element/add components-context default/charge])}
-                                   {:title :string.entity/charge-group
-                                    :handler #(rf/dispatch [::component.element/add components-context default/charge-group])}
-                                   {:title :string.entity/semy
-                                    :handler #(rf/dispatch [::component.element/add components-context default/semy])}]}
-                           {:icon "fas fa-pen-nib"
-                            :title :string.button/from-blazon
-                            :handler #(blazonry-editor/open context)}]
-                    (non-mandatory-part-of-parent? context)
-                    (conj {:icon "fas fa-undo"
-                           :title "Reset"
-                           :handler #(rf/dispatch [::reset-part-reference context])}))))
+                [{:icon "fas fa-plus"
+                  :title :string.button/add
+                  :menu [{:title :string.entity/ordinary
+                          :handler #(rf/dispatch [::component.element/add components-context default/ordinary])}
+                         {:title :string.entity/charge
+                          :handler #(rf/dispatch [::component.element/add components-context default/charge])}
+                         {:title :string.entity/charge-group
+                          :handler #(rf/dispatch [::component.element/add components-context default/charge-group])}
+                         {:title :string.entity/semy
+                          :handler #(rf/dispatch [::component.element/add components-context default/semy])}]}
+                 {:icon "fas fa-pen-nib"
+                  :title :string.button/from-blazon
+                  :handler #(blazonry-editor/open context)}])
      :nodes (concat (when (and (not (show-tinctures-only? field-type))
                                (-> field-type name keyword (not= :plain)))
                       (let [fields-context (c/++ context :fields)

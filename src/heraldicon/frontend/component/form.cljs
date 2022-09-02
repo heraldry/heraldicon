@@ -8,7 +8,11 @@
 
 (defn- form [context]
   (let [{:keys [title]} (tree/node-data context)
-        form (component/form context)]
+        form (component/form context)
+        {:keys [form effective-context]} (if (map? form)
+                                           form
+                                           {:form form
+                                            :effective-context context})]
     [:div.ui-component
      [:div.ui-component-header
       [:h1
@@ -16,7 +20,7 @@
        [tr title]]]
      [:div.content
       (when form
-        [form context])]]))
+        [form effective-context])]]))
 
 (defn active [context]
   (let [selected-component-path @(rf/subscribe [::tree/active-node-path])

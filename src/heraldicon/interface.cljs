@@ -191,23 +191,20 @@
 (defmethod subfield-environments :default [context _properties]
   (log/warn :not-implemented 'subfield-environments context))
 
-(defn- subfield-context [context]
-  (let [subfield-index (-> context :path last)
-        subfield? (and (isa? (effective-component-type context) :heraldry/field)
-                       (int? subfield-index))]
-    (when subfield?
-      {:parent-context (c/-- context 2)
-       :index subfield-index})))
+(rf/reg-sub-raw ::subfield-environments
+  (fn [_app-db [_ context]]
+    (reaction
+     (let [context (resolve-context context)]
+       (subfield-environments context (get-properties context))))))
+
+(defn get-subfield-environments [context]
+  @(rf/subscribe [::subfield-environments (scrub-context context)]))
 
 (rf/reg-sub-raw ::environment
   (fn [_app-db [_ context]]
     (reaction
      (let [context (resolve-context context)]
-       (if-let [subfield (subfield-context context)]
-         (-> (subfield-environments (:parent-context subfield) (get-properties (:parent-context subfield)))
-             :subfields
-             (get (:index subfield)))
-         (environment context (get-properties context)))))))
+       (environment context (get-properties context))))))
 
 (defn get-parent-environment [{:keys [parent-environment
                                       path]
@@ -232,15 +229,20 @@
 (defmethod subfield-render-shapes :default [context _properties]
   (log/warn :not-implemented 'subfield-render-shapes context))
 
+(rf/reg-sub-raw ::subfield-render-shapes
+  (fn [_app-db [_ context]]
+    (reaction
+     (let [context (resolve-context context)]
+       (subfield-render-shapes context (get-properties context))))))
+
+(defn get-subfield-render-shapes [context]
+  @(rf/subscribe [::subfield-render-shapes (scrub-context context)]))
+
 (rf/reg-sub-raw ::render-shape
   (fn [_app-db [_ context]]
     (reaction
      (let [context (resolve-context context)]
-       (if-let [subfield (subfield-context context)]
-         (-> (subfield-render-shapes (:parent-context subfield) (get-properties (:parent-context subfield)))
-             :subfields
-             (get (:index subfield)))
-         (render-shape context (get-properties context)))))))
+       (render-shape context (get-properties context))))))
 
 (defn get-render-shape [context]
   @(rf/subscribe [::render-shape (scrub-context context)]))
@@ -284,6 +286,9 @@
 (defmethod exact-shape nil [context _properties]
   (fallback-exact-shape context))
 
+(defmethod exact-shape :heraldry/subfield [context _properties]
+  (fallback-exact-shape context))
+
 (defmethod exact-shape :heraldry/ordinary [context _properties]
   (fallback-exact-shape context))
 
@@ -296,9 +301,7 @@
   (fn [_app-db [_ context]]
     (reaction
      (let [context (resolve-context context)]
-       (if-let [subfield (subfield-context context)]
-         (subfield-exact-shape context subfield)
-         (exact-shape context (get-properties context)))))))
+       (exact-shape context (get-properties context))))))
 
 (rf/reg-sub-raw ::field-edges
   (fn [_app-db [_ context]]

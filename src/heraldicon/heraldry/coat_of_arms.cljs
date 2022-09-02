@@ -3,7 +3,6 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.escutcheon :as escutcheon]
-   [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.options :as options]
@@ -148,8 +147,8 @@
         [:path {:d (s/join "" shape-paths)
                 :fill-rule "evenodd"
                 :fill "#f0f0f0"}]
-        [field.render/render (-> (c/++ context :field)
-                                 (dissoc :metadata-path))]]]]
+        [interface/render-component (-> (c/++ context :field)
+                                        (dissoc :metadata-path))]]]]
      (when (or escutcheon-outline?
                outline?)
        [:g (outline/style context)

@@ -1,7 +1,6 @@
 (ns heraldicon.heraldry.ordinary.render
   (:require
    [heraldicon.context :as c]
-   [heraldicon.heraldry.field.render :as field.render]
    [heraldicon.heraldry.render :as render]
    [heraldicon.interface :as interface]
    [heraldicon.util.uid :as uid]
@@ -73,6 +72,6 @@
             :clip-path) (str "url(#" clip-path-id ")")}
       [:g (when transform
             {:transform transform})
-       [field.render/render (c/++ context :field)]]]
+       [interface/render-component (c/++ context :field)]]]
      [render/ordinary-edges context]
      [cottising context]]))

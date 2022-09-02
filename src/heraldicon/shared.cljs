@@ -15,6 +15,7 @@
    [heraldicon.heraldry.coat-of-arms]
    [heraldicon.heraldry.cottising]
    [heraldicon.heraldry.field.core]
+   [heraldicon.heraldry.field.render]
    [heraldicon.heraldry.helms]
    [heraldicon.heraldry.motto]
    [heraldicon.heraldry.option.attributes]
@@ -24,6 +25,7 @@
    [heraldicon.heraldry.ornaments]
    [heraldicon.heraldry.ribbon]
    [heraldicon.heraldry.semy]
+   [heraldicon.heraldry.subfield]
    [heraldicon.heraldry.tincture]
    [heraldicon.render.options]))
 
