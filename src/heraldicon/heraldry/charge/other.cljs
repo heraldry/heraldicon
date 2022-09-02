@@ -341,7 +341,7 @@
             layer-separator-colour-for-shadow-highlight (if hide-lower-layer?
                                                           "#000000"
                                                           "none")
-            charge-clip-path-id (uid/generate "mask")]
+            #_#_charge-clip-path-id (uid/generate "mask")]
         [:<>
          #_(when-not svg-export?
              [:defs
