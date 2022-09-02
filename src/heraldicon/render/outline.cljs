@@ -9,7 +9,7 @@
   (let [mode (interface/render-option :mode context)]
     (if (= mode :hatching)
       "#000001"
-      (tincture/pick :sable context))))
+      (tincture/pick :sable (dissoc context :tincture-mapping)))))
 
 (defn style [context]
   {:stroke (color context)
