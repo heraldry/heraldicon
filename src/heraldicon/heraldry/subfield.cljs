@@ -13,6 +13,12 @@
   {:heraldry.subfield.type/field :heraldry.subfield.type/field
    :heraldry.subfield.type/reference :heraldry.subfield.type/reference})
 
+(defmethod interface/options-subscriptions :heraldry/subfield [_context]
+  #{})
+
+(defmethod interface/options :heraldry/subfield [_context]
+  nil)
+
 (defmethod interface/blazon-component :heraldry/subfield [context]
   (let [subfield-type (interface/get-raw-data (c/++ context :type))]
     (when (= subfield-type :heraldry.subfield.type/field)
