@@ -2,8 +2,10 @@
   (:require
    ["paper" :refer [Path]]
    ["paperjs-offset" :refer [PaperOffset]]
+   [clojure.string :as s]
    [heraldicon.math.bounding-box :as bb]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.math.vector :as v]
+   [taoensso.timbre :as log]))
 
 (defn create
   ([bounding-box] (create bounding-box nil))
@@ -63,32 +65,35 @@
                :hoist hoist
                :fly fly}})))
 
+(defn- apply-offset [shape distance join]
+  (let [original-path (new Path shape)
+        path (.-pathData (.offset PaperOffset
+                                  original-path
+                                  distance
+                                  (clj->js {:join join
+                                            :insert false})))
+        ;; there might be multiple closed paths in the result, find the longest string,
+        ;; and assume that's the one we want
+        sub-paths (s/split path #"[zZ]")
+        longest (first (sort-by count > sub-paths))]
+    (new Path (str longest "z"))))
+
 (def ^:private shrink-step
   (memoize
    (fn shrink-step [shape distance join]
      (let [original-path (new Path shape)
-           outline-left (.offset PaperOffset
-                                 original-path
-                                 (- distance)
-                                 (clj->js {:join join
-                                           :insert false}))]
-    ;; The path might be clockwise, then (- distance) is the
-    ;; correct offset for the inner path; we expect that path
-    ;; to surround a smaller area, so use it, if that's true, otherwise
-    ;; use the offset on the other side (distance).
-    ;; Escutcheon paths are clockwise, so testing for that
-    ;; first should avoid having to do both calculations in
-    ;; most cases.
+           outline-left (apply-offset shape (- distance) join)]
+       ;; The path might be clockwise, then (- distance) is the
+       ;; correct offset for the inner path; we expect that path
+       ;; to surround a smaller area, so use it, if that's true, otherwise
+       ;; use the offset on the other side (distance).
+       ;; Escutcheon paths are clockwise, so testing for that
+       ;; first should avoid having to do both calculations in
+       ;; most cases.
        (if (<= (Math/abs (.-area outline-left))
                (Math/abs (.-area original-path)))
          (.-pathData outline-left)
-         (-> PaperOffset
-             (.offset
-              original-path
-              distance
-              (clj->js {:join join
-                        :insert false}))
-             .-pathData))))))
+         (.-pathData (apply-offset shape (- distance) join)))))))
 
 (defn shrink-shape [shape distance join]
   (let [max-step 5
@@ -101,7 +106,13 @@
       (cond
         (zero? distance) shape
         (<= distance max-step) (shrink-step shape distance join)
-        :else (recur (shrink-step shape max-step join) (- distance max-step))))))
+        :else (let [next-shape (try
+                                 (shrink-step shape max-step join)
+                                 (catch js/RangeError _
+                                   (log/error nil "Endless loop while using paperjs-offset")))]
+                (if next-shape
+                  (recur next-shape (- distance max-step))
+                  shape))))))
 
 (defn intersect-shapes [shape1 shape2]
   (-> (new Path shape1)
