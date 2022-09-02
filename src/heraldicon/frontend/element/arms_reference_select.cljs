@@ -13,42 +13,41 @@
 
 (defn form [context & {:keys [title on-select display-selected-item? tooltip]
                        :or {display-selected-item? true}}]
-  (when-let [option (interface/get-relevant-options context)]
-    (let [{arms-id :id
-           version :version} (interface/get-raw-data context)
-          {:ui/keys [label]} option
-          {:keys [_status entity]} (when arms-id
-                                     @(rf/subscribe [::entity-for-rendering/data arms-id version]))
-          arms-title (or title
-                         (-> entity
-                             :name
-                             (or :string.miscellaneous/none)))]
-      [:div.ui-setting
-       (when label
-         [:label [tr label]])
-       [:div.option
-        [submenu/submenu context :string.option/select-arms
-         [tr arms-title]
-         {:style {:position "fixed"
-                  :transform "none"
-                  :left "45vw"
-                  :width "53vw"
-                  :top "10vh"
-                  :height "80vh"}}
-         [arms-select/list-arms (fn [{:keys [id]}]
-                                  {:href (reife/href :route.arms.details/by-id {:id (id/for-url id)})
-                                   :on-click (fn [event]
-                                               (doto event
-                                                 .preventDefault
-                                                 .stopPropagation)
-                                               (if on-select
-                                                 (on-select (:path context) {:id id
-                                                                             :version 0})
-                                                 (rf/dispatch [:set context {:id id
-                                                                             :version 0}])))})
-          :selected-item entity
-          :display-selected-item? display-selected-item?]]]
-       [tooltip/info tooltip]])))
+  (let [{arms-id :id
+         version :version} (interface/get-raw-data context)
+        {:ui/keys [label]} (interface/get-relevant-options context)
+        {:keys [_status entity]} (when arms-id
+                                   @(rf/subscribe [::entity-for-rendering/data arms-id version]))
+        arms-title (or title
+                       (-> entity
+                           :name
+                           (or :string.miscellaneous/none)))]
+    [:div.ui-setting
+     (when label
+       [:label [tr label]])
+     [:div.option
+      [submenu/submenu context :string.option/select-arms
+       [tr arms-title]
+       {:style {:position "fixed"
+                :transform "none"
+                :left "45vw"
+                :width "53vw"
+                :top "10vh"
+                :height "80vh"}}
+       [arms-select/list-arms (fn [{:keys [id]}]
+                                {:href (reife/href :route.arms.details/by-id {:id (id/for-url id)})
+                                 :on-click (fn [event]
+                                             (doto event
+                                               .preventDefault
+                                               .stopPropagation)
+                                             (if on-select
+                                               (on-select (:path context) {:id id
+                                                                           :version 0})
+                                               (rf/dispatch [:set context {:id id
+                                                                           :version 0}])))})
+        :selected-item entity
+        :display-selected-item? display-selected-item?]]]
+     [tooltip/info tooltip]]))
 
 (defmethod element/element :ui.element/arms-reference-select [context]
   (form context))

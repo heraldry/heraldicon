@@ -27,21 +27,18 @@
         :papellony
         :fretty}))
 
-(macros/reg-event-db ::set-field-data
-  (fn [db [_ path field-data]]
-    (assoc-in db path field-data)))
-
 (macros/reg-event-db ::load-arms
-  (fn [db [_ path arms]]
+  (fn [db [_ path arms field-fn]]
     (let [{arms-id :id
            arms-version :version} arms
+          field-fn (or field-fn identity)
           ;; TODO: this sets the data either right away when the result status is :done,
           ;; or inside the on-loaded call
           ;; this is a bit hacky still, also because it dispatches inside the event,
           ;; and there's a race condition, because the ::entity/data below also fetches
           ;; the arms with a different subscription, resulting in two requests being
           ;; sent to the API
-          on-arms-load #(rf/dispatch [::set-field-data path (-> % :data :achievement :coat-of-arms :field)])
+          on-arms-load #(rf/dispatch [:set path (-> % :data :achievement :coat-of-arms :field field-fn)])
           {:keys [status entity]} @(rf/subscribe [::entity/data arms-id arms-version on-arms-load])]
       (when (= status :done)
         (on-arms-load entity))
