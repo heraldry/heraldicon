@@ -75,11 +75,13 @@
    [:div {:style {:position "absolute"
                   :top 0
                   :right 0}}
-    [arms-reference-select/form context
+    ;; use the field's context so the submenu will be the same as the replaced subfield,
+    ;; then use (:path context) below to explicitly set the result to this context's path
+    [arms-reference-select/form (c/++ context :field)
      :title :string.option/load-from-arms
-     :on-select #(rf/dispatch [::component.field/load-arms %1 %2 (fn [field]
-                                                                   {:type :heraldry.subfield.type/field
-                                                                    :field field})])
+     :on-select #(rf/dispatch [::component.field/load-arms (:path context) %2 (fn [field]
+                                                                                {:type :heraldry.subfield.type/field
+                                                                                 :field field})])
      :display-selected-item? false
      :tooltip :string.tooltip/load-field-from-arms]]])
 
