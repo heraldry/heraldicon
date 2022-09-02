@@ -42,6 +42,7 @@
            :repeatcount :repeatCount
            :attributename :attributeName
            :filterunits :filterUnits
+           :clippathunits :clipPathUnits
            :primitiveunits :primitiveUnits
            :stddeviation :stdDeviation} v v))
    data))
