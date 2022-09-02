@@ -2,7 +2,9 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.field :as component.field]
    [heraldicon.frontend.component.tree :as tree]
+   [heraldicon.frontend.element.arms-reference-select :as arms-reference-select]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.interface :as interface]
@@ -67,9 +69,25 @@
     (update node-data :title (fn [title]
                                (string/str-tr (name-prefix-for-part context) ": " title)))))
 
+(defn- reference-form [context]
+  [:div {:style {:position "relative"
+                 :height "1em"}}
+   [:div {:style {:position "absolute"
+                  :top 0
+                  :right 0}}
+    [arms-reference-select/form context
+     :title :string.option/load-from-arms
+     :on-select #(rf/dispatch [::component.field/load-arms %1 %2 (fn [field]
+                                                                   {:type :heraldry.subfield.type/field
+                                                                    :field field})])
+     :display-selected-item? false
+     :tooltip :string.tooltip/load-field-from-arms]]])
+
 (defmethod component/form :heraldry/subfield [context]
-  (let [subfield-type (interface/get-raw-data (c/++ context :type))]
-    ;; TODO: add form for refs
-    (when (= subfield-type :heraldry.subfield.type/field)
-      {:form (component/form (c/++ context :field))
-       :effective-context (c/++ context :field)})))
+  (let [subfield-type (interface/get-raw-data (c/++ context :type))
+        field-context (c/++ context :field)]
+    (if (= subfield-type :heraldry.subfield.type/field)
+      {:form (component/form field-context)
+       :effective-context field-context}
+      {:form reference-form
+       :effective-context context})))
