@@ -63,7 +63,7 @@
 
 (defn- render-counterchanged-field [{:keys [path]
                                      :as context} _properties]
-  (when-let [parent-field-context (some-> context interface/parent interface/parent)]
+  (when-let [parent-field-context (interface/get-counterchange-parent (interface/parent context))]
     (let [counterchange-tinctures (counterchange/tinctures parent-field-context)
           counterchanged-context (-> parent-field-context
                                      (update :counterchanged-paths conj path)

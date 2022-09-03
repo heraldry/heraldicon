@@ -318,3 +318,8 @@
   (if (get-sanitized-data (c/++ context :inherit-environment?))
     (get-exact-shape (parent (parent context)))
     (get-exact-shape (parent context))))
+
+(defn get-counterchange-parent [context]
+  (if (cottise-context? context)
+    (parent (parent context))
+    (parent context)))
