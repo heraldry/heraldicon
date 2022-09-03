@@ -9,7 +9,8 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
    [heraldicon.options :as options]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.path :as path]
+   [heraldicon.svg.shape :as shape]))
 
 (def ordinary-type :heraldry.ordinary.type/bordure)
 
@@ -76,10 +77,10 @@
 
 (defmethod interface/render-shape ordinary-type [context {:keys [edge line]}]
   (let [parent-environment (interface/get-parent-environment context)
-        parent-shape (interface/get-exact-parent-shape context)
+        big-shape (shape/build-shape context :full)
         shape (cond-> edge
                 (not= (:type line) :straight) (line/modify-path line parent-environment))]
-    {:shape [parent-shape shape]
+    {:shape [big-shape shape]
      :edges [{:paths [shape]}]}))
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
