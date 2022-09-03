@@ -61,6 +61,11 @@ staging-backend-release:
 	rm -rf $(STAGING_BACKEND_RELEASE_DIR) 2> /dev/null || true
 	npx shadow-cljs release backend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-to "./backend/build/staging/backend.js"}'
 
+staging-backend-package: staging-backend-release
+	make copy-fonts-to-backend
+	cd backend && npx sls package --stage staging
+	make remove-backend-fonts
+
 staging-backend-deploy: staging-backend-release
 	make copy-fonts-to-backend
 	cd backend && npx sls deploy --stage staging
