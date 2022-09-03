@@ -48,8 +48,8 @@
       (if variant
         (preview/url
          :charge variant
-         :width 64
-         :height 72)
+         :width 100
+         :height 120)
         (static/static-url
          (str "/svg/charge-type-" (name value) "-unselected.svg"))))))
 
