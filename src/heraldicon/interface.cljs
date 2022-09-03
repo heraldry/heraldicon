@@ -4,7 +4,6 @@
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.field.environment :as field.environment]
    [heraldicon.options :as options]
-   [heraldicon.svg.path :as path]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
@@ -266,20 +265,6 @@
     (field.environment/intersect-shapes
      shape-path
      (get-exact-shape (parent context)))))
-
-(defn subfield-exact-shape [context {:keys [parent-context]}]
-  (let [shape-path (:shape (get-render-shape context))
-        shape-path (if (vector? shape-path)
-                     (first shape-path)
-                     shape-path)
-        {:keys [reverse-transform-fn]} (get-properties parent-context)]
-    (cond-> (field.environment/intersect-shapes
-             shape-path
-             (get-exact-shape (parent context)))
-      reverse-transform-fn (->
-                             path/parse-path
-                             reverse-transform-fn
-                             path/to-svg))))
 
 (defmethod exact-shape nil [context _properties]
   (fallback-exact-shape context))
