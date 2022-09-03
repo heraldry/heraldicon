@@ -25,4 +25,4 @@
         lambdaisland/deep-diff2 {:mvn/version "2.4.138"}
         instaparse/instaparse {:local/root "deps/instaparse-1.4.10-namespaced-nts.jar"
                                #_#_:mvn/version "1.4.10"}
-        org.slf4j/slf4j-nop {:mvn/version "2.0.0-alpha7"}}}
+        org.slf4j/slf4j-nop {:mvn/version "2.0.0"}}}
