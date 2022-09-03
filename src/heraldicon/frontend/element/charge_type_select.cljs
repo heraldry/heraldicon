@@ -58,12 +58,21 @@
         variant (interface/get-raw-data variant-context)
         img-url (choice-preview-url context)]
     [:div {:style {:transform (when (not variant)
-                                "translate(-0.333em,0)")}}
+                                "translate(-0.333em,0)")
+                   :position "relative"
+                   :width "4em"
+                   :height "4.5em"
+                   :border (when variant
+                             "1.5px solid #ddd")}}
      [:img.clickable {:src img-url
-                      :style {:width "4em"
-                              :height "4.5em"
-                              :border (when variant
-                                        "1.5px solid #ddd")}}]]))
+                      :style {:position "absolute"
+                              :margin "auto"
+                              :top 0
+                              :left 0
+                              :right 0
+                              :bottom 0
+                              :max-width "100%"
+                              :max-height "100%"}}]]))
 
 (defmethod element/element :ui.element/charge-type-select [context]
   (when-let [option (interface/get-relevant-options context)]
