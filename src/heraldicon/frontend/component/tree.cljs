@@ -63,15 +63,24 @@
         (let [effective-icon (if selected?
                                (:selected icon)
                                (:default icon))
-              icon-style {:width "14px"
+              icon-style {:display "inline-block"
+                          :width "14px"
                           :height "16px"
                           :margin-right "5px"
                           :vertical-align "top"
                           :transform "translate(0,3px)"}]
           (if (vector? effective-icon)
             (update-in effective-icon [1 :style] merge icon-style)
-            [:img {:src effective-icon
-                   :style icon-style}])))
+            [:div {:style icon-style}
+             [:img {:src effective-icon
+                    :style {:position "absolute"
+                            :margin "auto"
+                            :top 0
+                            :left 0
+                            :right 0
+                            :bottom 0
+                            :max-width "100%"
+                            :max-height "100%"}}]])))
 
       [tr title]
 
