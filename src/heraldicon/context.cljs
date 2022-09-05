@@ -14,9 +14,6 @@
 (defn << [context key value]
   (assoc context key value))
 
-(defn set-parent-environment [context environment]
-  (assoc-in context [:parent-environment (:path context)] environment))
-
 (defn add-counterchanged-path [context path]
   (update-in context [:rendering :counterchanged-paths] conj path))
 
@@ -50,3 +47,9 @@
 
 (defn component-context [context]
   (get-in context [:component-context (:path context)]))
+
+(defn set-parent-environment-override [context environment]
+  (add-component-context context {:parent-environment environment}))
+
+(defn parent-environment-override [context]
+  (get-in context [:component-context (:path context) :parent-environment]))
