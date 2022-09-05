@@ -156,24 +156,15 @@
   (-> context :path drop-last last (= :cottising)))
 
 (defn parent [context]
-  (let [context (cond-> context
-                  (:path-map context) (update :path-map
-                                              (fn [path-map]
-                                                (into {}
-                                                      (filter (fn [[k _v]]
-                                                                (let [current-path (:path context)]
-                                                                  (not= (take (count current-path) k)
-                                                                        current-path))))
-                                                      path-map))))]
-
-    (cond
-      (-> context :path last (= :field)) (c/-- context)
-      (-> context :path drop-last last (= :charges)) (c/-- context 4)
-      (-> context :path last int?) (c/-- context 2)
-      (cottise-context? context) (c/-- context 2)
-      :else (do
-              (log/warn :not-implemented "parent" context)
-              nil))))
+  (some-> (cond
+            (-> context :path last (= :field)) (c/-- context)
+            (-> context :path drop-last last (= :charges)) (c/-- context 4)
+            (-> context :path last int?) (c/-- context 2)
+            (cottise-context? context) (c/-- context 2)
+            :else (do
+                    (log/warn :not-implemented "parent" context)
+                    nil))
+          c/remove-keys-for-children))
 
 (defn- resolve-context [context]
   (if-let [path-redirect (c/get-key context :path-redirect)]

@@ -43,10 +43,10 @@
   (dissoc context :render-hints))
 
 (defn set-key [context key value]
-  (assoc-in context [:component-context (:path context) key] value))
+  (assoc-in context [:component-data (:path context) key] value))
 
 (defn get-key [context key]
-  (get-in context [:component-context (:path context) key]))
+  (get-in context [:component-data (:path context) key]))
 
 (defn set-render-hint
   ([context key value]
@@ -70,3 +70,14 @@
 
 (defn render-hints [context]
   (:render-hints context))
+
+(defn remove-keys-for-children [{:keys [path]
+                                 :as context}]
+  (cond-> context
+    (:component-data context) (update :component-data
+                                      (fn [component-data]
+                                        (into {}
+                                              (remove (fn [[k _v]]
+                                                        (and (not= path k)
+                                                             (= (take (count path) k) path))))
+                                              component-data)))))
