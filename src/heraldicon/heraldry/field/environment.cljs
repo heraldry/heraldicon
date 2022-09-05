@@ -100,16 +100,18 @@
         join (case join
                :round "round"
                :bevel "bevel"
-               "miter")]
+               "miter")
+        shrink-step-fn (fn [shape step join]
+                         (try
+                           (shrink-step shape step join)
+                           (catch js/RangeError _
+                             (log/error nil "Endless loop while using paperjs-offset"))))]
     (loop [shape shape
            distance distance]
       (cond
         (zero? distance) shape
-        (<= distance max-step) (shrink-step shape distance join)
-        :else (let [next-shape (try
-                                 (shrink-step shape max-step join)
-                                 (catch js/RangeError _
-                                   (log/error nil "Endless loop while using paperjs-offset")))]
+        (<= distance max-step) (shrink-step-fn shape distance join)
+        :else (let [next-shape (shrink-step-fn shape max-step join)]
                 (if next-shape
                   (recur next-shape (- distance max-step))
                   shape))))))
