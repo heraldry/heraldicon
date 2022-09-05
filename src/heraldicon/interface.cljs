@@ -229,10 +229,8 @@
      #(let [context (resolve-context context)]
         (environment context (get-properties context))))))
 
-(defn get-parent-environment [{:keys [parent-environment
-                                      path]
-                               :as context}]
-  (or (get parent-environment path)
+(defn get-parent-environment [context]
+  (or (c/parent-environment-override context)
       (if (cottise-context? context)
         @(rf/subscribe [::environment (c/scrub-rendering-context (parent (parent context)))])
         @(rf/subscribe [::environment (c/scrub-rendering-context (parent context))]))))
