@@ -94,6 +94,9 @@
     (string/tr-raw (interface/blazon (assoc context/default
                                             :path (conj form-db-path :data :achievement :coat-of-arms))) :en)]])
 
+(def ^:private component-context
+  (c/clear-render-hint base-context :select-component-fn))
+
 (defn- arms-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
@@ -102,7 +105,7 @@
   (layout/three-columns
    [interface/render-component (c/++ base-context :data :achievement)]
    [:<>
-    [form/active base-context]
+    [form/active component-context]
     [message/display entity-type]
     [buttons/buttons entity-type]
     [blazonry form-db-path]
@@ -117,7 +120,7 @@
                 (conj form-db-path :data :achievement :coat-of-arms)
                 :spacer
                 (conj form-db-path :data :achievement :ornaments)]
-     base-context]]))
+     component-context]]))
 
 (defn- load-hdn [hdn-hash]
   (go
