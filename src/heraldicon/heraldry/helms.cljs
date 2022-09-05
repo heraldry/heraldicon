@@ -30,8 +30,8 @@
                  ^{:key idx}
                  [interface/render-component
                   (-> (c/++ components-context idx)
-                      (assoc :auto-resize? false
-                             :self-below-shield? self-below-shield?))])
+                      (c/set-key :auto-resize? false)
+                      (c/set-render-hint :self-below-shield? self-below-shield?))])
                (shield-separator/get-element-indices components-context)))))
 
 (defmethod interface/properties :heraldry/helms [context]
@@ -74,6 +74,6 @@
                  ^{:key idx}
                  [interface/render-component
                   (-> (c/++ elements-context idx)
-                      (assoc :auto-resize? false
-                             :self-below-shield? self-below-shield?))]))
+                      (c/set-key :auto-resize? false)
+                      (c/set-render-hint :self-below-shield? self-below-shield?))]))
           (shield-separator/get-element-indices elements-context))))

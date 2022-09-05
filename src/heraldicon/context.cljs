@@ -47,3 +47,9 @@
 
 (defn get-key [context key]
   (get-in context [:component-context (:path context) key]))
+
+(defn set-render-hint [context key value]
+  (assoc-in context [:rendering key] value))
+
+(defn get-render-hint [context key]
+  (get-in context [:rendering key]))

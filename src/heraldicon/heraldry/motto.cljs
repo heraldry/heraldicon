@@ -136,26 +136,26 @@
       (bb/scale ribbon-scale)
       (bb/translate anchor-point)))
 
-(defmethod interface/render-component :heraldry/motto [{:keys [self-below-shield?
-                                                               render-pass-below-shield?]
-                                                        :as context}]
-  (when (= (boolean self-below-shield?)
-           (boolean render-pass-below-shield?))
-    (let [{:keys [anchor-point
-                  ribbon-offset
-                  ribbon-scale]} (interface/get-properties context)
-          tincture-foreground (interface/get-sanitized-data (c/++ context :tincture-foreground))
-          tincture-background (interface/get-sanitized-data (c/++ context :tincture-background))
-          tincture-text (interface/get-sanitized-data (c/++ context :tincture-text))
-          outline-thickness (/ outline/stroke-width
-                               2
-                               ribbon-scale)]
-      [:g {:transform (str "translate(" (v/->str anchor-point) ")"
-                           "scale(" ribbon-scale "," ribbon-scale ")"
-                           "translate(" (v/->str ribbon-offset) ")")}
-       [render.ribbon/render
-        (c/++ context :ribbon)
-        tincture-foreground
-        tincture-background
-        tincture-text
-        :outline-thickness outline-thickness]])))
+(defmethod interface/render-component :heraldry/motto [context]
+  (let [self-below-shield? (c/get-render-hint context :self-below-shield?)
+        render-pass-below-shield? (c/get-render-hint context :render-pass-below-shield?)]
+    (when (= (boolean self-below-shield?)
+             (boolean render-pass-below-shield?))
+      (let [{:keys [anchor-point
+                    ribbon-offset
+                    ribbon-scale]} (interface/get-properties context)
+            tincture-foreground (interface/get-sanitized-data (c/++ context :tincture-foreground))
+            tincture-background (interface/get-sanitized-data (c/++ context :tincture-background))
+            tincture-text (interface/get-sanitized-data (c/++ context :tincture-text))
+            outline-thickness (/ outline/stroke-width
+                                 2
+                                 ribbon-scale)]
+        [:g {:transform (str "translate(" (v/->str anchor-point) ")"
+                             "scale(" ribbon-scale "," ribbon-scale ")"
+                             "translate(" (v/->str ribbon-offset) ")")}
+         [render.ribbon/render
+          (c/++ context :ribbon)
+          tincture-foreground
+          tincture-background
+          tincture-text
+          :outline-thickness outline-thickness]]))))

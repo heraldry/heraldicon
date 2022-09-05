@@ -157,12 +157,12 @@
           :style {:transition "transform 0.5s"}}
 
       (when render-ornaments?
-        [interface/render-component (c/<< ornaments-context :render-pass-below-shield? true)])
+        [interface/render-component (c/set-render-hint ornaments-context :render-pass-below-shield? true)])
 
       (when render-helms?
         [:g {:transform (str "translate(" (v/->str helm-position) ")")
              :style {:transition "transform 0.5s"}}
-         [interface/render-component (c/<< helms-context :render-pass-below-shield? true)]])
+         [interface/render-component (c/set-render-hint helms-context :render-pass-below-shield? true)]])
 
       [:g {:transform (cond
                         (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
@@ -176,10 +176,10 @@
       (when render-helms?
         [:g {:transform (str "translate(" (v/->str helm-position) ")")
              :style {:transition "transform 0.5s"}}
-         [interface/render-component (c/<< helms-context :render-pass-below-shield? false)]])
+         [interface/render-component (c/set-render-hint helms-context :render-pass-below-shield? false)]])
 
       (when render-ornaments?
-        [interface/render-component (c/<< ornaments-context :render-pass-below-shield? false)])]
+        [interface/render-component (c/set-render-hint ornaments-context :render-pass-below-shield? false)])]
 
      (when short-url
        [:text {:x 0
