@@ -289,19 +289,19 @@
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
         context (-> shared/coa-select-option-context
                     (c/<< :path [:context :coat-of-arms])
-                    (c/<< :ui-show-colours
-                          (->> @(rf/subscribe [:get show-colours-path])
-                               (keep (fn [value]
-                                       (when (second value)
-                                         (first value))))
-                               set))
+                    (c/set-render-hint :ui-show-colours
+                                       (->> @(rf/subscribe [:get show-colours-path])
+                                            (keep (fn [value]
+                                                    (when (second value)
+                                                      (first value))))
+                                            set))
                     (c/<< :render-options-path
                           (conj example-coa-db-path :render-options))
                     (c/<< :coat-of-arms
                           (assoc-in coat-of-arms
                                     [:field :components 0 :data] prepared-charge-data))
-                    (c/<< :charge-preview? true)
-                    (c/<< :preview-original? original?))
+                    (c/set-render-hint :charge-preview? true)
+                    (c/set-render-hint :preview-original? original?))
         bounding-box (interface/get-bounding-box context)]
     [:svg {:viewBox (-> bounding-box
                         (bb/scale 5)
