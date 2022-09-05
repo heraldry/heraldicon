@@ -137,8 +137,8 @@
       (bb/translate anchor-point)))
 
 (defmethod interface/render-component :heraldry/motto [context]
-  (let [self-below-shield? (c/get-render-hint context :self-below-shield?)
-        render-pass-below-shield? (c/get-render-hint context :render-pass-below-shield?)]
+  (let [{:keys [self-below-shield?
+                render-pass-below-shield?]} (c/render-hints context)]
     (when (= (boolean self-below-shield?)
              (boolean render-pass-below-shield?))
       (let [{:keys [anchor-point

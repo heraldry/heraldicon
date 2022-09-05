@@ -91,9 +91,10 @@
     :bevel "bevel"
     "round"))
 
-(defn dilate-and-fill-path [shape negate-shape thickness color {:keys [svg-export?]}
+(defn dilate-and-fill-path [shape negate-shape thickness color context
                             & {:keys [fill? corner] :or {fill? true}}]
-  (let [mask-id (uid/generate "mask")
+  (let [{:keys [svg-export?]} (c/render-hints context)
+        mask-id (uid/generate "mask")
         linejoin-value (linejoin corner)]
     [:<>
      [:defs
@@ -143,10 +144,11 @@
                      :else data))
                  data))
 
-(defn dilate-and-fill [shape thickness color {:keys [svg-export?]}
+(defn dilate-and-fill [shape thickness color context
                        & {:keys [reverse-transform corner scale]
                           :or {scale 1}}]
-  (let [mask-id (uid/generate "mask")
+  (let [{:keys [svg-export?]} (c/render-hints context)
+        mask-id (uid/generate "mask")
         linejoin-value (linejoin corner)
         thickness (* scale thickness)]
     [:<>

@@ -56,9 +56,9 @@
                 cottise-opposite-2?)
        [render-cottise (c/++ cottising-context :cottise-opposite-2)])]))
 
-(defmethod interface/render-component :heraldry/ordinary [{:keys [svg-export?]
-                                                           :as context}]
-  (let [clip-path-id (uid/generate "clip")
+(defmethod interface/render-component :heraldry/ordinary [context]
+  (let [{:keys [svg-export?]} (c/render-hints context)
+        clip-path-id (uid/generate "clip")
         {:keys [transform]} (interface/get-properties context)]
     [:g
      [:defs

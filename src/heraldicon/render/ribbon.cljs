@@ -15,15 +15,16 @@
    [heraldicon.util.colour :as colour]
    [heraldicon.util.uid :as uid]))
 
-(defn render [{:keys [select-component-fn
-                      svg-export?] :as context}
+(defn render [context
               tincture-foreground
               tincture-background
               tincture-text
               & {:keys [outline-thickness]
                  :or {outline-thickness 1}}]
   (when-let [points (interface/get-raw-data (c/++ context :points))]
-    (let [thickness (interface/get-sanitized-data (c/++ context :thickness))
+    (let [{:keys [select-component-fn
+                  svg-export?]} (c/render-hints context)
+          thickness (interface/get-sanitized-data (c/++ context :thickness))
           edge-angle (interface/get-sanitized-data (c/++ context :edge-angle))
           end-split (interface/get-sanitized-data (c/++ context :end-split))
           outline? (or (interface/render-option :outline? context)
@@ -148,11 +149,12 @@
                         idx])
                      (map-indexed vector curves))))))
 
-(defn render-standalone [{:keys [svg-export?
-                                 target-width
-                                 target-height
-                                 embed-fonts] :as context}]
-  (let [bounding-box (bb/dilate (interface/get-bounding-box context) 10)
+(defn render-standalone [context]
+  (let [{:keys [svg-export?
+                target-width
+                target-height
+                embed-fonts]} (c/render-hints context)
+        bounding-box (bb/dilate (interface/get-bounding-box context) 10)
         [result-width result-height] (bb/size bounding-box)
         [document-width
          document-height
