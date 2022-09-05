@@ -42,8 +42,7 @@
     (-> (if (= subfield-type :heraldry.subfield.type/reference)
           (let [index (interface/get-raw-data (c/++ context :index))
                 source-context (-> context c/-- (c/++ index))]
-            (-> source-context
-                (assoc-in [:path-map (:path source-context)] (:path context))))
+            (c/set-key source-context :path-redirect (:path context)))
           context)
         (c/++ :field))))
 
