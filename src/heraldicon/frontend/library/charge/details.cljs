@@ -115,7 +115,8 @@
           [shift-x shift-y
            width height] (let [[viewbox-x viewbox-y
                                 viewbox-width viewbox-height] (parse-width-height-from-viewbox
-                                                               (get-in edn-data [1 :viewbox]))]
+                                                               (or (get-in edn-data [1 :viewbox])
+                                                                   (get-in edn-data [1 :viewBox])))]
                            (if (and viewbox-width viewbox-height)
                              [viewbox-x viewbox-y viewbox-width viewbox-height]
                              [0 0 width height]))
