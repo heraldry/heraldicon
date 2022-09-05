@@ -10,7 +10,7 @@
                                  target-height] :as context}]
   (let [escutcheon-data (escutcheon/data :rectangle nil nil nil nil nil)
         {:keys [environment]} (escutcheon/transform-to-width escutcheon-data 100)
-        charge-context (c/set-parent-environment-override context environment)
+        charge-context (c/set-key context :parent-environment-override environment)
         bounding-box (interface/get-bounding-box charge-context)
         [width height] (bb/size bounding-box)
         target-width (or target-width 1000)

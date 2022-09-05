@@ -141,7 +141,7 @@
                            [interface/render-component
                             (-> charge-context
                                 (c/add-component-context {:anchor-override shift})
-                                (c/set-parent-environment-override (shift-environment charge-environment shift)))]))
+                                (c/set-key :parent-environment-override (shift-environment charge-environment shift)))]))
             (cond->
               [v/zero
                (v/Vector. part-width 0)

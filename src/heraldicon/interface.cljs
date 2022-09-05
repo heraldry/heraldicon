@@ -228,7 +228,7 @@
         (environment context (get-properties context))))))
 
 (defn get-parent-environment [context]
-  (or (c/parent-environment-override context)
+  (or (c/get-key context :parent-environment-override)
       (if (cottise-context? context)
         @(rf/subscribe [::environment (c/scrub-rendering-context (parent (parent context)))])
         @(rf/subscribe [::environment (c/scrub-rendering-context (parent context))]))))
