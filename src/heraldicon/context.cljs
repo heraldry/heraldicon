@@ -42,12 +42,6 @@
 (defn scrub-rendering-context [context]
   (dissoc context :rendering))
 
-(defn add-component-context [context component-context]
-  (update-in context [:component-context (:path context)] merge component-context))
-
-(defn component-context [context]
-  (get-in context [:component-context (:path context)]))
-
 (defn set-key [context key value]
   (assoc-in context [:component-context (:path context) key] value))
 

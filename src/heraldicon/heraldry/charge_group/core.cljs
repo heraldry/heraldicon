@@ -197,10 +197,10 @@
                    (< charge-index num-charges))]
     (-> context
         (c/++ :charges charge-index)
-        (c/add-component-context {:anchor-override (v/add anchor-point point)
-                                  :charge-group {:slot-spacing slot-spacing
-                                                 :slot-angle (when rotate-charges?
-                                                               angle)}}))))
+        (c/set-key :anchor-override (v/add anchor-point point))
+        (c/set-key :charge-group {:slot-spacing slot-spacing
+                                  :slot-angle (when rotate-charges?
+                                                angle)}))))
 
 (defmethod interface/bounding-box :heraldry/charge-group [context properties]
   (->> (iterate-charge-contexts context properties)
