@@ -168,7 +168,7 @@
                                 (-> context
                                     (c/set-key :parent-environment-override {:width 200
                                                                              :height 200})
-                                    (c/<< :parent-shape "M-100,-100 h200 v200 h-200 z")))
+                                    (c/set-key :parent-shape "M-100,-100 h200 v200 h-200 z")))
         num-charges (interface/get-list-size (c/++ context :charges))
         dot-size (/ (min (:width slot-spacing)
                          (:height slot-spacing))

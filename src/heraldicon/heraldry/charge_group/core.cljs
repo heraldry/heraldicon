@@ -220,7 +220,7 @@
                                   (-> context
                                       (c/set-key :parent-environment-override {:width 200
                                                                                :height 200})
-                                      (c/<< :parent-shape "M-100,-100 h200 v200 h-200 z")))
+                                      (c/set-key :parent-shape "M-100,-100 h200 v200 h-200 z")))
         charge-group-type (interface/get-raw-data (c/++ context :type))
         used-charges (->> (group-by :charge-index slot-positions)
                           (map (fn [[k v]]
