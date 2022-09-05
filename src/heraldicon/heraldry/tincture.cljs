@@ -86,9 +86,10 @@
    :erminois erminois
    :pean pean})
 
-(defn pick [tincture {:keys [tincture-mapping] :as context}]
+(defn pick [tincture context]
   (let [mode (interface/render-option :mode context)
         theme (interface/render-option :theme context)
+        tincture-mapping (c/tincture-mapping context)
         tincture (get tincture-mapping tincture tincture)]
     (cond
       (= tincture :none) "url(#void)"
@@ -100,8 +101,7 @@
       :else (or (theme/lookup-colour tincture theme)
                 "url(#void)"))))
 
-(defn tinctured-field [{:keys [tincture-mapping
-                               svg-export?
+(defn tinctured-field [{:keys [svg-export?
                                select-component-fn
                                charge-preview?] :as context}
 
@@ -117,6 +117,7 @@
                        (= theme :all))
                 :wappenwiki
                 theme)
+        tincture-mapping (c/tincture-mapping context)
         effective-tincture (get tincture-mapping tincture tincture)
         [colour animation] (if (and (= theme :all)
                                     (-> theme/theme-data-map
