@@ -218,8 +218,8 @@
   ;; TODO: no need to calculate all positions here
   (let [{:keys [slot-positions]} (calculate-points
                                   (-> context
-                                      (c/set-parent-environment-override {:width 200
-                                                                          :height 200})
+                                      (c/set-key :parent-environment-override {:width 200
+                                                                               :height 200})
                                       (c/<< :parent-shape "M-100,-100 h200 v200 h-200 z")))
         charge-group-type (interface/get-raw-data (c/++ context :type))
         used-charges (->> (group-by :charge-index slot-positions)

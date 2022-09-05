@@ -48,12 +48,6 @@
 (defn component-context [context]
   (get-in context [:component-context (:path context)]))
 
-(defn set-parent-environment-override [context environment]
-  (add-component-context context {:parent-environment environment}))
-
-(defn parent-environment-override [context]
-  (get-in context [:component-context (:path context) :parent-environment]))
-
 (defn set-key [context key value]
   (assoc-in context [:component-context (:path context) key] value))
 

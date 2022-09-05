@@ -166,8 +166,8 @@
   (let [{:keys [slot-positions
                 slot-spacing]} (charge-group/calculate-points
                                 (-> context
-                                    (c/set-parent-environment-override {:width 200
-                                                               :height 200})
+                                    (c/set-key :parent-environment-override {:width 200
+                                                                             :height 200})
                                     (c/<< :parent-shape "M-100,-100 h200 v200 h-200 z")))
         num-charges (interface/get-list-size (c/++ context :charges))
         dot-size (/ (min (:width slot-spacing)

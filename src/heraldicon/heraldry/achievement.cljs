@@ -75,7 +75,7 @@
         [coat-of-arms-width coat-of-arms-height] (bb/size coat-of-arms-bounding-box)
         render-helms? (#{:achievement :coat-of-arms-and-helm} scope)
         helms-context (-> (c/++ context :helms)
-                          (c/set-parent-environment-override (environment/create coat-of-arms-bounding-box)))
+                          (c/set-key :parent-environment-override (environment/create coat-of-arms-bounding-box)))
         helms-bounding-box (when render-helms?
                              (interface/get-bounding-box helms-context))
         short-arm (* coat-of-arms-width (Math/cos coa-angle-rad-abs))
@@ -103,7 +103,7 @@
         coa-and-helms-bounding-box (bb/combine coat-of-arms-bounding-box helms-bounding-box)
 
         ornaments-context (-> (c/++ context :ornaments)
-                              (c/set-parent-environment-override (environment/create coat-of-arms-bounding-box)))
+                              (c/set-key :parent-environment-override (environment/create coat-of-arms-bounding-box)))
         render-ornaments? (= scope :achievement)
         ornaments-bounding-box (when render-ornaments?
                                  (interface/get-bounding-box ornaments-context))
