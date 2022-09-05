@@ -140,7 +140,7 @@
                            ^{:key idx}
                            [interface/render-component
                             (-> charge-context
-                                (c/<< :anchor-override shift)
+                                (c/add-component-context {:anchor-override shift})
                                 (c/set-parent-environment (shift-environment charge-environment shift)))]))
             (cond->
               [v/zero
