@@ -175,12 +175,10 @@
               (log/warn :not-implemented "parent" context)
               nil))))
 
-(defn- resolve-context [{:keys [path-map path]
-                         :as context}]
-  (if-let [real-path (get path-map path)]
-    (-> context
-        (c/<< :path real-path)
-        (update :path-map dissoc path))
+(defn- resolve-context [context]
+  (if-let [path-redirect (c/get-key context :path-redirect)]
+    ;; TODO: clean up old path's component data?
+    (c/<< context :path path-redirect)
     context))
 
 (defmulti properties effective-component-type)
