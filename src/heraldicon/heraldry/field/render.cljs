@@ -16,7 +16,8 @@
                [subfield/render (c/++ context :fields idx) transform (overlap?-fn idx)]))
         (sort-by overlap?-fn > (range num-subfields))))
 
-(defn- field-path-allowed? [{:keys [path counterchanged-paths]}]
+(defn- field-path-allowed? [{:keys [path]
+                             :as context}]
   (let [component-path (->> path
                             reverse
                             (drop-while (comp not int?)))
@@ -25,6 +26,7 @@
                              (drop 1)
                              reverse
                              vec)
+        counterchanged-paths (c/counterchanged-paths context)
         length (count components-path)]
     (loop [[counterchanged-path & rest] counterchanged-paths]
       (if (nil? counterchanged-path)
@@ -44,30 +46,13 @@
           ^{:key idx}
           [interface/render-component (c/++ context :components idx)])))
 
-(defn- add-tinctures-to-mapping [context counterchange-tinctures]
-  (if (-> counterchange-tinctures count (= 2))
-    (let [[t1 t2] counterchange-tinctures
-          tincture-replacer {t1 t2
-                             t2 t1}]
-      (update context
-              :tincture-mapping
-              (fn [tincture-mapping]
-                (let [new-mapping (into {}
-                                        (map (fn [[k v]]
-                                               [k (get tincture-replacer v v)]))
-                                        tincture-mapping)]
-                  (cond-> new-mapping
-                    (not (contains? new-mapping t1)) (assoc t1 t2)
-                    (not (contains? new-mapping t2)) (assoc t2 t1))))))
-    context))
-
 (defn- render-counterchanged-field [{:keys [path]
                                      :as context} _properties]
   (when-let [parent-field-context (interface/get-counterchange-parent (interface/parent context))]
     (let [counterchange-tinctures (counterchange/tinctures parent-field-context)
           counterchanged-context (-> parent-field-context
-                                     (update :counterchanged-paths conj path)
-                                     (add-tinctures-to-mapping counterchange-tinctures))]
+                                     (c/add-counterchanged-path path)
+                                     (c/add-counterchanged-tinctures counterchange-tinctures))]
       [interface/render-component counterchanged-context])))
 
 (defn- render-plain-field [context _properties]
