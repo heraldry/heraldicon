@@ -171,6 +171,7 @@
 (rf/reg-sub-raw ::properties
   (fn [_app-db [_ context]]
     (reaction
+     (log/info ::properties context)
      (properties context))))
 
 (defn get-properties [context]
@@ -191,6 +192,7 @@
 (rf/reg-sub-raw ::subfield-environments
   (fn [_app-db [_ context]]
     (reaction
+     (log/info ::subfield-environments context)
      (let [context (resolve-context context)]
        (subfield-environments context (get-properties context))))))
 
@@ -200,6 +202,7 @@
 (rf/reg-sub-raw ::environment
   (fn [_app-db [_ context]]
     (reaction
+     (log/info ::environment context)
      (let [context (resolve-context context)]
        (environment context (get-properties context))))))
 
@@ -229,6 +232,7 @@
 (rf/reg-sub-raw ::subfield-render-shapes
   (fn [_app-db [_ context]]
     (reaction
+     (log/info ::subfield-render-shapes context)
      (let [context (resolve-context context)]
        (subfield-render-shapes context (get-properties context))))))
 
@@ -238,6 +242,7 @@
 (rf/reg-sub-raw ::render-shape
   (fn [_app-db [_ context]]
     (reaction
+     (log/info ::render-shape context)
      (let [context (resolve-context context)]
        (render-shape context (get-properties context))))))
 
@@ -283,12 +288,14 @@
 (rf/reg-sub-raw ::exact-shape
   (fn [_app-db [_ context]]
     (reaction
+     (log/info ::exact-shape context)
      (let [context (resolve-context context)]
        (exact-shape context (get-properties context))))))
 
 (rf/reg-sub-raw ::field-edges
   (fn [_app-db [_ context]]
     (reaction
+     (log/info ::field-edges context)
      (:edges (subfield-render-shapes context (get-properties context))))))
 
 (defn get-field-edges [context]
@@ -303,6 +310,7 @@
 (rf/reg-sub-raw ::bounding-box
   (fn [_app-db [_ context]]
     (reaction
+     (log/info ::bounding-box context)
      (let [context (resolve-context context)]
        (bounding-box context (get-properties context))))))
 
