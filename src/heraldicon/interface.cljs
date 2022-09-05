@@ -11,6 +11,19 @@
 (defn- scrub-context [context]
   (dissoc context :tincture-mapping :counterchanged-paths))
 
+(def ^:private cache
+  (atom {}))
+
+(defn- reaction-or-cache [id
+                          {:keys [cache-subscriptions?]
+                           :as context} f]
+  (if cache-subscriptions?
+    (let [key [id context]
+          value (or (get @cache key) (f))]
+      (swap! cache assoc key value)
+      (reaction value))
+    (reaction (f))))
+
 (defn get-raw-data [{:keys [path subscriptions] :as context}]
   (cond
     subscriptions (let [{:keys [base-path data]} subscriptions
@@ -183,9 +196,12 @@
 
 (rf/reg-sub-raw ::properties
   (fn [_app-db [_ context]]
-    (reaction
-     (log/info ::properties context)
-     (properties context))))
+    (reaction-or-cache
+     ::properties
+     context
+     #(do
+        (log/info ::properties context)
+        (properties context)))))
 
 (defn get-properties [context]
   @(rf/subscribe [::properties (scrub-context context)]))
@@ -204,20 +220,26 @@
 
 (rf/reg-sub-raw ::subfield-environments
   (fn [_app-db [_ context]]
-    (reaction
-     (log/info ::subfield-environments context)
-     (let [context (resolve-context context)]
-       (subfield-environments context (get-properties context))))))
+    (reaction-or-cache
+     ::subfield-environments
+     context
+     #(do
+        (log/info ::subfield-environments context)
+        (let [context (resolve-context context)]
+          (subfield-environments context (get-properties context)))))))
 
 (defn get-subfield-environments [context]
   @(rf/subscribe [::subfield-environments (scrub-context context)]))
 
 (rf/reg-sub-raw ::environment
   (fn [_app-db [_ context]]
-    (reaction
-     (log/info ::environment context)
-     (let [context (resolve-context context)]
-       (environment context (get-properties context))))))
+    (reaction-or-cache
+     ::environment
+     context
+     #(do
+        (log/info ::environment context)
+        (let [context (resolve-context context)]
+          (environment context (get-properties context)))))))
 
 (defn get-parent-environment [{:keys [parent-environment
                                       path]
@@ -244,20 +266,26 @@
 
 (rf/reg-sub-raw ::subfield-render-shapes
   (fn [_app-db [_ context]]
-    (reaction
-     (log/info ::subfield-render-shapes context)
-     (let [context (resolve-context context)]
-       (subfield-render-shapes context (get-properties context))))))
+    (reaction-or-cache
+     :subfield-render-shapes
+     context
+     #(do
+        (log/info ::subfield-render-shapes context)
+        (let [context (resolve-context context)]
+          (subfield-render-shapes context (get-properties context)))))))
 
 (defn get-subfield-render-shapes [context]
   @(rf/subscribe [::subfield-render-shapes (scrub-context context)]))
 
 (rf/reg-sub-raw ::render-shape
   (fn [_app-db [_ context]]
-    (reaction
-     (log/info ::render-shape context)
-     (let [context (resolve-context context)]
-       (render-shape context (get-properties context))))))
+    (reaction-or-cache
+     ::render-shape
+     context
+     #(do
+        (log/info ::render-shape context)
+        (let [context (resolve-context context)]
+          (render-shape context (get-properties context)))))))
 
 (defn get-render-shape [context]
   @(rf/subscribe [::render-shape (scrub-context context)]))
@@ -300,16 +328,22 @@
 
 (rf/reg-sub-raw ::exact-shape
   (fn [_app-db [_ context]]
-    (reaction
-     (log/info ::exact-shape context)
-     (let [context (resolve-context context)]
-       (exact-shape context (get-properties context))))))
+    (reaction-or-cache
+     ::exact-shape
+     context
+     #(do
+        (log/info ::exact-shape context)
+        (let [context (resolve-context context)]
+          (exact-shape context (get-properties context)))))))
 
 (rf/reg-sub-raw ::field-edges
   (fn [_app-db [_ context]]
-    (reaction
-     (log/info ::field-edges context)
-     (:edges (subfield-render-shapes context (get-properties context))))))
+    (reaction-or-cache
+     ::field-edges
+     context
+     #(do
+        (log/info ::field-edges context)
+        (:edges (subfield-render-shapes context (get-properties context)))))))
 
 (defn get-field-edges [context]
   @(rf/subscribe [::field-edges (scrub-context context)]))
@@ -322,10 +356,13 @@
 
 (rf/reg-sub-raw ::bounding-box
   (fn [_app-db [_ context]]
-    (reaction
-     (log/info ::bounding-box context)
-     (let [context (resolve-context context)]
-       (bounding-box context (get-properties context))))))
+    (reaction-or-cache
+     ::bounding-box
+     context
+     #(do
+        (log/info ::bounding-box context)
+        (let [context (resolve-context context)]
+          (bounding-box context (get-properties context)))))))
 
 (defn get-bounding-box [context]
   @(rf/subscribe [::bounding-box (scrub-context context)]))
