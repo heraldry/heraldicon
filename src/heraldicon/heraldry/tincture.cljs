@@ -101,18 +101,18 @@
       :else (or (theme/lookup-colour tincture theme)
                 "url(#void)"))))
 
-(defn tinctured-field [{:keys [svg-export?
-                               select-component-fn] :as context}
-                       & {:keys [mask-id
-                                 transform]}]
-  (let [charge-preview? (c/get-render-hint context :charge-preview?)
+(defn tinctured-field [context & {:keys [mask-id
+                                         transform]}]
+  (let [{:keys [charge-preview?
+                svg-export?
+                select-component-fn]} (c/render-hints context)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
         pattern-scaling (interface/get-sanitized-data (c/++ context :pattern-scaling))
         pattern-rotation (interface/get-sanitized-data (c/++ context :pattern-rotation))
         pattern-offset-x (interface/get-sanitized-data (c/++ context :pattern-offset-x))
         pattern-offset-y (interface/get-sanitized-data (c/++ context :pattern-offset-y))
         theme (interface/render-option :theme context)
-        theme (if (and (:svg-export? context)
+        theme (if (and svg-export?
                        (= theme :all))
                 :wappenwiki
                 theme)

@@ -54,12 +54,13 @@
                                                   j
                                                   :font))))))
 
-(defmethod interface/render-component :heraldry/achievement [{:keys [short-url
-                                                                     svg-export?
-                                                                     target-width
-                                                                     target-height
-                                                                     embed-fonts] :as context}]
-  (let [short-url-font :deja-vu-sans
+(defmethod interface/render-component :heraldry/achievement [context]
+  (let [{:keys [short-url
+                svg-export?
+                target-width
+                target-height
+                embed-fonts]} (c/render-hints context)
+        short-url-font :deja-vu-sans
         scope (interface/render-option :scope context)
         coat-of-arms-angle (if (= scope :coat-of-arms)
                              0

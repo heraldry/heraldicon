@@ -95,7 +95,7 @@
                                             :path (conj form-db-path :data :achievement :coat-of-arms))) :en)]])
 
 (def ^:private component-context
-  (dissoc base-context :select-component-fn))
+  (c/clear-render-hint base-context :select-component-fn))
 
 (defn- arms-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default

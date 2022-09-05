@@ -218,15 +218,15 @@
       :charge-entity charge-entity
       :unadjusted-charge unadjusted-charge})))
 
-(defn render [{:keys [select-component-fn
-                      svg-export?] :as context}
-              {:keys [anchor-point scale-x scale-y angle top-left unadjusted-charge
-                      charge-entity]}]
-  (let [self-below-shield? (c/get-render-hint context :self-below-shield?)
-        render-pass-below-shield? (c/get-render-hint context :render-pass-below-shield?)
-        ui-show-colours (c/get-render-hint context :ui-show-colours)
-        preview-original? (c/get-render-hint context :preview-original?)
-        charge-preview? (c/get-render-hint context :charge-preview?)
+(defn render [context {:keys [anchor-point scale-x scale-y angle top-left unadjusted-charge
+                              charge-entity]}]
+  (let [{:keys [self-below-shield?
+                render-pass-below-shield?
+                ui-show-colours
+                preview-original?
+                charge-preview?
+                svg-export?
+                select-component-fn]} (c/render-hints context)
         charge-data (-> charge-entity :data :edn-data)
         placeholder-colours (-> charge-entity :data :colours)
         layer-separator-colours (colours-for-modifier placeholder-colours :layer-separator)

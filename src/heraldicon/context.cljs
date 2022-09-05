@@ -15,17 +15,17 @@
   (assoc context key value))
 
 (defn add-counterchanged-path [context path]
-  (update-in context [:rendering :counterchanged-paths] conj path))
+  (update-in context [:render-hints :counterchanged-paths] conj path))
 
 (defn counterchanged-paths [context]
-  (-> context :rendering :counterchanged-paths))
+  (-> context :render-hints :counterchanged-paths))
 
 (defn add-counterchanged-tinctures [context [tincture-1 tincture-2]]
   (if (and tincture-1 tincture-2)
     (let [tincture-replacer {tincture-1 tincture-2
                              tincture-2 tincture-1}]
       (update-in context
-                 [:rendering :tincture-mapping]
+                 [:render-hints :tincture-mapping]
                  (fn [tincture-mapping]
                    (let [new-mapping (into {}
                                            (map (fn [[k v]]
@@ -37,10 +37,10 @@
     context))
 
 (defn tincture-mapping [context]
-  (-> context :rendering :tincture-mapping))
+  (-> context :render-hints :tincture-mapping))
 
-(defn scrub-rendering-context [context]
-  (dissoc context :rendering))
+(defn scrub-render-hints [context]
+  (dissoc context :render-hints))
 
 (defn set-key [context key value]
   (assoc-in context [:component-context (:path context) key] value))
@@ -48,8 +48,25 @@
 (defn get-key [context key]
   (get-in context [:component-context (:path context) key]))
 
-(defn set-render-hint [context key value]
-  (assoc-in context [:rendering key] value))
+(defn set-render-hint
+  ([context key value]
+   (assoc-in context [:render-hints key] value))
+  ([context key value & kvs]
+   (let [result (set-render-hint context key value)]
+     (if kvs
+       (if (next kvs)
+         (recur result (first kvs) (second kvs) (nnext kvs))
+         (throw (ex-info "Illegal argument for set-render-hint" {})))
+       result))))
 
-(defn get-render-hint [context key]
-  (get-in context [:rendering key]))
+(defn clear-render-hint
+  ([context key]
+   (update context :render-hints dissoc key))
+  ([context key & ks]
+   (let [result (clear-render-hint context key)]
+     (if ks
+       (recur result (first ks) (next ks))
+       result))))
+
+(defn render-hints [context]
+  (:render-hints context))

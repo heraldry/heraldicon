@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.library.arms.shared
   (:require
+   [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.entity.form :as form]
@@ -13,9 +14,9 @@
 
 (def base-context
   (let [form-db-path (form/data-path entity-type)]
-    (assoc
-     context/default
-     :path form-db-path
-     :render-options-path (conj form-db-path :data :achievement :render-options)
-     :select-component-fn (fn [context]
-                            (rf/dispatch [::tree/select-node (:path context)])))))
+    (-> context/default
+        (c/<< :path form-db-path)
+        (c/<< :render-options-path (conj form-db-path :data :achievement :render-options))
+        (c/set-render-hint :select-component-fn
+                           (fn [context]
+                             (rf/dispatch [::tree/select-node (:path context)]))))))

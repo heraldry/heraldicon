@@ -5,10 +5,11 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]))
 
-(defn render-standalone [{:keys [svg-export?
-                                 target-width
-                                 target-height] :as context}]
-  (let [escutcheon-data (escutcheon/data :rectangle nil nil nil nil nil)
+(defn render-standalone [context]
+  (let [{:keys [svg-export?
+                target-width
+                target-height]} (c/render-hints context)
+        escutcheon-data (escutcheon/data :rectangle nil nil nil nil nil)
         {:keys [environment]} (escutcheon/transform-to-width escutcheon-data 100)
         charge-context (c/set-key context :parent-environment-override environment)
         bounding-box (interface/get-bounding-box charge-context)

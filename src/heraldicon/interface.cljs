@@ -194,7 +194,7 @@
      #(properties context))))
 
 (defn get-properties [context]
-  @(rf/subscribe [::properties (c/scrub-rendering-context context)]))
+  @(rf/subscribe [::properties (c/scrub-render-hints context)]))
 
 (defmulti environment (fn [_context properties]
                         (:type properties)))
@@ -217,7 +217,7 @@
         (subfield-environments context (get-properties context))))))
 
 (defn get-subfield-environments [context]
-  @(rf/subscribe [::subfield-environments (c/scrub-rendering-context context)]))
+  @(rf/subscribe [::subfield-environments (c/scrub-render-hints context)]))
 
 (rf/reg-sub-raw ::environment
   (fn [_app-db [_ context]]
@@ -230,11 +230,11 @@
 (defn get-parent-environment [context]
   (or (c/get-key context :parent-environment-override)
       (if (cottise-context? context)
-        @(rf/subscribe [::environment (c/scrub-rendering-context (parent (parent context)))])
-        @(rf/subscribe [::environment (c/scrub-rendering-context (parent context))]))))
+        @(rf/subscribe [::environment (c/scrub-render-hints (parent (parent context)))])
+        @(rf/subscribe [::environment (c/scrub-render-hints (parent context))]))))
 
 (defn get-environment [context]
-  @(rf/subscribe [::environment (c/scrub-rendering-context context)]))
+  @(rf/subscribe [::environment (c/scrub-render-hints context)]))
 
 (defmulti render-shape (fn [_context properties]
                          (:type properties)))
@@ -257,7 +257,7 @@
         (subfield-render-shapes context (get-properties context))))))
 
 (defn get-subfield-render-shapes [context]
-  @(rf/subscribe [::subfield-render-shapes (c/scrub-rendering-context context)]))
+  @(rf/subscribe [::subfield-render-shapes (c/scrub-render-hints context)]))
 
 (rf/reg-sub-raw ::render-shape
   (fn [_app-db [_ context]]
@@ -268,19 +268,19 @@
         (render-shape context (get-properties context))))))
 
 (defn get-render-shape [context]
-  @(rf/subscribe [::render-shape (c/scrub-rendering-context context)]))
+  @(rf/subscribe [::render-shape (c/scrub-render-hints context)]))
 
 (defmulti exact-shape (fn [_context properties]
                         (:type properties)))
 
 (defn get-exact-shape [context]
-  @(rf/subscribe [::exact-shape (c/scrub-rendering-context context)]))
+  @(rf/subscribe [::exact-shape (c/scrub-render-hints context)]))
 
 (defn get-exact-parent-shape [context]
   (or (c/get-key context :parent-shape)
       (if (cottise-context? context)
-        @(rf/subscribe [::exact-shape (c/scrub-rendering-context (parent (parent context)))])
-        @(rf/subscribe [::exact-shape (c/scrub-rendering-context (parent context))]))))
+        @(rf/subscribe [::exact-shape (c/scrub-render-hints (parent (parent context)))])
+        @(rf/subscribe [::exact-shape (c/scrub-render-hints (parent context))]))))
 
 (defn fallback-exact-shape [context]
   (let [shape-path (:shape (get-render-shape context))
@@ -321,7 +321,7 @@
      #(:edges (subfield-render-shapes context (get-properties context))))))
 
 (defn get-field-edges [context]
-  @(rf/subscribe [::field-edges (c/scrub-rendering-context context)]))
+  @(rf/subscribe [::field-edges (c/scrub-render-hints context)]))
 
 (defmulti bounding-box (fn [_context properties]
                          (:type properties)))
@@ -338,7 +338,7 @@
         (bounding-box context (get-properties context))))))
 
 (defn get-bounding-box [context]
-  @(rf/subscribe [::bounding-box (c/scrub-rendering-context context)]))
+  @(rf/subscribe [::bounding-box (c/scrub-render-hints context)]))
 
 (defn get-effective-parent-environment [context]
   (if (get-sanitized-data (c/++ context :inherit-environment?))

@@ -56,11 +56,11 @@
 (defmethod interface/exact-shape :heraldry/coat-of-arms [context _properties]
   (-> (interface/get-render-shape context) :shape first))
 
-(defmethod interface/render-component :heraldry/coat-of-arms [{:keys
-                                                               [svg-export?
-                                                                metadata-path
-                                                                texture-link] :as context}]
-  (let [{:keys [min-x min-y]
+(defmethod interface/render-component :heraldry/coat-of-arms [context]
+  (let [{:keys [svg-export?
+                metadata-path
+                texture-link]} (c/render-hints context)
+        {:keys [min-x min-y]
          :as bounding-box} (interface/get-bounding-box context)
         [width height] (bb/size bounding-box)
         shape-paths (:shape (interface/get-render-shape context))
@@ -81,7 +81,7 @@
     [:g {:filter (when escutcheon-shadow?
                    "url(#shadow)")}
      (when metadata-path
-       [svg.metadata/attribution (assoc context :path metadata-path) :arms])
+       [svg.metadata/attribution (c/<< context :path metadata-path) :arms])
      [:defs
       (when shiny?
         [:filter {:id shiny-id}
@@ -147,8 +147,7 @@
         [:path {:d (s/join "" shape-paths)
                 :fill-rule "evenodd"
                 :fill "#f0f0f0"}]
-        [interface/render-component (-> (c/++ context :field)
-                                        (dissoc :metadata-path))]]]]
+        [interface/render-component (c/++ context :field)]]]]
      (when (or escutcheon-outline?
                outline?)
        [:g (outline/style context)

@@ -6,9 +6,9 @@
    [heraldicon.interface :as interface]
    [heraldicon.util.uid :as uid]))
 
-(defmethod interface/render-component :heraldry/charge [{:keys [svg-export?]
-                                                         :as context}]
-  (let [shape-clip-path-id (uid/generate "clip")
+(defmethod interface/render-component :heraldry/charge [context]
+  (let [{:keys [svg-export?]} (c/render-hints context)
+        shape-clip-path-id (uid/generate "clip")
         vertical-mask-clip-path-id (uid/generate "clip")
         {:keys [vertical-mask-shape
                 other?]
