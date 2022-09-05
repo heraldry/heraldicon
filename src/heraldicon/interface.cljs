@@ -276,9 +276,8 @@
 (defn get-exact-shape [context]
   @(rf/subscribe [::exact-shape (c/scrub-rendering-context context)]))
 
-(defn get-exact-parent-shape [{:keys [parent-shape]
-                               :as context}]
-  (or parent-shape
+(defn get-exact-parent-shape [context]
+  (or (c/get-key context :parent-shape)
       (if (cottise-context? context)
         @(rf/subscribe [::exact-shape (c/scrub-rendering-context (parent (parent context)))])
         @(rf/subscribe [::exact-shape (c/scrub-rendering-context (parent context))]))))
