@@ -156,18 +156,15 @@
   (-> context :path drop-last last (= :cottising)))
 
 (defn parent [context]
-  (let [context (-> context
-                    (dissoc :anchor-override
-                            :charge-group)
-                    (cond->
-                      (:path-map context) (update :path-map
-                                                  (fn [path-map]
-                                                    (into {}
-                                                          (filter (fn [[k _v]]
-                                                                    (let [current-path (:path context)]
-                                                                      (not= (take (count current-path) k)
-                                                                            current-path))))
-                                                          path-map)))))]
+  (let [context (cond-> context
+                  (:path-map context) (update :path-map
+                                              (fn [path-map]
+                                                (into {}
+                                                      (filter (fn [[k _v]]
+                                                                (let [current-path (:path context)]
+                                                                  (not= (take (count current-path) k)
+                                                                        current-path))))
+                                                      path-map))))]
 
     (cond
       (-> context :path last (= :field)) (c/-- context)

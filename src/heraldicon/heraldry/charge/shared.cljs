@@ -188,8 +188,6 @@
            :vertical-mask-shape vertical-mask-shape)))
 
 (defn process-shape [{:keys [size-default
-                             anchor-override
-                             charge-group
                              auto-resize?]
                       :or {auto-resize? true}
                       :as context}
@@ -209,6 +207,8 @@
         mirrored? (interface/get-sanitized-data (c/++ context :geometry :mirrored?))
         reversed? (interface/get-sanitized-data (c/++ context :geometry :reversed?))
         squiggly? (interface/render-option :squiggly? context)
+        {:keys [anchor-override
+                charge-group]} (c/component-context context)
         {:keys [slot-spacing
                 slot-angle]} charge-group
         environment-for-anchor (if anchor-override
