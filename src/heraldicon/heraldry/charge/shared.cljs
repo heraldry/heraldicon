@@ -207,10 +207,9 @@
         mirrored? (interface/get-sanitized-data (c/++ context :geometry :mirrored?))
         reversed? (interface/get-sanitized-data (c/++ context :geometry :reversed?))
         squiggly? (interface/render-option :squiggly? context)
-        {:keys [anchor-override
-                charge-group]} (c/component-context context)
+        anchor-override (c/get-key context :anchor-override)
         {:keys [slot-spacing
-                slot-angle]} charge-group
+                slot-angle]} (c/get-key context :charge-group)
         environment-for-anchor (if anchor-override
                                  (assoc-in parent-environment [:points :special] anchor-override)
                                  parent-environment)
