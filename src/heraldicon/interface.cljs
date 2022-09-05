@@ -146,14 +146,17 @@
   (-> context :path drop-last last (= :cottising)))
 
 (defn parent [context]
-  (cond
-    (-> context :path last (= :field)) (c/-- context)
-    (-> context :path drop-last last (= :charges)) (c/-- context 4)
-    (-> context :path last int?) (c/-- context 2)
-    (cottise-context? context) (c/-- context 2)
-    :else (do
-            (log/warn :not-implemented "parent" context)
-            nil)))
+  (let [context (dissoc context
+                        :anchor-override
+                        :charge-group)]
+    (cond
+      (-> context :path last (= :field)) (c/-- context)
+      (-> context :path drop-last last (= :charges)) (c/-- context 4)
+      (-> context :path last int?) (c/-- context 2)
+      (cottise-context? context) (c/-- context 2)
+      :else (do
+              (log/warn :not-implemented "parent" context)
+              nil))))
 
 (defn- resolve-context [{:keys [path-map path]
                          :as context}]
