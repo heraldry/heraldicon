@@ -102,12 +102,11 @@
                 "url(#void)"))))
 
 (defn tinctured-field [{:keys [svg-export?
-                               select-component-fn
-                               charge-preview?] :as context}
-
+                               select-component-fn] :as context}
                        & {:keys [mask-id
                                  transform]}]
-  (let [tincture (interface/get-sanitized-data (c/++ context :tincture))
+  (let [charge-preview? (c/get-render-hint context :charge-preview?)
+        tincture (interface/get-sanitized-data (c/++ context :tincture))
         pattern-scaling (interface/get-sanitized-data (c/++ context :pattern-scaling))
         pattern-rotation (interface/get-sanitized-data (c/++ context :pattern-rotation))
         pattern-offset-x (interface/get-sanitized-data (c/++ context :pattern-offset-x))

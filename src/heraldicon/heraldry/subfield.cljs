@@ -46,10 +46,10 @@
           context)
         (c/++ :field))))
 
-(defn render [{:keys [svg-export?
-                      charge-preview?]
+(defn render [{:keys [svg-export?]
                :as context} transform overlap?]
-  (let [clip-path-id (uid/generate "clip")
+  (let [charge-preview? (c/get-render-hint context :charge-preview?)
+        clip-path-id (uid/generate "clip")
         field-context (effective-field-context context)]
     [:g
      [:defs
