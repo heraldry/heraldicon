@@ -36,6 +36,10 @@
                        (not (contains? new-mapping tincture-2)) (assoc tincture-2 tincture-1))))))
     context))
 
+(defn clear-tincture-mapping [context]
+  (cond-> context
+    (-> context :render-hints :tincture-mapping) (update :render-hints dissoc :tincture-mapping)))
+
 (defn tincture-mapping [context]
   (-> context :render-hints :tincture-mapping))
 

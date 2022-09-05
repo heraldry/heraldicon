@@ -1,5 +1,6 @@
 (ns heraldicon.render.outline
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]))
 
@@ -9,7 +10,7 @@
   (let [mode (interface/render-option :mode context)]
     (if (= mode :hatching)
       "#000001"
-      (tincture/pick :sable (dissoc context :tincture-mapping)))))
+      (tincture/pick :sable (c/clear-tincture-mapping context)))))
 
 (defn style [context]
   {:stroke (color context)
