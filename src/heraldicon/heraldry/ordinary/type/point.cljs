@@ -182,6 +182,10 @@
         :transform (when-not use-parent-environment?
                      (str "translate(" (v/->str upper-left) ")"
                           "rotate(" angle ")"))
+        :bounding-box-transform-fn (when-not use-parent-environment?
+                                     #(-> %
+                                          (bb/translate upper-left)
+                                          (bb/rotate angle)))
         :reverse-transform-fn reverse-transform-fn
         :flip-cottise? true
         :swap-lines? true
