@@ -13,9 +13,6 @@
   {:heraldry.subfield.type/field :heraldry.subfield.type/field
    :heraldry.subfield.type/reference :heraldry.subfield.type/reference})
 
-(defmethod interface/options-subscriptions :heraldry/subfield [_context]
-  #{})
-
 (defmethod interface/options :heraldry/subfield [_context]
   nil)
 

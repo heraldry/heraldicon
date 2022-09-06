@@ -17,9 +17,6 @@
 
 (derive :heraldry/coat-of-arms :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldry/coat-of-arms [_context]
-  #{})
-
 (defmethod interface/options :heraldry/coat-of-arms [_context]
   {:manual-blazon options/manual-blazon})
 

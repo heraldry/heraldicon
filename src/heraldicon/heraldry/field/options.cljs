@@ -83,22 +83,6 @@
 
 (derive :heraldry/field :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldry/field [_context]
-  #{[:type]
-    [:line]
-    [:line :type]
-    [:line :fimbriation]
-    [:line :fimbriation :mode]
-    [:opposite-line :type]
-    [:opposite-line :fimbriation :mode]
-    [:extra-line :type]
-    [:extra-line :fimbriation :mode]
-    [:anchor :point]
-    [:origin :point]
-    [:orientation :point]
-    [:geometry :size-mode]
-    [:tincture]})
-
 (defmethod interface/options :heraldry/field [context]
   (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))

@@ -4,9 +4,6 @@
 
 (derive :heraldicon.entity.collection/element :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldicon.entity.collection/element [_context]
-  #{})
-
 (defmethod interface/options :heraldicon.entity.collection/element [_context]
   {:name {:type :option.type/text
           :ui/label :string.option/name}

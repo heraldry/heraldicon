@@ -21,15 +21,8 @@
       (reaction value))
     (reaction (f))))
 
-(defn get-raw-data [{:keys [path subscriptions] :as context}]
+(defn get-raw-data [{:keys [path] :as context}]
   (cond
-    subscriptions (let [{:keys [base-path data]} subscriptions
-                        relative-path (-> base-path count (drop path) vec)]
-                    (if (contains? data relative-path)
-                      (get data relative-path)
-                      (do
-                        (log/error (str "Missing subscription: " path " context: " context))
-                        (get-raw-data (dissoc context :subscriptions)))))
     (-> path first (= :context)) (get-in context (drop 1 path))
     :else @(rf/subscribe [:get path])))
 
@@ -51,20 +44,13 @@
                     (or dispatch-value
                         (effective-component-type context))))
 
-(defmethod options nil [_context]
-  nil)
-
-(defmulti options-subscriptions (fn [{:keys [dispatch-value] :as context}]
-                                  (or dispatch-value
-                                      (effective-component-type context))))
-
-(defmethod options-subscriptions nil [_context]
+(defmethod options :default [_context]
   nil)
 
 ;; TODO: this is one of the biggest potential bottle necks
 (defn get-relevant-options [{:keys [path] :as context}]
   (if (-> path first (not= :context))
-    @(rf/subscribe [::options (:path context)])
+    @(rf/subscribe [::options context])
     (let [[options relative-path] (or (->> (range (count path) 0 -1)
                                            (keep (fn [idx]
                                                    (let [option-path (subvec path 0 idx)
@@ -78,11 +64,12 @@
       (get-in options relative-path))))
 
 (rf/reg-sub ::sanitized-data
-  (fn [[_ path] _]
+  (fn [[_ {:keys [path]
+           :as context}] _]
     [(rf/subscribe [:get path])
-     (rf/subscribe [::options path])])
+     (rf/subscribe [::options context])])
 
-  (fn [[data options] [_ _path]]
+  (fn [[data options] [_ _context]]
     (options/sanitize-value-or-data data options)))
 
 (defn get-sanitized-data [{:keys [path] :as context}]
@@ -90,46 +77,25 @@
     (let [data (get-raw-data context)
           options (get-relevant-options context)]
       (options/sanitize-value-or-data data options))
-    @(rf/subscribe [::sanitized-data (:path context)])))
+    @(rf/subscribe [::sanitized-data context])))
 
 (defn get-list-size [{:keys [path] :as context}]
   (if (-> path first (= :context))
     (count (get-in context (drop 1 path)))
     @(rf/subscribe [:get-list-size path])))
 
-(rf/reg-sub ::component-type
-  (fn [[_ path] _]
-    (rf/subscribe [:get (conj path :type)]))
-
-  (fn [raw-type _]
-    (component/effective-type raw-type)))
-
-(rf/reg-sub ::options-subscriptions-data
-  (fn [[_ path] _]
-    [(rf/subscribe [::component-type path])
-     (rf/subscribe [:get (conj path :type)])])
-
-  (fn [[component-type entity-type] [_ path]]
-    (when (isa? component-type :heraldry.options/root)
-      (let [context {:path path
-                     :dispatch-value component-type
-                     :entity-type entity-type}]
-        (assoc context :required-subscriptions (options-subscriptions context))))))
+(defn get-options [context]
+  @(rf/subscribe [::options (c/scrub-render-hints context)]))
 
 (rf/reg-sub-raw ::options
-  (fn [_app-db [_ path]]
-    (reaction
-     (when (seq path)
-       (if-let [context @(rf/subscribe [::options-subscriptions-data path])]
-         (-> context
-             (assoc :subscriptions {:base-path path
-                                    :data (into {}
-                                                (map (fn [relative-path]
-                                                       [relative-path
-                                                        @(rf/subscribe [:get (vec (concat path relative-path))])]))
-                                                (:required-subscriptions context))})
-             options)
-         (get @(rf/subscribe [::options (pop path)]) (last path)))))))
+  (fn [_app-db [_ {:keys [path]
+                   :as context}]]
+    (reaction-or-cache
+     ::options
+     context
+     #(when (seq path)
+        (or (options context)
+            (get (get-options (c/-- context)) (last path)))))))
 
 (defn render-option [key {:keys [render-options-path] :as context}]
   (get-sanitized-data (c/<< context :path (conj render-options-path key))))

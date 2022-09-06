@@ -42,10 +42,6 @@
 
 (derive :heraldry/motto :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldry/motto [_context]
-  #{[:type]
-    [:ribbon-variant]})
-
 (defmethod interface/options :heraldry/motto [context]
   (let [ribbon-variant (interface/get-raw-data (c/++ context :ribbon-variant))
         motto-type (interface/get-raw-data (c/++ context :type))]

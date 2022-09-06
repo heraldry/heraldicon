@@ -38,9 +38,6 @@
 
 (derive :heraldry/ribbon :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldry/ribbon [_context]
-  #{})
-
 (defmethod interface/options :heraldry/ribbon [context]
   (options context))
 
@@ -136,9 +133,6 @@
    :ui/element :ui.element/radio-select})
 
 (derive :heraldry.ribbon/segment :heraldry.options/root)
-
-(defmethod interface/options-subscriptions :heraldry.ribbon/segment [_context]
-  #{[:type]})
 
 (defmethod interface/options :heraldry.ribbon/segment [context]
   (-> {:z-index {:type :option.type/range

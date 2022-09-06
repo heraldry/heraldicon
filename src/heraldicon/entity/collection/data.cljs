@@ -5,9 +5,6 @@
 
 (derive :heraldicon.entity.collection/data :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldicon.entity.collection/data [_context]
-  #{})
-
 (defmethod interface/options :heraldicon.entity.collection/data [_context]
   {:num-columns {:type :option.type/range
                  :default 6
