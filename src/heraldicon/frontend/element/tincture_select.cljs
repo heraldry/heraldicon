@@ -22,7 +22,8 @@
         mask-id "m"
         tincture-context (-> context
                              (assoc :data (assoc default/field :tincture key))
-                             (c/<< :path [:context :data]))
+                             (c/<< :path [:context :data])
+                             (c/clear-render-hint :select-component-fn))
         choice [:div {:style {:border (if selected?
                                         "1px solid #000"
                                         "1px solid transparent")
