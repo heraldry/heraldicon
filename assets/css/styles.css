@@ -555,7 +555,8 @@ label div {
   }
 }
 
-.button {
+.buttons .button {
+  height: 100%;
 }
 
 .button.primary {

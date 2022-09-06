@@ -9,7 +9,8 @@
 
 (defn buttons [entity-type additional-buttons]
   [:<>
-   [:div.buttons {:style {:display "flex"}}
+   [:div.buttons {:style {:display "flex"
+                          :height "2.25em"}}
     additional-buttons
 
     [:div {:style {:flex "auto"}}]
