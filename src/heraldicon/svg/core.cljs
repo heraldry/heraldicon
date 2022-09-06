@@ -47,6 +47,26 @@
            :stddeviation :stdDeviation} v v))
    data))
 
+(defn- svg-namespaced-tag-or-attribute? [tag]
+  (and (keyword? tag)
+       (-> tag name (s/includes? ":"))))
+
+(defn remove-namespaced-elements [data]
+  (walk/postwalk
+   (fn [data]
+     (cond
+       (vector? data) (into []
+                            (remove (fn [element]
+                                      (and (vector? element)
+                                           (-> element first svg-namespaced-tag-or-attribute?))))
+                            data)
+       (map? data) (into {}
+                         (remove (comp svg-namespaced-tag-or-attribute? first))
+                         data)
+       :else data))
+
+   data))
+
 (defn- replace-id-references [data id-map]
   (let [prepared-id-map (into {}
                               (mapcat (fn [[k v]]
