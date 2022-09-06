@@ -87,27 +87,29 @@
       :edge-right [anchor-point right-end]
       :edge-top [anchor-point top-end]
       :edge-bottom [anchor-point bottom-end]
+      :anchor-point anchor-point
       :line-length line-length
       :percentage-base percentage-base
       :num-subfields 4
       :overlap?-fn #{0 3}}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {[edge-top-1 edge-top-2] :edge-top
+(defmethod interface/subfield-environments field-type [context {:keys [anchor-point]
+                                                                [_edge-top-1 edge-top-2] :edge-top
                                                                 [_edge-bottom-1 edge-bottom-2] :edge-bottom
                                                                 [_edge-left-1 edge-left-2] :edge-left
                                                                 [_edge-right-1 edge-right-2] :edge-right}]
   (let [{:keys [points]} (interface/get-effective-parent-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
-    {:subfields [(environment/create (bb/from-points [top-left edge-top-1
-                                                      edge-left-2 edge-top-2]))
-                 (environment/create (bb/from-points [top-right edge-top-1
-                                                      edge-top-2 edge-right-2]))
-                 (environment/create (bb/from-points [bottom-left edge-top-1
-                                                      edge-left-2 edge-bottom-2]))
-                 (environment/create (bb/from-points [bottom-right edge-top-1
-                                                      edge-right-2 edge-bottom-2]))]}))
+    {:subfields [(environment/create (bb/from-points [top-left edge-top-2
+                                                      edge-left-2 anchor-point]))
+                 (environment/create (bb/from-points [edge-top-2 top-right
+                                                      anchor-point edge-right-2]))
+                 (environment/create (bb/from-points [edge-left-2 anchor-point
+                                                      bottom-left edge-bottom-2]))
+                 (environment/create (bb/from-points [anchor-point edge-right-2
+                                                      edge-bottom-2 bottom-right]))]}))
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-top-1 edge-top-2] :edge-top
@@ -151,13 +153,11 @@
                            line-edge-top
                            line-edge-right
                            :counter-clockwise)]}
-
                  {:shape [(shape/build-shape
                            context
                            line-edge-bottom
                            line-edge-left
                            :counter-clockwise)]}
-
                  {:shape [(shape/build-shape
                            context
                            line-edge-bottom
