@@ -9,9 +9,6 @@
 
 (derive :heraldry/semy :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldry/semy [_context]
-  #{})
-
 (defmethod interface/options :heraldry/semy [_context]
   (-> {:layout {:num-fields-x {:type :option.type/range
                                :min 1

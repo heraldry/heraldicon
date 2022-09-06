@@ -150,13 +150,7 @@
 
 (derive :heraldry/charge-group :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldry/charge-group [_context]
-  #{[:type]})
-
 (derive :heraldry.charge-group.element.type/strip :heraldry.options/root)
-
-(defmethod interface/options-subscriptions :heraldry.charge-group.element.type/strip [_context]
-  #{[:type]})
 
 (defmethod interface/options :heraldry.charge-group.element.type/strip [_context]
   {:slots {:type :option.type/range

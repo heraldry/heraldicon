@@ -11,11 +11,6 @@
 
 (derive :heraldry/render-options :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldry/render-options [_context]
-  #{[:escutcheon]
-    [:mode]
-    [:texture]})
-
 (defmethod interface/options :heraldry/render-options [context]
   (let [mode (-> context (c/++ :mode) interface/get-raw-data (or :colours))
         texture (-> context (c/++ :texture) interface/get-raw-data (or :none))

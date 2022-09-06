@@ -70,15 +70,6 @@
 
 (derive :heraldry/charge :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldry/charge [_context]
-  #{[:type]
-    [:escutcheon]
-    [:orientation :point]
-    [:num-points]
-    [:variant]
-    [:data]
-    [:fimbriation :mode]})
-
 (defmethod interface/options :heraldry/charge [context]
   (-> context
       charge.interface/options

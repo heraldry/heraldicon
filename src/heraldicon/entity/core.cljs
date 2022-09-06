@@ -13,11 +13,6 @@
 (derive :heraldicon.entity.type/ribbon :heraldicon.entity/type)
 (derive :heraldicon.entity/type :heraldicon/entity)
 
-(defmethod interface/options-subscriptions :heraldicon/entity [_context]
-  #{[:attribution :license]
-    [:attribution :nature]
-    [:attribution :source-license]})
-
 (def access-choices
   [["private" :private]
    ["public" :public]])

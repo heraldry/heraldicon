@@ -7,9 +7,6 @@
 
 (derive :heraldicon.entity.charge/data :heraldry.options/root)
 
-(defmethod interface/options-subscriptions :heraldicon.entity.charge/data [_context]
-  #{[:landscape?]})
-
 (defmethod interface/options :heraldicon.entity.charge/data [context]
   (cond-> {:charge-type {:type :option.type/text
                          :ui/label :string.option/charge-type
