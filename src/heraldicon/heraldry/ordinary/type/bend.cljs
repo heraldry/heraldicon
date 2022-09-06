@@ -224,6 +224,10 @@
       :transform (when-not use-parent-environment?
                    (str "translate(" (v/->str upper-left) ")"
                         "rotate(" angle ")"))
+      :bounding-box-transform-fn (when-not use-parent-environment?
+                                   #(-> %
+                                        (bb/translate upper-left)
+                                        (bb/rotate angle)))
       :reverse-transform-fn reverse-transform-fn
       :humetty-percentage-base (min (:width parent-environment)
                                     (:height parent-environment))
@@ -238,6 +242,12 @@
                                       lower-left lower-right]
                               reverse-transform-fn (map reverse-transform-fn))]
     (environment/create (bb/from-points bounding-box-points))))
+
+(defmethod interface/bounding-box ordinary-type [context {:keys [bounding-box-transform-fn]}]
+  (let [bounding-box-transform-fn (or bounding-box-transform-fn identity)]
+    (some-> (interface/get-environment context)
+            :bounding-box
+            bounding-box-transform-fn)))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [upper-left upper-right] :upper
@@ -337,6 +347,10 @@
       :transform (when-not use-parent-environment?
                    (str "translate(" (v/->str upper-left) ")"
                         "rotate(" angle ")"))
+      :bounding-box-transform-fn (when-not use-parent-environment?
+                                   #(-> %
+                                        (bb/translate upper-left)
+                                        (bb/rotate angle)))
       :reverse-transform-fn reverse-transform-fn
       :swap-lines? opposite?
       :humetty humetty}

@@ -139,6 +139,9 @@
 (defmethod interface/environment ordinary-type [context properties]
   ((get-method interface/environment :heraldry.ordinary.type/bend) context properties))
 
+(defmethod interface/bounding-box ordinary-type [context properties]
+  ((get-method interface/bounding-box :heraldry.ordinary.type/bend) context properties))
+
 (defmethod interface/render-shape ordinary-type [context properties]
   ((get-method interface/render-shape :heraldry.ordinary.type/bend) context properties))
 
