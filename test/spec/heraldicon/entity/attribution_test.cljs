@@ -60,14 +60,6 @@
      :source-creator-link "foo"}
 
     {:nature :derivative
-     ;; :source-name  missing
-     :source-link "foo"
-     :source-license :cc-attribution
-     :source-license-version :v4
-     :source-creator-name "foo"
-     :source-creator-link "foo"}
-
-    {:nature :derivative
      :source-name "foo"
      :source-link :wrong
      :source-license :cc-attribution
@@ -77,24 +69,8 @@
 
     {:nature :derivative
      :source-name "foo"
-     ;; :source-link missing
-     :source-license :cc-attribution
-     :source-license-version :v4
-     :source-creator-name "foo"
-     :source-creator-link "foo"}
-
-    {:nature :derivative
-     :source-name "foo"
      :source-link "foo"
      :source-license :wrong
-     :source-license-version :v4
-     :source-creator-name "foo"
-     :source-creator-link "foo"}
-
-    {:nature :derivative
-     :source-name "foo"
-     :source-link "foo"
-     ;; :source-license missing
      :source-license-version :v4
      :source-creator-name "foo"
      :source-creator-link "foo"}
@@ -120,25 +96,8 @@
      :source-link "foo"
      :source-license :cc-attribution
      :source-license-version :v4
-     ;; :source-creator-name missing
-     :source-creator-link "foo"}
-
-    {:nature :derivative
-     :source-name "foo"
-     :source-link "foo"
-     :source-license :cc-attribution
-     :source-license-version :v4
      :source-creator-name "foo"
      :source-creator-link :wrong}
-
-    {:nature :derivative
-     :source-name "foo"
-     :source-link "foo"
-     :source-license :cc-attribution
-     :source-license-version :v4
-     :source-creator-name "foo"
-     ;; :source-creator-link missing
-     }
 
     {:nature :derivative
      :source-name "foo"
