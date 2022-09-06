@@ -51,13 +51,11 @@
                     (.stopPropagation %))}
       (if openable?
         [:span.node-icon.clickable
-         {:on-click (js-event/handled #(rf/dispatch [::toggle-node path]))
-          :style {:width "0.9em"}}
+         {:on-click (js-event/handled #(rf/dispatch [::toggle-node path]))}
          [:i.fa.ui-icon {:class (if open?
                                   "fa-angle-down"
                                   "fa-angle-right")}]]
-        [:span.node-icon
-         [:i.fa.ui-icon.fa-angle-down {:style {:opacity 0}}]])
+        [:span.node-icon])
 
       (when icon
         (let [effective-icon (if selected?

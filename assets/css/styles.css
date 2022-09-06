@@ -757,6 +757,7 @@ label div {
 
 .ui-tree .node-icon {
   display: inline-block;
+  width: 0.9em;
 }
 
 .ui-tree .node-name i {
