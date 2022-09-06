@@ -251,9 +251,9 @@
                                  (= (interface/render-option :mode context)
                                     :hatching)) :keep
                              (interface/get-sanitized-data (c/++ context :outline-mode)))
-            fixed-tincture (-> charge-data :fixed-tincture (or :none))
+            fixed-tincture (-> charge-entity :data :fixed-tincture (or :none))
             render-field? (= fixed-tincture :none)
-            landscape? (:landscape? charge-data)
+            landscape? (-> charge-entity :data :landscape?)
             render-shadow? (and (not preview-original?)
                                 (->> placeholder-colours
                                      vals
