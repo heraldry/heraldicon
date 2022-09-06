@@ -224,14 +224,15 @@
            (odd? num-fields-y)) (conj {:level :warning
                                        :message :string.validation.partition/bendy-should-have-even-number-of-fields}))))
 
-(defn- validate-attribution [context]
+(defn- validate-attribution [context public?]
   (let [nature (interface/get-sanitized-data (c/++ context :nature))
         source-fields [(interface/get-sanitized-data (c/++ context :source-license))
                        (interface/get-sanitized-data (c/++ context :source-name))
                        (interface/get-sanitized-data (c/++ context :source-link))
                        (interface/get-sanitized-data (c/++ context :source-creator-name))
                        (interface/get-sanitized-data (c/++ context :source-creator-link))]]
-    (when (and (= nature :derivative)
+    (when (and public?
+               (= nature :derivative)
                (seq (filter (fn [value]
                               (if (keyword? value)
                                 (= value :none)
@@ -249,7 +250,9 @@
 
 (defn validate-entity [context]
   (let [access (validate-access context)
-        attribution (validate-attribution (c/++ context :attribution))]
+        public? (= (interface/get-sanitized-data (c/++ context :access))
+                   :public)
+        attribution (validate-attribution (c/++ context :attribution) public?)]
     (concat
      access
      attribution)))
