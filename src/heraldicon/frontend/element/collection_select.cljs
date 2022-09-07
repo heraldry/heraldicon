@@ -20,7 +20,10 @@
           :page-size 20
           :component-styles (if display-selected-item?
                               {:height "80vh"}
-                              {:height "90vh"}))])
+                              {:height "90vh"})
+          :title-fn (fn [entity]
+                      ;; TODO: include the arms count, once the list entity has that information
+                      (:name entity)))])
 
 (defn list-collections [on-select & {:as options}]
   [component

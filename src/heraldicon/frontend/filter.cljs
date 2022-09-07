@@ -133,12 +133,15 @@
                                                                                    filter-tags-path
                                                                                    filter-tags
                                                                                    filter-list-mode-path
-                                                                                   default-list-mode]}]
+                                                                                   default-list-mode
+                                                                                   title-fn]}]
   (let [{:keys [username]
          :as item} @(rf/subscribe [::filtered-item items-path item-id])
         selected? @(rf/subscribe [::filtered-item-selected? selected-item-path item-id])
         own-username (:username @(rf/subscribe [::session/data]))
-        small? (= (list-mode filter-list-mode-path default-list-mode) :small)]
+        small? (= (list-mode filter-list-mode-path default-list-mode) :small)
+        title-fn (or title-fn :name)
+        title (title-fn item)]
     [:li.filter-result-card-wrapper
      [:div.filter-result-card {:class (when (and item selected?) "selected")
                                :style (when selection-placeholder?
@@ -154,8 +157,8 @@
              [:img {:src (avatar/url username)
                     :style {:border-radius "50%"}}]])]
          [:div.filter-result-card-title
-          {:title (:name item)}
-          (:name item)]
+          {:title title}
+          title]
          (when item
            [:div.filter-result-card-access
             (when (= own-username username)
@@ -164,7 +167,7 @@
                 [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))])])
       [(if item
          :a.filter-result-card-preview
-         :div.filter-result-card-preview) (merge {:title (:name item)}
+         :div.filter-result-card-preview) (merge {:title title}
                                                  (when on-select
                                                    (on-select item)))
        (if item
@@ -273,7 +276,8 @@
                                                                                    initial-sorting-mode
                                                                                    favour-heraldicon?
                                                                                    display-selected-item?
-                                                                                   default-list-mode]}]
+                                                                                   default-list-mode
+                                                                                   title-fn]}]
   (status/default
    items-subscription
    (fn [{all-items-path :path
@@ -357,7 +361,8 @@
                 :filter-tags filter-tags
                 :selection-placeholder? true
                 :filter-list-mode-path filter-list-mode-path
-                :default-list-mode default-list-mode])
+                :default-list-mode default-list-mode
+                :title-fn title-fn])
              (into [:<>]
                    (map (fn [item]
                           ^{:key (:id item)}
@@ -365,7 +370,8 @@
                            :filter-tags-path filter-tags-path
                            :filter-tags filter-tags
                            :filter-list-mode-path filter-list-mode-path
-                           :default-list-mode default-list-mode]))
+                           :default-list-mode default-list-mode
+                           :title-fn title-fn]))
                    display-items)
              (when-not (= (count filtered-items)
                           (count display-items))
