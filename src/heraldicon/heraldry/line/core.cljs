@@ -450,8 +450,8 @@
                              :string.entity/line)
                  :ui/element :ui.element/line)))))
 
-(defn- create-raw [{:keys [type] :or {type :straight} :as line} length
-                   & {:keys [angle flipped? context seed reversed?] :as line-options}]
+(defn- create-raw [context {:keys [type] :or {type :straight} :as line} length
+                   & {:keys [angle flipped? seed reversed?] :as line-options}]
   (let [pattern-data (get kinds-pattern-map type)
         line (update line :width #(max % 1))
         line-function (:function pattern-data)
@@ -511,17 +511,15 @@
            :up (v/rotate (v/Vector. 0 -50) angle)
            :down (v/rotate (v/Vector. 0 50) angle))))
 
-(defn- create [line from to & {:keys [reversed? real-start real-end] :as line-options}]
+(defn- create [context line from to & {:keys [reversed?] :as line-options}]
   (let [[from to] (if reversed?
                     [to from]
                     [from to])
         direction (v/sub to from)
         length (v/abs direction)
         angle (v/angle-to-point from to)]
-    (create-raw line length
-                (merge {:real-start real-start
-                        :real-end real-end
-                        :angle angle}
+    (create-raw context line length
+                (merge {:angle angle}
                        line-options))))
 
 (defn- mask-intersection-points [start line-segments direction]
@@ -865,7 +863,8 @@
       (recur next extra bounding-box)
       next)))
 
-(defn create-with-extension [{:keys [line-length]
+(defn create-with-extension [context
+                             {:keys [line-length]
                               :as line} from to bounding-box & {:keys [extend-from?
                                                                        extend-to?
                                                                        reversed?]
@@ -892,9 +891,9 @@
         real-start (v/abs (v/sub from extended-from))
         real-end (or (+ real-start line-length)
                      (v/abs (v/sub to extended-from)))]
-    (assoc (create line extended-from extended-to (assoc line-options
-                                                         :real-start real-start
-                                                         :real-end real-end))
+    (assoc (create context line extended-from extended-to (assoc line-options
+                                                                 :real-start real-start
+                                                                 :real-end real-end))
            :line-data line
            :reversed? reversed?
            :adjusted-from extended-from

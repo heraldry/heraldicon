@@ -137,19 +137,19 @@
         lines (vec (map-indexed
                     (fn [index edge-end]
                       (if (even? index)
-                        (line/create-with-extension line
+                        (line/create-with-extension context
+                                                    line
                                                     edge-start edge-end
                                                     bounding-box
                                                     :reversed? true
-                                                    :extend-from? false
-                                                    :context context)
-                        (line/create-with-extension line
+                                                    :extend-from? false)
+                        (line/create-with-extension context
+                                                    line
                                                     edge-start edge-end
                                                     bounding-box
                                                     :flipped? true
                                                     :mirrored? true
-                                                    :extend-from? false
-                                                    :context context)))
+                                                    :extend-from? false)))
                     edge-ends))]
     {:subfields (into []
                       (comp

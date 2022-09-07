@@ -179,20 +179,20 @@
         ;; first line isn't needed
         lines (into [[nil nil]]
                     (map (fn [[edge-start corner-point edge-end]]
-                           [(line/create-with-extension line
+                           [(line/create-with-extension context
+                                                        line
                                                         corner-point edge-start
                                                         bounding-box
                                                         :reversed? true
-                                                        :extend-from? false
-                                                        :context context)
-                            (line/create-with-extension opposite-line
+                                                        :extend-from? false)
+                            (line/create-with-extension context
+                                                        opposite-line
                                                         corner-point edge-end
                                                         bounding-box
                                                         :reversed? true
                                                         :flipped? true
                                                         :mirrored? true
-                                                        :extend-from? false
-                                                        :context context)]))
+                                                        :extend-from? false)]))
                     (drop 1 edges))]
     {:subfields (into []
                       (comp

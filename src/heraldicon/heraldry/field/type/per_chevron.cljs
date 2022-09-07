@@ -277,17 +277,17 @@
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-left edge-corner edge-right] :edge}]
   (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
-        line-edge-left (line/create-with-extension line
+        line-edge-left (line/create-with-extension context
+                                                   line
                                                    edge-corner edge-left
                                                    bounding-box
                                                    :reversed? true
-                                                   :extend-from? false
-                                                   :context context)
-        line-edge-right (line/create-with-extension opposite-line
+                                                   :extend-from? false)
+        line-edge-right (line/create-with-extension context
+                                                    opposite-line
                                                     edge-corner edge-right
                                                     bounding-box
-                                                    :extend-from? false
-                                                    :context context)]
+                                                    :extend-from? false)]
     {:subfields [{:shape [(shape/build-shape
                            context
                            line-edge-left

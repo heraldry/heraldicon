@@ -68,11 +68,11 @@
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        line-lower (line/create-with-extension line
+        line-lower (line/create-with-extension context
+                                               line
                                                lower-left lower-right
                                                bounding-box
-                                               :reversed? true
-                                               :context context)]
+                                               :reversed? true)]
     (post-process/shape
      {:shape [(shape/build-shape
                context

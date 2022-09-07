@@ -107,17 +107,17 @@
                       ;; first line isn't needed
                       (when (pos? index)
                         (if (even? index)
-                          (line/create-with-extension line
+                          (line/create-with-extension context
+                                                      line
                                                       edge-start edge-end
                                                       bounding-box
                                                       :reversed? true
                                                       :flipped? true
-                                                      :mirrored? true
-                                                      :context context)
-                          (line/create-with-extension line
+                                                      :mirrored? true)
+                          (line/create-with-extension context
+                                                      line
                                                       edge-start edge-end
-                                                      bounding-box
-                                                      :context context))))
+                                                      bounding-box))))
                     edges))]
     {:subfields (into []
                       (comp

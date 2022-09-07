@@ -164,10 +164,10 @@
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line]
                                                                  [edge-start edge-end] :edge}]
   (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
-        line-edge (line/create-with-extension line
+        line-edge (line/create-with-extension context
+                                              line
                                               edge-start edge-end
-                                              bounding-box
-                                              :context context)]
+                                              bounding-box)]
     {:subfields [{:shape [(shape/build-shape
                            context
                            line-edge

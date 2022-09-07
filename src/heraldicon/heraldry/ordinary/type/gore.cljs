@@ -144,17 +144,17 @@
                                                           [left point right] :edge
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        line-left (line/create-with-extension line
+        line-left (line/create-with-extension context
+                                              line
                                               point left
                                               bounding-box
                                               :reversed? true
-                                              :extend-from? false
-                                              :context context)
-        line-right (line/create-with-extension opposite-line
+                                              :extend-from? false)
+        line-right (line/create-with-extension context
+                                               opposite-line
                                                point right
                                                bounding-box
-                                               :extend-from? false
-                                               :context context)]
+                                               :extend-from? false)]
     (post-process/shape
      {:shape [(shape/build-shape
                context

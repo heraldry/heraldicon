@@ -154,17 +154,17 @@
                                                           [first-point anchor-point second-point] :edge
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        line-one (line/create-with-extension line
+        line-one (line/create-with-extension context
+                                             line
                                              anchor-point first-point
                                              bounding-box
                                              :reversed? true
-                                             :extend-from? false
-                                             :context context)
-        line-two (line/create-with-extension opposite-line
+                                             :extend-from? false)
+        line-two (line/create-with-extension context
+                                             opposite-line
                                              anchor-point second-point
                                              bounding-box
-                                             :extend-from? false
-                                             :context context)]
+                                             :extend-from? false)]
     (post-process/shape
      {:shape [(shape/build-shape
                context

@@ -104,7 +104,8 @@
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        line-lower (line/create-with-extension line
+        line-lower (line/create-with-extension context
+                                               line
                                                (if dexter?
                                                  lower-left
                                                  lower-right)
@@ -112,8 +113,7 @@
                                                  lower-right
                                                  lower-left)
                                                bounding-box
-                                               :reversed? (not dexter?)
-                                               :context context)]
+                                               :reversed? (not dexter?))]
     (post-process/shape
      {:shape (shape/build-shape
               context

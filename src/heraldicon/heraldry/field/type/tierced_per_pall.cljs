@@ -290,25 +290,25 @@
                                                                         edge-start edge-bottom-end
                                                                         edge-left-end edge-right-end]}]
   (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
-        line-edge-left (line/create-with-extension line
+        line-edge-left (line/create-with-extension context
+                                                   line
                                                    edge-start edge-left-end
                                                    bounding-box
                                                    :reversed? true
-                                                   :extend-from? false
-                                                   :context context)
-        line-edge-right (line/create-with-extension opposite-line
+                                                   :extend-from? false)
+        line-edge-right (line/create-with-extension context
+                                                    opposite-line
                                                     edge-start edge-right-end
                                                     bounding-box
                                                     :flipped? true
                                                     :mirrored? true
-                                                    :extend-from? false
-                                                    :context context)
-        line-edge-bottom (line/create-with-extension extra-line
+                                                    :extend-from? false)
+        line-edge-bottom (line/create-with-extension context
+                                                     extra-line
                                                      edge-start edge-bottom-end
                                                      bounding-box
                                                      :reversed? true
-                                                     :extend-from? false
-                                                     :context context)]
+                                                     :extend-from? false)]
     {:subfields [{:shape [(shape/build-shape
                            context
                            line-edge-left

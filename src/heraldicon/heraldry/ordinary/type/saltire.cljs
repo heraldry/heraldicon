@@ -208,50 +208,50 @@
                                                           [right-1 corner-right right-2] :edge-right
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        line-edge-top-first (line/create-with-extension line
+        line-edge-top-first (line/create-with-extension context
+                                                        line
                                                         corner-top top-1
                                                         bounding-box
                                                         :reversed? true
-                                                        :extend-from? false
-                                                        :context context)
-        line-edge-top-second (line/create-with-extension line
+                                                        :extend-from? false)
+        line-edge-top-second (line/create-with-extension context
+                                                         line
                                                          corner-top top-2
                                                          bounding-box
-                                                         :extend-from? false
-                                                         :context context)
-        line-edge-left-first (line/create-with-extension line
+                                                         :extend-from? false)
+        line-edge-left-first (line/create-with-extension context
+                                                         line
                                                          corner-left left-1
                                                          bounding-box
                                                          :reversed? true
-                                                         :extend-from? false
-                                                         :context context)
-        line-edge-left-second (line/create-with-extension line
+                                                         :extend-from? false)
+        line-edge-left-second (line/create-with-extension context
+                                                          line
                                                           corner-left left-2
                                                           bounding-box
-                                                          :extend-from? false
-                                                          :context context)
-        line-edge-right-first (line/create-with-extension line
+                                                          :extend-from? false)
+        line-edge-right-first (line/create-with-extension context
+                                                          line
                                                           corner-right right-1
                                                           bounding-box
                                                           :reversed? true
-                                                          :extend-from? false
-                                                          :context context)
-        line-edge-right-second (line/create-with-extension line
+                                                          :extend-from? false)
+        line-edge-right-second (line/create-with-extension context
+                                                           line
                                                            corner-right right-2
                                                            bounding-box
-                                                           :extend-from? false
-                                                           :context context)
-        line-edge-bottom-first (line/create-with-extension line
+                                                           :extend-from? false)
+        line-edge-bottom-first (line/create-with-extension context
+                                                           line
                                                            corner-bottom bottom-1
                                                            bounding-box
                                                            :reversed? true
-                                                           :extend-from? false
-                                                           :context context)
-        line-edge-bottom-second (line/create-with-extension line
+                                                           :extend-from? false)
+        line-edge-bottom-second (line/create-with-extension context
+                                                            line
                                                             corner-bottom bottom-2
                                                             bounding-box
-                                                            :extend-from? false
-                                                            :context context)]
+                                                            :extend-from? false)]
     (post-process/shape
      {:shape [(shape/build-shape
                context
