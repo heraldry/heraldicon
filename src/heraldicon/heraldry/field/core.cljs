@@ -28,8 +28,21 @@
   {:type :heraldry.subfield.type/field
    :field field})
 
+(defn default-layout-values [type]
+  (case type
+    :heraldry.field.type/quarterly {:num-fields-x 3
+                                    :num-fields-y 4
+                                    :num-base-fields 2}
+    {:num-fields-x 6
+     :num-fields-y 6
+     :num-base-fields 2}))
+
 (defn raw-default-fields [type num-fields-x num-fields-y num-base-fields]
-  (let [type (-> type name keyword)
+  (let [default-values (default-layout-values type)
+        type (-> type name keyword)
+        num-fields-x (or num-fields-x (:num-fields-x default-values))
+        num-fields-y (or num-fields-y (:num-fields-y default-values))
+        num-base-fields (or num-base-fields (:num-base-fields default-values))
         defaults (mapv
                   make-subfield
                   [default/field

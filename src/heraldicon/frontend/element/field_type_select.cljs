@@ -14,7 +14,6 @@
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
-;; TODO: this needs some more thinking, currently it creates dummy contexts to access db data
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]
   (let [path (vec path)]
     (if (= new-type :heraldry.field.type/plain)
@@ -22,49 +21,43 @@
           (assoc-in (conj path :type) new-type)
           (update-in (conj path :tincture) #(or % :none))
           (update-in path dissoc :fields))
-      (-> db
-          (assoc-in (conj path :type) new-type)
-          (update-in (conj path :line :type) #(or % :straight))
-          (assoc-in (conj path :layout :num-fields-x) num-fields-x)
-          (assoc-in (conj path :layout :num-fields-y) num-fields-y)
-          (assoc-in (conj path :layout :num-base-fields) num-base-fields)
-          (update-in path
-                     (fn [prepared-field]
-                       (let [current (or (:fields prepared-field) [])
-                             default (field/default-fields {:path [:context :dummy]
-                                                            :dummy prepared-field})
-                             previous-default (field/default-fields {:path [:context :dummy]
-                                                                     :dummy (get-in db path)})
-                             previous-default (cond
-                                                (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
-                                                (> (count previous-default) (count default)) (subvec previous-default 0 (count default))
-                                                :else previous-default)
-                             merged (cond
-                                      (< (count current) (count default)) (into current (subvec default (count current)))
-                                      (> (count current) (count default)) (subvec current 0 (count default))
-                                      :else current)]
-                         (assoc prepared-field
-                                :fields (->> (map vector merged previous-default default)
+      (update-in db
+                 path
+                 (fn [prepared-field]
+                   (let [current (or (:fields prepared-field) [])
+                         default (field/raw-default-fields new-type num-fields-x num-fields-y num-base-fields)
+                         previous-default (field/raw-default-fields
+                                           (:type prepared-field)
+                                           (get-in prepared-field [:layout :num-fields-x])
+                                           (get-in prepared-field [:layout :num-fields-y])
+                                           (get-in prepared-field [:layout :num-base-fields]))
+                         previous-default (cond
+                                            (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
+                                            (> (count previous-default) (count default)) (subvec previous-default 0 (count default))
+                                            :else previous-default)
+                         merged (cond
+                                  (< (count current) (count default)) (into current (subvec default (count current)))
+                                  (> (count current) (count default)) (subvec current 0 (count default))
+                                  :else current)]
+                     (-> prepared-field
+                         (assoc :type new-type)
+                         (dissoc :tincture)
+                         (update-in [:line :type] #(or % :straight))
+                         (assoc-in [:layout :num-fields-x] num-fields-x)
+                         (assoc-in [:layout :num-fields-y] num-fields-y)
+                         (assoc-in [:layout :num-base-fields] num-base-fields)
+                         (assoc :fields (->> (map vector merged previous-default default)
                                              (map (fn [[cur old-def def]]
                                                     (if (and (= (:type cur) :heraldry.subfield.type/field)
                                                              (not= cur old-def))
                                                       cur
                                                       def)))
-                                             vec)))))
-          (update-in path dissoc :tincture)))))
+                                             vec)))))))))
 
 (macros/reg-event-db ::set
   (fn [db [_ path new-type]]
-    (let [field-path (vec (drop-last path))
-          field (get-in db field-path)
-          new-field (assoc field :type key)
-          {:keys [num-fields-x
-                  num-fields-y
-                  num-base-fields]} (:layout (options/sanitize-or-nil
-                                              new-field
-                                              (interface/options {:path [:context :dummy]
-                                                                  :dummy new-field})))]
-      (set-field-type db field-path new-type num-fields-x num-fields-y num-base-fields))))
+    (let [field-path (vec (drop-last path))]
+      (set-field-type db field-path new-type nil nil nil))))
 
 (defn- field-type-choice [path key display-name & {:keys [selected?
                                                           clickable?]
