@@ -11,6 +11,9 @@
 (def ^:private cache
   (atom {}))
 
+(defn clear-subscription-cache! []
+  (reset! cache {}))
+
 (defn- reaction-or-cache [id
                           {:keys [cache-subscriptions?]
                            :as context} f]
