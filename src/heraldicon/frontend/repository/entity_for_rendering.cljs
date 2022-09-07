@@ -18,13 +18,17 @@
 
 (rf/reg-event-db ::store
   (fn [db [_ {:keys [id version] :as entity}]]
-    (assoc-in db (entity-for-rendering-path id version) {:status :done
-                                                         :entity entity})))
+    (let [path (entity-for-rendering-path id version)]
+      (assoc-in db path {:status :done
+                         :entity entity
+                         :path path}))))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ entity-id version error]]
-    (assoc-in db (entity-for-rendering-path entity-id version) {:status :error
-                                                                :error error})))
+    (let [path (entity-for-rendering-path entity-id version)]
+      (assoc-in db path {:status :error
+                         :error error
+                         :path path}))))
 
 (defmulti ^:private load-editing-data :type)
 
