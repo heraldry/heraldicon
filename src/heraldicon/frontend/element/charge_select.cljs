@@ -6,10 +6,11 @@
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
-(defn component [charges-subscription on-select refresh-fn & {:keys [display-selected-item?]
+(defn component [charges-subscription on-select refresh-fn & {:keys [display-selected-item?
+                                                                     list-id]
                                                               :as options}]
   [filter/component
-   :charge-list
+   (or list-id :charge-list)
    @(rf/subscribe [::session/data])
    charges-subscription
    [:name :username :metadata :tags

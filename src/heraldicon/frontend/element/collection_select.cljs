@@ -5,10 +5,11 @@
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
-(defn component [collections-subscription on-select refresh-fn & {:keys [display-selected-item?]
+(defn component [collections-subscription on-select refresh-fn & {:keys [display-selected-item?
+                                                                         list-id]
                                                                   :as options}]
   [filter/component
-   :collection-list
+   (or list-id :collection-list)
    @(rf/subscribe [::session/data])
    collections-subscription
    [:name :username :metadata :tags]
