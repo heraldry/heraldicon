@@ -55,7 +55,7 @@
 
 (defmethod interface/render-component :heraldry/coat-of-arms [context]
   (let [{:keys [svg-export?
-                metadata-path
+                root-path
                 texture-link]} (c/render-hints context)
         {:keys [min-x min-y]
          :as bounding-box} (interface/get-bounding-box context)
@@ -77,8 +77,8 @@
                          (texture/full-path texture))]
     [:g {:filter (when escutcheon-shadow?
                    "url(#shadow)")}
-     (when metadata-path
-       [svg.metadata/attribution (c/<< context :path metadata-path) :arms])
+     (when root-path
+       [svg.metadata/attribution (c/<< context :path root-path)])
      [:defs
       (when shiny?
         [:filter {:id shiny-id}
