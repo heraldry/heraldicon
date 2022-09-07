@@ -99,41 +99,17 @@
         charge-preview? (-> context :path (= [:example-coa :coat-of-arms :field :components 0 :field]))]
     {:title (field/title context)
      :icon (case field-type
-             :heraldry.field.type/plain (let [[scale-x
-                                               scale-y
-                                               translate-x
-                                               translate-y] (if (= tincture :none)
-                                                              [5 6 0 0]
-                                                              [10 10 -15 -40])
-                                              mask-id "preview-mask"
-                                              icon [:svg {:version "1.1"
-                                                          :xmlns "http://www.w3.org/2000/svg"
-                                                          :xmlnsXlink "http://www.w3.org/1999/xlink"
-                                                          :viewBox (str "0 0 120 140")
-                                                          :preserveAspectRatio "xMidYMin slice"}
-                                                    [:g {:transform "translate(10,10)"}
-                                                     [:mask {:id mask-id}
-                                                      [:rect {:x 0
-                                                              :y 0
-                                                              :width 100
-                                                              :height 120
-                                                              :stroke "none"
-                                                              :fill "#fff"}]]
-                                                     [:g {:mask (str "url(#" mask-id ")")}
-                                                      [:g {:transform (str "translate(" translate-x "," translate-y ")")}
-                                                       [:rect {:x 0
-                                                               :y 0
-                                                               :width 100
-                                                               :height 120
-                                                               :stroke "none"
-                                                               :fill (tincture/pick tincture context)
-                                                               :transform (str "scale(" scale-x "," scale-y ")")}]]]
-                                                     [:rect {:x 0
-                                                             :y 0
-                                                             :width 100
-                                                             :height 120
-                                                             :stroke "#000"
-                                                             :fill "none"}]]]]
+             :heraldry.field.type/plain (let [icon (tincture-select/preview
+                                                    (tincture/pick tincture context)
+                                                    (if (= tincture :none)
+                                                      {:scale-x 5
+                                                       :scale-y 6
+                                                       :translate-x 0
+                                                       :translate-y 0}
+                                                      {:scale-x 10
+                                                       :scale-y 10
+                                                       :translate-x -15
+                                                       :translate-y -40}))]
                                           {:default icon
                                            :selected icon})
              {:default (static/static-url
