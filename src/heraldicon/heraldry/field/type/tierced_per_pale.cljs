@@ -103,17 +103,17 @@
                                                                  [edge-1-top edge-1-bottom] :edge-1
                                                                  [edge-2-top edge-2-bottom] :edge-2}]
   (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
-        line-edge-1 (line/create-with-extension line
+        line-edge-1 (line/create-with-extension context
+                                                line
                                                 edge-1-top edge-1-bottom
-                                                bounding-box
-                                                :context context)
-        line-edge-2 (line/create-with-extension opposite-line
+                                                bounding-box)
+        line-edge-2 (line/create-with-extension context
+                                                opposite-line
                                                 edge-2-top edge-2-bottom
                                                 bounding-box
                                                 :reversed? true
                                                 :flipped? true
-                                                :mirrored? true
-                                                :context context)]
+                                                :mirrored? true)]
     {:subfields [{:shape [(shape/build-shape
                            context
                            line-edge-1

@@ -68,10 +68,10 @@
                                                           [upper-left upper-right] :upper
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        line-upper (line/create-with-extension line
+        line-upper (line/create-with-extension context
+                                               line
                                                upper-left upper-right
-                                               bounding-box
-                                               :context context)]
+                                               bounding-box)]
     (post-process/shape
      {:shape [(shape/build-shape
                context

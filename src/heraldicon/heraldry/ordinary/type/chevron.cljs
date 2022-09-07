@@ -335,28 +335,28 @@
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
         line (dissoc line :base-line)
         opposite-line (dissoc opposite-line :base-line)
-        line-upper-left (line/create-with-extension line
+        line-upper-left (line/create-with-extension context
+                                                    line
                                                     upper-corner upper-left
                                                     bounding-box
                                                     :reversed? true
-                                                    :extend-from? false
-                                                    :context context)
-        line-upper-right (line/create-with-extension line
+                                                    :extend-from? false)
+        line-upper-right (line/create-with-extension context
+                                                     line
                                                      upper-corner upper-right
                                                      bounding-box
-                                                     :extend-from? false
-                                                     :context context)
-        line-lower-right (line/create-with-extension opposite-line
+                                                     :extend-from? false)
+        line-lower-right (line/create-with-extension context
+                                                     opposite-line
                                                      lower-corner lower-right
                                                      bounding-box
                                                      :reversed? true
-                                                     :extend-from? false
-                                                     :context context)
-        line-lower-left (line/create-with-extension opposite-line
+                                                     :extend-from? false)
+        line-lower-left (line/create-with-extension context
+                                                    opposite-line
                                                     lower-corner lower-left
                                                     bounding-box
-                                                    :extend-from? false
-                                                    :context context)]
+                                                    :extend-from? false)]
     (post-process/shape
      {:shape [(shape/build-shape
                context

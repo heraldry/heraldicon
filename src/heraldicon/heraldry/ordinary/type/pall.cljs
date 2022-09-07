@@ -368,39 +368,39 @@
                                                           [right-1 corner-right right-2] :edge-right
                                                           :as properties}]
   (let [{:keys [bounding-box]} (interface/get-parent-environment context)
-        line-edge-bottom-first (line/create-with-extension extra-line
+        line-edge-bottom-first (line/create-with-extension context
+                                                           extra-line
                                                            corner-bottom bottom-1
                                                            bounding-box
                                                            :reversed? true
-                                                           :extend-from? false
-                                                           :context context)
-        line-edge-bottom-second (line/create-with-extension extra-line
+                                                           :extend-from? false)
+        line-edge-bottom-second (line/create-with-extension context
+                                                            extra-line
                                                             corner-bottom bottom-2
                                                             bounding-box
-                                                            :extend-from? false
-                                                            :context context)
-        line-edge-left-first (line/create-with-extension opposite-line
+                                                            :extend-from? false)
+        line-edge-left-first (line/create-with-extension context
+                                                         opposite-line
                                                          corner-left left-1
                                                          bounding-box
                                                          :reversed? true
-                                                         :extend-from? false
-                                                         :context context)
-        line-edge-left-second (line/create-with-extension opposite-line
+                                                         :extend-from? false)
+        line-edge-left-second (line/create-with-extension context
+                                                          opposite-line
                                                           corner-left left-2
                                                           bounding-box
-                                                          :extend-from? false
-                                                          :context context)
-        line-edge-right-first (line/create-with-extension line
+                                                          :extend-from? false)
+        line-edge-right-first (line/create-with-extension context
+                                                          line
                                                           corner-right right-1
                                                           bounding-box
                                                           :reversed? true
-                                                          :extend-from? false
-                                                          :context context)
-        line-edge-right-second (line/create-with-extension line
+                                                          :extend-from? false)
+        line-edge-right-second (line/create-with-extension context
+                                                           line
                                                            corner-right right-2
                                                            bounding-box
-                                                           :extend-from? false
-                                                           :context context)]
+                                                           :extend-from? false)]
     ;; TODO: seems to work fine without it, but maybe infinity patching would improve this
     (post-process/shape
      {:shape [(shape/build-shape
