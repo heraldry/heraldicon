@@ -40,6 +40,7 @@
                                                                         :highlight 1.0})}]}}}
    :ui {:charge-tree {:show-public? true
                       :show-own? true}
+        :empty-coat-of-arms default/coat-of-arms
         :component-tree {}}})
 
 (macros/reg-event-db ::initialize

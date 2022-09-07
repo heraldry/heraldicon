@@ -4,8 +4,10 @@
    [heraldicon.context :as c]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
    [heraldicon.heraldry.escutcheon :as escutcheon]
-   [heraldicon.interface :as interface]))
+   [heraldicon.interface :as interface]
+   [re-frame.core :as rf]))
 
 (defn- credits [{:keys [url title username
                         nature
@@ -60,37 +62,56 @@
            [:<>
             " " [tr :string.attribution/modifications] ": " source-modification])])]]))
 
-(defn- general [context attribution-type]
-  [:div.credit
-   (if (interface/get-raw-data (c/++ context :id))
-     (let [attribution (interface/get-sanitized-data (c/++ context :attribution))
-           title (interface/get-raw-data (c/++ context :name))
-           username (interface/get-raw-data (c/++ context :username))
-           url (case attribution-type
-                 :arms (attribution/full-url-for-arms context)
-                 :charge (attribution/full-url-for-charge context)
-                 :collection (attribution/full-url-for-collection context)
-                 :ribbon (attribution/full-url-for-ribbon context))]
-       [credits (assoc attribution
-                       :title title
-                       :username username
-                       :url url)])
-     [tr :string.miscellaneous/unsaved-data])])
-
-(defn for-charge [context]
-  [general context :charge])
-
-(defn for-arms [context]
-  [general context :arms])
-
-(defn for-collection [context]
-  [general context :collection])
-
-(defn for-ribbon [context]
-  [general context :ribbon])
+(defn for-entity [context]
+  (let [id (interface/get-raw-data (c/++ context :id))]
+    [:div.credit
+     (if id
+       (let [attribution (interface/get-sanitized-data (c/++ context :attribution))
+             title (interface/get-raw-data (c/++ context :name))
+             username (interface/get-raw-data (c/++ context :username))
+             entity-type (interface/get-raw-data (c/++ context :type))
+             url (case entity-type
+                   :heraldicon.entity.type/arms (attribution/full-url-for-arms context)
+                   :heraldicon.entity.type/charge (attribution/full-url-for-charge context)
+                   :heraldicon.entity.type/collection (attribution/full-url-for-collection context)
+                   :heraldicon.entity.type/ribbon (attribution/full-url-for-ribbon context))]
+         [credits (assoc attribution
+                         :title title
+                         :username username
+                         :url url)])
+       [tr :string.miscellaneous/unsaved-data])]))
 
 (defn for-escutcheon [context]
   (let [escutcheon (interface/render-option :escutcheon context)
         escutcheon-attribution (escutcheon/attribution escutcheon)]
     [credits (assoc escutcheon-attribution
                     :title (escutcheon/escutcheon-map escutcheon))]))
+
+(defn for-entities [entities]
+  (let [entity-paths (keep (fn [{:keys [id version]}]
+                             (when id
+                               (some-> @(rf/subscribe [::entity-for-rendering/data id version])
+                                       :path
+                                       (conj :entity)))) entities)
+        entity-type (when-let [path (first entity-paths)]
+                      (interface/get-raw-data {:path (conj path :type)}))
+        title (case entity-type
+                :heraldicon.entity.type/arms :string.entity/arms
+                :heraldicon.entity.type/charge :string.entity/charges
+                :heraldicon.entity.type/ribbon :string.entity/ribbons
+                :heraldicon.entity.type/collection :string.entity/collections
+                nil)]
+    (when (seq entity-paths)
+      [:<>
+       [:h3 [tr title]]
+       (into [:ul]
+             (keep (fn [path]
+                     ^{:key path}
+                     [:li [for-entity {:path path}]]))
+             entity-paths)])))
+
+(defn attribution [context & sections]
+  (into [:div.attribution
+         [:h3 [tr :string.attribution/license]]
+         [for-entity context]]
+        sections))

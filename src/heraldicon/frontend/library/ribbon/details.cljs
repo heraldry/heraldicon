@@ -331,12 +331,6 @@
                       [add-point points-path idx point]))
                @(rf/subscribe [::edit-addable-points points-path])))]]]))
 
-(defn- attribution [form-db-path]
-  (let [attribution-data (attribution/for-ribbon {:path form-db-path})]
-    [:div.attribution
-     [:h3 [tr :string.attribution/license]]
-     attribution-data]))
-
 (defn- edit-controls []
   (let [edit-mode @(rf/subscribe [::edit-mode])]
     [:div.no-select {:style {:position "absolute"
@@ -365,7 +359,7 @@
     [form/active]
     [message/display entity-type]
     [buttons/buttons entity-type]
-    [attribution form-db-path]]))
+    [attribution/attribution {:path form-db-path}]]))
 
 (defn create-view []
   [details/create-view entity-type ribbon-form #(go default/ribbon-entity)])
