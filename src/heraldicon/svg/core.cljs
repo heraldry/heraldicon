@@ -31,6 +31,8 @@
   (walk/postwalk
    (fn [v]
      (get {:pattern-units :patternUnits
+           :patternunits :patternUnits
+           :patterntransform :patternTransform
            :gradientunits :gradientUnits
            :xlink:href :href
            :gradienttransform :gradientTransform
