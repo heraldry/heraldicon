@@ -241,10 +241,14 @@
            total-count (count all-items)
            filtered-count (count filtered-items)]
        [:div {:style {:display "inline"
-                      :margin-left "0.5em"}}
+                      :margin-left "1em"}}
         (if (= filtered-count total-count)
           (str total-count)
-          (str filtered-count "/" total-count))]))
+          (str filtered-count "/" total-count))
+        " "
+        [tr (if (= filtered-count 1)
+              :string.miscellaneous/item
+              :string.miscellaneous/items)]]))
    :on-error (fn [_])
    :on-default (fn [_])))
 

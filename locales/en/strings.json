@@ -603,6 +603,8 @@
     "fields": "fields",
     "general": "General",
     "inherited": "Inherited",
+    "item": "item",
+    "items": "items",
     "left": "Left",
     "loading": "Loading...",
     "show-more": "Show more",
