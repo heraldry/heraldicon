@@ -72,12 +72,17 @@
   (let [data @(rf/subscribe [:get path])
         {arms-id :id
          version :version} (:reference data)
-        {:keys [_status entity]} (when arms-id
-                                   @(rf/subscribe [::entity-for-rendering/data arms-id version]))
+        {:keys [status entity]
+         data-path :path} (when arms-id
+                            @(rf/subscribe [::entity-for-rendering/data arms-id version]))
+        entity-path (when data-path
+                      (conj data-path :entity))
         collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
         context (-> shared/coa-select-option-context
                     (c/<< :coat-of-arms-target-width size)
-                    (c/<< :path [:context :coat-of-arms])
+                    (c/<< :path (if (= status :done)
+                                  (conj entity-path :data :achievement :coat-of-arms)
+                                  [:ui :empty-coat-of-arms]))
                     (c/<< :render-options (merge-with
                                            (fn [old new]
                                              (if (nil? new)
@@ -85,11 +90,7 @@
                                                new))
                                            (:render-options shared/coa-select-option-context)
                                            (-> entity :data :achievement :render-options)
-                                           collection-render-options))
-                    (c/<< :coat-of-arms
-                          (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
-                            coat-of-arms
-                            default/coat-of-arms)))
+                                           collection-render-options)))
         bounding-box (interface/get-bounding-box context)
         [width height] (bb/size bounding-box)]
     [:g
@@ -183,13 +184,17 @@
     (let [arms-reference @(rf/subscribe [:get (conj form-db-path :data :elements selected-element-index :reference)])
           {arms-id :id
            version :version} arms-reference
-          {:keys [status entity]} (when arms-id
-                                    @(rf/subscribe [::entity-for-rendering/data arms-id version]))
+          {:keys [status entity path]} (when arms-id
+                                         @(rf/subscribe [::entity-for-rendering/data arms-id version]))
+          entity-path (when path
+                        (conj path :entity))
           collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})]
       (when (or (not arms-id)
                 (= status :done))
         (let [context (-> shared/coa-select-option-context
-                          (c/<< :path [:context :coat-of-arms])
+                          (c/<< :path (if (= status :done)
+                                        (conj entity-path :data :achievement :coat-of-arms)
+                                        [:ui :empty-coat-of-arms]))
                           (c/<< :render-options (merge-with
                                                  (fn [old new]
                                                    (if (nil? new)
@@ -197,17 +202,12 @@
                                                      new))
                                                  (:render-options shared/coa-select-option-context)
                                                  (-> entity :data :achievement :render-options)
-                                                 collection-render-options))
-                          (c/<< :coat-of-arms
-                                (if-let [coat-of-arms (-> entity :data :achievement :coat-of-arms)]
-                                  coat-of-arms
-                                  default/coat-of-arms)))
+                                                 collection-render-options)))
               bounding-box (interface/get-bounding-box context)]
           [:<>
            (when arms-id
              [:div.attribution
-              [attribution/for-arms {:path [:context :arms]
-                                     :arms entity}]])
+              [attribution/for-entity {:path entity-path}]])
            [:svg {:id "svg"
                   :style {:width "100%"}
                   :viewBox (-> bounding-box

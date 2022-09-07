@@ -354,12 +354,6 @@
                     :white-space "nowrap"}}
         [tr :string.miscellaneous/svg-file]])]))
 
-(defn- attribution [form-db-path]
-  (let [attribution-data (attribution/for-charge {:path form-db-path})]
-    [:div.attribution
-     [:h3 [tr :string.attribution/license]]
-     attribution-data]))
-
 (defn- charge-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
@@ -375,7 +369,7 @@
     [message/display entity-type]
     [buttons/buttons entity-type
      [svg-buttons form-db-path]]
-    [attribution form-db-path]]
+    [attribution/attribution {:path form-db-path}]]
    [:<>
     [history/buttons form-db-path]
     [tree/tree [form-db-path

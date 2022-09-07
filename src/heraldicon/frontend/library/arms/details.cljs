@@ -6,7 +6,6 @@
    [heraldicon.context :as c]
    [heraldicon.entity.arms :as entity.arms]
    [heraldicon.frontend.attribution :as attribution]
-   [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
@@ -18,7 +17,6 @@
    [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.library.arms.shared :refer [entity-type base-context]]
    [heraldicon.frontend.message :as message]
-   [heraldicon.frontend.ribbon :as ribbon]
    [heraldicon.frontend.title :as title]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
@@ -40,34 +38,10 @@
     (entity.arms/used-ribbons data)))
 
 (defn- charge-attribution [form-db-path]
-  (let [used-charges @(rf/subscribe [::used-charge-variants (conj form-db-path :data :achievement)])
-        charges-data (map charge/fetch-charge-data used-charges)]
-    (when (-> charges-data first :id)
-      [:<>
-       [:h3 [tr :string.entity/charges]]
-       (into [:ul]
-             (keep (fn [charge]
-                     (when (:id charge)
-                       ^{:key charge}
-                       [:li [attribution/for-charge
-                             {:path [:context :charge-data]
-                              :charge-data charge}]])))
-             charges-data)])))
+  [attribution/for-entities @(rf/subscribe [::used-charge-variants (conj form-db-path :data :achievement)])])
 
 (defn- ribbon-attribution [form-db-path]
-  (let [used-ribbons @(rf/subscribe [::used-ribbons (conj form-db-path :data :achievement)])
-        ribbons-data (map ribbon/fetch-ribbon-data used-ribbons)]
-    (when (-> ribbons-data first :id)
-      [:<>
-       [:h3 [tr :string.menu/ribbon-library]]
-       (into [:ul]
-             (keep (fn [ribbon]
-                     (when (:id ribbon)
-                       ^{:key ribbon}
-                       [:li [attribution/for-ribbon
-                             {:path [:context :ribbon-data]
-                              :ribbon-data ribbon}]])))
-             ribbons-data)])))
+  [attribution/for-entities @(rf/subscribe [::used-ribbons (conj form-db-path :data :achievement)])])
 
 (defn- escutcheon-attribution []
   (let [context (c/++ base-context :data :achievement)]
@@ -76,13 +50,10 @@
      [attribution/for-escutcheon context]]))
 
 (defn- attribution [form-db-path]
-  (let [attribution-data (attribution/for-arms {:path form-db-path})]
-    [:div.attribution
-     [:h3 [tr :string.attribution/license]]
-     attribution-data
-     [charge-attribution form-db-path]
-     [ribbon-attribution form-db-path]
-     [escutcheon-attribution]]))
+  [attribution/attribution {:path form-db-path}
+   [charge-attribution form-db-path]
+   [ribbon-attribution form-db-path]
+   [escutcheon-attribution]])
 
 (defn- blazonry [form-db-path]
   [:div.blazonry
