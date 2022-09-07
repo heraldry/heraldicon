@@ -51,9 +51,6 @@
                                                       cur
                                                       def)))
                                              vec)))))
-          (update-in path #(merge %
-                                  (options/sanitize-or-nil % (interface/options {:path [:context :dummy]
-                                                                                 :dummy %}))))
           (update-in path dissoc :tincture)))))
 
 (macros/reg-event-db ::set
