@@ -11,13 +11,10 @@
 
 (defn- generate-url [db entity-type]
   (let [form-db-path (form/data-path entity-type)
-        context {:path (into [:context :db] form-db-path)
-                 :db db}]
-    (case entity-type
-      :heraldicon.entity.type/arms (entity.arms/short-url (get-in db form-db-path))
-      :heraldicon.entity.type/charge (entity.attribution/full-url-for-charge context)
-      :heraldicon.entity.type/ribbon (entity.attribution/full-url-for-ribbon context)
-      :heraldicon.entity.type/collection (entity.attribution/full-url-for-collection context))))
+        entity-data (get-in db form-db-path)]
+    (if (= entity-type :heraldicon.entity.type/arms)
+      (entity.arms/short-url entity-data)
+      (entity.attribution/full-url-for-entity-data entity-data))))
 
 (rf/reg-event-fx ::invoke
   (fn [{:keys [db]} [_ entity-type]]

@@ -69,12 +69,7 @@
        (let [attribution (interface/get-sanitized-data (c/++ context :attribution))
              title (interface/get-raw-data (c/++ context :name))
              username (interface/get-raw-data (c/++ context :username))
-             entity-type (interface/get-raw-data (c/++ context :type))
-             url (case entity-type
-                   :heraldicon.entity.type/arms (attribution/full-url-for-arms context)
-                   :heraldicon.entity.type/charge (attribution/full-url-for-charge context)
-                   :heraldicon.entity.type/collection (attribution/full-url-for-collection context)
-                   :heraldicon.entity.type/ribbon (attribution/full-url-for-ribbon context))]
+             url (attribution/full-url-for-entity context)]
          [credits (assoc attribution
                          :title title
                          :username username
