@@ -28,7 +28,9 @@
    #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/charge])
    :predicate-fn (partial owned-by-user? username)
    :remove-empty-groups? true
-   :hide-ownership-filter? true])
+   :hide-ownership-filter? true
+   :default-list-mode :small
+   :list-id [:charges-for-user-list username]])
 
 (defn- view-arms-for-user [username]
   [arms-select/component
@@ -36,7 +38,9 @@
    library.arms.list/on-select
    #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/arms])
    :predicate-fn (partial owned-by-user? username)
-   :hide-ownership-filter? true])
+   :hide-ownership-filter? true
+   :default-list-mode :small
+   :list-id [:arms-for-user-list username]])
 
 (defn- view-collections-for-user [username]
   [collection-select/component
@@ -45,7 +49,9 @@
    #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])
    :predicate-fn (partial owned-by-user? username)
    :remove-empty-groups? true
-   :hide-ownership-filter? true])
+   :hide-ownership-filter? true
+   :default-list-mode :small
+   :list-id [:collections-for-user-list username]])
 
 (defn- user-display [username]
   (status/default
