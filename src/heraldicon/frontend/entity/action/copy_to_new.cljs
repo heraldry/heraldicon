@@ -25,7 +25,7 @@
               :license license
               :license-version license-version
               :source-name source-name
-              :source-link (attribution/full-url-for-entity source-id source-version)
+              :source-link (attribution/full-url-for-entity-data source-entity)
               :source-license license
               :source-license-version license-version
               :source-creator-name creator

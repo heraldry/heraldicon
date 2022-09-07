@@ -145,31 +145,21 @@
 (defn- full-url-raw [base entity-id version]
   (str (config/get :heraldicon-url) base (id/for-url entity-id) "/" version))
 
-(defn- full-url [context base]
+(defn- base-path [entity-type]
+  (case entity-type
+    :heraldicon.entity.type/arms "/arms/"
+    :heraldicon.entity.type/charge "/charges/"
+    :heraldicon.entity.type/collection "/collections/"
+    :heraldicon.entity.type/ribbon "/ribbons/"))
+
+(defn full-url-for-entity [context]
   (when-let [entity-id (interface/get-raw-data (c/++ context :id))]
-    (let [version (interface/get-raw-data (c/++ context :version))]
-      (full-url-raw base entity-id version))))
-
-(defn full-url-for-arms [context]
-  (full-url context "/arms/"))
-
-(defn full-url-for-collection [context]
-  (full-url context "/collections/"))
-
-(defn full-url-for-charge [context]
-  (full-url context "/charges/"))
-
-(defn full-url-for-ribbon [context]
-  (full-url context "/ribbons/"))
+    (let [entity-type (interface/get-raw-data (c/++ context :type))
+          version (interface/get-raw-data (c/++ context :version))]
+      (full-url-raw (base-path entity-type) entity-id version))))
 
 (defn full-url-for-username [username]
   (str (config/get :heraldicon-url) "/users/" username))
 
-(defn full-url-for-entity [entity-id version]
-  (full-url-raw
-   (case (id/type-from-id entity-id)
-     :heraldicon.entity.type/arms "/arms/"
-     :heraldicon.entity.type/charge "/charges/"
-     :heraldicon.entity.type/ribbon "/ribbons/"
-     :heraldicon.entity.type/collection "/collections/")
-   entity-id version))
+(defn full-url-for-entity-data [{:keys [id version type]}]
+  (full-url-raw (base-path type) id version))

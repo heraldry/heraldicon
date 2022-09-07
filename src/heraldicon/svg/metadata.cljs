@@ -58,14 +58,10 @@
            [:cc:attributionName source-creator-name]
            [:cc:attributionURL {:rdf:resource source-creator-link}]]]))]))
 
-;; TODO: attribution type can be grabbed from (c/++ context :type)
-(defn attribution [context attribution-type]
+(defn attribution [context]
   (let [username (interface/get-raw-data (c/++ context :username))
         creator-url (attribution/full-url-for-username username)
-        url (case attribution-type
-              :arms (attribution/full-url-for-arms context)
-              :charge (attribution/full-url-for-charge context)
-              :ribbon (attribution/full-url-for-ribbon context))]
+        url (attribution/full-url-for-entity context)]
     [actual-attribution
      (interface/get-raw-data (c/++ context :name))
      username
