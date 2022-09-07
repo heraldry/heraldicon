@@ -127,4 +127,6 @@
            :selected-item variant
            :favour-heraldicon? true
            :initial-sorting-mode :name
-           :display-selected-item? true]]]]])))
+           :display-selected-item? true
+           :default-list-mode :small
+           :list-id :charge-type-select]]]]])))

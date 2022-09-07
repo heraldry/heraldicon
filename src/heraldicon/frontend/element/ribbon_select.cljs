@@ -5,10 +5,11 @@
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]))
 
-(defn- component [ribbons-subscription on-select refresh-fn & {:keys [display-selected-item?]
+(defn- component [ribbons-subscription on-select refresh-fn & {:keys [display-selected-item?
+                                                                      list-id]
                                                                :as options}]
   [filter/component
-   :ribbon-list
+   (or list-id :ribbon-list)
    @(rf/subscribe [::session/data])
    ribbons-subscription
    [:name :username :metadata :tags]

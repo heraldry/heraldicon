@@ -961,10 +961,19 @@ li.ui-menu-header {
   gap: 15px;
 }
 
+.filter-results.small {
+  gap: 5px;
+}
+
 .filter-result-card-wrapper {
   display: inline-block;
   width: 300px;
   height: 300px;
+}
+
+.small .filter-result-card-wrapper {
+  width: 100px;
+  height: 100px;
 }
 
 .filter-result-card {
@@ -973,6 +982,13 @@ li.ui-menu-header {
   border-radius: 15px;
   background-color: #fff;
   filter: drop-shadow(rgb(200, 200, 200) 0px 0px 5px);
+}
+
+.small .filter-result-card {
+  width: 100px;
+  height: 100px;
+  border-radius: 0;
+  filter: none;
 }
 
 .filter-result-card.selected {
@@ -1015,6 +1031,11 @@ li.ui-menu-header {
   height: 215px;
   text-decoration: none;
   cursor: pointer;
+}
+
+.small .filter-result-card-preview {
+  width: 100px;
+  height: 100px;
 }
 
 .filter-result-card-access {

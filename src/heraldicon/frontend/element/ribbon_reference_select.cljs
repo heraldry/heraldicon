@@ -91,4 +91,5 @@
           :selected-item entity
           :favour-heraldicon? true
           :initial-sorting-mode :name
-          :display-selected-item? true]]]])))
+          :display-selected-item? true
+          :list-id :ribbons-reference-select]]]])))

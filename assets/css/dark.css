@@ -132,6 +132,11 @@
   filter: drop-shadow(#888 0px 0px 5px);
 }
 
+.dark .small .filter-result-card {
+  background-color: #222;
+  filter: none;
+}
+
 .dark table {
   color: #ccc;
 }
