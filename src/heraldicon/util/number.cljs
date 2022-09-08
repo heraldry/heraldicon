@@ -85,7 +85,8 @@
 (defn- ordinal-plain [s]
   (when-let [s (some-> s s/trim)]
     (cond
-      (s/ends-with? s ".") (from-string (subs s 0 (dec (count s))))
+      (or (s/ends-with? s ".")
+          (s/ends-with? s ":")) (from-string (subs s 0 (dec (count s))))
       (or (s/ends-with? s "st")
           (s/ends-with? s "nd")
           (s/ends-with? s "rd")
