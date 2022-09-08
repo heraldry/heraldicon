@@ -25,7 +25,7 @@
       choice)))
 
 (defmethod element/element :ui.element/escutcheon-select [context]
-  (when-let [option (interface/get-relevant-options context)]
+  (when-let [option (interface/get-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [inherited default choices]
            :ui/keys [label]} option

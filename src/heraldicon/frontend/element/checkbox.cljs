@@ -10,7 +10,7 @@
 
 (defn checkbox [context & {:keys [disabled? on-change style option]}]
   (when-let [option (or option
-                        (interface/get-relevant-options context))]
+                        (interface/get-options context))]
     (let [component-id (uid/generate "checkbox")
           {:keys [inherited default]
            :ui/keys [label tooltip]} option

@@ -21,7 +21,7 @@
         variant (interface/get-raw-data (-> context c/-- (c/++ :variant)))]
     (when (or preview?
               variant)
-      (let [options (interface/get-relevant-options context)
+      (let [options (interface/get-options context)
             {:ui/keys [label]} options
             tincture-data (interface/get-raw-data context)
             sanitized-tincture-data (merge tincture-data

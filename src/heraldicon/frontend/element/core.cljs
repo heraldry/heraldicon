@@ -11,11 +11,11 @@
 
 (defmulti element (fn [context]
                     (let [{:keys [type]
-                           :ui/keys [element]} (interface/get-relevant-options context)]
+                           :ui/keys [element]} (interface/get-options context)]
                       (or element (get default-element type)))))
 
 (defmethod element nil [context]
-  (when-let [options (interface/get-relevant-options context)]
+  (when-let [options (interface/get-options context)]
     [:div (str "not implemented: " context options)]))
 
 (defn elements [context options]

@@ -71,7 +71,7 @@
       choice)))
 
 (defn tincture-select [context & {:keys [default-option]}]
-  (when-let [option (or (interface/get-relevant-options context)
+  (when-let [option (or (interface/get-options context)
                         default-option)]
     (let [current-value (interface/get-raw-data context)
           {:keys [choices]

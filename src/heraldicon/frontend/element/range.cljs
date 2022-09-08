@@ -13,7 +13,7 @@
   (let [tmp-value (r/atom nil)
         focused? (r/atom false)]
     (fn [context & {:keys [value on-change disabled?]}]
-      (when-let [option (interface/get-relevant-options context)]
+      (when-let [option (interface/get-options context)]
         (let [component-id (uid/generate "range")
               current-value (interface/get-raw-data context)
               {:keys [inherited default min max]

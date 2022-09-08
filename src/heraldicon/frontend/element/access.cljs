@@ -7,7 +7,7 @@
    [re-frame.core :as rf]))
 
 (defmethod element/element :ui.element/access [context]
-  (when-let [option (interface/get-relevant-options context)]
+  (when-let [option (interface/get-options context)]
     (let [component-id (uid/generate "access")
           {:keys [default]
            :ui/keys [label]} option

@@ -17,7 +17,7 @@
           (assoc-in height-path height)))))
 
 (defmethod element/element :ui.element/flag-aspect-ratio-preset-select [context]
-  (when-let [option (interface/get-relevant-options context)]
+  (when-let [option (interface/get-options context)]
     (let [choices (:choices option)
           {:ui/keys [label]} option]
       [select/raw-select context :none label choices

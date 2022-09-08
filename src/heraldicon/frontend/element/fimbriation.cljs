@@ -31,7 +31,7 @@
     (string/upper-case-first (string/combine ", " changes))))
 
 (defmethod element/element :ui.element/fimbriation [context]
-  (when-let [options (interface/get-relevant-options context)]
+  (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
           link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting

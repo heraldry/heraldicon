@@ -32,7 +32,7 @@
       (string/upper-case-first (string/combine ", " changes)))))
 
 (defmethod element/element :ui.element/semy-layout [context]
-  (when-let [options (interface/get-relevant-options context)]
+  (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
           link-name @(rf/subscribe [::link-name context])]
       [:div.ui-setting
