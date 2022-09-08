@@ -153,29 +153,38 @@
                new-references] (split-with
                                 #(get result %)
                                 integer-references)
-              first-new-reference (first new-references)]
-          (doseq [reference seen-references]
-            (assoc! result reference
-                    (conj (get result reference [])
-                          field)))
-          (when first-new-reference
-            (assoc! result first-new-reference
-                    (conj (get result first-new-reference [])
-                          field))
-            (doseq [reference (rest new-references)]
-              (assoc! result reference
-                      (conj (get result reference [])
-                            (if (< reference num-mandatory-fields)
-                              field
-                              first-new-reference))))))
-
-        (let [keyword-references (filter keyword? references)]
-          (doseq [reference keyword-references]
-            (assoc! result reference
-                    (conj (get result reference [])
-                          field))))
-
-        result)
+              first-new-reference (first new-references)
+              result (loop [result result
+                            [reference & rest] seen-references]
+                       (if reference
+                         (recur (assoc! result reference
+                                        (conj (get result reference [])
+                                              field))
+                                rest)
+                         result))
+              result (if first-new-reference
+                       (loop [result (assoc! result first-new-reference
+                                             (conj (get result first-new-reference [])
+                                                   field))
+                              [reference & rest] (rest new-references)]
+                         (if reference
+                           (recur (assoc! result reference
+                                          (conj (get result reference [])
+                                                (if (< reference num-mandatory-fields)
+                                                  field
+                                                  first-new-reference)))
+                                  rest)
+                           result))
+                       result)
+              keyword-references (filter keyword? references)]
+          (loop [result result
+                 [reference & rest] keyword-references]
+            (if reference
+              (recur (assoc! result reference
+                             (conj (get result reference [])
+                                   field))
+                     rest)
+              result))))
       (transient {})
       fields))))
 
