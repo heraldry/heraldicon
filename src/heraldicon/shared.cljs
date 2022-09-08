@@ -27,6 +27,6 @@
    [heraldicon.heraldry.semy]
    [heraldicon.heraldry.subfield]
    [heraldicon.heraldry.tincture]
-   [heraldicon.render.options]))
+   [heraldicon.render.shared]))
 
 (.setup paper (new Size 500 500))
