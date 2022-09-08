@@ -448,6 +448,10 @@
               :fimbriation-shape fimbriation-shape
               :reverse-transform reverse-transform
               :scale (/ 1 scale-x)]
+             [svg.metadata/attribution
+              {:path [:context :charge-data]
+               :charge-data charge-entity}
+              :charge]
              (cond
                preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)
                                    highlight-colours? (replace-colours
@@ -457,10 +461,6 @@
                landscape? unadjusted-charge
                highlight-colours? adjusted-charge
                :else [:g
-                      [svg.metadata/attribution
-                       {:path [:context :charge-data]
-                        :charge-data charge-entity}
-                       :charge]
                       (when (= outline-mode :keep)
                         [:g {:mask (str "url(#" mask-base-id ")")}
                          [:rect {:transform reverse-transform
