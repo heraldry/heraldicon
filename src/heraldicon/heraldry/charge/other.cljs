@@ -198,9 +198,9 @@
 (derive :heraldry.charge.type/other :heraldry/charge)
 
 (defmethod interface/properties :heraldry.charge.type/other [{:keys [load-charge-data] :as context}]
-  (let [data (interface/get-raw-data (c/++ context :data))
-        variant (interface/get-raw-data (c/++ context :variant))
-        charge-entity (or data (when variant (load-charge-data variant)))
+  (let [variant (interface/get-raw-data (c/++ context :variant))
+        {charge-entity :entity
+         entity-path :path} (when variant (load-charge-data variant))
         charge-data (-> charge-entity :data :edn-data)
         base-width (js/parseFloat (-> charge-data :width (or "1")))
         base-height (js/parseFloat (-> charge-data :height (or "1")))
@@ -216,10 +216,11 @@
       :base-height base-height
       :other? true
       :charge-entity charge-entity
+      :charge-entity-path entity-path
       :unadjusted-charge unadjusted-charge})))
 
 (defn render [context {:keys [anchor-point scale-x scale-y angle top-left unadjusted-charge
-                              charge-entity]}]
+                              charge-entity charge-entity-path]}]
   (let [{:keys [self-below-shield?
                 render-pass-below-shield?
                 ui-show-colours
@@ -448,10 +449,7 @@
               :fimbriation-shape fimbriation-shape
               :reverse-transform reverse-transform
               :scale (/ 1 scale-x)]
-             [svg.metadata/attribution
-              {:path [:context :charge-data]
-               :charge-data charge-entity}
-              :charge]
+             [svg.metadata/attribution {:path charge-entity-path}]
              (cond
                preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)
                                    highlight-colours? (replace-colours
