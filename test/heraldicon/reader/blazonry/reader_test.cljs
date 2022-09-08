@@ -678,6 +678,73 @@
       "Fields not found in partition: XIX., chief"
       "Field for partition mentioned more than once: I."]}
 
+    "quarterly of 5x6 or and azure"
+    {:type :heraldry.field.type/quarterly
+     :layout {:num-fields-x 5
+              :num-fields-y 6}
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}
+              {:type :heraldry.subfield.type/reference
+               :index 0}
+              {:type :heraldry.subfield.type/reference
+               :index 1}]}
+
     "per pale chief or, base azure"
     {:type :heraldry.field.type/per-pale
      :fields [{:type :heraldry.subfield.type/field
