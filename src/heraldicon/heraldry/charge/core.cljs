@@ -22,7 +22,7 @@
                     (update :blazonry dissoc :part-of-charge-group?)
                     (update :blazonry dissoc :pluralize?))
         charge-data (when variant
-                      (load-charge-data variant))
+                      (:entity (load-charge-data variant)))
         fixed-tincture (-> charge-data
                            :fixed-tincture
                            (or :none)
