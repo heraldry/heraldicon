@@ -43,9 +43,7 @@
           component-type))
       component-type)))
 
-(defmulti options (fn [{:keys [dispatch-value] :as context}]
-                    (or dispatch-value
-                        (effective-component-type context))))
+(defmulti options effective-component-type)
 
 (defmethod options :default [_context]
   nil)
