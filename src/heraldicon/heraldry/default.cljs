@@ -58,11 +58,7 @@
    :field field})
 
 (def render-options
-  {:type :heraldry/render-options
-   :mode :colours
-   :outline? false
-   :squiggly? false
-   :escutcheon-shadow? true})
+  {:type :heraldry/render-options})
 
 (def helmet
   {:type :heraldry.charge.type/helmet
@@ -249,9 +245,9 @@
   {:type :heraldicon.entity.collection/data
    :num-columns 6
    :elements []
-   :render-options (-> render-options
-                       (dissoc :escutcheon-shadow?)
-                       (assoc :escutcheon-outline? true))})
+   :render-options (assoc render-options
+                          :escutcheon-shadow? false
+                          :escutcheon-outline? true)})
 
 (def collection-element
   {:type :heraldicon.entity.collection/element})

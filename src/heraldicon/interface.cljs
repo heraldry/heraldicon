@@ -2,8 +2,10 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.component :as component]
+   [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.environment :as field.environment]
    [heraldicon.options :as options]
+   [heraldicon.render.options :as render.options]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
@@ -100,8 +102,18 @@
         (or (options context)
             (get (get-options (c/-- context)) (last path)))))))
 
-(defn render-option [key {:keys [render-options-path] :as context}]
-  (get-sanitized-data (c/<< context :path (conj render-options-path key))))
+(defn render-option [key {:keys [render-options-path
+                                 override-render-options-path] :as context}]
+  (let [override-value (when override-render-options-path
+                         (let [value @(rf/subscribe [:get (conj override-render-options-path key)])]
+                           ;; treat :none as nil
+                           (when (not= value :none)
+                             value)))]
+    (if (some? override-value)
+      override-value
+      (if render-options-path
+        (get-sanitized-data (c/<< context :path (conj render-options-path key)))
+        (get (options/sanitize-value-or-data default/render-options (render.options/build nil)) key)))))
 
 (defmulti render-component effective-component-type)
 

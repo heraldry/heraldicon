@@ -42,10 +42,6 @@
 (def ^:private ribbon-max-y
   (/ preview-height 2))
 
-(def ^:private render-context
-  {:render-options default/render-options
-   :render-options-path [:context :render-options]})
-
 (macros/reg-event-db ::edit-remove-point
   (fn [db [_ path]]
     (let [points-path (-> path drop-last vec)
@@ -314,8 +310,7 @@
         [grid-lines width height 20 20])
 
       [:g {:transform (str "translate(" (/ width 2) "," (/ height 2) ")")}
-       [render.ribbon/render (assoc render-context
-                                    :path ribbon-path) :argent :none :helmet-dark]
+       [render.ribbon/render {:path ribbon-path} :argent :none :helmet-dark]
        [render-edit-overlay ribbon-path]
 
        (into [:<>]

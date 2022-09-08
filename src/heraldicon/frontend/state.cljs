@@ -10,6 +10,7 @@
 
 (def ^:private db-defaults
   {:example-coa {:render-options (assoc default/render-options
+                                        :escutcheon-shadow? true
                                         :escutcheon :rectangle)
                  :coat-of-arms {:type :heraldry/coat-of-arms
                                 :field {:type :heraldry.field.type/plain

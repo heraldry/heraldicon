@@ -12,10 +12,6 @@
    [heraldicon.heraldry.component :as component]
    [re-frame.core :as rf]))
 
-(def node-context
-  {:render-options {:type :heraldry/render-options}
-   :render-options-path [:context :render-options]})
-
 (defn node-data [{:keys [path] :as context}]
   (merge {:open? @(rf/subscribe [::node-open? path])
           :selected? (= path @(rf/subscribe [::active-node-path]))
@@ -127,16 +123,15 @@
              nodes))]))
 
 (defn tree [paths context]
-  (let [context (or context node-context)]
-    [:div.ui-tree
-     (into [:ul]
-           (map-indexed (fn [idx node-path]
-                          ^{:key idx}
-                          [:li
-                           (if (= node-path :spacer)
-                             [:div {:style {:height "1em"}}]
-                             [node (c/<< context :path node-path)])]))
-           paths)]))
+  [:div.ui-tree
+   (into [:ul]
+         (map-indexed (fn [idx node-path]
+                        ^{:key idx}
+                        [:li
+                         (if (= node-path :spacer)
+                           [:div {:style {:height "1em"}}]
+                           [node (c/<< context :path node-path)])]))
+         paths)])
 
 (def ^:private active-node-path
   [:ui :component-tree :selected-node])

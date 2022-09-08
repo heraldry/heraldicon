@@ -67,37 +67,32 @@
             :fill "#33f8"}]
     [:<>]))
 
-(defn- render-arms [form-db-path x y size path & {:keys [font font-size]
-                                                  :or {font-size 12}}]
-  (let [data @(rf/subscribe [:get path])
-        {arms-id :id
-         version :version} (:reference data)
-        {:keys [status entity]
+(defn- arms-context [form-db-path path]
+  (let [{arms-id :id
+         version :version} @(rf/subscribe [:get (conj path :reference)])
+        {:keys [status]
          data-path :path} (when arms-id
                             @(rf/subscribe [::entity-for-rendering/data arms-id version]))
         entity-path (when data-path
                       (conj data-path :entity))
-        collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
-        context (-> context/default
-                    (c/<< :coat-of-arms-target-width size)
-                    (c/<< :path (if (= status :done)
-                                  (conj entity-path :data :achievement :coat-of-arms)
-                                  [:ui :empty-coat-of-arms]))
-                    (c/<< :render-options-path [:context :render-options])
-                    (c/<< :render-options (merge-with
-                                           (fn [old new]
-                                             (if (nil? new)
-                                               old
-                                               new))
-                                           (assoc default/render-options
-                                                  :outline? true
-                                                  :escutcheon-shadow? true)
-                                           (-> entity :data :achievement :render-options)
-                                           collection-render-options)))
+        loaded? (= status :done)]
+    {:context (-> context/default
+                  (c/<< :path (if loaded?
+                                (conj entity-path :data :achievement :coat-of-arms)
+                                [:ui :empty-coat-of-arms]))
+                  (c/<< :render-options-path (when loaded?
+                                               (conj entity-path :data :achievement :render-options)))
+                  (c/<< :override-render-options-path (conj form-db-path :data :render-options)))
+     :entity-path entity-path}))
+
+(defn- render-arms [form-db-path x y path & {:keys [font font-size]
+                                             :or {font-size 12}}]
+  (let [arms-name @(rf/subscribe [:get (conj path :name)])
+        {:keys [context]} (arms-context form-db-path path)
         bounding-box (interface/get-bounding-box context)
         [width height] (bb/size bounding-box)]
     [:g
-     [:title (:name data)]
+     [:title arms-name]
      [arms-highlight path x y width height]
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
       [interface/render-component context]
@@ -106,7 +101,7 @@
               :text-anchor "middle"
               :style {:font-family font
                       :font-size font-size}}
-       (:name data)]]]))
+       arms-name]]]))
 
 (defn- render-collection [form-db-path & {:keys [allow-adding?]}]
   (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
@@ -158,7 +153,6 @@
                           (* y (+ arms-height
                                   margin))
                           (+ (/ arms-height 2)))
-                       arms-width
                        (conj form-db-path :data :elements idx)
                        :font font]])))
             (range num-elements))
@@ -184,44 +178,20 @@
 
 (defn- render-arms-preview [form-db-path]
   (when-let [selected-element-index (selected-element-index form-db-path)]
-    (let [arms-reference @(rf/subscribe [:get (conj form-db-path :data :elements selected-element-index :reference)])
-          {arms-id :id
-           version :version} arms-reference
-          {:keys [status entity path]} (when arms-id
-                                         @(rf/subscribe [::entity-for-rendering/data arms-id version]))
-          entity-path (when path
-                        (conj path :entity))
-          collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})]
-      (when (or (not arms-id)
-                (= status :done))
-        (let [context (-> context/default
-                          (c/<< :path (if (= status :done)
-                                        (conj entity-path :data :achievement :coat-of-arms)
-                                        [:ui :empty-coat-of-arms]))
-                          (c/<< :render-options-path [:context :render-options])
-                          (c/<< :render-options (merge-with
-                                                 (fn [old new]
-                                                   (if (nil? new)
-                                                     old
-                                                     new))
-                                                 (assoc default/render-options
-                                                        :outline? true
-                                                        :escutcheon-shadow? true)
-                                                 (-> entity :data :achievement :render-options)
-                                                 collection-render-options)))
-              bounding-box (interface/get-bounding-box context)]
-          [:<>
-           (when arms-id
-             [:div.attribution
-              [attribution/for-entity {:path entity-path}]])
-           [:svg {:id "svg"
-                  :style {:width "100%"}
-                  :viewBox (-> bounding-box
-                               (bb/scale 5)
-                               (bb/->viewbox :margin 10))
-                  :preserveAspectRatio "xMidYMin meet"}
-            [:g {:transform "scale(5,5)"}
-             [interface/render-component context]]]])))))
+    (let [{:keys [context
+                  entity-path]} (arms-context form-db-path (conj form-db-path :data :elements selected-element-index))
+          bounding-box (interface/get-bounding-box context)]
+      [:<>
+       (when entity-path
+         [attribution/for-entity {:path entity-path}])
+       [:svg {:id "svg"
+              :style {:width "100%"}
+              :viewBox (-> bounding-box
+                           (bb/scale 5)
+                           (bb/->viewbox :margin 10))
+              :preserveAspectRatio "xMidYMin meet"}
+        [:g {:transform "scale(5,5)"}
+         [interface/render-component context]]]])))
 
 (defn- collection-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default

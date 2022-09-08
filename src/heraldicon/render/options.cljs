@@ -1,9 +1,6 @@
 (ns heraldicon.render.options
   (:require
-   [heraldicon.context :as c]
-   [heraldicon.frontend.entity.form :as form]
    [heraldicon.heraldry.escutcheon :as escutcheon]
-   [heraldicon.interface :as interface]
    [heraldicon.render.mode :as mode]
    [heraldicon.render.scope :as scope]
    [heraldicon.render.texture :as texture]
@@ -11,11 +8,11 @@
 
 (derive :heraldry/render-options :heraldry.options/root)
 
-(defmethod interface/options :heraldry/render-options [context]
-  (let [mode (-> context (c/++ :mode) interface/get-raw-data (or :colours))
-        texture (-> context (c/++ :texture) interface/get-raw-data (or :none))
+(defn build [{:keys [mode texture with-root-escutcheon? escutcheon]}]
+  (let [mode (or mode :colours)
+        texture (or texture :none)
         ;; TODO: path shouldn't be hard-coded
-        escutcheon-option (if (-> context :path (= (conj (form/data-path :heraldicon.entity.type/collection) :data :render-options)))
+        escutcheon-option (if with-root-escutcheon?
                             {:type :option.type/choice
                              :choices escutcheon/choices
                              :default :none
@@ -26,8 +23,7 @@
                              :default :heater
                              :ui/label :string.render-options/escutcheon
                              :ui/element :ui.element/escutcheon-select})
-        escutcheon (-> context (c/++ :escutcheon) interface/get-raw-data
-                       (or (-> escutcheon-option :choices first second)))]
+        escutcheon (or escutcheon (-> escutcheon-option :choices first second))]
     (cond-> {:escutcheon escutcheon-option
 
              :mode {:type :option.type/choice
