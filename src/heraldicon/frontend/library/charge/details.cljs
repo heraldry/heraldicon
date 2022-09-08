@@ -34,8 +34,8 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
-(def ^:private example-coa-db-path
-  [:example-coa])
+(def ^:private preview-db-path
+  [:ui :charge-preview])
 
 (defn- find-colours [data]
   (->> data
@@ -287,7 +287,7 @@
                                  (update :username #(or % (:username @(rf/subscribe [::session/data]))))
                                  (cond->
                                    original? (prepare-for-preview form-db-path)))
-        coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
+        coat-of-arms @(rf/subscribe [:get (conj preview-db-path :coat-of-arms)])
         context (-> context/default
                     (c/<< :path [:context :coat-of-arms])
                     (c/set-render-hint :ui-show-colours
@@ -297,7 +297,7 @@
                                                       (first value))))
                                             set))
                     (c/<< :render-options-path
-                          (conj example-coa-db-path :render-options))
+                          (conj preview-db-path :render-options))
                     (c/<< :coat-of-arms
                           (assoc-in coat-of-arms
                                     [:field :components 0 :data] prepared-charge-data))
@@ -359,7 +359,7 @@
                 (conj form-db-path :name)
                 :string.text.title/create-charge])
   (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path
-                                                              example-coa-db-path]])
+                                                              preview-db-path]])
   (layout/three-columns
    [:<>
     [preview form-db-path :original? true]
@@ -374,9 +374,9 @@
     [history/buttons form-db-path]
     [tree/tree [form-db-path
                 :spacer
-                (conj example-coa-db-path :render-options)
+                (conj preview-db-path :render-options)
                 :spacer
-                (conj example-coa-db-path :coat-of-arms :field :components 0)]]
+                (conj preview-db-path :coat-of-arms :field :components 0)]]
     [preview form-db-path]]))
 
 (defn create-view []
