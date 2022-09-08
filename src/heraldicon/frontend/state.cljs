@@ -10,6 +10,19 @@
 
 (def ^:private db-defaults
   {:ui {:empty-coat-of-arms default/coat-of-arms
+        :charge-original {:render-options (assoc default/render-options
+                                                 :escutcheon-shadow? true
+                                                 :escutcheon :rectangle)
+                          :coat-of-arms {:type :heraldry/coat-of-arms
+                                         :field {:type :heraldry.field.type/plain
+                                                 :tincture :argent
+                                                 :components [{:type :heraldry.charge.type/preview
+                                                               :variant {:id :form-data-original
+                                                                         :version :form-data-original}
+                                                               :preview? true
+                                                               :field {:type :heraldry.field.type/plain
+                                                                       :tincture :azure}
+                                                               :geometry {:size 95}}]}}}
         :charge-preview {:render-options (assoc default/render-options
                                                 :escutcheon-shadow? true
                                                 :escutcheon :rectangle)
@@ -17,6 +30,8 @@
                                         :field {:type :heraldry.field.type/plain
                                                 :tincture :argent
                                                 :components [{:type :heraldry.charge.type/preview
+                                                              :variant {:id :form-data
+                                                                        :version :form-data}
                                                               :preview? true
                                                               :ignore-layer-separator? true
                                                               :field {:type :heraldry.field.type/plain

@@ -15,6 +15,7 @@
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.core :as entity]
    [heraldicon.frontend.entity.details :as details]
+   [heraldicon.frontend.entity.form :as entity.form]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
@@ -36,6 +37,9 @@
 
 (def ^:private preview-db-path
   [:ui :charge-preview])
+
+(def ^:private original-preview-db-path
+  [:ui :charge-original])
 
 (defn- find-colours [data]
   (->> data
@@ -281,28 +285,27 @@
                                   element))
                               charge-data))))
 
-(defn- preview [form-db-path & {:keys [original?]}]
-  (let [form-data @(rf/subscribe [:get form-db-path])
-        prepared-charge-data (-> form-data
-                                 (update :username #(or % (:username @(rf/subscribe [::session/data]))))
-                                 (cond->
-                                   original? (prepare-for-preview form-db-path)))
-        coat-of-arms @(rf/subscribe [:get (conj preview-db-path :coat-of-arms)])
+(rf/reg-sub ::original-charge-data
+  (fn [_ _]
+    (rf/subscribe [:get (entity.form/data-path :heraldicon.entity.type/charge)]))
+
+  (fn [data _]
+    (prepare-for-preview data (entity.form/data-path :heraldicon.entity.type/charge))))
+
+(defn- preview [& {:keys [original?]}]
+  (let [base-path (if original?
+                    original-preview-db-path
+                    preview-db-path)
         context (-> context/default
-                    (c/<< :path [:context :coat-of-arms])
-                    (c/set-render-hint :ui-show-colours
-                                       (->> @(rf/subscribe [:get show-colours-path])
-                                            (keep (fn [value]
-                                                    (when (second value)
-                                                      (first value))))
-                                            set))
-                    (c/<< :render-options-path
-                          (conj preview-db-path :render-options))
-                    (c/<< :coat-of-arms
-                          (assoc-in coat-of-arms
-                                    [:field :components 0 :data] prepared-charge-data))
-                    (c/set-render-hint :charge-preview? true)
-                    (c/set-render-hint :preview-original? original?))
+                    (c/<< :path (conj base-path :coat-of-arms))
+                    (c/<< :render-options-path (conj base-path :render-options))
+                    (c/set-render-hint :ui-show-colours (->> @(rf/subscribe [:get show-colours-path])
+                                                             (keep (fn [value]
+                                                                     (when (second value)
+                                                                       (first value))))
+                                                             set)
+                                       :charge-preview? true
+                                       :preview-original? original?))
         bounding-box (interface/get-bounding-box context)]
     [:svg {:viewBox (-> bounding-box
                         (bb/scale 5)
@@ -362,7 +365,7 @@
                                                               preview-db-path]])
   (layout/three-columns
    [:<>
-    [preview form-db-path :original? true]
+    [preview :original? true]
     [edit-controls]]
    [:<>
     [form/active]
@@ -377,7 +380,7 @@
                 (conj preview-db-path :render-options)
                 :spacer
                 (conj preview-db-path :coat-of-arms :field :components 0)]]
-    [preview form-db-path]]))
+    [preview]]))
 
 (defn create-view []
   [details/create-view entity-type charge-form #(go default/charge-entity)])
