@@ -12,8 +12,7 @@
   [:copy-data entity-type])
 
 (defn- set-attribution [entity source-entity set-attribution?]
-  (let [{source-id :id
-         source-version :version} source-entity
+  (let [{source-id :id} source-entity
         {:keys [license license-version]} (:attribution source-entity)
         {:keys [attribution]
          creator :username
