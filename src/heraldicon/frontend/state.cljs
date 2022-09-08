@@ -39,10 +39,7 @@
                                                                         :pommeled :gules
                                                                         :shadow 1.0
                                                                         :highlight 1.0})}]}}}
-   :ui {:charge-tree {:show-public? true
-                      :show-own? true}
-        :empty-coat-of-arms default/coat-of-arms
-        :component-tree {}}})
+   :ui {:empty-coat-of-arms default/coat-of-arms}})
 
 (macros/reg-event-db ::initialize
   (fn [db [_ crawler?]]
