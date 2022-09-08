@@ -264,11 +264,15 @@
         layout (transform-first #{:layout
                                   :horizontal-layout
                                   :vertical-layout} nodes)
-        field-type (if (and (= field-type :heraldry.field.type/gyronny)
-                            layout
-                            (-> layout :num-fields-x (not= 8)))
-                     :heraldry.field.type/gyronny-n
-                     field-type)
+        field-type (cond
+                     (and (= field-type :heraldry.field.type/gyronny)
+                          layout
+                          (-> layout :num-fields-x (not= 8))) :heraldry.field.type/gyronny-n
+                     (and (= field-type :heraldry.field.type/quartered)
+                          layout
+                          (or (-> layout :num-fields-x (not= 2))
+                              (-> layout :num-fields-y (not= 2)))) :heraldry.field.type/quarterly
+                     :else field-type)
         ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
         default-fields (walk/postwalk
                         (fn [data]

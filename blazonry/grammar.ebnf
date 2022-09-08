@@ -711,6 +711,7 @@ partition
       partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)?
 
     | partition/QUARTERED
+      (OF? layout)?
       enhanced-dehanced*
       partition-field AND+ partition-field (AND+ partition-field)*
 
