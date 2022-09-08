@@ -84,32 +84,16 @@
 
 (defn- ordinal-plain [s]
   (when-let [s (some-> s s/trim)]
-    (when (s/ends-with? s ".")
-      (from-string (subs s 0 (dec (count s)))))))
+    (cond
+      (s/ends-with? s ".") (from-string (subs s 0 (dec (count s))))
+      (or (s/ends-with? s "st")
+          (s/ends-with? s "nd")
+          (s/ends-with? s "rd")
+          (s/ends-with? s "th")) (from-string (subs s 0 (- (count s) 2)))
+      :else nil)))
 
 (def ^:private ordinals
-  {"1st" 1
-   "2nd" 2
-   "3rd" 3
-   "4th" 4
-   "5th" 5
-   "6th" 6
-   "7th" 7
-   "8th" 8
-   "9th" 9
-   "10th" 10
-   "11th" 11
-   "12th" 12
-   "13th" 13
-   "14th" 14
-   "15th" 15
-   "16th" 16
-   "17th" 17
-   "18th" 18
-   "19th" 19
-   "20th" 20
-
-   "first" 1
+  {"first" 1
    "second" 2
    "third" 3
    "fourth" 4
