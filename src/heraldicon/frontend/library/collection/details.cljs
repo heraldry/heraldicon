@@ -8,6 +8,7 @@
    [heraldicon.frontend.component.entity.collection.element :as element]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
+   [heraldicon.frontend.context :as context]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.history.core :as history]
@@ -16,7 +17,6 @@
    [heraldicon.frontend.library.collection.shared :refer [entity-type]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
-   [heraldicon.frontend.shared :as shared]
    [heraldicon.frontend.title :as title]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
@@ -78,17 +78,20 @@
         entity-path (when data-path
                       (conj data-path :entity))
         collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})
-        context (-> shared/coa-select-option-context
+        context (-> context/default
                     (c/<< :coat-of-arms-target-width size)
                     (c/<< :path (if (= status :done)
                                   (conj entity-path :data :achievement :coat-of-arms)
                                   [:ui :empty-coat-of-arms]))
+                    (c/<< :render-options-path [:context :render-options])
                     (c/<< :render-options (merge-with
                                            (fn [old new]
                                              (if (nil? new)
                                                old
                                                new))
-                                           (:render-options shared/coa-select-option-context)
+                                           (assoc default/render-options
+                                                  :outline? true
+                                                  :escutcheon-shadow? true)
                                            (-> entity :data :achievement :render-options)
                                            collection-render-options)))
         bounding-box (interface/get-bounding-box context)
@@ -191,16 +194,19 @@
           collection-render-options (interface/get-raw-data {:path (conj form-db-path :data :render-options)})]
       (when (or (not arms-id)
                 (= status :done))
-        (let [context (-> shared/coa-select-option-context
+        (let [context (-> context/default
                           (c/<< :path (if (= status :done)
                                         (conj entity-path :data :achievement :coat-of-arms)
                                         [:ui :empty-coat-of-arms]))
+                          (c/<< :render-options-path [:context :render-options])
                           (c/<< :render-options (merge-with
                                                  (fn [old new]
                                                    (if (nil? new)
                                                      old
                                                      new))
-                                                 (:render-options shared/coa-select-option-context)
+                                                 (assoc default/render-options
+                                                        :outline? true
+                                                        :escutcheon-shadow? true)
                                                  (-> entity :data :achievement :render-options)
                                                  collection-render-options)))
               bounding-box (interface/get-bounding-box context)]
