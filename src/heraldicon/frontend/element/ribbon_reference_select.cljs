@@ -58,7 +58,7 @@
        [:img.clickable {:src img-url}])]))
 
 (defmethod element/element :ui.element/ribbon-reference-select [context]
-  (when-let [option (interface/get-relevant-options context)]
+  (when-let [option (interface/get-options context)]
     (let [{ribbon-id :id
            version :version} (interface/get-raw-data context)
           {:ui/keys [label]} option

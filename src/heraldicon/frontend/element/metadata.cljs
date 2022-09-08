@@ -53,7 +53,7 @@
     (update-in db (:path context) remove-metadata-name name)))
 
 (defmethod element/element :ui.element/metadata [context]
-  (when-let [options (interface/get-relevant-options context)]
+  (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
           num-metadata (interface/get-list-size context)
           link-name (if (pos? num-metadata)

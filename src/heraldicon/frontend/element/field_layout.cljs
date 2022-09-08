@@ -74,7 +74,7 @@
        value))))
 
 (defmethod element/element :ui.element/field-layout [context]
-  (when-let [options (interface/get-relevant-options context)]
+  (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
           link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting

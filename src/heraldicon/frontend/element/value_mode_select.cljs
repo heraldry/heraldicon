@@ -18,7 +18,7 @@
                 default
                 type
                 choices]
-         :ui/keys [additional-values]} (or (interface/get-relevant-options context)
+         :ui/keys [additional-values]} (or (interface/get-options context)
                                            default-option)
         display-fn (or display-fn
                        (when (= type :option.type/choice)

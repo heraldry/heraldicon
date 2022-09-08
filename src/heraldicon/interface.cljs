@@ -26,10 +26,8 @@
       (reaction value))
     (reaction (f))))
 
-(defn get-raw-data [{:keys [path] :as context}]
-  (cond
-    (-> path first (= :context)) (get-in context (drop 1 path))
-    :else @(rf/subscribe [:get path])))
+(defn get-raw-data [{:keys [path]}]
+  @(rf/subscribe [:get path]))
 
 (defn effective-component-type [context]
   (let [component-type (component/effective-type (get-raw-data (c/++ context :type)))]
@@ -52,22 +50,6 @@
 (defmethod options :default [_context]
   nil)
 
-;; TODO: this is one of the biggest potential bottle necks
-(defn get-relevant-options [{:keys [path] :as context}]
-  (if (-> path first (not= :context))
-    @(rf/subscribe [::options context])
-    (let [[options relative-path] (or (->> (range (count path) 0 -1)
-                                           (keep (fn [idx]
-                                                   (let [option-path (subvec path 0 idx)
-                                                         relative-path (subvec path idx)
-                                                         options (options
-                                                                  (c/<< context :path option-path))]
-                                                     (when options
-                                                       [options relative-path]))))
-                                           first)
-                                      [nil nil])]
-      (get-in options relative-path))))
-
 (rf/reg-sub ::sanitized-data
   (fn [[_ {:keys [path]
            :as context}] _]
@@ -77,17 +59,11 @@
   (fn [[data options] [_ _context]]
     (options/sanitize-value-or-data data options)))
 
-(defn get-sanitized-data [{:keys [path] :as context}]
-  (if (-> path first (= :context))
-    (let [data (get-raw-data context)
-          options (get-relevant-options context)]
-      (options/sanitize-value-or-data data options))
-    @(rf/subscribe [::sanitized-data context])))
+(defn get-sanitized-data [context]
+  @(rf/subscribe [::sanitized-data context]))
 
-(defn get-list-size [{:keys [path] :as context}]
-  (if (-> path first (= :context))
-    (count (get-in context (drop 1 path)))
-    @(rf/subscribe [:get-list-size path])))
+(defn get-list-size [{:keys [path]}]
+  @(rf/subscribe [:get-list-size path]))
 
 (defn get-options [context]
   @(rf/subscribe [::options (c/scrub-render-hints context)]))

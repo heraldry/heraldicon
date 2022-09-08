@@ -25,7 +25,7 @@
 
 (defn radio-select [context & {:keys [on-change option style]}]
   (when-let [option (or option
-                        (interface/get-relevant-options context))]
+                        (interface/get-options context))]
     (let [current-value (interface/get-raw-data context)
           {:keys [inherited default choices]
            :ui/keys [label]} option

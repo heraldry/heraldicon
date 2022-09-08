@@ -19,7 +19,7 @@
 
 (defmethod element/element :ui.element/charge-group-slot-number [{:keys [path] :as context}]
   (let [value (interface/get-list-size context)
-        default (:default (interface/get-relevant-options context))]
+        default (:default (interface/get-options context))]
     [range/range-input context
      :value value
      :on-change #(rf/dispatch [::set-slot-number path (or % default)])]))

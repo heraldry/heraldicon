@@ -15,7 +15,7 @@
                        :or {display-selected-item? true}}]
   (let [{arms-id :id
          version :version} (interface/get-raw-data context)
-        {:ui/keys [label]} (interface/get-relevant-options context)
+        {:ui/keys [label]} (interface/get-options context)
         {:keys [_status entity]} (when arms-id
                                    @(rf/subscribe [::entity-for-rendering/data arms-id version]))
         arms-title (or title

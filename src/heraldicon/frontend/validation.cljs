@@ -72,7 +72,7 @@
         parent-field-tinctures (field-tinctures-for-validation parent-field-context)
         fimbriation-tincture-1 (interface/get-sanitized-data (c/++ fimbriation-context :tincture-1))
         fimbriation-tincture-2 (interface/get-sanitized-data (c/++ fimbriation-context :tincture-2))
-        fimbriation-options (interface/get-relevant-options fimbriation-context)]
+        fimbriation-options (interface/get-options fimbriation-context)]
     (when (or fimbriation-options
               (= (-> field-context :path drop-last)
                  (-> fimbriation-context :path drop-last)))

@@ -54,7 +54,7 @@
       [value-mode-select/value-mode-select context]]]))
 
 (defn- select [context & {:keys [on-change]}]
-  (when-let [option (interface/get-relevant-options context)]
+  (when-let [option (interface/get-options context)]
     (let [current-value (interface/get-raw-data context)
           {:keys [default inherited choices]
            :ui/keys [label tooltip]} option

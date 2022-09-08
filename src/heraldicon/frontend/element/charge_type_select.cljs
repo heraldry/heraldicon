@@ -39,7 +39,7 @@
      (str "/svg/charge-type-roundel-unselected.svg"))
     (let [charge-type-context (c/++ context :type)
           variant-context (c/++ context :variant)
-          {:keys [inherited default]} (interface/get-relevant-options charge-type-context)
+          {:keys [inherited default]} (interface/get-options charge-type-context)
           current-value (interface/get-raw-data charge-type-context)
           value (or current-value
                     inherited
@@ -75,7 +75,7 @@
                               :max-height "100%"}}]]))
 
 (defmethod element/element :ui.element/charge-type-select [context]
-  (when-let [option (interface/get-relevant-options context)]
+  (when-let [option (interface/get-options context)]
     (let [charge-context (c/-- context)
           variant-context (c/++ charge-context :variant)
           variant (interface/get-raw-data variant-context)

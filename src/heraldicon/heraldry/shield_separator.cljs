@@ -72,11 +72,8 @@
                       [idx false]) (element-indices-above-shield elements)))))
 
 ;; TODO: get rid of this
-(defn get-element-indices [{:keys [path] :as context}]
-  (let [elements (if (-> path first (= :context))
-                   (get-in context (drop 1 path))
-                   @(rf/subscribe [:get path]))]
-    (element-indices-with-position elements)))
+(defn get-element-indices [{:keys [path]}]
+  (element-indices-with-position @(rf/subscribe [:get path])))
 
 (defmethod interface/properties :heraldry/shield-separator [_context]
   {:type :heraldry/shield-separator})

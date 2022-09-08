@@ -24,7 +24,7 @@
       (assoc-in db path (assoc data :source-modification source-modification)))))
 
 (defmethod element/element :ui.element/attribution [{:keys [path] :as context}]
-  (when-let [options (interface/get-relevant-options context)]
+  (when-let [options (interface/get-options context)]
     (let [charge-presets? (->> context :path drop-last last #{:heraldicon.entity.type/charge})
           {:ui/keys [label]} options
           link-name (submenu-link-name (interface/get-sanitized-data context))]
