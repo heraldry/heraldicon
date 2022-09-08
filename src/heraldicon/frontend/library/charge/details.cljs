@@ -11,6 +11,7 @@
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
+   [heraldicon.frontend.context :as context]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.core :as entity]
    [heraldicon.frontend.entity.details :as details]
@@ -21,7 +22,6 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.shared :as shared]
    [heraldicon.frontend.svgo-setup]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.session :as session]
@@ -288,7 +288,7 @@
                                  (cond->
                                    original? (prepare-for-preview form-db-path)))
         coat-of-arms @(rf/subscribe [:get (conj example-coa-db-path :coat-of-arms)])
-        context (-> shared/coa-select-option-context
+        context (-> context/default
                     (c/<< :path [:context :coat-of-arms])
                     (c/set-render-hint :ui-show-colours
                                        (->> @(rf/subscribe [:get show-colours-path])
