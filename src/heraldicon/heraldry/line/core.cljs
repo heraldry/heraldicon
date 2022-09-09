@@ -100,7 +100,8 @@
      :line-min line-min
      :line-max line-max
      :line-start line-start
-     :pattern-width pattern-width}))
+     :pattern-width pattern-width
+     :height (js/Math.abs line-min)}))
 
 (defn- full-line [line length line-function line-options]
   (let [{line-pattern :pattern
@@ -111,7 +112,8 @@
     {:line line-pattern
      :line-min line-min
      :line-max line-max
-     :line-start (v/Vector. 0 line-base)}))
+     :line-start (v/Vector. 0 line-base)
+     :height (js/Math.abs line-min)}))
 
 (def ^:private lines
   [#'straight/pattern
@@ -450,26 +452,26 @@
                              :string.entity/line)
                  :ui/element :ui.element/line)))))
 
-(defn- create-raw [context {:keys [type] :or {type :straight} :as line} length
-                   & {:keys [angle flipped? seed reversed?] :as line-options}]
+(defn- get-line-data [{:keys [type]
+                       :or {type :straight}
+                       :as line}
+                      length
+                      line-options]
   (let [pattern-data (get kinds-pattern-map type)
-        line (update line :width #(max % 1))
         line-function (:function pattern-data)
-        line-options-values (cond-> line #_(options/sanitize line (options line))
-                              (= type :straight) (assoc :width length
-                                                        :offset 0))
+        line (cond-> line
+               (= type :straight) (assoc :width length
+                                         :offset 0))
+        line-data-fn (if (:full? pattern-data)
+                       full-line
+                       pattern-line-with-offset)]
+    (line-data-fn line length line-function line-options)))
+
+(defn- create-raw [context line length
+                   & {:keys [angle flipped? seed reversed?] :as line-options}]
+  (let [line (update line :width #(max % 1))
         base-end (v/Vector. length 0)
-        line-data (if (:full? pattern-data)
-                    (full-line
-                     line-options-values
-                     length
-                     line-function
-                     line-options)
-                    (pattern-line-with-offset
-                     line-options-values
-                     length
-                     line-function
-                     line-options))
+        line-data (get-line-data line length line-options)
         line-path (path/make-path (into ["M" 0 0] (:line line-data)))
         reversed-path (-> line-path
                           path/parse-path
@@ -490,7 +492,7 @@
                                 [(v/dot line-end (v/Vector. -1 1))
                                  (v/dot line-start (v/Vector. -1 1))]
                                 [line-start line-end])
-        line-flipped? (:flipped? line-options-values)
+        line-flipped? (:flipped? line)
         effective-flipped? (util/xor flipped? line-flipped?)
         [line-start line-end] (if effective-flipped?
                                 [(v/dot line-start (v/Vector. 1 -1))
@@ -835,27 +837,31 @@
            path/make-path
            (str "z"))))))
 
+(defn- calculate-effective-height [{:keys [line-length
+                                           fimbriation] :as line}]
+  (let [fimbriation-alignment (:alignment fimbriation)
+        fimbriation-thickness (+ (or (:thickness-1 fimbriation) 0)
+                                 (or (:thickness-2 fimbriation) 0))
+        effective-line-height (or (:height (get-line-data line line-length {})) 0)]
+    (assoc line
+           :effective-height (+ effective-line-height
+                                (case fimbriation-alignment
+                                  :even (/ fimbriation-thickness 2)
+                                  :outside fimbriation-thickness
+                                  :inside 0
+                                  0)))))
+
 (defn resolve-percentages [line line-length field-width field-height fimbriation-percentage-base]
   (let [line-percentage-base (case (:size-reference line)
                                :field-width field-width
                                :field-height field-height
-                               line-length)
-        new-line (-> line
-                     (update :width (partial math/percent-of line-percentage-base))
-                     (update-in [:fimbriation :thickness-1] (partial math/percent-of fimbriation-percentage-base))
-                     (update-in [:fimbriation :thickness-2] (partial math/percent-of fimbriation-percentage-base)))
-        fimbriation-alignment (-> line :fimbriation :alignment)
-        fimbriation-thickness (+ (-> new-line :fimbriation :thickness-1 (or 0))
-                                 (-> new-line :fimbriation :thickness-2 (or 0)))]
-    (assoc new-line
-           :line-length line-length
-           ;; TODO: calculate this properly, in particular for line styles with
-           ;; middle or bottom alignment this height can differ greatly
-           :effective-height (case fimbriation-alignment
-                               :even (/ fimbriation-thickness 2)
-                               :outside fimbriation-thickness
-                               :inside 0
-                               0))))
+                               line-length)]
+    (-> line
+        (update :width (partial math/percent-of line-percentage-base))
+        (update-in [:fimbriation :thickness-1] (partial math/percent-of fimbriation-percentage-base))
+        (update-in [:fimbriation :thickness-2] (partial math/percent-of fimbriation-percentage-base))
+        (assoc :line-length line-length)
+        calculate-effective-height)))
 
 (defn- extend [start extra bounding-box]
   (let [next (v/add start extra)]

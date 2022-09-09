@@ -45,8 +45,9 @@
                      height (* 1.2 width height)
                      line-up (curvy-line (v/Vector. (* half-width 0.4) (- height)) eccentricity true)
                      line-down (curvy-line (v/Vector. (* half-width 0.6) height) eccentricity false)]
-                 {:pattern (concat line-up line-down
-                                   ["l" quarter-width (- height)]
-                                   ["l" quarter-width height])
+                 {:pattern (concat line-up
+                                   line-down
+                                   ["l" quarter-width (- height)
+                                    "l" quarter-width height])
                   :min (- height)
                   :max 0}))})

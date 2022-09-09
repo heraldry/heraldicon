@@ -15,10 +15,10 @@
                                    (* 0.7)
                                    (+ 0.3))))]
                  {:pattern ["l"
-                            [quarter-width 0]
-                            [(- dx) (- height)]
-                            [half-width 0]
-                            [dx height]
-                            [quarter-width 0]]
+                            quarter-width 0
+                            (- dx) (- height)
+                            half-width 0
+                            dx height
+                            quarter-width 0]
                   :min (- height)
                   :max 0}))})
