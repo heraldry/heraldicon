@@ -5,10 +5,12 @@
    :function (fn [{:keys [height
                           width]}
                   _line-options]
-               (let [half-width (/ width 2)
-                     height (* half-width height)]
+               (let [quarter-width (/ width 4)
+                     height (* quarter-width height)]
                  {:pattern ["l"
-                            half-width (- height)
-                            half-width height]
+                            quarter-width (- height)
+                            quarter-width height
+                            quarter-width (- height)
+                            quarter-width height]
                   :min (- height)
                   :max 0}))})
