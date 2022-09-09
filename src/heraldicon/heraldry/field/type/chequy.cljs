@@ -31,7 +31,7 @@
                            :ui/element :ui.element/field-layout-num-fields-y}
             :num-base-fields {:type :option.type/range
                               :min 2
-                              :max 8
+                              :max 16
                               :default 2
                               :integer? true
                               :ui/label :string.option/base-fields
