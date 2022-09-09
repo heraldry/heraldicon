@@ -121,6 +121,11 @@
     (assoc-in options path value)
     options))
 
+(defn update-if-exists [options path f]
+  (if (get-in options path)
+    (update-in options path f)
+    options))
+
 (defn populate-inheritance [options inherited-values]
   (into {}
         (map (fn [[k v]]

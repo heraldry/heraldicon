@@ -7,9 +7,11 @@
 
 (defn add-cottise-options [options key context]
   (let [line-style (-> (line/options (c/++ context :line))
-                       (options/override-if-exists [:fimbriation :alignment :default] :outside))
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                       (options/update-if-exists [:height :default] #(/ % 3)))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
-                                (options/override-if-exists [:fimbriation :alignment :default] :outside))]
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                                (options/update-if-exists [:height :default] #(/ % 3)))]
     (assoc options
            key
            {:line (assoc line-style :ui/label :string.entity/line)
