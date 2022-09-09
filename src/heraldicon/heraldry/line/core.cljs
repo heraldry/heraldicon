@@ -850,7 +850,7 @@
     (assoc new-line
            :line-length line-length
            ;; TODO: calculate this properly, in particular for line styles with
-           ;; middle our bottom alignment this height can differ greatly
+           ;; middle or bottom alignment this height can differ greatly
            :effective-height (case fimbriation-alignment
                                :even (/ fimbriation-thickness 2)
                                :outside fimbriation-thickness
