@@ -10,8 +10,8 @@
                      half-height (* quarter-width height)
                      height (* half-height 2)]
                  {:pattern ["l"
-                            [quarter-width (- half-height)]
-                            [half-width height]
-                            [quarter-width (- half-height)]]
+                            quarter-width (- half-height)
+                            half-width height
+                            quarter-width (- half-height)]
                   :min (- half-height)
                   :max half-height}))})

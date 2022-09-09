@@ -16,13 +16,13 @@
                      middle-height (* quarter-width height)
                      half-height (/ middle-height 2)]
                  {:pattern ["l"
-                            [0 (- half-height)]
-                            [quarter-width (- pointy-height)]
-                            [quarter-width pointy-height]
-                            [0 middle-height]
-                            [quarter-width pointy-height]
-                            [quarter-width (- pointy-height)]
-                            [0 (- half-height)]]
+                            0 (- half-height)
+                            quarter-width (- pointy-height)
+                            quarter-width pointy-height
+                            0 middle-height
+                            quarter-width pointy-height
+                            quarter-width (- pointy-height)
+                            0 (- half-height)]
                   :min (+ (- half-height)
                           (- pointy-height))
                   :max (+ half-height

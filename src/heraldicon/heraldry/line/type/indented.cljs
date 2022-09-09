@@ -8,7 +8,7 @@
                (let [half-width (/ width 2)
                      height (* half-width height)]
                  {:pattern ["l"
-                            [half-width (- height)]
-                            [half-width height]]
+                            half-width (- height)
+                            half-width height]
                   :min (- height)
                   :max 0}))})
