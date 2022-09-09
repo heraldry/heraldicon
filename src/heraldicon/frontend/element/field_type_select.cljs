@@ -14,7 +14,7 @@
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
-(defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields]
+(defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields base-field-shift]
   (let [path (vec path)]
     (if (= new-type :heraldry.field.type/plain)
       (-> db
@@ -25,12 +25,14 @@
                  path
                  (fn [prepared-field]
                    (let [current (or (:fields prepared-field) [])
-                         default (field/raw-default-fields new-type num-fields-x num-fields-y num-base-fields)
+                         default (field/raw-default-fields
+                                  new-type num-fields-x num-fields-y num-base-fields base-field-shift)
                          previous-default (field/raw-default-fields
                                            (:type prepared-field)
                                            (get-in prepared-field [:layout :num-fields-x])
                                            (get-in prepared-field [:layout :num-fields-y])
-                                           (get-in prepared-field [:layout :num-base-fields]))
+                                           (get-in prepared-field [:layout :num-base-fields])
+                                           (get-in prepared-field [:layout :base-field-shift]))
                          previous-default (cond
                                             (< (count previous-default) (count default)) (into previous-default (subvec default (count previous-default)))
                                             (> (count previous-default) (count default)) (subvec previous-default 0 (count default))
@@ -46,6 +48,7 @@
                          (assoc-in [:layout :num-fields-x] num-fields-x)
                          (assoc-in [:layout :num-fields-y] num-fields-y)
                          (assoc-in [:layout :num-base-fields] num-base-fields)
+                         (assoc-in [:layout :base-field-shift] base-field-shift)
                          (assoc :fields (->> (map vector merged previous-default default)
                                              (map (fn [[cur old-def def]]
                                                     (if (and (= (:type cur) :heraldry.subfield.type/field)
@@ -57,7 +60,7 @@
 (macros/reg-event-db ::set
   (fn [db [_ path new-type]]
     (let [field-path (vec (drop-last path))]
-      (set-field-type db field-path new-type nil nil nil))))
+      (set-field-type db field-path new-type nil nil nil nil))))
 
 (defn- field-type-choice [path key display-name & {:keys [selected?
                                                           clickable?]
