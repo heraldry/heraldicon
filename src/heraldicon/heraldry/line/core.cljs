@@ -285,7 +285,8 @@
                                      [:width]
                                      [:offset]
                                      [:flipped?]
-                                     [:base-line]])
+                                     [:base-line]]
+                                    {[:width :default] 20})
             :embattled (options/pick default-options
                                      [[:height]
                                       [:size-reference]
