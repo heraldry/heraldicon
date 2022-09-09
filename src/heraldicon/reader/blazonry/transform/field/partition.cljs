@@ -268,6 +268,11 @@
     (cond-> hdn
       (seq warnings) (assoc ::result/warnings warnings))))
 
+(defn- determine-num-base-fields [reference-map]
+  (let [first-index-not-present (first (filter (comp not reference-map) (range)))]
+    (when-not (zero? first-index-not-present)
+      first-index-not-present)))
+
 (defmethod ast->hdn :partition [[_ & nodes]]
   (let [field-type (get-field-type nodes)
         layout (transform-first #{:layout
@@ -282,18 +287,6 @@
                           (or (-> layout :num-fields-x (not= 2))
                               (-> layout :num-fields-y (not= 2)))) :heraldry.field.type/quarterly
                      :else field-type)
-        ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
-        default-fields (walk/postwalk
-                        (fn [data]
-                          (cond-> data
-                            (and (map? data)
-                                 (:tincture data)) (assoc :tincture :void)))
-                        (field/raw-default-fields
-                         field-type
-                         (-> layout :num-fields-x (or 6))
-                         (-> layout :num-fields-y (or 6))
-                         2
-                         1))
         given-fields (->> (transform-all #{:partition-field} nodes)
                           (map (fn [field-data]
                                  (update field-data
@@ -312,6 +305,23 @@
                        given-fields
                        ;; TODO: this could be DRYer
                        num-mandatory-fields)
+        num-base-fields (or (determine-num-base-fields reference-map)
+                            2)
+        ;; TODO: num-fields-x, num-fields-y, num-base-fields should be the defaults for the partition type
+        default-fields (walk/postwalk
+                        (fn [data]
+                          (cond-> data
+                            (and (map? data)
+                                 (:tincture data)) (assoc :tincture :void)))
+                        (field/raw-default-fields
+                         field-type
+                         (-> layout :num-fields-x (or 6))
+                         (-> layout :num-fields-y (or 6))
+                         num-base-fields
+                         1))
+        layout (some-> layout
+                       (cond->
+                         (not= num-base-fields 2) (assoc :num-base-fields num-base-fields)))
         fields (populate-field-references default-fields reference-map)]
     (-> {:type field-type
          :fields (mapv (fn [{:keys [type]
