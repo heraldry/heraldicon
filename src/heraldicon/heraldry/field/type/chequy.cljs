@@ -36,6 +36,13 @@
                               :integer? true
                               :ui/label :string.option/base-fields
                               :ui/element :ui.element/field-layout-num-base-fields}
+            :base-field-shift {:type :option.type/range
+                               :min -16
+                               :max 16
+                               :default 1
+                               :integer? true
+                               :ui/label :string.option/base-field-shift
+                               :ui/element :ui.element/field-layout-base-field-shift}
             :offset-x {:type :option.type/range
                        :min -1
                        :max 1
@@ -65,6 +72,7 @@
 
 (defn- render [context {:keys [start part-width part-height]}]
   (let [num-base-fields (interface/get-sanitized-data (c/++ context :layout :num-base-fields))
+        base-field-shift (interface/get-sanitized-data (c/++ context :layout :base-field-shift))
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         pattern-id (uid/generate "chequy")]
@@ -99,7 +107,7 @@
                     (into [:<>]
                           (for [j (range num-base-fields)
                                 i (range num-base-fields)]
-                            (when (-> i (+ j) (mod num-base-fields) (= idx))
+                            (when (-> i (- (* j base-field-shift)) (mod num-base-fields) (= idx))
                               ^{:key [i j]}
                               [:rect {:x (* i part-width)
                                       :y (* j part-height)

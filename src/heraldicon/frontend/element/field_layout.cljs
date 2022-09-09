@@ -47,7 +47,8 @@
        (:type field)
        value
        (-> field :layout :num-fields-y)
-       (-> field :layout :num-base-fields)))))
+       (-> field :layout :num-base-fields)
+       (-> field :layout :base-field-shift)))))
 
 (macros/reg-event-db ::set-num-fields-y
   (fn [db [_ path value]]
@@ -59,7 +60,8 @@
        (:type field)
        (-> field :layout :num-fields-x)
        value
-       (-> field :layout :num-base-fields)))))
+       (-> field :layout :num-base-fields)
+       (-> field :layout :base-field-shift)))))
 
 (macros/reg-event-db ::num-base-fields
   (fn [db [_ path value]]
@@ -71,6 +73,20 @@
        (:type field)
        (-> field :layout :num-fields-x)
        (-> field :layout :num-fields-y)
+       value
+       (-> field :layout :base-field-shift)))))
+
+(macros/reg-event-db ::base-field-shift
+  (fn [db [_ path value]]
+    (let [field-path (drop-last 2 path)
+          field (get-in db field-path)]
+      (field-type-select/set-field-type
+       db
+       field-path
+       (:type field)
+       (-> field :layout :num-fields-x)
+       (-> field :layout :num-fields-y)
+       (-> field :layout :num-base-fields)
        value))))
 
 (defmethod element/element :ui.element/field-layout [context]
@@ -86,6 +102,7 @@
          (element/elements
           context
           [:num-base-fields
+           :base-field-shift
            :num-fields-x
            :num-fields-y
            :offset-x
@@ -108,3 +125,8 @@
   [range/range-input context
    :on-change (fn [value]
                 (rf/dispatch [::num-base-fields path value]))])
+
+(defmethod element/element :ui.element/field-layout-base-field-shift [{:keys [path] :as context}]
+  [range/range-input context
+   :on-change (fn [value]
+                (rf/dispatch [::base-field-shift path value]))])

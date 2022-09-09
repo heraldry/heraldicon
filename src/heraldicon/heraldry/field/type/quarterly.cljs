@@ -36,6 +36,13 @@
                               :integer? true
                               :ui/label :string.option/base-fields
                               :ui/element :ui.element/field-layout-num-base-fields}
+            :base-field-shift {:type :option.type/range
+                               :min -16
+                               :max 16
+                               :default 1
+                               :integer? true
+                               :ui/label :string.option/base-field-shift
+                               :ui/element :ui.element/field-layout-base-field-shift}
             :offset-x {:type :option.type/range
                        :min -1
                        :max 1

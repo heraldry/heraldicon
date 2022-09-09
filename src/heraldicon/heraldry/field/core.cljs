@@ -32,16 +32,19 @@
   (case type
     :heraldry.field.type/quarterly {:num-fields-x 3
                                     :num-fields-y 4
-                                    :num-base-fields 2}
+                                    :num-base-fields 2
+                                    :base-field-shift 1}
     {:num-fields-x 6
      :num-fields-y 6
-     :num-base-fields 2}))
+     :num-base-fields 2
+     :base-field-shift 1}))
 
-(defn raw-default-fields [type num-fields-x num-fields-y num-base-fields]
+(defn raw-default-fields [type num-fields-x num-fields-y num-base-fields base-field-shift]
   (let [default-values (default-layout-values type)
         type (-> type name keyword)
         num-fields-x (or num-fields-x (:num-fields-x default-values))
         num-fields-y (or num-fields-y (:num-fields-y default-values))
+        base-field-shift (or base-field-shift (:base-field-shift default-values))
         num-base-fields (or num-base-fields (:num-base-fields default-values))
         defaults (mapv
                   make-subfield
@@ -73,7 +76,7 @@
                                       (if (< idx effective-num-base-fields)
                                         (nth defaults idx)
                                         {:type :heraldry.subfield.type/reference
-                                         :index (mod (+ i j) effective-num-base-fields)})))))
+                                         :index (mod (- i (* j base-field-shift)) effective-num-base-fields)})))))
       (= :gyronny type) (into (subvec defaults 0 2)
                               [{:type :heraldry.subfield.type/reference
                                 :index 1}
@@ -121,8 +124,9 @@
   (let [type (interface/get-raw-data (c/++ context :type))
         num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
-        num-base-fields (interface/get-sanitized-data (c/++ context :layout :num-base-fields))]
-    (raw-default-fields type num-fields-x num-fields-y num-base-fields)))
+        num-base-fields (interface/get-sanitized-data (c/++ context :layout :num-base-fields))
+        base-field-shift (interface/get-sanitized-data (c/++ context :layout :base-field-shift))]
+    (raw-default-fields type num-fields-x num-fields-y num-base-fields base-field-shift)))
 
 (defn part-name [field-type index]
   (-> field-type field.interface/part-names (get index) (or (number/to-roman (inc index)))))

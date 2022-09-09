@@ -292,7 +292,8 @@
                          field-type
                          (-> layout :num-fields-x (or 6))
                          (-> layout :num-fields-y (or 6))
-                         2))
+                         2
+                         1))
         given-fields (->> (transform-all #{:partition-field} nodes)
                           (map (fn [field-data]
                                  (update field-data
