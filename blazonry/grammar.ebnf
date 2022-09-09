@@ -955,8 +955,11 @@ partition
       enhanced-dehanced*
       partition-field AND+ partition-field (AND+ partition-field)*
 
-    | (partition/CHEQUY
-       | partition/LOZENGY
+    | partition/CHEQUY
+      (OF? layout)?
+      partition-field-plain AND+ partition-field-plain (AND+ partition-field-plain)*
+
+    | (partition/LOZENGY
        | partition/VAIRY
        | partition/POTENTY
        | partition/PAPELLONY

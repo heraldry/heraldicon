@@ -431,6 +431,24 @@
                :field {:type :heraldry.field.type/plain
                        :tincture :azure}}]}
 
+    "chequy of 5x6 or, azure, gules, sable"
+    {:type :heraldry.field.type/chequy
+     :layout {:num-base-fields 4
+              :num-fields-x 5
+              :num-fields-y 6}
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :gules}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :sable}}]}
+
     "lozengy 2 tracts or and azure"
     {:type :heraldry.field.type/lozengy
      :layout {:num-fields-y 2}
@@ -655,11 +673,11 @@
                :field {:type :heraldry.field.type/plain
                        :tincture :azure}}
               {:type :heraldry.subfield.type/reference
-               :index 1}
+               :index 0}
               {:type :heraldry.subfield.type/reference
                :index 2}
               {:type :heraldry.subfield.type/reference
-               :index 1}]}
+               :index 2}]}
 
     "quartered chief and i. or, i. and 19th azure"
     {:type :heraldry.field.type/quartered
