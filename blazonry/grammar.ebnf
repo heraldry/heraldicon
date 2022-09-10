@@ -456,7 +456,9 @@ partition/BENDY = #"\bbendy\b"
 partition/BENDY-SINISTER
     = #"\bbendy +sinister\b"
     | #"\bbendy\b" #"\bsinister\b"
-partition/CHEQUY = #"\bchequy\b"
+partition/CHEQUY
+    = #"\bchequy\b"
+    | #"\bchecky\b"
 partition/CHEVRONNY = #"\bchevronny\b"
 partition/FRETTY = #"\bfretty\b"
 partition/GYRONNY = #"\bg[yi]ronny\b"
