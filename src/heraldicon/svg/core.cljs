@@ -46,7 +46,12 @@
            :filterunits :filterUnits
            :clippathunits :clipPathUnits
            :primitiveunits :primitiveUnits
-           :stddeviation :stdDeviation} v v))
+           :stddeviation :stdDeviation
+           :horizOriginX :horizoriginx
+           :horizOriginY :horizoriginy
+           :basefrequency :baseFrequency
+           :solidColor :solidcolor
+           :requiredextensions :requiredExtensions} v v))
    data))
 
 (defn- svg-namespaced-tag-or-attribute? [tag]
