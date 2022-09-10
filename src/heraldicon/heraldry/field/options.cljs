@@ -90,7 +90,11 @@
         semy-charge? (->> path (take-last 2) (= [:charge :field]))
         field-type (interface/get-raw-data (c/++ context :type))
         plain? (= field-type :heraldry.field.type/plain)
-        counterchanged? (= field-type :heraldry.field.type/counterchanged)]
+        counterchanged? (= field-type :heraldry.field.type/counterchanged)
+        parent-type (interface/get-raw-data (-> context
+                                                interface/parent
+                                                interface/parent
+                                                (c/++ :type)))]
     (cond-> (assoc (field.interface/options context)
                    :type type-option
                    :manual-blazon options/manual-blazon)
@@ -102,8 +106,9 @@
                                                           (filter (fn [[_ t]]
                                                                     (not= t :heraldry.field.type/counterchanged)))
                                                           vec))
-      (not (or root-field?
-               semy-charge?)) (assoc :inherit-environment?
-                                     {:type :option.type/boolean
-                                      :default false
-                                      :ui/label :string.option/inherit-environment?}))))
+      (and (isa? parent-type :heraldry/field)
+           (not (or root-field?
+                    semy-charge?))) (assoc :inherit-environment?
+                                           {:type :option.type/boolean
+                                            :default false
+                                            :ui/label :string.option/inherit-environment?}))))
