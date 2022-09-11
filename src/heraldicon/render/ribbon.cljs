@@ -137,6 +137,7 @@
                             [:path {:id path-id
                                     :d (str "M " (v/->str text-path-start) " " text-path)}]]
                            [:textPath {:href (str "#" path-id)
+                                       :xlinkHref (str "#" path-id)
                                        :alignment-baseline "middle"
                                        :method "align"
                                        :lengthAdjust "spacing"
@@ -185,6 +186,7 @@
                          bb/->viewbox)}
            (if svg-export?
              {:xmlns "http://www.w3.org/2000/svg"
+              :xmlnsXlink "http://www.w3.org/1999/xlink"
               :version "1.1"
               :width document-width
               :height document-height}
