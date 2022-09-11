@@ -121,10 +121,15 @@
                               font-scale (interface/get-sanitized-data (c/++ segment-context :font-scale))
                               font-size (* font-scale thickness)
                               spacing (* spacing font-size)
+                              ; the value of 3 here was chosen because it seems to center all current
+                              ; fonts sufficiently at font-scaling 1
+                              baseline-offset (+ 0.5
+                                                 (/ font-scale 3)
+                                                 (- offset-y))
                               text-path-start (v/add (ffirst partial-curve)
-                                                     (v/mul first-edge-vector (- 0.6 offset-y)))
+                                                     (v/mul first-edge-vector baseline-offset))
                               text-path-end (v/add (last (last partial-curve))
-                                                   (v/mul second-edge-vector (- 0.6 offset-y)))
+                                                   (v/mul second-edge-vector baseline-offset))
                               text-path (ribbon/project-path-to
                                          partial-curve
                                          text-path-start
@@ -138,7 +143,6 @@
                                     :d (str "M " (v/->str text-path-start) " " text-path)}]]
                            [:textPath {:href (str "#" path-id)
                                        :xlinkHref (str "#" path-id)
-                                       :alignment-baseline "middle"
                                        :method "align"
                                        :lengthAdjust "spacing"
                                        :letter-spacing spacing
