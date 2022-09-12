@@ -75,36 +75,28 @@
         middle-y (/ height 2)
         dx (-> thickness
                (* width)
-               (/ 2))
-        mask-id (uid/generate "brick-mask")]
+               (/ 2))]
     {:width width
      :height height
      :pattern [:<>
-               [:mask {:id mask-id}
-                [:rect {:x 0
-                        :y 0
-                        :width width
-                        :height height
-                        :fill "#ffffff"}]
-                [:path {:d (str "M" dx "," dx
-                                "V" (- middle-y dx)
-                                "H" (- width dx)
-                                "V" dx
-                                "z")
-                        :fill "#000000"}]]
-               [:path {:mask (str "url(#" mask-id ")")
-                       :d (str "M 0,0"
-                               "H" width
-                               "V" (+ middle-y dx)
+               [:path {:d (str "M" dx "," dx
+                               "V" (- middle-y dx)
+                               "H" (- width dx)
+                               "V" dx
+                               "z")}]
+                               ;; (1, 0) extra to prevent anti-aliasing
+               [:path {:d (str "M" -1 "," (+ middle-y dx)
+                               "H" (- middle-x dx)
+                               "V" (- height dx)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "H" -1
+                               "z")}]
+                               ;; (1, 0) extra to prevent anti-aliasing
+               [:path {:d (str "M" (inc width) "," (+ middle-y dx)
                                "H" (+ middle-x dx)
                                "V" (- height dx)
-                               "H" width
-                               "V" height
-                               "H" 0
-                               "V" (- height dx)
-                               "H" (- middle-x dx)
-                               "V" (+ middle-y dx)
-                               "H 0"
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "H" (inc width)
                                "z")}]]
      :outline [:<>
                [:path {:d (str "M" dx "," dx
@@ -149,12 +141,13 @@
                               :x (:x start)
                               :y (:y start)
                               :pattern-units "userSpaceOnUse"}
-                    [:rect {:x 0
-                            :y 0
-                            :width pattern-width
-                            :height pattern-height
-                            :fill (get ["#ffffff" "#000000"] idx)}]
-                    [:g {:fill (get ["#000000" "#ffffff"] idx)}
+                    [:rect {:x -1
+                            :y -1
+                            :width (+ pattern-width 2)
+                            :height (+ pattern-height 2)
+                            :shape-rendering "crispEdges"
+                            :fill (get ["#000000" "#ffffff"] idx)}]
+                    [:g {:fill (get ["#ffffff" "#000000"] idx)}
                      masony-pattern]]))
             (range 2))]
      (into [:<>]

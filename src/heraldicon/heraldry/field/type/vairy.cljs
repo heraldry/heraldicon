@@ -98,17 +98,25 @@
                                "v" (* sqr2 h)
                                "L" width "," middle-y
                                "z")}]
-               [:path {:d (str "M 0," middle-y
+                               ;; (1, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," (dec middle-y)
+                               "L 0," middle-y
                                "l" w "," h
                                "v" (* sqr2 h)
-                               "L" middle-x "," height
-                               "L 0," height
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L" (inc middle-x) "," (inc height)
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L -1," (inc height)
                                "z")}]
-               [:path {:d (str "M " width "," middle-y
+                               ;; (1, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M " (inc width) "," (dec middle-y)
+                               "L" width "," middle-y
                                "l" (- w) "," h
                                "v" (* sqr2 h)
-                               "L" middle-x "," height
-                               "L " width "," height
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L" (dec middle-x) "," (inc height)
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L " (inc width) "," (inc height)
                                "z")}]]
      :outline [:<>
                [:path {:d (str "M 0,0"
@@ -180,13 +188,17 @@
     {:width width
      :height height
      :pattern [:<>
-               [:path {:d (str "M 0," height
+                               ;; (1, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," (inc height)
+                               "L 0," height
                                "l" w "," (- h)
                                "v" (* sqr2 (- h))
                                "L" middle-x ",0"
                                "l" w "," h
                                "v" (* sqr2 h)
                                "L" width "," height
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L" (inc width) "," (inc height)
                                "z")}]]
      :outline [:<>
                [:path {:d (str "M 0,0"
@@ -211,13 +223,19 @@
     {:width width
      :height height
      :pattern [:<>
-               [:path {:d (str "M 0," middle-y
+                               ;; (1, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," (inc middle-y)
+                               "L 0," middle-y
                                "l" w "," (- h)
                                "v" (* sqr2 (- h))
                                "L" middle-x ",0"
                                "l" w "," h
                                "v" (* sqr2 h)
                                "L" width "," middle-y
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L" (inc width) "," (inc middle-y)
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L" (inc width) "," (inc height)
                                "L" width "," height
                                "l" (- w) "," (- h)
                                "v" (* sqr2 (- h))
@@ -225,6 +243,8 @@
                                "l" (- w) "," h
                                "v" (* sqr2 h)
                                "L 0," height
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L -1," (inc height)
                                "z")}]]
      :outline [:<>
                [:path {:d (str "M 0," middle-y
@@ -252,14 +272,20 @@
     {:width width
      :height height
      :pattern [:<>
-               [:path {:d (str "M 0,0"
-                               "L" width ",0"
+                               ;; (1, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M -1,-1"
+                               ;; (1, 1) extra to prevent anti-aliasing
+                               "L" (inc width) ",-1"
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "L" (inc width) "," (- height (* dy h))
                                "L" width "," (- height (* dy h))
                                "a" w " " h " 0 0 1 " (- w) "," (- h)
                                "v" (- h)
                                "a" w " " h " 0 0 0 " (- (* 2 w)) ",0"
                                "v" h
                                "a" w " " h " 0 0 1 " (- w) "," h
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "L -1," (- height (* dy h))
                                "z")}]]
      :outline [:<>
                [:path {:d (str "M 0,0"
@@ -308,10 +334,11 @@
                               :x (:x start)
                               :y (:y start)
                               :pattern-units "userSpaceOnUse"}
-                    [:rect {:x 0
-                            :y 0
-                            :width pattern-width
-                            :height pattern-height
+                    [:rect {:x -1
+                            :y -1
+                            :width (+ pattern-width 2)
+                            :height (+ pattern-height 2)
+                            :shape-rendering "crispEdges"
                             :fill (get ["#000000" "#ffffff"] idx)}]
                     [:g {:fill (get ["#ffffff" "#000000"] idx)}
                      vair-pattern]]))

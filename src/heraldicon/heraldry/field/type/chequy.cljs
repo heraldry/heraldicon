@@ -103,6 +103,7 @@
                             :y 0
                             :width (* part-width num-base-fields)
                             :height (* part-height num-base-fields)
+                            :shape-rendering "crispEdges"
                             :fill "#000000"}]
                     (into [:<>]
                           (for [j (range num-base-fields)
@@ -113,6 +114,7 @@
                                       :y (* j part-height)
                                       :width part-width
                                       :height part-height
+                                      :shape-rendering "crispEdges"
                                       :fill "#ffffff"}])))]))
             (range num-base-fields))]
      (into [:<>]

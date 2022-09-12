@@ -90,26 +90,47 @@
     {:width width
      :height height
      :pattern [:<>
-               [:path {:d (str "M 0," middle-y
+                               ;; (1, 0) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," middle-y
                                "v" (- h)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
                                "h" w
                                "v" (- h)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
                                "h" w
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
                                "v" h
                                "h" w
                                "v" h
                                "z")}]
-               [:path {:d (str "M 0," height
+                               ;; (0, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," (inc height)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
                                "v" (- h)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
                                "h" w
                                "v" h
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
                                "z")}]
-               [:path {:d (str "M " middle-x "," height
+                               ;; (0, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M" middle-x "," (inc height)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "L" middle-x "," height
                                "v" (- h)
                                "h" w
                                "v" (- h)
                                "H" width
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
                                "V" height
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
                                "z")}]]
      :outline [:<>
                [:path {:d (str "M 0," middle-y
@@ -148,22 +169,33 @@
     {:width width
      :height height
      :pattern [:<>
-               [:path {:d (str "M 0," middle-y
+                               ;; (1, 0) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," middle-y
                                "v" (- h)
-                               "h" w
-                               "v" (- h)
-                               "h" w
-                               "v" h
-                               "h" w
-                               "v" h
-                               "z")}]
-               [:path {:d (str "M 0," middle-y
-                               "v" h
-                               "h" w
-                               "v" h
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
                                "h" w
                                "v" (- h)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
                                "h" w
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
+                               "v" h
+                               "h" w
+                               "v" h
+                               "v" h
+                               "h" (- w)
+                               "v" h
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
+                               "h" (- w)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
+                               "v" (- h)
+                               "h" (- w)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" -1
                                "v" (- h)
                                "z")}]]
      :outline [:<>
@@ -203,23 +235,39 @@
     {:width width
      :height height
      :pattern [:<>
-               [:path {:d (str "M 0," middle-y
+                               ;; (1, 0) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," middle-y
                                "v" (- h)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
                                "h" w
                                "v" (- h)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
                                "h" w
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
                                "v" h
                                "h" w
                                "v" h
-                               "z")}]
-               [:path {:d (str "M 0," height
-                               "v" (- h)
-                               "h" w
-                               "v" (- h)
-                               "h" w
+                               "h" (- w)
                                "v" h
                                "h" w
                                "v" h
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "H" -1
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
+                               "v" (- h)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
+                               "h" w
+                               "v" (- h)
+                               "h" (- w)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" -1
                                "z")}]]
      :outline [:<>
                [:path {:d (str "M 0," middle-y
@@ -261,22 +309,35 @@
     {:width width
      :height height
      :pattern [:<>
-               [:path {:d (str "M 0," middle-y
+                               ;; (1, 0) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," middle-y
+                               "h" 1
                                "h" w
                                "v" (- h)
                                "h" w
                                "v" (- h)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
                                "h" w
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
                                "v" h
                                "H" width
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
                                "v" (* 2 h)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" -1
                                "h" (- w)
                                "v" (- h)
                                "h" (- w)
                                "v" h
                                "h" (- w)
                                "v" h
-                               "H 0"
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "H -1"
                                "z")}]]
      :outline [:<>
                [:path {:d (str "M 0," middle-y
@@ -342,10 +403,11 @@
                               :x (:x start)
                               :y (:y start)
                               :pattern-units "userSpaceOnUse"}
-                    [:rect {:x 0
-                            :y 0
-                            :width pattern-width
-                            :height pattern-height
+                    [:rect {:x -1
+                            :y -1
+                            :width (+ pattern-width 2)
+                            :height (+ pattern-height 2)
+                            :shape-rendering "crispEdges"
                             :fill (get ["#000000" "#ffffff"] idx)}]
                     [:g {:fill (get ["#ffffff" "#000000"] idx)}
                      potent-pattern]]))
