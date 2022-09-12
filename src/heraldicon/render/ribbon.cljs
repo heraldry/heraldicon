@@ -134,20 +134,21 @@
                                          partial-curve
                                          text-path-start
                                          text-path-end)]
-                          [:text.no-select {:fill text-colour
-                                            :text-anchor "middle"
-                                            :style {:font-family font
-                                                    :font-size font-size}}
+                          [:<>
                            [:defs
                             [:path {:id path-id
                                     :d (str "M " (v/->str text-path-start) " " text-path)}]]
-                           [:textPath {:href (str "#" path-id)
-                                       :xlinkHref (str "#" path-id)
-                                       :method "align"
-                                       :lengthAdjust "spacing"
-                                       :letter-spacing spacing
-                                       :startOffset (str (+ 50 (* offset-x 100)) "%")}
-                            text]]))])))
+                           [:text.no-select {:fill text-colour
+                                             :text-anchor "middle"
+                                             :style {:font-family font
+                                                     :font-size font-size}}
+                            [:textPath {:href (str "#" path-id)
+                                        :xlinkHref (str "#" path-id)
+                                        :method "align"
+                                        :lengthAdjust "spacing"
+                                        :letter-spacing spacing
+                                        :startOffset (str (+ 50 (* offset-x 100)) "%")}
+                             text]]]))])))
             (sort-by (fn [[idx _]]
                        [(or (:z-index (get segments idx))
                             1000)
