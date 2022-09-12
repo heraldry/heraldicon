@@ -94,6 +94,7 @@
                :y 0
                :width part-width
                :height part-height
+               :shape-rendering "crispEdges"
                :fill "#000000"}]
        [:path {:d lozenge-shape
                :fill "#ffffff"}]]
@@ -107,6 +108,7 @@
                :y 0
                :width part-width
                :height part-height
+               :shape-rendering "crispEdges"
                :fill "#ffffff"}]
        [:path {:d lozenge-shape
                :fill "#000000"}]]]

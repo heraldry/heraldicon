@@ -191,10 +191,11 @@
                               :x (:x start)
                               :y (:y start)
                               :pattern-units "userSpaceOnUse"}
-                    [:rect {:x 0
-                            :y 0
-                            :width pattern-width
-                            :height pattern-height
+                    [:rect {:x -1
+                            :y -1
+                            :width (+ pattern-width 2)
+                            :height (+ pattern-height 2)
+                            :shape-rendering "crispEdges"
                             :fill (get ["#ffffff" "#000000"] idx)}]
                     [:g {:fill (get ["#000000" "#ffffff"] idx)}
                      papellony-pattern]]))

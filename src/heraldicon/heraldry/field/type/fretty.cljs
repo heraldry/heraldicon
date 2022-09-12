@@ -86,97 +86,141 @@
      :height height
      :pattern [:<>
                ;; -|-
-               [:path {:d (str "M 0,0"
-                               "h " (- middle-x half-thickness gap)
-                               "v " half-thickness
-                               "h " (- (- middle-x half-thickness gap))
+                               ;; (1, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M -1,-1"
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
+                               "h" (- middle-x half-thickness gap)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
+                               "v" half-thickness
+                               "h" (- (- middle-x half-thickness gap))
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" -1
                                "z")}]
-               [:path {:d (str "M" (- middle-x half-thickness) "," 0
+                               ;; (0, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M" (- middle-x half-thickness) "," -1
                                "h " thickness
-                               "v " (- middle-y half-thickness gap)
-                               "h " (- thickness)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
+                               "v" (- middle-y half-thickness gap)
+                               "h" (- thickness)
                                "z")}]
-               [:path {:d (str "M " (+ middle-x half-thickness gap) ",0"
-                               "h " (- middle-x half-thickness gap)
-                               "v " half-thickness
-                               "h " (- (- middle-x half-thickness gap))
+                               ;; (0, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M" (+ middle-x half-thickness gap) ",-1"
+                               "H" width
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" 1
+                               "v" half-thickness
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "h" -1
+                               "h" (- (- middle-x half-thickness gap))
                                "z")}]
 
                ;; |-|
-               [:path {:d (str "M 0," (+ half-thickness gap)
-                               "h " half-thickness
-                               "v " (- height thickness gap gap)
-                               "h " (- half-thickness)
+                               ;; (1, 0) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," (+ half-thickness gap)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
+                               "h" half-thickness
+                               "v" (- height thickness gap gap)
+                               "h" (- half-thickness)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" -1
                                "z")}]
-               [:path {:d (str "M " (+ half-thickness gap) "," (- middle-y half-thickness)
-                               "h " (- width thickness gap gap)
-                               "v " thickness
-                               "h " (- (- width thickness gap gap))
+               [:path {:d (str "M" (+ half-thickness gap) "," (- middle-y half-thickness)
+                               "h" (- width thickness gap gap)
+                               "v" thickness
+                               "h" (- (- width thickness gap gap))
                                "z")}]
-               [:path {:d (str "M " width "," (+ half-thickness gap)
-                               "h " (- half-thickness)
-                               "v " (- height thickness gap gap)
-                               "h " half-thickness
+                               ;; (1, 0) extra to prevent anti-aliasing
+               [:path {:d (str "M" (inc width) "," (+ half-thickness gap)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" -1
+                               "h" (- half-thickness)
+                               "v" (- height thickness gap gap)
+                               "h" half-thickness
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
                                "z")}]
 
                ;; -|-
-               [:path {:d (str "M 0," height
-                               "h " (- middle-x half-thickness gap)
-                               "v " (- half-thickness)
-                               "h " (- (- middle-x half-thickness gap))
+                               ;; (1, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M -1," (inc height)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
+                               "h" (- middle-x half-thickness gap)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
+                               "v" (- half-thickness)
+                               "h" (- (- middle-x half-thickness gap))
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" -1
                                "z")}]
-               [:path {:d (str "M" (- middle-x half-thickness) "," height
-                               "h " thickness
-                               "v " (- (- middle-y half-thickness gap))
-                               "h " (- thickness)
+                               ;; (0, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M" (- middle-x half-thickness) "," (inc height)
+                               "h" thickness
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
+                               "v" (- (- middle-y half-thickness gap))
+                               "h" (- thickness)
                                "z")}]
-               [:path {:d (str "M " (+ middle-x half-thickness gap) "," height
-                               "h " (- middle-x half-thickness gap)
-                               "v " (- half-thickness)
-                               "h " (- (- middle-x half-thickness gap))
+                               ;; (0, 1) extra to prevent anti-aliasing
+               [:path {:d (str "M" (+ middle-x half-thickness gap) "," (inc height)
+                               "h" (- middle-x half-thickness gap)
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" 1
+                               "v" (- half-thickness)
+                               ;; (0, 1) extra to prevent anti-aliasing
+                               "v" -1
+                               ;; (1, 0) extra to prevent anti-aliasing
+                               "h" -1
+                               "h" (- (- middle-x half-thickness gap))
                                "z")}]]
 
      :outline [:<>
                ;; -|-
-               [:path {:d (str "M " (- middle-x half-thickness gap) ",0"
-                               "v " half-thickness
-                               "h " (- (- middle-x half-thickness gap)))}]
+               [:path {:d (str "M" (- middle-x half-thickness gap) ",0"
+                               "v" half-thickness
+                               "h" (- (- middle-x half-thickness gap)))}]
                [:path {:d (str "M" (- middle-x half-thickness) "," 0
-                               "v " (- middle-y half-thickness gap)
-                               "h " thickness
-                               "v " (- (- middle-y half-thickness gap)))}]
-               [:path {:d (str "M " (+ middle-x half-thickness gap) ",0"
-                               "v " half-thickness
-                               "h " (- middle-x half-thickness gap))}]
+                               "v" (- middle-y half-thickness gap)
+                               "h" thickness
+                               "v" (- (- middle-y half-thickness gap)))}]
+               [:path {:d (str "M" (+ middle-x half-thickness gap) ",0"
+                               "v" half-thickness
+                               "h" (- middle-x half-thickness gap))}]
 
                ;; |-|
 
                [:path {:d (str "M 0," (+ half-thickness gap)
-                               "h " half-thickness
-                               "v " (- height thickness gap gap)
-                               "h " (- half-thickness))}]
-               [:path {:d (str "M " (+ half-thickness gap) "," (- middle-y half-thickness)
-                               "h " (- width thickness gap gap)
-                               "v " thickness
-                               "h " (- (- width thickness gap gap))
+                               "h" half-thickness
+                               "v" (- height thickness gap gap)
+                               "h" (- half-thickness))}]
+               [:path {:d (str "M" (+ half-thickness gap) "," (- middle-y half-thickness)
+                               "h" (- width thickness gap gap)
+                               "v" thickness
+                               "h" (- (- width thickness gap gap))
                                "z")}]
-               [:path {:d (str "M " width "," (+ half-thickness gap)
-                               "h " (- half-thickness)
-                               "v " (- height thickness gap gap)
-                               "h " half-thickness)}]
+               [:path {:d (str "M" width "," (+ half-thickness gap)
+                               "h" (- half-thickness)
+                               "v" (- height thickness gap gap)
+                               "h" half-thickness)}]
 
                ;; -|-
 
-               [:path {:d (str "M " (- middle-x half-thickness gap) "," height
-                               "v " (- half-thickness)
-                               "h " (- (- middle-x half-thickness gap)))}]
+               [:path {:d (str "M" (- middle-x half-thickness gap) "," height
+                               "v" (- half-thickness)
+                               "h" (- (- middle-x half-thickness gap)))}]
                [:path {:d (str "M" (- middle-x half-thickness) "," height
-                               "v " (- (- middle-y half-thickness gap))
-                               "h " thickness
-                               "v " (- middle-y half-thickness gap))}]
-               [:path {:d (str "M " (+ middle-x half-thickness gap) "," height
-                               "v " (- half-thickness)
-                               "h " (- middle-x half-thickness gap))}]]}))
+                               "v" (- (- middle-y half-thickness gap))
+                               "h" thickness
+                               "v" (- middle-y half-thickness gap))}]
+               [:path {:d (str "M" (+ middle-x half-thickness gap) "," height
+                               "v" (- half-thickness)
+                               "h" (- middle-x half-thickness gap))}]]}))
 
 (defn- render [context {:keys [start part-width part-height rotation thickness gap]}]
   (let [outline? (or (interface/render-option :outline? context)
@@ -206,10 +250,11 @@
                               :x (:x start)
                               :y (:y start)
                               :pattern-units "userSpaceOnUse"}
-                    [:rect {:x 0
-                            :y 0
-                            :width pattern-width
-                            :height pattern-height
+                    [:rect {:x -1
+                            :y -1
+                            :width (+ pattern-width 2)
+                            :height (+ pattern-height 2)
+                            :shape-rendering "crispEdges"
                             :fill (get ["#ffffff" "#000000"] idx)}]
                     [:g {:fill (get ["#000000" "#ffffff"] idx)}
                      fretty-pattern]]))
