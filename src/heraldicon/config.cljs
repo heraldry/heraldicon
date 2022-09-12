@@ -34,7 +34,7 @@
            :supporter-charge-id "charge:fxOk19"
            :mantling-charge-id "charge:gTrIM7"}
 
-    "staging" {:heraldicon-api-endpoint "https://ru73nh6ozg.execute-api.eu-central-1.amazonaws.com/api"
+    "staging" {:heraldicon-api-endpoint "https://lg0j98nuab.execute-api.eu-central-1.amazonaws.com/api"
                :heraldicon-url "https://staging.heraldicon.org"
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                      :ClientId "2v90eij0l4aluf2amqumqh9gko"
