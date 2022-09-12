@@ -1,13 +1,5 @@
 COMMIT = $(shell git rev-parse --short HEAD)
 
-remove-backend-fonts:
-	rm -rf backend/assets/font
-
-copy-fonts-to-backend:
-	mkdir -p backend/assets
-	make remove-backend-fonts
-	cp -r assets/font backend/assets
-
 PROD_FRONTEND_RELEASE_DIR = build/prod
 PROD_BACKEND_RELEASE_DIR = backend/build/prod
 PROD_CONFIG = {:closure-defines {heraldicon.config/stage "prod" heraldicon.config/commit "$(COMMIT)"}}}
@@ -27,11 +19,9 @@ dirty-prod-backend-deploy: actual-prod-backend-deploy
 prod-backend-deploy: check-before-deploy-backend actual-prod-backend-deploy
 
 actual-prod-backend-deploy: prod-backend-release
-	make copy-fonts-to-backend
 	cd backend && npx sls deploy --stage prod
 	cd backend && git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
 	git tag $(shell date +"deploy-backend-%Y-%m-%d_%H-%M-%S")
-	make remove-backend-fonts
 
 prod-frontend-release:
 	rm -rf $(PROD_FRONTEND_RELEASE_DIR) 2> /dev/null || true
@@ -62,14 +52,10 @@ staging-backend-release:
 	npx shadow-cljs release backend --config-merge '$(STAGING_CONFIG)' --config-merge '{:output-to "./backend/build/staging/backend.js"}'
 
 staging-backend-package: staging-backend-release
-	make copy-fonts-to-backend
 	cd backend && npx sls package --stage staging
-	make remove-backend-fonts
 
 staging-backend-deploy: staging-backend-release
-	make copy-fonts-to-backend
 	cd backend && npx sls deploy --stage staging
-	make remove-backend-fonts
 
 staging-frontend-release:
 	rm -rf $(STAGING_FRONTEND_RELEASE_DIR) 2> /dev/null || true
