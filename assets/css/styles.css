@@ -13,7 +13,7 @@
 }
 
 @font-face {
-  font-family: "Black Chancery";
+  font-family: "BlackChancery";
   font-style: "normal";
   font-weight: 400;
   src: url("../font/black-chancery/BLKCHCRY.TTF") format("truetype");
@@ -27,7 +27,7 @@
 }
 
 @font-face {
-  font-family: "Carolinga";
+  font-family: "Carolingia";
   font-style: "normal";
   font-weight: 400;
   src: url("../font/carolinga/CAROBTN_.TTF") format("truetype");
@@ -41,7 +41,7 @@
 }
 
 @font-face {
-  font-family: "Magic School";
+  font-family: "Magic School One";
   font-style: "normal";
   font-weight: 400;
   src: url("../font/magic-school/MagicSchoolOne.ttf") format("truetype");
@@ -55,14 +55,14 @@
 }
 
 @font-face {
-  font-family: "DejaVuSans";
+  font-family: "DejaVu Sans";
   font-style: "normal";
   font-weight: 400;
   src: url("../font/deja-vu/DejaVuSans.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: "DejaVuSerif";
+  font-family: "DejaVu Serif";
   font-style: "normal";
   font-weight: 400;
   src: url("../font/deja-vu/DejaVuSerif.ttf") format("truetype");
@@ -83,14 +83,14 @@
 }
 
 @font-face {
-  font-family: "Cloister";
+  font-family: "Cloister Black";
   font-style: "normal";
   font-weight: 400;
   src: url("../font/cloister/CloisterBlack.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: "Baskerville Berthold";
+  font-family: "Berthold Baskerville";
   font-style: "normal";
   font-weight: 400;
   src: url("../font/baskerville/BaskervilleBE-Regular.otf") format("opentype");
