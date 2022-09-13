@@ -17,6 +17,11 @@
 (goog-define stage "dev")
 (goog-define commit "unknown")
 
+(def ^:private base-font-dir
+  (if (= stage "dev")
+    "/Library/Fonts"
+    "/opt/fonts"))
+
 (def ^:private config-data
   (case stage
     "dev" {:heraldicon-api-endpoint "http://localhost:4000/api"
@@ -26,7 +31,6 @@
                                  :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
            :static-files-url "http://localhost:8081"
-           :base-font-dir "/Library/Fonts"
            :fleur-de-lis-charge-id "charge:ZfqrIl"
            :torse-charge-id "charge:8vwlZ2"
            :helmet-charge-id "charge:hlsnvP"
@@ -40,7 +44,6 @@
                                      :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                      :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
                :static-files-url "https://cdn.staging.heraldicon.org"
-               :base-font-dir "/opt/fonts"
                :fleur-de-lis-charge-id "charge:ZfqrIl"
                :torse-charge-id "charge:8vwlZ2"
                :helmet-charge-id "charge:hlsnvP"
@@ -54,7 +57,6 @@
                                   :ClientId "21pvp6cc4l3gptoj4bl3jc9s7r"
                                   :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}
             :static-files-url "https://cdn.heraldicon.org"
-            :base-font-dir "/opt/fonts"
             :fleur-de-lis-charge-id "charge:ZfqrIl"
             :torse-charge-id "charge:8vwlZ2"
             :helmet-charge-id "charge:hlsnvP"
@@ -70,6 +72,7 @@
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}
     :maintenance-mode? false
+    :base-font-dir base-font-dir
     (or (some-> setting
                 name
                 s/upper-case
