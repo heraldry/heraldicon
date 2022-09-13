@@ -26,7 +26,7 @@
                                  :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
            :static-files-url "http://localhost:8081"
-           :base-font-dir "/Users/thi/dev/armory/assets/font"
+           :base-font-dir "/Library/Fonts"
            :fleur-de-lis-charge-id "charge:ZfqrIl"
            :torse-charge-id "charge:8vwlZ2"
            :helmet-charge-id "charge:hlsnvP"
@@ -40,7 +40,7 @@
                                      :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                      :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
                :static-files-url "https://cdn.staging.heraldicon.org"
-               :base-font-dir "./assets/font"
+               :base-font-dir "/opt/fonts"
                :fleur-de-lis-charge-id "charge:ZfqrIl"
                :torse-charge-id "charge:8vwlZ2"
                :helmet-charge-id "charge:hlsnvP"
@@ -54,7 +54,7 @@
                                   :ClientId "21pvp6cc4l3gptoj4bl3jc9s7r"
                                   :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}
             :static-files-url "https://cdn.heraldicon.org"
-            :base-font-dir "./assets/font"
+            :base-font-dir "/opt/fonts"
             :fleur-de-lis-charge-id "charge:ZfqrIl"
             :torse-charge-id "charge:8vwlZ2"
             :helmet-charge-id "charge:hlsnvP"
