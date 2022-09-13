@@ -76,11 +76,11 @@
                                               edge-top edge-bottom
                                               bounding-box)]
     {:subfields [{:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 0)
                            line-edge
                            :clockwise)]}
                  {:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 1)
                            line-edge
                            :counter-clockwise)]}]
      :edges [{:lines [line-edge]}]}))

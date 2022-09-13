@@ -310,18 +310,17 @@
                                                      :reversed? true
                                                      :extend-from? false)]
     {:subfields [{:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 0)
                            line-edge-left
                            line-edge-right
                            :clockwise)]}
                  {:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 1)
                            line-edge-left
                            [:reverse line-edge-bottom]
                            :counter-clockwise)]}
-
                  {:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 2)
                            line-edge-bottom
                            line-edge-right
                            :counter-clockwise)]}]
