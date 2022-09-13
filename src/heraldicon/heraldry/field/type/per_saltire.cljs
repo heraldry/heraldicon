@@ -202,8 +202,8 @@
                            :clockwise)]}
                  {:shape [(shape/build-shape
                            context
-                           line-edge-top-right
                            line-edge-bottom-right
+                           line-edge-top-right
                            :clockwise)]}
                  {:shape [(shape/build-shape
                            context
