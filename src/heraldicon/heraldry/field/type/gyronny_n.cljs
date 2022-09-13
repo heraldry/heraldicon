@@ -164,7 +164,10 @@
                                   (if (= glue :counter-clockwise)
                                     [line-1 line-2 glue]
                                     [line-2 line-1 glue])))))
-                       (map #(apply shape/build-shape context %))
+                       (map-indexed (fn [idx shape-data]
+                                      (apply shape/build-shape
+                                             (c/++ context :fields idx)
+                                             shape-data)))
                        (map (fn [path]
                               {:shape [path]})))
                       (map vector

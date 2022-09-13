@@ -169,11 +169,11 @@
                                               edge-start edge-end
                                               bounding-box)]
     {:subfields [{:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 0)
                            line-edge
                            :counter-clockwise)]}
                  {:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 1)
                            line-edge
                            :clockwise)]}]
      :edges [{:lines [line-edge]}]}))

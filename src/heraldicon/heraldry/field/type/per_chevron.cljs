@@ -289,12 +289,12 @@
                                                     bounding-box
                                                     :extend-from? false)]
     {:subfields [{:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 0)
                            line-edge-left
                            line-edge-right
                            :counter-clockwise)]}
                  {:shape [(shape/build-shape
-                           context
+                           (c/++ context :fields 1)
                            line-edge-left
                            line-edge-right
                            :clockwise)]}]

@@ -213,7 +213,10 @@
                                              [:reverse line-2-right]
                                              :counter-clockwise]
                                 :else [:full])))
-                       (map #(apply shape/build-shape context %))
+                       (map-indexed (fn [idx shape-data]
+                                      (apply shape/build-shape
+                                             (c/++ context :fields idx)
+                                             shape-data)))
                        (map (fn [path]
                               {:shape [path]})))
                       (partition 2 1 [[nil nil]] lines))
