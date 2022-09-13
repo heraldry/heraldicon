@@ -112,6 +112,8 @@
 
 (defn parent [context]
   (some-> (cond
+            ;; TODO: can all this be done without inspecting the path?
+            (-> context :path last (= :coat-of-arms)) nil
             (-> context :path last (= :field)) (c/-- context)
             (-> context :path drop-last last (= :charges)) (c/-- context 4)
             (-> context :path last int?) (c/-- context 2)
