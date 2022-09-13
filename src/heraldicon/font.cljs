@@ -5,11 +5,11 @@
 (def default :prince-valiant)
 
 (def font-data
-  [["Berthold Baskerville" :baskerville-berthold "/baskerville/BaskervilleBE-Regular.otf"]
+  [["Berthold Baskerville" :berthold-baskerville "/berthold-baskerville/BaskervilleBE-Regular.otf"]
    ["BlackChancery" :black-chancery "/black-chancery/BLKCHCRY.TTF"]
    ["Cardinal" :cardinal "/cardinal/Cardinal.ttf"]
-   ["Carolingia" :carolinga "/carolinga/CAROBTN_.TTF"]
-   ["Cloister Black" :cloister "/cloister/CloisterBlack.ttf"]
+   ["Carolingia" :carolingia "/carolingia/CAROBTN_.TTF"]
+   ["Cloister Black" :cloister-black "/cloister-black/CloisterBlack.ttf"]
    ["DejaVu Sans" :deja-vu-sans "/deja-vu/DejaVuSans.ttf"]
    ["DejaVu Serif" :deja-vu-serif "/deja-vu/DejaVuSerif.ttf"]
    ["Fondamento" :fondamento "/fondamento/Fondamento-Regular.ttf"]
@@ -18,7 +18,8 @@
    ["Uncial Antiqua" :uncial-antiqua "/uncial-antiqua/UncialAntiqua-Regular.ttf"]
    ["Liturgisch" :liturgisch "/liturgisch/liturgisch.regular.ttf"]
    ["Lohengrin" :lohengrin "/lohengrin/Lohengrin.ttf"]
-   ["Magic School One" :magic-school "/magic-school/MagicSchoolOne.ttf"]
+   ["Magic School One" :magic-school-one "/magic-school/MagicSchoolOne.ttf"]
+   ["Magic School Two" :magic-school-two "/magic-school/MagicSchoolTwo.ttf"]
    ["Prince Valiant" :prince-valiant "/prince-valiant/PrinceValiant.ttf"]
    ["Trajan Pro" :trajan-pro "/trajan-pro/Trajan Pro Regular.ttf"]])
 
