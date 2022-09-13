@@ -1,4 +1,5 @@
-(ns heraldicon.render.hatching)
+(ns heraldicon.render.hatching
+  (:refer-clojure :exclude [or]))
 
 (def spacing 2.5)
 (def line-thickness 0.2)
@@ -17,7 +18,6 @@
                 :height width
                 :fill "#f5f5f5"}]])]))
 
-#_{:clj-kondo/ignore [:redefined-var]}
 (def ^:private or
   (let [id "hatching-or"]
     [id

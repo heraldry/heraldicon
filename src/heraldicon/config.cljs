@@ -1,4 +1,5 @@
 (ns heraldicon.config
+  (:refer-clojure :exclude [get])
   (:require
    [clojure.string :as s]))
 
@@ -64,7 +65,6 @@
             :supporter-charge-id "charge:fxOk19"
             :mantling-charge-id "charge:gTrIM7"}))
 
-#_{:clj-kondo/ignore [:redefined-var]}
 (defn get [setting]
   (case setting
     :stage stage
