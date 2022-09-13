@@ -1,4 +1,5 @@
 (ns heraldicon.svg.path
+  (:refer-clojure :exclude [reverse])
   (:require
    ["paper" :refer [Path Point]]
    [clojure.string :as s]
@@ -35,7 +36,6 @@
   (.rotate path angle (when center
                         (new Point (:x center) (:y center)))))
 
-#_{:clj-kondo/ignore [:redefined-var]}
 (defn reverse [path]
   (doto path .reverse))
 
