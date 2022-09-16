@@ -104,20 +104,25 @@
         (assoc :current-y new-current-y))))
 
 (defmethod interface/auto-arrangement ordinary-type [_ordinary-type context]
-  (let [{:keys [width points height]} (interface/get-environment context)
+  (let [{:keys [width points height]
+         :as environment} (interface/get-environment context)
+        {fess-y :y} (position/calculate {:point :fess} environment :fess)
+        {center-y :y} (position/calculate {:point :center} environment :fess)
         start-x (-> points :left :x)
+        min-y (-> points :top :y)
+        max-y (-> points :bottom :y)
         percentage-base height
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
                 num-ordinaries
                 margin
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
+        margin (apply-percentage margin)
         bars (cond
                (zero? num-ordinaries) nil
                (= num-ordinaries 1) [{:context (first ordinary-contexts)
-                                      :y 0}]
-               :else (let [margin (apply-percentage margin)
-                           {:keys [current-y
+                                      :y fess-y}]
+               :else (let [{:keys [current-y
                                    bars]} (->> ordinary-contexts
                                                (map (fn [context]
                                                       {:context context}))
@@ -134,10 +139,25 @@
                                                (reduce add-bar {:current-y 0
                                                                 :margin margin
                                                                 :bars []}))
-                           half-height (/ current-y 2)
-                           first-offset-y (-> bars first :offset-y)]
+                           first-offset-y (-> bars first :offset-y)
+                           total-height (- current-y)
+                           half-height (/ total-height 2)
+                           weight (min (* (/ total-height (* 0.66666 height))
+                                          (/ num-ordinaries
+                                             (inc num-ordinaries))) 1)
+                           middle-y (+ fess-y
+                                       (* (- center-y fess-y)
+                                          weight))
+                           start-y (if (> (+ total-height (* 2 margin))
+                                          height)
+                                     (- center-y half-height)
+                                     (-> (- middle-y half-height)
+                                         (max (+ min-y margin))
+                                         (min (- max-y margin total-height))))]
                        (map (fn [bar]
-                              (update bar :y + (- half-height current-y first-offset-y)))
+                              (-> bar
+                                  (update :y - current-y first-offset-y)
+                                  (update :y + start-y)))
                             bars)))]
     {:arrangement-data (into {}
                              (map (fn [{:keys [context]
@@ -160,9 +180,7 @@
                       (apply-percentage (interface/get-sanitized-data (c/++ context :geometry :size))))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         anchor-point (position/calculate anchor parent-environment :fess)
-        {fess-y :y} (position/calculate {:point :fess} parent-environment :fess)
         upper (or (some-> arranged-y
-                          (+ fess-y)
                           (- (/ band-size 2)))
                   (case (:alignment anchor)
                     :left (:y anchor-point)
