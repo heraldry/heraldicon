@@ -10,7 +10,7 @@
   0.3333333333)
 
 (defn size [num-ordinaries]
-  (max (* 25 (js/Math.pow 0.75 (dec num-ordinaries)))
+  (max (* 25 (js/Math.pow 0.85 (dec num-ordinaries)))
        7))
 
 (defn margin [num-ordinaries]
