@@ -13,8 +13,8 @@
   (max (* 25 (js/Math.pow 0.85 (dec num-ordinaries)))
        7))
 
-(defn margin [num-ordinaries]
-  (* margin-factor (size num-ordinaries)))
+(defn- margin [size]
+  (* margin-factor size))
 
 (defn- get-auto-positioned-ordinaries [context ordinary-type]
   (let [num-elements (interface/get-list-size context)]
@@ -31,7 +31,8 @@
 
 (defmethod interface/auto-ordinary-info :default [ordinary-type context]
   (let [ordinaries (get-auto-positioned-ordinaries (c/++ context :components) ordinary-type)
-        num-ordinaries (count ordinaries)]
+        num-ordinaries (count ordinaries)
+        default-size (size num-ordinaries)]
     {:ordinary-contexts ordinaries
      :num-ordinaries num-ordinaries
      :affected-paths (if (> num-ordinaries 1)
@@ -39,8 +40,8 @@
                              (map :path)
                              ordinaries)
                        #{})
-     :default-size (size num-ordinaries)
-     :margin (margin num-ordinaries)}))
+     :default-size default-size
+     :margin (margin default-size)}))
 
 (defn set-offset-x [{:keys [context percentage-base]
                      :as bar}]
