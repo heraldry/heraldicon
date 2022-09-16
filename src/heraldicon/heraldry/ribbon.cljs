@@ -170,7 +170,7 @@
                 :text {:type :option.type/text
                        :default ""}
                 :font (-> font/default-options
-                          (assoc :default :baskerville-berthold))}))
+                          (assoc :default :berthold-baskerville))}))
       (assoc :type type-option)))
 
 (defn project-path-to [curve new-start new-end & {:keys [reverse?]}]
