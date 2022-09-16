@@ -302,3 +302,32 @@
   (if (cottise-context? context)
     (parent (parent context))
     (parent context)))
+
+(defmulti auto-ordinary-info (fn [ordinary-type _context]
+                               ordinary-type))
+
+(rf/reg-sub-raw ::auto-ordinary-info
+  (fn [_app-db [_ ordinary-type context]]
+    (reaction-or-cache
+     [::auto-ordinary-info ordinary-type]
+     context
+     #(auto-ordinary-info ordinary-type context))))
+
+(defn get-auto-ordinary-info [ordinary-type context]
+  @(rf/subscribe [::auto-ordinary-info ordinary-type (c/scrub-render-hints context)]))
+
+(defmulti auto-arrangement (fn [ordinary-type _context]
+                             ordinary-type))
+
+(defmethod auto-arrangement :default [ordinary-type context]
+  (log/warn :not-implemented "interface.auto-arrangement" ordinary-type context))
+
+(rf/reg-sub-raw ::auto-arrangement
+  (fn [_app-db [_ ordinary-type context]]
+    (reaction-or-cache
+     [::auto-arrangement ordinary-type]
+     context
+     #(auto-arrangement ordinary-type context))))
+
+(defn get-auto-arrangement [ordinary-type context]
+  @(rf/subscribe [::auto-arrangement ordinary-type (c/scrub-render-hints context)]))

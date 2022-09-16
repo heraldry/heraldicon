@@ -22,11 +22,9 @@
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/fess)
 
 (defmethod ordinary.interface/options ordinary-type [context]
-  (let [num-auto-ordinaries (auto-arrange/num-auto-positioned-ordinaries (c/-- context) ordinary-type)
-        auto-positioned? (and (> num-auto-ordinaries 1)
-                              (= (or (interface/get-raw-data (c/++ context :anchor :point))
-                                     :auto)
-                                 :auto))
+  (let [{:keys [num-ordinaries
+                affected-paths]} (interface/get-auto-ordinary-info ordinary-type (interface/parent context))
+        auto-positioned? (get affected-paths (:path context))
         line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside)
                        (cond->
@@ -49,7 +47,6 @@
                                           :bottom])
                                :default :auto
                                :ui/label :string.option/point}
-
                        :offset-y {:type :option.type/range
                                   :min -75
                                   :max 75
@@ -69,7 +66,7 @@
                         :min 0.1
                         :max 90
                         :default (if auto-positioned?
-                                   (auto-arrange/size num-auto-ordinaries)
+                                   (auto-arrange/size num-ordinaries)
                                    25)
                         :ui/label :string.option/size
                         :ui/step 0.1}
@@ -106,19 +103,25 @@
                                             (/ size 2))))
         (assoc :current-y new-current-y))))
 
-(defn- arrange-bars [context percentage-base]
-  (let [{:keys [width points]} (interface/get-environment context)
+(defmethod interface/auto-arrangement ordinary-type [_ordinary-type context]
+  (let [{:keys [width points height]} (interface/get-environment context)
         start-x (-> points :left :x)
+        percentage-base height
         apply-percentage (partial math/percent-of percentage-base)
-        auto-ordinaries (auto-arrange/get-auto-positioned-ordinaries (c/++ context :components) ordinary-type)
-        num-bars (count auto-ordinaries)
+        {:keys [ordinary-contexts
+                num-ordinaries
+                margin
+                default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         bars (cond
-               (zero? num-bars) nil
-               (= num-bars 1) [(assoc (first auto-ordinaries) :y 0)]
-               :else (let [default-size (auto-arrange/size num-bars)
-                           margin (apply-percentage (auto-arrange/margin num-bars))
+               (zero? num-ordinaries) nil
+               (= num-ordinaries 1) [{:context (first ordinary-contexts)
+                                      :y 0}]
+               :else (let [margin (apply-percentage margin)
                            {:keys [current-y
-                                   bars]} (->> auto-ordinaries
+                                   bars]} (->> ordinary-contexts
+                                               (map (fn [context]
+                                                      {:context context}))
+                                               (map #(assoc % :auto-positioned? (> num-ordinaries 1)))
                                                (map #(assoc % :start-x start-x))
                                                (map #(assoc % :line-length width))
                                                (map #(assoc % :size default-size))
@@ -136,21 +139,23 @@
                        (map (fn [bar]
                               (update bar :y + (- half-height current-y first-offset-y)))
                             bars)))]
-    (into {}
-          (map (fn [{:keys [context]
-                     :as bar}]
-                 [(:path context) bar]))
-          bars)))
+    {:arrangement-data (into {}
+                             (map (fn [{:keys [context]
+                                        :as bar}]
+                                    [(:path context) bar]))
+                             bars)
+     :num-ordinaries num-ordinaries}))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
-        {:keys [left right]} (:points parent-environment)
-        percentage-base (:height parent-environment)
+  (let [{:keys [points height]
+         :as parent-environment} (interface/get-parent-environment context)
+        {:keys [left right]} points
+        percentage-base height
         apply-percentage (partial math/percent-of percentage-base)
-        arrangement (arrange-bars (interface/parent context) percentage-base)
+        {:keys [arrangement-data]} (interface/get-auto-arrangement ordinary-type (interface/parent context))
         {arranged-size :size
          arranged-y :y
-         arranged-start-x :start-x} (get arrangement (:path context))
+         arranged-start-x :start-x} (get arrangement-data (:path context))
         band-size (or arranged-size
                       (apply-percentage (interface/get-sanitized-data (c/++ context :geometry :size))))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
