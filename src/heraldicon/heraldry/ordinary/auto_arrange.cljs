@@ -18,9 +18,8 @@
   (let [num-elements (interface/get-list-size context)]
     (into []
           (comp
-           (map (fn [idx]
-                  {:context (c/++ context idx)}))
-           (filter (fn [{component-context :context}]
+           (map #(c/++ context %))
+           (filter (fn [component-context]
                      (and (= (interface/get-raw-data (c/++ component-context :type))
                              ordinary-type)
                           (= (or (interface/get-raw-data (c/++ component-context :anchor :point))
@@ -28,8 +27,18 @@
                              :auto)))))
           (range num-elements))))
 
-(defn num-auto-positioned-ordinaries [context ordinary-type]
-  (count (get-auto-positioned-ordinaries context ordinary-type)))
+(defmethod interface/auto-ordinary-info :default [ordinary-type context]
+  (let [ordinaries (get-auto-positioned-ordinaries (c/++ context :components) ordinary-type)
+        num-ordinaries (count ordinaries)]
+    {:ordinary-contexts ordinaries
+     :num-ordinaries num-ordinaries
+     :affected-paths (if (> num-ordinaries 1)
+                       (into #{}
+                             (map :path)
+                             ordinaries)
+                       #{})
+     :default-size (size num-ordinaries)
+     :margin (margin num-ordinaries)}))
 
 (defn set-offset-x [{:keys [context percentage-base]
                      :as bar}]
