@@ -2,7 +2,9 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.core :as line]
+   [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.interface :as interface]
+   [heraldicon.math.core :as math]
    [heraldicon.options :as options]))
 
 (defn add-cottise-options [options key context]
@@ -68,3 +70,21 @@
                             (interface/parent context))
         reference-properties (interface/get-properties reference-context)]
     (cottise-properties context reference-properties)))
+
+(defn cottise-height [context line-length percentage-base]
+  (if (interface/get-raw-data (c/++ context :type))
+    (let [distance (math/percent-of percentage-base
+                                    (interface/get-sanitized-data (c/++ context :distance)))
+          thickness (math/percent-of percentage-base
+                                     (interface/get-sanitized-data (c/++ context :thickness)))
+          line-properties (post-process/line-properties {:line-length line-length} context)
+          kind! (kind context)]
+      (+ distance
+         thickness
+         (cond
+           (#{:cottise-1
+              :cottise-2} kind!) (-> line-properties :line :effective-height)
+           (#{:opposite-cottise-1
+              :opposite-cottise-2} kind!) (-> line-properties :opposite-line :effective-height)
+           :else 0)))
+    0))

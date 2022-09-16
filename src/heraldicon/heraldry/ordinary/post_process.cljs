@@ -29,8 +29,9 @@
       (assoc properties :voided voided)
       properties)))
 
-(defn properties [{:keys [line-length swap-lines?]
-                   :as properties} context]
+(defn line-properties [{:keys [line-length
+                               swap-lines?]
+                        :as properties} context]
   (let [{:keys [width height]} (interface/get-parent-environment context)
         fimbriation-percentage-base (min width height)]
     (-> properties
@@ -47,9 +48,13 @@
                                           (line/resolve-percentages line-length width height fimbriation-percentage-base)))))
         (cond->
           swap-lines? (set/rename-keys {:line :opposite-line
-                                        :opposite-line :line}))
-        (process-humetty-properties context)
-        (process-voided-properties context))))
+                                        :opposite-line :line})))))
+
+(defn properties [properties context]
+  (-> properties
+      (line-properties context)
+      (process-humetty-properties context)
+      (process-voided-properties context)))
 
 (defn- process-shape-humetty [{:keys [shape]
                                :as shape-data} context {:keys [humetty]}]
