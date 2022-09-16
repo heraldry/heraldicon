@@ -6,6 +6,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.option.position :as position]
+   [heraldicon.heraldry.ordinary.auto-arrange :as auto-arrange]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.heraldry.ordinary.shared :as ordinary.shared]
@@ -21,42 +22,55 @@
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/fess)
 
 (defmethod ordinary.interface/options ordinary-type [context]
-  (let [line-style (-> (line/options (c/++ context :line))
-                       (options/override-if-exists [:fimbriation :alignment :default] :outside))
+  (let [num-auto-ordinaries (auto-arrange/num-auto-positioned-ordinaries (c/-- context) ordinary-type)
+        auto-positioned? (and (> num-auto-ordinaries 1)
+                              (= (or (interface/get-raw-data (c/++ context :anchor :point))
+                                     :auto)
+                                 :auto))
+        line-style (-> (line/options (c/++ context :line))
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                       (cond->
+                         auto-positioned? (options/override-if-exists [:size-reference :default] :field-width)))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
-                                (options/override-if-exists [:fimbriation :alignment :default] :outside))]
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                                (cond->
+                                  auto-positioned? (options/override-if-exists [:size-reference :default] :field-width)))]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :option.type/choice
-                       :choices (position/anchor-choices
-                                 [:fess
-                                  :chief
-                                  :base
-                                  :honour
-                                  :nombril
-                                  :top
-                                  :center
-                                  :bottom])
-                       :default :fess
-                       :ui/label :string.option/point}
-               :alignment {:type :option.type/choice
-                           :choices position/alignment-choices
-                           :default :middle
-                           :ui/label :string.option/alignment
-                           :ui/element :ui.element/radio-select}
-               :offset-y {:type :option.type/range
-                          :min -75
-                          :max 75
-                          :default 0
-                          :ui/label :string.option/offset-y
-                          :ui/step 0.1}
-               :ui/label :string.option/anchor
-               :ui/element :ui.element/position}
+     {:anchor (cond-> {:point {:type :option.type/choice
+                               :choices (position/anchor-choices
+                                         [:auto
+                                          :fess
+                                          :chief
+                                          :base
+                                          :honour
+                                          :nombril
+                                          :top
+                                          :center
+                                          :bottom])
+                               :default :auto
+                               :ui/label :string.option/point}
+
+                       :offset-y {:type :option.type/range
+                                  :min -75
+                                  :max 75
+                                  :default 0
+                                  :ui/label :string.option/offset-y
+                                  :ui/step 0.1}
+                       :ui/label :string.option/anchor
+                       :ui/element :ui.element/position}
+                (not auto-positioned?) (assoc :alignment {:type :option.type/choice
+                                                          :choices position/alignment-choices
+                                                          :default :middle
+                                                          :ui/label :string.option/alignment
+                                                          :ui/element :ui.element/radio-select}))
       :line line-style
       :opposite-line opposite-line-style
       :geometry {:size {:type :option.type/range
                         :min 0.1
                         :max 90
-                        :default 25
+                        :default (if auto-positioned?
+                                   (auto-arrange/size num-auto-ordinaries)
+                                   25)
                         :ui/label :string.option/size
                         :ui/step 0.1}
                  :ui/label :string.option/geometry
@@ -64,18 +78,91 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 
+(defn- add-bar [{:keys [current-y
+                        margin]
+                 :as arrangement}
+                {:keys [size
+                        offset-y
+                        line
+                        opposite-line
+                        cottise-height
+                        opposite-cottise-height]
+                 :as bar}]
+  (let [line-height (:effective-height line)
+        opposite-line-height (:effective-height opposite-line)
+        new-current-y (cond-> (- current-y
+                                 cottise-height
+                                 line-height
+                                 size
+                                 opposite-line-height
+                                 opposite-cottise-height)
+                        (not (zero? current-y)) (->
+                                                  (- offset-y)
+                                                  (- margin)))]
+    (-> arrangement
+        (update :bars conj (assoc bar :y (+ new-current-y
+                                            cottise-height
+                                            line-height
+                                            (/ size 2))))
+        (assoc :current-y new-current-y))))
+
+(defn- arrange-bars [context percentage-base]
+  (let [{:keys [width points]} (interface/get-environment context)
+        start-x (-> points :left :x)
+        apply-percentage (partial math/percent-of percentage-base)
+        auto-ordinaries (auto-arrange/get-auto-positioned-ordinaries (c/++ context :components) ordinary-type)
+        num-bars (count auto-ordinaries)
+        bars (cond
+               (zero? num-bars) nil
+               (= num-bars 1) [(assoc (first auto-ordinaries) :y 0)]
+               :else (let [default-size (auto-arrange/size num-bars)
+                           margin (apply-percentage (auto-arrange/margin num-bars))
+                           {:keys [current-y
+                                   bars]} (->> auto-ordinaries
+                                               (map #(assoc % :start-x start-x))
+                                               (map #(assoc % :line-length width))
+                                               (map #(assoc % :size default-size))
+                                               (map #(assoc % :percentage-base percentage-base))
+                                               (map auto-arrange/set-offset-y)
+                                               (map auto-arrange/set-size)
+                                               (map #(update % :size apply-percentage))
+                                               (map auto-arrange/set-line-data)
+                                               (map auto-arrange/set-cottise-data)
+                                               (reduce add-bar {:current-y 0
+                                                                :margin margin
+                                                                :bars []}))
+                           half-height (/ current-y 2)
+                           first-offset-y (-> bars first :offset-y)]
+                       (map (fn [bar]
+                              (update bar :y + (- half-height current-y first-offset-y)))
+                            bars)))]
+    (into {}
+          (map (fn [{:keys [context]
+                     :as bar}]
+                 [(:path context) bar]))
+          bars)))
+
 (defmethod interface/properties ordinary-type [context]
   (let [parent-environment (interface/get-parent-environment context)
-        size (interface/get-sanitized-data (c/++ context :geometry :size))
         {:keys [left right]} (:points parent-environment)
         percentage-base (:height parent-environment)
-        band-size (math/percent-of percentage-base size)
+        apply-percentage (partial math/percent-of percentage-base)
+        arrangement (arrange-bars (interface/parent context) percentage-base)
+        {arranged-size :size
+         arranged-y :y
+         arranged-start-x :start-x} (get arrangement (:path context))
+        band-size (or arranged-size
+                      (apply-percentage (interface/get-sanitized-data (c/++ context :geometry :size))))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         anchor-point (position/calculate anchor parent-environment :fess)
-        upper (case (:alignment anchor)
-                :left (:y anchor-point)
-                :right (- (:y anchor-point) band-size)
-                (- (:y anchor-point) (/ band-size 2)))
+        {fess-y :y} (position/calculate {:point :fess} parent-environment :fess)
+        upper (or (some-> arranged-y
+                          (+ fess-y)
+                          (- (/ band-size 2)))
+                  (case (:alignment anchor)
+                    :left (:y anchor-point)
+                    :right (- (:y anchor-point) band-size)
+                    (- (:y anchor-point) (/ band-size 2))))
         lower (+ upper band-size)
         parent-shape (interface/get-exact-parent-shape context)
         [upper-left upper-right] (v/intersections-with-shape
@@ -84,7 +171,8 @@
         [lower-left lower-right] (v/intersections-with-shape
                                   (v/Vector. (:x left) lower) (v/Vector. (:x right) lower)
                                   parent-shape :default? true)
-        start-x (min (:x upper-left) (:x lower-left))
+        start-x (or arranged-start-x
+                    (min (:x upper-left) (:x lower-left)))
         upper-left (assoc upper-left :x start-x)
         lower-left (assoc lower-left :x start-x)
         line-length (max (v/abs (v/sub upper-left upper-right))
@@ -139,22 +227,22 @@
                                                         reference-upper-line :line
                                                         reference-lower-line :opposite-line}]
   (let [kind (cottising/kind context)
-        distance (interface/get-sanitized-data (c/++ context :distance))
-        distance (math/percent-of percentage-base distance)
-        thickness (interface/get-sanitized-data (c/++ context :thickness))
-        band-size (math/percent-of percentage-base thickness)
         opposite? (or flip-cottise?
                       (-> kind name (s/starts-with? "cottise-opposite")))
         reference-line (if opposite?
                          reference-lower-line
                          reference-upper-line)
-        real-distance (+ (:effective-height reference-line)
-                         distance)
         [base-left base-right] (if opposite?
                                  [reference-lower-left reference-lower-right]
                                  [reference-upper-left reference-upper-right])
-        dist-vector (v/Vector. 0 real-distance)
-        band-size-vector (v/Vector. 0 band-size)
+        direction (v/Vector. 0 1)
+        distance (math/percent-of percentage-base
+                                  (+ (:effective-height reference-line)
+                                     (interface/get-sanitized-data (c/++ context :distance))))
+        dist-vector (v/mul direction distance)
+        band-size (math/percent-of percentage-base
+                                   (interface/get-sanitized-data (c/++ context :thickness)))
+        band-size-vector (v/mul direction band-size)
         add-fn (if opposite?
                  v/add
                  v/sub)

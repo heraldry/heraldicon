@@ -481,6 +481,7 @@
       "technical": "Technisch"
     },
     "point-choice": {
+      "auto": "Auto",
       "base": "Unterstelle",
       "bottom": "Unten",
       "bottom-left": "Unten-links",

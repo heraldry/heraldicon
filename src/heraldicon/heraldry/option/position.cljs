@@ -17,6 +17,7 @@
     [:string.option.point-choice/hoist :hoist]
     [:string.option.point-choice/fly :fly]]
    [:string.option.point-choice-group/technical
+    [:string.option.point-choice/auto :auto]
     [:string.option.point-choice/top-left :top-left]
     [:string.option.point-choice/top :top]
     [:string.option.point-choice/top-right :top-right]
@@ -30,6 +31,7 @@
 (def ^:private all-orientation-choices
   [[:string.option.orientation-point-choice/angle :angle]
    [:string.option.point-choice-group/technical
+    [:string.option.point-choice/auto :auto]
     [:string.option.point-choice/top-left :top-left]
     [:string.option.point-choice/top :top]
     [:string.option.point-choice/top-right :top-right]
