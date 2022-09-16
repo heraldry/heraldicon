@@ -6,13 +6,15 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]))
 
+(def ^:private margin-factor
+  0.3333333333)
+
 (defn size [num-ordinaries]
   (max (* 25 (js/Math.pow 0.75 (dec num-ordinaries)))
-       7.5))
+       7))
 
 (defn margin [num-ordinaries]
-  (max (* 10 (js/Math.pow 0.75 (dec num-ordinaries)))
-       3))
+  (* margin-factor (size num-ordinaries)))
 
 (defn- get-auto-positioned-ordinaries [context ordinary-type]
   (let [num-elements (interface/get-list-size context)]
