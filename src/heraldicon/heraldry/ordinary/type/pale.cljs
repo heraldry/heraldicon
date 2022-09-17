@@ -122,7 +122,6 @@
                               pales]} (->> ordinary-contexts
                                            (map (fn [context]
                                                   {:context context}))
-                                           (map #(assoc % :auto-positioned? (> num-ordinaries 1)))
                                            (map #(assoc % :start-y start-y))
                                            (map #(assoc % :line-length height))
                                            (map #(assoc % :size default-size))
