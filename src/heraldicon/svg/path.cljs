@@ -23,8 +23,11 @@
 (defn parse-path [path]
   (new Path path))
 
-(defn translate [path dx dy]
-  (.translate path dx dy))
+(defn translate
+  ([path {:keys [x y]}]
+   (.translate path x y))
+  ([path dx dy]
+   (.translate path dx dy)))
 
 (defn scale [path sx sy & {:keys [center]
                            :or {center v/zero}}]

@@ -516,6 +516,7 @@
     "rotation": "Rotation",
     "row": "Zeile",
     "section": {
+      "bend-group": "Schrägbalkengruppe",
       "fess-group": "Balkengruppe",
       "pale-group": "Pfahlgruppe",
       "chevron-group": "Sparrengruppe"
