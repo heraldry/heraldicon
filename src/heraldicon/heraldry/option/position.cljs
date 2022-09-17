@@ -73,6 +73,9 @@
 (defn calculate [{:keys [point offset-x offset-y] :or {offset-x 0
                                                        offset-y 0}} environment & [default]]
   (let [ref (or point default)
+        ref (if (= ref :auto)
+              :fess
+              ref)
         p (-> environment :points (get ref))
         width (:width environment)
         height (:height environment)

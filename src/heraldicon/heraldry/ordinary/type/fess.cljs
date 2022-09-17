@@ -118,47 +118,44 @@
                 margin
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         margin (apply-percentage margin)
-        bars (cond
-               (zero? num-ordinaries) nil
-               (= num-ordinaries 1) [{:context (first ordinary-contexts)
-                                      :y fess-y}]
-               :else (let [{:keys [current-y
-                                   bars]} (->> ordinary-contexts
-                                               (map (fn [context]
-                                                      {:context context}))
-                                               (map #(assoc % :auto-positioned? (> num-ordinaries 1)))
-                                               (map #(assoc % :start-x start-x))
-                                               (map #(assoc % :line-length width))
-                                               (map #(assoc % :size default-size))
-                                               (map #(assoc % :percentage-base percentage-base))
-                                               (map auto-arrange/set-offset-y)
-                                               (map auto-arrange/set-size)
-                                               (map #(update % :size apply-percentage))
-                                               (map auto-arrange/set-line-data)
-                                               (map auto-arrange/set-cottise-data)
-                                               (reduce add-bar {:current-y 0
-                                                                :margin margin
-                                                                :bars []}))
-                           first-offset-y (-> bars first :offset-y)
-                           total-height (- current-y)
-                           half-height (/ total-height 2)
-                           weight (min (* (/ total-height (* 0.66666 height))
-                                          (/ num-ordinaries
-                                             (inc num-ordinaries))) 1)
-                           middle-y (+ fess-y
-                                       (* (- center-y fess-y)
-                                          weight))
-                           start-y (if (> (+ total-height (* 2 margin))
-                                          height)
-                                     (- center-y half-height)
-                                     (-> (- middle-y half-height)
-                                         (max (+ min-y margin))
-                                         (min (- max-y margin total-height))))]
-                       (map (fn [bar]
-                              (-> bar
-                                  (update :y - current-y first-offset-y)
-                                  (update :y + start-y)))
-                            bars)))]
+        bars (when (> num-ordinaries 1)
+               (let [{:keys [current-y
+                             bars]} (->> ordinary-contexts
+                                         (map (fn [context]
+                                                {:context context}))
+                                         (map #(assoc % :auto-positioned? (> num-ordinaries 1)))
+                                         (map #(assoc % :start-x start-x))
+                                         (map #(assoc % :line-length width))
+                                         (map #(assoc % :size default-size))
+                                         (map #(assoc % :percentage-base percentage-base))
+                                         (map auto-arrange/set-offset-y)
+                                         (map auto-arrange/set-size)
+                                         (map #(update % :size apply-percentage))
+                                         (map auto-arrange/set-line-data)
+                                         (map auto-arrange/set-cottise-data)
+                                         (reduce add-bar {:current-y 0
+                                                          :margin margin
+                                                          :bars []}))
+                     first-offset-y (-> bars first :offset-y)
+                     total-height (- current-y)
+                     half-height (/ total-height 2)
+                     weight (min (* (/ total-height (* 0.66666 height))
+                                    (/ num-ordinaries
+                                       (inc num-ordinaries))) 1)
+                     middle-y (+ fess-y
+                                 (* (- center-y fess-y)
+                                    weight))
+                     start-y (if (> (+ total-height (* 2 margin))
+                                    height)
+                               (- center-y half-height)
+                               (-> (- middle-y half-height)
+                                   (max (+ min-y margin))
+                                   (min (- max-y margin total-height))))]
+                 (map (fn [bar]
+                        (-> bar
+                            (update :y - current-y first-offset-y)
+                            (update :y + start-y)))
+                      bars)))]
     {:arrangement-data (into {}
                              (map (fn [{:keys [context]
                                         :as bar}]
@@ -175,7 +172,8 @@
         {:keys [arrangement-data]} (interface/get-auto-arrangement ordinary-type (interface/parent context))
         {arranged-size :size
          arranged-y :y
-         arranged-start-x :start-x} (get arrangement-data (:path context))
+         arranged-start-x :start-x
+         arranged-line-length :line-length} (get arrangement-data (:path context))
         band-size (or arranged-size
                       (apply-percentage (interface/get-sanitized-data (c/++ context :geometry :size))))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
@@ -198,8 +196,9 @@
                     (min (:x upper-left) (:x lower-left)))
         upper-left (assoc upper-left :x start-x)
         lower-left (assoc lower-left :x start-x)
-        line-length (max (v/abs (v/sub upper-left upper-right))
-                         (v/abs (v/sub lower-left lower-right)))]
+        line-length (or arranged-line-length
+                        (max (v/abs (v/sub upper-left upper-right))
+                             (v/abs (v/sub lower-left lower-right))))]
     (post-process/properties
      {:type ordinary-type
       :upper [upper-left upper-right]
