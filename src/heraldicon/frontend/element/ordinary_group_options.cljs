@@ -15,9 +15,11 @@
         fess-group-context (c/++ field-context :fess-group)
         pale-group-context (c/++ field-context :pale-group)
         chevron-group-context (c/++ field-context :chevron-group)
+        bend-group-context (c/++ field-context :bend-group)
         part-of-fess-group? (part-of-group? ordinary-context :heraldry.ordinary.type/fess)
         part-of-pale-group? (part-of-group? ordinary-context :heraldry.ordinary.type/pale)
-        part-of-chevron-group? (part-of-group? ordinary-context :heraldry.ordinary.type/chevron)]
+        part-of-chevron-group? (part-of-group? ordinary-context :heraldry.ordinary.type/chevron)
+        part-of-bend-group? (part-of-group? ordinary-context :heraldry.ordinary.type/bend)]
     [:<>
      (when part-of-fess-group?
        [:<>
@@ -53,4 +55,16 @@
           :default-size
           :default-spacing
           :offset-x
+          :offset-y])])
+
+     (when part-of-bend-group?
+       [:<>
+        [:div {:style {:font-size "1.3em"
+                       :margin-top "0.5em"
+                       :margin-bottom "0.5em"}} [tr :string.option.section/bend-group]]
+        (element/elements
+         bend-group-context
+         [:orientation
+          :default-size
+          :default-spacing
           :offset-y])])]))

@@ -28,6 +28,7 @@
                                              ;; special case, because these paths are not parents
                                              ;; of the submenu context that spawns them
                                              (some #{:fess-group
+                                                     :bend-group
                                                      :pale-group
                                                      :chevron-group} path))
                                      [key value])))
