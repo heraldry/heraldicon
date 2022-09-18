@@ -66,7 +66,7 @@
                         :min 0.1
                         :max 90
                         :default (if auto-positioned?
-                                   (auto-arrange/size num-ordinaries)
+                                   (auto-arrange/size ordinary-type num-ordinaries)
                                    25)
                         :ui/label :string.option/size
                         :ui/step 0.1}
