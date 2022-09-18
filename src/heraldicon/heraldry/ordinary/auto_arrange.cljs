@@ -36,10 +36,11 @@
     {:ordinary-contexts ordinaries
      :num-ordinaries num-ordinaries
      :affected-paths (if (> num-ordinaries 1)
-                       (into #{}
-                             (map :path)
+                       (into {}
+                             (map-indexed (fn [index {:keys [path]}]
+                                            [path index]))
                              ordinaries)
-                       #{})
+                       {})
      :default-size default-size
      :margin (margin default-size)}))
 
