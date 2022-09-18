@@ -74,7 +74,11 @@
 
     {:type :heraldry.ordinary.type/fess
      :field example-field
-     :manual-blazon "foobar"}))
+     :manual-blazon "foobar"}
+
+    {:type :heraldry.ordinary.type/orle
+     :field example-field
+     :positioning-mode (tu/example :heraldry.ordinary/positioning-mode)}))
 
 (deftest invalid-ordinary
   (are [form] (tu/invalid? :heraldry/ordinary form)

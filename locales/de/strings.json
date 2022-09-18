@@ -502,6 +502,11 @@
       "fly": "Flugseite"
     },
     "position": "Position",
+    "positioning-mode": "Positionierung",
+    "positioning-mode-choice": {
+      "automatic": "Automatisch",
+      "manual": "Manuell"
+    },
     "radius": "Radius",
     "rectangular?": "Rechteckiges Gitter",
     "reversed?": "Umgedreht",

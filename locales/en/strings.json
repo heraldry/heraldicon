@@ -503,6 +503,11 @@
       "fly": "Fly"
     },
     "position": "Position",
+    "positioning-mode": "Positioning",
+    "positioning-mode-choice": {
+      "automatic": "Automatic",
+      "manual": "Manual"
+    },
     "radius": "Radius",
     "rectangular?": "Rectangular grid",
     "reversed?": "Reversed",
