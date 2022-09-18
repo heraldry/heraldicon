@@ -49,6 +49,7 @@
     :anchor
     :orientation
     :variant
+    :positioning-mode
     :line
     :opposite-line
     :extra-line

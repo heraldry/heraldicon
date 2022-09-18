@@ -3,6 +3,7 @@
    [cljs.spec.alpha :as s]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.heraldry.ordinary.type.label :as label]
+   [heraldicon.heraldry.ordinary.type.orle :as orle]
    [heraldicon.heraldry.ordinary.type.point :as point]
    [heraldicon.heraldry.ordinary.type.quarter :as quarter]
    [spec.heraldicon.spec-util :as su]
@@ -33,6 +34,8 @@
 (s/def :heraldry.ordinary/variant (s/or :label (su/key-in? label/variant-map)
                                         :quarter (su/key-in? quarter/variant-map)
                                         :point (su/key-in? point/variant-map)))
+
+(s/def :heraldry.ordinary/positioning-mode (su/key-in? orle/positioning-mode-map))
 
 (s/def :heraldry.ordinary/fimbriation :heraldry/fimbriation)
 
@@ -69,4 +72,5 @@
                                            :heraldry.ordinary/smoothing
                                            :heraldry.ordinary/fimbriation
                                            :heraldry.ordinary/cottising
+                                           :heraldry.ordinary/positioning-mode
                                            :heraldry.ordinary/manual-blazon]))

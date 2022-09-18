@@ -4,6 +4,7 @@
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.line.core :as line]
+   [heraldicon.heraldry.ordinary.auto-arrange :as auto-arrange]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.interface :as interface]
@@ -15,8 +16,18 @@
 
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/orle)
 
+(def ^:private positioning-mode-choices
+  [[:string.option.positioning-mode-choice/automatic :auto]
+   [:string.option.positioning-mode-choice/manual :manual]])
+
+(def positioning-mode-map
+  (options/choices->map positioning-mode-choices))
+
 (defmethod ordinary.interface/options ordinary-type [context]
-  (let [line-type (or (interface/get-raw-data (c/++ context :line :type))
+  (let [{:keys [num-ordinaries
+                affected-paths]} (interface/get-auto-ordinary-info ordinary-type (interface/parent context))
+        auto-positioned? (get affected-paths (:path context))
+        line-type (or (interface/get-raw-data (c/++ context :line :type))
                       :straight)
         opposite-line-type (or (interface/get-raw-data (c/++ context :opposite-line :type))
                                :straight)
@@ -28,17 +39,25 @@
                                                             (and (not= line-type :straight)
                                                                  (-> line-type line/kinds-pattern-map :full?))))
                                                   choices)))
-                               (options/override-if-exists [:base-line :default] :bottom))]
-    {:thickness {:type :option.type/range
+                               (options/override-if-exists [:base-line :default] :bottom))
+        default-thickness (if auto-positioned?
+                            (auto-arrange/size ordinary-type num-ordinaries)
+                            5)]
+    {:positioning-mode {:type :option.type/choice
+                        :choices positioning-mode-choices
+                        :default :auto
+                        :ui/label :string.option/positioning-mode
+                        :ui/element :ui.element/radio-select}
+     :thickness {:type :option.type/range
                  :min 0.1
                  :max 20
-                 :default 5
+                 :default default-thickness
                  :ui/label :string.option/thickness
                  :ui/step 0.1}
      :distance {:type :option.type/range
                 :min 0.1
                 :max 30
-                :default 4
+                :default (* 0.75 default-thickness)
                 :ui/label :string.option/distance
                 :ui/step 0.1}
      :corner-radius {:type :option.type/range
@@ -66,17 +85,74 @@
                                    :corner-dampening? true))
      :outline? options/plain-outline?-option}))
 
+(defn- add-orle [{:keys [current-distance]
+                  :as arrangement}
+                 {:keys [thickness
+                         distance
+                         line
+                         opposite-line]
+                  :as orle}]
+  (let [line-height (:effective-height line)
+        opposite-line-height (:effective-height opposite-line)
+        new-current-distance (+ current-distance
+                                distance
+                                opposite-line-height
+                                thickness
+                                line-height)]
+    (-> arrangement
+        (update :orles conj (assoc orle :distance (- new-current-distance
+                                                     thickness
+                                                     line-height)))
+        (assoc :current-distance new-current-distance))))
+
+(defmethod interface/auto-arrangement ordinary-type [_ordinary-type context]
+  (let [{:keys [width height]} (interface/get-environment context)
+        percentage-base (min width height)
+        apply-percentage (partial math/percent-of percentage-base)
+        {:keys [ordinary-contexts
+                num-ordinaries
+                margin
+                default-size]} (interface/get-auto-ordinary-info ordinary-type context)
+        orles (when (> num-ordinaries 1)
+                (let [{:keys [orles]} (->> ordinary-contexts
+                                           (map (fn [context]
+                                                  {:context context}))
+                                           (map #(assoc % :line-length percentage-base))
+                                           (map #(assoc % :percentage-base percentage-base))
+                                           (map #(assoc % :distance margin))
+                                           (map auto-arrange/set-distance)
+                                           (map #(update % :distance apply-percentage))
+                                           (map #(assoc % :thickness default-size))
+                                           (map auto-arrange/set-thickness)
+                                           (map #(update % :thickness apply-percentage))
+                                           (map auto-arrange/set-line-data)
+                                           (reduce add-orle {:current-distance 0
+                                                             :orles []}))]
+                  orles))]
+    {:arrangement-data (into {}
+                             (map (fn [{:keys [context]
+                                        :as orle}]
+                                    [(:path context) orle]))
+                             orles)
+     :num-ordinaries num-ordinaries}))
+
 (defmethod interface/properties ordinary-type [context]
   (let [{:keys [width height]} (interface/get-parent-environment context)
-        distance (interface/get-sanitized-data (c/++ context :distance))
-        thickness (interface/get-sanitized-data (c/++ context :thickness))
+        percentage-base (min width height)
+        apply-percentage (partial math/percent-of percentage-base)
+        {:keys [arrangement-data]} (interface/get-auto-arrangement ordinary-type (interface/parent context))
+        {arranged-thickness :thickness
+         arranged-distance :distance} (get arrangement-data (:path context))
+        distance (or arranged-distance
+                     (apply-percentage
+                      (interface/get-sanitized-data (c/++ context :distance))))
+        thickness (or arranged-thickness
+                      (apply-percentage
+                       (interface/get-sanitized-data (c/++ context :thickness))))
         corner-radius (interface/get-sanitized-data (c/++ context :corner-radius))
         smoothing (interface/get-sanitized-data (c/++ context :smoothing))
-        percentage-base (min width height)
         parent-shape (interface/get-exact-parent-shape context)
         line-length percentage-base
-        distance (math/percent-of percentage-base distance)
-        thickness (math/percent-of percentage-base thickness)
         outer-edge (-> parent-shape
                        (environment/shrink-shape distance :round)
                        (path/round-corners corner-radius smoothing))

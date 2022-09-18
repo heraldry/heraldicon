@@ -8,10 +8,12 @@
 
 (defn- margin-factor [ordinary-type]
   (case ordinary-type
+    :heraldry.ordinary.type/orle 0.75
     0.3333333333))
 
 (defn size [ordinary-type num-ordinaries]
   (let [[base-size min-size factor] (case ordinary-type
+                                      :heraldry.ordinary.type/orle [5 2 0.8]
                                       [25 7 0.85])]
     (max (* base-size (js/Math.pow factor (dec num-ordinaries)))
          min-size)))
@@ -27,9 +29,13 @@
            (filter (fn [component-context]
                      (and (= (interface/get-raw-data (c/++ component-context :type))
                              ordinary-type)
-                          (= (or (interface/get-raw-data (c/++ component-context :anchor :point))
-                                 :auto)
-                             :auto)))))
+                          (case ordinary-type
+                            :heraldry.ordinary.type/orle (= (or (interface/get-raw-data (c/++ component-context :positioning-mode))
+                                                                :auto)
+                                                            :auto)
+                            (= (or (interface/get-raw-data (c/++ component-context :anchor :point))
+                                   :auto)
+                               :auto))))))
           (range num-elements))))
 
 (defmethod interface/auto-ordinary-info :default [ordinary-type context]
@@ -65,6 +71,20 @@
           :size (fn [size]
                   (or (interface/get-raw-data (c/++ context :geometry :size))
                       size))))
+
+(defn set-distance [{:keys [context]
+                     :as ordinary}]
+  (update ordinary
+          :distance (fn [distance]
+                      (or (interface/get-raw-data (c/++ context :distance))
+                          distance))))
+
+(defn set-thickness [{:keys [context]
+                      :as ordinary}]
+  (update ordinary
+          :thickness (fn [thickness]
+                       (or (interface/get-raw-data (c/++ context :thickness))
+                           thickness))))
 
 (defn set-line-data [{:keys [context line-length]
                       :as ordinary}]
