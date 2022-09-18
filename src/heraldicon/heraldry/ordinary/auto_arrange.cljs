@@ -6,15 +6,18 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]))
 
-(def ^:private margin-factor
-  0.3333333333)
+(defn- margin-factor [ordinary-type]
+  (case ordinary-type
+    0.3333333333))
 
-(defn size [num-ordinaries]
-  (max (* 25 (js/Math.pow 0.85 (dec num-ordinaries)))
-       7))
+(defn size [ordinary-type num-ordinaries]
+  (let [[base-size min-size factor] (case ordinary-type
+                                      [25 7 0.85])]
+    (max (* base-size (js/Math.pow factor (dec num-ordinaries)))
+         min-size)))
 
-(defn- margin [size]
-  (* margin-factor size))
+(defn- margin [ordinary-type size]
+  (* (margin-factor ordinary-type) size))
 
 (defn- get-auto-positioned-ordinaries [context ordinary-type]
   (let [num-elements (interface/get-list-size context)]
@@ -32,7 +35,7 @@
 (defmethod interface/auto-ordinary-info :default [ordinary-type context]
   (let [ordinaries (get-auto-positioned-ordinaries (c/++ context :components) ordinary-type)
         num-ordinaries (count ordinaries)
-        default-size (size num-ordinaries)]
+        default-size (size ordinary-type num-ordinaries)]
     {:ordinary-contexts ordinaries
      :num-ordinaries num-ordinaries
      :affected-paths (if (> num-ordinaries 1)
@@ -42,7 +45,7 @@
                              ordinaries)
                        {})
      :default-size default-size
-     :margin (margin default-size)}))
+     :margin (margin ordinary-type default-size)}))
 
 (defn set-offset-x [{:keys [context percentage-base]
                      :as bar}]
