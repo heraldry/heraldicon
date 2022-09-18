@@ -48,35 +48,35 @@
      :margin (margin ordinary-type default-size)}))
 
 (defn set-offset-x [{:keys [context percentage-base]
-                     :as bar}]
-  (assoc bar
+                     :as ordinary}]
+  (assoc ordinary
          :offset-x (math/percent-of percentage-base
                                     (interface/get-sanitized-data (c/++ context :anchor :offset-x)))))
 
 (defn set-offset-y [{:keys [context percentage-base]
-                     :as bar}]
-  (assoc bar
+                     :as ordinary}]
+  (assoc ordinary
          :offset-y (math/percent-of percentage-base
                                     (interface/get-sanitized-data (c/++ context :anchor :offset-y)))))
 
 (defn set-size [{:keys [context]
-                 :as bar}]
-  (update bar
+                 :as ordinary}]
+  (update ordinary
           :size (fn [size]
                   (or (interface/get-raw-data (c/++ context :geometry :size))
                       size))))
 
 (defn set-line-data [{:keys [context line-length]
-                      :as bar}]
+                      :as ordinary}]
   (let [{:keys [line
                 opposite-line]} (post-process/line-properties {:line-length line-length} context)]
-    (assoc bar
+    (assoc ordinary
            :line line
            :opposite-line opposite-line)))
 
 (defn set-cottise-data [{:keys [context line-length percentage-base]
-                         :as bar}]
-  (assoc bar
+                         :as ordinary}]
+  (assoc ordinary
          :cottise-height (+ (cottising/cottise-height (c/++ context :cottising :cottise-1)
                                                       line-length percentage-base)
                             (cottising/cottise-height (c/++ context :cottising :cottise-2)
