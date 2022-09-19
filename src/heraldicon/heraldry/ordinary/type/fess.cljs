@@ -47,19 +47,26 @@
                                           :bottom])
                                :default :auto
                                :ui/label :string.option/point}
-                       :offset-y {:type :option.type/range
-                                  :min -75
-                                  :max 75
-                                  :default 0
-                                  :ui/label :string.option/offset-y
-                                  :ui/step 0.1}
+
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
+                auto-positioned? (assoc :bottom-margin {:type :option.type/range
+                                                        :min -75
+                                                        :max 75
+                                                        :default (auto-arrange/margin ordinary-type num-ordinaries)
+                                                        :ui/label :string.option/bottom-margin
+                                                        :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
                                                           :ui/label :string.option/alignment
-                                                          :ui/element :ui.element/radio-select}))
+                                                          :ui/element :ui.element/radio-select}
+                                              :offset-y {:type :option.type/range
+                                                         :min -75
+                                                         :max 75
+                                                         :default 0
+                                                         :ui/label :string.option/offset-y
+                                                         :ui/step 0.1}))
       :line line-style
       :opposite-line opposite-line-style
       :geometry {:size {:type :option.type/range
@@ -75,11 +82,10 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 
-(defn- add-bar [{:keys [current-y
-                        margin]
+(defn- add-bar [{:keys [current-y]
                  :as arrangement}
                 {:keys [size
-                        offset-y
+                        bottom-margin
                         line
                         opposite-line
                         cottise-height
@@ -93,9 +99,7 @@
                                  size
                                  opposite-line-height
                                  opposite-cottise-height)
-                        (not (zero? current-y)) (->
-                                                  (- offset-y)
-                                                  (- margin)))]
+                        (not (zero? current-y)) (- bottom-margin))]
     (-> arrangement
         (update :bars conj (assoc bar :y (+ new-current-y
                                             cottise-height
@@ -115,9 +119,9 @@
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
                 num-ordinaries
-                margin
+                default-margin
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
-        margin (apply-percentage margin)
+        default-margin (apply-percentage default-margin)
         bars (when (> num-ordinaries 1)
                (let [{:keys [current-y
                              bars]} (->> ordinary-contexts
@@ -125,17 +129,17 @@
                                                 {:context context}))
                                          (map #(assoc % :start-x start-x))
                                          (map #(assoc % :line-length width))
+                                         (map #(assoc % :bottom-margin default-margin))
+                                         (map auto-arrange/set-bottom-margin)
+                                         (map #(update % :bottom-margin apply-percentage))
                                          (map #(assoc % :size default-size))
-                                         (map #(assoc % :percentage-base percentage-base))
-                                         (map auto-arrange/set-offset-y)
                                          (map auto-arrange/set-size)
                                          (map #(update % :size apply-percentage))
                                          (map auto-arrange/set-line-data)
                                          (map auto-arrange/set-cottise-data)
                                          (reduce add-bar {:current-y 0
-                                                          :margin margin
                                                           :bars []}))
-                     first-offset-y (-> bars first :offset-y)
+                     first-bottom-margin (-> bars first :bottom-margin)
                      total-height (- current-y)
                      half-height (/ total-height 2)
                      weight (min (* (/ total-height (* 0.66666 height))
@@ -144,15 +148,15 @@
                      middle-y (+ fess-y
                                  (* (- center-y fess-y)
                                     weight))
-                     start-y (if (> (+ total-height (* 2 margin))
+                     start-y (if (> (+ total-height (* 2 default-margin))
                                     height)
                                (- center-y half-height)
                                (-> (- middle-y half-height)
-                                   (max (+ min-y margin))
-                                   (min (- max-y margin total-height))))]
+                                   (max (+ min-y default-margin))
+                                   (min (- max-y default-margin total-height))))]
                  (map (fn [bar]
                         (-> bar
-                            (update :y - current-y first-offset-y)
+                            (update :y - current-y first-bottom-margin)
                             (update :y + start-y)))
                       bars)))]
     {:arrangement-data (into {}

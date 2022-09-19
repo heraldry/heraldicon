@@ -111,7 +111,7 @@
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
                 num-ordinaries
-                margin
+                default-margin
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         orles (when (> num-ordinaries 1)
                 (let [{:keys [orles]} (->> ordinary-contexts
@@ -119,7 +119,7 @@
                                                   {:context context}))
                                            (map #(assoc % :line-length percentage-base))
                                            (map #(assoc % :percentage-base percentage-base))
-                                           (map #(assoc % :distance margin))
+                                           (map #(assoc % :distance default-margin))
                                            (map auto-arrange/set-distance)
                                            (map #(update % :distance apply-percentage))
                                            (map #(assoc % :thickness default-size))

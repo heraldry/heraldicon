@@ -46,19 +46,25 @@
                                           :right])
                                :default :auto
                                :ui/label :string.option/point}
-                       :offset-x {:type :option.type/range
-                                  :min -50
-                                  :max 50
-                                  :default 0
-                                  :ui/label :string.option/offset-x
-                                  :ui/step 0.1}
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
+                auto-positioned? (assoc :left-margin {:type :option.type/range
+                                                      :min -75
+                                                      :max 75
+                                                      :default (auto-arrange/margin ordinary-type num-ordinaries)
+                                                      :ui/label :string.option/left-margin
+                                                      :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
                                                           :ui/label :string.option/alignment
-                                                          :ui/element :ui.element/radio-select}))
+                                                          :ui/element :ui.element/radio-select}
+                                              :offset-x {:type :option.type/range
+                                                         :min -50
+                                                         :max 50
+                                                         :default 0
+                                                         :ui/label :string.option/offset-x
+                                                         :ui/step 0.1}))
       :line line-style
       :opposite-line opposite-line-style
       :geometry {:size {:type :option.type/range
@@ -74,11 +80,10 @@
       :outline? options/plain-outline?-option
       :cottising (cottising/add-cottising context 2)} context)))
 
-(defn- add-pale [{:keys [current-x
-                         margin]
+(defn- add-pale [{:keys [current-x]
                   :as arrangement}
                  {:keys [size
-                         offset-x
+                         left-margin
                          line
                          opposite-line
                          cottise-height
@@ -92,9 +97,7 @@
                                  size
                                  line-height
                                  cottise-height)
-                        (not (zero? current-x)) (->
-                                                  (+ offset-x)
-                                                  (+ margin)))]
+                        (not (zero? current-x)) (+ left-margin))]
     (-> arrangement
         (update :pales conj (assoc pale :x (- new-current-x
                                               opposite-cottise-height
@@ -114,9 +117,9 @@
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
                 num-ordinaries
-                margin
+                default-margin
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
-        margin (apply-percentage margin)
+        default-margin (apply-percentage default-margin)
         pales (when (> num-ordinaries 1)
                 (let [{:keys [current-x
                               pales]} (->> ordinary-contexts
@@ -124,17 +127,17 @@
                                                   {:context context}))
                                            (map #(assoc % :start-y start-y))
                                            (map #(assoc % :line-length height))
+                                           (map #(assoc % :left-margin default-margin))
+                                           (map auto-arrange/set-left-margin)
+                                           (map #(update % :left-margin apply-percentage))
                                            (map #(assoc % :size default-size))
-                                           (map #(assoc % :percentage-base percentage-base))
-                                           (map auto-arrange/set-offset-x)
                                            (map auto-arrange/set-size)
                                            (map #(update % :size apply-percentage))
                                            (map auto-arrange/set-line-data)
                                            (map auto-arrange/set-cottise-data)
                                            (reduce add-pale {:current-x 0
-                                                             :margin margin
                                                              :pales []}))
-                      first-offset-x (-> pales first :offset-x)
+                      first-left-margin (-> pales first :left-margin)
                       total-width current-x
                       half-width (/ total-width 2)
                       weight (min (* (/ total-width (* 0.66666 width))
@@ -143,14 +146,14 @@
                       middle-x (+ fess-x
                                   (* (- center-x fess-x)
                                      weight))
-                      start-x (if (> (+ total-width (* 2 margin))
+                      start-x (if (> (+ total-width (* 2 default-margin))
                                      width)
                                 (- center-x half-width)
                                 (-> (- middle-x half-width)
-                                    (max (+ min-x margin))
-                                    (min (- max-x margin total-width))))]
+                                    (max (+ min-x default-margin))
+                                    (min (- max-x default-margin total-width))))]
                   (map (fn [pale]
-                         (update pale :x + start-x first-offset-x))
+                         (update pale :x + start-x first-left-margin))
                        pales)))]
     {:arrangement-data (into {}
                              (map (fn [{:keys [context]

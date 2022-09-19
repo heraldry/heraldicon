@@ -3,8 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.ordinary.post-process :as post-process]
-   [heraldicon.interface :as interface]
-   [heraldicon.math.core :as math]))
+   [heraldicon.interface :as interface]))
 
 (defn- margin-factor [ordinary-type]
   (case ordinary-type
@@ -18,8 +17,9 @@
     (max (* base-size (js/Math.pow factor (dec num-ordinaries)))
          min-size)))
 
-(defn- margin [ordinary-type size]
-  (* (margin-factor ordinary-type) size))
+(defn margin [ordinary-type num-ordinaries]
+  (* (margin-factor ordinary-type)
+     (size ordinary-type num-ordinaries)))
 
 (defn- get-auto-positioned-ordinaries [context ordinary-type]
   (let [num-elements (interface/get-list-size context)]
@@ -40,8 +40,7 @@
 
 (defmethod interface/auto-ordinary-info :default [ordinary-type context]
   (let [ordinaries (get-auto-positioned-ordinaries (c/++ context :components) ordinary-type)
-        num-ordinaries (count ordinaries)
-        default-size (size ordinary-type num-ordinaries)]
+        num-ordinaries (count ordinaries)]
     {:ordinary-contexts ordinaries
      :num-ordinaries num-ordinaries
      :affected-paths (if (> num-ordinaries 1)
@@ -50,20 +49,22 @@
                                             [path index]))
                              ordinaries)
                        {})
-     :default-size default-size
-     :margin (margin ordinary-type default-size)}))
+     :default-size (size ordinary-type num-ordinaries)
+     :default-margin (margin ordinary-type num-ordinaries)}))
 
-(defn set-offset-x [{:keys [context percentage-base]
-                     :as ordinary}]
-  (assoc ordinary
-         :offset-x (math/percent-of percentage-base
-                                    (interface/get-sanitized-data (c/++ context :anchor :offset-x)))))
+(defn set-bottom-margin [{:keys [context]
+                          :as ordinary}]
+  (update ordinary
+          :bottom-margin (fn [bottom-margin]
+                           (or (interface/get-sanitized-data (c/++ context :anchor :bottom-margin))
+                               bottom-margin))))
 
-(defn set-offset-y [{:keys [context percentage-base]
-                     :as ordinary}]
-  (assoc ordinary
-         :offset-y (math/percent-of percentage-base
-                                    (interface/get-sanitized-data (c/++ context :anchor :offset-y)))))
+(defn set-left-margin [{:keys [context]
+                        :as ordinary}]
+  (update ordinary
+          :left-margin (fn [left-margin]
+                         (or (interface/get-sanitized-data (c/++ context :anchor :left-margin))
+                             left-margin))))
 
 (defn set-size [{:keys [context]
                  :as ordinary}]

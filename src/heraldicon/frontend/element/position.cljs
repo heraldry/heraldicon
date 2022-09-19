@@ -28,13 +28,15 @@
        (when label
          [:label [tr label]])
        [:div.option
-        [submenu/submenu context label [tr link-name] {:style {:width "22em"}
+        [submenu/submenu context label [tr link-name] {:style {:width "24em"}
                                                        :class "submenu-position"}
          (element/elements
           context
           [:point
            :alignment
            :angle
+           :bottom-margin
+           :left-margin
            :offset-x
            :offset-y
            :type])]]])))
