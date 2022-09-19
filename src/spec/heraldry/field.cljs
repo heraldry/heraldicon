@@ -54,6 +54,20 @@
 (s/def :heraldry.field/variant (s/or :potenty (su/key-in? potenty/variant-map)
                                      :vairy (su/key-in? vairy/variant-map)))
 
+(s/def :heraldry.field.fess-group/default-size number?)
+(s/def :heraldry.field.fess-group/default-bottom-margin number?)
+(s/def :heraldry.field.fess-group/offset-y number?)
+(s/def :heraldry.field/fess-group (s/keys :opt-un [:heraldry.field.fess-group/default-size
+                                                   :heraldry.field.fess-group/default-bottom-margin
+                                                   :heraldry.field.fess-group/offset-y]))
+
+(s/def :heraldry.field.pale-group/default-size number?)
+(s/def :heraldry.field.pale-group/default-left-margin number?)
+(s/def :heraldry.field.pale-group/offset-x number?)
+(s/def :heraldry.field/pale-group (s/keys :opt-un [:heraldry.field.pale-group/default-size
+                                                   :heraldry.field.pale-group/default-left-margin
+                                                   :heraldry.field.pale-group/offset-x]))
+
 (s/def :heraldry.field/manual-blazon string?)
 
 (defmulti field-type (fn [field]
@@ -89,6 +103,8 @@
                                                  :heraldry.field/thickness
                                                  :heraldry.field/gap
                                                  :heraldry.field/variant
+                                                 :heraldry.field/fess-group
+                                                 :heraldry.field/pale-group
                                                  :heraldry.field/manual-blazon]))
                          #(g/return {:type :heraldry.field.type/plain
                                      :tincture :azure})))
