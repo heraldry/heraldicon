@@ -22,9 +22,10 @@
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/pale)
 
 (defmethod ordinary.interface/options ordinary-type [context]
-  (let [{:keys [num-ordinaries
-                affected-paths]} (interface/get-auto-ordinary-info ordinary-type (interface/parent context))
-        auto-positioned? (get affected-paths (:path context))
+  (let [parent-context (interface/parent context)
+        {:keys [affected-paths]} (interface/get-auto-ordinary-info ordinary-type parent-context)
+        auto-position-index (get affected-paths (:path context))
+        auto-positioned? auto-position-index
         line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside)
                        (cond->
@@ -32,7 +33,9 @@
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside)
                                 (cond->
-                                  auto-positioned? (options/override-if-exists [:size-reference :default] :field-height)))]
+                                  auto-positioned? (options/override-if-exists [:size-reference :default] :field-height)))
+        default-size (interface/get-sanitized-data (c/++ parent-context :pale-group :default-size))
+        default-left-margin (interface/get-sanitized-data (c/++ parent-context :pale-group :default-left-margin))]
     (ordinary.shared/add-humetty-and-voided
      {:anchor (cond-> {:point {:type :option.type/choice
                                :choices (position/anchor-choices
@@ -48,12 +51,13 @@
                                :ui/label :string.option/point}
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
-                auto-positioned? (assoc :left-margin {:type :option.type/range
-                                                      :min -75
-                                                      :max 75
-                                                      :default (auto-arrange/margin ordinary-type num-ordinaries)
-                                                      :ui/label :string.option/left-margin
-                                                      :ui/step 0.1})
+                (and auto-positioned?
+                     (pos? auto-position-index)) (assoc :left-margin {:type :option.type/range
+                                                                      :min -75
+                                                                      :max 75
+                                                                      :default default-left-margin
+                                                                      :ui/label :string.option/left-margin
+                                                                      :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
@@ -71,7 +75,7 @@
                         :min 0.1
                         :max 90
                         :default (if auto-positioned?
-                                   (auto-arrange/size ordinary-type num-ordinaries)
+                                   default-size
                                    25)
                         :ui/label :string.option/size
                         :ui/step 0.1}
@@ -117,9 +121,7 @@
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
                 num-ordinaries
-                default-margin
-                default-size]} (interface/get-auto-ordinary-info ordinary-type context)
-        default-margin (apply-percentage default-margin)
+                default-margin]} (interface/get-auto-ordinary-info ordinary-type context)
         pales (when (> num-ordinaries 1)
                 (let [{:keys [current-x
                               pales]} (->> ordinary-contexts
@@ -127,17 +129,15 @@
                                                   {:context context}))
                                            (map #(assoc % :start-y start-y))
                                            (map #(assoc % :line-length height))
-                                           (map #(assoc % :left-margin default-margin))
                                            (map auto-arrange/set-left-margin)
                                            (map #(update % :left-margin apply-percentage))
-                                           (map #(assoc % :size default-size))
                                            (map auto-arrange/set-size)
                                            (map #(update % :size apply-percentage))
                                            (map auto-arrange/set-line-data)
                                            (map auto-arrange/set-cottise-data)
                                            (reduce add-pale {:current-x 0
                                                              :pales []}))
-                      first-left-margin (-> pales first :left-margin)
+                      offset-x (interface/get-sanitized-data (c/++ context :pale-group :offset-x))
                       total-width current-x
                       half-width (/ total-width 2)
                       weight (min (* (/ total-width (* 0.66666 width))
@@ -153,7 +153,7 @@
                                     (max (+ min-x default-margin))
                                     (min (- max-x default-margin total-width))))]
                   (map (fn [pale]
-                         (update pale :x + start-x first-left-margin))
+                         (update pale :x + start-x offset-x))
                        pales)))]
     {:arrangement-data (into {}
                              (map (fn [{:keys [context]

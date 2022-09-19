@@ -83,6 +83,58 @@
 
 (derive :heraldry/field :heraldry.options/root)
 
+(defn- fess-group-options [context]
+  (let [ordinary-type :heraldry.ordinary.type/fess
+        {:keys [affected-paths
+                default-margin
+                default-size]} (interface/get-auto-ordinary-info ordinary-type context)
+        auto-positioned? (seq affected-paths)]
+    (when auto-positioned?
+      {:default-size {:type :option.type/range
+                      :min 0.1
+                      :max 90
+                      :default default-size
+                      :ui/label :string.option/default-size
+                      :ui/step 0.1}
+       :default-bottom-margin {:type :option.type/range
+                               :min -75
+                               :max 75
+                               :default default-margin
+                               :ui/label :string.option/default-bottom-margin
+                               :ui/step 0.1}
+       :offset-y {:type :option.type/range
+                  :min -75
+                  :max 75
+                  :default 0
+                  :ui/label :string.option/offset-y
+                  :ui/step 0.1}})))
+
+(defn- pale-group-options [context]
+  (let [ordinary-type :heraldry.ordinary.type/pale
+        {:keys [affected-paths
+                default-margin
+                default-size]} (interface/get-auto-ordinary-info ordinary-type context)
+        auto-positioned? (seq affected-paths)]
+    (when auto-positioned?
+      {:default-size {:type :option.type/range
+                      :min 0.1
+                      :max 90
+                      :default default-size
+                      :ui/label :string.option/default-size
+                      :ui/step 0.1}
+       :default-left-margin {:type :option.type/range
+                             :min -75
+                             :max 75
+                             :default default-margin
+                             :ui/label :string.option/default-left-margin
+                             :ui/step 0.1}
+       :offset-x {:type :option.type/range
+                  :min -75
+                  :max 75
+                  :default 0
+                  :ui/label :string.option/offset-x
+                  :ui/step 0.1}})))
+
 (defmethod interface/options :heraldry/field [context]
   (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))
@@ -97,7 +149,9 @@
                                                 (c/++ :type)))]
     (cond-> (assoc (field.interface/options context)
                    :type type-option
-                   :manual-blazon options/manual-blazon)
+                   :manual-blazon options/manual-blazon
+                   :fess-group (fess-group-options context)
+                   :pale-group (pale-group-options context))
       (not (or counterchanged?
                plain?)) (assoc :outline? options/plain-outline?-option)
       (or subfield?

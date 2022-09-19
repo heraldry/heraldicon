@@ -417,6 +417,9 @@
       "square-root-dampening": "Wurzel abflachen"
     },
     "dampening-radius": "Abflachungsradius",
+    "default-size": "Default Größe",
+    "default-bottom-margin": "Default Abstand unten",
+    "default-left-margin": "Default Abstand links",
     "distance": "Abstand",
     "eccentricity": "Exzentrizität",
     "edge-angle": "Kantenwinkel",
@@ -515,6 +518,10 @@
     "rotate-charges?": "Wappenfiguren rotieren",
     "rotation": "Rotation",
     "row": "Zeile",
+    "section": {
+      "fess-group": "Balkengruppe",
+      "pale-group": "Pfahlgruppe"
+    },
     "select-arms": "Wappen auswählen",
     "select-charge": "Wappenfigur auswählen",
     "select-colour-theme": "Farbschema auswählen",
