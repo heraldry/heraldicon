@@ -78,6 +78,14 @@
 
     {:type :heraldry.field.type/plain
      :tincture :azure
+     :fess-group (tu/example :heraldry.field/fess-group)}
+
+    {:type :heraldry.field.type/plain
+     :tincture :azure
+     :pale-group (tu/example :heraldry.field/pale-group)}
+
+    {:type :heraldry.field.type/plain
+     :tincture :azure
      :manual-blazon "foobar"}))
 
 (deftest invalid-field
@@ -183,6 +191,14 @@
     {:type :heraldry.field.type/plain
      :tincture :azure
      :variant :wrong}
+
+    {:type :heraldry.field.type/plain
+     :tincture :azure
+     :fess-group :wrong}
+
+    {:type :heraldry.field.type/plain
+     :tincture :azure
+     :pale-group :wrong}
 
     {:type :heraldry.field.type/plain
      :tincture :azure
