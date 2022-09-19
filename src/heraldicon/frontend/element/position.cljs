@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.element.core :as element]
+   [heraldicon.frontend.element.ordinary-group-options :as ordinary-group-options]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.heraldry.option.position :as position]
@@ -25,9 +26,7 @@
   (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
           link-name (submenu-link-name options (interface/get-sanitized-data context))
-          field-context (-> context c/-- interface/parent)
-          fess-group-context (c/++ field-context :fess-group)
-          pale-group-context (c/++ field-context :pale-group)]
+          field-context (-> context c/-- interface/parent)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
@@ -45,24 +44,4 @@
            :offset-y
            :type])
 
-         (when (interface/get-options fess-group-context)
-           [:<>
-            [:div {:style {:font-size "1.3em"
-                           :margin-top "0.5em"
-                           :margin-bottom "0.5em"}} [tr :string.option.section/fess-group]]
-            (element/elements
-             fess-group-context
-             [:default-size
-              :default-bottom-margin
-              :offset-y])])
-
-         (when (interface/get-options pale-group-context)
-           [:<>
-            [:div {:style {:font-size "1.3em"
-                           :margin-top "0.5em"
-                           :margin-bottom "0.5em"}} [tr :string.option.section/pale-group]]
-            (element/elements
-             pale-group-context
-             [:default-size
-              :default-left-margin
-              :offset-x])])]]])))
+         [ordinary-group-options/elements field-context]]]])))

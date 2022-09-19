@@ -1,6 +1,8 @@
 (ns heraldicon.frontend.element.geometry
   (:require
+   [heraldicon.context :as c]
    [heraldicon.frontend.element.core :as element]
+   [heraldicon.frontend.element.ordinary-group-options :as ordinary-group-options]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
@@ -30,7 +32,8 @@
 (defmethod element/element :ui.element/geometry [context]
   (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
-          link-name (submenu-link-name options (interface/get-sanitized-data context))]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))
+          field-context (-> context c/-- interface/parent)]
       [:div.ui-setting
        (when label
          [:label [tr label]])
@@ -47,4 +50,6 @@
            :eccentricity
            :stretch
            :mirrored?
-           :reversed?])]]])))
+           :reversed?])
+
+         [ordinary-group-options/elements field-context]]]])))
