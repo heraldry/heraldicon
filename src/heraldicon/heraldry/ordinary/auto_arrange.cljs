@@ -54,24 +54,15 @@
 
 (defn set-bottom-margin [{:keys [context]
                           :as ordinary}]
-  (update ordinary
-          :bottom-margin (fn [bottom-margin]
-                           (or (interface/get-sanitized-data (c/++ context :anchor :bottom-margin))
-                               bottom-margin))))
+  (assoc ordinary :bottom-margin (interface/get-sanitized-data (c/++ context :anchor :bottom-margin))))
 
 (defn set-left-margin [{:keys [context]
                         :as ordinary}]
-  (update ordinary
-          :left-margin (fn [left-margin]
-                         (or (interface/get-sanitized-data (c/++ context :anchor :left-margin))
-                             left-margin))))
+  (assoc ordinary :left-margin (interface/get-sanitized-data (c/++ context :anchor :left-margin))))
 
 (defn set-size [{:keys [context]
                  :as ordinary}]
-  (update ordinary
-          :size (fn [size]
-                  (or (interface/get-raw-data (c/++ context :geometry :size))
-                      size))))
+  (assoc ordinary :size (interface/get-sanitized-data (c/++ context :geometry :size))))
 
 (defn set-distance [{:keys [context]
                      :as ordinary}]

@@ -417,6 +417,9 @@
       "square-root-dampening": "Square root dampening"
     },
     "dampening-radius": "Dampening radius",
+    "default-size": "Default size",
+    "default-bottom-margin": "Default bottom margin",
+    "default-left-margin": "Default left margin",
     "distance": "Distance",
     "eccentricity": "Eccentricity",
     "edge-angle": "Edge angle",
@@ -516,6 +519,10 @@
     "rotate-charges?": "Rotate charges",
     "rotation": "Rotation",
     "row": "Row",
+    "section": {
+      "fess-group": "Fess group",
+      "pale-group": "Pale group"
+    },
     "select-arms": "Select Arms",
     "select-charge": "Select Charge",
     "select-colour-theme": "Select Colour Theme",
