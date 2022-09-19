@@ -14,6 +14,10 @@
 
     {:offset-y 5}
 
+    {:bottom-margin -10}
+
+    {:left-margin 5}
+
     {:alignment (tu/example :heraldry.position/alignment)}
 
     {:type (tu/example :heraldry.position/type)}))
@@ -25,6 +29,10 @@
     {:offset-x :wrong}
 
     {:offset-y :wrong}
+
+    {:bottom-margin :wrong}
+
+    {:left-margin :wrong}
 
     {:alignment :wrong}
 

@@ -804,7 +804,7 @@ label div {
 .submenu-position label,
 .submenu-strip-form label,
 .submenu-segment-form label {
-  width: 6em;
+  width: 9em;
 }
 
 .ui-setting > label.for-checkbox {
