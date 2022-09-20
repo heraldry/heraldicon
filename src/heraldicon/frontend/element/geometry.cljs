@@ -32,8 +32,7 @@
 (defmethod element/element :ui.element/geometry [context]
   (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
-          link-name (submenu-link-name options (interface/get-sanitized-data context))
-          field-context (-> context c/-- interface/parent)]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
@@ -52,4 +51,4 @@
            :mirrored?
            :reversed?])
 
-         [ordinary-group-options/elements field-context]]]])))
+         [ordinary-group-options/elements (c/-- context)]]]])))
