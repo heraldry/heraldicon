@@ -86,7 +86,7 @@
 (defn- fess-group-options [context]
   (let [ordinary-type :heraldry.ordinary.type/fess
         {:keys [affected-paths
-                default-margin
+                default-spacing
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         auto-positioned? (seq affected-paths)]
     (when auto-positioned?
@@ -96,12 +96,12 @@
                       :default default-size
                       :ui/label :string.option/default-size
                       :ui/step 0.1}
-       :default-bottom-margin {:type :option.type/range
-                               :min -75
-                               :max 75
-                               :default default-margin
-                               :ui/label :string.option/default-bottom-margin
-                               :ui/step 0.1}
+       :default-spacing {:type :option.type/range
+                         :min -75
+                         :max 75
+                         :default default-spacing
+                         :ui/label :string.option/default-spacing
+                         :ui/step 0.1}
        :offset-y {:type :option.type/range
                   :min -75
                   :max 75
@@ -112,7 +112,7 @@
 (defn- pale-group-options [context]
   (let [ordinary-type :heraldry.ordinary.type/pale
         {:keys [affected-paths
-                default-margin
+                default-spacing
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         auto-positioned? (seq affected-paths)]
     (when auto-positioned?
@@ -122,12 +122,12 @@
                       :default default-size
                       :ui/label :string.option/default-size
                       :ui/step 0.1}
-       :default-left-margin {:type :option.type/range
-                             :min -75
-                             :max 75
-                             :default default-margin
-                             :ui/label :string.option/default-left-margin
-                             :ui/step 0.1}
+       :default-spacing {:type :option.type/range
+                         :min -75
+                         :max 75
+                         :default default-spacing
+                         :ui/label :string.option/default-spacing
+                         :ui/step 0.1}
        :offset-x {:type :option.type/range
                   :min -75
                   :max 75
