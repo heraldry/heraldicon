@@ -35,7 +35,7 @@
                                 (cond->
                                   auto-positioned? (options/override-if-exists [:size-reference :default] :field-height)))
         default-size (interface/get-sanitized-data (c/++ parent-context :pale-group :default-size))
-        default-left-margin (interface/get-sanitized-data (c/++ parent-context :pale-group :default-left-margin))]
+        default-spacing (interface/get-sanitized-data (c/++ parent-context :pale-group :default-spacing))]
     (ordinary.shared/add-humetty-and-voided
      {:anchor (cond-> {:point {:type :option.type/choice
                                :choices (position/anchor-choices
@@ -52,12 +52,12 @@
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
                 (and auto-positioned?
-                     (pos? auto-position-index)) (assoc :left-margin {:type :option.type/range
-                                                                      :min -75
-                                                                      :max 75
-                                                                      :default default-left-margin
-                                                                      :ui/label :string.option/left-margin
-                                                                      :ui/step 0.1})
+                     (pos? auto-position-index)) (assoc :spacing-left {:type :option.type/range
+                                                                       :min -75
+                                                                       :max 75
+                                                                       :default default-spacing
+                                                                       :ui/label :string.option/spacing-left
+                                                                       :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
@@ -87,7 +87,7 @@
 (defn- add-pale [{:keys [current-x]
                   :as arrangement}
                  {:keys [size
-                         left-margin
+                         spacing-left
                          line
                          opposite-line
                          cottise-height
@@ -101,7 +101,7 @@
                                  size
                                  line-height
                                  cottise-height)
-                        (not (zero? current-x)) (+ left-margin))]
+                        (not (zero? current-x)) (+ spacing-left))]
     (-> arrangement
         (update :pales conj (assoc pale :x (- new-current-x
                                               opposite-cottise-height
@@ -121,7 +121,7 @@
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
                 num-ordinaries
-                default-margin]} (interface/get-auto-ordinary-info ordinary-type context)
+                default-spacing]} (interface/get-auto-ordinary-info ordinary-type context)
         pales (when (> num-ordinaries 1)
                 (let [{:keys [current-x
                               pales]} (->> ordinary-contexts
@@ -129,8 +129,8 @@
                                                   {:context context}))
                                            (map #(assoc % :start-y start-y))
                                            (map #(assoc % :line-length height))
-                                           (map auto-arrange/set-left-margin)
-                                           (map #(update % :left-margin apply-percentage))
+                                           (map auto-arrange/set-spacing-left)
+                                           (map #(update % :spacing-left apply-percentage))
                                            (map auto-arrange/set-size)
                                            (map #(update % :size apply-percentage))
                                            (map auto-arrange/set-line-data)
@@ -146,12 +146,12 @@
                       middle-x (+ fess-x
                                   (* (- center-x fess-x)
                                      weight))
-                      start-x (if (> (+ total-width (* 2 default-margin))
+                      start-x (if (> (+ total-width (* 2 default-spacing))
                                      width)
                                 (- center-x half-width)
                                 (-> (- middle-x half-width)
-                                    (max (+ min-x default-margin))
-                                    (min (- max-x default-margin total-width))))]
+                                    (max (+ min-x default-spacing))
+                                    (min (- max-x default-spacing total-width))))]
                   (map (fn [pale]
                          (update pale :x + start-x offset-x))
                        pales)))]

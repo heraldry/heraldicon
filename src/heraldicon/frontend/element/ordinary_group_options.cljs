@@ -17,7 +17,7 @@
         (element/elements
          fess-group-context
          [:default-size
-          :default-bottom-margin
+          :default-spacing
           :offset-y])])
 
      (when (interface/get-options pale-group-context)
@@ -28,5 +28,5 @@
         (element/elements
          pale-group-context
          [:default-size
-          :default-left-margin
+          :default-spacing
           :offset-x])])]))

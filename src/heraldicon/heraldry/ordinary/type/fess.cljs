@@ -35,7 +35,7 @@
                                 (cond->
                                   auto-positioned? (options/override-if-exists [:size-reference :default] :field-width)))
         default-size (interface/get-sanitized-data (c/++ parent-context :fess-group :default-size))
-        default-bottom-margin (interface/get-sanitized-data (c/++ parent-context :fess-group :default-bottom-margin))]
+        default-spacing (interface/get-sanitized-data (c/++ parent-context :fess-group :default-spacing))]
     (ordinary.shared/add-humetty-and-voided
      {:anchor (cond-> {:point {:type :option.type/choice
                                :choices (position/anchor-choices
@@ -54,12 +54,12 @@
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
                 (and auto-positioned?
-                     (pos? auto-position-index)) (assoc :bottom-margin {:type :option.type/range
-                                                                        :min -75
-                                                                        :max 75
-                                                                        :default default-bottom-margin
-                                                                        :ui/label :string.option/bottom-margin
-                                                                        :ui/step 0.1})
+                     (pos? auto-position-index)) (assoc :spacing-bottom {:type :option.type/range
+                                                                         :min -75
+                                                                         :max 75
+                                                                         :default default-spacing
+                                                                         :ui/label :string.option/spacing-bottom
+                                                                         :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
@@ -89,7 +89,7 @@
 (defn- add-bar [{:keys [current-y]
                  :as arrangement}
                 {:keys [size
-                        bottom-margin
+                        spacing-bottom
                         line
                         opposite-line
                         cottise-height
@@ -103,7 +103,7 @@
                                  size
                                  opposite-line-height
                                  opposite-cottise-height)
-                        (not (zero? current-y)) (- bottom-margin))]
+                        (not (zero? current-y)) (- spacing-bottom))]
     (-> arrangement
         (update :bars conj (assoc bar :y (+ new-current-y
                                             cottise-height
@@ -123,7 +123,7 @@
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
                 num-ordinaries
-                default-margin]} (interface/get-auto-ordinary-info ordinary-type context)
+                default-spacing]} (interface/get-auto-ordinary-info ordinary-type context)
         bars (when (> num-ordinaries 1)
                (let [{:keys [current-y
                              bars]} (->> ordinary-contexts
@@ -131,8 +131,8 @@
                                                 {:context context}))
                                          (map #(assoc % :start-x start-x))
                                          (map #(assoc % :line-length width))
-                                         (map auto-arrange/set-bottom-margin)
-                                         (map #(update % :bottom-margin apply-percentage))
+                                         (map auto-arrange/set-spacing-bottom)
+                                         (map #(update % :spacing-bottom apply-percentage))
                                          (map auto-arrange/set-size)
                                          (map #(update % :size apply-percentage))
                                          (map auto-arrange/set-line-data)
@@ -148,12 +148,12 @@
                      middle-y (+ fess-y
                                  (* (- center-y fess-y)
                                     weight))
-                     start-y (if (> (+ total-height (* 2 default-margin))
+                     start-y (if (> (+ total-height (* 2 default-spacing))
                                     height)
                                (- center-y half-height)
                                (-> (- middle-y half-height)
-                                   (max (+ min-y default-margin))
-                                   (min (- max-y default-margin total-height))))]
+                                   (max (+ min-y default-spacing))
+                                   (min (- max-y default-spacing total-height))))]
                  (map (fn [bar]
                         (-> bar
                             (update :y - current-y offset-y)

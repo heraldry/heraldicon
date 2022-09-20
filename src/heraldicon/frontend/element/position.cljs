@@ -38,8 +38,8 @@
           [:point
            :alignment
            :angle
-           :bottom-margin
-           :left-margin
+           :spacing-bottom
+           :spacing-left
            :offset-x
            :offset-y
            :type])

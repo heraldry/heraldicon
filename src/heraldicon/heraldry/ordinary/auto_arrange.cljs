@@ -5,20 +5,20 @@
    [heraldicon.heraldry.ordinary.post-process :as post-process]
    [heraldicon.interface :as interface]))
 
-(defn- margin-factor [ordinary-type]
+(defn- spacing-factor [ordinary-type]
   (case ordinary-type
     :heraldry.ordinary.type/orle 0.75
     0.3333333333))
 
-(defn size [ordinary-type num-ordinaries]
+(defn- size [ordinary-type num-ordinaries]
   (let [[base-size min-size factor] (case ordinary-type
                                       :heraldry.ordinary.type/orle [5 2 0.8]
                                       [25 7 0.85])]
     (max (* base-size (js/Math.pow factor (dec num-ordinaries)))
          min-size)))
 
-(defn margin [ordinary-type num-ordinaries]
-  (* (margin-factor ordinary-type)
+(defn- spacing [ordinary-type num-ordinaries]
+  (* (spacing-factor ordinary-type)
      (size ordinary-type num-ordinaries)))
 
 (defn- get-auto-positioned-ordinaries [context ordinary-type]
@@ -50,15 +50,15 @@
                              ordinaries)
                        {})
      :default-size (size ordinary-type num-ordinaries)
-     :default-margin (margin ordinary-type num-ordinaries)}))
+     :default-spacing (spacing ordinary-type num-ordinaries)}))
 
-(defn set-bottom-margin [{:keys [context]
-                          :as ordinary}]
-  (assoc ordinary :bottom-margin (interface/get-sanitized-data (c/++ context :anchor :bottom-margin))))
+(defn set-spacing-bottom [{:keys [context]
+                           :as ordinary}]
+  (assoc ordinary :spacing-bottom (interface/get-sanitized-data (c/++ context :anchor :spacing-bottom))))
 
-(defn set-left-margin [{:keys [context]
-                        :as ordinary}]
-  (assoc ordinary :left-margin (interface/get-sanitized-data (c/++ context :anchor :left-margin))))
+(defn set-spacing-left [{:keys [context]
+                         :as ordinary}]
+  (assoc ordinary :spacing-left (interface/get-sanitized-data (c/++ context :anchor :spacing-left))))
 
 (defn set-size [{:keys [context]
                  :as ordinary}]
