@@ -24,7 +24,8 @@
   (options/choices->map positioning-mode-choices))
 
 (defmethod ordinary.interface/options ordinary-type [context]
-  (let [{:keys [num-ordinaries
+  (let [{:keys [default-size
+                default-spacing
                 affected-paths]} (interface/get-auto-ordinary-info ordinary-type (interface/parent context))
         auto-positioned? (get affected-paths (:path context))
         line-type (or (interface/get-raw-data (c/++ context :line :type))
@@ -41,8 +42,11 @@
                                                   choices)))
                                (options/override-if-exists [:base-line :default] :bottom))
         default-thickness (if auto-positioned?
-                            (auto-arrange/size ordinary-type num-ordinaries)
-                            5)]
+                            default-size
+                            5)
+        default-distance (if auto-positioned?
+                           default-spacing
+                           4)]
     {:positioning-mode {:type :option.type/choice
                         :choices positioning-mode-choices
                         :default :auto
@@ -57,7 +61,7 @@
      :distance {:type :option.type/range
                 :min 0.1
                 :max 30
-                :default (* 0.75 default-thickness)
+                :default default-distance
                 :ui/label :string.option/distance
                 :ui/step 0.1}
      :corner-radius {:type :option.type/range
