@@ -131,6 +131,7 @@
                                                 {:context context}))
                                          (map #(assoc % :start-x start-x))
                                          (map #(assoc % :line-length width))
+                                         (map #(assoc % :percentage-base percentage-base))
                                          (map auto-arrange/set-spacing-bottom)
                                          (map #(update % :spacing-bottom apply-percentage))
                                          (map auto-arrange/set-size)
