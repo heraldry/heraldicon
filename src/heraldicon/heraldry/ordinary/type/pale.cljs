@@ -126,16 +126,16 @@
                 (let [{:keys [current-x
                               pales]} (->> ordinary-contexts
                                            (map (fn [context]
-                                                  {:context context}))
-                                           (map #(assoc % :start-y start-y))
-                                           (map #(assoc % :line-length height))
-                                           (map #(assoc % :percentage-base percentage-base))
-                                           (map auto-arrange/set-spacing-left)
-                                           (map #(update % :spacing-left apply-percentage))
-                                           (map auto-arrange/set-size)
-                                           (map #(update % :size apply-percentage))
-                                           (map auto-arrange/set-line-data)
-                                           (map auto-arrange/set-cottise-data)
+                                                  (-> {:context context
+                                                       :start-y start-y
+                                                       :line-length height
+                                                       :percentage-base percentage-base}
+                                                      auto-arrange/set-spacing-left
+                                                      auto-arrange/set-size
+                                                      auto-arrange/set-line-data
+                                                      auto-arrange/set-cottise-data
+                                                      (update :spacing-left apply-percentage)
+                                                      (update :size apply-percentage))))
                                            (reduce add-pale {:current-x 0
                                                              :pales []}))
                       offset-x (interface/get-sanitized-data (c/++ context :pale-group :offset-x))

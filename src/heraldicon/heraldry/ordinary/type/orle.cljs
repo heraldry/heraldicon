@@ -114,22 +114,18 @@
         percentage-base (min width height)
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
-                num-ordinaries
-                default-spacing
-                default-size]} (interface/get-auto-ordinary-info ordinary-type context)
+                num-ordinaries]} (interface/get-auto-ordinary-info ordinary-type context)
         orles (when (> num-ordinaries 1)
                 (let [{:keys [orles]} (->> ordinary-contexts
                                            (map (fn [context]
-                                                  {:context context}))
-                                           (map #(assoc % :line-length percentage-base))
-                                           (map #(assoc % :percentage-base percentage-base))
-                                           (map #(assoc % :distance default-spacing))
-                                           (map auto-arrange/set-distance)
-                                           (map #(update % :distance apply-percentage))
-                                           (map #(assoc % :thickness default-size))
-                                           (map auto-arrange/set-thickness)
-                                           (map #(update % :thickness apply-percentage))
-                                           (map auto-arrange/set-line-data)
+                                                  (-> {:context context
+                                                       :line-length percentage-base
+                                                       :percentage-base percentage-base}
+                                                      auto-arrange/set-distance
+                                                      auto-arrange/set-thickness
+                                                      auto-arrange/set-line-data
+                                                      (update :distance apply-percentage)
+                                                      (update :thickness apply-percentage))))
                                            (reduce add-orle {:current-distance 0
                                                              :orles []}))]
                   orles))]

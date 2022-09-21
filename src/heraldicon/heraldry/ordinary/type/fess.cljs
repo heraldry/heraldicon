@@ -128,16 +128,16 @@
                (let [{:keys [current-y
                              bars]} (->> ordinary-contexts
                                          (map (fn [context]
-                                                {:context context}))
-                                         (map #(assoc % :start-x start-x))
-                                         (map #(assoc % :line-length width))
-                                         (map #(assoc % :percentage-base percentage-base))
-                                         (map auto-arrange/set-spacing-bottom)
-                                         (map #(update % :spacing-bottom apply-percentage))
-                                         (map auto-arrange/set-size)
-                                         (map #(update % :size apply-percentage))
-                                         (map auto-arrange/set-line-data)
-                                         (map auto-arrange/set-cottise-data)
+                                                (-> {:context context
+                                                     :start-x start-x
+                                                     :line-length width
+                                                     :percentage-base percentage-base}
+                                                    auto-arrange/set-spacing-bottom
+                                                    auto-arrange/set-size
+                                                    auto-arrange/set-line-data
+                                                    auto-arrange/set-cottise-data
+                                                    (update :spacing-bottom apply-percentage)
+                                                    (update :size apply-percentage))))
                                          (reduce add-bar {:current-y 0
                                                           :bars []}))
                      offset-y (interface/get-sanitized-data (c/++ context :fess-group :offset-y))
