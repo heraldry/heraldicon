@@ -129,6 +129,7 @@
                                                   {:context context}))
                                            (map #(assoc % :start-y start-y))
                                            (map #(assoc % :line-length height))
+                                           (map #(assoc % :percentage-base percentage-base))
                                            (map auto-arrange/set-spacing-left)
                                            (map #(update % :spacing-left apply-percentage))
                                            (map auto-arrange/set-size)
