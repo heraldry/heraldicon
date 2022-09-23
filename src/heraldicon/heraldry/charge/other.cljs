@@ -448,7 +448,7 @@
              [render/shape-fimbriation context
               :fimbriation-shape fimbriation-shape
               :reverse-transform reverse-transform
-              :scale (/ 1 scale-x)]
+              :scale (Math/abs (/ 1 scale-x))]
              [svg.metadata/attribution {:path charge-entity-path}]
              (cond
                preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)
