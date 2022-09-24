@@ -30,6 +30,7 @@
    [heraldicon.heraldry.field.type.tierced-per-pale :as tierced-per-pale]
    [heraldicon.heraldry.field.type.tierced-per-pall :as tierced-per-pall]
    [heraldicon.heraldry.field.type.vairy :as vairy]
+   [heraldicon.heraldry.option.position :as position]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]))
 
@@ -135,6 +136,91 @@
                   :ui/label :string.option/offset-x
                   :ui/step 0.1}})))
 
+(defn- chevron-group-options [context]
+  (let [ordinary-type :heraldry.ordinary.type/chevron
+        {:keys [affected-paths
+                default-spacing
+                default-size]} (interface/get-auto-ordinary-info ordinary-type context)
+        auto-positioned? (seq affected-paths)
+        origin-point-option {:type :option.type/choice
+                             :choices (position/orientation-choices
+                                       [:chief
+                                        :base
+                                        :dexter
+                                        :sinister
+                                        :hoist
+                                        :fly
+                                        :top-left
+                                        :top-right
+                                        :bottom-left
+                                        :bottom-right
+                                        :angle])
+                             :default :base
+                             :ui/label :string.option/point}
+        current-origin-point (options/get-value
+                              (interface/get-raw-data (c/++ context :chevron-group :origin :point))
+                              origin-point-option)]
+    (when auto-positioned?
+      {:origin (cond-> {:point origin-point-option
+                        :ui/label :string.charge.attitude/issuant
+                        :ui/element :ui.element/position}
+
+                 (= current-origin-point
+                    :angle) (assoc :angle {:type :option.type/range
+                                           :min -180
+                                           :max 180
+                                           :default 0
+                                           :ui/label :string.option/angle})
+
+                 (not= current-origin-point
+                       :angle) (assoc :offset-x {:type :option.type/range
+                                                 :min -50
+                                                 :max 50
+                                                 :default 0
+                                                 :ui/label :string.option/offset-x
+                                                 :ui/step 0.1}
+                                      :offset-y {:type :option.type/range
+                                                 :min -75
+                                                 :max 75
+                                                 :default 0
+                                                 :ui/label :string.option/offset-y
+                                                 :ui/step 0.1}))
+       :orientation {:point {:type :option.type/choice
+                             :choices (position/orientation-choices [:angle])
+                             :default :angle
+                             :ui/label :string.option/point}
+                     :angle {:type :option.type/range
+                             :min 0
+                             :max 360
+                             :default 45
+                             :ui/label :string.option/angle}
+                     :ui/label :string.option/orientation
+                     :ui/element :ui.element/position}
+       :default-size {:type :option.type/range
+                      :min 0.1
+                      :max 90
+                      :default default-size
+                      :ui/label :string.option/default-size
+                      :ui/step 0.1}
+       :default-spacing {:type :option.type/range
+                         :min -75
+                         :max 75
+                         :default default-spacing
+                         :ui/label :string.option/default-spacing
+                         :ui/step 0.1}
+       :offset-x {:type :option.type/range
+                  :min -75
+                  :max 75
+                  :default 0
+                  :ui/label :string.option/offset-x
+                  :ui/step 0.1}
+       :offset-y {:type :option.type/range
+                  :min -75
+                  :max 75
+                  :default 0
+                  :ui/label :string.option/offset-y
+                  :ui/step 0.1}})))
+
 (defmethod interface/options :heraldry/field [context]
   (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))
@@ -151,7 +237,8 @@
                    :type type-option
                    :manual-blazon options/manual-blazon
                    :fess-group (fess-group-options context)
-                   :pale-group (pale-group-options context))
+                   :pale-group (pale-group-options context)
+                   :chevron-group (chevron-group-options context))
       (not (or counterchanged?
                plain?)) (assoc :outline? options/plain-outline?-option)
       (or subfield?

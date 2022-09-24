@@ -23,8 +23,13 @@
                    (fn [open-flags]
                      (into {}
                            (keep (fn [[key value]]
-                                   (when (= key
-                                            (take (count key) path))
+                                   (when (or (= key
+                                                (take (count key) path))
+                                             ;; special case, because these paths are not parents
+                                             ;; of the submenu context that spawns them
+                                             (some #{:fess-group
+                                                     :pale-group
+                                                     :chevron-group} path))
                                      [key value])))
                            open-flags)))
         (assoc-in (conj open?-path path) true))))

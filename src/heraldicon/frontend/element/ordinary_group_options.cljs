@@ -14,8 +14,10 @@
   (let [field-context (interface/parent ordinary-context)
         fess-group-context (c/++ field-context :fess-group)
         pale-group-context (c/++ field-context :pale-group)
+        chevron-group-context (c/++ field-context :chevron-group)
         part-of-fess-group? (part-of-group? ordinary-context :heraldry.ordinary.type/fess)
-        part-of-pale-group? (part-of-group? ordinary-context :heraldry.ordinary.type/pale)]
+        part-of-pale-group? (part-of-group? ordinary-context :heraldry.ordinary.type/pale)
+        part-of-chevron-group? (part-of-group? ordinary-context :heraldry.ordinary.type/chevron)]
     [:<>
      (when part-of-fess-group?
        [:<>
@@ -37,4 +39,18 @@
          pale-group-context
          [:default-size
           :default-spacing
-          :offset-x])])]))
+          :offset-x])])
+
+     (when part-of-chevron-group?
+       [:<>
+        [:div {:style {:font-size "1.3em"
+                       :margin-top "0.5em"
+                       :margin-bottom "0.5em"}} [tr :string.option.section/chevron-group]]
+        (element/elements
+         chevron-group-context
+         [:origin
+          :orientation
+          :default-size
+          :default-spacing
+          :offset-x
+          :offset-y])])]))

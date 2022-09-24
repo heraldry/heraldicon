@@ -25,7 +25,11 @@
 (defmethod element/element :ui.element/position [context]
   (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
-          link-name (submenu-link-name options (interface/get-sanitized-data context))]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))
+          ordinary-context (c/-- context)
+          ordinary-group-position? (some #{:fess-group
+                                           :pale-group
+                                           :chevron-group} (:path ordinary-context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
@@ -43,4 +47,5 @@
            :offset-y
            :type])
 
-         [ordinary-group-options/elements (c/-- context)]]]])))
+         (when-not ordinary-group-position?
+           [ordinary-group-options/elements ordinary-context])]]])))

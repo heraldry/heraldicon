@@ -517,7 +517,8 @@
     "row": "Zeile",
     "section": {
       "fess-group": "Balkengruppe",
-      "pale-group": "Pfahlgruppe"
+      "pale-group": "Pfahlgruppe",
+      "chevron-group": "Sparrengruppe"
     },
     "select-arms": "Wappen auswählen",
     "select-charge": "Wappenfigur auswählen",

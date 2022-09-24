@@ -518,7 +518,8 @@
     "row": "Row",
     "section": {
       "fess-group": "Fess group",
-      "pale-group": "Pale group"
+      "pale-group": "Pale group",
+      "chevron-group": "Chevron group"
     },
     "select-arms": "Select Arms",
     "select-charge": "Select Charge",
