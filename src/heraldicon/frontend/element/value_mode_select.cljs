@@ -74,5 +74,8 @@
          context
          :string.render-options/mode
          menu
-         [:i.ui-icon {:class "fas fa-cog"}]
+         [:i.ui-icon {:class "fas fa-cog"
+                      :style {:color (if (some? current-value)
+                                       "#ffb366"
+                                       "#00b300")}}]
          :disabled? disabled?]])]))
