@@ -13,6 +13,7 @@
 (defn- size [ordinary-type num-ordinaries]
   (let [[base-size min-size factor] (case ordinary-type
                                       :heraldry.ordinary.type/orle [5 2 0.8]
+                                      :heraldry.ordinary.type/chevron [20 6 0.85]
                                       [25 7 0.85])]
     (max (* base-size (js/Math.pow factor (dec num-ordinaries)))
          min-size)))
@@ -66,17 +67,11 @@
 
 (defn set-distance [{:keys [context]
                      :as ordinary}]
-  (update ordinary
-          :distance (fn [distance]
-                      (or (interface/get-raw-data (c/++ context :distance))
-                          distance))))
+  (assoc ordinary :distance (interface/get-sanitized-data (c/++ context :distance))))
 
 (defn set-thickness [{:keys [context]
                       :as ordinary}]
-  (update ordinary
-          :thickness (fn [thickness]
-                       (or (interface/get-raw-data (c/++ context :thickness))
-                           thickness))))
+  (assoc ordinary :thickness (interface/get-sanitized-data (c/++ context :thickness))))
 
 (defn set-line-data [{:keys [context line-length]
                       :as ordinary}]
