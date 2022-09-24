@@ -967,8 +967,15 @@ partition
        | partition/PAPELLONY
        | partition/MASONY
        | partition/FRETTY)
-      (OF? layout)?
+      OF? layout?
       partition-field-plain AND+ partition-field-plain
+
+    | partition-field-plain
+      (partition/PAPELLONY
+       | partition/MASONY
+       | partition/FRETTY)
+      OF? layout?
+      partition-field-plain
 
     | partition/PALY
       (OF? horizontal-layout)?
