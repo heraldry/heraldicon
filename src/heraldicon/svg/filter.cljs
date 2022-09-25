@@ -1,10 +1,11 @@
 (ns heraldicon.svg.filter)
 
 (def shadow
-  [:filter#shadow {:x "-20%"
-                   :y "-20%"
-                   :width "200%"
-                   :height "200%"}
+  [:filter#shadow {:x -20
+                   :y -20
+                   :width 200
+                   :height 600
+                   :filter-units "userSpaceOnUse"}
    [:feOffset {:result "offsetOut"
                :in "SourceAlpha"
                :dx "0.2"
