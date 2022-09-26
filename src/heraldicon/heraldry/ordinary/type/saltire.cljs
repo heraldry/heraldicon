@@ -26,6 +26,10 @@
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))
+        opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
+                                (options/override-if-exists [:offset :min] 0)
+                                (options/override-if-exists [:base-line] nil)
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside))
         orientation-point-option {:type :option.type/choice
                                   :choices (position/orientation-choices
                                             [:top-left
@@ -99,6 +103,7 @@
                                                      :ui/label :string.option/offset-y
                                                      :ui/step 0.1}))
       :line line-style
+      :opposite-line opposite-line-style
       :geometry {:size {:type :option.type/range
                         :min 0.1
                         :max 90
@@ -201,7 +206,7 @@
                                       corner-left
                                       corner-right)})))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [line]
+(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [top-1 corner-top top-2] :edge-top
                                                           [bottom-1 corner-bottom bottom-2] :edge-bottom
                                                           [left-1 corner-left left-2] :edge-left
@@ -215,7 +220,7 @@
                                                         :reversed? true
                                                         :extend-from? false)
         line-edge-top-second (line/create-with-extension context
-                                                         line
+                                                         opposite-line
                                                          corner-top top-2
                                                          bounding-box
                                                          :extend-from? false)
@@ -226,7 +231,7 @@
                                                          :reversed? true
                                                          :extend-from? false)
         line-edge-left-second (line/create-with-extension context
-                                                          line
+                                                          opposite-line
                                                           corner-left left-2
                                                           bounding-box
                                                           :extend-from? false)
@@ -237,7 +242,7 @@
                                                           :reversed? true
                                                           :extend-from? false)
         line-edge-right-second (line/create-with-extension context
-                                                           line
+                                                           opposite-line
                                                            corner-right right-2
                                                            bounding-box
                                                            :extend-from? false)
@@ -248,7 +253,7 @@
                                                            :reversed? true
                                                            :extend-from? false)
         line-edge-bottom-second (line/create-with-extension context
-                                                            line
+                                                            opposite-line
                                                             corner-bottom bottom-2
                                                             bounding-box
                                                             :extend-from? false)]
