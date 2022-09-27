@@ -55,6 +55,17 @@
                                    {:type :option.type/choice
                                     :choices (position/orientation-choices
                                               (case current-anchor-point
+                                                :auto [:fess
+                                                       :center
+                                                       :chief
+                                                       :base
+                                                       :honour
+                                                       :nombril
+                                                       :hoist
+                                                       :fly
+                                                       :bottom-left
+                                                       :center
+                                                       :angle]
                                                 :top-right [:fess
                                                             :center
                                                             :chief
@@ -80,6 +91,7 @@
                                                  :bottom-left
                                                  :angle]))
                                     :default (case current-anchor-point
+                                               :auto :fess
                                                :top-right :fess
                                                :bottom-left :fess
                                                :top-right)

@@ -64,6 +64,16 @@
                                    {:type :option.type/choice
                                     :choices (position/orientation-choices
                                               (case current-anchor-point
+                                                :auto [:fess
+                                                       :chief
+                                                       :base
+                                                       :honour
+                                                       :nombril
+                                                       :bottom-right
+                                                       :hoist
+                                                       :fly
+                                                       :center
+                                                       :angle]
                                                 :top-left [:fess
                                                            :chief
                                                            :base
@@ -88,6 +98,7 @@
                                                  :bottom-right
                                                  :angle]))
                                     :default (case current-anchor-point
+                                               :auto :fess
                                                :top-left :fess
                                                :bottom-right :fess
                                                :top-left)
@@ -281,7 +292,14 @@
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
         band-size (apply-percentage (interface/get-sanitized-data (c/++ context :geometry :size)))
-        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        anchor (update (interface/get-sanitized-data (c/++ context :anchor))
+                       :point
+                       (fn [point]
+                         (if (= point :auto)
+                           (if sinister?
+                             :top-right
+                             :top-left)
+                           point)))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
