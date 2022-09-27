@@ -517,6 +517,7 @@
     "row": "Zeile",
     "section": {
       "bend-group": "Schrägbalkengruppe",
+      "bend-sinister-group": "Schräglinksbalkengruppe",
       "fess-group": "Balkengruppe",
       "pale-group": "Pfahlgruppe",
       "chevron-group": "Sparrengruppe"

@@ -288,6 +288,73 @@
                   :ui/label :string.option/offset-y
                   :ui/step 0.1}})))
 
+(defn- bend-sinister-group-options [context]
+  (let [ordinary-type :heraldry.ordinary.type/bend-sinister
+        {:keys [affected-paths
+                default-spacing
+                default-size]} (interface/get-auto-ordinary-info ordinary-type context)
+        auto-positioned? (seq affected-paths)
+        orientation-point-option {:type :option.type/choice
+                                  :choices (position/orientation-choices
+                                            [:fess
+                                             :chief
+                                             :base
+                                             :honour
+                                             :nombril
+                                             :bottom-right
+                                             :hoist
+                                             :fly
+                                             :center
+                                             :angle])
+                                  :default :fess
+                                  :ui/label :string.option/point}
+        current-orientation-point (options/get-value
+                                   (interface/get-raw-data (c/++ context :bend-sinister-group :orientation :point))
+                                   orientation-point-option)]
+    (when auto-positioned?
+      {:orientation (cond-> {:point orientation-point-option
+                             :ui/label :string.option/orientation
+                             :ui/element :ui.element/position}
+
+                      (= current-orientation-point
+                         :angle) (assoc :angle {:type :option.type/range
+                                                :min 0
+                                                :max 360
+                                                :default 45
+                                                :ui/label :string.option/angle})
+
+                      (not= current-orientation-point
+                            :angle) (assoc :offset-x {:type :option.type/range
+                                                      :min -75
+                                                      :max 75
+                                                      :default 0
+                                                      :ui/label :string.option/offset-x
+                                                      :ui/step 0.1}
+                                           :offset-y {:type :option.type/range
+                                                      :min -75
+                                                      :max 75
+                                                      :default 0
+                                                      :ui/label :string.option/offset-y
+                                                      :ui/step 0.1}))
+       :default-size {:type :option.type/range
+                      :min 0.1
+                      :max 90
+                      :default default-size
+                      :ui/label :string.option/default-size
+                      :ui/step 0.1}
+       :default-spacing {:type :option.type/range
+                         :min -75
+                         :max 75
+                         :default default-spacing
+                         :ui/label :string.option/default-spacing
+                         :ui/step 0.1}
+       :offset-y {:type :option.type/range
+                  :min -75
+                  :max 75
+                  :default 0
+                  :ui/label :string.option/offset-y
+                  :ui/step 0.1}})))
+
 (defmethod interface/options :heraldry/field [context]
   (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))
@@ -306,7 +373,8 @@
                    :fess-group (fess-group-options context)
                    :pale-group (pale-group-options context)
                    :chevron-group (chevron-group-options context)
-                   :bend-group (bend-group-options context))
+                   :bend-group (bend-group-options context)
+                   :bend-sinister-group (bend-sinister-group-options context))
       (not (or counterchanged?
                plain?)) (assoc :outline? options/plain-outline?-option)
       (or subfield?

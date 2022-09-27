@@ -29,6 +29,7 @@
                                              ;; of the submenu context that spawns them
                                              (some #{:fess-group
                                                      :bend-group
+                                                     :bend-sinister-group
                                                      :pale-group
                                                      :chevron-group} path))
                                      [key value])))

@@ -55,37 +55,43 @@
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)
-        orientation-point-option {:type :option.type/choice
-                                  :choices (position/orientation-choices
-                                            (case current-anchor-point
-                                              :top-left [:fess
-                                                         :chief
-                                                         :base
-                                                         :honour
-                                                         :nombril
-                                                         :bottom-right
-                                                         :hoist
-                                                         :fly
-                                                         :center
-                                                         :angle]
-                                              :bottom-right [:fess
-                                                             :chief
-                                                             :base
-                                                             :honour
-                                                             :nombril
-                                                             :hoist
-                                                             :fly
-                                                             :top-left
-                                                             :center
-                                                             :angle]
-                                              [:top-left
-                                               :bottom-right
-                                               :angle]))
-                                  :default (case current-anchor-point
-                                             :top-left :fess
-                                             :bottom-right :fess
-                                             :top-left)
-                                  :ui/label :string.option/point}
+        orientation-point-option (if auto-positioned?
+                                   {:type :option.type/choice
+                                    :choices (position/orientation-choices
+                                              [:auto])
+                                    :default :auto
+                                    :ui/label :string.option/point}
+                                   {:type :option.type/choice
+                                    :choices (position/orientation-choices
+                                              (case current-anchor-point
+                                                :top-left [:fess
+                                                           :chief
+                                                           :base
+                                                           :honour
+                                                           :nombril
+                                                           :bottom-right
+                                                           :hoist
+                                                           :fly
+                                                           :center
+                                                           :angle]
+                                                :bottom-right [:fess
+                                                               :chief
+                                                               :base
+                                                               :honour
+                                                               :nombril
+                                                               :hoist
+                                                               :fly
+                                                               :top-left
+                                                               :center
+                                                               :angle]
+                                                [:top-left
+                                                 :bottom-right
+                                                 :angle]))
+                                    :default (case current-anchor-point
+                                               :top-left :fess
+                                               :bottom-right :fess
+                                               :top-left)
+                                    :ui/label :string.option/point})
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
@@ -121,34 +127,36 @@
                             :ui/label :string.option/orientation
                             :ui/element :ui.element/position}
 
-                     (= current-orientation-point
-                        :angle) (assoc :angle {:type :option.type/range
-                                               :min 0
-                                               :max 360
-                                               :default 45
-                                               :ui/label :string.option/angle})
+                     (and (not auto-positioned?)
+                          (= current-orientation-point
+                             :angle)) (assoc :angle {:type :option.type/range
+                                                     :min 0
+                                                     :max 360
+                                                     :default 45
+                                                     :ui/label :string.option/angle})
 
-                     (not= current-orientation-point
-                           :angle) (assoc :offset-x {:type :option.type/range
-                                                     :min -75
-                                                     :max 75
-                                                     :default 0
-                                                     :ui/label :string.option/offset-x
-                                                     :ui/step 0.1}
-                                          :offset-y {:type :option.type/range
-                                                     :min -75
-                                                     :max 75
-                                                     :default 0
-                                                     :ui/label :string.option/offset-y
-                                                     :ui/step 0.1})
+                     (and (not auto-positioned?)
+                          (not= current-orientation-point
+                                :angle)) (assoc :offset-x {:type :option.type/range
+                                                           :min -75
+                                                           :max 75
+                                                           :default 0
+                                                           :ui/label :string.option/offset-x
+                                                           :ui/step 0.1}
+                                                :offset-y {:type :option.type/range
+                                                           :min -75
+                                                           :max 75
+                                                           :default 0
+                                                           :ui/label :string.option/offset-y
+                                                           :ui/step 0.1})
 
-                     (and (not= current-orientation-point
-                                :angle)
-                          (not auto-positioned?)) (assoc :alignment {:type :option.type/choice
-                                                                     :choices position/alignment-choices
-                                                                     :default :middle
-                                                                     :ui/label :string.option/alignment
-                                                                     :ui/element :ui.element/radio-select}))
+                     (and (not auto-positioned?)
+                          (not= current-orientation-point
+                                :angle)) (assoc :alignment {:type :option.type/choice
+                                                            :choices position/alignment-choices
+                                                            :default :middle
+                                                            :ui/label :string.option/alignment
+                                                            :ui/element :ui.element/radio-select}))
       :line line-style
       :opposite-line opposite-line-style
       :geometry {:size {:type :option.type/range
@@ -191,12 +199,18 @@
                                                                       (/ size 2)))))
         (assoc :current-y new-current-y))))
 
-(defmethod interface/auto-arrangement ordinary-type [_ordinary-type context]
+(defmethod interface/auto-arrangement ordinary-type [real-ordinary-type context]
   (let [{:keys [height width points]
          :as environment} (interface/get-environment context)
-        {:keys [top-left]} points
-        anchor {:point :top-left}
-        bend-group-context (c/++ context :bend-group)
+        sinister? (= real-ordinary-type :heraldry.ordinary.type/bend-sinister)
+        {:keys [top-left top-right]} points
+        corner-point (if sinister?
+                       top-right
+                       top-left)
+        anchor {:point corner-point}
+        bend-group-context (c/++ context (if sinister?
+                                           :bend-sinister-group
+                                           :bend-group))
         orientation (interface/get-sanitized-data (c/++ bend-group-context :orientation))
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
@@ -209,8 +223,9 @@
         bend-angle (angle/normalize (v/angle-to-point anchor-point orientation-point))
         rotated-shape (-> (interface/get-exact-shape context)
                           path/parse-path
-                          (path/translate (v/mul top-left -1))
-                          (path/rotate (- bend-angle))
+                          (path/translate (v/mul corner-point -1))
+                          (path/rotate (- (cond-> bend-angle
+                                            sinister? (+ 90))))
                           path/to-svg)
         rotated-bounding-box (bb/from-paths [rotated-shape])
         start-x 0
@@ -219,7 +234,7 @@
         percentage-base (min width height)
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [ordinary-contexts
-                num-ordinaries]} (interface/get-auto-ordinary-info ordinary-type context)
+                num-ordinaries]} (interface/get-auto-ordinary-info real-ordinary-type context)
         bends (when (> num-ordinaries 1)
                 (let [{:keys [current-y
                               bends]} (->> ordinary-contexts
@@ -252,19 +267,11 @@
                              bends)
      :num-ordinaries num-ordinaries}))
 
-(defmethod interface/properties ordinary-type [context]
-  (let [{:keys [width height points]
+(defn- calculate-bend-data [context]
+  (let [{:keys [width height]
          :as parent-environment} (interface/get-parent-environment context)
-        {:keys [top-left]} points
         percentage-base (min width height)
         apply-percentage (partial math/percent-of percentage-base)
-        {:keys [arrangement-data]} (interface/get-auto-arrangement ordinary-type (interface/parent context))
-        {arranged-size :size
-         arranged-anchor-point :anchor-point
-         arranged-bend-angle :bend-angle
-         arranged-start-x :start-x
-         arranged-end-x :end-x} (get arrangement-data (:path context))
-        arranged? arranged-size
         real-ordinary-type (interface/get-raw-data (c/++ context :type))
         sinister? (= real-ordinary-type
                      :heraldry.ordinary.type/bend-sinister)
@@ -273,27 +280,16 @@
         inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
-        band-size (or arranged-size
-                      (apply-percentage (interface/get-sanitized-data (c/++ context :geometry :size))))
-        anchor (when-not arranged?
-                 (interface/get-sanitized-data (c/++ context :anchor)))
-        orientation (when-not arranged?
-                      (interface/get-sanitized-data (c/++ context :orientation)))
+        band-size (apply-percentage (interface/get-sanitized-data (c/++ context :geometry :size)))
+        anchor (interface/get-sanitized-data (c/++ context :anchor))
+        orientation (interface/get-sanitized-data (c/++ context :orientation))
         {anchor-point :real-anchor
-         orientation-point :real-orientation} (if arranged?
-                                                (let [rotated-anchor-point (-> arranged-anchor-point
-                                                                               (v/rotate arranged-bend-angle)
-                                                                               (v/add top-left))]
-                                                  {:real-anchor rotated-anchor-point
-                                                   :real-orientation (-> (v/Vector. 1 0)
-                                                                         (v/rotate arranged-bend-angle)
-                                                                         (v/add rotated-anchor-point))})
-                                                (position/calculate-anchor-and-orientation
-                                                 parent-environment
-                                                 anchor
-                                                 orientation
-                                                 band-size
-                                                 nil))
+         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
+                                               parent-environment
+                                               anchor
+                                               orientation
+                                               band-size
+                                               nil)
         direction (v/sub orientation-point anchor-point)
         direction (-> (v/Vector. (-> direction :x Math/abs)
                                  (-> direction :y Math/abs))
@@ -307,8 +303,7 @@
         parent-shape (interface/get-exact-parent-shape context)
         [middle-start middle-end] (v/intersections-with-shape anchor-point (v/add anchor-point direction)
                                                               parent-shape :default? true)
-        angle (or arranged-bend-angle
-                  (v/angle-to-point middle-start middle-end))
+        angle (v/angle-to-point middle-start middle-end)
         width-offset (-> direction-orthogonal
                          (v/mul band-size)
                          (v/div 2))
@@ -324,14 +319,12 @@
         rotated-middle-end (v/rotate middle-end (- angle))
         rotated-lower-left (v/rotate lower-left (- angle))
         rotated-lower-right (v/rotate lower-right (- angle))
-        start-x (or arranged-start-x
-                    (apply min (map :x [rotated-upper-left
-                                        rotated-middle-start
-                                        rotated-lower-left])))
-        end-x (or arranged-end-x
-                  (apply max (map :x [rotated-upper-right
-                                      rotated-middle-end
-                                      rotated-lower-right])))
+        start-x (apply min (map :x [rotated-upper-left
+                                    rotated-middle-start
+                                    rotated-lower-left]))
+        end-x (apply max (map :x [rotated-upper-right
+                                  rotated-middle-end
+                                  rotated-lower-right]))
         upper-left (v/rotate (assoc rotated-upper-left :x start-x) angle)
         upper-right (v/rotate (assoc rotated-upper-right :x end-x) angle)
         lower-left (v/rotate (assoc rotated-lower-left :x start-x) angle)
@@ -346,28 +339,113 @@
                                    (-> v
                                        (path/translate (- (:x upper-left)) (- (:y upper-left)))
                                        (path/rotate (- angle))))))]
-    (post-process/properties
-     {:type real-ordinary-type
-      :upper [upper-left upper-right]
-      :lower [lower-left lower-right]
-      :angle angle
-      :direction-orthogonal direction-orthogonal
-      :band-size band-size
-      :line-length line-length
-      :percentage-base percentage-base
-      :use-parent-environment? use-parent-environment?
-      :transform (when-not use-parent-environment?
-                   (str "translate(" (v/->str upper-left) ")"
-                        "rotate(" angle ")"))
-      :bounding-box-transform-fn (when-not use-parent-environment?
-                                   #(-> %
-                                        (bb/translate upper-left)
-                                        (bb/rotate angle)))
-      :reverse-transform-fn reverse-transform-fn
-      :humetty-percentage-base (min (:width parent-environment)
-                                    (:height parent-environment))
-      :voided-percentage-base band-size}
-     context)))
+    {:type real-ordinary-type
+     :upper [upper-left upper-right]
+     :lower [lower-left lower-right]
+     :angle angle
+     :direction-orthogonal direction-orthogonal
+     :band-size band-size
+     :line-length line-length
+     :transform (when-not use-parent-environment?
+                  (str "translate(" (v/->str upper-left) ")"
+                       "rotate(" angle ")"))
+     :bounding-box-transform-fn (when-not use-parent-environment?
+                                  #(-> %
+                                       (bb/translate upper-left)
+                                       (bb/rotate angle)))
+     :reverse-transform-fn reverse-transform-fn}))
+
+(defn- calculate-auto-positioned-bend-data [context]
+  (let [real-ordinary-type (interface/get-raw-data (c/++ context :type))
+        {:keys [arrangement-data]} (interface/get-auto-arrangement real-ordinary-type (interface/parent context))
+        {:keys [size
+                anchor-point
+                bend-angle
+                start-x
+                end-x]} (get arrangement-data (:path context))]
+    (when size
+      (let [{:keys [width height points]} (interface/get-parent-environment context)
+            {:keys [top-left top-right]} points
+            percentage-base (min width height)
+            sinister? (= real-ordinary-type
+                         :heraldry.ordinary.type/bend-sinister)
+            counterchanged? (= (interface/get-sanitized-data (c/++ context :field :type))
+                               :heraldry.field.type/counterchanged)
+            inherit-environment? (interface/get-sanitized-data (c/++ context :field :inherit-environment?))
+            use-parent-environment? (or counterchanged?
+                                        inherit-environment?)
+            direction (v/rotate (v/Vector. 1 0) bend-angle)
+            direction (-> (v/Vector. (-> direction :x Math/abs)
+                                     (-> direction :y Math/abs))
+                          v/normal
+                          (cond->
+                            sinister? (v/dot (v/Vector. 1 -1))))
+            angle (v/angle-to-point v/zero direction)
+            direction-orthogonal (v/orthogonal direction)
+            direction-orthogonal (if (neg? (:y direction-orthogonal))
+                                   (v/mul direction-orthogonal -1)
+                                   direction-orthogonal)
+            width-offset (-> (v/Vector. 0 size)
+                             (v/div 2))
+            corner-point (if sinister?
+                           top-right
+                           top-left)
+            shift (if sinister?
+                    (v/Vector. (- end-x) 0)
+                    v/zero)
+            upper-left (-> (v/sub anchor-point width-offset)
+                           (v/add shift)
+                           (v/rotate angle)
+                           (v/add corner-point))
+            lower-left (-> (v/add anchor-point width-offset)
+                           (v/add shift)
+                           (v/rotate angle)
+                           (v/add corner-point))
+            upper-right (-> (v/sub anchor-point width-offset)
+                            (v/add (v/Vector. end-x 0))
+                            (v/add shift)
+                            (v/rotate angle)
+                            (v/add corner-point))
+            lower-right (-> (v/add anchor-point width-offset)
+                            (v/add (v/Vector. end-x 0))
+                            (v/add shift)
+                            (v/rotate angle)
+                            (v/add corner-point))
+            line-length (max (- end-x start-x) 10)
+            reverse-transform-fn (when-not use-parent-environment?
+                                   (fn reverse-transform-fn [v]
+                                     (if (instance? v/Vector v)
+                                       (-> v
+                                           (v/sub upper-left)
+                                           (v/rotate (- angle)))
+                                       (-> v
+                                           (path/translate (- (:x upper-left)) (- (:y upper-left)))
+                                           (path/rotate (- angle))))))]
+        {:type real-ordinary-type
+         :upper [upper-left upper-right]
+         :lower [lower-left lower-right]
+         :angle angle
+         :direction-orthogonal direction-orthogonal
+         :band-size size
+         :line-length line-length
+         :percentage-base percentage-base
+         :use-parent-environment? use-parent-environment?
+         :transform (when-not use-parent-environment?
+                      (str "translate(" (v/->str upper-left) ")"
+                           "rotate(" angle ")"))
+         :bounding-box-transform-fn (when-not use-parent-environment?
+                                      #(-> %
+                                           (bb/translate upper-left)
+                                           (bb/rotate angle)))
+         :reverse-transform-fn reverse-transform-fn
+         :humetty-percentage-base (min width height)
+         :voided-percentage-base size}))))
+
+(defmethod interface/properties ordinary-type [context]
+  (post-process/properties
+   (or (calculate-auto-positioned-bend-data context)
+       (calculate-bend-data context))
+   context))
 
 (defmethod interface/environment ordinary-type [_context {:keys [reverse-transform-fn]
                                                           [upper-left upper-right] :upper
