@@ -162,7 +162,9 @@
                  :ui/label :string.option/geometry
                  :ui/element :ui.element/geometry}
       :outline? options/plain-outline?-option
-      :cottising (cottising/add-cottising context 2)} context)))
+      :cottising (cottising/add-cottising context 2 :size-reference-default (when auto-positioned?
+                                                                              :field-width))}
+     context)))
 
 (defn- add-bend [{:keys [current-y]
                   :as arrangement}
