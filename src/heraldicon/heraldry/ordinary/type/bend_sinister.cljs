@@ -14,13 +14,24 @@
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/bend-sinister)
 
 (defmethod ordinary.interface/options ordinary-type [context]
-  (let [line-style (-> (line/options (c/++ context :line))
-                       (options/override-if-exists [:fimbriation :alignment :default] :outside))
+  (let [parent-context (interface/parent context)
+        {:keys [affected-paths]} (interface/get-auto-ordinary-info ordinary-type parent-context)
+        auto-position-index (get affected-paths (:path context))
+        auto-positioned? auto-position-index
+        default-size (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :default-size))
+        default-spacing (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :default-spacing))
+        line-style (-> (line/options (c/++ context :line))
+                       (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                       (cond->
+                         auto-positioned? (options/override-if-exists [:size-reference :default] :field-width)))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
-                                (options/override-if-exists [:fimbriation :alignment :default] :outside))
+                                (options/override-if-exists [:fimbriation :alignment :default] :outside)
+                                (cond->
+                                  auto-positioned? (options/override-if-exists [:size-reference :default] :field-width)))
         anchor-point-option {:type :option.type/choice
                              :choices (position/anchor-choices
-                                       [:fess
+                                       [:auto
+                                        :fess
                                         :chief
                                         :base
                                         :honour
@@ -30,108 +41,133 @@
                                         :top-right
                                         :center
                                         :bottom-left])
-                             :default :top-right
+                             :default :auto
                              :ui/label :string.option/point}
         current-anchor-point (options/get-value
                               (interface/get-raw-data (c/++ context :anchor :point))
                               anchor-point-option)
-        orientation-point-option {:type :option.type/choice
-                                  :choices (position/orientation-choices
-                                            (case current-anchor-point
-                                              :top-right [:fess
-                                                          :center
-                                                          :chief
-                                                          :base
-                                                          :honour
-                                                          :nombril
-                                                          :hoist
-                                                          :fly
-                                                          :bottom-left
-                                                          :center
-                                                          :angle]
-                                              :bottom-left [:fess
+        orientation-point-option (if auto-positioned?
+                                   {:type :option.type/choice
+                                    :choices (position/orientation-choices
+                                              [:auto])
+                                    :default :auto
+                                    :ui/label :string.option/point}
+                                   {:type :option.type/choice
+                                    :choices (position/orientation-choices
+                                              (case current-anchor-point
+                                                :top-right [:fess
+                                                            :center
                                                             :chief
                                                             :base
                                                             :honour
                                                             :nombril
                                                             :hoist
                                                             :fly
-                                                            :top-right
+                                                            :bottom-left
                                                             :center
                                                             :angle]
-                                              [:top-right
-                                               :bottom-left
-                                               :angle]))
-                                  :default (case current-anchor-point
-                                             :top-right :fess
-                                             :bottom-left :fess
-                                             :top-right)
-                                  :ui/label :string.option/point}
+                                                :bottom-left [:fess
+                                                              :chief
+                                                              :base
+                                                              :honour
+                                                              :nombril
+                                                              :hoist
+                                                              :fly
+                                                              :top-right
+                                                              :center
+                                                              :angle]
+                                                [:top-right
+                                                 :bottom-left
+                                                 :angle]))
+                                    :default (case current-anchor-point
+                                               :top-right :fess
+                                               :bottom-left :fess
+                                               :top-right)
+                                    :ui/label :string.option/point})
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point anchor-point-option
-               :alignment {:type :option.type/choice
-                           :choices position/alignment-choices
-                           :default :middle
-                           :ui/label :string.option/alignment
-                           :ui/element :ui.element/radio-select}
-               :offset-x {:type :option.type/range
-                          :min -75
-                          :max 75
-                          :default 0
-                          :ui/label :string.option/offset-x
-                          :ui/step 0.1}
-               :offset-y {:type :option.type/range
-                          :min -75
-                          :max 75
-                          :default 0
-                          :ui/label :string.option/offset-y
-                          :ui/step 0.1}
-               :ui/label :string.option/anchor
-               :ui/element :ui.element/position}
+     {:anchor (cond-> {:point anchor-point-option
+                       :ui/label :string.option/anchor
+                       :ui/element :ui.element/position}
+                (and auto-positioned?
+                     (pos? auto-position-index)) (assoc :spacing-bottom {:type :option.type/range
+                                                                         :min -75
+                                                                         :max 75
+                                                                         :default default-spacing
+                                                                         :ui/label :string.option/spacing-bottom
+                                                                         :ui/step 0.1})
+                (not auto-positioned?) (assoc :alignment {:type :option.type/choice
+                                                          :choices position/alignment-choices
+                                                          :default :middle
+                                                          :ui/label :string.option/alignment
+                                                          :ui/element :ui.element/radio-select}
+                                              :offset-x {:type :option.type/range
+                                                         :min -75
+                                                         :max 75
+                                                         :default 0
+                                                         :ui/label :string.option/offset-x
+                                                         :ui/step 0.1}
+                                              :offset-y {:type :option.type/range
+                                                         :min -75
+                                                         :max 75
+                                                         :default 0
+                                                         :ui/label :string.option/offset-y
+                                                         :ui/step 0.1}))
       :orientation (cond-> {:point orientation-point-option
                             :ui/label :string.option/orientation
                             :ui/element :ui.element/position}
 
-                     (= current-orientation-point
-                        :angle) (assoc :angle {:type :option.type/range
-                                               :min 0
-                                               :max 360
-                                               :default 45
-                                               :ui/label :string.option/angle})
+                     (and (not auto-positioned?)
+                          (= current-orientation-point
+                             :angle)) (assoc :angle {:type :option.type/range
+                                                     :min 0
+                                                     :max 360
+                                                     :default 45
+                                                     :ui/label :string.option/angle})
 
-                     (not= current-orientation-point
-                           :angle) (assoc :alignment {:type :option.type/choice
-                                                      :choices position/alignment-choices
-                                                      :default :middle
-                                                      :ui/label :string.option/alignment
-                                                      :ui/element :ui.element/radio-select}
-                                          :offset-x {:type :option.type/range
-                                                     :min -75
-                                                     :max 75
-                                                     :default 0
-                                                     :ui/label :string.option/offset-x
-                                                     :ui/step 0.1}
-                                          :offset-y {:type :option.type/range
-                                                     :min -75
-                                                     :max 75
-                                                     :default 0
-                                                     :ui/label :string.option/offset-y
-                                                     :ui/step 0.1}))
+                     (and (not auto-positioned?)
+                          (not= current-orientation-point
+                                :angle)) (assoc :offset-x {:type :option.type/range
+                                                           :min -75
+                                                           :max 75
+                                                           :default 0
+                                                           :ui/label :string.option/offset-x
+                                                           :ui/step 0.1}
+                                                :offset-y {:type :option.type/range
+                                                           :min -75
+                                                           :max 75
+                                                           :default 0
+                                                           :ui/label :string.option/offset-y
+                                                           :ui/step 0.1})
+
+                     (and (not auto-positioned?)
+                          (not= current-orientation-point
+                                :angle)) (assoc :alignment {:type :option.type/choice
+                                                            :choices position/alignment-choices
+                                                            :default :middle
+                                                            :ui/label :string.option/alignment
+                                                            :ui/element :ui.element/radio-select}))
       :line line-style
       :opposite-line opposite-line-style
       :geometry {:size {:type :option.type/range
                         :min 0.1
                         :max 90
-                        :default 25
+                        :default (if auto-positioned?
+                                   default-size
+                                   25)
                         :ui/label :string.option/size
                         :ui/step 0.1}
                  :ui/label :string.option/geometry
                  :ui/element :ui.element/geometry}
       :outline? options/plain-outline?-option
-      :cottising (cottising/add-cottising context 2)} context)))
+      :cottising (cottising/add-cottising context 2 :size-reference-default (when auto-positioned?
+                                                                              :field-width))}
+     context)))
+
+(defmethod interface/auto-arrangement ordinary-type [real-ordinary-type context]
+  ((get-method interface/auto-arrangement :heraldry.ordinary.type/bend) real-ordinary-type context))
 
 (defmethod interface/properties ordinary-type [context]
   ((get-method interface/properties :heraldry.ordinary.type/bend) context))
