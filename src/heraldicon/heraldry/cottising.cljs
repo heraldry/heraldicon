@@ -7,13 +7,17 @@
    [heraldicon.math.core :as math]
    [heraldicon.options :as options]))
 
-(defn add-cottise-options [options key context]
+(defn- add-cottise-options [options key context & {:keys [size-reference-default]}]
   (let [line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside)
-                       (options/update-if-exists [:height :default] #(/ % 3)))
+                       (options/update-if-exists [:height :default] #(/ % 3))
+                       (cond->
+                         size-reference-default (options/override-if-exists [:size-reference :default] size-reference-default)))
         opposite-line-style (-> (line/options (c/++ context :opposite-line) :inherited-options line-style)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside)
-                                (options/update-if-exists [:height :default] #(/ % 3)))]
+                                (options/update-if-exists [:height :default] #(/ % 3))
+                                (cond->
+                                  size-reference-default (options/override-if-exists [:size-reference :default] size-reference-default)))]
     (assoc options
            key
            {:line (assoc line-style :ui/label :string.entity/line)
@@ -35,18 +39,18 @@
                        :ui/label :string.charge.tincture-modifier.special/outline}
             :ui/element :ui.element/cottising})))
 
-(defn add-cottising [context num]
+(defn add-cottising [context num & {:as opts}]
   (let [cottising-context (c/++ context :cottising)]
     (cond-> {}
       (>= num 1) (->
-                   (add-cottise-options :cottise-1 (c/++ cottising-context :cottise-1))
-                   (add-cottise-options :cottise-2 (c/++ cottising-context :cottise-2)))
+                   (add-cottise-options :cottise-1 (c/++ cottising-context :cottise-1) opts)
+                   (add-cottise-options :cottise-2 (c/++ cottising-context :cottise-2) opts))
       (>= num 2) (->
-                   (add-cottise-options :cottise-opposite-1 (c/++ cottising-context :cottise-opposite-1))
-                   (add-cottise-options :cottise-opposite-2 (c/++ cottising-context :cottise-opposite-2)))
+                   (add-cottise-options :cottise-opposite-1 (c/++ cottising-context :cottise-opposite-1) opts)
+                   (add-cottise-options :cottise-opposite-2 (c/++ cottising-context :cottise-opposite-2) opts))
       (>= num 3) (->
-                   (add-cottise-options :cottise-extra-1 (c/++ cottising-context :cottise-extra-1))
-                   (add-cottise-options :cottise-extra-2 (c/++ cottising-context :cottise-extra-2))))))
+                   (add-cottise-options :cottise-extra-1 (c/++ cottising-context :cottise-extra-1) opts)
+                   (add-cottise-options :cottise-extra-2 (c/++ cottising-context :cottise-extra-2) opts)))))
 
 ; :heraldry/cottise is a special case, it's a UI component, but not a :heraldry.options/root,
 ; because it is a child of the parent :cottising

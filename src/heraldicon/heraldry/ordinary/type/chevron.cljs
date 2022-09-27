@@ -257,7 +257,9 @@
                  :ui/label :string.option/geometry
                  :ui/element :ui.element/geometry}
       :outline? options/plain-outline?-option
-      :cottising (cottising/add-cottising context 2)} context)))
+      :cottising (cottising/add-cottising context 2 :size-reference-default (when auto-positioned?
+                                                                              :field-width))}
+     context)))
 
 (defn- scale-factor [arm-angle]
   (/ 1 (-> arm-angle angle/to-rad Math/sin (or 1))))
