@@ -893,7 +893,8 @@
     "topology": "Topologie",
     "editor": {
       "shift-info": "Umschalttaste - Punkt hinzufügen oder entfernen"
-    }
+    },
+    "layer": "Ebene"
   },
   "escutcheon": {
     "group": {
