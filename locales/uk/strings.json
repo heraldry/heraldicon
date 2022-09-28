@@ -15,6 +15,7 @@
   },
   "language": {
     "english": "Англійська",
+    "french": "Французька",
     "german": "Німецька",
     "russian": "Російська",
     "ukrainian": "Українська"
@@ -54,7 +55,7 @@
       "lozengy": "Поділене косошахово",
       "masony": "Муроване",
       "paly": "Розтяте багато разів",
-      "papellony": "Papellony",
+      "papellony": "Метеликове біляче хутро",
       "per-bend-sinister": "Скошене ліворуч",
       "per-bend": "Скошене праворуч",
       "per-chevron": "Розділене кроквоподібно",
@@ -63,7 +64,7 @@
       "per-pile": "Розділене вістрям",
       "per-saltire": "Скошене обабіч",
       "plain": "Без поділу",
-      "potenty": "Potenty",
+      "potenty": "Костуроподібне біляче хутро",
       "quartered": "Розтяте і перетяте",
       "quarterly": "Поділене N на M",
       "tierced-per-fess": "Двічі перетяте",
@@ -74,29 +75,29 @@
   },
   "line": {
     "type": {
-      "angled": "Angled",
+      "angled": "У щабель",
       "bevilled": "Зазубрена",
       "dancetty": "Ламана",
-      "dovetailed": "Dovetailed",
+      "dovetailed": "У ластівчин хвіст",
       "embattled": "Зубчата",
       "embattled-grady": "Східчасто-зубчаста",
       "embattled-in-crosses": "Хрещато-зубчаста",
       "enarched": "Вигнута / увігнута",
-      "engrailed": "Engrailed",
-      "fir-tree-topped": "Fir-tree topped",
-      "fir-twigged": "Fir-twigged",
-      "indented": "Indented",
+      "engrailed": "Шипоподібна",
+      "fir-tree-topped": "Хвойно-верхівкоподібна",
+      "fir-twigged": "Хвойно-гілкоподібна",
+      "indented": "Зазублена",
       "invected": "Лускоподібна",
       "nebuly": "Хмароподібна",
-      "potenty": "Potenty",
-      "raguly": "Raguly",
+      "potenty": "Костуроподібна",
+      "raguly": "Сукоподібна",
       "rayonny-flaming": "Полум'яподібна (у вогні)",
       "rayonny-spiked": "Полум'яподібна (промениста)",
       "straight": "Пряма",
-      "thorny": "Thorny",
-      "urdy": "Urdy",
+      "thorny": "Вигнуто-сукоподібна",
+      "urdy": "Шоломоподібна",
       "wavy": "Хвиляста",
-      "wolf-toothed": "Wolf toothed"
+      "wolf-toothed": "Вовчі зуби"
     }
   },
   "tincture": {
@@ -174,9 +175,9 @@
       "coward": "Опущений між ногами",
       "defamed": "Без хвоста",
       "double-queued": "Два хвости",
-      "erased": "Erased",
+      "erased": "Відірвана",
       "mantling": "Намет",
-      "pierced": "Pierced",
+      "pierced": "Просвердлена",
       "queue-fourche": "Роздвоєний",
       "queue-fourche-saltire": "Роздвоєний і схрещений",
       "queue-fourche-saltire-reverse": "Роздвоєний і двічі схрещений",
@@ -184,7 +185,7 @@
       "supporter-left": "Лівий щитотримач",
       "supporter-right": "Правий щитотримач",
       "tail-nowed": "Хвіст зав'язаний у вузол",
-      "voided": "Voided"
+      "voided": "Наскрізна"
     },
     "attitude": {
       "group": {
@@ -235,8 +236,8 @@
       "none": "Немає",
       "reguardant": "Озирається",
       "salient": "У стрибку",
-      "to-dexter": "Направо (типово)",
-      "to-sinister": "Наліво"
+      "to-dexter": "Праворуч (типово)",
+      "to-sinister": "Ліворуч"
     },
     "tincture-modifier": {
       "group": {
@@ -247,7 +248,7 @@
         "technical": "Технічне"
       },
       "special": {
-        "highlight": "Highlight (alpha)",
+        "highlight": "Світло (альфа)",
         "keep": "Не замінювати",
         "layer-separator": "Розділення шарів",
         "outline": "Контур",
@@ -259,7 +260,7 @@
       "armed": "Колір озброєння",
       "attired": "Колір рогів",
       "barbed": "Колір чашолистків",
-      "barred": "Barred",
+      "barred": "Колір решітки",
       "beaked": "Колір дзьоба",
       "bladed": "Колір леза",
       "caparisoned": "Колір попони",
@@ -272,10 +273,10 @@
       "finned": "Колір плавців",
       "flagged": "Колір прапора",
       "fructed": "Колір плодів",
-      "garnished": "Garnished",
+      "garnished": "Колір оправи",
       "handled": "Колір держака",
       "hilted": "Колір руків'я",
-      "hooded": "Hooded",
+      "hooded": "Колір клобука",
       "illuminated": "Колір вікон",
       "incensed": "Колір пахощів пантери",
       "langued": "Колір язика",
@@ -288,10 +289,10 @@
       "pommeled": "Колір голівки руків'я",
       "seeded": "Колір осердя",
       "slipped": "Колір стебла",
-      "stringed": "Stringed",
+      "stringed": "Колір струн",
       "tailed": "Колір хвоста",
       "toothed": "Колір зубів",
-      "trimmed": "Trimmed",
+      "trimmed": "Колір оздоблення",
       "unguled": "Колір копит",
       "wattled": "Колір борідки",
       "winged": "Колір крил"
@@ -367,12 +368,12 @@
     "sorting-filter-choice": {
       "name": "За назвою",
       "creation": "Останні додані",
-      "update": "Останні оновлення"
+      "update": "Останні оновлені"
     },
-    "sort-by": "Порядок сортування",
+    "sort-by": "Сортування",
     "alignment": "Розміщення",
     "alignment-choice": {
-      "left": "Зліва",
+      "left": "Ліворуч",
       "middle": "Посередині",
       "right": "Справа",
       "bottom": "Знизу",
@@ -388,7 +389,7 @@
       "angle": "Кут"
     },
     "orientation-type-choice": {
-      "edge": "Edge",
+      "edge": "Край",
       "orientation-point": "Верхній кут"
     },
     "angle": "Кут",
@@ -396,10 +397,10 @@
     "arms": "Герби",
     "aspect-ratio-preset": "Шаблон співвідношення сторін",
     "attitude": "Поза",
-    "bar-thickness": "Bar thickness",
-    "base-fields": "Base fields",
-    "base-field-shift": "Base field shift",
-    "base-line": "Base line",
+    "bar-thickness": "Товщина балки",
+    "base-fields": "Основні поля",
+    "base-field-shift": "Зміщення основного поля",
+    "base-line": "Основна лінія",
     "charge-type": "Тип фігури",
     "column": "Стовпчик",
     "corner": "Кути",
@@ -409,22 +410,22 @@
       "sharp": "Гострі"
     },
     "corner-radius": "Радіус кута",
-    "dampening-mode": "Dampening mode",
+    "dampening-mode": "Режим демпфування",
     "dampening-mode-choice": {
-      "clamp-to-zero": "Clamp to zero",
-      "linear-dampening": "Linear dampening",
-      "square-root-dampening": "Square root dampening"
+      "clamp-to-zero": "Стискання до нуля",
+      "linear-dampening": "Лінійне демпфування",
+      "square-root-dampening": "Кореневе демпфування"
     },
-    "dampening-radius": "Dampening radius",
+    "dampening-radius": "Радіус демпфування",
     "default-size": "Типовий розмір",
     "default-spacing": "Типовий інтервал",
     "distance": "Відстань",
     "eccentricity": "Ексцентричність",
-    "edge-angle": "Edge angle",
-    "end-split": "End split",
+    "edge-angle": "Кут бокового краю",
+    "end-split": "Роздвоєння кінців",
     "wavy-rays?": "Хвилясті",
     "facing": "Поворот фігури",
-    "gap": "Gap",
+    "gap": "Інтервал",
     "fimbriation": "Облямування",
     "fixed-tincture": "Фіксований колір",
     "flag-height": "Висота прапора",
@@ -432,31 +433,31 @@
     "flag-tail-point-height": "Висота косиць",
     "flag-tongue": "Середня косиця",
     "flag-width": "Ширина прапора",
-    "flipped?": "Flipped",
+    "flipped?": "В інший бік",
     "font": "Шрифт",
     "font-scale": "Масштаб шрифту",
-    "function": "Function",
+    "function": "Функція",
     "geometry": "Геометрія",
     "height": "Висота",
-    "highlight": "Highlight",
+    "highlight": "Світло",
     "humetty": "Укорочена",
     "ignore-layer-separator?": "Ігнорувати розділення шарів",
     "inherit-environment?": "Перейняти розташування фігур у щиті",
     "is-public": "Зробити публічним",
     "landscape?": "Ландшафт",
     "layer": "Шар",
-    "layout": "Layout",
+    "layout": "Макет",
     "load-from-arms": "Завантажити герб",
     "manual-blazon": "Блазон — вручну",
     "mirrored?": "Дзеркально",
     "name": "Назва",
     "number": "Кількість",
     "number-of-columns": "Кількість стовпців",
-    "number-of-points": "Number of points",
+    "number-of-points": "Кількість підвісок",
     "number-of-rows": "Кількість рядків",
     "offset": "Зміщення",
-    "offset-x": "Зміщення осі X",
-    "offset-y": "Зміщення осі Y",
+    "offset-x": "Зміщення X",
+    "offset-y": "Зміщення Y",
     "anchor": "Точка прив'язки",
     "outline-mode": "Контур",
     "outline-mode-choice": {
@@ -472,10 +473,10 @@
       "community": "Від спільноти"
     },
     "partition": "Поділ поля",
-    "pattern-scaling": "Pattern scaling",
-    "pattern-rotation": "Pattern rotation",
-    "pattern-offset-x": "Зміщення візерунка осі X",
-    "pattern-offset-y": "Зміщення візерунка осі Y",
+    "pattern-scaling": "Масштаб візерунка",
+    "pattern-rotation": "Обертання візерунка",
+    "pattern-offset-x": "Зміщення візерунка X",
+    "pattern-offset-y": "Зміщення візерунка Y",
     "point": "Точка",
     "point-choice-group": {
       "heraldic": "Геральдичні",
@@ -485,21 +486,21 @@
     "point-choice": {
       "auto": "Авто",
       "base": "Основа",
-      "bottom": "Знизу",
+      "bottom": "Низ",
       "bottom-left": "Знизу зліва",
-      "bottom-right": "Знизу справа",
-      "center": "Посередині",
+      "bottom-right": "Низ праворуч",
+      "center": "Середина",
       "chief": "Глава",
       "dexter": "Праворуч",
       "fess": "Центр",
       "honour": "Вище центру",
-      "left": "Зліва",
+      "left": "Ліворуч",
       "nombril": "Нижче центру",
-      "right": "Справа",
+      "right": "Праворуч",
       "sinister": "Ліворуч",
-      "top": "Вгорі",
-      "top-left": "Зверху зліва",
-      "top-right": "Зверху справа",
+      "top": "Верх",
+      "top-left": "Верх ліворуч",
+      "top-right": "Верх праворуч",
       "hoist": "Біля древка",
       "fly": "З вільного краю"
     },
@@ -516,11 +517,11 @@
     "rotation": "Обертання",
     "row": "Рядок",
     "section": {
-      "bend-group": "Bend group",
-      "bend-sinister-group": "Bend sinister group",
+      "bend-group": "Група перев'язу справа",
+      "bend-sinister-group": "Група перев'язу зліва",
       "fess-group": "Група балки",
       "pale-group": "Група стовпа",
-      "chevron-group": "Chevron group"
+      "chevron-group": "Група крокви"
     },
     "select-arms": "Обрати герб",
     "select-charge": "Обрати гербову фігуру",
@@ -551,19 +552,19 @@
     "spacing-left": "Лівий інтервал",
     "start-angle": "Початок кута",
     "stretch": "Проміжок",
-    "stretch-x": "Розтягування осі X",
-    "stretch-y": "Розтягування осі Y",
+    "stretch-x": "Розтягування X",
+    "stretch-y": "Розтягування Y",
     "strip-angle": "Кут нахилу",
     "subfields": "Підсекції",
-    "subfields-x": "Підсекції осі X",
-    "subfields-y": "Підсекції осі Y",
+    "subfields-x": "Підсекції X",
+    "subfields-y": "Підсекції Y",
     "thickness": "Товщина",
     "tincture": "Колір",
     "tincture-background-group": {
       "other-or-metal": "Метали та інше"
     },
     "tincture-background-choice": {
-      "none": "Затемнений передній план"
+      "none": "Затемнена передня поверхня"
     },
     "type": "Вид",
     "type-fimbriation-choice": {
@@ -571,10 +572,10 @@
       "double": "Подвійне",
       "single": "Одинарне"
     },
-    "variant": "Variant",
+    "variant": "Різновид",
     "variant-label-choice": {
       "full": "Повний",
-      "truncated": "Truncated"
+      "truncated": "Укорочене"
     },
     "variant-point-choice": {
       "dexter": "Праворуч",
@@ -588,16 +589,16 @@
     },
     "variant-potenty-choice": {
       "default": "Типово",
-      "counter": "Counter",
-      "in-pale": "In pale",
-      "en-point": "En point"
+      "counter": "Протибіляче",
+      "in-pale": "У стовп",
+      "en-point": "Перемінне протибіляче"
     },
     "variant-vairy-choice": {
       "default": "Типово",
-      "counter": "Counter",
-      "in-pale": "In pale",
-      "en-point": "En point",
-      "ancien": "Ancien"
+      "counter": "Протибіляче",
+      "in-pale": "У стовп",
+      "en-point": "Перемінне протибіляче",
+      "ancien": "Хмароподібне"
     },
     "vertical-mask": "Вертикальна маска",
     "width": "Ширина"
@@ -605,7 +606,7 @@
   "tooltip": {
     "alpha-feature-warning": "Роботу над цією функцією ще не завершено. Можливі зміни, користуйтеся з обачністю. :)",
     "dampening-mode": "Спосіб пристосування лінії біля кутів. Різні стилі краще працюють з різними режимами.",
-    "dampening-radius": "How far around corners the dampening mode is applied.",
+    "dampening-radius": "Відстань навколо кутів, на яку застосовується режим демпфування.",
     "edge-angle": "Може спричинити глюки для деяких вигинів з певними кутами через проблеми з числами. Налаштовуйте обережно.",
     "humetty-warning": "З певними значеннями це може спричинити дивні результати. Спробуйте трохи змістити лінії або налаштувати параметри, якщо таке станеться.",
     "ignore-layer-separator?": "Якщо фігура містить у собі розділення шарів щита, цим можна його вимкнути.",
@@ -630,12 +631,12 @@
     "by": "від автора",
     "extra": "додатково",
     "error": "Помилка",
-    "fields": "поля",
+    "fields": "полів",
     "general": "Загальні",
     "inherited": "Перейнято",
     "item": "об'єкт",
     "items": "об'єкти",
-    "left": "Зліва",
+    "left": "Ліворуч",
     "loading": "Завантаження...",
     "show-more": "Більше",
     "not-found": "Не знайдено",
@@ -644,7 +645,7 @@
     "no-name": "<no name>",
     "none": "Немає",
     "no-item-selected": "Нічого не вибрано",
-    "opposite": "opposite",
+    "opposite": "навпроти",
     "svg-file": "Файл SVG",
     "right": "Справа",
     "semy-of": "Усіяно фігурами",
@@ -665,7 +666,7 @@
     "from-blazon": "З блазону",
     "save": "Зберегти",
     "upload-svg": "Додати файл SVG",
-    "colourize": "Colourize",
+    "colourize": "Забарвити",
     "actions": "Дії",
     "export": "Експортувати",
     "share": "Поділитися"
@@ -754,7 +755,7 @@
     "type": {
       "arc": "Дуга",
       "columns": "Колонки",
-      "in-orle": "In orle",
+      "in-orle": "За краями поля",
       "rows": "Ряди"
     },
     "presets": {
@@ -776,7 +777,7 @@
       "in-annullo-follow": "По колу (за його ходом)",
       "in-annullo-point-to-center": "По колу (обернені до центру)",
       "in-cross": "У хрест",
-      "in-orle": "In orle",
+      "in-orle": "За краями поля",
       "in-pall": "У вилоподібний хрест",
       "in-saltire": "Навхрест",
       "palewise": "У стовб",
@@ -809,8 +810,8 @@
     "crest-charge-group": "Група фігур нашоломника",
     "collection": "Колекція",
     "collections": "Колекції",
-    "cottising": "Cottising",
-    "cottise": "Cottise",
+    "cottising": "Смуги вздовж країв",
+    "cottise": "Смуга вздовж краю",
     "extra-line": "Додаткова лінія",
     "helm": "Шолом",
     "helmet": "Колір шолома",
@@ -824,9 +825,9 @@
     "ordinary": "Почесна фігура",
     "ribbon": "Стрічка",
     "ribbons": "Стрічки",
-    "semy": "Усіяно",
+    "semy": "Усіяно фігурами",
     "slogan": "Бойовий клич",
-    "tag": "Tag",
+    "tag": "Мітка",
     "tags": "Мітки",
     "tincture": "Колір",
     "tinctures": "Кольори",
@@ -834,38 +835,39 @@
     "user": "Користувач"
   },
   "submenu-summary": {
-    "adjusted": "adjusted",
-    "base-fields": "base fields",
+    "adjusted": "змінено",
+    "aligned": "зрівняно",
+    "base-fields": "основних полів",
     "default": "Типово",
     "fimbriated": "облямовано",
-    "flipped": "перевернуто",
+    "flipped": "в інший бік",
     "mirrored": "дзеркально",
     "no": "Ні",
-    "resized": "розмір змінено",
+    "resized": "змінено розмір",
     "reversed": "перевернуто",
     "rotated": "повернуто",
     "shifted": "зсунуто",
     "slot": "шт.",
     "slots": "шт.",
-    "stretched": "з розтягненням"
+    "stretched": "розтягнено"
   },
   "ribbon": {
     "button": {
-      "invert": "Invert"
+      "invert": "Вивернути"
     },
     "text": {
       "apply-preset-after-change": "Застосуйте шаблон після редагування вигину стрічки та зміни кількості сегментів.",
       "segment-explanation": "Сегменти можуть належати до категорії задньої поверхні, передньої поверхні або передньої поверхні з текстом. Порядок їхнього промальовування залежить від номера шару. Зверніть увагу: після додавання нових сегментів чи видалення сегментів з лінії вигину необхідно застосувати шаблон. Таким чином внесені зміни будуть перезаписані тут, але прямо зараз немає надійного способу збереження.",
-      "svg-font-rendering-warning": "The SVG export embeds the fonts, but some programs might not display them correctly. At least Chrome should display it.",
+      "svg-font-rendering-warning": "Експорт SVG вбудовує шрифти у файл, але деякі застосунки можуть не показувати їх правильно. Працює коректно щонайменше Chrome.",
       "topology-explanation-1": "Є багато способів інтерпретувати лінію вигину стрічки, залежно від її передньої та задньої поверхонь та того, як різні сегменти перетинаються між собою.",
-      "topology-explanation-2": "The Presets can be used to setup the segments for some typical effects, the segments can then be fine-tuned."
+      "topology-explanation-2": "Шаблони можна використати для налаштування деяких типових ефектів сегментів, після чого сегменти можна додатково відрегулювати."
     },
     "apply-presets": "Застосувати шаблони",
     "flow-presets": "Шаблони звивання",
     "flow-presets-choice": {
-      "spiral-clockwise": "Спіраль за годинниковою стрілкою",
-      "spiral-counter-clockwise": "Спіраль проти годинникової стрілки",
-      "stacked": "Stacked",
+      "spiral-clockwise": "За годинниковою стрілкою",
+      "spiral-counter-clockwise": "Проти годинникової стрілки",
+      "stacked": "Зигзаг",
       "waves": "Хвилі"
     },
     "segment-type-choice": {
@@ -964,7 +966,7 @@
       "goal-2-open-arms-library": "Забезпечити засіб створення онлайн-гербовників для довідкових чи дослідницьких цілей",
       "goal-3-support-heraldic-concepts": "Підтримувати якнайбільше геральдичних концепцій та елементів",
       "status": "Статус",
-      "status-site-still-beta": "Всі функції сайту поки що, по суті, досі на стадії бета-версії. Прошу бути терплячими, якщо натрапите на помилки або відчуєте брак функціоналу. Нижче є мої контактні дані, якщо хочете повідомити про щось дивне.",
+      "status-site-still-beta": "Всі функції сайту практично досі на стадії бета-версії. Прошу бути терплячими, якщо натрапите на помилки або відчуєте брак функціоналу. Нижче є мої контактні дані, якщо хочете повідомити про щось дивне.",
       "licensing": "Ліцензування",
       "licensing-1-and-attribution-for-public-objects": "Гербові фігури та герби, створені на цьому сайті, повинні мати ліцензію Creative Commons або бути оголошеними суспільним надбанням. Роботи, створені з використанням уже наявних, повинні мати посилання на автора та джерело, а ліцензія джерела має бути сумісною з обраною вами ліцензією Creative Commons.",
       "licensing-2-how-to-specify-and-responsibility": "Ви можете вказати цю інформацію під час редагування фігури або герба. Вона буде показана при перегляді та експортуванні роботи. Ви відповідальні за надання цієї інформації, якщо робите свою роботу публічною.",
