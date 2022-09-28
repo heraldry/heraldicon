@@ -837,6 +837,7 @@
   },
   "submenu-summary": {
     "adjusted": "adjusted",
+    "aligned": "aligned",
     "base-fields": "base fields",
     "default": "Default",
     "fimbriated": "fimbriated",
