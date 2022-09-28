@@ -24,7 +24,7 @@
         z-index (interface/get-sanitized-data (c/++ context :z-index))
         title (string/str-tr (inc idx) ". "
                              (ribbon/segment-type-map segment-type)
-                             ", layer " z-index)]
+                             ", " :string.ribbon/layer " " z-index)]
 
     [:div {:style {:position "relative"}}
      [submenu/submenu context nil [tr title] {:style {:width "28em"}

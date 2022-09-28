@@ -892,7 +892,8 @@
     "topology": "Topology",
     "editor": {
       "shift-info": "Shift - add or remove points"
-    }
+    },
+    "layer": "layer"
   },
   "escutcheon": {
     "group": {
