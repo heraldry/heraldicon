@@ -586,6 +586,19 @@
       "sinister-base": "Heraldisch links-unten",
       "sinister-chief": "Heraldisch links-oben"
     },
+    "variant-potenty-choice": {
+      "default": "Default",
+      "counter": "Gegenkrücken",
+      "in-pale": "Pfahlkrückenfeh",
+      "en-point": "Wechselkrückenfeh"
+    },
+    "variant-vairy-choice": {
+      "default": "Default",
+      "counter": "Gegenfeh",
+      "in-pale": "Pfahlfeh",
+      "en-point": "Wechselfeh",
+      "ancien": "Wolkenfeh"
+    },
     "vertical-mask": "Vertikale Maske",
     "width": "Breite"
   },

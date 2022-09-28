@@ -587,6 +587,19 @@
       "sinister-base": "Sinister-base",
       "sinister-chief": "Sinister-chief"
     },
+    "variant-potenty-choice": {
+      "default": "Default",
+      "counter": "Counter",
+      "in-pale": "In pale",
+      "en-point": "En point"
+    },
+    "variant-vairy-choice": {
+      "default": "Default",
+      "counter": "Counter",
+      "in-pale": "In pale",
+      "en-point": "En point",
+      "ancien": "Ancien"
+    },
     "vertical-mask": "Vertical mask",
     "width": "Width"
   },
