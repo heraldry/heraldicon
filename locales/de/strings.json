@@ -410,13 +410,13 @@
       "sharp": "Spitz"
     },
     "corner-radius": "Rundungsradius",
-    "dampening-mode": "Abflachmodus",
-    "dampening-mode-choice": {
+    "damping-mode": "Abflachmodus",
+    "damping-mode-choice": {
       "clamp-to-zero": "Auf Null setzen",
-      "linear-dampening": "Linear abflachen",
-      "square-root-dampening": "Wurzel abflachen"
+      "linear-damping": "Linear abflachen",
+      "square-root-damping": "Wurzel abflachen"
     },
-    "dampening-radius": "Abflachungsradius",
+    "damping-radius": "Abflachungsradius",
     "default-size": "Default Größe",
     "default-spacing": "Default Abstand",
     "distance": "Abstand",
@@ -605,8 +605,8 @@
   },
   "tooltip": {
     "alpha-feature-warning": "Dieses Feature ist noch nicht fertig und wird sich wahrscheinlich noch ändern, benutze es mit Vorsicht. :)",
-    "dampening-mode": "Die Art wie die Linie in der Nähe von Ecken angepaßt wird. Verschiedene Linienstile funktionieren besser mit verschiedenen Modi.",
-    "dampening-radius": "In welcher Umgebung einer Ecke der Abflachungsmodus angewandt wird.",
+    "damping-mode": "Die Art wie die Linie in der Nähe von Ecken angepaßt wird. Verschiedene Linienstile funktionieren besser mit verschiedenen Modi.",
+    "damping-radius": "In welcher Umgebung einer Ecke der Abflachungsmodus angewandt wird.",
     "edge-angle": "Das kann im Moment ein paar Fehler verursachen, aufgrund von numerischer Probleme, benutze es vorsichtig.",
     "humetty-warning": "Das kann manchmal merkwürdige Ergebnisse liefern, versuche in dem Fall der Linie ein kleines Offset zu geben oder die Parameter leicht anzupassen.",
     "ignore-layer-separator?": "Wenn eine Wappenfigur einen Ebenentrenner enthält, dann kann er hiermit ausgeschaltet werden.",

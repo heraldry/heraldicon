@@ -20,9 +20,9 @@
 
     {:base-line (tu/example :heraldry.line/base-line)}
 
-    {:corner-dampening-radius 13}
+    {:corner-damping-radius 13}
 
-    {:corner-dampening-mode (tu/example :heraldry.line/corner-dampening-mode)}
+    {:corner-damping-mode (tu/example :heraldry.line/corner-damping-mode)}
 
     {:flipped? true}
 
@@ -46,9 +46,9 @@
 
     {:base-line :wrong}
 
-    {:corner-dampening-radius :wrong}
+    {:corner-damping-radius :wrong}
 
-    {:corner-dampening-mode :wrong}
+    {:corner-damping-mode :wrong}
 
     {:flipped? :wrong}
 

@@ -82,11 +82,11 @@
                  :ui/step 0.1}
      :line (adjust-line-style
             (line/options (c/++ context :line)
-                          :corner-dampening? true))
+                          :corner-damping? true))
      :opposite-line (adjust-line-style
                      (line/options (c/++ context :opposite-line)
                                    :fimbriation? false
-                                   :corner-dampening? true))
+                                   :corner-damping? true))
      :outline? options/plain-outline?-option}))
 
 (defn- add-orle [{:keys [current-distance]

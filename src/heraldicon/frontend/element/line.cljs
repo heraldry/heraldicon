@@ -49,8 +49,8 @@
            :spacing
            :offset
            :base-line
-           :corner-dampening-radius
-           :corner-dampening-mode
+           :corner-damping-radius
+           :corner-damping-mode
            :mirrored?
            :flipped?
            :fimbriation])]]])))
