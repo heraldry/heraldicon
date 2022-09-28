@@ -17,11 +17,11 @@
 
 ;; TODO: needs translation
 (def ^:private variant-choices
-  [["Default" :default]
-   ["Counter" :counter]
-   ["In pale" :in-pale]
-   ["En point" :en-point]
-   ["Ancien" :ancien]])
+  [[:string.option.variant-vairy-choice/default :default]
+   [:string.option.variant-vairy-choice/counter :counter]
+   [:string.option.variant-vairy-choice/in-pale :in-pale]
+   [:string.option.variant-vairy-choice/en-point :en-point]
+   [:string.option.variant-vairy-choice/ancien :ancien]])
 
 (def variant-map
   (options/choices->map variant-choices))
