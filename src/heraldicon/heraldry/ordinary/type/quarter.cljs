@@ -128,10 +128,10 @@
                                     [first-point
                                      second-point]))
         x-size (case variant
-                 :dexter-chief (-> (v/sub anchor-point second-point) :y Math/abs)
-                 :sinister-chief (-> (v/sub anchor-point first-point) :y Math/abs)
-                 :dexter-base (-> (v/sub anchor-point first-point) :y Math/abs)
-                 :sinister-base (-> (v/sub anchor-point second-point) :y Math/abs))]
+                 :dexter-chief (-> (v/sub anchor-point first-point) :y Math/abs)
+                 :sinister-chief (-> (v/sub anchor-point second-point) :y Math/abs)
+                 :dexter-base (-> (v/sub anchor-point second-point) :y Math/abs)
+                 :sinister-base (-> (v/sub anchor-point first-point) :y Math/abs))]
     (post-process/properties
      {:type ordinary-type
       :edge [first-point anchor-point second-point]
