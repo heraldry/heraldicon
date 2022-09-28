@@ -25,7 +25,7 @@
     "alignment-choice" : { },
     "point-choice" : { },
     "orientation-type-choice" : { },
-    "dampening-mode-choice" : { },
+    "damping-mode-choice" : { },
     "radius" : "Raio",
     "variant-quarter-choice" : { },
     "shadow" : "Sombra",

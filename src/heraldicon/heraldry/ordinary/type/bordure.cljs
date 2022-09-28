@@ -41,7 +41,7 @@
                  :ui/tooltip :string.tooltip/smoothing
                  :ui/step 0.1}
      :line (-> (line/options (c/++ context :line)
-                             :corner-dampening? true)
+                             :corner-damping? true)
                (dissoc :flipped?)
                (update-in [:type :choices]
                           (fn [choices]

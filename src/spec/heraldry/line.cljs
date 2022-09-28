@@ -13,8 +13,8 @@
 (s/def :heraldry.line/offset number?)
 (s/def :heraldry.line/spacing number?)
 (s/def :heraldry.line/base-line (su/key-in? line/base-line-map))
-(s/def :heraldry.line/corner-dampening-radius number?)
-(s/def :heraldry.line/corner-dampening-mode (su/key-in? line/corner-dampening-mode-map))
+(s/def :heraldry.line/corner-damping-radius number?)
+(s/def :heraldry.line/corner-damping-mode (su/key-in? line/corner-damping-mode-map))
 (s/def :heraldry.line/flipped? boolean?)
 (s/def :heraldry.line/mirrored? boolean?)
 (s/def :heraldry.line/fimbriation :heraldry/fimbriation)
@@ -26,8 +26,8 @@
                                        :heraldry.line/width
                                        :heraldry.line/spacing
                                        :heraldry.line/base-line
-                                       :heraldry.line/corner-dampening-radius
-                                       :heraldry.line/corner-dampening-mode
+                                       :heraldry.line/corner-damping-radius
+                                       :heraldry.line/corner-damping-mode
                                        :heraldry.line/offset
                                        :heraldry.line/mirrored?
                                        :heraldry.line/flipped?

@@ -408,13 +408,13 @@
       "sharp": "Sharp"
     },
     "corner-radius": "Corner radius",
-    "dampening-mode": "Dampening mode",
-    "dampening-mode-choice": {
+    "damping-mode": "Damping mode",
+    "damping-mode-choice": {
       "clamp-to-zero": "Clamp to zero",
-      "linear-dampening": "Linear dampening",
-      "square-root-dampening": "Square root dampening"
+      "linear-damping": "Linear damping",
+      "square-root-damping": "Square root damping"
     },
-    "dampening-radius": "Dampening radius",
+    "damping-radius": "Damping radius",
     "distance": "Расстояние",
     "eccentricity": "Eccentricity",
     "edge-angle": "Edge angle",
@@ -567,8 +567,8 @@
   },
   "tooltip": {
     "alpha-feature-warning": "Работу над этой функцией не завершено. Возможны изменения, поэтому используйте с осторожностью)",
-    "dampening-mode": "The way the line is adjusted near corners. Different styles work better with different modes.",
-    "dampening-radius": "How far around corners the dampening mode is applied.",
+    "damping-mode": "The way the line is adjusted near corners. Different styles work better with different modes.",
+    "damping-radius": "How far around corners the damping mode is applied.",
     "edge-angle": "This currently can cause glitches at some angles for some curves due to some numerical issues, set it carefully.",
     "humetty-warning": "This might have some strange results for some values, try to give lines a little offset or adjust the parameters a bit if that happens.",
     "ignore-layer-separator?": "If the charge contains a layer separator for the shield, then this can disable it.",

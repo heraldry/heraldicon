@@ -409,13 +409,13 @@
       "sharp": "Pointu"
     },
     "corner-radius": "Arrondi des angles",
-    "dampening-mode": "Mode d'atténuation",
-    "dampening-mode-choice": {
+    "damping-mode": "Mode d'atténuation",
+    "damping-mode-choice": {
       "clamp-to-zero": "Borner à zéro",
-      "linear-dampening": "Atténuation linéaire",
-      "square-root-dampening": "Atténuation racine carrée"
+      "linear-damping": "Atténuation linéaire",
+      "square-root-damping": "Atténuation racine carrée"
     },
-    "dampening-radius": "Rayon d'atténuation",
+    "damping-radius": "Rayon d'atténuation",
     "default-size": "Default size",
     "default-spacing": "Default spacing",
     "distance": "Distance",
@@ -604,8 +604,8 @@
   },
   "tooltip": {
     "alpha-feature-warning": "Cette fonctionnalité est incomplète et peut être amenée à changer, utiliser avec précaution. :)",
-    "dampening-mode": "La façon dont la ligne est ajustée près des sommets. Différents styles fonctionnent mieux avec différents modes.",
-    "dampening-radius": "Distance autour des sommets jusqu'à laquelle le mode d'atténuation est appliqué.",
+    "damping-mode": "La façon dont la ligne est ajustée près des sommets. Différents styles fonctionnent mieux avec différents modes.",
+    "damping-radius": "Distance autour des sommets jusqu'à laquelle le mode d'atténuation est appliqué.",
     "edge-angle": "Peut actuellement causer des problèmes de rendu à certains angles pour certaines courbes à cause de problèmes de calcul, renseigner avec précaution.",
     "humetty-warning": "Peut avoir des résultats étranges avec certaines valeurs, donnez aux lignes un léger décalage ou ajustez un peu les paramètres si cela se produit.",
     "ignore-layer-separator?": "Si la charge contient un séparateur de calques pour le bouclier, cette option peut le désactiver.",

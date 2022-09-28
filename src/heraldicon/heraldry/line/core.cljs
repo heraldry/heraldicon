@@ -172,13 +172,13 @@
 (def base-line-map
   (options/choices->map base-line-choices))
 
-(def ^:private corner-dampening-mode-choices
-  [[:string.option.dampening-mode-choice/clamp-to-zero :clamp-to-zero]
-   [:string.option.dampening-mode-choice/linear-dampening :linear-dampening]
-   [:string.option.dampening-mode-choice/square-root-dampening :square-root-dampening]])
+(def ^:private corner-damping-mode-choices
+  [[:string.option.damping-mode-choice/clamp-to-zero :clamp-to-zero]
+   [:string.option.damping-mode-choice/linear-damping :linear-damping]
+   [:string.option.damping-mode-choice/square-root-damping :square-root-damping]])
 
-(def corner-dampening-mode-map
-  (options/choices->map corner-dampening-mode-choices))
+(def corner-damping-mode-map
+  (options/choices->map corner-damping-mode-choices))
 
 (def ^:private size-reference-choices
   [[:string.option.size-reference-choice/line-length :line-length]
@@ -229,18 +229,18 @@
                :default :middle
                :ui/label :string.option/base-line
                :ui/element :ui.element/radio-select}
-   :corner-dampening-radius {:type :option.type/range
+   :corner-damping-radius {:type :option.type/range
                              :min 0
                              :max 50
                              :default 0
-                             :ui/label :string.option/dampening-radius
-                             :ui/tooltip :string.tooltip/dampening-radius
+                             :ui/label :string.option/damping-radius
+                             :ui/tooltip :string.tooltip/damping-radius
                              :ui/step 0.01}
-   :corner-dampening-mode {:type :option.type/choice
-                           :choices corner-dampening-mode-choices
+   :corner-damping-mode {:type :option.type/choice
+                           :choices corner-damping-mode-choices
                            :default :clamp-to-zero
-                           :ui/label :string.option/dampening-mode
-                           :ui/tooltip :string.tooltip/dampening-mode
+                           :ui/label :string.option/damping-mode
+                           :ui/tooltip :string.tooltip/damping-mode
                            :ui/step 0.01}
    :mirrored? {:type :option.type/boolean
                :default false
@@ -251,7 +251,7 @@
 
 (defn options [{:keys [path] :as context} & {:keys [fimbriation?
                                                     inherited-options
-                                                    corner-dampening?]
+                                                    corner-damping?]
                                              :or {fimbriation? true}}]
   (let [kind (last path)
         inherited (when inherited-options
@@ -443,9 +443,9 @@
           (cond->
             fimbriation? (assoc :fimbriation (fimbriation/options (c/++ context :fimbriation)
                                                                   :inherited-options (:fimbriation inherited-options)))
-            corner-dampening? (merge (options/pick default-options
-                                                   [[:corner-dampening-radius]
-                                                    [:corner-dampening-mode]]
+            corner-damping? (merge (options/pick default-options
+                                                   [[:corner-damping-radius]
+                                                    [:corner-damping-mode]]
                                                    {})))
           (assoc :ui/label (case kind
                              :opposite-line :string.entity/opposite-line
@@ -723,24 +723,24 @@
        (-> x (+ full-length) (- corner-x) Math/abs)
        (-> x (- corner-x) (- full-length) Math/abs)))
 
-(defn- process-y-value [x y full-length corners dampening-radius dampening-mode]
-  (let [process-fn (case dampening-mode
+(defn- process-y-value [x y full-length corners damping-radius damping-mode]
+  (let [process-fn (case damping-mode
                      :clamp-to-zero (constantly 0)
-                     :linear-dampening (fn [y dist]
+                     :linear-damping (fn [y dist]
                                          (-> dist
-                                             (/ dampening-radius)
+                                             (/ damping-radius)
                                              (* y)))
-                     :square-root-dampening (fn [y dist]
+                     :square-root-damping (fn [y dist]
                                               (-> dist
-                                                  (/ dampening-radius)
+                                                  (/ damping-radius)
                                                   Math/sqrt
                                                   (* y))))]
-    (if (zero? dampening-radius)
+    (if (zero? damping-radius)
       y
       (if-let [dist (->> corners
                          (keep (fn [corner]
                                  (let [dist (dist-to-corner x corner full-length)]
-                                   (when (<= dist dampening-radius)
+                                   (when (<= dist damping-radius)
                                      dist))))
                          sort
                          first)]
@@ -751,8 +751,8 @@
   (memoize
    (fn modify-path [path {:keys [type
                                  width
-                                 corner-dampening-radius
-                                 corner-dampening-mode]
+                                 corner-damping-radius
+                                 corner-damping-mode]
                           :as line} environment & {:keys [outer-shape?]}]
      (let [pattern-data (get kinds-pattern-map type)
            guiding-path (cond-> path
@@ -822,7 +822,7 @@
                    point-on-curve (get-point-on-curve path-points path-x-steps x-on-path)
                    y-dir (:normal point-on-curve)
                    y-value (process-y-value x-on-path (:y real-point) full-length corners
-                                            corner-dampening-radius corner-dampening-mode)]
+                                            corner-damping-radius corner-damping-mode)]
             ;; the y-value will usually be negative, but the normals
             ;; will also point outwards from the shape, so this will
             ;; build a path on the inside of the shape
