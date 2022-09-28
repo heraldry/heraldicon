@@ -17,9 +17,9 @@
                      position/orientation-point-map)
                  (when (some #(options/changed? % position options)
                              [:offset-x :offset-y :angle])
-                   "adjusted")
+                   :string.submenu-summary/adjusted)
                  (when (options/changed? :alignment position options)
-                   "aligned")]]
+                   :string.submenu-summary/aligned)]]
     (string/upper-case-first (string/combine ", " changes))))
 
 (defmethod element/element :ui.element/position [context]
