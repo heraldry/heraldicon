@@ -76,16 +76,16 @@
   "line": {
     "type": {
       "angled": "У щабель",
-      "bevilled": "Зазубрена",
+      "bevilled": "Z-подібна",
       "dancetty": "Ламана",
       "dovetailed": "У ластівчин хвіст",
-      "embattled": "Зубчата",
+      "embattled": "Зубчаста",
       "embattled-grady": "Східчасто-зубчаста",
       "embattled-in-crosses": "Хрещато-зубчаста",
       "enarched": "Вигнута / увігнута",
       "engrailed": "Шипоподібна",
-      "fir-tree-topped": "Хвойно-верхівкоподібна",
-      "fir-twigged": "Хвойно-гілкоподібна",
+      "fir-tree-topped": "Ялиноподібна",
+      "fir-twigged": "Ялино-гілкоподібна",
       "indented": "Зазублена",
       "invected": "Лускоподібна",
       "nebuly": "Хмароподібна",
@@ -653,7 +653,8 @@
     "top": "вгорі",
     "unnamed": "без назви",
     "unsaved-data": "незбережені дані",
-    "field-reference": "як у"
+    "field-reference": "як у",
+    "not-supported-by-charge": "не підтримується для фігури"
   },
   "button": {
     "add": "Додати",
@@ -890,7 +891,8 @@
     "topology": "Топологія",
     "editor": {
       "shift-info": "Shift — додати або видалити точки"
-    }
+    },
+    "layer": "шар"
   },
   "escutcheon": {
     "group": {
