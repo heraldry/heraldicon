@@ -364,6 +364,7 @@
      :direction-orthogonal direction-orthogonal
      :band-size band-size
      :line-length line-length
+     :percentage-base percentage-base
      :transform (when-not use-parent-environment?
                   (str "translate(" (v/->str upper-left) ")"
                        "rotate(" angle ")"))
@@ -371,7 +372,9 @@
                                   #(-> %
                                        (bb/translate upper-left)
                                        (bb/rotate angle)))
-     :reverse-transform-fn reverse-transform-fn}))
+     :reverse-transform-fn reverse-transform-fn
+     :humetty-percentage-base (min width height)
+     :voided-percentage-base band-size}))
 
 (defn- calculate-auto-positioned-bend-data [context]
   (let [real-ordinary-type (interface/get-raw-data (c/++ context :type))
