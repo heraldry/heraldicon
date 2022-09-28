@@ -14,8 +14,8 @@
 (derive :heraldicon.entity/type :heraldicon/entity)
 
 (def access-choices
-  [["private" :private]
-   ["public" :public]])
+  [[:string.option.access-filter-choice/private :private]
+   [:string.option.access-filter-choice/public :public]])
 
 (def access-map
   (options/choices->map access-choices))
