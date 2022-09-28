@@ -4,6 +4,7 @@
 (def ^:private JSON-DICT
   {:en (load-locale "en/strings.json")
    :de (load-locale "de/strings.json")
+   :fr (load-locale "fr/strings.json")
    :pt (load-locale "pt-PT/strings.json")
    :ru (load-locale "ru/strings.json")
    :uk (load-locale "uk/strings.json")})
@@ -16,6 +17,7 @@
 
 (def all
   {:en :string.language/english
+   :fr :string.language/french
    :de :string.language/german
    :ru :string.language/russian
    :uk :string.language/ukrainian})
