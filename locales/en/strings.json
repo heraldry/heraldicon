@@ -654,7 +654,8 @@
     "top": "top",
     "unnamed": "unnamed",
     "unsaved-data": "unsaved data",
-    "field-reference": "like"
+    "field-reference": "like",
+    "not-supported-by-charge": "not supported by charge"
   },
   "button": {
     "add": "Add",

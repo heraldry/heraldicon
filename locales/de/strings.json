@@ -655,7 +655,8 @@
     "top": "oben",
     "unnamed": "unbenannt",
     "unsaved-data": "ungespeicherte Daten",
-    "field-reference": "wie"
+    "field-reference": "wie",
+    "not-supported-by-charge": "nicht von der Wappenfigur unterstützt"
   },
   "button": {
     "add": "Hinzufügen",

@@ -94,7 +94,7 @@
              [:label [tr label]])
            [:div.option
             (if (empty? supported-tinctures)
-              [:span.disabled "not supported by charge"]
+              [:span.disabled [tr :string.miscellaneous/not-supported-by-charge]]
               [submenu/submenu context label [tr link-name] {:style {:width "22em"}
                                                              :class "submenu-tincture-modifiers"}
                [:div.placeholders
