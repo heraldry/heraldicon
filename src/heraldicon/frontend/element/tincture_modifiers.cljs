@@ -2,7 +2,6 @@
   (:require
    [clojure.set :as set]
    [clojure.string :as s]
-   [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.element.core :as element]
@@ -79,8 +78,9 @@
                                          pos?)) (conj :highlight)))
             tinctures-title (if (-> tinctures-set count pos?)
                               (->> tinctures-set
-                                   (map blazonry/translate)
+                                   (keep attributes/tincture-modifier-map)
                                    (string/combine ", ")
+                                   tr
                                    s/lower-case
                                    string/upper-case-first)
                               :string.charge.tincture-modifier/none)
@@ -113,5 +113,5 @@
                               :default-option {:type :option.type/choice
                                                :choices tincture/choices
                                                :default :none
-                                               :ui/label (blazonry/translate-cap-first t)}]))
+                                               :ui/label (attributes/tincture-modifier-map t)}]))
                       sorted-supported-tinctures)]])]])))))
