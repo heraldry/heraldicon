@@ -55,16 +55,15 @@
                   :title :string.button/add
                   :menu add-menu}])
      :nodes (->> (range num-components)
-                 reverse
                  (map (fn [idx]
                         (let [component-context (c/++ components-context idx)
                               removable? @(rf/subscribe [::component.element/removable? component-context])]
                           {:context component-context
-                           :buttons (cond-> [{:icon "fas fa-chevron-down"
+                           :buttons (cond-> [{:icon "fas fa-chevron-up"
                                               :disabled? (zero? idx)
                                               :title :string.tooltip/move-down
                                               :handler #(rf/dispatch [::component.element/move component-context (dec idx)])}
-                                             {:icon "fas fa-chevron-up"
+                                             {:icon "fas fa-chevron-down"
                                               :disabled? (= idx (dec num-components))
                                               :title :string.tooltip/move-up
                                               :handler #(rf/dispatch [::component.element/move component-context (inc idx)])}]

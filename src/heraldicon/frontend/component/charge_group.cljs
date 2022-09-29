@@ -327,15 +327,14 @@
                 :menu [{:title :string.entity/charge
                         :handler #(rf/dispatch [::component.element/add charges-context default/charge])}]}]
      :nodes (concat (->> (range num-charges)
-                         reverse
                          (map (fn [idx]
                                 (let [charge-context (c/++ charges-context idx)]
                                   {:context charge-context
-                                   :buttons [{:icon "fas fa-chevron-down"
+                                   :buttons [{:icon "fas fa-chevron-up"
                                               :disabled? (zero? idx)
                                               :title :string.tooltip/move-down
                                               :handler #(rf/dispatch [::move-charge-down charge-context])}
-                                             {:icon "fas fa-chevron-up"
+                                             {:icon "fas fa-chevron-down"
                                               :disabled? (= idx (dec num-charges))
                                               :title :string.tooltip/move-up
                                               :handler #(rf/dispatch [::move-charge-up charge-context])}
