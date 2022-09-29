@@ -44,16 +44,15 @@
                         :handler #(rf/dispatch [::component.element/add elements-context default/ornament-charge-group
                                                 shield-separator/add-element-options])}]}]
      :nodes (->> (range num-elements)
-                 reverse
                  (map (fn [idx]
                         (let [ornament-context (c/++ elements-context idx)
                               removable? @(rf/subscribe [::component.element/removable? ornament-context])]
                           {:context ornament-context
-                           :buttons (cond-> [{:icon "fas fa-chevron-down"
+                           :buttons (cond-> [{:icon "fas fa-chevron-up"
                                               :disabled? (zero? idx)
                                               :title :string.tooltip/move-down
                                               :handler #(rf/dispatch [::component.element/move ornament-context (dec idx)])}
-                                             {:icon "fas fa-chevron-up"
+                                             {:icon "fas fa-chevron-down"
                                               :disabled? (= idx (dec num-elements))
                                               :title :string.tooltip/move-up
                                               :handler #(rf/dispatch [::component.element/move ornament-context (inc idx)])}]
