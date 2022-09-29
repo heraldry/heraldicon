@@ -53,9 +53,9 @@
      :default-size (size ordinary-type num-ordinaries)
      :default-spacing (spacing ordinary-type num-ordinaries)}))
 
-(defn set-spacing-bottom [{:keys [context]
+(defn set-spacing-top [{:keys [context]
                            :as ordinary}]
-  (assoc ordinary :spacing-bottom (interface/get-sanitized-data (c/++ context :anchor :spacing-bottom))))
+  (assoc ordinary :spacing-top (interface/get-sanitized-data (c/++ context :anchor :spacing-top))))
 
 (defn set-spacing-left [{:keys [context]
                          :as ordinary}]

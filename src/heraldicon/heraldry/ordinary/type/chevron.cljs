@@ -164,12 +164,12 @@
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
                 (and auto-positioned?
-                     (pos? auto-position-index)) (assoc :spacing-bottom {:type :option.type/range
-                                                                         :min -75
-                                                                         :max 75
-                                                                         :default default-spacing
-                                                                         :ui/label :string.option/spacing-bottom
-                                                                         :ui/step 0.1})
+                     (pos? auto-position-index)) (assoc :spacing-top {:type :option.type/range
+                                                                      :min -75
+                                                                      :max 75
+                                                                      :default default-spacing
+                                                                      :ui/label :string.option/spacing-top
+                                                                      :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
@@ -268,7 +268,7 @@
                      :as arrangement}
                     {:keys [size
                             scale
-                            spacing-bottom
+                            spacing-top
                             line
                             opposite-line
                             cottise-height
@@ -276,19 +276,19 @@
                      :as bar}]
   (let [line-height (:effective-height line)
         opposite-line-height (:effective-height opposite-line)
-        new-current-y (cond-> (- current-y
+        new-current-y (cond-> (+ current-y
                                  (* scale
                                     (+ cottise-height
                                        line-height
                                        size
                                        opposite-line-height
                                        opposite-cottise-height)))
-                        (not (zero? current-y)) (- (* scale spacing-bottom)))]
+                        (not (zero? current-y)) (+ (* scale spacing-top)))]
     (-> arrangement
-        (update :chevrons conj (assoc bar :anchor-point (v/Vector. 0 (+ new-current-y
+        (update :chevrons conj (assoc bar :anchor-point (v/Vector. 0 (- new-current-y
                                                                         (* scale
-                                                                           (+ cottise-height
-                                                                              line-height
+                                                                           (+ opposite-cottise-height
+                                                                              opposite-line-height
                                                                               (/ size 2)))))))
         (assoc :current-y new-current-y))))
 
@@ -329,18 +329,18 @@
                                                              :line-length width
                                                              :scale scale-factor!
                                                              :percentage-base percentage-base}
-                                                            auto-arrange/set-spacing-bottom
+                                                            auto-arrange/set-spacing-top
                                                             auto-arrange/set-size
                                                             auto-arrange/set-line-data
                                                             auto-arrange/set-cottise-data
-                                                            (update :spacing-bottom apply-percentage)
+                                                            (update :spacing-top apply-percentage)
                                                             (update :size apply-percentage))))
                                                  (reduce add-chevron {:current-y 0
                                                                       :chevrons []}))
                          offset-x (interface/get-sanitized-data (c/++ context :chevron-group :offset-x))
                          offset-y (interface/get-sanitized-data (c/++ context :chevron-group :offset-y))
                          relevant-height (- max-y min-y)
-                         total-height (- current-y)
+                         total-height current-y
                          half-height (/ total-height 2)
                          weight (min (* (/ total-height (* 0.8 relevant-height))
                                         (/ num-ordinaries
@@ -358,7 +358,6 @@
                                 :as bar}]
                             (let [anchor-point (v/add anchor-point
                                                       (v/Vector. 0 start-y)
-                                                      (v/Vector. 0 total-height)
                                                       (v/Vector. offset-x (- offset-y)))
                                   arm-point (-> (v/Vector. 0 1)
                                                 (v/rotate arm-angle)
