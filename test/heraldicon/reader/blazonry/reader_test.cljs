@@ -84,29 +84,32 @@
      :tincture :or
      :components [{:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}
-                   :thickness 3
-                   :distance 3}
+                           :tincture :sable}}
                   {:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}
-                   :thickness 3
-                   :distance 8}
+                           :tincture :sable}}
                   {:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}
-                   :thickness 3
-                   :distance 13}
+                           :tincture :sable}}
                   {:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}
-                   :thickness 3
-                   :distance 18}
+                           :tincture :sable}}
                   {:type :heraldry.ordinary.type/orle
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}
-                   :thickness 3
-                   :distance 23}]}
+                           :tincture :sable}}]}
+
+    "or three bars azure"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}
+                  {:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}
+                  {:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}]}
 
     "or a fess enhanced gules"
     {:type :heraldry.field.type/plain
