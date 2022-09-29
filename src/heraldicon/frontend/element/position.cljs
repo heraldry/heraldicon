@@ -41,7 +41,7 @@
           [:point
            :alignment
            :angle
-           :spacing-bottom
+           :spacing-top
            :spacing-left
            :offset-x
            :offset-y

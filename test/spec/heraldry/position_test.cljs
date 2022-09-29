@@ -14,7 +14,7 @@
 
     {:offset-y 5}
 
-    {:spacing-bottom -10}
+    {:spacing-top -10}
 
     {:spacing-left 5}
 
@@ -30,7 +30,7 @@
 
     {:offset-y :wrong}
 
-    {:spacing-bottom :wrong}
+    {:spacing-top :wrong}
 
     {:spacing-left :wrong}
 

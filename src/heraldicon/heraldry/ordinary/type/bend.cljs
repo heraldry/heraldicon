@@ -111,12 +111,12 @@
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
                 (and auto-positioned?
-                     (pos? auto-position-index)) (assoc :spacing-bottom {:type :option.type/range
-                                                                         :min -75
-                                                                         :max 75
-                                                                         :default default-spacing
-                                                                         :ui/label :string.option/spacing-bottom
-                                                                         :ui/step 0.1})
+                     (pos? auto-position-index)) (assoc :spacing-top {:type :option.type/range
+                                                                      :min -75
+                                                                      :max 75
+                                                                      :default default-spacing
+                                                                      :ui/label :string.option/spacing-top
+                                                                      :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
@@ -188,7 +188,7 @@
 (defn- add-bend [{:keys [current-y]
                   :as arrangement}
                  {:keys [size
-                         spacing-bottom
+                         spacing-top
                          line
                          opposite-line
                          cottise-height
@@ -196,17 +196,17 @@
                   :as bend}]
   (let [line-height (:effective-height line)
         opposite-line-height (:effective-height opposite-line)
-        new-current-y (cond-> (- current-y
+        new-current-y (cond-> (+ current-y
                                  cottise-height
                                  line-height
                                  size
                                  opposite-line-height
                                  opposite-cottise-height)
-                        (not (zero? current-y)) (- spacing-bottom))]
+                        (not (zero? current-y)) (+ spacing-top))]
     (-> arrangement
-        (update :bends conj (assoc bend :anchor-point (v/Vector. 0 (+ new-current-y
-                                                                      cottise-height
-                                                                      line-height
+        (update :bends conj (assoc bend :anchor-point (v/Vector. 0 (- new-current-y
+                                                                      opposite-cottise-height
+                                                                      opposite-line-height
                                                                       (/ size 2)))))
         (assoc :current-y new-current-y))))
 
@@ -256,20 +256,19 @@
                                                        :line-length line-length
                                                        :bend-angle bend-angle
                                                        :percentage-base percentage-base}
-                                                      auto-arrange/set-spacing-bottom
+                                                      auto-arrange/set-spacing-top
                                                       auto-arrange/set-size
                                                       auto-arrange/set-line-data
                                                       auto-arrange/set-cottise-data
-                                                      (update :spacing-bottom apply-percentage)
+                                                      (update :spacing-top apply-percentage)
                                                       (update :size apply-percentage))))
                                            (reduce add-bend {:current-y 0
                                                              :bends []}))
                       offset-y (interface/get-sanitized-data (c/++ bend-group-context :offset-y))
-                      total-height (- current-y)
-                      half-height (/ total-height 2)
+                      half-height (/ current-y 2)
                       start-y (- half-height)]
                   (map (fn [bend]
-                         (update bend :anchor-point v/add (v/Vector. 0 (- start-y current-y offset-y))))
+                         (update bend :anchor-point v/add (v/Vector. 0 (- start-y offset-y))))
                        bends)))]
     {:arrangement-data (into {}
                              (map (fn [{:keys [context]

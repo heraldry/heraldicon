@@ -54,12 +54,12 @@
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
                 (and auto-positioned?
-                     (pos? auto-position-index)) (assoc :spacing-bottom {:type :option.type/range
-                                                                         :min -75
-                                                                         :max 75
-                                                                         :default default-spacing
-                                                                         :ui/label :string.option/spacing-bottom
-                                                                         :ui/step 0.1})
+                     (pos? auto-position-index)) (assoc :spacing-top {:type :option.type/range
+                                                                      :min -75
+                                                                      :max 75
+                                                                      :default default-spacing
+                                                                      :ui/label :string.option/spacing-top
+                                                                      :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
@@ -91,7 +91,7 @@
 (defn- add-bar [{:keys [current-y]
                  :as arrangement}
                 {:keys [size
-                        spacing-bottom
+                        spacing-top
                         line
                         opposite-line
                         cottise-height
@@ -99,17 +99,17 @@
                  :as bar}]
   (let [line-height (:effective-height line)
         opposite-line-height (:effective-height opposite-line)
-        new-current-y (cond-> (- current-y
+        new-current-y (cond-> (+ current-y
                                  cottise-height
                                  line-height
                                  size
                                  opposite-line-height
                                  opposite-cottise-height)
-                        (not (zero? current-y)) (- spacing-bottom))]
+                        (not (zero? current-y)) (+ spacing-top))]
     (-> arrangement
-        (update :bars conj (assoc bar :y (+ new-current-y
-                                            cottise-height
-                                            line-height
+        (update :bars conj (assoc bar :y (- new-current-y
+                                            opposite-cottise-height
+                                            opposite-line-height
                                             (/ size 2))))
         (assoc :current-y new-current-y))))
 
@@ -134,16 +134,16 @@
                                                      :start-x start-x
                                                      :line-length width
                                                      :percentage-base percentage-base}
-                                                    auto-arrange/set-spacing-bottom
+                                                    auto-arrange/set-spacing-top
                                                     auto-arrange/set-size
                                                     auto-arrange/set-line-data
                                                     auto-arrange/set-cottise-data
-                                                    (update :spacing-bottom apply-percentage)
+                                                    (update :spacing-top apply-percentage)
                                                     (update :size apply-percentage))))
                                          (reduce add-bar {:current-y 0
                                                           :bars []}))
                      offset-y (interface/get-sanitized-data (c/++ context :fess-group :offset-y))
-                     total-height (- current-y)
+                     total-height current-y
                      half-height (/ total-height 2)
                      weight (min (* (/ total-height (* 0.66666 height))
                                     (/ num-ordinaries
@@ -159,7 +159,7 @@
                                    (min (- max-y default-spacing total-height))))]
                  (map (fn [bar]
                         (-> bar
-                            (update :y - current-y offset-y)
+                            (update :y - offset-y)
                             (update :y + start-y)))
                       bars)))]
     {:arrangement-data (into {}
