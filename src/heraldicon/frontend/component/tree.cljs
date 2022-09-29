@@ -150,6 +150,8 @@
        (take-last 1 path))
       (#{[:coat-of-arms :field]}
        (take-last 2 path))
+      (#{[:coat-of-arms :field :components]}
+       (butlast (take-last 4 path)))
       (#{;; TODO: path shouldn't be hard-coded
          [:heraldicon.entity/collection :data :data]}
        (take-last 3 path))
