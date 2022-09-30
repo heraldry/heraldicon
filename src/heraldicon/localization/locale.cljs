@@ -5,6 +5,7 @@
   {:en (load-locale "en/strings.json")
    :de (load-locale "de/strings.json")
    :fr (load-locale "fr/strings.json")
+   :it (load-locale "it/strings.json")
    :pt (load-locale "pt-PT/strings.json")
    :ru (load-locale "ru/strings.json")
    :uk (load-locale "uk/strings.json")})
@@ -19,5 +20,6 @@
   {:en :string.language/english
    :fr :string.language/french
    :de :string.language/german
+   :it :string.language/italian
    :ru :string.language/russian
    :uk :string.language/ukrainian})
