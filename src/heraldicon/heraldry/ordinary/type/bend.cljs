@@ -214,11 +214,11 @@
   (let [{:keys [height width points]
          :as environment} (interface/get-environment context)
         sinister? (= real-ordinary-type :heraldry.ordinary.type/bend-sinister)
-        {:keys [top-left top-right]} points
-        corner-point (if sinister?
-                       top-right
-                       top-left)
-        anchor {:point corner-point}
+        corner-point-keyword (if sinister?
+                               :top-right
+                               :top-left)
+        anchor {:point corner-point-keyword}
+        corner-point (get points corner-point-keyword)
         bend-group-context (c/++ context (if sinister?
                                            :bend-sinister-group
                                            :bend-group))
