@@ -67,12 +67,6 @@
                         :default 1
                         :ui/label :string.option/stretch-y
                         :ui/step 0.01}
-            :rotation {:type :option.type/range
-                       :min -90
-                       :max 90
-                       :default 0
-                       :ui/label :string.option/rotation
-                       :ui/step 0.01}
             :ui/label :string.option/layout
             :ui/element :ui.element/field-layout}})
 
