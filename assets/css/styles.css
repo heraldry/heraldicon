@@ -527,7 +527,7 @@ label div {
   z-index: 3;
   border: 1px solid #ddd;
   border-top: 0;
-  width: 100%;
+  min-width: 100%;
   background: #fff;
 }
 
@@ -1156,7 +1156,6 @@ li.ui-menu-header {
 .auto-complete-box .auto-complete-suggestion:hover .hint {
   color: #ff0;
 }
-
 
 .DraftEditor-root,
 .DraftEditor-editorContainer,
