@@ -13,14 +13,6 @@
     "logout": "Esci",
     "register": "Registrati"
   },
-  "language": {
-    "english": "Inglese",
-    "french": "Francese",
-    "german": "Tedesco",
-    "italian": "Italiano",
-    "russian": "Russo",
-    "ukrainian": "Ucraino"
-  },
   "ordinary": {
     "type": {
       "base": "Campagna",

@@ -13,13 +13,6 @@
     "logout": "Вийти",
     "register": "Реєстрація"
   },
-  "language": {
-    "english": "Англійська",
-    "french": "Французька",
-    "german": "Німецька",
-    "russian": "Російська",
-    "ukrainian": "Українська"
-  },
   "ordinary": {
     "type": {
       "base": "Основа",

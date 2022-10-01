@@ -13,12 +13,6 @@
     "logout": "Выйти",
     "register": "Зарегистрироваться"
   },
-  "language": {
-    "english": "Английский",
-    "german": "Немецкий",
-    "russian": "Русский",
-    "ukrainian": "Ukrainian"
-  },
   "ordinary": {
     "type": {
       "base": "Основание",

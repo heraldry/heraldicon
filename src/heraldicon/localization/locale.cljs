@@ -17,9 +17,9 @@
         JSON-DICT))
 
 (def all
-  {:en :string.language/english
-   :fr :string.language/french
-   :de :string.language/german
-   :it :string.language/italian
-   :ru :string.language/russian
-   :uk :string.language/ukrainian})
+  {:en "English"
+   :fr "Français"
+   :de "Deutsch"
+   :it "Italiano"
+   :ru "Русский"
+   :uk "Українська"})
