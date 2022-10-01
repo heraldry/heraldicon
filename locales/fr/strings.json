@@ -13,12 +13,6 @@
     "logout": "Déconnexion",
     "register": "Inscription"
   },
-  "language": {
-    "english": "Anglais",
-    "german": "Allemand",
-    "russian": "Russe",
-    "ukrainian": "Ukrainien"
-  },
   "ordinary": {
     "type": {
       "base": "Champagne",
