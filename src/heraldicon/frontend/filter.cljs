@@ -16,6 +16,7 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.user.session :as session]
+   [heraldicon.localization.string :as string]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
@@ -167,7 +168,8 @@
                 [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))])])
       [(if item
          :a.filter-result-card-preview
-         :div.filter-result-card-preview) (merge {:title title}
+         :div.filter-result-card-preview) (merge {:title (tr (string/str-tr
+                                                              title " " :string.miscellaneous/by " " username))}
                                                  (when on-select
                                                    (on-select item)))
        (if item
