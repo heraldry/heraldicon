@@ -780,6 +780,10 @@ label div {
   vertical-align: top;
 }
 
+.ui-setting input:disabled + label {
+  color: #ccc;
+}
+
 .submenu-field-layout label,
 .submenu-semy-layout label,
 .submenu-tincture-modifiers label,
