@@ -14,6 +14,7 @@
     (let [component-id (uid/generate "checkbox")
           {:keys [inherited default]
            :ui/keys [label tooltip]} option
+          disabled? (or (:ui/disabled? option) disabled?)
           current-value (interface/get-raw-data context)
           checked? (->> [current-value
                          inherited
