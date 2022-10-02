@@ -2,7 +2,8 @@
   font-family: "SiteDefault";
   font-style: normal;
   font-weight: 425;
-  src: url("../font/montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
+  src: url("../font/montserrat/Montserrat-VariableFont_wght.ttf")
+    format("truetype");
 }
 
 @font-face {
@@ -1205,7 +1206,8 @@ ul.parser-warnings li {
   text-decoration: underline;
 }
 
-.new-badge, .updated-badge {
+.new-badge,
+.updated-badge {
   position: absolute;
   top: 10px;
   left: 10px;
