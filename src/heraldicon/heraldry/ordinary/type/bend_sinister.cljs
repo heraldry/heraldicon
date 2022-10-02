@@ -105,11 +105,11 @@
                        :ui/element :ui.element/position}
                 (and auto-positioned?
                      (pos? auto-position-index)) (assoc :spacing-top {:type :option.type/range
-                                                                         :min -75
-                                                                         :max 75
-                                                                         :default default-spacing
-                                                                         :ui/label :string.option/spacing-top
-                                                                         :ui/step 0.1})
+                                                                      :min -75
+                                                                      :max 75
+                                                                      :default default-spacing
+                                                                      :ui/label :string.option/spacing-top
+                                                                      :ui/step 0.1})
                 (not auto-positioned?) (assoc :alignment {:type :option.type/choice
                                                           :choices position/alignment-choices
                                                           :default :middle
