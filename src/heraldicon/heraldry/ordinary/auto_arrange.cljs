@@ -54,7 +54,7 @@
      :default-spacing (spacing ordinary-type num-ordinaries)}))
 
 (defn set-spacing-top [{:keys [context]
-                           :as ordinary}]
+                        :as ordinary}]
   (assoc ordinary :spacing-top (interface/get-sanitized-data (c/++ context :anchor :spacing-top))))
 
 (defn set-spacing-left [{:keys [context]

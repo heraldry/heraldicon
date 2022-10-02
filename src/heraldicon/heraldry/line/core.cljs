@@ -230,18 +230,18 @@
                :ui/label :string.option/base-line
                :ui/element :ui.element/radio-select}
    :corner-damping-radius {:type :option.type/range
-                             :min 0
-                             :max 50
-                             :default 0
-                             :ui/label :string.option/damping-radius
-                             :ui/tooltip :string.tooltip/damping-radius
-                             :ui/step 0.01}
-   :corner-damping-mode {:type :option.type/choice
-                           :choices corner-damping-mode-choices
-                           :default :clamp-to-zero
-                           :ui/label :string.option/damping-mode
-                           :ui/tooltip :string.tooltip/damping-mode
+                           :min 0
+                           :max 50
+                           :default 0
+                           :ui/label :string.option/damping-radius
+                           :ui/tooltip :string.tooltip/damping-radius
                            :ui/step 0.01}
+   :corner-damping-mode {:type :option.type/choice
+                         :choices corner-damping-mode-choices
+                         :default :clamp-to-zero
+                         :ui/label :string.option/damping-mode
+                         :ui/tooltip :string.tooltip/damping-mode
+                         :ui/step 0.01}
    :mirrored? {:type :option.type/boolean
                :default false
                :ui/label :string.option/mirrored?}
@@ -444,9 +444,9 @@
             fimbriation? (assoc :fimbriation (fimbriation/options (c/++ context :fimbriation)
                                                                   :inherited-options (:fimbriation inherited-options)))
             corner-damping? (merge (options/pick default-options
-                                                   [[:corner-damping-radius]
-                                                    [:corner-damping-mode]]
-                                                   {})))
+                                                 [[:corner-damping-radius]
+                                                  [:corner-damping-mode]]
+                                                 {})))
           (assoc :ui/label (case kind
                              :opposite-line :string.entity/opposite-line
                              :extra-line :string.entity/extra-line
@@ -727,14 +727,14 @@
   (let [process-fn (case damping-mode
                      :clamp-to-zero (constantly 0)
                      :linear-damping (fn [y dist]
-                                         (-> dist
-                                             (/ damping-radius)
-                                             (* y)))
+                                       (-> dist
+                                           (/ damping-radius)
+                                           (* y)))
                      :square-root-damping (fn [y dist]
-                                              (-> dist
-                                                  (/ damping-radius)
-                                                  Math/sqrt
-                                                  (* y))))]
+                                            (-> dist
+                                                (/ damping-radius)
+                                                Math/sqrt
+                                                (* y))))]
     (if (zero? damping-radius)
       y
       (if-let [dist (->> corners
