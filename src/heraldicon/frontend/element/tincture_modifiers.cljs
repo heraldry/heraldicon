@@ -78,7 +78,9 @@
                                          pos?)) (conj :highlight)))
             tinctures-title (if (-> tinctures-set count pos?)
                               (->> tinctures-set
-                                   (keep attributes/tincture-modifier-map)
+                                   (keep (some-fn {:shadow :string.option/shadow
+                                                   :highlight :string.option/highlight}
+                                                  attributes/tincture-modifier-for-charge-map))
                                    (string/combine ", ")
                                    tr
                                    s/lower-case
