@@ -22,7 +22,7 @@
                                 (when-not (nil? v)
                                   v)))
                         first)]
-      [:div.ui-setting {:style style}
+      [:div.ui-setting {:style (assoc style :white-space "nowrap")}
        [:input {:type "checkbox"
                 :id component-id
                 :checked (or checked? false)
@@ -31,7 +31,8 @@
                               (if on-change
                                 (on-change new-checked?)
                                 (rf/dispatch [:set context new-checked?])))}]
-       [:label.for-checkbox {:for component-id} [tr label]]
+       [:label.for-checkbox {:for component-id
+                             :style {:white-space "normal"}} [tr label]]
        [tooltip/info tooltip]
        [value-mode-select/value-mode-select context :disabled? disabled?]])))
 
