@@ -74,10 +74,13 @@
                                   distance
                                   (clj->js {:join join
                                             :insert false})))
-        ;; there might be multiple closed paths in the result, find the longest string,
+        ;; there might be multiple closed paths in the result, find the one with the largest area
         ;; and assume that's the one we want
         sub-paths (s/split path #"[zZ]")
-        longest (first (sort-by count > sub-paths))]
+        longest (first (sort-by (fn [path]
+                                  (-> (new Path (str path "z"))
+                                      .-area
+                                      Math/abs)) > sub-paths))]
     (new Path (str longest "z"))))
 
 (def ^:private shrink-step
