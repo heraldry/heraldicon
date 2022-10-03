@@ -44,7 +44,8 @@
 (defn- form [context]
   (element/elements
    context
-   [:type
+   [:ignore-ordinary-impact?
+    :type
     :origin
     :anchor
     :orientation
