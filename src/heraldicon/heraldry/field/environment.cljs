@@ -98,7 +98,7 @@
        (if (<= (Math/abs (.-area outline-left))
                (Math/abs (.-area original-path)))
          (.-pathData outline-left)
-         (.-pathData (apply-offset shape (- distance) join)))))))
+         (.-pathData (apply-offset shape distance join)))))))
 
 (defn shrink-shape [shape distance join]
   (let [max-step 5
