@@ -25,13 +25,14 @@
          ;; the fess point calculated like this isn't even included in the field
          ;; update: for now only the root environment gets the "smart" fess point, the others
          ;; just get the middle, even if that'll break saltire-like divisions
+         center (v/avg top-left bottom-right)
+         fess-at-45-deg (v/Vector. (:x top) (+ min-y (/ (- max-x min-x) 2)))
          fess (or (:fess points)
-                  (if root?
-                    (v/Vector. (:x top) (+ min-y (/ (- max-x min-x) 2)))
-                    (v/avg top-left bottom-right)))
+                  (if (and root?
+                           (< (:y fess-at-45-deg) (:y center)))
+                    fess-at-45-deg
+                    center))
          left (v/Vector. min-x (:y fess))
-         center (v/Vector. (/ (+ min-x max-x) 2)
-                           (/ (+ min-y max-y) 2))
          right (v/Vector. max-x (:y fess))
          honour (v/avg top fess)
          nombril (v/avg honour bottom)
@@ -44,6 +45,7 @@
          fly (v/Vector. (max (- max-x (/ (- max-y min-y) 2))
                              (:x center)) (:y center))]
      {:bounding-box bounding-box
+      :root? root?
       :width width
       :height height
       :points {:top-left top-left
