@@ -175,11 +175,13 @@
      #(let [context (resolve-context context)]
         (environment context (get-properties context))))))
 
+(defn get-effective-parent-context [context]
+  (cond-> (parent context)
+    (cottise-context? context) parent))
+
 (defn get-parent-environment [context]
   (or (c/get-key context :parent-environment-override)
-      (if (cottise-context? context)
-        @(rf/subscribe [::environment (c/scrub-render-hints (parent (parent context)))])
-        @(rf/subscribe [::environment (c/scrub-render-hints (parent context))]))))
+      @(rf/subscribe [::environment (c/scrub-render-hints (get-effective-parent-context context))])))
 
 (defn get-environment [context]
   @(rf/subscribe [::environment (c/scrub-render-hints context)]))
@@ -226,9 +228,7 @@
 
 (defn get-exact-parent-shape [context]
   (or (c/get-key context :parent-shape)
-      (if (cottise-context? context)
-        @(rf/subscribe [::exact-shape (c/scrub-render-hints (parent (parent context)))])
-        @(rf/subscribe [::exact-shape (c/scrub-render-hints (parent context))]))))
+      @(rf/subscribe [::exact-shape (c/scrub-render-hints (get-effective-parent-context context))])))
 
 (defn fallback-exact-shape [context]
   (let [shape-path (:shape (get-render-shape context))
@@ -288,20 +288,20 @@
 (defn get-bounding-box [context]
   @(rf/subscribe [::bounding-box (c/scrub-render-hints context)]))
 
+(defn- get-effective-parent-environment-context [context]
+  (cond-> context
+    (get-sanitized-data (c/++ context :inherit-environment?)) parent))
+
 (defn get-effective-parent-environment [context]
-  (if (get-sanitized-data (c/++ context :inherit-environment?))
-    (get-parent-environment (parent context))
-    (get-parent-environment context)))
+  (-> context
+      get-effective-parent-environment-context
+      get-parent-environment))
 
 (defn get-effective-parent-shape [context]
-  (if (get-sanitized-data (c/++ context :inherit-environment?))
-    (get-exact-shape (parent (parent context)))
-    (get-exact-shape (parent context))))
-
-(defn get-counterchange-parent [context]
-  (if (cottise-context? context)
-    (parent (parent context))
-    (parent context)))
+  (-> context
+      get-effective-parent-environment-context
+      parent
+      get-exact-shape))
 
 (defmulti auto-ordinary-info (fn [ordinary-type _context]
                                ordinary-type))
