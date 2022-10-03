@@ -245,7 +245,10 @@
                                    (interface/get-raw-data (c/++ context :bend-group :orientation :point))
                                    orientation-point-option)]
     (when auto-positioned?
-      {:orientation (cond-> {:point orientation-point-option
+      {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+       :orientation (cond-> {:point orientation-point-option
                              :ui/label :string.option/orientation
                              :ui/element :ui.element/position}
 
@@ -312,7 +315,10 @@
                                    (interface/get-raw-data (c/++ context :bend-sinister-group :orientation :point))
                                    orientation-point-option)]
     (when auto-positioned?
-      {:orientation (cond-> {:point orientation-point-option
+      {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+       :orientation (cond-> {:point orientation-point-option
                              :ui/label :string.option/orientation
                              :ui/element :ui.element/position}
 

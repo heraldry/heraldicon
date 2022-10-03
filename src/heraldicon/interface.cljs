@@ -3,7 +3,9 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.default :as default]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.field.environment :as field.environment]
+   [heraldicon.math.bounding-box :as bb]
    [heraldicon.options :as options]
    [heraldicon.render.options :as render.options]
    [re-frame.core :as rf]
@@ -230,14 +232,64 @@
   (or (c/get-key context :parent-shape)
       @(rf/subscribe [::exact-shape (c/scrub-render-hints (get-effective-parent-context context))])))
 
-(defn fallback-exact-shape [context]
+(rf/reg-sub-raw ::exact-impacted-shape
+  (fn [_app-db [_ context type-pred]]
+    (reaction-or-cache
+     [::exact-impacted-shape type-pred]
+     context
+     (fn []
+       (let [context (resolve-context context)
+             ;; TODO: sort out parent-shape, here's not the right place probably
+             shape (or (c/get-key context :parent-shape)
+                       (exact-shape context (get-properties context)))
+             own-index (-> context :path last)
+             components-context (c/++ context :components)
+             num-components (get-list-size components-context)
+             impactful-ordinary-contexts (into []
+                                               (comp
+                                                (filter #(not= % own-index))
+                                                (map #(c/++ components-context %))
+                                                (filter #(type-pred (get-raw-data (c/++ % :type)))))
+                                               (range num-components))
+             component-properties (map (fn [context]
+                                         [context (get-properties context)])
+                                       impactful-ordinary-contexts)
+             chief-context (->> component-properties
+                                (filter (comp #{:heraldry.ordinary.type/chief} :type second))
+                                (sort-by (comp :y first :lower second) >)
+                                first
+                                first)
+             chief-shape (some-> chief-context
+                                 get-render-shape
+                                 :shape
+                                 first)
+             base-context (->> component-properties
+                               (filter (comp #{:heraldry.ordinary.type/base} :type second))
+                               (sort-by (comp :y first :upper second) <)
+                               first
+                               first)
+             base-shape (some-> base-context
+                                get-render-shape
+                                :shape
+                                first)]
+         (cond-> shape
+           chief-shape (environment/subtract-shape chief-shape)
+           base-shape (environment/subtract-shape base-shape)))))))
+
+(defn get-exact-impacted-shape [context type-pred]
+  @(rf/subscribe [::exact-impacted-shape (c/scrub-render-hints context) type-pred]))
+
+(defn get-exact-impacted-parent-shape [context type-pred]
+  (get-exact-impacted-shape (get-effective-parent-context context) type-pred))
+
+(defn fallback-exact-shape [context & {:keys [type-pred]}]
   (let [shape-path (:shape (get-render-shape context))
         shape-path (if (vector? shape-path)
                      (first shape-path)
                      shape-path)]
     (field.environment/intersect-shapes
      shape-path
-     (get-exact-shape (parent context)))))
+     (get-exact-impacted-shape (parent context) type-pred))))
 
 (defmethod exact-shape nil [context _properties]
   (fallback-exact-shape context))
@@ -302,6 +354,57 @@
       get-effective-parent-environment-context
       parent
       get-exact-shape))
+
+(rf/reg-sub-raw ::impacted-environment
+  (fn [_app-db [_ context type-pred]]
+    (reaction-or-cache
+     [::impacted-environment type-pred]
+     context
+     (fn []
+       (let [{:keys [bounding-box
+                     root?]
+              :as environment} (get-environment context)
+             own-index (-> context :path last)
+             components-context (c/++ context :components)
+             num-components (get-list-size components-context)
+             impactful-ordinary-contexts (into []
+                                               (comp
+                                                (filter #(not= % own-index))
+                                                (map #(c/++ components-context %))
+                                                (filter #(type-pred (get-raw-data (c/++ % :type)))))
+                                               (range num-components))
+             component-properties (map get-properties impactful-ordinary-contexts)
+             chief-impact (->> component-properties
+                               (filter (comp #{:heraldry.ordinary.type/chief} :type))
+                               (map (comp :y first :lower))
+                               (apply max))
+             base-impact (->> component-properties
+                              (filter (comp #{:heraldry.ordinary.type/base} :type))
+                              (map (comp :y first :upper))
+                              (apply min))
+             new-bounding-box (cond-> bounding-box
+                                chief-impact (bb/shrink-top chief-impact :min-height 5)
+                                base-impact (bb/shrink-bottom base-impact :min-height 5))]
+         (if (= new-bounding-box bounding-box)
+           environment
+           (environment/create new-bounding-box nil :root? root?)))))))
+
+(defn get-impacted-environment [context type-pred]
+  @(rf/subscribe [::impacted-environment (c/scrub-render-hints context) type-pred]))
+
+(rf/reg-sub-raw ::impacted-parent-environment
+  (fn [_app-db [_ context type-pred]]
+    (reaction-or-cache
+     [::impacted-parent-environment type-pred]
+     context
+     (fn []
+       (-> context
+           get-effective-parent-environment-context
+           get-effective-parent-context
+           (get-impacted-environment type-pred))))))
+
+(defn get-impacted-parent-environment [context type-pred]
+  @(rf/subscribe [::impacted-parent-environment (c/scrub-render-hints context) type-pred]))
 
 (defmulti auto-ordinary-info (fn [ordinary-type _context]
                                ordinary-type))

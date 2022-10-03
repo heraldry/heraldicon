@@ -121,3 +121,23 @@
 
 (defn top-left ^v/Vector [^BoundingBox {:keys [min-x min-y]}]
   (v/Vector. min-x min-y))
+
+(defn shrink-top [^BoundingBox {:keys [min-y
+                                       max-y]
+                                :as bounding-box}
+                  new-min-y
+                  & {:keys [min-height]}]
+  (let [new-min-y (-> new-min-y
+                      (min (- max-y min-height))
+                      (max min-y))]
+    (assoc bounding-box :min-y new-min-y)))
+
+(defn shrink-bottom [^BoundingBox {:keys [min-y
+                                          max-y]
+                                   :as bounding-box}
+                     new-max-y
+                     & {:keys [min-height]}]
+  (let [new-max-y (-> new-max-y
+                      (max (+ min-y min-height))
+                      (min max-y))]
+    (assoc bounding-box :max-y new-max-y)))

@@ -435,6 +435,7 @@
     "highlight": "Highlight",
     "humetty": "Humetty / Couped",
     "ignore-layer-separator?": "Ignore layer separator",
+    "ignore-ordinary-impact?": "Ignore ordinary impact on the field, e.g. chief or base",
     "inherit-environment?": "Inherit environment (e.g. for dimidiation)",
     "is-public": "Make public",
     "landscape?": "Landscape",

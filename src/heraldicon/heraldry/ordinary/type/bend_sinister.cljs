@@ -20,6 +20,7 @@
         auto-positioned? auto-position-index
         default-size (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :default-size))
         default-spacing (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :default-spacing))
+        default-ignore-ordinary-impact? (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :ignore-ordinary-impact?))
         line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside)
                        (cond->
@@ -100,7 +101,15 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor (cond-> {:point anchor-point-option
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default (if auto-positioned?
+                                           default-ignore-ordinary-impact?
+                                           false)
+                                :ui/override (when auto-positioned?
+                                               default-ignore-ordinary-impact?)
+                                :ui/disabled? (boolean auto-positioned?)
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor (cond-> {:point anchor-point-option
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
                 (and auto-positioned?

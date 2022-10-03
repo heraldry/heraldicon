@@ -30,6 +30,7 @@
         auto-positioned? auto-position-index
         default-size (interface/get-sanitized-data (c/++ parent-context :bend-group :default-size))
         default-spacing (interface/get-sanitized-data (c/++ parent-context :bend-group :default-spacing))
+        default-ignore-ordinary-impact? (interface/get-sanitized-data (c/++ parent-context :bend-group :ignore-ordinary-impact?))
         line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside)
                        (cond->
@@ -107,7 +108,15 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor (cond-> {:point anchor-point-option
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default (if auto-positioned?
+                                           default-ignore-ordinary-impact?
+                                           false)
+                                :ui/override (when auto-positioned?
+                                               default-ignore-ordinary-impact?)
+                                :ui/disabled? (boolean auto-positioned?)
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor (cond-> {:point anchor-point-option
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}
                 (and auto-positioned?
@@ -210,18 +219,26 @@
                                                                       (/ size 2)))))
         (assoc :current-y new-current-y))))
 
+(defn- impact-ordinary-type-pred [context]
+  (let [ignore-ordinary-impact? (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))]
+    (if ignore-ordinary-impact?
+      #{}
+      #{:heraldry.ordinary.type/chief
+        :heraldry.ordinary.type/base})))
+
 (defmethod interface/auto-arrangement ordinary-type [real-ordinary-type context]
-  (let [{:keys [height width points]
-         :as environment} (interface/get-environment context)
-        sinister? (= real-ordinary-type :heraldry.ordinary.type/bend-sinister)
+  (let [sinister? (= real-ordinary-type :heraldry.ordinary.type/bend-sinister)
+        bend-group-context (c/++ context (if sinister?
+                                           :bend-sinister-group
+                                           :bend-group))
+        {:keys [height width points]
+         :as environment} (interface/get-impacted-environment
+                           context (impact-ordinary-type-pred bend-group-context))
         corner-point-keyword (if sinister?
                                :top-right
                                :top-left)
         anchor {:point corner-point-keyword}
         corner-point (get points corner-point-keyword)
-        bend-group-context (c/++ context (if sinister?
-                                           :bend-sinister-group
-                                           :bend-group))
         orientation (interface/get-sanitized-data (c/++ bend-group-context :orientation))
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
@@ -279,7 +296,8 @@
 
 (defn- calculate-bend-data [context]
   (let [{:keys [width height]
-         :as parent-environment} (interface/get-parent-environment context)
+         :as parent-environment} (interface/get-impacted-parent-environment
+                                  context (impact-ordinary-type-pred context))
         percentage-base (min width height)
         apply-percentage (partial math/percent-of percentage-base)
         real-ordinary-type (interface/get-raw-data (c/++ context :type))
@@ -384,7 +402,9 @@
                 start-x
                 end-x]} (get arrangement-data (:path context))]
     (when size
-      (let [{:keys [width height points]} (interface/get-parent-environment context)
+      (let [{:keys [width height points]} (interface/get-impacted-parent-environment
+                                           context (impact-ordinary-type-pred context))
+
             {:keys [top-left top-right]} points
             percentage-base (min width height)
             sinister? (= real-ordinary-type
@@ -486,7 +506,8 @@
                                                           [upper-left upper-right] :upper
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-impacted-parent-environment
+                                context (impact-ordinary-type-pred context))
         line-upper (line/create-with-extension context
                                                line
                                                upper-left upper-right
@@ -509,13 +530,13 @@
      properties)))
 
 (defmethod interface/exact-shape ordinary-type [context {:keys [reverse-transform-fn]}]
-  (let [exact-shape (interface/fallback-exact-shape context)]
-    (if reverse-transform-fn
-      (-> exact-shape
-          path/parse-path
-          reverse-transform-fn
-          path/to-svg)
-      exact-shape)))
+  (let [exact-shape (interface/fallback-exact-shape
+                     context :type-pred (impact-ordinary-type-pred context))]
+    (cond-> exact-shape
+      reverse-transform-fn (->
+                             path/parse-path
+                             reverse-transform-fn
+                             path/to-svg))))
 
 (defmethod cottising/cottise-properties ordinary-type [context
                                                        {:keys [line-length percentage-base direction-orthogonal

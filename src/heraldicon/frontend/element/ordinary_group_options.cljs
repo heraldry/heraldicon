@@ -66,7 +66,8 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/bend-group]]
         (element/elements
          bend-group-context
-         [:orientation
+         [:ignore-ordinary-impact?
+          :orientation
           :default-size
           :default-spacing
           :offset-y])])
@@ -78,7 +79,8 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/bend-sinister-group]]
         (element/elements
          bend-sinister-group-context
-         [:orientation
+         [:ignore-ordinary-impact?
+          :orientation
           :default-size
           :default-spacing
           :offset-y])])]))

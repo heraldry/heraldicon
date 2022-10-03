@@ -125,3 +125,8 @@
   (-> (new Path shape1)
       (.intersect (new Path shape2))
       .-pathData))
+
+(defn subtract-shape [shape1 shape2]
+  (-> (new Path shape1)
+      (.subtract (new Path shape2))
+      .-pathData))
