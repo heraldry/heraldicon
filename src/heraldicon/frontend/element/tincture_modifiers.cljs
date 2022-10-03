@@ -115,5 +115,5 @@
                               :default-option {:type :option.type/choice
                                                :choices tincture/choices
                                                :default :none
-                                               :ui/label (attributes/tincture-modifier-map t)}]))
+                                               :ui/label (attributes/tincture-modifier-for-charge-map t)}]))
                       sorted-supported-tinctures)]])]])))))
