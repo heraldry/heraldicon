@@ -59,9 +59,7 @@
 (defn- process-shape-humetty [{:keys [shape]
                                :as shape-data} context {:keys [humetty]}]
   (if (:humetty? humetty)
-    ;; TODO: need to pass type-pred along
-    (let [parent-shape (interface/get-exact-impacted-parent-shape context #{:heraldry.ordinary.type/chief
-                                                                            :heraldry.ordinary.type/base})
+    (let [parent-shape (interface/get-parent-field-shape context)
           adjusted-shape (humetty/coup shape parent-shape humetty)]
       (assoc shape-data
              :shape adjusted-shape
@@ -71,8 +69,7 @@
 (defn- process-shape-voided [{:keys [shape]
                               :as shape-data} context {:keys [voided]}]
   (if (:voided? voided)
-    (let [parent-shape (interface/get-exact-impacted-parent-shape context #{:heraldry.ordinary.type/chief
-                                                                            :heraldry.ordinary.type/base})
+    (let [parent-shape (interface/get-parent-field-shape context)
           adjusted-shape (voided/void shape parent-shape voided)]
       (-> shape-data
           (assoc :shape adjusted-shape)

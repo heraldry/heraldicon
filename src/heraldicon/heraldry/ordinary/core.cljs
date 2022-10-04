@@ -37,3 +37,15 @@
 (defn title [context]
   (let [ordinary-type (interface/get-raw-data (c/++ context :type))]
     (ordinary.options/ordinary-map ordinary-type)))
+
+(defmethod interface/parent-field-environment :heraldry/ordinary [context]
+  (let [parent-context (interface/parent context)]
+    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
+      (interface/get-environment parent-context)
+      (interface/get-impacted-environment parent-context))))
+
+(defmethod interface/parent-field-shape :heraldry/ordinary [context]
+  (let [parent-context (interface/parent context)]
+    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
+      (interface/get-exact-shape parent-context)
+      (interface/get-exact-impacted-shape parent-context))))

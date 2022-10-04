@@ -184,16 +184,36 @@
       blazon
       (string/str-tr "(" blazon ")"))))
 
+(defn- component-attribute [context get-attribute-fn get-parent-attribute-fn attribute-override-key]
+  (let [inherit-environment? (interface/get-sanitized-data (c/++ context :inherit-environment?))
+        parent-component-context (interface/parent context)]
+    (if inherit-environment?
+      (get-parent-attribute-fn parent-component-context)
+      (or (c/get-key context attribute-override-key)
+          (get-attribute-fn parent-component-context)))))
+
 (defmethod interface/environment :heraldry/field [context _properties]
-  (interface/get-effective-parent-environment context))
+  (component-attribute context
+                       interface/get-environment
+                       ;; this will use the unimpacted parent field for subfields,
+                       ;; which seems to make the most sense for things like bordures
+                       interface/get-parent-field-environment
+                       :parent-environment-override))
 
 (defmethod interface/exact-shape :heraldry/field [context _properties]
-  (let [{:keys [reverse-transform-fn]} (interface/get-properties (interface/parent context))]
-    (cond-> (interface/get-effective-parent-shape context)
+  (let [{:keys [reverse-transform-fn]} (interface/get-properties (interface/parent context))
+        shape (component-attribute context
+                                   interface/get-exact-shape
+                                   interface/get-parent-field-shape
+                                   :parent-shape)]
+    (cond-> shape
       reverse-transform-fn (->
                              path/parse-path
                              reverse-transform-fn
                              path/to-svg))))
 
 (defmethod interface/render-shape :heraldry/field [context _properties]
-  (interface/get-render-shape (interface/parent context)))
+  (component-attribute context
+                       interface/get-render-shape
+                       interface/get-parent-field-shape
+                       :parent-shape))

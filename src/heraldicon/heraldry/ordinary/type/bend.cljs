@@ -219,85 +219,79 @@
                                                                       (/ size 2)))))
         (assoc :current-y new-current-y))))
 
-(defn- impact-ordinary-type-pred [context]
-  (let [ignore-ordinary-impact? (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))]
-    (if ignore-ordinary-impact?
-      #{}
-      #{:heraldry.ordinary.type/chief
-        :heraldry.ordinary.type/base})))
-
 (defmethod interface/auto-arrangement ordinary-type [real-ordinary-type context]
-  (let [sinister? (= real-ordinary-type :heraldry.ordinary.type/bend-sinister)
-        bend-group-context (c/++ context (if sinister?
-                                           :bend-sinister-group
-                                           :bend-group))
-        {:keys [height width points]
-         :as environment} (interface/get-impacted-environment
-                           context (impact-ordinary-type-pred bend-group-context))
-        corner-point-keyword (if sinister?
-                               :top-right
-                               :top-left)
-        anchor {:point corner-point-keyword}
-        corner-point (get points corner-point-keyword)
-        orientation (interface/get-sanitized-data (c/++ bend-group-context :orientation))
-        {anchor-point :real-anchor
-         orientation-point :real-orientation} (position/calculate-anchor-and-orientation
-                                               environment
-                                               anchor
-                                               orientation
-                                               ;; no alignment, so size is not needed
-                                               nil
-                                               nil)
-        bend-angle (angle/normalize (v/angle-to-point anchor-point orientation-point))
-        rotated-shape (-> (interface/get-exact-shape context)
-                          path/parse-path
-                          (path/translate (v/mul corner-point -1))
-                          (path/rotate (- (cond-> bend-angle
-                                            sinister? (+ 90))))
-                          path/to-svg)
-        rotated-bounding-box (bb/from-paths [rotated-shape])
-        start-x 0
-        end-x (:max-x rotated-bounding-box)
-        line-length (- end-x start-x)
-        percentage-base (min width height)
-        apply-percentage (partial math/percent-of percentage-base)
-        {:keys [ordinary-contexts
+  (let [{:keys [ordinary-contexts
                 num-ordinaries]} (interface/get-auto-ordinary-info real-ordinary-type context)
-        bends (when (> num-ordinaries 1)
-                (let [{:keys [current-y
-                              bends]} (->> ordinary-contexts
-                                           (map (fn [context]
-                                                  (-> {:context context
-                                                       :start-x start-x
-                                                       :end-x end-x
-                                                       :line-length line-length
-                                                       :bend-angle bend-angle
-                                                       :percentage-base percentage-base}
-                                                      auto-arrange/set-spacing-top
-                                                      auto-arrange/set-size
-                                                      auto-arrange/set-line-data
-                                                      auto-arrange/set-cottise-data
-                                                      (update :spacing-top apply-percentage)
-                                                      (update :size apply-percentage))))
-                                           (reduce add-bend {:current-y 0
-                                                             :bends []}))
-                      offset-y (interface/get-sanitized-data (c/++ bend-group-context :offset-y))
-                      half-height (/ current-y 2)
-                      start-y (- half-height)]
-                  (map (fn [bend]
-                         (update bend :anchor-point v/add (v/Vector. 0 (- start-y offset-y))))
-                       bends)))]
-    {:arrangement-data (into {}
-                             (map (fn [{:keys [context]
-                                        :as bend}]
-                                    [(:path context) bend]))
-                             bends)
-     :num-ordinaries num-ordinaries}))
+        auto-positioned? (> num-ordinaries 1)]
+    (if auto-positioned?
+      (let [sinister? (= real-ordinary-type :heraldry.ordinary.type/bend-sinister)
+            bend-group-context (c/++ context (if sinister?
+                                               :bend-sinister-group
+                                               :bend-group))
+            {:keys [height width points]
+             :as environment} (interface/get-parent-field-environment (first ordinary-contexts))
+            corner-point-keyword (if sinister?
+                                   :top-right
+                                   :top-left)
+            anchor {:point corner-point-keyword}
+            corner-point (get points corner-point-keyword)
+            orientation (interface/get-sanitized-data (c/++ bend-group-context :orientation))
+            {anchor-point :real-anchor
+             orientation-point :real-orientation} (position/calculate-anchor-and-orientation
+                                                   environment
+                                                   anchor
+                                                   orientation
+                                                   ;; no alignment, so size is not needed
+                                                   nil
+                                                   nil)
+            bend-angle (angle/normalize (v/angle-to-point anchor-point orientation-point))
+            rotated-shape (-> (interface/get-exact-shape context)
+                              path/parse-path
+                              (path/translate (v/mul corner-point -1))
+                              (path/rotate (- (cond-> bend-angle
+                                                sinister? (+ 90))))
+                              path/to-svg)
+            rotated-bounding-box (bb/from-paths [rotated-shape])
+            start-x 0
+            end-x (:max-x rotated-bounding-box)
+            line-length (- end-x start-x)
+            percentage-base (min width height)
+            apply-percentage (partial math/percent-of percentage-base)
+            bends (let [{:keys [current-y
+                                bends]} (->> ordinary-contexts
+                                             (map (fn [context]
+                                                    (-> {:context context
+                                                         :start-x start-x
+                                                         :end-x end-x
+                                                         :line-length line-length
+                                                         :bend-angle bend-angle
+                                                         :percentage-base percentage-base}
+                                                        auto-arrange/set-spacing-top
+                                                        auto-arrange/set-size
+                                                        auto-arrange/set-line-data
+                                                        auto-arrange/set-cottise-data
+                                                        (update :spacing-top apply-percentage)
+                                                        (update :size apply-percentage))))
+                                             (reduce add-bend {:current-y 0
+                                                               :bends []}))
+                        offset-y (interface/get-sanitized-data (c/++ bend-group-context :offset-y))
+                        half-height (/ current-y 2)
+                        start-y (- half-height)]
+                    (map (fn [bend]
+                           (update bend :anchor-point v/add (v/Vector. 0 (- start-y offset-y))))
+                         bends))]
+        {:arrangement-data (into {}
+                                 (map (fn [{:keys [context]
+                                            :as bend}]
+                                        [(:path context) bend]))
+                                 bends)
+         :num-ordinaries num-ordinaries})
+      {:arrangement-data {}
+       :num-ordinaries num-ordinaries})))
 
 (defn- calculate-bend-data [context]
   (let [{:keys [width height]
-         :as parent-environment} (interface/get-impacted-parent-environment
-                                  context (impact-ordinary-type-pred context))
+         :as parent-environment} (interface/get-parent-field-environment context)
         percentage-base (min width height)
         apply-percentage (partial math/percent-of percentage-base)
         real-ordinary-type (interface/get-raw-data (c/++ context :type))
@@ -335,7 +329,7 @@
         direction-orthogonal (if (neg? (:y direction-orthogonal))
                                (v/mul direction-orthogonal -1)
                                direction-orthogonal)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         [middle-start middle-end] (v/intersections-with-shape anchor-point (v/add anchor-point direction)
                                                               parent-shape :default? true)
         angle (v/angle-to-point middle-start middle-end)
@@ -402,9 +396,7 @@
                 start-x
                 end-x]} (get arrangement-data (:path context))]
     (when size
-      (let [{:keys [width height points]} (interface/get-impacted-parent-environment
-                                           context (impact-ordinary-type-pred context))
-
+      (let [{:keys [width height points]} (interface/get-parent-field-environment context)
             {:keys [top-left top-right]} points
             percentage-base (min width height)
             sinister? (= real-ordinary-type
@@ -506,8 +498,7 @@
                                                           [upper-left upper-right] :upper
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-impacted-parent-environment
-                                context (impact-ordinary-type-pred context))
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-upper (line/create-with-extension context
                                                line
                                                upper-left upper-right
@@ -530,8 +521,13 @@
      properties)))
 
 (defmethod interface/exact-shape ordinary-type [context {:keys [reverse-transform-fn]}]
-  (let [exact-shape (interface/fallback-exact-shape
-                     context :type-pred (impact-ordinary-type-pred context))]
+  (let [shape-path (:shape (interface/get-render-shape context))
+        shape-path (if (vector? shape-path)
+                     (first shape-path)
+                     shape-path)
+        exact-shape (environment/intersect-shapes
+                     shape-path
+                     (interface/get-parent-field-shape context))]
     (cond-> exact-shape
       reverse-transform-fn (->
                              path/parse-path
