@@ -246,8 +246,8 @@
                                    orientation-point-option)]
     (when auto-positioned?
       {:ignore-ordinary-impact? {:type :option.type/boolean
-                                :default false
-                                :ui/label :string.option/ignore-ordinary-impact?}
+                                 :default false
+                                 :ui/label :string.option/ignore-ordinary-impact?}
        :orientation (cond-> {:point orientation-point-option
                              :ui/label :string.option/orientation
                              :ui/element :ui.element/position}
@@ -316,8 +316,8 @@
                                    orientation-point-option)]
     (when auto-positioned?
       {:ignore-ordinary-impact? {:type :option.type/boolean
-                                :default false
-                                :ui/label :string.option/ignore-ordinary-impact?}
+                                 :default false
+                                 :ui/label :string.option/ignore-ordinary-impact?}
        :orientation (cond-> {:point orientation-point-option
                              :ui/label :string.option/orientation
                              :ui/element :ui.element/position}
