@@ -465,7 +465,7 @@
            -5,15 -5,30 0,40 40,40 50,40 10,0 50,0 50,-40 C 100,65 97,55
            95,50 91,40 90,35 90,30 90,28 90,8 100,0 70,0 55,5 40,10 30,5
            25,4 15,5 0,7 0,17 0,20 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 125)
+   :bounding-box (bb/BoundingBox. 0 100 0 120)
    :attribution {:nature :own-work
                  :license :public-domain
                  :username "korfi2go"}})
