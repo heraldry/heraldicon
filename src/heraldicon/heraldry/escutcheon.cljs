@@ -474,6 +474,7 @@
   {:shape "M 45,0 C 45,0 0,15 0,80 c 0,65 45,80 45,80 0,0 45,-15 45,-80 C
            90,15 45,0 45,0 z"
    :bounding-box (bb/BoundingBox. 0 90 0 160)
+   :points {:fess (v/Vector. 45 80)}
    :attribution {:nature :own-work
                  :license :public-domain
                  :username "korfi2go"}})
