@@ -31,30 +31,31 @@
         choices))
 
 (defn get-value [value options]
-  (if (and (vector? value)
-           (-> value first (= :force)))
-    (second value)
-    (let [fallback (first (keep identity [(:inherited options)
-                                          (:default options)]))
-          value (first (keep identity [value
-                                       fallback]))]
-      (case (:type options)
-        :option.type/boolean (boolean value)
-        :option.type/choice (let [choices (choices->map (:choices options))]
-                              (if (contains? choices value)
-                                value
-                                (if (contains? choices fallback)
-                                  fallback
-                                  (-> options :choices first second))))
-        :option.type/range (cond
-                             (and (nil? value)
-                                  (-> options :default nil?)) nil
-                             (nil? value) (:min options)
-                             :else (-> value
-                                       (max (:min options))
-                                       (min (:max options))))
-        :option.type/text (or value (:default options))
-        nil))))
+  (cond
+    (and (vector? value)
+         (-> value first (= :force))) (second value)
+    (some? (:override options)) (:override options)
+    :else (let [fallback (first (keep identity [(:inherited options)
+                                                (:default options)]))
+                value (first (keep identity [value
+                                             fallback]))]
+            (case (:type options)
+              :option.type/boolean (boolean value)
+              :option.type/choice (let [choices (choices->map (:choices options))]
+                                    (if (contains? choices value)
+                                      value
+                                      (if (contains? choices fallback)
+                                        fallback
+                                        (-> options :choices first second))))
+              :option.type/range (cond
+                                   (and (nil? value)
+                                        (-> options :default nil?)) nil
+                                   (nil? value) (:min options)
+                                   :else (-> value
+                                             (max (:min options))
+                                             (min (:max options))))
+              :option.type/text (or value (:default options))
+              nil))))
 
 (defn- get-sanitized-value-or-nil [value options]
   (when-not (nil? value)

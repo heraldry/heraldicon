@@ -112,8 +112,8 @@
                                 :default (if auto-positioned?
                                            default-ignore-ordinary-impact?
                                            false)
-                                :ui/override (when auto-positioned?
-                                               default-ignore-ordinary-impact?)
+                                :override (when auto-positioned?
+                                            default-ignore-ordinary-impact?)
                                 :ui/disabled? (boolean auto-positioned?)
                                 :ui/label :string.option/ignore-ordinary-impact?}
       :anchor (cond-> {:point anchor-point-option
