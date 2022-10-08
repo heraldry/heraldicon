@@ -45,7 +45,10 @@
     ;; TODO: perhaps there should be anchor options for the corners?
     ;; so one can align fro top-left to bottom-right
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :option.type/choice
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:chief
                                   :base
@@ -116,10 +119,11 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width height]
+         :as parent-environment} (interface/get-parent-field-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
-        percentage-base (min (:width parent-environment)
-                             (:height parent-environment))
+        percentage-base (min width
+                             height)
         band-size (math/percent-of percentage-base size)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
@@ -132,7 +136,7 @@
                                                nil)
         [relative-top-left relative-top-right
          relative-bottom-left relative-bottom-right] (saltire/arm-diagonals anchor-point orientation-point)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         angle-bottom-right (v/angle-to-point v/zero relative-bottom-right)
         angle (-> angle-bottom-right (* Math/PI) (/ 180))
         dx (/ band-size 2 (Math/sin angle))
@@ -180,8 +184,7 @@
       :band-size band-size
       :line-length line-length
       :percentage-base percentage-base
-      :humetty-percentage-base (min (:width parent-environment)
-                                    (:height parent-environment))
+      :humetty-percentage-base percentage-base
       :voided-percentage-base band-size
       :num-cottise-parts 4}
      context)))
@@ -190,7 +193,7 @@
                                                          [bottom-1 corner-bottom bottom-2] :edge-bottom
                                                          [left-1 corner-left left-2] :edge-left
                                                          [right-1 corner-right right-2] :edge-right}]
-  (let [{:keys [points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-field-environment context)
         bounding-box-points [top-1 top-2
                              bottom-1 bottom-2
                              left-1 left-2
@@ -212,7 +215,7 @@
                                                           [left-1 corner-left left-2] :edge-left
                                                           [right-1 corner-right right-2] :edge-right
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-edge-top-first (line/create-with-extension context
                                                         line
                                                         corner-top top-1
