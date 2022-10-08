@@ -30,6 +30,7 @@
         auto-positioned? auto-position-index
         default-size (interface/get-sanitized-data (c/++ parent-context :chevron-group :default-size))
         default-spacing (interface/get-sanitized-data (c/++ parent-context :chevron-group :default-spacing))
+        default-ignore-ordinary-impact? (interface/get-sanitized-data (c/++ parent-context :chevron-group :ignore-ordinary-impact?))
         line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
@@ -140,7 +141,15 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor (cond-> {:point {:type :option.type/choice
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default (if auto-positioned?
+                                           default-ignore-ordinary-impact?
+                                           false)
+                                :override (when auto-positioned?
+                                            default-ignore-ordinary-impact?)
+                                :ui/disabled? (boolean auto-positioned?)
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor (cond-> {:point {:type :option.type/choice
                                :choices (position/anchor-choices
                                          [:auto
                                           :fess
@@ -293,94 +302,98 @@
         (assoc :current-y new-current-y))))
 
 (defmethod interface/auto-arrangement ordinary-type [_ordinary-type context]
-  (let [{:keys [width height]
-         :as environment} (interface/get-environment context)
-        percentage-base (min width height)
-        apply-percentage (partial math/percent-of percentage-base)
-        chevron-group-context (c/++ context :chevron-group)
-        origin (interface/get-sanitized-data (c/++ chevron-group-context :origin))
-        anchor {:point :fess}
-        {direction-anchor-point :real-anchor
-         origin-point :real-orientation} (position/calculate-anchor-and-orientation
-                                          environment
-                                          anchor
-                                          origin
-                                          0
-                                          90)
-        chevron-angle (angle/normalize
-                       (v/angle-to-point direction-anchor-point
-                                         origin-point))
-        parent-shape (interface/get-exact-parent-shape context)
-        [upper-intersection lower-intersection] (v/intersections-with-shape
-                                                 direction-anchor-point origin-point
-                                                 parent-shape :default? true)
-        min-y (- (v/abs (v/sub upper-intersection direction-anchor-point)))
-        max-y (v/abs (v/sub lower-intersection direction-anchor-point))
-        arm-angle (interface/get-sanitized-data (c/++ chevron-group-context :orientation :angle))
-        scale-factor! (scale-factor arm-angle)
-        {:keys [ordinary-contexts
+  (let [{:keys [ordinary-contexts
                 num-ordinaries
                 default-spacing]} (interface/get-auto-ordinary-info ordinary-type context)
-        chevrons (when (> num-ordinaries 1)
-                   (let [{:keys [current-y
-                                 chevrons]} (->> ordinary-contexts
-                                                 (map (fn [context]
-                                                        (-> {:context context
-                                                             :line-length width
-                                                             :scale scale-factor!
-                                                             :percentage-base percentage-base}
-                                                            auto-arrange/set-spacing-top
-                                                            auto-arrange/set-size
-                                                            auto-arrange/set-line-data
-                                                            auto-arrange/set-cottise-data
-                                                            (update :spacing-top apply-percentage)
-                                                            (update :size apply-percentage))))
-                                                 (reduce add-chevron {:current-y 0
-                                                                      :chevrons []}))
-                         offset-x (interface/get-sanitized-data (c/++ context :chevron-group :offset-x))
-                         offset-y (interface/get-sanitized-data (c/++ context :chevron-group :offset-y))
-                         relevant-height (- max-y min-y)
-                         total-height current-y
-                         half-height (/ total-height 2)
-                         weight (min (* (/ total-height (* 0.8 relevant-height))
-                                        (/ num-ordinaries
-                                           (inc num-ordinaries))) 1)
-                         adjusted-spacing (* scale-factor! default-spacing)
-                         center-offset (/ (+ max-y min-y) 2)
-                         middle-y (* weight center-offset)
-                         start-y (if (> (+ total-height (* 2 adjusted-spacing))
-                                        relevant-height)
-                                   (- center-offset half-height)
-                                   (-> (- middle-y half-height)
-                                       (max (+ min-y adjusted-spacing))
-                                       (min (- max-y adjusted-spacing total-height))))]
-                     (map (fn [{:keys [anchor-point]
-                                :as bar}]
-                            (let [anchor-point (v/add anchor-point
-                                                      (v/Vector. 0 start-y)
-                                                      (v/Vector. offset-x (- offset-y)))
-                                  arm-point (-> (v/Vector. 0 1)
-                                                (v/rotate arm-angle)
-                                                (v/add anchor-point))]
-                              (-> bar
-                                  (assoc :chevron-angle chevron-angle)
-                                  (assoc :anchor-point (-> anchor-point
-                                                           (v/rotate (- chevron-angle 90))
-                                                           (v/add direction-anchor-point)))
-                                  (assoc :arm-point (-> arm-point
-                                                        (v/rotate (- chevron-angle 90))
-                                                        (v/add direction-anchor-point))))))
-                          chevrons)))]
-    {:arrangement-data (into {}
-                             (map (fn [{:keys [context]
-                                        :as bar}]
-                                    [(:path context) bar]))
-                             chevrons)
-     :num-ordinaries num-ordinaries}))
+        auto-positioned? (> num-ordinaries 1)]
+    (if auto-positioned?
+      (let [first-ordinary-context (first ordinary-contexts)
+            {:keys [width height]
+             :as environment} (interface/get-parent-field-environment first-ordinary-context)
+            percentage-base (min width height)
+            apply-percentage (partial math/percent-of percentage-base)
+            chevron-group-context (c/++ context :chevron-group)
+            origin (interface/get-sanitized-data (c/++ chevron-group-context :origin))
+            anchor {:point :fess}
+            {direction-anchor-point :real-anchor
+             origin-point :real-orientation} (position/calculate-anchor-and-orientation
+                                              environment
+                                              anchor
+                                              origin
+                                              0
+                                              90)
+            chevron-angle (angle/normalize
+                           (v/angle-to-point direction-anchor-point
+                                             origin-point))
+            parent-shape (interface/get-parent-field-shape first-ordinary-context)
+            [upper-intersection lower-intersection] (v/intersections-with-shape
+                                                     direction-anchor-point origin-point
+                                                     parent-shape :default? true)
+            min-y (- (v/abs (v/sub upper-intersection direction-anchor-point)))
+            max-y (v/abs (v/sub lower-intersection direction-anchor-point))
+            arm-angle (interface/get-sanitized-data (c/++ chevron-group-context :orientation :angle))
+            scale-factor! (scale-factor arm-angle)
+            chevrons (let [{:keys [current-y
+                                   chevrons]} (->> ordinary-contexts
+                                                   (map (fn [context]
+                                                          (-> {:context context
+                                                               :line-length width
+                                                               :scale scale-factor!
+                                                               :percentage-base percentage-base}
+                                                              auto-arrange/set-spacing-top
+                                                              auto-arrange/set-size
+                                                              auto-arrange/set-line-data
+                                                              auto-arrange/set-cottise-data
+                                                              (update :spacing-top apply-percentage)
+                                                              (update :size apply-percentage))))
+                                                   (reduce add-chevron {:current-y 0
+                                                                        :chevrons []}))
+                           offset-x (interface/get-sanitized-data (c/++ context :chevron-group :offset-x))
+                           offset-y (interface/get-sanitized-data (c/++ context :chevron-group :offset-y))
+                           relevant-height (- max-y min-y)
+                           total-height current-y
+                           half-height (/ total-height 2)
+                           weight (min (* (/ total-height (* 0.8 relevant-height))
+                                          (/ num-ordinaries
+                                             (inc num-ordinaries))) 1)
+                           adjusted-spacing (* scale-factor! default-spacing)
+                           center-offset (/ (+ max-y min-y) 2)
+                           middle-y (* weight center-offset)
+                           start-y (if (> (+ total-height (* 2 adjusted-spacing))
+                                          relevant-height)
+                                     (- center-offset half-height)
+                                     (-> (- middle-y half-height)
+                                         (max (+ min-y adjusted-spacing))
+                                         (min (- max-y adjusted-spacing total-height))))]
+                       (map (fn [{:keys [anchor-point]
+                                  :as bar}]
+                              (let [anchor-point (v/add anchor-point
+                                                        (v/Vector. 0 start-y)
+                                                        (v/Vector. offset-x (- offset-y)))
+                                    arm-point (-> (v/Vector. 0 1)
+                                                  (v/rotate arm-angle)
+                                                  (v/add anchor-point))]
+                                (-> bar
+                                    (assoc :chevron-angle chevron-angle)
+                                    (assoc :anchor-point (-> anchor-point
+                                                             (v/rotate (- chevron-angle 90))
+                                                             (v/add direction-anchor-point)))
+                                    (assoc :arm-point (-> arm-point
+                                                          (v/rotate (- chevron-angle 90))
+                                                          (v/add direction-anchor-point))))))
+                            chevrons))]
+        {:arrangement-data (into {}
+                                 (map (fn [{:keys [context]
+                                            :as bar}]
+                                        [(:path context) bar]))
+                                 chevrons)
+         :num-ordinaries num-ordinaries})
+      {:arrangement-data {}
+       :num-ordinaries num-ordinaries})))
 
 (defmethod interface/properties ordinary-type [context]
   (let [{:keys [width height]
-         :as parent-environment} (interface/get-parent-environment context)
+         :as parent-environment} (interface/get-parent-field-environment context)
         percentage-base (min width height)
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [arrangement-data]} (interface/get-auto-arrangement ordinary-type (interface/parent context))
@@ -467,7 +480,7 @@
         lower-left (v/add diagonal-left offset-lower)
         upper-right (v/add diagonal-right offset-upper)
         lower-right (v/add diagonal-right offset-lower)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         intersection-upper-left (v/last-intersection-with-shape upper-corner upper-left parent-shape :default? true)
         intersection-upper-right (v/last-intersection-with-shape upper-corner upper-right parent-shape :default? true)
         intersection-lower-left (v/last-intersection-with-shape lower-corner lower-left parent-shape :default? true)
@@ -508,7 +521,7 @@
                                                           [upper-left upper-corner upper-right] :upper
                                                           [lower-left lower-corner lower-right] :lower
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line (dissoc line :base-line)
         opposite-line (dissoc opposite-line :base-line)
         line-upper-left (line/create-with-extension context

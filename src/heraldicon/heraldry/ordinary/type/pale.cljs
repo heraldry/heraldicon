@@ -35,9 +35,18 @@
                                 (cond->
                                   auto-positioned? (options/override-if-exists [:size-reference :default] :field-height)))
         default-size (interface/get-sanitized-data (c/++ parent-context :pale-group :default-size))
-        default-spacing (interface/get-sanitized-data (c/++ parent-context :pale-group :default-spacing))]
+        default-spacing (interface/get-sanitized-data (c/++ parent-context :pale-group :default-spacing))
+        default-ignore-ordinary-impact? (interface/get-sanitized-data (c/++ parent-context :pale-group :ignore-ordinary-impact?))]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor (cond-> {:point {:type :option.type/choice
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default (if auto-positioned?
+                                           default-ignore-ordinary-impact?
+                                           false)
+                                :override (when auto-positioned?
+                                            default-ignore-ordinary-impact?)
+                                :ui/disabled? (boolean auto-positioned?)
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor (cond-> {:point {:type :option.type/choice
                                :choices (position/anchor-choices
                                          [:auto
                                           :fess
@@ -112,62 +121,65 @@
         (assoc :current-x new-current-x))))
 
 (defmethod interface/auto-arrangement ordinary-type [_ordinary-type context]
-  (let [{:keys [width points height]
-         :as environment} (interface/get-environment context)
-        {fess-x :x} (position/calculate {:point :fess} environment :fess)
-        {center-x :x} (position/calculate {:point :center} environment :fess)
-        min-x (-> points :left :x)
-        max-x (-> points :right :x)
-        start-y (-> points :top :y)
-        percentage-base width
-        apply-percentage (partial math/percent-of percentage-base)
-        {:keys [ordinary-contexts
+  (let [{:keys [ordinary-contexts
                 num-ordinaries
                 default-spacing]} (interface/get-auto-ordinary-info ordinary-type context)
-        pales (when (> num-ordinaries 1)
-                (let [{:keys [current-x
-                              pales]} (->> ordinary-contexts
-                                           (map (fn [context]
-                                                  (-> {:context context
-                                                       :start-y start-y
-                                                       :line-length height
-                                                       :percentage-base percentage-base}
-                                                      auto-arrange/set-spacing-left
-                                                      auto-arrange/set-size
-                                                      auto-arrange/set-line-data
-                                                      auto-arrange/set-cottise-data
-                                                      (update :spacing-left apply-percentage)
-                                                      (update :size apply-percentage))))
-                                           (reduce add-pale {:current-x 0
-                                                             :pales []}))
-                      offset-x (interface/get-sanitized-data (c/++ context :pale-group :offset-x))
-                      total-width current-x
-                      half-width (/ total-width 2)
-                      weight (min (* (/ total-width (* 0.66666 width))
-                                     (/ num-ordinaries
-                                        (inc num-ordinaries))) 1)
-                      middle-x (+ fess-x
-                                  (* (- center-x fess-x)
-                                     weight))
-                      start-x (if (> (+ total-width (* 2 default-spacing))
-                                     width)
-                                (- center-x half-width)
-                                (-> (- middle-x half-width)
-                                    (max (+ min-x default-spacing))
-                                    (min (- max-x default-spacing total-width))))]
-                  (map (fn [pale]
-                         (update pale :x + start-x offset-x))
-                       pales)))]
-    {:arrangement-data (into {}
-                             (map (fn [{:keys [context]
-                                        :as pale}]
-                                    [(:path context) pale]))
-                             pales)
-     :num-ordinaries num-ordinaries}))
+        auto-positioned? (> num-ordinaries 1)]
+    (if auto-positioned?
+      (let [{:keys [width points height]
+             :as environment} (interface/get-parent-field-environment (first ordinary-contexts))
+            {fess-x :x} (position/calculate {:point :fess} environment :fess)
+            {center-x :x} (position/calculate {:point :center} environment :fess)
+            min-x (-> points :left :x)
+            max-x (-> points :right :x)
+            start-y (-> points :top :y)
+            percentage-base width
+            apply-percentage (partial math/percent-of percentage-base)
+            pales (let [{:keys [current-x
+                                pales]} (->> ordinary-contexts
+                                             (map (fn [context]
+                                                    (-> {:context context
+                                                         :start-y start-y
+                                                         :line-length height
+                                                         :percentage-base percentage-base}
+                                                        auto-arrange/set-spacing-left
+                                                        auto-arrange/set-size
+                                                        auto-arrange/set-line-data
+                                                        auto-arrange/set-cottise-data
+                                                        (update :spacing-left apply-percentage)
+                                                        (update :size apply-percentage))))
+                                             (reduce add-pale {:current-x 0
+                                                               :pales []}))
+                        offset-x (interface/get-sanitized-data (c/++ context :pale-group :offset-x))
+                        total-width current-x
+                        half-width (/ total-width 2)
+                        weight (min (* (/ total-width (* 0.66666 width))
+                                       (/ num-ordinaries
+                                          (inc num-ordinaries))) 1)
+                        middle-x (+ fess-x
+                                    (* (- center-x fess-x)
+                                       weight))
+                        start-x (if (> (+ total-width (* 2 default-spacing))
+                                       width)
+                                  (- center-x half-width)
+                                  (-> (- middle-x half-width)
+                                      (max (+ min-x default-spacing))
+                                      (min (- max-x default-spacing total-width))))]
+                    (map (fn [pale]
+                           (update pale :x + start-x offset-x))
+                         pales))]
+        {:arrangement-data (into {}
+                                 (map (fn [{:keys [context]
+                                            :as pale}]
+                                        [(:path context) pale]))
+                                 pales)
+         :num-ordinaries num-ordinaries})
+      {:arrangement-data {}
+       :num-ordinaries num-ordinaries})))
 
 (defmethod interface/properties ordinary-type [context]
   (let [{:keys [points width]
-         :as parent-environment} (interface/get-parent-environment context)
+         :as parent-environment} (interface/get-parent-field-environment context)
         {:keys [top bottom]} points
         percentage-base width
         apply-percentage (partial math/percent-of percentage-base)
@@ -187,7 +199,7 @@
                    :right (- (:x anchor-point) band-size)
                    (- (:x anchor-point) (/ band-size 2))))
         right (+ left band-size)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         [left-upper left-lower] (v/intersections-with-shape
                                  (v/Vector. left (:y top)) (v/Vector. left (:y bottom))
                                  parent-shape
@@ -224,7 +236,7 @@
                                                           [left-upper left-lower] :left
                                                           [right-upper right-lower] :right
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-left (line/create-with-extension context
                                               line
                                               left-upper left-lower

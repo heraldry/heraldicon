@@ -30,7 +30,8 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/fess-group]]
         (element/elements
          fess-group-context
-         [:default-size
+         [:ignore-ordinary-impact?
+          :default-size
           :default-spacing
           :offset-y])])
 
@@ -41,7 +42,8 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/pale-group]]
         (element/elements
          pale-group-context
-         [:default-size
+         [:ignore-ordinary-impact?
+          :default-size
           :default-spacing
           :offset-x])])
 
@@ -52,7 +54,8 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/chevron-group]]
         (element/elements
          chevron-group-context
-         [:origin
+         [:ignore-ordinary-impact?
+          :origin
           :orientation
           :default-size
           :default-spacing
