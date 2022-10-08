@@ -135,8 +135,8 @@
      parent-shape :default? true)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
-        points (:points parent-environment)
+  (let [{:keys [points width height]
+         :as parent-environment} (interface/get-parent-field-environment context)
         {:keys [left right]} points
         variant (interface/get-sanitized-data (c/++ context :variant))
         truncated? (= variant :truncated)
@@ -145,9 +145,9 @@
         thickness (interface/get-sanitized-data (c/++ context :geometry :thickness))
         eccentricity (interface/get-sanitized-data (c/++ context :geometry :eccentricity))
         stretch (interface/get-sanitized-data (c/++ context :geometry :stretch))
-        percentage-base-height (:height parent-environment)
+        percentage-base-height height
         band-size (math/percent-of percentage-base-height thickness)
-        percentage-base-width (:width parent-environment)
+        percentage-base-width width
         label-width (math/percent-of percentage-base-width
                                      (interface/get-sanitized-data (c/++ context :geometry :width)))
         point-width (math/percent-of percentage-base-width size)
@@ -164,7 +164,7 @@
         point-extra (-> point-width
                         (/ 2)
                         (* eccentricity))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         [upper-left upper-right] (start-and-end truncated? upper label-start label-width
                                                 parent-shape (:x left) (:x right))
         projected-extra (-> point-extra
@@ -211,7 +211,7 @@
       :band-size band-size
       :percentage-base-height percentage-base-height
       :percentage-base-width percentage-base-width
-      :humetty-percentage-base (:width parent-environment)
+      :humetty-percentage-base width
       :voided-percentage-base (min band-size point-width)}
      context)))
 
@@ -264,3 +264,13 @@
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
   nil)
+
+(defmethod interface/parent-field-environment ordinary-type [context]
+  (interface/get-environment (interface/parent context)))
+
+(prefer-method interface/parent-field-environment ordinary-type :heraldry/ordinary)
+
+(defmethod interface/parent-field-shape ordinary-type [context]
+  (interface/get-exact-shape (interface/parent context)))
+
+(prefer-method interface/parent-field-shape ordinary-type :heraldry/ordinary)
