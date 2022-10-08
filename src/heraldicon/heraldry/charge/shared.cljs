@@ -68,7 +68,10 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    {:anchor {:point anchor-point-option
+    {:ignore-ordinary-impact? {:type :option.type/boolean
+                               :default false
+                               :ui/label :string.option/ignore-ordinary-impact?}
+     :anchor {:point anchor-point-option
               :offset-x {:type :option.type/range
                          :min -45
                          :max 45
@@ -194,7 +197,7 @@
                      {:keys [base-shape base-width base-height]
                       :as base-properties}]
   (let [{:keys [width height points]
-         :as parent-environment} (interface/get-parent-environment context)
+         :as parent-environment} (interface/get-parent-field-environment context)
         {:keys [left right top bottom]} points
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
