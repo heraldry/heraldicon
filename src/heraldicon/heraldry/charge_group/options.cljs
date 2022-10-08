@@ -14,7 +14,10 @@
   (options/choices->map type-choices))
 
 (def ^:private shared-options
-  {:type {:type :option.type/choice
+  {:ignore-ordinary-impact? {:type :option.type/boolean
+                             :default false
+                             :ui/label :string.option/ignore-ordinary-impact?}
+   :type {:type :option.type/choice
           :choices type-choices
           :ui/label :string.option/type
           :ui/element :ui.element/charge-group-type-select}
