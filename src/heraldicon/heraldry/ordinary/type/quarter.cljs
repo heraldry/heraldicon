@@ -39,7 +39,10 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :option.type/choice
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:fess
                                   :chief
@@ -85,14 +88,15 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width points]
+         :as parent-environment} (interface/get-parent-field-environment context)
         variant (interface/get-sanitized-data (c/++ context :variant))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         {:keys [top-left top-right
-                bottom-left bottom-right]} (:points parent-environment)
+                bottom-left bottom-right]} points
         anchor-point (position/calculate anchor parent-environment :fess)
-        percentage-base (:width parent-environment)
+        percentage-base width
         {:keys [corner-point
                 first-dir
                 second-dir]} (case variant
@@ -112,7 +116,7 @@
                          (v/sub corner-point)
                          (v/mul (/ size 100))
                          (v/add corner-point))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         first-point (v/last-intersection-with-shape
                      anchor-point
                      (v/add anchor-point (v/mul first-dir 50))
@@ -140,7 +144,7 @@
       :variant variant
       :line-length line-length
       :percentage-base percentage-base
-      :humetty-percentage-base (:width parent-environment)
+      :humetty-percentage-base width
       :voided-percentage-base x-size}
      context)))
 
@@ -153,7 +157,7 @@
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [first-point anchor-point second-point] :edge
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-one (line/create-with-extension context
                                              line
                                              anchor-point first-point

@@ -33,7 +33,10 @@
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
-     {:line line-style
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :line line-style
       :variant {:type :option.type/choice
                 :choices variant-choices
                 :default :dexter
@@ -55,13 +58,12 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [{:keys [width height]
-         :as parent-environment} (interface/get-parent-environment context)
+  (let [{:keys [points width height]} (interface/get-parent-field-environment context)
         variant (interface/get-sanitized-data (c/++ context :variant))
         dexter? (= variant :dexter)
         point-width (interface/get-sanitized-data (c/++ context :geometry :width))
         point-height (interface/get-sanitized-data (c/++ context :geometry :height))
-        {:keys [top-left top-right]} (:points parent-environment)
+        {:keys [top-left top-right]} points
         percentage-base (min width height)
         real-point-width (math/percent-of percentage-base point-width)
         real-point-height (math/percent-of percentage-base point-height)
@@ -72,7 +74,7 @@
         ideal-point-top ((if dexter?
                            v/add
                            v/sub) corner-point (v/Vector. real-point-width 0))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         [lower-left lower-right] (v/intersections-with-shape
                                   ideal-point-top ideal-point-side parent-shape :default? true)
         [lower-left lower-right] (if dexter?
@@ -86,13 +88,13 @@
       :dexter? dexter?
       :line-length line-length
       :percentage-base percentage-base
-      :humetty-percentage-base (:width parent-environment)
+      :humetty-percentage-base width
       :voided-percentage-base real-point-height}
      context)))
 
 (defmethod interface/environment ordinary-type [context {:keys [dexter?]
                                                          [lower-left lower-right] :lower}]
-  (let [{:keys [points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-field-environment context)
         corner (if dexter?
                  (:top-left points)
                  (:top-right points))
@@ -103,7 +105,7 @@
 (defmethod interface/render-shape ordinary-type [context {:keys [dexter? line]
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-lower (line/create-with-extension context
                                                line
                                                (if dexter?
