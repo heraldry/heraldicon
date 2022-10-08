@@ -211,9 +211,3 @@
                              path/parse-path
                              reverse-transform-fn
                              path/to-svg))))
-
-(defmethod interface/render-shape :heraldry/field [context _properties]
-  (component-attribute context
-                       interface/get-render-shape
-                       interface/get-parent-field-shape
-                       :parent-shape))
