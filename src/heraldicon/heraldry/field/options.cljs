@@ -91,7 +91,10 @@
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         auto-positioned? (seq affected-paths)]
     (when auto-positioned?
-      {:default-size {:type :option.type/range
+      {:ignore-ordinary-impact? {:type :option.type/boolean
+                                 :default false
+                                 :ui/label :string.option/ignore-ordinary-impact?}
+       :default-size {:type :option.type/range
                       :min 0.1
                       :max 90
                       :default default-size
@@ -117,7 +120,10 @@
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         auto-positioned? (seq affected-paths)]
     (when auto-positioned?
-      {:default-size {:type :option.type/range
+      {:ignore-ordinary-impact? {:type :option.type/boolean
+                                 :default false
+                                 :ui/label :string.option/ignore-ordinary-impact?}
+       :default-size {:type :option.type/range
                       :min 0.1
                       :max 90
                       :default default-size
@@ -161,7 +167,10 @@
                               (interface/get-raw-data (c/++ context :chevron-group :origin :point))
                               origin-point-option)]
     (when auto-positioned?
-      {:origin (cond-> {:point origin-point-option
+      {:ignore-ordinary-impact? {:type :option.type/boolean
+                                 :default false
+                                 :ui/label :string.option/ignore-ordinary-impact?}
+       :origin (cond-> {:point origin-point-option
                         :ui/label :string.charge.attitude/issuant
                         :ui/element :ui.element/position}
 
