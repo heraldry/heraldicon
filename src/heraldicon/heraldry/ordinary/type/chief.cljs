@@ -36,13 +36,13 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [points width height]} (interface/get-parent-field-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
-        {:keys [left right top]} (:points parent-environment)
-        percentage-base (:height parent-environment)
+        {:keys [left right top]} points
+        percentage-base height
         band-size (math/percent-of percentage-base size)
         lower (+ (:y top) band-size)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         [lower-left lower-right] (v/intersections-with-shape
                                   (v/Vector. (:x left) lower) (v/Vector. (:x right) lower)
                                   parent-shape :default? true)
@@ -53,12 +53,12 @@
       :band-size band-size
       :line-length line-length
       :percentage-base percentage-base
-      :humetty-percentage-base (:width parent-environment)
+      :humetty-percentage-base width
       :voided-percentage-base band-size}
      context)))
 
 (defmethod interface/environment ordinary-type [context {[lower-left lower-right] :lower}]
-  (let [{:keys [points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-field-environment context)
         {:keys [top-left top-right]} points
         bounding-box-points [top-left top-right
                              lower-left lower-right]]
@@ -67,7 +67,7 @@
 (defmethod interface/render-shape ordinary-type [context {:keys [line]
                                                           [lower-left lower-right] :lower
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-lower (line/create-with-extension context
                                                line
                                                lower-left lower-right
@@ -108,3 +108,13 @@
         :swap-lines? true
         :humetty humetty}
        context))))
+
+(defmethod interface/parent-field-environment ordinary-type [context]
+  (interface/get-environment (interface/parent context)))
+
+(prefer-method interface/parent-field-environment ordinary-type :heraldry/ordinary)
+
+(defmethod interface/parent-field-shape ordinary-type [context]
+  (interface/get-exact-shape (interface/parent context)))
+
+(prefer-method interface/parent-field-shape ordinary-type :heraldry/ordinary)
