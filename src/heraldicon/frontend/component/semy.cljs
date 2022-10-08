@@ -9,7 +9,8 @@
 (defn- form [context]
   (element/elements
    context
-   [:anchor
+   [:ignore-ordinary-impact?
+    :anchor
     :layout
     :rectangular?
     :manual-blazon]))
