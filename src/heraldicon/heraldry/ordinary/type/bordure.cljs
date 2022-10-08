@@ -53,12 +53,12 @@
      :outline? options/plain-outline?-option}))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [{:keys [width height]} (interface/get-parent-environment context)
+  (let [{:keys [width height]} (interface/get-parent-field-environment context)
         thickness (interface/get-sanitized-data (c/++ context :thickness))
         corner-radius (interface/get-sanitized-data (c/++ context :corner-radius))
         smoothing (interface/get-sanitized-data (c/++ context :smoothing))
         percentage-base (min width height)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         ;; TODO: calculate the actual line length?
         line-length percentage-base
         thickness (math/percent-of percentage-base thickness)
@@ -73,10 +73,10 @@
      context)))
 
 (defmethod interface/environment ordinary-type [context _properties]
-  (interface/get-parent-environment context))
+  (interface/get-parent-field-environment context))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [edge line]}]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-field-environment context)
         big-shape (shape/build-shape context :full)
         shape (cond-> edge
                 (not= (:type line) :straight) (line/modify-path line parent-environment))]
@@ -85,3 +85,13 @@
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
   nil)
+
+(defmethod interface/parent-field-environment ordinary-type [context]
+  (interface/get-environment (interface/parent context)))
+
+(prefer-method interface/parent-field-environment ordinary-type :heraldry/ordinary)
+
+(defmethod interface/parent-field-shape ordinary-type [context]
+  (interface/get-exact-shape (interface/parent context)))
+
+(prefer-method interface/parent-field-shape ordinary-type :heraldry/ordinary)

@@ -110,34 +110,38 @@
         (assoc :current-distance new-current-distance))))
 
 (defmethod interface/auto-arrangement ordinary-type [_ordinary-type context]
-  (let [{:keys [width height]} (interface/get-environment context)
-        percentage-base (min width height)
-        apply-percentage (partial math/percent-of percentage-base)
-        {:keys [ordinary-contexts
-                num-ordinaries]} (interface/get-auto-ordinary-info ordinary-type context)
-        orles (when (> num-ordinaries 1)
-                (let [{:keys [orles]} (->> ordinary-contexts
-                                           (map (fn [context]
-                                                  (-> {:context context
-                                                       :line-length percentage-base
-                                                       :percentage-base percentage-base}
-                                                      auto-arrange/set-distance
-                                                      auto-arrange/set-thickness
-                                                      auto-arrange/set-line-data
-                                                      (update :distance apply-percentage)
-                                                      (update :thickness apply-percentage))))
-                                           (reduce add-orle {:current-distance 0
-                                                             :orles []}))]
-                  orles))]
-    {:arrangement-data (into {}
-                             (map (fn [{:keys [context]
-                                        :as orle}]
-                                    [(:path context) orle]))
-                             orles)
-     :num-ordinaries num-ordinaries}))
+  (let [{:keys [ordinary-contexts
+                num-ordinaries
+                default-spacing]} (interface/get-auto-ordinary-info ordinary-type context)
+        auto-positioned? (> num-ordinaries 1)]
+    (if auto-positioned?
+      (let [{:keys [width height]} (interface/get-parent-field-environment (first ordinary-contexts))
+            percentage-base (min width height)
+            apply-percentage (partial math/percent-of percentage-base)
+            orles (let [{:keys [orles]} (->> ordinary-contexts
+                                             (map (fn [context]
+                                                    (-> {:context context
+                                                         :line-length percentage-base
+                                                         :percentage-base percentage-base}
+                                                        auto-arrange/set-distance
+                                                        auto-arrange/set-thickness
+                                                        auto-arrange/set-line-data
+                                                        (update :distance apply-percentage)
+                                                        (update :thickness apply-percentage))))
+                                             (reduce add-orle {:current-distance 0
+                                                               :orles []}))]
+                    orles)]
+        {:arrangement-data (into {}
+                                 (map (fn [{:keys [context]
+                                            :as orle}]
+                                        [(:path context) orle]))
+                                 orles)
+         :num-ordinaries num-ordinaries})
+      {:arrangement-data {}
+       :num-ordinaries num-ordinaries})))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [{:keys [width height]} (interface/get-parent-environment context)
+  (let [{:keys [width height]} (interface/get-parent-field-environment context)
         percentage-base (min width height)
         apply-percentage (partial math/percent-of percentage-base)
         {:keys [arrangement-data]} (interface/get-auto-arrangement ordinary-type (interface/parent context))
@@ -151,7 +155,7 @@
                        (interface/get-sanitized-data (c/++ context :thickness))))
         corner-radius (interface/get-sanitized-data (c/++ context :corner-radius))
         smoothing (interface/get-sanitized-data (c/++ context :smoothing))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         line-length percentage-base
         outer-edge (-> parent-shape
                        (environment/shrink-shape distance :round)
@@ -168,10 +172,10 @@
      context)))
 
 (defmethod interface/environment ordinary-type [context _properties]
-  (interface/get-parent-environment context))
+  (interface/get-parent-field-environment context))
 
 (defmethod interface/render-shape ordinary-type [context {:keys [outer-edge inner-edge line opposite-line]}]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-field-environment context)
         outer-shape (cond-> outer-edge
                       (not= (:type opposite-line) :straight) (line/modify-path opposite-line parent-environment
                                                                                :outer-shape? true))
@@ -182,3 +186,13 @@
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
   nil)
+
+(defmethod interface/parent-field-environment ordinary-type [context]
+  (interface/get-environment (interface/parent context)))
+
+(prefer-method interface/parent-field-environment ordinary-type :heraldry/ordinary)
+
+(defmethod interface/parent-field-shape ordinary-type [context]
+  (interface/get-exact-shape (interface/parent context)))
+
+(prefer-method interface/parent-field-shape ordinary-type :heraldry/ordinary)
