@@ -56,3 +56,15 @@
                                    keys
                                    sort)))
                          (fimbriation/blazon context)])))
+
+(defmethod interface/parent-field-environment :heraldry/charge [context]
+  (let [parent-context (interface/parent context)]
+    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
+      (interface/get-environment parent-context)
+      (interface/get-impacted-environment parent-context))))
+
+(defmethod interface/parent-field-shape :heraldry/charge [context]
+  (let [parent-context (interface/parent context)]
+    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
+      (interface/get-exact-shape parent-context)
+      (interface/get-exact-impacted-shape parent-context))))
