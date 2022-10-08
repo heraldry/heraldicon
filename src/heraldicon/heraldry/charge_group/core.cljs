@@ -47,7 +47,7 @@
       :heraldry.charge-group.type/in-orle :in-orle)))
 
 (defmethod calculate-points :strips [context]
-  (let [{:keys [width height]} (interface/get-parent-environment context)
+  (let [{:keys [width height]} (interface/get-parent-field-environment context)
         charge-group-type (interface/get-sanitized-data (c/++ context :type))
         reference-length (case charge-group-type
                            :heraldry.charge-group.type/rows width
@@ -91,7 +91,7 @@
                                                           :height spacing})}))
 
 (defmethod calculate-points :arc [context]
-  (let [{:keys [width]} (interface/get-parent-environment context)
+  (let [{:keys [width]} (interface/get-parent-field-environment context)
         radius (interface/get-sanitized-data (c/++ context :radius))
         start-angle (interface/get-sanitized-data (c/++ context :start-angle))
         arc-angle (interface/get-sanitized-data (c/++ context :arc-angle))
@@ -131,14 +131,16 @@
                     :height (/ distance 1.2)}}))
 
 (defmethod calculate-points :in-orle [context]
-  (let [{:keys [width height points]} (interface/get-parent-environment context)
+  ;; use get-environment and get-exact-shape for the parent context here deliberately,
+  ;; so the orle arrangement is not inside the impacted field
+  (let [{:keys [width height points]} (interface/get-environment (interface/parent context))
         percentage-base (min width height)
         distance (interface/get-sanitized-data (c/++ context :distance))
         offset (interface/get-sanitized-data (c/++ context :offset))
         slots (interface/get-raw-data (c/++ context :slots))
         num-charges (interface/get-list-size (c/++ context :charges))
         num-slots (interface/get-list-size (c/++ context :slots))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-exact-shape (interface/parent context))
         distance (math/percent-of percentage-base distance)
         bordure-shape (environment/shrink-shape parent-shape distance :round)
         shape-path (path/parse-path bordure-shape)
@@ -174,7 +176,7 @@
                     :height (/ charge-space 1.2)}}))
 
 (defmethod interface/properties :heraldry/charge-group [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [parent-environment (interface/get-parent-field-environment context)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         anchor-point (position/calculate anchor parent-environment)
         rotate-charges? (interface/get-sanitized-data (c/++ context :rotate-charges?))
@@ -240,3 +242,15 @@
                          used-charges))
                    (when (= charge-group-type :heraldry.charge-group.type/in-orle)
                      " in orle"))))
+
+(defmethod interface/parent-field-environment :heraldry/charge-group [context]
+  (let [parent-context (interface/parent context)]
+    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
+      (interface/get-environment parent-context)
+      (interface/get-impacted-environment parent-context))))
+
+(defmethod interface/parent-field-shape :heraldry/charge-group [context]
+  (let [parent-context (interface/parent context)]
+    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
+      (interface/get-exact-shape parent-context)
+      (interface/get-exact-impacted-shape parent-context))))
