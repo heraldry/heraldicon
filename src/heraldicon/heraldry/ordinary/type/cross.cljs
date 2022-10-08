@@ -30,7 +30,10 @@
                                 (options/override-if-exists [:base-line] nil)
                                 (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :option.type/choice
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:chief
                                   :base
@@ -72,14 +75,14 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width height]
+         :as parent-environment} (interface/get-parent-field-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
-        percentage-base (min (:width parent-environment)
-                             (:height parent-environment))
+        percentage-base (min width height)
         band-size (math/percent-of percentage-base size)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         anchor-point (position/calculate anchor parent-environment :fess)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         upper (- (:y anchor-point) (/ band-size 2))
         lower (+ upper band-size)
         first (- (:x anchor-point) (/ band-size 2))
@@ -127,8 +130,7 @@
       :band-size band-size
       :line-length line-length
       :percentage-base percentage-base
-      :humetty-percentage-base (min (:width parent-environment)
-                                    (:height parent-environment))
+      :humetty-percentage-base percentage-base
       :voided-percentage-base band-size
       :num-cottise-parts 4}
      context)))
@@ -137,7 +139,7 @@
                                                          [top-2 corner-top-right right-1] :edge-top-right
                                                          [bottom-1 corner-bottom-left left-2] :edge-bottom-left
                                                          [right-2 corner-bottom-right bottom-2] :edge-bottom-right}]
-  (let [{:keys [points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-field-environment context)
         bounding-box-points [top-1 top-2
                              bottom-1 bottom-2
                              left-1 left-2
@@ -159,7 +161,7 @@
                                                           [bottom-1 corner-bottom-left left-2] :edge-bottom-left
                                                           [right-2 corner-bottom-right bottom-2] :edge-bottom-right
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-edge-top-left-first (line/create-with-extension context
                                                              line
                                                              corner-top-left left-1
