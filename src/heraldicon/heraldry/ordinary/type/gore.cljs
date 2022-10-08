@@ -41,7 +41,10 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :option.type/choice
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:fess
                                   :chief
@@ -95,11 +98,12 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width]
+         :as parent-environment} (interface/get-parent-field-environment context)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
-        percentage-base (:width parent-environment)
-        parent-shape (interface/get-exact-parent-shape context)
+        percentage-base width
+        parent-shape (interface/get-parent-field-shape context)
         {anchor-point :real-anchor
          orientation-point :real-orientation} (position/calculate-anchor-and-orientation
                                                parent-environment
@@ -126,13 +130,13 @@
       :sinister? sinister?
       :line-length line-length
       :percentage-base percentage-base
-      :humetty-percentage-base (:width parent-environment)
-      :voided-percentage-base (/ (:width parent-environment) 2)}
+      :humetty-percentage-base width
+      :voided-percentage-base (/ width 2)}
      context)))
 
 (defmethod interface/environment ordinary-type [context {:keys [sinister?]
                                                          [left point right] :edge}]
-  (let [{:keys [points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-field-environment context)
         side-point (if sinister?
                      (:right points)
                      (:left points))
@@ -143,7 +147,7 @@
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [left point right] :edge
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-left (line/create-with-extension context
                                               line
                                               point left

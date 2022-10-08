@@ -101,7 +101,10 @@
                            (interface/get-raw-data (c/++ context :geometry :size-mode))
                            size-mode-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point anchor-point-option
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor {:point anchor-point-option
                :alignment {:type :option.type/choice
                            :choices position/alignment-choices
                            :default :middle
@@ -183,14 +186,15 @@
       :cottising (cottising/add-cottising context 1)} context)))
 
 (defmethod interface/properties ordinary-type [context]
-  (let [parent-environment (interface/get-parent-environment context)
+  (let [{:keys [width height]
+         :as parent-environment} (interface/get-parent-field-environment context)
         geometry (interface/get-sanitized-data (c/++ context :geometry))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         percentage-base (if (#{:left :right :dexter :sinister} (:point anchor))
-                          (:height parent-environment)
-                          (:width parent-environment))
-        parent-shape (interface/get-exact-parent-shape context)
+                          height
+                          width)
+        parent-shape (interface/get-parent-field-shape context)
         {anchor-point :anchor
          point :point
          thickness :thickness} (pile/calculate-properties
@@ -235,8 +239,7 @@
       :thickness thickness
       :line-length line-length
       :percentage-base percentage-base
-      :humetty-percentage-base (min (:width parent-environment)
-                                    (:height parent-environment))
+      :humetty-percentage-base (min width height)
       :voided-percentage-base (/ thickness 2)}
      context)))
 
@@ -248,7 +251,7 @@
 (defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
                                                           [left point right] :upper
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-left (line/create-with-extension context
                                               line
                                               point left

@@ -133,7 +133,10 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:anchor {:point {:type :option.type/choice
+     {:ignore-ordinary-impact? {:type :option.type/boolean
+                                :default false
+                                :ui/label :string.option/ignore-ordinary-impact?}
+      :anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:chief
                                   :base
@@ -244,7 +247,7 @@
 
 (defmethod interface/properties ordinary-type [context]
   (let [{:keys [width height]
-         :as parent-environment} (interface/get-parent-environment context)
+         :as parent-environment} (interface/get-parent-field-environment context)
         size (interface/get-sanitized-data (c/++ context :geometry :size))
         percentage-base (min width height)
         band-size (math/percent-of percentage-base size)
@@ -304,7 +307,7 @@
         offset-right (v/rotate
                       (v/Vector. (- dy) (- dx))
                       pall-angle)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-parent-field-shape context)
         corner-bottom (v/add anchor-point offset-bottom)
         corner-left (v/add anchor-point offset-left)
         corner-right (v/add anchor-point offset-right)
@@ -340,8 +343,7 @@
       :band-size band-size
       :line-length line-length
       :percentage-base percentage-base
-      :humetty-percentage-base (min (:width parent-environment)
-                                    (:height parent-environment))
+      :humetty-percentage-base percentage-base
       :voided-percentage-base band-size
       :num-cottise-parts 3}
      context)))
@@ -350,7 +352,7 @@
                                                          [bottom-1 _corner-top bottom-2] :edge-bottom
                                                          [left-1 _corner-left left-2] :edge-left
                                                          [right-1 _corner-right right-2] :edge-right}]
-  (let [{:keys [points]} (interface/get-parent-environment context)
+  (let [{:keys [points]} (interface/get-parent-field-environment context)
         bounding-box-points [bottom-1 bottom-2
                              left-1 left-2
                              right-1 right-2
@@ -367,7 +369,7 @@
                                                           [left-1 corner-left left-2] :edge-left
                                                           [right-1 corner-right right-2] :edge-right
                                                           :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-edge-bottom-first (line/create-with-extension context
                                                            extra-line
                                                            corner-bottom bottom-1
