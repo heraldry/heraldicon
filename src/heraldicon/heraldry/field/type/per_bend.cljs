@@ -113,7 +113,7 @@
      :line line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-effective-parent-environment context)
+  (let [parent-environment (interface/get-subfields-environment context)
         sinister? (= (interface/get-raw-data (c/++ context :type))
                      :heraldry.field.type/per-bend-sinister)
         percentage-base (:height parent-environment)
@@ -132,7 +132,7 @@
                       v/normal
                       (cond->
                         sinister? (v/dot (v/Vector. 1 -1))))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-subfields-shape context)
         [edge-start edge-end] (v/intersections-with-shape anchor-point (v/add anchor-point direction)
                                                           parent-shape :default? true)
         line-length (v/abs (v/sub edge-start edge-end))]
@@ -147,7 +147,7 @@
 
 (defmethod interface/subfield-environments field-type [context {:keys [sinister?]
                                                                 [edge-start edge-end] :edge}]
-  (let [{:keys [points]} (interface/get-effective-parent-environment context)
+  (let [{:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(let [points [(if sinister?
@@ -163,7 +163,7 @@
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line]
                                                                  [edge-start edge-end] :edge}]
-  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge (line/create-with-extension context
                                               line
                                               edge-start edge-end

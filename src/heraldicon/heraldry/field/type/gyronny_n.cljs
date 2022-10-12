@@ -76,7 +76,7 @@
      :line line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-effective-parent-environment context)
+  (let [parent-environment (interface/get-subfields-environment context)
         num-fields (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         offset (interface/get-sanitized-data (c/++ context :layout :offset-x))
         anchor (interface/get-sanitized-data (c/++ context :anchor))
@@ -87,7 +87,7 @@
                               (* angle-step)
                               (+ start-angle))
                          (range num-fields))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-subfields-shape context)
         edge-ends (mapv (fn [angle]
                           (v/last-intersection-with-shape
                            anchor-point (v/rotate (v/Vector. 0 -1) angle)
@@ -133,7 +133,7 @@
                (range num-fields))})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [edge-start edge-ends line num-fields]}]
-  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
         lines (vec (map-indexed
                     (fn [index edge-end]
                       (if (even? index)

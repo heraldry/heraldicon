@@ -391,7 +391,10 @@
                    :bend-group (bend-group-options context)
                    :bend-sinister-group (bend-sinister-group-options context))
       (not (or counterchanged?
-               plain?)) (assoc :outline? options/plain-outline?-option)
+               plain?)) (assoc :outline? options/plain-outline?-option
+                               :adapt-to-ordinaries? {:type :option.type/boolean
+                                                      :default true
+                                                      :ui/label :string.option/adapt-to-ordinaries?})
       (or subfield?
           root-field?
           semy-charge?) (update-in [:type :choices] #(->> %

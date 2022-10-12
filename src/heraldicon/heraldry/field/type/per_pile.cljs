@@ -173,7 +173,7 @@
 
 (defmethod interface/properties field-type [context]
   (let [{:keys [width height]
-         :as parent-environment} (interface/get-effective-parent-environment context)
+         :as parent-environment} (interface/get-subfields-environment context)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         orientation (interface/get-sanitized-data (c/++ context :orientation))
         geometry (interface/get-sanitized-data (c/++ context :geometry))
@@ -182,7 +182,7 @@
         percentage-base (if (#{:left :right} (:point anchor))
                           height
                           width)
-        parent-shape (interface/get-effective-parent-shape context)
+        parent-shape (interface/get-subfields-shape context)
         {anchor-point :anchor
          edge-start :point
          thickness :thickness} (pile/calculate-properties
@@ -225,7 +225,7 @@
      context)))
 
 (defmethod interface/subfield-environments field-type [context {:keys []}]
-  (let [{:keys [points]} (interface/get-effective-parent-environment context)
+  (let [{:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left bottom-right]} points]
     ;; TODO: replace with actual sub environments
     {:subfields [(environment/create (bb/from-points [top-left bottom-right]))
@@ -234,7 +234,7 @@
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line
                                                                         edge-start edge-left-end edge-right-end]}]
-  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge-left (line/create-with-extension context
                                                    line
                                                    edge-start edge-left-end

@@ -198,7 +198,7 @@
      :opposite-line opposite-line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-effective-parent-environment context)
+  (let [parent-environment (interface/get-subfields-environment context)
         sinister? (= (interface/get-raw-data (c/++ context :type))
                      :heraldry.field.type/per-bend-sinister)
         percentage-base (:height parent-environment)
@@ -247,7 +247,7 @@
         angle-left (angle/normalize (v/angle-to-point v/zero relative-left))
         angle-right (angle/normalize (v/angle-to-point v/zero relative-right))
         joint-angle (angle/normalize (- angle-left angle-right))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-subfields-shape context)
         edge-left (v/last-intersection-with-shape anchor-point relative-left parent-shape
                                                   :default? true :relative? true)
         edge-right (v/last-intersection-with-shape anchor-point relative-right parent-shape
@@ -266,7 +266,7 @@
      context)))
 
 (defmethod interface/subfield-environments field-type [context {[edge-left edge-corner edge-right] :edge}]
-  (let [{:keys [points]} (interface/get-effective-parent-environment context)
+  (let [{:keys [points]} (interface/get-subfields-environment context)
         {:keys [top bottom]} points]
     ;; TODO: needs to be smarter with chevron-angle
     {:subfields [(environment/create (bb/from-points [edge-corner top
@@ -276,7 +276,7 @@
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
                                                                  [edge-left edge-corner edge-right] :edge}]
-  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge-left (line/create-with-extension context
                                                    line
                                                    edge-corner edge-left

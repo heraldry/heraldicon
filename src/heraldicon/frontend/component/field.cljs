@@ -49,6 +49,7 @@
    (element/elements
     context
     [:inherit-environment?
+     :adapt-to-ordinaries?
      :type
      :origin
      :anchor

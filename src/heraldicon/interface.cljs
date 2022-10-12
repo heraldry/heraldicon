@@ -350,15 +350,6 @@
 (defn get-bounding-box [context]
   @(rf/subscribe [::bounding-box (c/scrub-render-hints context)]))
 
-(defn get-effective-parent-environment [context]
-  (-> context
-      get-parent-environment))
-
-(defn get-effective-parent-shape [context]
-  (-> context
-      parent
-      get-exact-shape))
-
 (rf/reg-sub-raw ::impacted-environment
   (fn [_app-db [_ context]]
     (reaction-or-cache
@@ -463,3 +454,37 @@
 
 (defn get-parent-field-shape [context]
   @(rf/subscribe [::parent-field-shape (c/scrub-render-hints context)]))
+
+(defmulti subfields-environment effective-component-type)
+
+(defmethod subfields-environment :default [context]
+  (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+    (get-impacted-environment context)
+    (get-environment context)))
+
+(rf/reg-sub-raw ::subfields-environment
+  (fn [_app-db [_ context]]
+    (reaction-or-cache
+     ::subfields-environment
+     context
+     #(subfields-environment context))))
+
+(defn get-subfields-environment [context]
+  @(rf/subscribe [::subfields-environment (c/scrub-render-hints context)]))
+
+(defmulti subfields-shape effective-component-type)
+
+(defmethod subfields-shape :default [context]
+  (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+    (get-exact-impacted-shape context)
+    (get-exact-shape context)))
+
+(rf/reg-sub-raw ::subfields-shape
+  (fn [_app-db [_ context]]
+    (reaction-or-cache
+     ::subfields-shape
+     context
+     #(subfields-shape context))))
+
+(defn get-subfields-shape [context]
+  @(rf/subscribe [::subfields-shape (c/scrub-render-hints context)]))

@@ -61,14 +61,14 @@
      :outline? options/plain-outline?-option}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-effective-parent-environment context)
+  (let [parent-environment (interface/get-subfields-environment context)
         {:keys [top bottom left right]} (:points parent-environment)
         percentage-base (:height parent-environment)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         anchor-point (position/calculate anchor parent-environment :fess)
         {edge-x :x
          edge-y :y} anchor-point
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-subfields-shape context)
         [left-end right-end] (v/intersections-with-shape
                               (v/Vector. (:x left) edge-y) (v/Vector. (:x right) edge-y)
                               parent-shape :default? true)
@@ -99,7 +99,7 @@
                                                                 [_edge-bottom-1 edge-bottom-2] :edge-bottom
                                                                 [_edge-left-1 edge-left-2] :edge-left
                                                                 [_edge-right-1 edge-right-2] :edge-right}]
-  (let [{:keys [points]} (interface/get-effective-parent-environment context)
+  (let [{:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(environment/create (bb/from-points [top-left edge-top-2
@@ -116,7 +116,7 @@
                                                                  [edge-bottom-1 edge-bottom-2] :edge-bottom
                                                                  [edge-left-1 edge-left-2] :edge-left
                                                                  [edge-right-1 edge-right-2] :edge-right}]
-  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge-top (line/create-with-extension context
                                                   line
                                                   edge-top-1 edge-top-2

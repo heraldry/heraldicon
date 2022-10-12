@@ -142,7 +142,7 @@
      :line line-style}))
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-effective-parent-environment context)
+  (let [parent-environment (interface/get-subfields-environment context)
         sinister? (= (interface/get-raw-data (c/++ context :type))
                      :heraldry.field.type/bendy-sinister)
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
@@ -168,7 +168,7 @@
                                (if (instance? v/Vector v)
                                  (v/rotate v (- angle))
                                  (path/rotate v (- angle))))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-subfields-shape context)
         rotated-parent-shape (-> parent-shape
                                  path/parse-path
                                  reverse-transform-fn
