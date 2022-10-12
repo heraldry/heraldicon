@@ -101,9 +101,9 @@
                            (interface/get-raw-data (c/++ context :geometry :size-mode))
                            size-mode-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:ignore-ordinary-impact? {:type :option.type/boolean
-                                :default false
-                                :ui/label :string.option/ignore-ordinary-impact?}
+     {:adapt-to-ordinaries? {:type :option.type/boolean
+                             :default true
+                             :ui/label :string.option/adapt-to-ordinaries?}
       :anchor {:point anchor-point-option
                :alignment {:type :option.type/choice
                            :choices position/alignment-choices

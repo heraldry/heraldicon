@@ -41,9 +41,9 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:ignore-ordinary-impact? {:type :option.type/boolean
-                                :default false
-                                :ui/label :string.option/ignore-ordinary-impact?}
+     {:adapt-to-ordinaries? {:type :option.type/boolean
+                             :default true
+                             :ui/label :string.option/adapt-to-ordinaries?}
       :anchor {:point {:type :option.type/choice
                        :choices (position/anchor-choices
                                  [:fess

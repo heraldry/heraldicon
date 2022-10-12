@@ -68,9 +68,9 @@
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
-    {:ignore-ordinary-impact? {:type :option.type/boolean
-                               :default false
-                               :ui/label :string.option/ignore-ordinary-impact?}
+    {:adapt-to-ordinaries? {:type :option.type/boolean
+                            :default true
+                            :ui/label :string.option/adapt-to-ordinaries?}
      :anchor {:point anchor-point-option
               :offset-x {:type :option.type/range
                          :min -45

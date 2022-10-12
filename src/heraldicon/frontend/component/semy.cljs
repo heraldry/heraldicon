@@ -9,7 +9,7 @@
 (defn- form [context]
   (element/elements
    context
-   [:ignore-ordinary-impact?
+   [:adapt-to-ordinaries?
     :anchor
     :layout
     :rectangular?

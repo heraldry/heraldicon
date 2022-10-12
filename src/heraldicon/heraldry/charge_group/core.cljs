@@ -242,15 +242,3 @@
                          used-charges))
                    (when (= charge-group-type :heraldry.charge-group.type/in-orle)
                      " in orle"))))
-
-(defmethod interface/parent-field-environment :heraldry/charge-group [context]
-  (let [parent-context (interface/parent context)]
-    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
-      (interface/get-environment parent-context)
-      (interface/get-impacted-environment parent-context))))
-
-(defmethod interface/parent-field-shape :heraldry/charge-group [context]
-  (let [parent-context (interface/parent context)]
-    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
-      (interface/get-exact-shape parent-context)
-      (interface/get-exact-impacted-shape parent-context))))

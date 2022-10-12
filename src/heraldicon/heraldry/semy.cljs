@@ -10,9 +10,9 @@
 (derive :heraldry/semy :heraldry.options/root)
 
 (defmethod interface/options :heraldry/semy [_context]
-  (-> {:ignore-ordinary-impact? {:type :option.type/boolean
-                                 :default false
-                                 :ui/label :string.option/ignore-ordinary-impact?}
+  (-> {:adapt-to-ordinaries? {:type :option.type/boolean
+                              :default true
+                              :ui/label :string.option/adapt-to-ordinaries?}
        :layout {:num-fields-x {:type :option.type/range
                                :min 1
                                :max 20
@@ -160,15 +160,3 @@
                              (-> context
                                  (c/++ :charge)
                                  (assoc-in [:blazonry :drop-article?] true)))))
-
-(defmethod interface/parent-field-environment :heraldry/semy [context]
-  (let [parent-context (interface/parent context)]
-    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
-      (interface/get-environment parent-context)
-      (interface/get-impacted-environment parent-context))))
-
-(defmethod interface/parent-field-shape :heraldry/semy [context]
-  (let [parent-context (interface/parent context)]
-    (if (interface/get-sanitized-data (c/++ context :ignore-ordinary-impact?))
-      (interface/get-exact-shape parent-context)
-      (interface/get-exact-impacted-shape parent-context))))

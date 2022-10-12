@@ -249,7 +249,7 @@
                           nil)]
     [:div {:style {:display "table-cell"
                    :vertical-align "top"}}
-     [element/element (c/++ context :ignore-ordinary-impact?)]
+     [element/element (c/++ context :adapt-to-ordinaries?)]
 
      [charge-group-preset-select/charge-group-preset-select context]
 

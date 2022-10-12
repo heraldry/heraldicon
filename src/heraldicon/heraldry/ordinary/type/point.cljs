@@ -33,9 +33,9 @@
                        (options/override-if-exists [:base-line] nil)
                        (options/override-if-exists [:fimbriation :alignment :default] :outside))]
     (ordinary.shared/add-humetty-and-voided
-     {:ignore-ordinary-impact? {:type :option.type/boolean
-                                :default false
-                                :ui/label :string.option/ignore-ordinary-impact?}
+     {:adapt-to-ordinaries? {:type :option.type/boolean
+                             :default true
+                             :ui/label :string.option/adapt-to-ordinaries?}
       :line line-style
       :variant {:type :option.type/choice
                 :choices variant-choices
