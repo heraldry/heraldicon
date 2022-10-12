@@ -430,7 +430,10 @@
 (defmulti parent-field-environment effective-component-type)
 
 (defmethod parent-field-environment :default [context]
-  (get-environment (parent context)))
+  (let [parent-context (parent context)]
+    (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+      (get-impacted-environment parent-context)
+      (get-environment parent-context))))
 
 (rf/reg-sub-raw ::parent-field-environment
   (fn [_app-db [_ context]]
@@ -446,7 +449,10 @@
 (defmulti parent-field-shape effective-component-type)
 
 (defmethod parent-field-shape :default [context]
-  (get-exact-parent-shape (parent context)))
+  (let [parent-context (parent context)]
+    (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+      (get-exact-impacted-shape parent-context)
+      (get-exact-shape parent-context))))
 
 (rf/reg-sub-raw ::parent-field-shape
   (fn [_app-db [_ context]]

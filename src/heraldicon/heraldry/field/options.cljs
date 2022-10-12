@@ -91,9 +91,9 @@
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         auto-positioned? (seq affected-paths)]
     (when auto-positioned?
-      {:ignore-ordinary-impact? {:type :option.type/boolean
-                                 :default false
-                                 :ui/label :string.option/ignore-ordinary-impact?}
+      {:adapt-to-ordinaries? {:type :option.type/boolean
+                              :default true
+                              :ui/label :string.option/adapt-to-ordinaries?}
        :default-size {:type :option.type/range
                       :min 0.1
                       :max 90
@@ -120,9 +120,9 @@
                 default-size]} (interface/get-auto-ordinary-info ordinary-type context)
         auto-positioned? (seq affected-paths)]
     (when auto-positioned?
-      {:ignore-ordinary-impact? {:type :option.type/boolean
-                                 :default false
-                                 :ui/label :string.option/ignore-ordinary-impact?}
+      {:adapt-to-ordinaries? {:type :option.type/boolean
+                              :default true
+                              :ui/label :string.option/adapt-to-ordinaries?}
        :default-size {:type :option.type/range
                       :min 0.1
                       :max 90
@@ -167,9 +167,9 @@
                               (interface/get-raw-data (c/++ context :chevron-group :origin :point))
                               origin-point-option)]
     (when auto-positioned?
-      {:ignore-ordinary-impact? {:type :option.type/boolean
-                                 :default false
-                                 :ui/label :string.option/ignore-ordinary-impact?}
+      {:adapt-to-ordinaries? {:type :option.type/boolean
+                              :default true
+                              :ui/label :string.option/adapt-to-ordinaries?}
        :origin (cond-> {:point origin-point-option
                         :ui/label :string.charge.attitude/issuant
                         :ui/element :ui.element/position}
@@ -254,9 +254,9 @@
                                    (interface/get-raw-data (c/++ context :bend-group :orientation :point))
                                    orientation-point-option)]
     (when auto-positioned?
-      {:ignore-ordinary-impact? {:type :option.type/boolean
-                                 :default false
-                                 :ui/label :string.option/ignore-ordinary-impact?}
+      {:adapt-to-ordinaries? {:type :option.type/boolean
+                              :default true
+                              :ui/label :string.option/adapt-to-ordinaries?}
        :orientation (cond-> {:point orientation-point-option
                              :ui/label :string.option/orientation
                              :ui/element :ui.element/position}
@@ -324,9 +324,9 @@
                                    (interface/get-raw-data (c/++ context :bend-sinister-group :orientation :point))
                                    orientation-point-option)]
     (when auto-positioned?
-      {:ignore-ordinary-impact? {:type :option.type/boolean
-                                 :default false
-                                 :ui/label :string.option/ignore-ordinary-impact?}
+      {:adapt-to-ordinaries? {:type :option.type/boolean
+                              :default true
+                              :ui/label :string.option/adapt-to-ordinaries?}
        :orientation (cond-> {:point orientation-point-option
                              :ui/label :string.option/orientation
                              :ui/element :ui.element/position}

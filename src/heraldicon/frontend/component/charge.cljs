@@ -10,7 +10,7 @@
 
 (defn- form [context]
   [:<>
-   (element/element (c/++ context :ignore-ordinary-impact?))
+   (element/element (c/++ context :adapt-to-ordinaries?))
 
    (when-not (interface/get-raw-data (c/++ context :preview?))
      [element/element (c/++ context :type)])

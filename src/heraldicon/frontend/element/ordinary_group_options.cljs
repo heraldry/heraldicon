@@ -30,7 +30,7 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/fess-group]]
         (element/elements
          fess-group-context
-         [:ignore-ordinary-impact?
+         [:adapt-to-ordinaries?
           :default-size
           :default-spacing
           :offset-y])])
@@ -42,7 +42,7 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/pale-group]]
         (element/elements
          pale-group-context
-         [:ignore-ordinary-impact?
+         [:adapt-to-ordinaries?
           :default-size
           :default-spacing
           :offset-x])])
@@ -54,7 +54,7 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/chevron-group]]
         (element/elements
          chevron-group-context
-         [:ignore-ordinary-impact?
+         [:adapt-to-ordinaries?
           :origin
           :orientation
           :default-size
@@ -69,7 +69,7 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/bend-group]]
         (element/elements
          bend-group-context
-         [:ignore-ordinary-impact?
+         [:adapt-to-ordinaries?
           :orientation
           :default-size
           :default-spacing
@@ -82,7 +82,7 @@
                        :margin-bottom "0.5em"}} [tr :string.option.section/bend-sinister-group]]
         (element/elements
          bend-sinister-group-context
-         [:ignore-ordinary-impact?
+         [:adapt-to-ordinaries?
           :orientation
           :default-size
           :default-spacing

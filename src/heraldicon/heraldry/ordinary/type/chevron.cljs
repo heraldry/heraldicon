@@ -30,7 +30,7 @@
         auto-positioned? auto-position-index
         default-size (interface/get-sanitized-data (c/++ parent-context :chevron-group :default-size))
         default-spacing (interface/get-sanitized-data (c/++ parent-context :chevron-group :default-spacing))
-        default-ignore-ordinary-impact? (interface/get-sanitized-data (c/++ parent-context :chevron-group :ignore-ordinary-impact?))
+        default-adapt-to-ordinaries? (interface/get-sanitized-data (c/++ parent-context :chevron-group :adapt-to-ordinaries?))
         line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:offset :min] 0)
                        (options/override-if-exists [:base-line] nil)
@@ -141,14 +141,14 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:ignore-ordinary-impact? {:type :option.type/boolean
-                                :default (if auto-positioned?
-                                           default-ignore-ordinary-impact?
-                                           false)
-                                :override (when auto-positioned?
-                                            default-ignore-ordinary-impact?)
-                                :ui/disabled? (boolean auto-positioned?)
-                                :ui/label :string.option/ignore-ordinary-impact?}
+     {:adapt-to-ordinaries? {:type :option.type/boolean
+                             :default (if auto-positioned?
+                                        default-adapt-to-ordinaries?
+                                        true)
+                             :override (when auto-positioned?
+                                         default-adapt-to-ordinaries?)
+                             :ui/disabled? (boolean auto-positioned?)
+                             :ui/label :string.option/adapt-to-ordinaries?}
       :anchor (cond-> {:point {:type :option.type/choice
                                :choices (position/anchor-choices
                                          [:auto

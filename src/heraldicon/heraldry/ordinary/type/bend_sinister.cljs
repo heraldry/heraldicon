@@ -20,7 +20,7 @@
         auto-positioned? auto-position-index
         default-size (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :default-size))
         default-spacing (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :default-spacing))
-        default-ignore-ordinary-impact? (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :ignore-ordinary-impact?))
+        default-adapt-to-ordinaries? (interface/get-sanitized-data (c/++ parent-context :bend-sinister-group :adapt-to-ordinaries?))
         line-style (-> (line/options (c/++ context :line))
                        (options/override-if-exists [:fimbriation :alignment :default] :outside)
                        (cond->
@@ -101,14 +101,14 @@
                                    (interface/get-raw-data (c/++ context :orientation :point))
                                    orientation-point-option)]
     (ordinary.shared/add-humetty-and-voided
-     {:ignore-ordinary-impact? {:type :option.type/boolean
-                                :default (if auto-positioned?
-                                           default-ignore-ordinary-impact?
-                                           false)
-                                :ui/override (when auto-positioned?
-                                               default-ignore-ordinary-impact?)
-                                :ui/disabled? (boolean auto-positioned?)
-                                :ui/label :string.option/ignore-ordinary-impact?}
+     {:adapt-to-ordinaries? {:type :option.type/boolean
+                             :default (if auto-positioned?
+                                        default-adapt-to-ordinaries?
+                                        true)
+                             :override (when auto-positioned?
+                                         default-adapt-to-ordinaries?)
+                             :ui/disabled? (boolean auto-positioned?)
+                             :ui/label :string.option/adapt-to-ordinaries?}
       :anchor (cond-> {:point anchor-point-option
                        :ui/label :string.option/anchor
                        :ui/element :ui.element/position}

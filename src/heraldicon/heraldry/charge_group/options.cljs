@@ -14,9 +14,9 @@
   (options/choices->map type-choices))
 
 (def ^:private shared-options
-  {:ignore-ordinary-impact? {:type :option.type/boolean
-                             :default false
-                             :ui/label :string.option/ignore-ordinary-impact?}
+  {:adapt-to-ordinaries? {:type :option.type/boolean
+                          :default true
+                          :ui/label :string.option/adapt-to-ordinaries?}
    :type {:type :option.type/choice
           :choices type-choices
           :ui/label :string.option/type
