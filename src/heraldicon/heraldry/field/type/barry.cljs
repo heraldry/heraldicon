@@ -49,7 +49,7 @@
                        :fimbriation? false)})
 
 (defmethod interface/properties field-type [context]
-  (let [{:keys [height points]} (interface/get-effective-parent-environment context)
+  (let [{:keys [height points]} (interface/get-subfields-environment context)
         {:keys [center left right]} points
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
         offset-y (interface/get-sanitized-data (c/++ context :layout :offset-y))
@@ -63,7 +63,7 @@
                (- (/ required-height 2))
                (+ (* offset-y
                      part-height)))
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-subfields-shape context)
         edges (mapv (fn [i]
                       (let [edge-y (+ y0 (* i part-height))]
                         (v/intersections-with-shape
@@ -101,7 +101,7 @@
                     edges)})
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line edges]}]
-  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
         lines (vec (map-indexed
                     (fn [index [edge-start edge-end]]
                       ;; first line isn't needed

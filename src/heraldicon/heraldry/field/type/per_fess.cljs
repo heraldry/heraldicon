@@ -41,13 +41,13 @@
    :line (line/options (c/++ context :line))})
 
 (defmethod interface/properties field-type [context]
-  (let [parent-environment (interface/get-effective-parent-environment context)
+  (let [parent-environment (interface/get-subfields-environment context)
         {:keys [left right]} (:points parent-environment)
         percentage-base (:height parent-environment)
         anchor (interface/get-sanitized-data (c/++ context :anchor))
         anchor-point (position/calculate anchor parent-environment :fess)
         edge-y (:y anchor-point)
-        parent-shape (interface/get-exact-parent-shape context)
+        parent-shape (interface/get-subfields-shape context)
         [edge-left edge-right] (v/intersections-with-shape
                                 (v/Vector. (:x left) edge-y) (v/Vector. (:x right) edge-y)
                                 parent-shape :default? true)
@@ -61,7 +61,7 @@
      context)))
 
 (defmethod interface/subfield-environments field-type [context {[edge-left edge-right] :edge}]
-  (let [{:keys [points]} (interface/get-effective-parent-environment context)
+  (let [{:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(environment/create (bb/from-points [top-left top-right
@@ -71,7 +71,7 @@
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [line]
                                                                  [edge-left edge-right] :edge}]
-  (let [{:keys [bounding-box]} (interface/get-effective-parent-environment context)
+  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge (line/create-with-extension context
                                               line
                                               edge-left edge-right

@@ -71,7 +71,7 @@
             :ui/element :ui.element/field-layout}})
 
 (defmethod interface/properties field-type [context]
-  (let [{:keys [width height points]} (interface/get-effective-parent-environment context)
+  (let [{:keys [width height points]} (interface/get-subfields-environment context)
         {:keys [center]} points
         num-fields-x (interface/get-sanitized-data (c/++ context :layout :num-fields-x))
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))
@@ -124,7 +124,7 @@
 
 (defmethod interface/subfield-render-shapes field-type [context {:keys [parts num-fields-x num-fields-y
                                                                         x-values y-values]}]
-  (let [{:keys [points]} (interface/get-effective-parent-environment context)
+  (let [{:keys [points]} (interface/get-subfields-environment context)
         {:keys [top bottom left right]} points
         min-x (- (:x left) 50)
         max-x (+ (:x right) 50)
