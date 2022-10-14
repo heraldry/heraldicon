@@ -344,8 +344,7 @@
       :line-length line-length
       :percentage-base percentage-base
       :humetty-percentage-base percentage-base
-      :voided-percentage-base band-size
-      :num-cottise-parts 3}
+      :voided-percentage-base band-size}
      context)))
 
 (defmethod interface/environment ordinary-type [context {:keys [fess]
@@ -459,28 +458,26 @@
      :joint-angle joint-angle
      :band-size band-size}))
 
-(defmethod cottising/cottise-properties ordinary-type [{:keys [cottise-parts path]
-                                                        :as context}
+(defmethod cottising/cottise-properties ordinary-type [context
                                                        {:keys [line-length percentage-base
                                                                edge-bottom edge-left edge-right
                                                                humetty]
                                                         reference-line :line
                                                         reference-opposite-line :opposite-line
                                                         reference-extra-line :extra-line}]
-  (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
-    (let [distance (interface/get-sanitized-data (c/++ context :distance))
-          distance (math/percent-of percentage-base distance)
-          thickness (interface/get-sanitized-data (c/++ context :thickness))
-          band-size (math/percent-of percentage-base thickness)
-          part (get cottise-parts path 0)
-          [edge ref-line] (case part
-                            0 [edge-right reference-line]
-                            1 [edge-left reference-opposite-line]
-                            2 [edge-bottom reference-extra-line])]
-      (post-process/properties
-       (-> (cottise-part-properties edge distance band-size ref-line)
-           (assoc :line-length line-length
-                  :percentage-base percentage-base
-                  :swap-lines? true
-                  :humetty humetty))
-       context))))
+  (let [kind (cottising/kind context)
+        distance (interface/get-sanitized-data (c/++ context :distance))
+        distance (math/percent-of percentage-base distance)
+        thickness (interface/get-sanitized-data (c/++ context :thickness))
+        band-size (math/percent-of percentage-base thickness)
+        [edge ref-line] (case kind
+                          :cottise-1 [edge-right reference-line]
+                          :cottise-opposite-1 [edge-left reference-opposite-line]
+                          :cottise-extra-1 [edge-bottom reference-extra-line])]
+    (post-process/properties
+     (-> (cottise-part-properties edge distance band-size ref-line)
+         (assoc :line-length line-length
+                :percentage-base percentage-base
+                :swap-lines? true
+                :humetty humetty))
+     context)))
