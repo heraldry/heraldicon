@@ -180,11 +180,6 @@
   (cond-> (parent context)
     (cottise-context? context) parent))
 
-(defmulti effective-parent-environment effective-component-type)
-
-(defmethod effective-parent-environment :default [context]
-  @(rf/subscribe [::environment (get-effective-parent-context context)]))
-
 (rf/reg-sub-raw ::parent-environment
   (fn [_app-db [_ context]]
     (reaction-or-cache
@@ -451,36 +446,26 @@
 (defn get-parent-field-shape [context]
   @(rf/subscribe [::parent-field-shape (c/scrub-render-hints context)]))
 
-(defmulti subfields-environment effective-component-type)
-
-(defmethod subfields-environment :default [context]
-  (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
-    (get-impacted-environment context)
-    (get-environment context)))
-
 (rf/reg-sub-raw ::subfields-environment
   (fn [_app-db [_ context]]
     (reaction-or-cache
      ::subfields-environment
      context
-     #(subfields-environment context))))
+     #(if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+        (get-impacted-environment context)
+        (get-environment context)))))
 
 (defn get-subfields-environment [context]
   @(rf/subscribe [::subfields-environment (c/scrub-render-hints context)]))
-
-(defmulti subfields-shape effective-component-type)
-
-(defmethod subfields-shape :default [context]
-  (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
-    (get-exact-impacted-shape context)
-    (get-exact-shape context)))
 
 (rf/reg-sub-raw ::subfields-shape
   (fn [_app-db [_ context]]
     (reaction-or-cache
      ::subfields-shape
      context
-     #(subfields-shape context))))
+     #(if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+        (get-exact-impacted-shape context)
+        (get-exact-shape context)))))
 
 (defn get-subfields-shape [context]
   @(rf/subscribe [::subfields-shape (c/scrub-render-hints context)]))
