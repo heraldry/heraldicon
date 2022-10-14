@@ -253,7 +253,8 @@
                               path/to-svg)
             rotated-bounding-box (bb/from-paths [rotated-shape])
             start-x 0
-            end-x (:max-x rotated-bounding-box)
+            end-x (- (:max-x rotated-bounding-box)
+                     (:min-x rotated-bounding-box))
             line-length (- end-x start-x)
             percentage-base (min width height)
             apply-percentage (partial math/percent-of percentage-base)
