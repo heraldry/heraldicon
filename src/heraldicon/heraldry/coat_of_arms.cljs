@@ -39,18 +39,21 @@
     {:type :heraldry/coat-of-arms
      :escutcheon-data (escutcheon/transform-to-width escutcheon-data coat-of-arms-target-width)}))
 
-(defmethod interface/environment :heraldry/coat-of-arms [_context {:keys [escutcheon-data]}]
-  (:environment escutcheon-data))
+(defmethod interface/environment :heraldry/coat-of-arms [context]
+  (-> (interface/get-properties context) :escutcheon-data :environment))
 
-(defmethod interface/render-shape :heraldry/coat-of-arms [context {:keys [escutcheon-data]}]
+(defmethod interface/render-shape :heraldry/coat-of-arms [context]
   (let [squiggly? (interface/render-option :squiggly? context)]
-    {:shape [(cond-> (:shape escutcheon-data)
-               squiggly? squiggly/squiggly-path)]}))
+    {:shape [(-> (interface/get-properties context)
+                 :escutcheon-data
+                 :shape
+                 (cond->
+                   squiggly? squiggly/squiggly-path))]}))
 
-(defmethod interface/bounding-box :heraldry/coat-of-arms [_context {:keys [escutcheon-data]}]
-  (:shape-bounding-box escutcheon-data))
+(defmethod interface/bounding-box :heraldry/coat-of-arms [context]
+  (-> (interface/get-properties context) :escutcheon-data :shape-bounding-box))
 
-(defmethod interface/exact-shape :heraldry/coat-of-arms [context _properties]
+(defmethod interface/exact-shape :heraldry/coat-of-arms [context]
   (-> (interface/get-render-shape context) :shape first))
 
 (defmethod interface/render-component :heraldry/coat-of-arms [context]

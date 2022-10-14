@@ -72,11 +72,12 @@
       :percentage-base percentage-base}
      context)))
 
-(defmethod interface/environment ordinary-type [context _properties]
+(defmethod interface/environment ordinary-type [context]
   (interface/get-parent-field-environment context))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [edge line]}]
-  (let [parent-environment (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [edge line]} (interface/get-properties context)
+        parent-environment (interface/get-parent-field-environment context)
         big-shape (shape/build-shape context :full)
         shape (cond-> edge
                 (not= (:type line) :straight) (line/modify-path line parent-environment))]

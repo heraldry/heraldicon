@@ -46,6 +46,6 @@
 (defmethod interface/properties field-type [_context]
   {:type field-type})
 
-(defmethod interface/subfield-environments field-type [_context _properties])
+(defmethod interface/subfield-environments field-type [_context])
 
-(defmethod interface/subfield-render-shapes field-type [_context _properties])
+(defmethod interface/subfield-render-shapes field-type [_context])

@@ -93,16 +93,18 @@
       :num-subfields num-fields-x}
      context)))
 
-(defmethod interface/subfield-environments field-type [_context {:keys [edges start-y end-y part-width]}]
-  {:subfields (mapv (fn [[edge-start _edge-end]]
-                      (environment/create (bb/from-points [(assoc edge-start :y start-y)
-                                                           (assoc edge-start
-                                                                  :x (+ (:x edge-start) part-width)
-                                                                  :y end-y)])))
-                    edges)})
+(defmethod interface/subfield-environments field-type [context]
+  (let [{:keys [edges start-y end-y part-width]} (interface/get-properties context)]
+    {:subfields (mapv (fn [[edge-start _edge-end]]
+                        (environment/create (bb/from-points [(assoc edge-start :y start-y)
+                                                             (assoc edge-start
+                                                                    :x (+ (:x edge-start) part-width)
+                                                                    :y end-y)])))
+                      edges)}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line edges]}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line edges]} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         lines (vec (map-indexed
                     (fn [index [edge-start edge-end]]
                       ;; first line isn't needed

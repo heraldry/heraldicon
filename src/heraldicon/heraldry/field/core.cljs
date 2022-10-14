@@ -192,7 +192,7 @@
       (or (c/get-key context attribute-override-key)
           (get-attribute-fn parent-component-context)))))
 
-(defmethod interface/environment :heraldry/field [context _properties]
+(defmethod interface/environment :heraldry/field [context]
   (component-attribute context
                        interface/get-environment
                        ;; this will use the unimpacted parent field for subfields,
@@ -200,7 +200,7 @@
                        interface/get-parent-field-environment
                        :parent-environment-override))
 
-(defmethod interface/exact-shape :heraldry/field [context _properties]
+(defmethod interface/exact-shape :heraldry/field [context]
   (let [{:keys [reverse-transform-fn]} (interface/get-properties (interface/parent context))
         shape (component-attribute context
                                    interface/get-exact-shape

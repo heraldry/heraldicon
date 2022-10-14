@@ -145,9 +145,10 @@
       :num-subfields 2}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {:keys [sinister?]
-                                                                [edge-start edge-end] :edge}]
-  (let [{:keys [points]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-environments field-type [context]
+  (let [{:keys [sinister?]
+         [edge-start edge-end] :edge} (interface/get-properties context)
+        {:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(let [points [(if sinister?
@@ -161,9 +162,10 @@
                                edge-start edge-end]]
                    (environment/create (bb/from-points points) {:fess (apply v/avg points)}))]}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line]
-                                                                 [edge-start edge-end] :edge}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line]
+         [edge-start edge-end] :edge} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge (line/create-with-extension context
                                               line
                                               edge-start edge-end

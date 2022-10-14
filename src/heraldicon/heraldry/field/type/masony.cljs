@@ -214,8 +214,8 @@
      :thickness thickness
      :render-fn render}))
 
-(defmethod interface/subfield-environments field-type [_context _properties]
+(defmethod interface/subfield-environments field-type [_context]
   nil)
 
-(defmethod interface/subfield-render-shapes field-type [_context _properties]
+(defmethod interface/subfield-render-shapes field-type [_context]
   nil)

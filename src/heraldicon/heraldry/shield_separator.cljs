@@ -78,7 +78,7 @@
 (defmethod interface/properties :heraldry/shield-separator [_context]
   {:type :heraldry/shield-separator})
 
-(defmethod interface/bounding-box :heraldry/shield-separator [_context _properties]
+(defmethod interface/bounding-box :heraldry/shield-separator [_context]
   nil)
 
 (defmethod interface/render-component :heraldry/shield-separator [_context]

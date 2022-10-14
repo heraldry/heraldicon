@@ -279,17 +279,19 @@
       :num-subfields 3}
      context)))
 
-(defmethod interface/subfield-environments field-type [_context {:keys [edge-start edge-bottom-end
-                                                                        edge-left-end edge-right-end]}]
-  ;; TODO: include outer environment points, based on rotation
-  {:subfields [(environment/create (bb/from-points [edge-start edge-left-end edge-right-end]))
-               (environment/create (bb/from-points [edge-start edge-left-end edge-bottom-end]))
-               (environment/create (bb/from-points [edge-start edge-right-end edge-bottom-end]))]})
+(defmethod interface/subfield-environments field-type [context]
+  (let [{:keys [edge-start edge-bottom-end
+                edge-left-end edge-right-end]} (interface/get-properties context)]
+    ;; TODO: include outer environment points, based on rotation
+    {:subfields [(environment/create (bb/from-points [edge-start edge-left-end edge-right-end]))
+                 (environment/create (bb/from-points [edge-start edge-left-end edge-bottom-end]))
+                 (environment/create (bb/from-points [edge-start edge-right-end edge-bottom-end]))]}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line extra-line
-                                                                        edge-start edge-bottom-end
-                                                                        edge-left-end edge-right-end]}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line opposite-line extra-line
+                edge-start edge-bottom-end
+                edge-left-end edge-right-end]} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge-left (line/create-with-extension context
                                                    line
                                                    edge-start edge-left-end

@@ -110,8 +110,8 @@
 (defmethod interface/properties field-type [context]
   ((get-method interface/properties :heraldry.field.type/per-bend) context))
 
-(defmethod interface/subfield-environments field-type [context properties]
-  ((get-method interface/subfield-environments :heraldry.field.type/per-bend) context properties))
+(defmethod interface/subfield-environments field-type [context]
+  ((get-method interface/subfield-environments :heraldry.field.type/per-bend) context))
 
-(defmethod interface/subfield-render-shapes field-type [context properties]
-  ((get-method interface/subfield-render-shapes :heraldry.field.type/per-bend) context properties))
+(defmethod interface/subfield-render-shapes field-type [context]
+  ((get-method interface/subfield-render-shapes :heraldry.field.type/per-bend) context))

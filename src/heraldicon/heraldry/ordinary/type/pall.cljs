@@ -347,11 +347,12 @@
       :voided-percentage-base band-size}
      context)))
 
-(defmethod interface/environment ordinary-type [context {:keys [fess]
-                                                         [bottom-1 _corner-top bottom-2] :edge-bottom
-                                                         [left-1 _corner-left left-2] :edge-left
-                                                         [right-1 _corner-right right-2] :edge-right}]
-  (let [{:keys [points]} (interface/get-parent-field-environment context)
+(defmethod interface/environment ordinary-type [context]
+  (let [{:keys [fess]
+         [bottom-1 _corner-top bottom-2] :edge-bottom
+         [left-1 _corner-left left-2] :edge-left
+         [right-1 _corner-right right-2] :edge-right} (interface/get-properties context)
+        {:keys [points]} (interface/get-parent-field-environment context)
         bounding-box-points [bottom-1 bottom-2
                              left-1 left-2
                              right-1 right-2
@@ -363,12 +364,13 @@
     (environment/create (bb/from-points bounding-box-points)
                         {:fess fess})))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line extra-line]
-                                                          [bottom-1 corner-bottom bottom-2] :edge-bottom
-                                                          [left-1 corner-left left-2] :edge-left
-                                                          [right-1 corner-right right-2] :edge-right
-                                                          :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [line opposite-line extra-line]
+         [bottom-1 corner-bottom bottom-2] :edge-bottom
+         [left-1 corner-left left-2] :edge-left
+         [right-1 corner-right right-2] :edge-right
+         :as properties} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-edge-bottom-first (line/create-with-extension context
                                                            extra-line
                                                            corner-bottom bottom-1

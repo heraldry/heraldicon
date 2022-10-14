@@ -90,19 +90,21 @@
       :num-subfields 3}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {[edge-1-top edge-1-bottom] :edge-1
-                                                                [edge-2-top edge-2-bottom] :edge-2}]
-  (let [{:keys [points]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-environments field-type [context]
+  (let [{[edge-1-top edge-1-bottom] :edge-1
+         [edge-2-top edge-2-bottom] :edge-2} (interface/get-properties context)
+        {:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left top-right]} points]
     {:subfields [(environment/create (bb/from-points [top-left edge-1-top edge-1-bottom]))
                  (environment/create (bb/from-points [edge-1-top edge-1-bottom
                                                       edge-2-top edge-2-bottom]))
                  (environment/create (bb/from-points [top-right edge-2-top edge-2-bottom]))]}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
-                                                                 [edge-1-top edge-1-bottom] :edge-1
-                                                                 [edge-2-top edge-2-bottom] :edge-2}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line opposite-line]
+         [edge-1-top edge-1-bottom] :edge-1
+         [edge-2-top edge-2-bottom] :edge-2} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge-1 (line/create-with-extension context
                                                 line
                                                 edge-1-top edge-1-bottom

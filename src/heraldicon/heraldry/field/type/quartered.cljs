@@ -94,12 +94,13 @@
       :overlap?-fn #{0 3}}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {:keys [anchor-point]
-                                                                [_edge-top-1 edge-top-2] :edge-top
-                                                                [_edge-bottom-1 edge-bottom-2] :edge-bottom
-                                                                [_edge-left-1 edge-left-2] :edge-left
-                                                                [_edge-right-1 edge-right-2] :edge-right}]
-  (let [{:keys [points]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-environments field-type [context]
+  (let [{:keys [anchor-point]
+         [_edge-top-1 edge-top-2] :edge-top
+         [_edge-bottom-1 edge-bottom-2] :edge-bottom
+         [_edge-left-1 edge-left-2] :edge-left
+         [_edge-right-1 edge-right-2] :edge-right} (interface/get-properties context)
+        {:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(environment/create (bb/from-points [top-left edge-top-2
@@ -111,12 +112,13 @@
                  (environment/create (bb/from-points [anchor-point edge-right-2
                                                       edge-bottom-2 bottom-right]))]}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
-                                                                 [edge-top-1 edge-top-2] :edge-top
-                                                                 [edge-bottom-1 edge-bottom-2] :edge-bottom
-                                                                 [edge-left-1 edge-left-2] :edge-left
-                                                                 [edge-right-1 edge-right-2] :edge-right}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line opposite-line]
+         [edge-top-1 edge-top-2] :edge-top
+         [edge-bottom-1 edge-bottom-2] :edge-bottom
+         [edge-left-1 edge-left-2] :edge-left
+         [edge-right-1 edge-right-2] :edge-right} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge-top (line/create-with-extension context
                                                   line
                                                   edge-top-1 edge-top-2

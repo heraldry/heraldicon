@@ -111,8 +111,7 @@
 
 (defmethod interface/auto-arrangement ordinary-type [_ordinary-type context]
   (let [{:keys [ordinary-contexts
-                num-ordinaries
-                default-spacing]} (interface/get-auto-ordinary-info ordinary-type context)
+                num-ordinaries]} (interface/get-auto-ordinary-info ordinary-type context)
         auto-positioned? (> num-ordinaries 1)]
     (if auto-positioned?
       (let [{:keys [width height]} (interface/get-parent-field-environment (first ordinary-contexts))
@@ -171,11 +170,12 @@
       :percentage-base percentage-base}
      context)))
 
-(defmethod interface/environment ordinary-type [context _properties]
+(defmethod interface/environment ordinary-type [context]
   (interface/get-parent-field-environment context))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [outer-edge inner-edge line opposite-line]}]
-  (let [parent-environment (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [outer-edge inner-edge line opposite-line]} (interface/get-properties context)
+        parent-environment (interface/get-parent-field-environment context)
         outer-shape (cond-> outer-edge
                       (not= (:type opposite-line) :straight) (line/modify-path opposite-line parent-environment
                                                                                :outer-shape? true))

@@ -243,15 +243,17 @@
       :voided-percentage-base (/ thickness 2)}
      context)))
 
-(defmethod interface/environment ordinary-type [_context {[left point right] :upper}]
-  (let [;; TODO: needs to be improved
+(defmethod interface/environment ordinary-type [context]
+  (let [{[left point right] :upper} (interface/get-properties context)
+        ;; TODO: needs to be improved
         bounding-box-points [point left right]]
     (environment/create (bb/from-points bounding-box-points))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
-                                                          [left point right] :upper
-                                                          :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [line opposite-line]
+         [left point right] :upper
+         :as properties} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-left (line/create-with-extension context
                                               line
                                               point left

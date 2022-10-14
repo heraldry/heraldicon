@@ -57,17 +57,19 @@
       :voided-percentage-base band-size}
      context)))
 
-(defmethod interface/environment ordinary-type [context {[upper-left upper-right] :upper}]
-  (let [{:keys [points]} (interface/get-parent-field-environment context)
+(defmethod interface/environment ordinary-type [context]
+  (let [{[upper-left upper-right] :upper} (interface/get-properties context)
+        {:keys [points]} (interface/get-parent-field-environment context)
         {:keys [bottom]} points
         bounding-box-points [upper-left upper-right
                              bottom]]
     (environment/create (bb/from-points bounding-box-points))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [line]
-                                                          [upper-left upper-right] :upper
-                                                          :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [line]
+         [upper-left upper-right] :upper
+         :as properties} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-upper (line/create-with-extension context
                                                line
                                                upper-left upper-right

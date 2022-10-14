@@ -145,16 +145,14 @@
 (defn get-properties [context]
   @(rf/subscribe [::properties (c/scrub-render-hints context)]))
 
-(defmulti environment (fn [_context properties]
-                        (:type properties)))
+(defmulti environment effective-component-type)
 
-(defmethod environment :default [_context _properties])
+(defmethod environment :default [_context])
 
-(defmulti subfield-environments (fn [_context properties]
-                                  (:type properties)))
+(defmulti subfield-environments effective-component-type)
 
-(defmethod subfield-environments nil [_context _properties])
-(defmethod subfield-environments :default [context _properties]
+(defmethod subfield-environments nil [_context])
+(defmethod subfield-environments :default [context]
   (log/warn :not-implemented 'subfield-environments context))
 
 (rf/reg-sub-raw ::subfield-environments
@@ -163,7 +161,7 @@
      ::subfield-environments
      context
      #(let [context (resolve-context context)]
-        (subfield-environments context (get-properties context))))))
+        (subfield-environments context)))))
 
 (defn get-subfield-environments [context]
   @(rf/subscribe [::subfield-environments (c/scrub-render-hints context)]))
@@ -174,7 +172,7 @@
      ::environment
      context
      #(let [context (resolve-context context)]
-        (environment context (get-properties context))))))
+        (environment context)))))
 
 (defn get-effective-parent-context [context]
   (cond-> (parent context)
@@ -194,16 +192,15 @@
 (defn get-environment [context]
   @(rf/subscribe [::environment (c/scrub-render-hints context)]))
 
-(defmulti render-shape (fn [_context properties]
-                         (:type properties)))
+(defmulti render-shape effective-component-type)
 
-(defmethod render-shape nil [_context _properties])
+(defmethod render-shape nil [context]
+  (log/warn :not-implemented 'render-shape context))
 
-(defmulti subfield-render-shapes (fn [_context properties]
-                                   (:type properties)))
+(defmulti subfield-render-shapes effective-component-type)
 
-(defmethod subfield-render-shapes nil [_context _properties])
-(defmethod subfield-render-shapes :default [context _properties]
+(defmethod subfield-render-shapes nil [_context])
+(defmethod subfield-render-shapes :default [context]
   (log/warn :not-implemented 'subfield-render-shapes context))
 
 (rf/reg-sub-raw ::subfield-render-shapes
@@ -212,7 +209,7 @@
      :subfield-render-shapes
      context
      #(let [context (resolve-context context)]
-        (subfield-render-shapes context (get-properties context))))))
+        (subfield-render-shapes context)))))
 
 (defn get-subfield-render-shapes [context]
   @(rf/subscribe [::subfield-render-shapes (c/scrub-render-hints context)]))
@@ -223,13 +220,12 @@
      ::render-shape
      context
      #(let [context (resolve-context context)]
-        (render-shape context (get-properties context))))))
+        (render-shape context)))))
 
 (defn get-render-shape [context]
   @(rf/subscribe [::render-shape (c/scrub-render-hints context)]))
 
-(defmulti exact-shape (fn [_context properties]
-                        (:type properties)))
+(defmulti exact-shape effective-component-type)
 
 (defn get-exact-shape [context]
   @(rf/subscribe [::exact-shape (c/scrub-render-hints context)]))
@@ -245,7 +241,7 @@
      context
      (fn []
        (let [context (resolve-context context)
-             shape (exact-shape context (get-properties context))
+             shape (exact-shape context)
              components-context (c/++ context :components)
              num-components (get-list-size components-context)
              impactful-ordinary-contexts (into []
@@ -294,16 +290,16 @@
      shape-path
      (get-parent-field-shape context))))
 
-(defmethod exact-shape nil [context _properties]
+(defmethod exact-shape nil [context]
   (fallback-exact-shape context))
 
-(defmethod exact-shape :heraldry/subfield [context _properties]
+(defmethod exact-shape :heraldry/subfield [context]
   (fallback-exact-shape context))
 
-(defmethod exact-shape :heraldry/ordinary [context _properties]
+(defmethod exact-shape :heraldry/ordinary [context]
   (fallback-exact-shape context))
 
-(defmethod exact-shape :heraldry/charge [context _properties]
+(defmethod exact-shape :heraldry/charge [context]
   ;; the charge dictates its own field, the parent field's shape does
   ;; not affect it like it does for ordinaries
   (-> (get-render-shape context) :shape first))
@@ -314,22 +310,21 @@
      ::exact-shape
      context
      #(let [context (resolve-context context)]
-        (exact-shape context (get-properties context))))))
+        (exact-shape context)))))
 
 (rf/reg-sub-raw ::field-edges
   (fn [_app-db [_ context]]
     (reaction-or-cache
      ::field-edges
      context
-     #(:edges (subfield-render-shapes context (get-properties context))))))
+     #(:edges (subfield-render-shapes context)))))
 
 (defn get-field-edges [context]
   @(rf/subscribe [::field-edges (c/scrub-render-hints context)]))
 
-(defmulti bounding-box (fn [_context properties]
-                         (:type properties)))
+(defmulti bounding-box effective-component-type)
 
-(defmethod bounding-box :default [context _properties]
+(defmethod bounding-box :default [context]
   (:bounding-box (get-environment context)))
 
 (rf/reg-sub-raw ::bounding-box
@@ -338,7 +333,7 @@
      ::bounding-box
      context
      #(let [context (resolve-context context)]
-        (bounding-box context (get-properties context))))))
+        (bounding-box context)))))
 
 (defn get-bounding-box [context]
   @(rf/subscribe [::bounding-box (c/scrub-render-hints context)]))

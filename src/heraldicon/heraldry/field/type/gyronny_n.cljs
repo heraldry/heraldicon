@@ -122,18 +122,20 @@
       :num-subfields num-fields}
      context)))
 
-(defmethod interface/subfield-environments field-type [_context {:keys [edge-start edge-ends
-                                                                        fess-points num-fields]}]
-  {:subfields (mapv
-               (fn [index]
-                 (environment/create (bb/from-points [(get edge-ends index)
-                                                      edge-start
-                                                      (get edge-ends (mod (inc index) num-fields))])
-                                     {:fess (get fess-points index)}))
-               (range num-fields))})
+(defmethod interface/subfield-environments field-type [context]
+  (let [{:keys [edge-start edge-ends
+                fess-points num-fields]} (interface/get-properties context)]
+    {:subfields (mapv
+                 (fn [index]
+                   (environment/create (bb/from-points [(get edge-ends index)
+                                                        edge-start
+                                                        (get edge-ends (mod (inc index) num-fields))])
+                                       {:fess (get fess-points index)}))
+                 (range num-fields))}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [edge-start edge-ends line num-fields]}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [edge-start edge-ends line num-fields]} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         lines (vec (map-indexed
                     (fn [index edge-end]
                       (if (even? index)

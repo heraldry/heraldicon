@@ -92,9 +92,10 @@
       :voided-percentage-base real-point-height}
      context)))
 
-(defmethod interface/environment ordinary-type [context {:keys [dexter?]
-                                                         [lower-left lower-right] :lower}]
-  (let [{:keys [points]} (interface/get-parent-field-environment context)
+(defmethod interface/environment ordinary-type [context]
+  (let [{:keys [dexter?]
+         [lower-left lower-right] :lower} (interface/get-properties context)
+        {:keys [points]} (interface/get-parent-field-environment context)
         corner (if dexter?
                  (:top-left points)
                  (:top-right points))
@@ -102,10 +103,11 @@
                              lower-left lower-right]]
     (environment/create (bb/from-points bounding-box-points))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [dexter? line]
-                                                          [lower-left lower-right] :lower
-                                                          :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [dexter? line]
+         [lower-left lower-right] :lower
+         :as properties} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-lower (line/create-with-extension context
                                                line
                                                (if dexter?

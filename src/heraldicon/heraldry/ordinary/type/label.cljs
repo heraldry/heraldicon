@@ -215,21 +215,23 @@
       :voided-percentage-base (min band-size point-width)}
      context)))
 
-(defmethod interface/environment ordinary-type [_context {:keys [point-height]
-                                                          [upper-left upper-right] :upper
-                                                          [lower-left lower-right] :lower}]
-  (let [bounding-box-points [upper-left upper-right
+(defmethod interface/environment ordinary-type [context]
+  (let [{:keys [point-height]
+         [upper-left upper-right] :upper
+         [lower-left lower-right] :lower} (interface/get-properties context)
+        bounding-box-points [upper-left upper-right
                              (v/add lower-left (v/Vector. 0 point-height))
                              (v/add lower-right (v/Vector. 0 point-height))]]
     (environment/create (bb/from-points bounding-box-points))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [truncated? point-width point-height
-                                                                 point-centers point-extra]
-                                                          [upper-left upper-right] :upper
-                                                          [lower-left lower-right] :lower
-                                                          [point-left point-right] :point-edge
-                                                          :as properties}]
-  (let [point-y (:y point-left)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [truncated? point-width point-height
+                point-centers point-extra]
+         [upper-left upper-right] :upper
+         [lower-left lower-right] :lower
+         [point-left point-right] :point-edge
+         :as properties} (interface/get-properties context)
+        point-y (:y point-left)
         point-width-half (/ point-width 2)
         [upper-left lower-left] (if-not truncated?
                                   (map #(v/sub % (v/Vector. 30 0)) [upper-left lower-left])

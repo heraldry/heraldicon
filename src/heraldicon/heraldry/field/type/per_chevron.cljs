@@ -265,8 +265,9 @@
       :num-subfields 2}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {[edge-left edge-corner edge-right] :edge}]
-  (let [{:keys [points]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-environments field-type [context]
+  (let [{[edge-left edge-corner edge-right] :edge} (interface/get-properties context)
+        {:keys [points]} (interface/get-subfields-environment context)
         {:keys [top bottom]} points]
     ;; TODO: needs to be smarter with chevron-angle
     {:subfields [(environment/create (bb/from-points [edge-corner top
@@ -274,9 +275,10 @@
                  (environment/create (bb/from-points [edge-corner bottom
                                                       edge-left edge-right]))]}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line]
-                                                                 [edge-left edge-corner edge-right] :edge}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line opposite-line]
+         [edge-left edge-corner edge-right] :edge} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge-left (line/create-with-extension context
                                                    line
                                                    edge-corner edge-left

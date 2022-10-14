@@ -123,14 +123,15 @@
      :ribbon-offset (v/mul (bb/center ribbon-bounding-box) -1)
      :ribbon-scale ribbon-scale}))
 
-(defmethod interface/bounding-box :heraldry/motto [_context {:keys [anchor-point
-                                                                    ribbon-bounding-box
-                                                                    ribbon-offset
-                                                                    ribbon-scale]}]
-  (-> ribbon-bounding-box
-      (bb/translate ribbon-offset)
-      (bb/scale ribbon-scale)
-      (bb/translate anchor-point)))
+(defmethod interface/bounding-box :heraldry/motto [context]
+  (let [{:keys [anchor-point
+                ribbon-bounding-box
+                ribbon-offset
+                ribbon-scale]} (interface/get-properties context)]
+    (-> ribbon-bounding-box
+        (bb/translate ribbon-offset)
+        (bb/scale ribbon-scale)
+        (bb/translate anchor-point))))
 
 (defmethod interface/render-component :heraldry/motto [context]
   (let [{:keys [self-below-shield?
