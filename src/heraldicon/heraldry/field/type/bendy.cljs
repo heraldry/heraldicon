@@ -214,15 +214,16 @@
       :num-subfields num-fields-y}
      context)))
 
-(defmethod interface/subfield-environments field-type [_context {:keys [edges start-x end-x part-height
-                                                                        reverse-transform-fn]}]
-  {:subfields (mapv (fn [[edge-start _edge-end]]
-                      (let [real-edge-start (reverse-transform-fn edge-start)]
-                        (environment/create (bb/from-points [(assoc real-edge-start :x start-x)
-                                                             (assoc real-edge-start
-                                                                    :x end-x
-                                                                    :y (+ (:y real-edge-start) part-height))]))))
-                    edges)})
+(defmethod interface/subfield-environments field-type [context]
+  (let [{:keys [edges start-x end-x part-height
+                reverse-transform-fn]} (interface/get-properties context)]
+    {:subfields (mapv (fn [[edge-start _edge-end]]
+                        (let [real-edge-start (reverse-transform-fn edge-start)]
+                          (environment/create (bb/from-points [(assoc real-edge-start :x start-x)
+                                                               (assoc real-edge-start
+                                                                      :x end-x
+                                                                      :y (+ (:y real-edge-start) part-height))]))))
+                      edges)}))
 
-(defmethod interface/subfield-render-shapes field-type [context properties]
-  ((get-method interface/subfield-render-shapes :heraldry.field.type/barry) context properties))
+(defmethod interface/subfield-render-shapes field-type [context]
+  ((get-method interface/subfield-render-shapes :heraldry.field.type/barry) context))

@@ -60,8 +60,9 @@
       :num-subfields 2}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {[edge-left edge-right] :edge}]
-  (let [{:keys [points]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-environments field-type [context]
+  (let [{[edge-left edge-right] :edge} (interface/get-properties context)
+        {:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left top-right
                 bottom-left bottom-right]} points]
     {:subfields [(environment/create (bb/from-points [top-left top-right
@@ -69,9 +70,10 @@
                  (environment/create (bb/from-points [edge-left edge-right
                                                       bottom-left bottom-right]))]}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line]
-                                                                 [edge-left edge-right] :edge}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line]
+         [edge-left edge-right] :edge} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge (line/create-with-extension context
                                               line
                                               edge-left edge-right

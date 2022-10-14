@@ -293,11 +293,12 @@
              :angle angle
              :top-left base-top-left}))))
 
-(defmethod interface/environment :heraldry/charge [_context {:keys [bounding-box anchor-point]}]
-  (environment/create bounding-box {:fess anchor-point}))
+(defmethod interface/environment :heraldry/charge [context]
+  (let [{:keys [bounding-box anchor-point]} (interface/get-properties context)]
+    (environment/create bounding-box {:fess anchor-point})))
 
-(defmethod interface/bounding-box :heraldry/charge [_context {:keys [bounding-box]}]
-  bounding-box)
+(defmethod interface/bounding-box :heraldry/charge [context]
+  (:bounding-box (interface/get-properties context)))
 
-(defmethod interface/render-shape :heraldry/charge [_context {:keys [shape]}]
-  {:shape shape})
+(defmethod interface/render-shape :heraldry/charge [context]
+  {:shape (:shape (interface/get-properties context))})

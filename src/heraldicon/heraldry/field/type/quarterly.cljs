@@ -117,14 +117,16 @@
      :part-size part-size
      :num-subfields (* num-fields-x num-fields-y)}))
 
-(defmethod interface/subfield-environments field-type [_context {:keys [parts]}]
-  {:subfields (mapv (fn [[part-top-left part-bottom-right]]
-                      (environment/create (bb/from-points [part-top-left part-bottom-right])))
-                    parts)})
+(defmethod interface/subfield-environments field-type [context]
+  (let [{:keys [parts]} (interface/get-properties context)]
+    {:subfields (mapv (fn [[part-top-left part-bottom-right]]
+                        (environment/create (bb/from-points [part-top-left part-bottom-right])))
+                      parts)}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [parts num-fields-x num-fields-y
-                                                                        x-values y-values]}]
-  (let [{:keys [points]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [parts num-fields-x num-fields-y
+                x-values y-values]} (interface/get-properties context)
+        {:keys [points]} (interface/get-subfields-environment context)
         {:keys [top bottom left right]} points
         min-x (- (:x left) 50)
         max-x (+ (:x right) 50)

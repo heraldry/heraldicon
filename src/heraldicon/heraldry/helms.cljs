@@ -10,7 +10,7 @@
 (defmethod interface/properties :heraldry/helm [_context]
   {:type :heraldry/helm})
 
-(defmethod interface/bounding-box :heraldry/helm [context _properties]
+(defmethod interface/bounding-box :heraldry/helm [context]
   (let [components-context (c/++ context :components)
         num-components (interface/get-list-size components-context)]
     (->> (range num-components)
@@ -19,7 +19,7 @@
          (reduce bb/combine nil))))
 
 (defmethod interface/environment :heraldry/helm [{:keys [path]
-                                                  :as context} _properties]
+                                                  :as context}]
   (let [{:keys [environments]} (interface/get-properties (interface/parent context))]
     (get environments (last path))))
 
@@ -57,7 +57,7 @@
     {:type :heraldry/helms
      :environments environments}))
 
-(defmethod interface/bounding-box :heraldry/helms [context _properties]
+(defmethod interface/bounding-box :heraldry/helms [context]
   (let [elements-context (c/++ context :elements)
         num-elements (interface/get-list-size elements-context)]
     (->> (range num-elements)

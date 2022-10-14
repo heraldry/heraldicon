@@ -244,5 +244,5 @@
      ;; height, the edge-angle also is ignored, which can affect the width
      :bounding-box bounding-box}))
 
-(defmethod interface/bounding-box :heraldry/ribbon [_context {:keys [bounding-box]}]
-  bounding-box)
+(defmethod interface/bounding-box :heraldry/ribbon [context]
+  (:bounding-box (interface/get-properties context)))

@@ -92,3 +92,11 @@
               :opposite-cottise-2} kind!) (-> line-properties :opposite-line :effective-height)
            :else 0)))
     0))
+
+(defmethod interface/environment :heraldry/cottise [context]
+  (let [reference-type (:type (interface/get-properties context))]
+    ((get-method interface/environment reference-type) context)))
+
+(defmethod interface/render-shape :heraldry/cottise [context]
+  (let [reference-type (:type (interface/get-properties context))]
+    ((get-method interface/render-shape reference-type) context)))

@@ -479,26 +479,29 @@
        (calculate-bend-data context))
    context))
 
-(defmethod interface/environment ordinary-type [_context {:keys [reverse-transform-fn]
-                                                          [upper-left upper-right] :upper
-                                                          [lower-left lower-right] :lower}]
-  (let [;; TODO: this should be more accurate
+(defmethod interface/environment ordinary-type [context]
+  (let [{:keys [reverse-transform-fn]
+         [upper-left upper-right] :upper
+         [lower-left lower-right] :lower} (interface/get-properties context)
+        ;; TODO: this should be more accurate
         bounding-box-points (cond->> [upper-left upper-right
                                       lower-left lower-right]
                               reverse-transform-fn (map reverse-transform-fn))]
     (environment/create (bb/from-points bounding-box-points))))
 
-(defmethod interface/bounding-box ordinary-type [context {:keys [bounding-box-transform-fn]}]
-  (let [bounding-box-transform-fn (or bounding-box-transform-fn identity)]
+(defmethod interface/bounding-box ordinary-type [context]
+  (let [{:keys [bounding-box-transform-fn]} (interface/get-properties context)
+        bounding-box-transform-fn (or bounding-box-transform-fn identity)]
     (some-> (interface/get-environment context)
             :bounding-box
             bounding-box-transform-fn)))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
-                                                          [upper-left upper-right] :upper
-                                                          [lower-left lower-right] :lower
-                                                          :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [line opposite-line]
+         [upper-left upper-right] :upper
+         [lower-left lower-right] :lower
+         :as properties} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-upper (line/create-with-extension context
                                                line
                                                upper-left upper-right
@@ -520,8 +523,9 @@
      context
      properties)))
 
-(defmethod interface/exact-shape ordinary-type [context {:keys [reverse-transform-fn]}]
-  (let [shape-path (:shape (interface/get-render-shape context))
+(defmethod interface/exact-shape ordinary-type [context]
+  (let [{:keys [reverse-transform-fn]} (interface/get-properties context)
+        shape-path (:shape (interface/get-render-shape context))
         shape-path (if (vector? shape-path)
                      (first shape-path)
                      shape-path)

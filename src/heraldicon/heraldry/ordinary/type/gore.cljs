@@ -134,9 +134,10 @@
       :voided-percentage-base (/ width 2)}
      context)))
 
-(defmethod interface/environment ordinary-type [context {:keys [sinister?]
-                                                         [left point right] :edge}]
-  (let [{:keys [points]} (interface/get-parent-field-environment context)
+(defmethod interface/environment ordinary-type [context]
+  (let [{:keys [sinister?]
+         [left point right] :edge} (interface/get-properties context)
+        {:keys [points]} (interface/get-parent-field-environment context)
         side-point (if sinister?
                      (:right points)
                      (:left points))
@@ -144,10 +145,11 @@
         bounding-box-points [point left right side-point]]
     (environment/create (bb/from-points bounding-box-points))))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
-                                                          [left point right] :edge
-                                                          :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [line opposite-line]
+         [left point right] :edge
+         :as properties} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-left (line/create-with-extension context
                                               line
                                               point left

@@ -189,11 +189,12 @@
       :num-cottise-parts 4}
      context)))
 
-(defmethod interface/environment ordinary-type [context {[top-1 corner-top top-2] :edge-top
-                                                         [bottom-1 corner-bottom bottom-2] :edge-bottom
-                                                         [left-1 corner-left left-2] :edge-left
-                                                         [right-1 corner-right right-2] :edge-right}]
-  (let [{:keys [points]} (interface/get-parent-field-environment context)
+(defmethod interface/environment ordinary-type [context]
+  (let [{[top-1 corner-top top-2] :edge-top
+         [bottom-1 corner-bottom bottom-2] :edge-bottom
+         [left-1 corner-left left-2] :edge-left
+         [right-1 corner-right right-2] :edge-right} (interface/get-properties context)
+        {:keys [points]} (interface/get-parent-field-environment context)
         bounding-box-points [top-1 top-2
                              bottom-1 bottom-2
                              left-1 left-2
@@ -209,13 +210,14 @@
                                       corner-left
                                       corner-right)})))
 
-(defmethod interface/render-shape ordinary-type [context {:keys [line opposite-line]
-                                                          [top-1 corner-top top-2] :edge-top
-                                                          [bottom-1 corner-bottom bottom-2] :edge-bottom
-                                                          [left-1 corner-left left-2] :edge-left
-                                                          [right-1 corner-right right-2] :edge-right
-                                                          :as properties}]
-  (let [{:keys [bounding-box]} (interface/get-parent-field-environment context)
+(defmethod interface/render-shape ordinary-type [context]
+  (let [{:keys [line opposite-line]
+         [top-1 corner-top top-2] :edge-top
+         [bottom-1 corner-bottom bottom-2] :edge-bottom
+         [left-1 corner-left left-2] :edge-left
+         [right-1 corner-right right-2] :edge-right
+         :as properties} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-parent-field-environment context)
         line-edge-top-first (line/create-with-extension context
                                                         line
                                                         corner-top top-1

@@ -161,8 +161,9 @@
       :num-subfields num-fields-y}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {:keys [edges part-height]}]
-  (let [{:keys [points]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-environments field-type [context]
+  (let [{:keys [edges part-height]} (interface/get-properties context)
+        {:keys [points]} (interface/get-subfields-environment context)
         {:keys [left right]} points
         offset (v/Vector. 0 part-height)]
     ;; TODO: needs to be improved
@@ -174,8 +175,9 @@
                                                              (assoc (v/add edge-end offset) :x (:x right))])))
                       edges)}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line edges]}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line opposite-line edges]} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         ;; first line isn't needed
         lines (into [[nil nil]]
                     (map (fn [[edge-start corner-point edge-end]]

@@ -29,7 +29,7 @@
         subfield-index (-> context :path last)]
     (get (:subfields subfield-environments) subfield-index)))
 
-(defmethod interface/render-shape :heraldry/subfield [context _properties]
+(defmethod interface/render-shape :heraldry/subfield [context]
   (let [subfield-render-shapes (interface/get-subfield-render-shapes (interface/parent context))
         subfield-index (-> context :path last)]
     (get (:subfields subfield-render-shapes) subfield-index)))

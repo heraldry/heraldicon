@@ -224,7 +224,7 @@
       :num-subfields 3}
      context)))
 
-(defmethod interface/subfield-environments field-type [context {:keys []}]
+(defmethod interface/subfield-environments field-type [context]
   (let [{:keys [points]} (interface/get-subfields-environment context)
         {:keys [top-left bottom-right]} points]
     ;; TODO: replace with actual sub environments
@@ -232,9 +232,10 @@
                  (environment/create (bb/from-points [top-left bottom-right]))
                  (environment/create (bb/from-points [top-left bottom-right]))]}))
 
-(defmethod interface/subfield-render-shapes field-type [context {:keys [line opposite-line
-                                                                        edge-start edge-left-end edge-right-end]}]
-  (let [{:keys [bounding-box]} (interface/get-subfields-environment context)
+(defmethod interface/subfield-render-shapes field-type [context]
+  (let [{:keys [line opposite-line
+                edge-start edge-left-end edge-right-end]} (interface/get-properties context)
+        {:keys [bounding-box]} (interface/get-subfields-environment context)
         line-edge-left (line/create-with-extension context
                                                    line
                                                    edge-start edge-left-end

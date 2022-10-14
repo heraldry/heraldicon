@@ -193,17 +193,17 @@
 (defmethod interface/properties ordinary-type [context]
   ((get-method interface/properties :heraldry.ordinary.type/bend) context))
 
-(defmethod interface/environment ordinary-type [context properties]
-  ((get-method interface/environment :heraldry.ordinary.type/bend) context properties))
+(defmethod interface/environment ordinary-type [context]
+  ((get-method interface/environment :heraldry.ordinary.type/bend) context))
 
-(defmethod interface/bounding-box ordinary-type [context properties]
-  ((get-method interface/bounding-box :heraldry.ordinary.type/bend) context properties))
+(defmethod interface/bounding-box ordinary-type [context]
+  ((get-method interface/bounding-box :heraldry.ordinary.type/bend) context))
 
-(defmethod interface/render-shape ordinary-type [context properties]
-  ((get-method interface/render-shape :heraldry.ordinary.type/bend) context properties))
+(defmethod interface/render-shape ordinary-type [context]
+  ((get-method interface/render-shape :heraldry.ordinary.type/bend) context))
 
-(defmethod interface/exact-shape ordinary-type [context properties]
-  ((get-method interface/exact-shape :heraldry.ordinary.type/bend) context properties))
+(defmethod interface/exact-shape ordinary-type [context]
+  ((get-method interface/exact-shape :heraldry.ordinary.type/bend) context))
 
 (defmethod cottising/cottise-properties ordinary-type [context properties]
   ((get-method cottising/cottise-properties :heraldry.ordinary.type/bend) context properties))
