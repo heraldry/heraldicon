@@ -251,12 +251,10 @@
      (fn []
        (let [context (resolve-context context)
              shape (exact-shape context (get-properties context))
-             own-index (-> context :path last)
              components-context (c/++ context :components)
              num-components (get-list-size components-context)
              impactful-ordinary-contexts (into []
                                                (comp
-                                                (filter #(not= % own-index))
                                                 (map #(c/++ components-context %))
                                                 (filter #(#{:heraldry.ordinary.type/chief
                                                             :heraldry.ordinary.type/base}
@@ -359,12 +357,10 @@
        (let [{:keys [bounding-box
                      root?]
               :as environment} (get-environment context)
-             own-index (-> context :path last)
              components-context (c/++ context :components)
              num-components (get-list-size components-context)
              impactful-ordinary-contexts (into []
                                                (comp
-                                                (filter #(not= % own-index))
                                                 (map #(c/++ components-context %))
                                                 (filter #(#{:heraldry.ordinary.type/chief
                                                             :heraldry.ordinary.type/base}
