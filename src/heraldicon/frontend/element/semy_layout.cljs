@@ -5,36 +5,38 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.options :as options]
-   [re-frame.core :as rf]))
+   [heraldicon.options :as options]))
 
 ;; TODO: probably can be improved with better subscriptions
-(rf/reg-sub ::link-name
-  (fn [[_ context] _]
-    [(rf/subscribe [:get context])
-     (rf/subscribe [::interface/options (:path context)])])
-
-  (fn [[layout options] [_ _path]]
-    (let [sanitized-layout (options/sanitize layout options)
-          main-name (string/str-tr (:num-fields-x sanitized-layout) "x"
-                                   (:num-fields-y sanitized-layout)
+(defn- submenu-link-name [options layout]
+  (let [main-name (when (or (:num-fields-x options)
+                            (:num-fields-y options))
+                    (string/str-tr (string/combine "x"
+                                                   [(:num-fields-x layout)
+                                                    (:num-fields-y layout)])
                                    " "
-                                   :string.miscellaneous/fields)
-          changes [main-name
-                   (when (some #(options/changed? % sanitized-layout options)
-                               [:offset-x :offset-y])
-                     :string.submenu-summary/shifted)
-                   (when (some #(options/changed? % sanitized-layout options)
-                               [:stretch-x :stretch-y])
-                     :string.submenu-summary/stretched)
-                   (when (options/changed? :rotation sanitized-layout options)
-                     :string.submenu-summary/rotated)]]
-      (string/upper-case-first (string/combine ", " changes)))))
+                                   :string.miscellaneous/fields))
+        changes (filter identity
+                        [main-name
+                         (when (options/changed? :num-base-fields layout options)
+                           (string/str-tr (:num-base-fields layout) " " :string.submenu-summary/base-fields))
+                         (when (some #(options/changed? % layout options)
+                                     [:offset-x :offset-y])
+                           :string.submenu-summary/shifted)
+                         (when (some #(options/changed? % layout options)
+                                     [:stretch-x :stretch-y])
+                           :string.submenu-summary/stretched)
+                         (when (options/changed? :rotation layout options)
+                           :string.submenu-summary/rotated)])
+        changes (if (seq changes)
+                  changes
+                  [:string.submenu-summary/default])]
+    (string/upper-case-first (string/combine ", " changes))))
 
 (defmethod element/element :ui.element/semy-layout [context]
   (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
-          link-name @(rf/subscribe [::link-name context])]
+          link-name (submenu-link-name options (interface/get-sanitized-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
