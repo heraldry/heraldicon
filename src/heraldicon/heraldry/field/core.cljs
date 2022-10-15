@@ -201,7 +201,9 @@
                        :parent-environment-override))
 
 (defmethod interface/exact-shape :heraldry/field [context]
-  (let [{:keys [reverse-transform-fn]} (interface/get-properties (interface/parent context))
+  (let [{:keys [reverse-transform-fn]} (interface/get-properties (-> context
+                                                                     interface/parent
+                                                                     interface/parent))
         shape (component-attribute context
                                    interface/get-exact-shape
                                    interface/get-parent-field-shape
