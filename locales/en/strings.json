@@ -435,7 +435,7 @@
     "highlight": "Highlight",
     "humetty": "Humetty / Couped",
     "ignore-layer-separator?": "Ignore layer separator",
-    "adapt-to-ordinaries?": "Adapt to chief and base",
+    "adapt-to-ordinaries?": "Adapt to chief and base ordinaries",
     "inherit-environment?": "Inherit environment (e.g. for dimidiation)",
     "is-public": "Make public",
     "landscape?": "Landscape",

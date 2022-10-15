@@ -435,6 +435,7 @@
     "highlight": "Highlight",
     "humetty": "Schwebend / Abgeschnitten",
     "ignore-layer-separator?": "Ebenentrenner ignorieren",
+    "adapt-to-ordinaries?": "An Schildhaupt und Schildfuß anpassen",
     "inherit-environment?": "Umgebung erben (e.g. für Halbierung)",
     "is-public": "Öffentlich machen",
     "landscape?": "Landschaft",
