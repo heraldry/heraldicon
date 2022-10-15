@@ -373,7 +373,7 @@
 (defmethod interface/options :heraldry/field [context]
   (let [path (:path context)
         root-field? (-> path drop-last last (= :coat-of-arms))
-        subfield? (-> path last int?)
+        subfield? (->> path (drop-last 2) last (= :fields))
         semy-charge? (->> path (take-last 2) (= [:charge :field]))
         field-type (interface/get-raw-data (c/++ context :type))
         plain? (= field-type :heraldry.field.type/plain)
