@@ -67,66 +67,81 @@
                :hoist hoist
                :fly fly}})))
 
+(defn- shape? [shape]
+  (-> shape count pos?))
+
 (defn- apply-offset [shape distance join]
-  (let [original-path (new Path shape)
-        path (.-pathData (.offset PaperOffset
-                                  original-path
-                                  distance
-                                  (clj->js {:join join
-                                            :insert false})))
-        ;; there might be multiple closed paths in the result, find the one with the largest area
-        ;; and assume that's the one we want
-        sub-paths (s/split path #"[zZ]")
-        longest (first (sort-by (fn [path]
-                                  (-> (new Path (str path "z"))
-                                      .-area
-                                      Math/abs)) > sub-paths))]
-    (new Path (str longest "z"))))
+  (when (shape? shape)
+    (let [original-path (new Path shape)
+          path (some-> (.offset PaperOffset
+                                original-path
+                                distance
+                                (clj->js {:join join
+                                          :insert false}))
+                       .-pathData)
+          ;; there might be multiple closed paths in the result, find the one with the largest area
+          ;; and assume that's the one we want
+          sub-paths (some-> path
+                            (s/split #"[zZ]"))
+          longest (some->> sub-paths
+                           (sort-by (fn [path]
+                                      (-> (new Path (str path "z"))
+                                          .-area
+                                          Math/abs)) >)
+                           first)]
+      (when longest
+        (new Path (str longest "z"))))))
 
 (def ^:private shrink-step
   (memoize
    (fn shrink-step [shape distance join]
-     (let [original-path (new Path shape)
-           outline-left (apply-offset shape (- distance) join)]
-       ;; The path might be clockwise, then (- distance) is the
-       ;; correct offset for the inner path; we expect that path
-       ;; to surround a smaller area, so use it, if that's true, otherwise
-       ;; use the offset on the other side (distance).
-       ;; Escutcheon paths are clockwise, so testing for that
-       ;; first should avoid having to do both calculations in
-       ;; most cases.
-       (if (<= (Math/abs (.-area outline-left))
-               (Math/abs (.-area original-path)))
-         (.-pathData outline-left)
-         (.-pathData (apply-offset shape distance join)))))))
+     (when (shape? shape)
+       (let [original-path (new Path shape)
+             outline-left (apply-offset shape (- distance) join)]
+        ;; The path might be clockwise, then (- distance) is the
+        ;; correct offset for the inner path; we expect that path
+        ;; to surround a smaller area, so use it, if that's true, otherwise
+        ;; use the offset on the other side (distance).
+        ;; Escutcheon paths are clockwise, so testing for that
+        ;; first should avoid having to do both calculations in
+        ;; most cases.
+         (if (<= (Math/abs (.-area outline-left))
+                 (Math/abs (.-area original-path)))
+           (.-pathData outline-left)
+           (.-pathData (apply-offset shape distance join))))))))
 
 (defn shrink-shape [shape distance join]
-  (let [max-step 5
-        join (case join
-               :round "round"
-               :bevel "bevel"
-               "miter")
-        shrink-step-fn (fn [shape step join]
-                         (try
-                           (shrink-step shape step join)
-                           (catch js/RangeError _
-                             (log/error nil "Endless loop while using paperjs-offset"))))]
-    (loop [shape shape
-           distance distance]
-      (cond
-        (zero? distance) shape
-        (<= distance max-step) (shrink-step-fn shape distance join)
-        :else (let [next-shape (shrink-step-fn shape max-step join)]
-                (if next-shape
-                  (recur next-shape (- distance max-step))
-                  shape))))))
+  (when (shape? shape)
+    (let [max-step 5
+          join (case join
+                 :round "round"
+                 :bevel "bevel"
+                 "miter")
+          shrink-step-fn (fn [shape step join]
+                           (try
+                             (shrink-step shape step join)
+                             (catch js/RangeError _
+                               (log/error nil "Endless loop while using paperjs-offset"))))]
+      (loop [shape shape
+             distance distance]
+        (cond
+          (zero? distance) shape
+          (<= distance max-step) (shrink-step-fn shape distance join)
+          :else (let [next-shape (shrink-step-fn shape max-step join)]
+                  (if next-shape
+                    (recur next-shape (- distance max-step))
+                    shape)))))))
 
 (defn intersect-shapes [shape1 shape2]
-  (-> (new Path shape1)
-      (.intersect (new Path shape2))
-      .-pathData))
+  (when (and (shape? shape1) (shape? shape1))
+    (-> (new Path shape1)
+        (.intersect (new Path shape2))
+        .-pathData)))
 
 (defn subtract-shape [shape1 shape2]
-  (-> (new Path shape1)
-      (.subtract (new Path shape2))
-      .-pathData))
+  (if (shape? shape2)
+    (when (shape? shape1)
+      (-> (new Path shape1)
+          (.subtract (new Path shape2))
+          .-pathData))
+    shape1))
