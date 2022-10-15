@@ -38,4 +38,9 @@
     " "
     [:a {:href "https://crowdin.com/project/heraldicon/" :target "_blank"}
      [tr :string.text.contact/crowdin-project]]
-    "."]])
+    "."]
+   [:h3 [tr :string.text.contact/translation-credits]]
+   [:p [tr :string.text.contact/translation-credits-intro]]
+   [:ul
+    [:li "Українська: Dughorm"]
+    [:li "Italiano: ashoppio#2022"]]])

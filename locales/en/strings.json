@@ -990,7 +990,9 @@
       "my-username-is": "my username is",
       "translation": "Translation",
       "translation-not-yet-complete": "Not all strings have been translated yet. If you want to help out or correct something, or want to add your own language, then reach out on Discord or the",
-      "crowdin-project": "Crowdin project"
+      "crowdin-project": "Crowdin project",
+      "translation-credits": "Translation credits",
+      "translation-credits-intro": "Thanks to everybody helping out! Let me know whether you want to be listed here and how. :)"
     },
     "home": {
       "release-news-info-1": "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed.",
