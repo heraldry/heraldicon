@@ -108,9 +108,6 @@
       manual-blazon
       (blazon-component context))))
 
-(defn- cottise-context? [context]
-  (-> context :path drop-last last (= :cottising)))
-
 (defn parent [context]
   (some-> (cond
             ;; TODO: can all this be done without inspecting the path?
@@ -118,7 +115,7 @@
             (-> context :path last (= :field)) (c/-- context)
             (-> context :path drop-last last (= :charges)) (c/-- context 4)
             (-> context :path last int?) (c/-- context 2)
-            (cottise-context? context) (c/-- context 2)
+            (-> context :path drop-last last (= :cottising)) (parent (c/-- context 2))
             :else (do
                     (log/warn :not-implemented "parent" context)
                     nil))
@@ -174,17 +171,13 @@
      #(let [context (resolve-context context)]
         (environment context)))))
 
-(defn get-effective-parent-context [context]
-  (cond-> (parent context)
-    (cottise-context? context) parent))
-
 (rf/reg-sub-raw ::parent-environment
   (fn [_app-db [_ context]]
     (reaction-or-cache
      ::parent-environment
      context
      #(or (c/get-key context :parent-environment-override)
-          @(rf/subscribe [::environment (get-effective-parent-context context)])))))
+          @(rf/subscribe [::environment (parent context)])))))
 
 (defn get-parent-environment [context]
   @(rf/subscribe [::parent-environment (c/scrub-render-hints context)]))
@@ -232,7 +225,7 @@
 
 (defn get-exact-parent-shape [context]
   (or (c/get-key context :parent-shape)
-      @(rf/subscribe [::exact-shape (c/scrub-render-hints (get-effective-parent-context context))])))
+      @(rf/subscribe [::exact-shape (c/scrub-render-hints (parent context))])))
 
 (rf/reg-sub-raw ::exact-impacted-shape
   (fn [_app-db [_ context]]
