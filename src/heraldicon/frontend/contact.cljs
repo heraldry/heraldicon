@@ -43,4 +43,4 @@
    [:p [tr :string.text.contact/translation-credits-intro]]
    [:ul
     [:li "Українська: Dughorm"]
-    [:li "Italiano: ashoppio#2022"]]])
+    [:li "Italiano: ashoppio#2022 (Brando Maria Pernice)"]]])
