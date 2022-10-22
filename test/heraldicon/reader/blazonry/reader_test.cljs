@@ -604,16 +604,16 @@
     "or, a star sable, a fess of the same, a star azure, a pale of the same"
     {:type :heraldry.field.type/plain
      :tincture :or
-     :components [{:type :heraldry.charge.type/star
+     :components [{:type :heraldry.ordinary.type/fess
                    :field {:type :heraldry.field.type/plain
                            :tincture :sable}}
-                  {:type :heraldry.ordinary.type/fess
+                  {:type :heraldry.ordinary.type/pale
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}
+                  {:type :heraldry.charge.type/star
                    :field {:type :heraldry.field.type/plain
                            :tincture :sable}}
                   {:type :heraldry.charge.type/star
-                   :field {:type :heraldry.field.type/plain
-                           :tincture :azure}}
-                  {:type :heraldry.ordinary.type/pale
                    :field {:type :heraldry.field.type/plain
                            :tincture :azure}}]}
 
@@ -881,11 +881,11 @@
     "or a roundel sable a chief vert"
     {:type :heraldry.field.type/plain
      :tincture :or
-     :components [{:type :heraldry.charge.type/roundel
+     :components [{:type :heraldry.ordinary.type/chief
                    :field {:type :heraldry.field.type/plain
-                           :tincture :sable}}
-                  {:type :heraldry.ordinary.type/chief
+                           :tincture :vert}}
+                  {:type :heraldry.charge.type/roundel
                    :field {:type :heraldry.field.type/plain
-                           :tincture :vert}}]}
+                           :tincture :sable}}]}
 ;;
     ))
