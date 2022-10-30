@@ -9,6 +9,7 @@
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.context :as c]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.canvas :as canvas]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
@@ -30,6 +31,7 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
+   [heraldicon.math.vector :as v]
    [heraldicon.svg.core :as svg]
    [heraldicon.util.colour :as colour]
    [hickory.core :as hickory]
@@ -113,24 +115,36 @@
                                     keys
                                     set)))))))
 
-(macros/reg-event-fx ::set-svg-data
-  (fn [{:keys [db]} [_ db-path edn-data raw-svg-data]]
-    (let [width (parse-number-with-unit (get-in edn-data [1 :width]))
-          height (parse-number-with-unit (get-in edn-data [1 :height]))
-          [shift-x shift-y
-           width height] (let [[viewbox-x viewbox-y
+(defn- determine-charge-boundaries [svg-data]
+  (go-catch
+   (let [width (parse-number-with-unit (get-in svg-data [1 :width]))
+         height (parse-number-with-unit (get-in svg-data [1 :height]))
+         [shift-x shift-y
+          width height
+          from-viewbox?] (let [[viewbox-x viewbox-y
                                 viewbox-width viewbox-height] (parse-width-height-from-viewbox
-                                                               (or (get-in edn-data [1 :viewbox])
-                                                                   (get-in edn-data [1 :viewBox])))]
+                                                               (or (get-in svg-data [1 :viewbox])
+                                                                   (get-in svg-data [1 :viewBox])))]
                            (if (and viewbox-width viewbox-height)
-                             [viewbox-x viewbox-y viewbox-width viewbox-height]
-                             [0 0 width height]))
-          [shift-x shift-y] (if (and shift-x shift-y)
-                              [shift-x shift-y]
-                              [100 100])
-          [width height] (if (and width height)
-                           [width height]
-                           [100 100])
+                             [viewbox-x viewbox-y viewbox-width viewbox-height true]
+                             [0 0 width height false]))
+         edn-data (assoc svg-data 0 :g)
+         naive-bounding-box (bb/from-vector-and-size
+                             (v/Vector. shift-x shift-y)
+                             width height)
+         detected-bounding-box (<? (canvas/svg-bounding-box edn-data naive-bounding-box))]
+     (if (or (not from-viewbox?)
+             (< (bb/width detected-bounding-box) width)
+             (< (bb/height detected-bounding-box) height))
+       detected-bounding-box
+       naive-bounding-box))))
+
+(macros/reg-event-fx ::set-svg-data
+  (fn [{:keys [db]} [_ db-path edn-data raw-svg-data boundaries]]
+    (let [width (bb/width boundaries)
+          height (bb/height boundaries)
+          {shift-x :x
+           shift-y :y} (bb/top-left boundaries)
           prepared-edn-data (-> edn-data
                                 (assoc 0 :g)
                                    ;; add fill and stroke at top level as default
@@ -193,8 +207,9 @@
                                   svg/process-style-blocks
                                   svg/strip-unnecessary-parts
                                   svg/fix-attribute-and-tag-names
-                                  svg/remove-namespaced-elements)]
-          (rf/dispatch [::set-svg-data db-path parsed-svg-data raw-svg-data]))
+                                  svg/remove-namespaced-elements)
+              boundaries (<? (determine-charge-boundaries parsed-svg-data))]
+          (rf/dispatch [::set-svg-data db-path parsed-svg-data raw-svg-data boundaries]))
         (catch :default e
           (log/error e "load svg file error"))))))
 
