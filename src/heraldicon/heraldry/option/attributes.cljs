@@ -95,6 +95,7 @@
     [:string.charge.tincture-modifier/legged :legged]
     [:string.charge.tincture-modifier/maned :maned]
     [:string.charge.tincture-modifier/orbed :orbed]
+    [:string.charge.tincture-modifier/pizzled :pizzled]
     [:string.charge.tincture-modifier/tailed :tailed]
     [:string.charge.tincture-modifier/toothed :toothed]
     [:string.charge.tincture-modifier/unguled :unguled]
