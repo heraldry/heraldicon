@@ -528,6 +528,29 @@
    :helmet-medium "#707070"
    :helmet-dark "#515151"})
 
+(def ^:private theme-community-the-violet-herald-palette
+  {;; metals
+   :argent "#bcc6cc"
+   :or "#ffc800"
+   ;; colours
+   :azure "#0000b0"
+   :vert "#046a38"
+   :gules "#e10000"
+   :sable "#000000"
+   :purpure "#670099"
+   ;; stains
+   :murrey "#800040"
+   :sanguine "#b40000"
+   :tenne "#953d02"
+   ;; other
+   :brunatre "#411c06"
+   :buff "#ddc595"
+   :carnation "#e6b488"
+   :copper "#bf7532"
+   :orange "#ff5500"
+   :rose "#e63d6a"
+   :white "#ffffff"})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:string.theme/wappenwiki :wappenwiki theme-wappenwiki]
@@ -561,7 +584,8 @@
     ["Content Cranium" :community-content-cranium theme-community-content-cranium]
     ["Sodacan by Bananasplit1611" :community-sodacan theme-community-sodacan]
     ["Custom Philippine by coinageFission" :community-custom-philippine theme-community-custom-philippine]
-    ["Soft Rage by Dughorm" :community-soft-rage theme-community-soft-rage]]])
+    ["Soft Rage by Dughorm" :community-soft-rage theme-community-soft-rage]
+    ["The Violet Herald Palette" :community-the-violet-herald-palette theme-community-the-violet-herald-palette]]])
 
 (def default
   :wappenwiki)
