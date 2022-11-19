@@ -31,6 +31,7 @@
    :copper "#953d02"
    :buff "#ddc595"
    :white "#ffffff"
+   :amaranth "#b51973"
    ;; special
    :helmet-light "#d8d8d8"
    :helmet-medium "#989898"
