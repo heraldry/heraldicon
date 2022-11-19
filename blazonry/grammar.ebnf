@@ -442,6 +442,9 @@ tincture/CARNATION = #"\bcarnation\b"
 tincture/CENDREE
     = #"\bcendreé(?=([ ,&]|$))"
     | #"\bcendree\b"
+tincture/AMARANTH
+    = #"\bamaranth\b"
+    | #"\bcolumbine\b"
 
 tincture/ERMINE = #"\bermine\b"
 tincture/ERMINES = #"\bermines\b"
@@ -813,6 +816,7 @@ tincture
     | tincture/WHITE
     | tincture/BRUNATRE
     | tincture/BUFF
+    | tincture/AMARANTH
     | tincture/ERMINE
     | tincture/ERMINES
     | tincture/ERMINOIS

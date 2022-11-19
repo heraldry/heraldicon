@@ -147,6 +147,11 @@
   100% { fill: #e9bfa2;}
 }
 
+@keyframes all-theme-transition-amaranth {
+  0% { fill: #b51973;}
+  100% { fill: #b51973;}
+}
+
 @keyframes all-theme-transition-sable {
   0% { fill: #333333;}
   7.142857142857143% { fill: #000000;}
