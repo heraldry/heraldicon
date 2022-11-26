@@ -30,6 +30,13 @@
   (fn [data [_ _path]]
     (entity.arms/charge-variants data)))
 
+(rf/reg-sub ::used-escutcheons
+  (fn [[_ path] _]
+    (rf/subscribe [:get path]))
+
+  (fn [data [_ _path]]
+    (entity.arms/used-escutcheons data)))
+
 (rf/reg-sub ::used-ribbons
   (fn [[_ path] _]
     (rf/subscribe [:get path]))
@@ -43,17 +50,16 @@
 (defn- ribbon-attribution [form-db-path]
   [attribution/for-entities @(rf/subscribe [::used-ribbons (conj form-db-path :data :achievement)])])
 
-(defn- escutcheon-attribution []
-  (let [context (c/++ base-context :data :achievement)]
-    [:<>
-     [:h3 [tr :string.render-options/escutcheon]]
-     [attribution/for-escutcheon context]]))
+(defn- escutcheon-attribution [form-db-path]
+  [attribution/for-escutcheons
+   (interface/render-option :escutcheon base-context)
+   @(rf/subscribe [::used-escutcheons (conj form-db-path :data :achievement)])])
 
 (defn- attribution [form-db-path]
   [attribution/attribution {:path form-db-path}
    [charge-attribution form-db-path]
    [ribbon-attribution form-db-path]
-   [escutcheon-attribution]])
+   [escutcheon-attribution form-db-path]])
 
 (defn- blazonry [form-db-path]
   [:div.blazonry
