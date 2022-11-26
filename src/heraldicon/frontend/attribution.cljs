@@ -76,11 +76,14 @@
                          :url url)])
        [tr :string.miscellaneous/unsaved-data])]))
 
-(defn for-escutcheon [context]
-  (let [escutcheon (interface/render-option :escutcheon context)
-        escutcheon-attribution (escutcheon/attribution escutcheon)]
-    [credits (assoc escutcheon-attribution
-                    :title (escutcheon/escutcheon-map escutcheon))]))
+(defn for-escutcheons [escutcheon inescutcheons]
+  (let [all-escutcheons (sort (conj inescutcheons escutcheon))]
+    [:<>
+     [:h3 [tr :string.render-options/escutcheon]]
+     (for [escutcheon all-escutcheons]
+       ^{:key escutcheon}
+       [credits (assoc (escutcheon/attribution escutcheon)
+                       :title (escutcheon/escutcheon-map escutcheon))])]))
 
 (defn for-entities [entities]
   (let [entity-paths (keep (fn [{:keys [id version]}]

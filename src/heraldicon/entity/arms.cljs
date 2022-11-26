@@ -33,3 +33,19 @@
                      (:ribbon-variant %)))
        (map :ribbon-variant)
        set))
+
+(defn used-escutcheons [data]
+  (->> data
+       (tree-seq #(or (map? %)
+                      (vector? %)
+                      (seq? %)) seq)
+       (filter #(and (map? %)
+                     (some-> % :type (isa? :heraldry.charge.type/escutcheon))
+                     (:escutcheon %)
+                     (-> %
+                         :escutcheon
+                         #{:none
+                           :root}
+                         not)))
+       (map :escutcheon)
+       set))
