@@ -243,3 +243,34 @@
                      [:clip-path nil]
                      value))
                  data))
+
+(defn fix-stroke-and-fill [data]
+  ;; add fill and stroke at top level as default
+  ;; some SVGs don't specify them for elements if
+  ;; they are black, but for that to work we need
+  ;; the root element to specify them
+  ;; disadvantage: this colour will now always show
+  ;; im the interface, even if the charge doesn't
+  ;; contain and black elements, but they usually will
+  ;;
+  ;; the stroke-width is also set to 0, because areas
+  ;; that really should not get an outline otherwise
+  ;; would default to one of width 1
+  (let [new-data (assoc data 1 {:fill "#000000"
+                                :stroke "none"
+                                :stroke-width 0})]
+    (walk/postwalk
+     (fn [data]
+       ;; as a follow up to above comment:
+       ;; if we find an element that has a stroke-width but no
+       ;; stroke, then set that stroke to none, so those thick
+       ;; black outlines won't appear
+       ;; TODO: this might, for some SVGs, remove some outlines,
+       ;; namely if the element was supposed to inherit the stroke
+       ;; from a parent element
+       (if (and (map? data)
+                (contains? data :stroke-width)
+                (not (contains? data :stroke)))
+         (assoc data :stroke "none")
+         data))
+     new-data)))
