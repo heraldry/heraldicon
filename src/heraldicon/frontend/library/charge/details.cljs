@@ -140,43 +140,9 @@
        naive-bounding-box))))
 
 (macros/reg-event-fx ::set-svg-data
-  (fn [{:keys [db]} [_ db-path edn-data raw-svg-data boundaries]]
-    (let [width (bb/width boundaries)
-          height (bb/height boundaries)
-          {shift-x :x
-           shift-y :y} (bb/top-left boundaries)
-          prepared-edn-data (-> edn-data
-                                (assoc 0 :g)
-                                   ;; add fill and stroke at top level as default
-                                   ;; some SVGs don't specify them for elements if
-                                   ;; they are black, but for that to work we need
-                                   ;; the root element to specify them
-                                   ;; disadvantage: this colour will now always show
-                                   ;; im the interface, even if the charge doesn't
-                                   ;; contain and black elements, but they usually will
-                                   ;;
-                                   ;; the stroke-width is also set to 0, because areas
-                                   ;; that really should not get an outline otherwise
-                                   ;; would default to one of width 1
-                                (assoc 1 {:fill "#000000"
-                                          :stroke "none"
-                                          :stroke-width 0})
-                                (->> (walk/postwalk
-                                      (fn [data]
-                                           ;; as a follow up to above comment:
-                                           ;; if we find an element that has a stroke-width but no
-                                           ;; stroke, then set that stroke to none, so those thick
-                                           ;; black outlines won't appear
-                                           ;; TODO: this might, for some SVGs, remove some outlines,
-                                           ;; namely if the element was supposed to inherit the stroke
-                                           ;; from a parent element
-                                        (if (and (map? data)
-                                                 (contains? data :stroke-width)
-                                                 (not (contains? data :stroke)))
-                                          (assoc data :stroke "none")
-                                          data))))
-                                svg/add-ids
-                                (assoc-in [1 :transform] (str "translate(" (- shift-x) "," (- shift-y) ")")))
+  (fn [{:keys [db]} [_ db-path prepared-edn-data raw-svg-data bounding-box]]
+    (let [width (bb/width bounding-box)
+          height (bb/height bounding-box)
           existing-colours (get-in db (conj db-path :colours))]
       {:db (update-in db db-path merge
                       (update-colours-map
@@ -208,8 +174,16 @@
                                   svg/strip-unnecessary-parts
                                   svg/fix-attribute-and-tag-names
                                   svg/remove-namespaced-elements)
-              boundaries (<? (determine-charge-boundaries parsed-svg-data))]
-          (rf/dispatch [::set-svg-data db-path parsed-svg-data raw-svg-data boundaries]))
+              bounding-box (<? (determine-charge-boundaries parsed-svg-data))
+              {shift-x :x
+               shift-y :y} (bb/top-left bounding-box)
+              prepared-edn-data (-> parsed-svg-data
+                                    (assoc 0 :g)
+                                    svg/fix-stroke-and-fill
+                                    (assoc-in [1 :transform]
+                                              (str "translate(" (- shift-x) "," (- shift-y) ")"))
+                                    svg/add-ids)]
+          (rf/dispatch [::set-svg-data db-path prepared-edn-data raw-svg-data bounding-box]))
         (catch :default e
           (log/error e "load svg file error"))))))
 
