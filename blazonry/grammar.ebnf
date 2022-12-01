@@ -983,14 +983,14 @@ partition
 
     | partition/PALY
       (OF? horizontal-layout)?
-      partition-field AND+ partition-field
+      line? partition-field AND+ partition-field
 
     | (partition/BARRY
        | partition/BENDY
        | partition/BENDY-SINISTER
        | partition/CHEVRONNY)
       (OF? vertical-layout)?
-      partition-field AND+ partition-field
+      line? partition-field AND+ partition-field
 
 components
     = component (AND* component)*
