@@ -129,6 +129,7 @@
   (let [style-blocks (->> svg-data
                           (tree-seq (some-fn map? vector? seq?) seq)
                           (filter #(and (vector? %)
+                                        (-> % count (> 2))
                                         (-> % first (= :style))
                                         (-> % second map?)
                                         (-> % second :type (= "text/css")))))
