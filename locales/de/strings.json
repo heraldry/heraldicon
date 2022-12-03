@@ -535,7 +535,7 @@
       "angle": "Winkel",
       "thickness": "Dicke"
     },
-    "size-reference": "Size reference",
+    "size-reference": "Größenreferenz",
     "size-reference-choice": {
       "line-length": "Linienlänge",
       "field-width": "Feldbreite",
@@ -584,13 +584,13 @@
       "sinister-chief": "Heraldisch links-oben"
     },
     "variant-potenty-choice": {
-      "default": "Default",
+      "default": "Standard",
       "counter": "Gegenkrücken",
       "in-pale": "Pfahlkrückenfeh",
       "en-point": "Wechselkrückenfeh"
     },
     "variant-vairy-choice": {
-      "default": "Default",
+      "default": "Standard",
       "counter": "Gegenfeh",
       "in-pale": "Pfahlfeh",
       "en-point": "Wechselfeh",
@@ -617,7 +617,7 @@
     "fixed-tincture": "Gibt der Figur eine fest gelegte Tinktur, die nicht geändert werden kann. Solche Wappenfiguren sind nicht sehr flexibel, die Option sollte also nur in Ausnahmefällen benutzt werden.",
     "charge-group-preview": "Klicke die Slots um zwischen den hinzugefügten Wappenfiguren umzuschalten oder den Slot abzuschalten.",
     "load-field-from-arms": "Ersetzt das Feld durch ein existierendes Wappen.",
-    "size-reference": "The value used as a base reference when size options are percentages, e.g. line width"
+    "size-reference": "Der als Basisreferenz verwendete Wert, wenn Größen als Prozente angegeben werden, z. B. Linienbreite"
   },
   "miscellaneous": {
     "and": "und",
@@ -643,8 +643,6 @@
     "no-item-selected": "Nichts ausgewählt",
     "opposite": "gegenüber",
     "svg-file": "SVG Datei",
-    "private": "privat",
-    "public": "öffentlich",
     "right": "Rechts",
     "semy-of": "Besät mit",
     "shield-layer": "Schildebene",
@@ -667,7 +665,7 @@
     "upload-svg": "SVG hochladen",
     "colourize": "Einfärben",
     "actions": "Aktionen",
-    "export": "Export",
+    "export": "Exportieren",
     "share": "Teilen"
   },
   "user": {
@@ -897,7 +895,7 @@
       "traditional": "Traditionell",
       "shapes": "Formen",
       "decorative": "Dekorativ",
-      "community": "Community"
+      "community": "Gemeinschaft"
     },
     "type": {
       "english": "Englische Form",
