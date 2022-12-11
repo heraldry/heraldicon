@@ -54,8 +54,7 @@
    [:string.charge.facing/en-arriere :en-arriere]
    [:string.charge.facing/guardant :guardant]
    [:string.charge.facing/in-trian-aspect :in-trian-aspect]
-   [:string.charge.facing/reguardant :reguardant]
-   [:string.charge.facing/salient :salient]])
+   [:string.charge.facing/reguardant :reguardant]])
 
 (def facing-map
   (options/choices->map facing-choices))
