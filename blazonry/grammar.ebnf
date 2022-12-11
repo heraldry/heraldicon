@@ -19,6 +19,7 @@ A = #"\ba\b"
 IN = #"\bin\b"
 AT = #"\bat\b"
 OF = #"\bof\b"
+ON = #"\bon\b"
 THE = #"\bthe\b"
 LIKE = #"\blike\b"
 WITH = #"\bwith\b"
@@ -1153,6 +1154,9 @@ blazon
 charged-with
     = CHARGED? WITH
 
+on-a
+    = ON A
+
 root-field
     = root-variation <charged-with> component (AND* components)?
     | root-variation
@@ -1387,6 +1391,7 @@ components
 
 component
     = ordinary-group
+    | ordinary-with-components
     | charge-group
     | semy
 
@@ -1432,6 +1437,10 @@ cottising-word
 
 ordinary-group
     = amount? ordinary
+
+ordinary-with-components
+    = <on-a> ordinary components
+    | <"("> <on-a> ordinary components <")">
 
 (* used for suggestion labeling *)
 ordinary-type
