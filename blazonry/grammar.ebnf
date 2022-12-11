@@ -1293,8 +1293,8 @@ field-location
     | point/BASE-SINISTER
 
 field-reference
-    = ordinal-including-dot
-    | (<IN> | <WITH>)? field-location
+    = (<IN> | <WITH>)? <THE>? ordinal-including-dot <FIELD>?
+    | (<IN> | <WITH>)? <THE>? field-location <FIELD>?
 
 partition-field
     = (field-reference (AND* field-reference)*)? root-field
