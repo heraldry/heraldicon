@@ -895,7 +895,7 @@ attitude/RESPECTANT
     = #"\brespectant\b"
     | #"\baspectant\b"
     | #"\brespecting\b" #"\beach\b" #"\bother\b"
-attitude/CLOSE
+attitude/CLOSED
     = #"\bclosed\b"
     | #"\btrussed\b"
 attitude/DISPLAYED
@@ -1764,7 +1764,7 @@ attitude
     | attitude/ADDORSED
     | attitude/COMBATANT
     | attitude/RESPECTANT
-    | attitude/CLOSE
+    | attitude/CLOSED
     | attitude/DISPLAYED
     | attitude/IN-HER-PIETY
     | attitude/ISSUANT
