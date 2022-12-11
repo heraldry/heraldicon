@@ -22,11 +22,12 @@
   (get-tincture-modifier-type nodes))
 
 (defmethod ast->hdn :tincture-modifier [[_ & nodes]]
-  (let [modifier-type (transform-first #{:tincture-modifier-type} nodes)
+  (let [modifier-types (transform-all #{:tincture-modifier-type} nodes)
         tincture (transform-first #{:tincture} nodes)]
-    [modifier-type tincture]))
+    (for [modifier-type modifier-types]
+      [modifier-type tincture])))
 
 (defn add-tincture-modifiers [hdn nodes]
-  (let [modifiers (into {} (transform-all #{:tincture-modifier} nodes))]
+  (let [modifiers (into {} (apply concat (transform-all #{:tincture-modifier} nodes)))]
     (cond-> hdn
       (seq modifiers) (assoc :tincture modifiers))))
