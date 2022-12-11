@@ -42,6 +42,11 @@
                                                      .generate
                                                      js->clj))))
                              (map s/trim)
+                             (map (fn [word]
+                                    (let [new-word (s/replace word #"[,&]" "")]
+                                      (if (s/blank? new-word)
+                                        word
+                                        new-word))))
                              (remove s/blank?)
                              sort
                              dedupe
