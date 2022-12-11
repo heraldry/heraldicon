@@ -1,9 +1,14 @@
 
 (* terminals *)
 
-COUNTERCHANGED = #"\bcounterchanged\b"
+COUNTERCHANGED
+    = #"\bcounterchanged\b"
+    | #"\bde +l'un +[aà] +l'autre\b"
+    | #"\binterchanged\b"
+
 FIMBRIATED
     = #"\bfimbriated\b"
+    | #"\bfimbrated\b"
     | #"\bfimbriation\b"
 
 A = #"\ba\b"
@@ -22,7 +27,10 @@ TRACTS = #"\btracts\b"
 X = #"x"
 TIMES = #"\btimes\b"
 TINCTURE = #"\btincture\b"
-FIELD = #"\bfield\b"
+FIELD
+    = #"\bfield\b"
+    | #"\bchamp\b"
+
 SAME = #"\bsame\b"
 POINT = #"\bpoint\b"
 SEMY
@@ -35,7 +43,12 @@ DOUBLY
     | #"\bdouble\b"
     | #"\btwo\b"
     | #"\b2\b"
-BETWEEN = #"\bbetween\b"
+BETWEEN
+    = #"\bbetween\b"
+    | #"\bbeside\b"
+    | #"\bbetwixt\b"
+    | #"\bbetwyxt\b"
+
 COTTISED
     = #"\bcottised\b"
     | #"\bcotticed\b"
@@ -45,6 +58,13 @@ COTTISED
     | #"\bcotticing\b"
     | #"\bbendorsed\b"
     | #"\bbendorsing\b"
+    | #"\bcosts\b"
+    | #"\bendorsed\b"
+    | #"\blined\b"
+    | #"\bcotices\b"
+    | #"\bcotissed\b"
+    | #"\bcottizes\b"
+    | #"\bcotised\b"
 
 number/NUMBER = #"[1-9][0-9]*"
 number/DIGIT-WORD
@@ -407,18 +427,30 @@ ordinal/WORD
     | #"\bnineteenth\b"
     | #"\btwentieth\b"
 
-tincture/OR = #"\bor\b"
-   | #"\bd'or\b"
+tincture/OR
+    = #"\bor\b"
+    | #"\bd'or\b"
 tincture/ARGENT
     = #"\bargent\b"
     | #"\bd'argent\b"
-tincture/SABLE = #"\bsable\b"
+    | #"\ba[.]\b"
+    | #"\bar[.]?\b"
+    | #"\bsilver\b"
+tincture/SABLE
+    = #"\bsable\b"
+    | #"\bsa[.]?\b"
 tincture/AZURE
     = #"\bazure\b"
     | #"\bd'azure\b"
-tincture/GULES = #"\bgules\b"
-tincture/PURPURE = #"\bpurpure\b"
-tincture/VERT = #"\bvert\b"
+    | #"\baz[.]?\b"
+tincture/GULES
+    = #"\bgules\b"
+    | #"\bgu[.]?\b"
+tincture/PURPURE
+    = #"\bpurpure\b"
+tincture/VERT
+    = #"\bvert\b"
+    | #"\bve[.]?\b"
 tincture/TENNE
     = #"\btenne\b"
     | #"\btenn[ée](?=([ ,&]|$))"
@@ -426,6 +458,7 @@ tincture/TENNE
 tincture/ORANGE
     = #"\borange\b"
     | #"\bd'orange\b"
+
 tincture/SANGUINE = #"\bsanguine\b"
 tincture/MURREY = #"\bmurrey\b"
 tincture/BLEU-CELESTE
@@ -433,13 +466,22 @@ tincture/BLEU-CELESTE
     | #"\bbleu +celeste\b"
 tincture/ROSE = #"\brose\b"
 tincture/COPPER = #"\bcopper\b"
-tincture/PROPER = #"\bproper\b"
+tincture/PROPER
+    = #"\bproper\b"
+    | #"\bppr[.]?\b"
 tincture/WHITE = #"\bwhite\b"
+
 tincture/BRUNATRE
     = #"\bbrunatre\b"
     | #"\bbrunâtre\b"
 tincture/BUFF = #"\bbuff\b"
-tincture/CARNATION = #"\bcarnation\b"
+tincture/CARNATION
+    = #"\bcarnation\b"
+    | #"\bgillofer\b"
+    | #"\bgillyflower\b"
+    | #"\bpink\b"
+    | #"\bgilly\-flower\b"
+
 tincture/CENDREE
     = #"\bcendre[ée](?=([ ,&]|$))"
     | #"\bcendre[ée]e\b"
@@ -447,7 +489,17 @@ tincture/AMARANTH
     = #"\bamaranth\b"
     | #"\bcolumbine\b"
 
-tincture/ERMINE = #"\bermine\b"
+tincture/ERMINE
+    = #"\bermine\b"
+    | #"\berm[.]?\b"
+    | #"\barmine\b"
+    | #"\bermined\b"
+    | #"\bhermine\b"
+    | #"\bd'hermine\b"
+    | #"\bd'herminé(?=([ ,&]|$))"
+    | #"\bd'herminée\b"
+    | #"\bstoat\b"
+
 tincture/ERMINES = #"\bermines\b"
 tincture/ERMINOIS = #"\berminois\b"
 tincture/PEAN = #"\bpean\b"
@@ -455,23 +507,40 @@ tincture/PEAN = #"\bpean\b"
 partition/BARRY
     = #"\bbarry\b"
     | #"\bbarruly\b"
-    | #"\burely\b"
-partition/BENDY = #"\bbendy\b"
+    | #"\bburely\b"
+partition/BENDY
+    = #"\bbendy\b"
+    | #"\bbarry[- ]+bendy\b"
 partition/BENDY-SINISTER
     = #"\bbendy +sinister\b"
     | #"\bbendy\b" #"\bsinister\b"
+    | #"\bbarry[- ]+bendy +sinister\b"
+    | #"\bbarry[- ]+bendy\b" #"\bsinister\b"
 partition/CHEQUY
     = #"\bchequy\b"
     | #"\bchecky\b"
-partition/CHEVRONNY = #"\bchevronny\b"
+    | #"\bcheckie\b"
+    | #"\bchecquy\b"
+partition/CHEVRONNY
+    = #"\bchevronny\b"
+    | #"\bchevronelly\b"
+    | #"\bchevrony\b"
 partition/FRETTY = #"\bfretty\b"
 partition/GYRONNY = #"\bg[yi]ronny\b"
 partition/LOZENGY = #"\blozengy\b"
 partition/MASONY
     = #"\bmasony\b"
     | #"\bmasoned\b"
-partition/PALY = #"\bpaly\b"
-partition/PAPELLONY = #"\bpapellony\b"
+    | #"\bmassoned\b"
+partition/PALY
+    = #"\bpaly\b"
+    | #"\bvergeté(?=([ ,&]|$))"
+    | #"\bvergetée\b"
+partition/PAPELLONY
+    = #"\bpapellony\b"
+    | #"\bpappellony\b"
+    | #"\bpapelonny\b"
+
 partition/PER-BEND
     = #"\bper +bend\b"
     | #"\bparty +per +bend\b"
@@ -499,20 +568,36 @@ partition/POTENTY = #"\bpotenty\b"
 partition/QUARTERED
     = #"\bquartered\b"
     | #"\bquarterly\b"
+    | #"\bparty[ -]+per[ -]+cross\b"
+    | #"\bper[ -]+cross\b"
 partition/TIERCED-PER-FESS = #"\btierced +per +fess\b"
 partition/TIERCED-PER-PALE = #"\btierced +per +pale\b"
 partition/TIERCED-PER-PALL = #"\btierced +per +pall\b"
 partition/VAIRY = #"\bvairy\b"
 
 ordinary/PALE = #"\bpales?\b"
-ordinary/PALLET = #"\bpallets?\b"
+ordinary/PALLET = #"\bpall?ets?\b"
 ordinary/FESS
     = #"\bfess(es?)?\b"
     | #"\bbars?\b"
-ordinary/BARRULET = #"\bbarrulets?\b"
+    | #"\bbarrs?\b"
+    | #"\bdevices?\b"
+    | #"\bdivises?\b"
+    | #"\bfasces?\b"
+ordinary/BARRULET
+    = #"\bbarrulets?\b"
+    | #"\bclosets?\b"
+    | #"\btrangles?\b"
+    | #"\bbarrelets?\b"
+
 ordinary/CHIEF = #"\bchief\b"
-ordinary/BASE = #"\bbase\b"
-ordinary/BEND = #"\bbends?\b"
+ordinary/BASE
+    = #"\bbase\b"
+    | #"\bchampagne\b"
+    | #"\bplain\ point\b"
+ordinary/BEND
+    = #"\bbends?\b"
+    | #"\bbandes?\b"
 ordinary/BENDLET = #"\bbendlets?\b"
 ordinary/BEND-SINISTER
     = #"\bbends? +sinister\b"
@@ -521,31 +606,53 @@ ordinary/BENDLET-SINISTER
     = #"\bbendlets? +sinister\b"
     | #"\bbendlets?\b" #"\bsinister\b"
 ordinary/CROSS = #"\bcross(es)?\b"
-ordinary/SALTIRE = #"\bsaltires?\b"
-ordinary/CHEVRON = #"\bchevrons?\b"
+ordinary/SALTIRE
+    = #"\bsaltires?\b"
+    | #"\bplain[ -]+saltires?\b"
+    | #"\bsaltiers?\b"
+    | #"\bsautoirs?\b"
+ordinary/CHEVRON
+    = #"\bchevrons?\b"
+    | #"\bcheverons?\b"
+    | #"\bchevera\b"
+    | #"\bchevra\b"
 ordinary/CHEVRONNEL = #"\bchevronnels?\b"
-ordinary/PALL = #"\bpalls?\b"
+ordinary/PALL
+    = #"\bpalls?\b"
+    | #"\bcross[ -]+palls?\b"
+    | #"\bpairles?\b"
+    | #"\bcross[ -]+palls?\b"
 ordinary/PILE = #"\bpiles?\b"
-ordinary/GORE = #"\bgores?\b"
-ordinary/QUARTER = #"\bquarters?\b"
-ordinary/CANTON = #"\bcantons?\b"
+ordinary/GORE
+    = #"\bgores?\b"
+    | #"\bgoars?\b"
+ordinary/QUARTER
+    = #"\bquarters?\b"
+    | #"\bfranc[ -]+quartiers?\b"
+ordinary/CANTON
+    = #"\bcantons?\b"
+    | #"\bcanta\b"
 ordinary/POINT
     = #"\bpoints?\b"
+
 LABEL-POINT = #"\bpoints?\b"
 STAR-POINT = #"\bpoints?\b"
+
 ordinary/BORDURE = #"\bbordures?\b"
 ordinary/ORLE
     = #"\borles?\b"
     | #"\btressures?\b"
-ordinary/LABEL = #"\blabels?\b"
+ordinary/LABEL
+    = #"\blabels?\b"
+    | #"\blambels?\b"
 
 line/STRAIGHT = #"\bstraight\b"
 line/INVECTED
     = #"\binvected\b"
     | #"\benvecked\b"
     | #"\binvecked\b"
-    | #"\bcannet[ée](?=([ ,&]|$))"
-    | #"\bcannet[ée]e\b"
+    | #"\bcannel[ée](?=([ ,&]|$))"
+    | #"\bcannel[ée]e\b"
 line/ENGRAILED
     = #"\bengrailed\b"
     | #"\bingrailed\b"
@@ -571,10 +678,12 @@ line/DANCETTY
     | #"\bdancett[ée](?=([ ,&]|$))"
     | #"\bdancett[ée]e\b"
     | #"\bdancy\b"
+    | #"\bvivr[ée](?=([ ,&]|$))"
 line/WAVY
     = #"\bwavy\b"
     | #"\bwaved\b"
     | #"\bundy\b"
+    | #"\bondy\b"
     | #"\boundy\b"
     | #"\bond[ée](?=([ ,&]|$))"
     | #"\bond[ée]e\b"
@@ -622,6 +731,7 @@ line/ANGLED
 line/BEVILLED
     = #"\bbevilled\b"
     | #"\bbevilly\b"
+    | #"\bbeviled\b"
 line/ENARCHED
     = #"\benarched\b"
     | #"\bconcave\b"
@@ -653,8 +763,8 @@ VOIDED
 ENHANCED
     = #"\benhanced\b"
     | #"\binhanced\b"
-    | #"\bhauss[ée](?=([ ,&]|$))"
-    | #"\bhauss[ée]e\b"
+    | #"\bhauss?[ée](?=([ ,&]|$))"
+    | #"\bhauss?[ée]e\b"
 DEHANCED
     = #"\bdehanced\b"
     | #"\bdebased\b"
@@ -677,8 +787,13 @@ THROUGHOUT
     | #"\bfixed\b"
 DOVETAILED = #"\bdovetailed\b"
 
-point/DEXTER = #"\bdexter\b"
-point/SINISTER = #"\bsinister\b"
+point/DEXTER
+    = #"\bdexter\b"
+    | #"\bright\b"
+point/SINISTER
+    = #"\bsinister\b"
+    | #"\bleft\b"
+
 point/CHIEF = #"\bchief\b"
 point/BASE = #"\bbase\b"
 point/FESS = #"\bfess\b"
@@ -715,120 +830,314 @@ point/HOIST
 point/FLY
     = #"\bfly\b"
 
-attitude/CADENT = #"\bcadent\b"
-attitude/COUCHANT = #"\bcouchant\b"
-attitude/COURANT = #"\bcourant\b"
+attitude/CADENT
+    = #"\bcadent\b"
+    | #"\bkicking\b"
+attitude/COUCHANT
+    = #"\bcouchant\b"
+    | #"\bjacent\b"
+attitude/COURANT
+    = #"\bcourant\b"
+    | #"\bat[ -]+speed\b"
+    | #"\bcurrent\b"
+    | #"\bcursant\b"
+    | #"\bin[ -]+full[ -]+chase\b"
+    | #"\bin[ -]+full[ -]+course\b"
 attitude/DORMANT = #"\bdormant\b"
-attitude/PASCUANT = #"\bpascuant\b"
-attitude/PASSANT = #"\bpassant\b"
-attitude/RAMPANT = #"\brampant\b"
-attitude/SALIENT = #"\bsalient\b"
-attitude/SEGREANT = #"\bsegreant\b"
-attitude/SEJANT = #"\bsejant\b"
+attitude/PASCUANT
+    = #"\bpascuant\b"
+    | #"\bbrowsing\b"
+    | #"\bgrazing\b"
+    | #"\bpaissant\b"
+attitude/PASSANT
+    = #"\bpassant\b"
+    | #"\bambulant\b"
+attitude/RAMPANT
+    = #"\brampant\b"
+    | #"\bforcene\b"
+    | #"\bcabr[ée](?=([ ,&]|$))"
+    | #"\bcareering\b"
+    | #"\brearing\b"
+attitude/SALIENT
+    = #"\bsalient\b"
+    | #"\bleaping\b"
+    | #"\bsaillant\b"
+    | #"\bsaltant\b"
+    | #"\bspringing\b"
+    | #"\bsaliant\b"
+attitude/SEGREANT
+    = #"\bsegreant\b"
+    | #"\brampant\b" #"\bwith\b" #"\bwings\b" #"\bdisplayed\b"
+    | #"\bsergreant\b"
+attitude/SEJANT
+    = #"\bsejant\b"
+    | #"\bassis\b"
+    | #"\bsejeant\b"
 attitude/SEJANT-ERECT
     = #"\bsejant[ -]erect\b"
-    | #"\bsejant\b" "\berect\b"
-attitude/STATANT = #"\bstatant\b"
-attitude/ADDORSED = #"\baddorsed\b"
-attitude/COMBATANT = #"\bcombatant\b"
-attitude/RESPECTANT = #"\brespectant\b"
-attitude/CLOSE = #"\bclose\b"
-attitude/DISPLAYED = #"\bdisplayed\b"
+    | #"\bsejant\b" #"\berect\b"
+    | #"\baccroupi\b"
+attitude/STATANT
+    = #"\bstatant\b"
+    | #"\bat\b" #"\bbay\b"
+attitude/ADDORSED
+    = #"\baddorsed\b"
+    | #"\badoss[ée](?=([ ,&]|$))"
+    | #"\bendorsed\b"
+    | #"\bindorsed\b"
+    | #"\badorsed\b"
+attitude/COMBATANT
+    = #"\bcombatant\b"
+    | #"\bcombattant\b"
+    | #"\baffrontant\b"
+    | #"\baffront[ée](?=([ ,&]|$))"
+attitude/RESPECTANT
+    = #"\brespectant\b"
+    | #"\baspectant\b"
+    | #"\brespecting\b" #"\beach\b" #"\bother\b"
+attitude/CLOSE
+    = #"\bclosed\b"
+    | #"\btrussed\b"
+attitude/DISPLAYED
+    = #"\bdisplayed\b"
+    | #"\bexpanded\b"
+    | #"\bspread\b"
+    | #"\bdisplay'd\b"
+    | #"\bexpansed\b"
 attitude/IN-HER-PIETY
     = #"\bin her piety\b"
     | #"\bin-her-piety\b"
-attitude/ISSUANT = #"\bissuant\b"
-attitude/OVERT = #"\bovert\b"
-attitude/RECURSANT = #"\brecursant\b"
-attitude/RISING = #"\brising\b"
+    | #"\bpiety\b"
+    | #"\bvulning\b"
+attitude/RECURSANT
+    = #"\brecursant\b"
+attitude/ISSUANT
+    = #"\bissuant\b"
+    | #"\bassurgant\b"
+    | #"\bissant\b"
+attitude/OVERT
+    = #"\bovert\b"
+    | #"\babaised\b"
+    | #"\bdisclosed\b"
+    | #"\bhovering\b"
+    | #"\blowered\b"
+    | #"\bwings\b" #"\binverted\b"
+    | #"\bwings\b" #"\baddorsed\b" #"\band\b" #"\binverted\b"
+attitude/RISING
+    = #"\brising\b"
+    | #"\bascending\b"
+    | #"\bessorant\b"
+    | #"\blevant\b"
+    | #"\bsoaring\b"
+    | #"\bsurgerant\b"
+    | #"\bsurgiant\b"
+    | #"\bsurjeant\b"
+    | #"\brousant\b"
 attitude/VIGILANT = #"\bvigilant\b"
-attitude/VOLANT = #"\bvolant\b"
 attitude/VULNING = #"\bvulning\b"
-attitude/HAURIANT = #"\bhauriant\b"
-attitude/NAIANT = #"\bnaiant\b"
-attitude/URINANT = #"\burinant\b"
-attitude/GLISSANT = #"\bglissant\b"
+attitude/VOLANT
+    = #"\bvolant\b"
+    | #"\bflying\b"
+    | #"\bsoarant\b"
+attitude/HAURIANT
+    = #"\bhauriant\b"
+    | #"\bhariant\b"
+    | #"\bhaurient\b"
+attitude/NAIANT
+    = #"\bnaiant\b"
+    | #"\bnatant\b"
+    | #"\bswimming\b"
+    | #"\bnayant\b"
+attitude/URINANT
+    = #"\burinant\b"
+    | #"\buriant\b"
+attitude/GLISSANT
+    = #"\bglissant\b"
+    | #"\bondoyant\b"
 attitude/NOWED = #"\bnowed\b"
 
 facing/TO-DEXTER = #"\bto[ -]dexter\b"
 facing/TO-SINISTER = #"\bto[ -]sinister\b"
 facing/AFFRONTE = #"\baffronte\b"
 facing/EN-ARRIERE = #"\ben[ -]arriere\b"
-facing/GUARDANT = #"\bguardant\b"
+facing/GUARDANT
+    = #"\bguardant\b"
+    | #"\bgardant\b"
 facing/IN-TRIAN-ASPECT
     = #"\bin trian aspect\b"
     | #"\bin-trian-aspect\b"
-facing/REGUARDANT = #"\breguardant\b"
-facing/SALIENT = #"\bsalient\b"
-
+facing/REGUARDANT
+    = #"\breguardant\b"
+    | #"\bregardant\b"
 tincture-modifier/ARMED = #"\barmed\b"
-tincture-modifier/ATTIRED = #"\battired\b"
-tincture-modifier/BEAKED = #"\bbeaked\b"
-tincture-modifier/COMBED = #"\bcombed\b"
-tincture-modifier/EYED = #"\beyed\b"
+tincture-modifier/ATTIRED
+    = #"\battired\b"
+    | #"\bram[ée](?=([ ,&]|$))"
+tincture-modifier/BEAKED
+    = #"\bbeaked\b"
+    | #"\bb[ée]qu[ée](?=([ ,&]|$))"
+tincture-modifier/COMBED
+    = #"\bcombed\b"
+    | #"\bcrested\b"
+tincture-modifier/EYED
+    = #"\beyed\b"
 tincture-modifier/EYED-PEACOCK
     = #"\beyed +peacock\b"
     | #"\beyed-peacock\b"
     | #"\bpeacock +eyed\b"
     | #"\bpeacock-eyed\b"
-tincture-modifier/FINNED = #"\bfinned\b"
-tincture-modifier/INCENSED = #"\bincensed\b"
-tincture-modifier/LANGUED = #"\blangued\b"
-tincture-modifier/LEGGED = #"\blegged\b"
-tincture-modifier/MANED = #"\bmaned\b"
-tincture-modifier/ORBED = #"\borbed\b"
+tincture-modifier/FINNED
+    = #"\bfinned\b"
+tincture-modifier/INCENSED
+    = #"\bincensed\b"
+    | #"\banim[ée](?=([ ,&]|$))"
+    | #"\bwith\b" #"\bfire\b" #"\bissuing\b" #"\bout\b" #"\bof\b" #"\b(his|its|her|their)\b" #"\bmouth(s|es)?\b"
+tincture-modifier/LANGUED
+    = #"\blangued\b"
+    | #"\blampass[ée](?=([ ,&]|$))"
+tincture-modifier/LEGGED
+    = #"\blegged\b"
+    | #"\bmembered\b"
+tincture-modifier/MANED
+    = #"\bmaned\b"
+    | #"\bcrined\b"
+tincture-modifier/ORBED
+    = #"\borbed\b"
+    | #"\ballum[ée](?=([ ,&]|$))"
+    | #"\banim[ée](?=([ ,&]|$))"
 tincture-modifier/TAILED = #"\btailed\b"
 tincture-modifier/TOOTHED = #"\btoothed\b"
-tincture-modifier/UNGULED = #"\bunguled\b"
-tincture-modifier/WATTLED = #"\bwattled\b"
-tincture-modifier/WINGED = #"\bwinged\b"
-tincture-modifier/BARBED = #"\bbarbed\b"
-tincture-modifier/BLADED = #"\bbladed\b"
+tincture-modifier/UNGULED
+    = #"\bunguled\b"
+    | #"\bcleyed\b"
+    | #"\bhoofed\b"
+    | #"\bhooved\b"
+    | #"\bongl[ée](?=([ ,&]|$))"
+    | #"\btaloned\b"
+tincture-modifier/WATTLED
+    = #"\bwattled\b"
+    | #"\bjawlopped\b"
+    | #"\bjelloped\b"
+    | #"\bjellopped\b"
+    | #"\bjowlopped\b"
+    | #"\bwatled\b"
+tincture-modifier/WINGED
+    = #"\bwinged\b"
+    | #"\baisl[ée](?=([ ,&]|$))"
+    | #"\bpinioned\b"
+    | #"\baisle\b"
+tincture-modifier/BARBED
+    = #"\bbarbed\b"
+    | #"\bwhiskered\b"
+    | #"\bbearded\b"
+tincture-modifier/BLADED
+    = #"\bbladed\b"
+    | #"\bstalked\b"
+    | #"\btig[ée](?=([ ,&]|$))"
 tincture-modifier/FRUCTED = #"\bfructed\b"
-tincture-modifier/LEAVED = #"\bleaved\b"
-tincture-modifier/SEEDED = #"\bseeded\b"
-tincture-modifier/SLIPPED = #"\bslipped\b"
+tincture-modifier/LEAVED
+    = #"\bleaved\b"
+    | #"\bfeuill[ée](?=([ ,&]|$))"
+    | #"\bleafy\b"
+    | #"\bfoliated\b"
+tincture-modifier/SEEDED
+    = #"\bseeded\b"
+    | #"\bboutonn[ée](?=([ ,&]|$))"
+tincture-modifier/SLIPPED
+    = #"\bslipped\b"
+    | #"\bstalked\b"
+    | #"\btig[ée](?=([ ,&]|$))"
 tincture-modifier/BARRED = #"\bbarred\b"
 tincture-modifier/TRIMMED = #"\btrimmed\b"
-tincture-modifier/CAPARISONED = #"\bcaparisoned\b"
-tincture-modifier/COLLARED = #"\bcollared\b"
-tincture-modifier/ERASED = #"\berased\b"
-tincture-modifier/GARNISHED = #"\bgarnished\b"
-tincture-modifier/HANDLED = #"\bhandled\b"
-tincture-modifier/HILTED = #"\bhilted\b"
+tincture-modifier/CAPARISONED
+    = #"\bcaparisoned\b"
+    | #"\baccoutred\b"
+    | #"\bfurnished\b"
+    | #"\bwith\b" #"\btrappers\b"
+tincture-modifier/COLLARED
+    = #"\bcollared\b"
+    | #"\baccol[ée](?=([ ,&]|$))"
+    | #"\bgorged\b"
+tincture-modifier/ERASED
+    = #"\berased\b"
+    | #"\beraced\b"
+tincture-modifier/GARNISHED
+    = #"\bgarnished\b"
+    | #"\bembout[ée](?=([ ,&]|$))"
+    | #"\bpurfled\b"
+tincture-modifier/HANDLED
+    = #"\bhandled\b"
+    | #"\bemmanch[ée](?=([ ,&]|$))"
+    | #"\bhafted\b"
+tincture-modifier/HILTED
+    = #"\bhilted\b"
+    | #"\bhelved\b"
+    | #"\bhilt\b"
 tincture-modifier/ILLUMINATED = #"\billuminated\b"
 tincture-modifier/HOODED = #"\bhooded\b"
-tincture-modifier/MASONED = #"\bmasoned\b"
+tincture-modifier/MASONED
+    = #"\bmasoned\b"
+    | #"\bmassoned\b"
 tincture-modifier/POMMELED = #"\bpommeled\b"
 tincture-modifier/STRINGED = #"\bstringed\b"
 
 MIRRORED = #"\bmirrored\b"
-ERASED = #"\berased\b"
-
-charge/ROUNDEL = #"\broundels?\b"
-charge/ANNULET = #"\bannulets?\b"
+ERASED
+    = #"\berased\b"
+    | #"\beraced\b"
+charge/ROUNDEL
+    = #"\broundels?\b"
+    | #"\bballs?\b"
+    | #"\broundles?\b"
+charge/ANNULET
+    = #"\bannulets?\b"
+   | #"\bcyclamors?\b"
+   | #"\bfalse\b" #"\broundels?\b"
+   | #"\brings?\b"
 charge/BILLET = #"\bbillets?\b"
 charge/ESCUTCHEON
     = #"\binescutcheons?\b"
     | #"\bescutcheons?\b"
-charge/LOZENGE = #"\blozenges?\b"
-charge/FUSIL = #"\bfusils?\b"
-charge/MASCLE = #"\bmascles?\b"
+charge/LOZENGE
+    = #"\blozenges?\b"
+    | #"\blozanges?\b"
+    | #"\blosanges?\b"
+charge/FUSIL
+    = #"\bfusils?\b"
+    | #"\bfus[ée]es?\b"
+
+charge/MASCLE
+    = #"\bmascles?\b"
+    | #"\bmacles?\b"
 charge/RUSTRE = #"\brustres?\b"
 charge/STAR
     = #"\bstars?\b"
     | #"\bmullets?\b"
 charge/ESTOILE
-    = #"\bestoiles?\b"
-charge/CRESCENT = #"\bcrescents?\b"
-
-arrangement/PALEWISE = #"\bpale[ -]?wise\b"
-arrangement/FESSWISE = #"\bfess[ -]?wise\b"
-arrangement/BENDWISE = #"\bbend[ -]?wise\b"
+    = #"\bestoile?s?\b"
+charge/CRESCENT
+    = #"\bcrescents?\b"
+    | #"\bcroissants?\b"
+    | #"\bmoons?\b"
+arrangement/PALEWISE
+    = #"\bpale[ -]?wise\b"
+    | #"\bpaleways\b"
+arrangement/FESSWISE
+    = #"\bfess[ -]?wise\b"
+    | #"\bfess[ -]?ways\b"
+    | #"\bbarr?[ -]?wise\b"
+    | #"\bbarr?[ -]?ways\b"
+arrangement/BENDWISE
+    = #"\bbend[ -]?wise\b"
+    | #"\bbend[ -]?ways\b"
 arrangement/BENDWISE-SINISTER
     = #"\bbend[ -]?wise +sinister\b"
-    | #"\bbend[ -]?wise\b" "\bsinister\b"
-arrangement/CHEVRONWISE = #"\bchevron[ -]?wise\b"
+    | #"\bbend[ -]?wise\b" #"\bsinister\b"
+    | #"\bbend[ -]?ways +sinister\b"
+    | #"\bbend[ -]?ways\b" #"\bsinister\b"
+arrangement/CHEVRONWISE
+    = #"\bchevron[ -]?wise\b"
+    | #"\bin +chevron\b"
 arrangement/IN-ANNULLO
     = #"\bin +annullo\b"
 arrangement/IN-ORLE = #"\bin +orle\b"
@@ -1479,7 +1788,6 @@ facing
     | facing/GUARDANT
     | facing/IN-TRIAN-ASPECT
     | facing/REGUARDANT
-    | facing/SALIENT
 
 tincture-modifier-type
     = tincture-modifier/ARMED
