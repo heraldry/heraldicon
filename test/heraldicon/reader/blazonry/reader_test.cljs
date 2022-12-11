@@ -556,6 +556,28 @@
                    :tincture {:langued :argent
                               :armed :gules}}]}
 
+    "or a lion sable, langued and armed gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/lion
+                   :variant {:id nil
+                             :version nil}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :tincture {:langued :gules
+                              :armed :gules}}]}
+
+    "or a lion sable, langued armed gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/lion
+                   :variant {:id nil
+                             :version nil}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :tincture {:langued :gules
+                              :armed :gules}}]}
+
     "per pale or and azure, a fess of the first, a pale of the second"
     {:type :heraldry.field.type/per-pale
      :fields [{:type :heraldry.subfield.type/field

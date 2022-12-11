@@ -1520,7 +1520,7 @@ tincture-modifier-type
     | tincture-modifier/STRINGED
 
 tincture-modifier
-    = AND* tincture-modifier-type tincture
+    = (AND* tincture-modifier-type)+ tincture
 
 (* used to filter out badly named charges *)
 bad-charge-type
