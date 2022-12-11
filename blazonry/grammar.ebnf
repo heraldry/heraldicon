@@ -27,8 +27,8 @@ SAME = #"\bsame\b"
 POINT = #"\bpoint\b"
 SEMY
     = #"\bsemy\b"
-    | #"\bsemé(?=([ ,&]|$))"
-    | #"\bsemée\b"
+    | #"\bsem[ée](?=([ ,&]|$))"
+    | #"\bsem[ée]e\b"
 
 DOUBLY
     = #"\bdoubly\b"
@@ -421,7 +421,8 @@ tincture/PURPURE = #"\bpurpure\b"
 tincture/VERT = #"\bvert\b"
 tincture/TENNE
     = #"\btenne\b"
-    | #"\btenné(?=([ ,&]|$))"
+    | #"\btenn[ée](?=([ ,&]|$))"
+    | #"\btenn[ée]e\b"
 tincture/ORANGE
     = #"\borange\b"
     | #"\bd'orange\b"
@@ -440,8 +441,8 @@ tincture/BRUNATRE
 tincture/BUFF = #"\bbuff\b"
 tincture/CARNATION = #"\bcarnation\b"
 tincture/CENDREE
-    = #"\bcendreé(?=([ ,&]|$))"
-    | #"\bcendree\b"
+    = #"\bcendre[ée](?=([ ,&]|$))"
+    | #"\bcendre[ée]e\b"
 tincture/AMARANTH
     = #"\bamaranth\b"
     | #"\bcolumbine\b"
@@ -539,31 +540,64 @@ ordinary/ORLE
 ordinary/LABEL = #"\blabels?\b"
 
 line/STRAIGHT = #"\bstraight\b"
-line/INVECTED = #"\binvected\b"
-line/ENGRAILED = #"\bengrailed\b"
-line/EMBATTLED = #"\bembattled\b"
+line/INVECTED
+    = #"\binvected\b"
+    | #"\benvecked\b"
+    | #"\binvecked\b"
+    | #"\bcannet[ée](?=([ ,&]|$))"
+    | #"\bcannet[ée]e\b"
+line/ENGRAILED
+    = #"\bengrailed\b"
+    | #"\bingrailed\b"
+    | #"\bsloped\b"
+line/EMBATTLED
+    = #"\b([ei]m)?mbattl(ed|y)\b"
 line/EMBATTLED-GRADY
-    = #"\bembattled grady\b"
-    | #"\bembattled-+grady\b"
-    | #"\bembattled\b" #"\bgrady\b"
+    = #"\b([ei]m)?battl(ed|y) grady\b"
+    | #"\b([ei]m)?battl(ed|y)-+grady\b"
+    | #"\b([ei]m)?battl(ed|y)\b" #"\bgrady\b"
 line/EMBATTLED-IN-CROSSES
-    = #"\bembattled +in +crosses\b"
-    | #"\bembattled-+in-+crosses\b"
-    | #"\bembattled\b" #"\bin crosses\b"
+    = #"\b([ei]m)?battl(ed|y) +in +crosses\b"
+    | #"\b([ei]m)?battl(ed|y)-+in-+crosses\b"
+    | #"\b([ei]m)?battl(ed|y)\b" #"\bin crosses\b"
 line/POTENTY = #"\bpotenty\b"
-line/INDENTED = #"\bindented\b"
-line/DANCETTY = #"\bdancetty\b"
+line/INDENTED
+    = #"\bindented\b"
+    | #"\bendented\b"
+    | #"\bdentel[ée](?=([ ,&]|$))\b"
+    | #"\bdentel[ée]e\b"
+line/DANCETTY
+    = #"\bdancetty\b"
+    | #"\bdancett[ée](?=([ ,&]|$))"
+    | #"\bdancett[ée]e\b"
+    | #"\bdancy\b"
 line/WAVY
     = #"\bwavy\b"
+    | #"\bwaved\b"
     | #"\bundy\b"
-line/NEBULY = #"\bnebuly\b"
+    | #"\boundy\b"
+    | #"\bond[ée](?=([ ,&]|$))"
+    | #"\bond[ée]e\b"
+    | #"\bund[ée](?=([ ,&]|$))"
+    | #"\bund[ée]e\b"
+line/NEBULY
+    = #"\bnebuly\b"
+    | #"\bnebul[ée](?=([ ,&]|$))"
+    | #"\bnebul[ée]e\b"
 line/DOVETAILED
     = #"\bdovetailed\b"
     | #"\bdove +tailed\b"
     | #"\bdove-+tailed\b"
-line/RAGULY = #"\braguly\b"
+line/RAGULY
+    = #"\braguly\b"
+    | #"\braguled\b"
 line/THORNY = #"\bthorny\b"
-line/URDY = #"\burdy\b"
+line/URDY
+    = #"\burdy\b"
+    | #"\burd[ée](?=([ ,&]|$))"
+    | #"\burd[ée]e\b"
+    | #"\bwarriated\b"
+    | #"\bchampaine\b"
 line/FIR-TREE-TOPPED
     = #"\bfir +tree +topped\b"
     | #"\bfir-+tree-+topped\b"
@@ -573,18 +607,54 @@ line/FIR-TWIGGED
 line/WOLF-TOOTHED
     = #"\bwolf +toothed\b"
     | #"\bwolf-+toothed\b"
-line/RAYONNY = #"\brayonny\b"
-line/ANGLED = #"\bangled\b"
-line/BEVILLED = #"\bbevilled\b"
-line/ENARCHED = #"\benarched\b"
+line/RAYONNY
+    = #"\brayonny\b"
+    | #"\birradiated\b"
+    | #"\bradiant\b"
+    | #"\brayonnant\b"
+    | #"\brayonn[ée](?=([ ,&]|$))"
+    | #"\brayonn[ée]e\b"
+    | #"\bflamm[ée](?=([ ,&]|$))"
+    | #"\bflamm[ée]e\b"
+line/ANGLED
+    = #"\bangled\b"
+    | #"\ben [ée]querre\b"
+line/BEVILLED
+    = #"\bbevilled\b"
+    | #"\bbevilly\b"
+line/ENARCHED
+    = #"\benarched\b"
+    | #"\bconcave\b"
+    | #"\barchy\b"
+    | #"\bcourb[ée](?=([ ,&]|$))"
+    | #"\bcourb[ée]e\b"
+    | #"\bvoût[ée](?=([ ,&]|$))"
+    | #"\bvoût[ée]e\b"
 
 HUMETTY
     = #"\bhumetty\b"
+    | #"\bhaumetty\b"
     | #"\bcouped\b"
+    | #"\balais[ée](?=([ ,&]|$))"
+    | #"\balais[ée]e\b"
+    | #"\bales[ée](?=([ ,&]|$))"
+    | #"\bales[ée]e\b"
 TRUNCATED
     = #"\btruncated\b"
-VOIDED = #"\bvoided\b"
-ENHANCED = #"\benhanced\b"
+    | #"\blopped\b"
+    | #"\bsnagged\b"
+    | #"\btrunked\b"
+VOIDED
+    = #"\bvoided\b"
+    | #"\bajoure\b"
+    | #"\bfalse\b"
+    | #"\bvid[ée](?=([ ,&]|$))"
+    | #"\bvid[ée]e\b"
+ENHANCED
+    = #"\benhanced\b"
+    | #"\binhanced\b"
+    | #"\bhauss[ée](?=([ ,&]|$))"
+    | #"\bhauss[ée]e\b"
 DEHANCED
     = #"\bdehanced\b"
     | #"\bdebased\b"
@@ -593,7 +663,18 @@ DEHANCED
 REVERSED
     = #"\breversed\b"
     | #"\binverted\b"
-THROUGHOUT = #"\bthroughout\b"
+    | #"\btransposed\b"
+    | #"\brevers[ée](?=([ ,&]|$))"
+    | #"\brevers[ée]e\b"
+    | #"\brenvers[ée](?=([ ,&]|$))"
+    | #"\brenvers[ée]e\b"
+    | #"\bvers[ée](?=([ ,&]|$))"
+    | #"\bvers[ée]e\b"
+THROUGHOUT
+    = #"\bthroughout\b"
+    | #"\bentire\b"
+    | #"\bfirm\b"
+    | #"\bfixed\b"
 DOVETAILED = #"\bdovetailed\b"
 
 point/DEXTER = #"\bdexter\b"
