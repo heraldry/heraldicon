@@ -147,3 +147,8 @@
         (add-lines nodes)
         (add-cottising nodes)
         (add-fimbriation nodes :line-fimbriation? (not= node-type :ordinary/LABEL)))))
+
+(defmethod ast->hdn :ordinary-with-components [[_ & nodes]]
+  (let [ordinary (transform-first #{:ordinary} nodes)
+        components (transform-first #{:components} nodes)]
+    [(assoc-in ordinary [:field :components] components)]))

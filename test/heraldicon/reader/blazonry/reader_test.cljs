@@ -623,6 +623,31 @@
                                                            :field {:type :heraldry.field.type/plain
                                                                    :tincture :or}}]}}]}}]}
 
+    "per pale azure and or, on a fess azure two stars of the field"
+    {:type :heraldry.field.type/per-pale
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}]
+     :components [{:type :heraldry.ordinary.type/fess
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure
+                           :components [{:type :heraldry.charge-group.type/rows
+                                         :charges [{:type :heraldry.charge.type/star
+                                                    :field {:type :heraldry.field.type/per-pale
+                                                            :fields [{:type :heraldry.subfield.type/field
+                                                                      :field {:type :heraldry.field.type/plain
+                                                                              :tincture :azure}}
+                                                                     {:type :heraldry.subfield.type/field
+                                                                      :field {:type :heraldry.field.type/plain
+                                                                              :tincture :or}}]}}]
+                                         :spacing 47.5
+                                         :strips [{:type :heraldry.charge-group.element.type/strip
+                                                   :slots [0
+                                                           0]}]}]}}]}
+
     "or, a star sable, a fess of the same, a star azure, a pale of the same"
     {:type :heraldry.field.type/plain
      :tincture :or
