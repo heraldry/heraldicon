@@ -25,7 +25,7 @@
     [:string.charge.attitude/combatant :combatant]
     [:string.charge.attitude/respectant :respectant]]
    [:string.charge.attitude.group/winged-creatures
-    [:string.charge.attitude/close :close]
+    [:string.charge.attitude/closed :closed]
     [:string.charge.attitude/displayed :displayed]
     [:string.charge.attitude/in-her-piety :in-her-piety]
     [:string.charge.attitude/issuant :issuant]
