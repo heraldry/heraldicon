@@ -1091,9 +1091,9 @@ charge/ROUNDEL
     | #"\broundles?\b"
 charge/ANNULET
     = #"\bannulets?\b"
-   | #"\bcyclamors?\b"
-   | #"\bfalse\b" #"\broundels?\b"
-   | #"\brings?\b"
+    | #"\bcyclamors?\b"
+    | #"\bfalse\b" #"\broundels?\b"
+    | #"\brings?\b"
 charge/BILLET = #"\bbillets?\b"
 charge/ESCUTCHEON
     = #"\binescutcheons?\b"
