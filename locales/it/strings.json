@@ -25,7 +25,7 @@
       "fess": "Fascia",
       "gore": "Gore",
       "label": "Lambello",
-      "orle": "Orlatura",
+      "orle": "Orlo",
       "pale": "Palo",
       "pall": "Pergola",
       "pile": "Pila",
@@ -42,13 +42,13 @@
       "chequy": "Scaccato",
       "chevronny": "Scaglionato",
       "counterchanged": "Controcambiato",
-      "fretty": "Magliato",
+      "fretty": "Graticolato",
       "gyronny": "Gheronato",
       "gyronny-n": "Gheronato in Croce",
       "lozengy": "Losangato",
-      "masony": "Mattonato",
-      "paly": "Pali",
-      "papellony": "Conchigliato",
+      "masony": "Murato",
+      "paly": "Verghettato",
+      "papellony": "Squamato",
       "per-bend-sinister": "Tagliato",
       "per-bend": "Trinciato",
       "per-chevron": "Troncato in Scaglione",
@@ -57,7 +57,7 @@
       "per-pile": "Pila Rovesciata",
       "per-saltire": "Inquartato in Decùsse",
       "plain": "Normale",
-      "potenty": "Vaio Potenziato",
+      "potenty": "Ramponato",
       "quartered": "Inquartato",
       "quarterly": "Inquartato NxM",
       "tierced-per-fess": "Interzato in Fascia",
@@ -70,7 +70,7 @@
     "type": {
       "angled": "Inclinato",
       "bevilled": "Fulmine",
-      "dancetty": "Spina di Pesce",
+      "dancetty": "Increspato",
       "dovetailed": "Innestato ad Incastro",
       "embattled": "Merlato",
       "embattled-grady": "Merlato Potente",
@@ -124,7 +124,7 @@
     "sanguine": "Sanguigno",
     "tenne": "Cannellato",
     "vert": "Verde",
-    "bleu-celeste": "Blu Celeste",
+    "bleu-celeste": "Campo di Cielo",
     "brunatre": "Bruno",
     "buff": "Camoscio",
     "carnation": "Carnagione",
@@ -279,6 +279,7 @@
       "masoned": "Murato",
       "none": "Nessuno",
       "orbed": "Allumato",
+      "pizzled": "Immaschito",
       "pommeled": "Pomato",
       "seeded": "Bottonato",
       "slipped": "Gambuto",
@@ -318,7 +319,7 @@
     "mode": "Modalità",
     "mode-choice": {
       "colours": "Colori",
-      "catching": "Tratteggiato"
+      "catching": "Monocromatico"
     },
     "outline?": "Traccia il Contorno",
     "scope": "Scopo",
@@ -1002,5 +1003,12 @@
     "success": "Capito",
     "warning": "Attenzione",
     "error": "Errore"
+  },
+  "banner": {
+    "outdated-version-arms": "Questa non è la versione più recente dello stemma.",
+    "outdated-version-charge": "Questa non è la versione più recente della figura.",
+    "outdated-version-collection": "Questa non è la versione più recente della collezione.",
+    "outdated-version-ribbon": "Questa non è la versione più recente del nastro.",
+    "open-latest-version": "Apri la versione più recente."
   }
 }
