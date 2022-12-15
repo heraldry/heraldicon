@@ -14,6 +14,7 @@
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.library.collection.list :as library.collection.list]
    [heraldicon.frontend.library.collection.shared :refer [entity-type]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
@@ -209,7 +210,13 @@
     [history/buttons form-db-path]
     [tree/tree [form-db-path
                 (conj form-db-path :data :render-options)
-                (conj form-db-path :data)]]]))
+                (conj form-db-path :data)]]]
+   :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
+                 entity-version @(rf/subscribe [:get (conj form-db-path :version)])]
+             [details/latest-version-banner
+              entity-id
+              entity-version
+              (library.collection.list/on-select {:id entity-id})])))
 
 (defn create-view []
   [details/create-view entity-type collection-form #(go default/collection-entity)])

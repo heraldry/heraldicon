@@ -1216,3 +1216,13 @@ ul.parser-warnings li {
 .disabled-item {
   color: #ccc;
 }
+
+.banner {
+  padding: 6px 10px;
+}
+
+.banner.warning {
+  border: 1px solid #ecc;
+  background-color: #fdd;
+  color: #b44;
+}

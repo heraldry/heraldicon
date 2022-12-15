@@ -9,6 +9,7 @@
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.library.ribbon.list :as library.ribbon.list]
    [heraldicon.frontend.library.ribbon.shared :refer [entity-type]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
@@ -354,7 +355,13 @@
     [form/active]
     [message/display entity-type]
     [buttons/buttons entity-type]
-    [attribution/attribution {:path form-db-path}]]))
+    [attribution/attribution {:path form-db-path}]]
+   :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
+                 entity-version @(rf/subscribe [:get (conj form-db-path :version)])]
+             [details/latest-version-banner
+              entity-id
+              entity-version
+              (library.ribbon.list/on-select {:id entity-id})])))
 
 (defn create-view []
   [details/create-view entity-type ribbon-form #(go default/ribbon-entity)])

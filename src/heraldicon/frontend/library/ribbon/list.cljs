@@ -9,7 +9,7 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defn- on-select [{:keys [id]}]
+(defn on-select [{:keys [id]}]
   {:href (reife/href :route.ribbon.details/by-id {:id (id/for-url id)})
    :on-click (fn [_event]
                (rf/dispatch-sync [::message/clear entity-type]))})
