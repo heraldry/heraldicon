@@ -283,7 +283,7 @@
      shape-path
      (get-parent-field-shape context))))
 
-(defmethod exact-shape nil [context]
+(defmethod exact-shape :default [context]
   (fallback-exact-shape context))
 
 (defmethod exact-shape :heraldry/subfield [context]
