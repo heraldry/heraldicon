@@ -76,7 +76,7 @@
                            :division))))
 
 (defmethod field-type :plain [_]
-  (s/keys :req-un [:heraldry.field/tincture]))
+  (s/keys :opt-un [:heraldry.field/tincture]))
 
 (defmethod field-type :counterchanged [_]
   (s/keys))
