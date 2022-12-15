@@ -1004,5 +1004,12 @@
     "success": "Understood",
     "warning": "Warning",
     "error": "Error"
+  },
+  "banner": {
+    "outdated-version-arms": "This is not the latest version of this coat of arms.",
+    "outdated-version-charge": "This is not the latest version of this charge.",
+    "outdated-version-collection": "This is not the latest version of this collection.",
+    "outdated-version-ribbon": "This is not the latest version of this ribbon.",
+    "open-latest-version": "Open latest version."
   }
 }

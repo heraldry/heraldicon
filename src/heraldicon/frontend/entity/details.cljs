@@ -6,9 +6,11 @@
    [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.history.core :as history]
+   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
+   [heraldicon.frontend.repository.entity :as entity]
    [heraldicon.frontend.repository.entity-for-editing :as entity-for-editing]
    [heraldicon.frontend.status :as status]
    [heraldicon.localization.string :as string]
@@ -128,3 +130,19 @@
                                                             (string/str-tr message " " (:version form-data))])))
                          :on-error (fn [error]
                                      (rf/dispatch [::message/set-error entity-type (:message (ex-data error))]))}]]]})))
+
+(defn latest-version-banner [entity-id version on-select]
+  (when entity-id
+    (when (not= version
+                @(rf/subscribe [::entity/latest-version entity-id]))
+      [:div.banner.warning
+       [:i.fas.fa-exclamation-circle #_{:style {:color ""}}]
+       " "
+       [tr (case (id/type-from-id entity-id)
+             :heraldicon.entity.type/arms :string.banner/outdated-version-arms
+             :heraldicon.entity.type/charge :string.banner/outdated-version-charge
+             :heraldicon.entity.type/ribbon :string.banner/outdated-version-ribbon
+             :heraldicon.entity.type/collection :string.banner/outdated-version-collection)]
+       " "
+       [:a on-select
+        [tr :string.banner/open-latest-version]]])))

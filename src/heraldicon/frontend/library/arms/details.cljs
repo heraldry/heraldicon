@@ -15,6 +15,7 @@
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
+   [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.arms.shared :refer [entity-type base-context]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.title :as title]
@@ -94,7 +95,13 @@
                 (conj form-db-path :data :achievement :coat-of-arms)
                 :spacer
                 (conj form-db-path :data :achievement :ornaments)]
-     base-context]]))
+     base-context]]
+   :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
+                 entity-version @(rf/subscribe [:get (conj form-db-path :version)])]
+             [details/latest-version-banner
+              entity-id
+              entity-version
+              (library.arms.list/on-select {:id entity-id})])))
 
 (defn- load-hdn [hdn-hash]
   (go

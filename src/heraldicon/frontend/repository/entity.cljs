@@ -51,7 +51,8 @@
 
 (defn update-latest-versions [db entities]
   (let [version-map (into {}
-                          (map (juxt :id :version))
+                          (map (fn [{:keys [id version latest-version]}]
+                                 [id (or latest-version version)]))
                           entities)]
     (update-in
      db db-path-latest-versions
