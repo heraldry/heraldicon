@@ -3,8 +3,8 @@
 (def shadow
   [:filter#shadow {:x -20
                    :y -20
-                   :width 200
-                   :height 600
+                   :width 800
+                   :height 800
                    :filter-units "userSpaceOnUse"}
    [:feOffset {:result "offsetOut"
                :in "SourceAlpha"
