@@ -108,16 +108,6 @@
                :field {:type :heraldry.field.type/plain
                        :tincture :or}}]}
 
-    {:type :heraldry.field.type/plain
-     :fields [{:type :heraldry.subfield.type/field
-               :field {:type :heraldry.field.type/plain
-                       :tincture :azure}}
-              {:type :heraldry.subfield.type/field
-               :field {:type :heraldry.field.type/plain
-                       :tincture :or}}
-              {:type :heraldry.subfield.type/reference
-               :index 1}]}
-
     {:type :heraldry.field.type/per-saltire
      :fields [{:type :heraldry.subfield.type/field
                :field {:type :heraldry.field.type/plain
