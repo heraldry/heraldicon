@@ -34,10 +34,8 @@
         alphas (take-nth 4 (drop 3 pixels))]
     (mapv pos? alphas)))
 
-(defn- painted-bounding-box [image]
-  (let [width (.-width image)
-        painted-pixels (get-painted-pixels image)
-        painted-coords (keep-indexed (fn [index painted?]
+(defn- painted-bounding-box [painted-pixels width]
+  (let [painted-coords (keep-indexed (fn [index painted?]
                                        (when painted?
                                          (v/Vector. (mod index width)
                                                     (quot index width))))
@@ -176,14 +174,19 @@
                                                "translate(" (- (:x top-left)) "," (- (:y top-left)) ")")}
                            svg-data]
          image (<? (draw-svg shifted-svg-data target-width target-height))
-         bounding-box (painted-bounding-box image)
-         bounding-box (if (<= depth max-depth)
-                        (<? (svg-bounding-box shifted-svg-data bounding-box :depth (inc depth)))
-                        bounding-box)
-         bounding-box (-> bounding-box
-                          (bb/scale (/ 1 scale))
-                          (bb/translate top-left))]
-     bounding-box)))
+         width (.-width image)
+         painted-pixels (get-painted-pixels image)
+         bounding-box (painted-bounding-box painted-pixels width)
+         empty-bounding-box? (or (zero? (bb/width bounding-box))
+                                 (zero? (bb/height bounding-box)))]
+     (if empty-bounding-box?
+       base-bounding-box
+       (let [bounding-box (if (>= depth max-depth)
+                            bounding-box
+                            (<? (svg-bounding-box shifted-svg-data bounding-box :depth (inc depth))))]
+         (-> bounding-box
+             (bb/scale (/ 1 scale))
+             (bb/translate top-left)))))))
 
 (comment
 
