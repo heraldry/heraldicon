@@ -451,7 +451,7 @@
     "number-of-points": "Anzahl Lätze",
     "number-of-rows": "Anzahl Zeilen",
     "offset": "Versatz",
-    "offset-x": "Versatz y",
+    "offset-x": "Versatz x",
     "offset-y": "Versatz y",
     "anchor": "Anker",
     "outline-mode": "Umrandung",
@@ -1007,7 +1007,7 @@
   "banner": {
     "outdated-version-arms": "Das ist nicht die neueste Version dieses Wappens.",
     "outdated-version-charge": "Das ist nicht die neueste Version dieser Wappenfigur.",
-    "outdated-version-collection": "Das ist nicht die neueste version dieser sammlung.",
+    "outdated-version-collection": "Das ist nicht die neueste version dieser Sammlung.",
     "outdated-version-ribbon": "Das ist nicht die neueste version dieses Bandes.",
     "open-latest-version": "Neueste Version öffnen."
   }
