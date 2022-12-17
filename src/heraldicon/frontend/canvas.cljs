@@ -157,8 +157,8 @@
 
 (def ^:private max-depth 3)
 
-(defn svg-bounding-box [svg-data base-bounding-box & {:keys [depth]
-                                                      :or {depth 0}}]
+(defn- svg-bounding-box [svg-data base-bounding-box & {:keys [depth]
+                                                       :or {depth 0}}]
   (go-catch
    (let [target-width 256
          target-height 256
@@ -185,10 +185,19 @@
              (bb/scale (/ 1 scale))
              (bb/translate top-left)))))))
 
-(defn svg-shapes [svg-data bounding-box]
+(defn- bounding-box-from-shape-points [shapes]
+  (let [edge-coords (mapcat (fn [paths]
+                              (apply concat paths))
+                            (vals shapes))]
+    (-> (bb/from-points edge-coords)
+        (update :max-x inc)
+        (update :max-y inc))))
+
+(defn svg-shapes-and-bounding-box [svg-data base-bounding-box]
   (go-catch
    (let [target-width 1024
          target-height 1024
+         bounding-box (<? (svg-bounding-box svg-data base-bounding-box))
          width (bb/width bounding-box)
          height (bb/height bounding-box)
          top-left (bb/top-left bounding-box)
@@ -200,22 +209,28 @@
          image (<? (draw-svg shifted-svg-data target-width target-height))
          width (.-width image)
          painted-pixels (get-painted-pixels image)
-         shapes (painted-shapes painted-pixels width)]
-     (mapv (fn [paths]
-             (mapv (fn [edges]
-                     (str (path/make-path (apply concat
-                                                 (map-indexed (fn [index {:keys [x y dir]}]
-                                                                [(if (zero? index)
-                                                                   "M"
-                                                                   "L")
-                                                                 (-> (v/Vector. x y)
-                                                                     (v/add (case dir
-                                                                              :left (v/Vector. 0 0.5)
-                                                                              :right (v/Vector. 1 0.5)
-                                                                              :top (v/Vector. 0.5 0)
-                                                                              :bottom (v/Vector. 0.5 1)))
-                                                                     (v/div scale))])
-                                                              edges)))
-                          "z"))
-                   paths))
-           (vals shapes)))))
+         shapes (painted-shapes painted-pixels width)
+         pixel-bounding-box (bounding-box-from-shape-points shapes)
+         new-bounding-box (-> pixel-bounding-box
+                              (bb/scale (/ 1 scale))
+                              (bb/translate top-left))]
+     {:bounding-box new-bounding-box
+      :shapes (mapv (fn [paths]
+                      (mapv (fn [edges]
+                              (str (path/make-path (apply concat
+                                                          (map-indexed (fn [index {:keys [x y dir]}]
+                                                                         [(if (zero? index)
+                                                                            "M"
+                                                                            "L")
+                                                                          (-> (v/Vector. x y)
+                                                                              (v/sub (bb/top-left pixel-bounding-box))
+                                                                              (v/add (case dir
+                                                                                       :left (v/Vector. 0 0.5)
+                                                                                       :right (v/Vector. 1 0.5)
+                                                                                       :top (v/Vector. 0.5 0)
+                                                                                       :bottom (v/Vector. 0.5 1)))
+                                                                              (v/div scale))])
+                                                                       edges)))
+                                   "z"))
+                            paths))
+                    (vals shapes))})))

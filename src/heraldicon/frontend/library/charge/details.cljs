@@ -132,17 +132,14 @@
          naive-bounding-box (bb/from-vector-and-size
                              (v/Vector. shift-x shift-y)
                              width height)
-         detected-bounding-box (<? (canvas/svg-bounding-box edn-data naive-bounding-box))]
-     (if (or (not from-viewbox?)
-             (< (bb/width detected-bounding-box) width)
-             (< (bb/height detected-bounding-box) height))
-       detected-bounding-box
-       naive-bounding-box))))
-
-(defn- determine-charge-shapes [svg-data bounding-box]
-  (go-catch
-   (let [edn-data (assoc svg-data 0 :g)]
-     (<? (canvas/svg-shapes edn-data bounding-box)))))
+         {:keys [bounding-box
+                 shapes]} (<? (canvas/svg-shapes-and-bounding-box edn-data naive-bounding-box))]
+     {:bounding-box (if (or (not from-viewbox?)
+                            (< (bb/width bounding-box) width)
+                            (< (bb/height bounding-box) height))
+                      bounding-box
+                      naive-bounding-box)
+      :shapes shapes})))
 
 (macros/reg-event-fx ::set-svg-data
   (fn [{:keys [db]} [_ db-path prepared-edn-data raw-svg-data bounding-box shapes]]
@@ -180,8 +177,8 @@
                                   svg/strip-unnecessary-parts
                                   svg/fix-attribute-and-tag-names
                                   svg/remove-namespaced-elements)
-              bounding-box (<? (determine-charge-boundaries parsed-svg-data))
-              shapes (<? (determine-charge-shapes parsed-svg-data bounding-box))
+              {:keys [bounding-box
+                      shapes]} (<? (determine-charge-boundaries parsed-svg-data))
               {shift-x :x
                shift-y :y} (bb/top-left bounding-box)
               prepared-edn-data (-> parsed-svg-data
