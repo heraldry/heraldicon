@@ -43,7 +43,7 @@
                         :ui/element :ui.element/tincture-modifiers})
       (assoc :ignore-layer-separator?
              {:type :option.type/boolean
-              :default (->> context :path (some #{:coat-of-arms}))
+              :default (boolean (some #{:coat-of-arms} (:path context)))
               :ui/label :string.option/ignore-layer-separator?
               :ui/tooltip :string.tooltip/ignore-layer-separator?})))
 
