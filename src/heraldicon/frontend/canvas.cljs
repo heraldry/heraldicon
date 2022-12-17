@@ -4,6 +4,7 @@
    [com.wsscode.async.async-cljs :refer [go-catch <?]]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
+   [heraldicon.svg.path :as path]
    [heraldicon.util.async :as util.async]
    [reagent.dom.server :as r-server]))
 
@@ -49,12 +50,11 @@
           (neg? y)
           (>= x width)
           (>= y (/ (count pixels) width)))
-    0
+    false
     (get pixels (+ (* y width) x))))
 
 (defn- trace-shape [pixels width {:keys [x y dir]
                                   :as edge} edges]
-  #_(js/console.log :trace edge edges)
   (if (= (first edges) edge)
     edges
     (let [possible-edges (case dir
@@ -96,7 +96,7 @@
                                      :y y
                                      :dir :left}])
           new-edge (first (filter (fn [{:keys [x y]}]
-                                    (= 1 (get-pixel pixels width x y)))
+                                    (get-pixel pixels width x y))
                                   possible-edges))]
       (recur pixels width new-edge (conj edges edge)))))
 
@@ -134,7 +134,7 @@
             (update-in [:shapes current] conj new-shape)
             (add-edges-for-lookup new-shape current))))))
 
-(defn- build-shapes [pixels width]
+(defn- painted-shapes [pixels width]
   (let [height (/ (count pixels) width)]
     (loop [x 0
            y 0
@@ -149,14 +149,11 @@
                         [(inc x) y])
               new-shapes-data (cond
                                 (and (not current)
-                                     (= 1 (get-pixel pixels width x y))) (enter-shape shapes-data pixels width x y)
+                                     (get-pixel pixels width x y)) (enter-shape shapes-data pixels width x y)
                                 (and current
-                                     (= 0 (get-pixel pixels width x y))) (leave-shape shapes-data pixels width x y)
+                                     (not (get-pixel pixels width x y))) (leave-shape shapes-data pixels width x y)
                                 :else shapes-data)]
           (recur nx ny new-shapes-data))))))
-
-(defn- painted-shapes [painted-pixels width]
-  (let [shapes (build-shapes painted-pixels width)]))
 
 (def ^:private max-depth 3)
 
@@ -187,6 +184,41 @@
          (-> bounding-box
              (bb/scale (/ 1 scale))
              (bb/translate top-left)))))))
+
+(defn svg-shapes [svg-data bounding-box]
+  (go-catch
+   (let [target-width 1024
+         target-height 1024
+         width (bb/width bounding-box)
+         height (bb/height bounding-box)
+         top-left (bb/top-left bounding-box)
+         scale (min (/ target-width width)
+                    (/ target-height height))
+         shifted-svg-data [:g {:transform (str "scale(" scale "," scale ")"
+                                               "translate(" (- (:x top-left)) "," (- (:y top-left)) ")")}
+                           svg-data]
+         image (<? (draw-svg shifted-svg-data target-width target-height))
+         width (.-width image)
+         painted-pixels (get-painted-pixels image)
+         shapes (painted-shapes painted-pixels width)]
+     (mapv (fn [paths]
+             (mapv (fn [edges]
+                     (str (path/make-path (apply concat
+                                                 (map-indexed (fn [index {:keys [x y dir]}]
+                                                                [(if (zero? index)
+                                                                   "M"
+                                                                   "L")
+                                                                 (-> (v/Vector. x y)
+                                                                     (v/add (case dir
+                                                                              :left (v/Vector. 0 0.5)
+                                                                              :right (v/Vector. 1 0.5)
+                                                                              :top (v/Vector. 0.5 0)
+                                                                              :bottom (v/Vector. 0.5 1)))
+                                                                     (v/div scale))])
+                                                              edges)))
+                          "z"))
+                   paths))
+           (vals shapes)))))
 
 (comment
 
@@ -234,7 +266,7 @@
 
     (try
       (let [[width pixels] test-pixels
-            shapes (build-shapes pixels width)]
+            shapes (painted-shapes pixels width)]
         shapes
         ;;
         )
