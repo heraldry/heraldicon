@@ -139,8 +139,13 @@
        detected-bounding-box
        naive-bounding-box))))
 
+(defn- determine-charge-shapes [svg-data bounding-box]
+  (go-catch
+   (let [edn-data (assoc svg-data 0 :g)]
+     (<? (canvas/svg-shapes edn-data bounding-box)))))
+
 (macros/reg-event-fx ::set-svg-data
-  (fn [{:keys [db]} [_ db-path prepared-edn-data raw-svg-data bounding-box]]
+  (fn [{:keys [db]} [_ db-path prepared-edn-data raw-svg-data bounding-box shapes]]
     (let [width (bb/width bounding-box)
           height (bb/height bounding-box)
           existing-colours (get-in db (conj db-path :colours))]
@@ -149,7 +154,8 @@
                        {:colours existing-colours
                         :edn-data {:data prepared-edn-data
                                    :width width
-                                   :height height}
+                                   :height height
+                                   :shapes shapes}
                         :svg-data raw-svg-data}))
        :dispatch [::clear-selected-colours]})))
 
@@ -175,6 +181,7 @@
                                   svg/fix-attribute-and-tag-names
                                   svg/remove-namespaced-elements)
               bounding-box (<? (determine-charge-boundaries parsed-svg-data))
+              shapes (<? (determine-charge-shapes parsed-svg-data bounding-box))
               {shift-x :x
                shift-y :y} (bb/top-left bounding-box)
               prepared-edn-data (-> parsed-svg-data
@@ -183,7 +190,7 @@
                                     (assoc-in [1 :transform]
                                               (str "translate(" (- shift-x) "," (- shift-y) ")"))
                                     svg/add-ids)]
-          (rf/dispatch [::set-svg-data db-path prepared-edn-data raw-svg-data bounding-box]))
+          (rf/dispatch [::set-svg-data db-path prepared-edn-data raw-svg-data bounding-box shapes]))
         (catch :default e
           (log/error e "load svg file error"))))))
 
