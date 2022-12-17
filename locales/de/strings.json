@@ -679,12 +679,12 @@
       "copy-to-clipboard-failed": "URL kopieren ist fehlgeschlagen.",
       "created-unsaved-copy": "Ungespeicherte Kopie erstellt.",
       "email-required": "Email erforderlich.",
-      "need-to-be-logged-in": "Du mußt eingeloggt sein.",
-      "need-to-be-logged-in-and-arms-must-be-saved": "Du mußt eingeloggt sein und das Wappen gespeichert haben.",
-      "need-to-be-logged-in-and-charge-must-be-saved": "Du mußt eingeloggt sein und die Wappenfigur gespeichert haben.",
-      "need-to-be-logged-in-and-own-the-arms": "Du mußt eingeloggt und der Besitzer des Wappens sein.",
-      "need-to-be-logged-in-and-own-the-charge.": "Du mußt eingeloggt und der Besitzer der Wappenfigur sein.",
-      "need-to-be-logged-in-and-own-the-collection.": "Du mußt eingeloggt und der Besitzer der Sammlung sein.",
+      "need-to-be-logged-in": "Du musst eingeloggt sein.",
+      "need-to-be-logged-in-and-arms-must-be-saved": "Du musst eingeloggt sein und das Wappen gespeichert haben.",
+      "need-to-be-logged-in-and-charge-must-be-saved": "Du musst eingeloggt sein und die Wappenfigur gespeichert haben.",
+      "need-to-be-logged-in-and-own-the-arms": "Du musst eingeloggt und der Besitzer des Wappens sein.",
+      "need-to-be-logged-in-and-own-the-charge.": "Du musst eingeloggt und der Besitzer der Wappenfigur sein.",
+      "need-to-be-logged-in-and-own-the-collection.": "Du musst eingeloggt und der Besitzer der Sammlung sein.",
       "new-confirmation-code-sent": "Ein neuer Bestätigungscode wurde an deine Emailadresse geschickt.",
       "password-reset-completed": "Password zurückgesetzt",
       "password-reset-confirmation-code-sent": "Ein Bestätigungscode für das Zurücksetzen des Passworts wurde an deine Emailadresse geschickt.",
@@ -831,7 +831,7 @@
     "user": "Benutzer"
   },
   "submenu-summary": {
-    "adjusted": "angepaßt",
+    "adjusted": "angepasst",
     "aligned": "ausgerichtet",
     "base-fields": "Basisfelder",
     "default": "Standard",
@@ -856,7 +856,7 @@
       "segment-explanation": "Segmente können Vorderseite oder Rückseite oder Vorderseite mit Text repräsentieren, und ihrer Render-Reihenfolge wird durch die Ebenen-Zahl angegeben. Note: wende die Vorauswahl an nachdem sich die Anzahl der Segmente in der Kurve ändert. Das überschreibt die Änderungen hier, aber im Moment gibt es keinen guten Weg, diese Änderungen beizubehalten.",
       "svg-font-rendering-warning": "Der SVG Export beinhaltet die Fonts, aber einige Programme zeigen sie nicht korrekt an. Zumindest Chrome sollte es richtig anzeigen.",
       "topology-explanation-1": "Die Band-Kurve kann unterschiedlich interpretiert werden, je nachdem was Vorder- und Rückseite ist und welche Segmente sich überlappen.",
-      "topology-explanation-2": "Die Vorauswahl kann benutzt werden, um typische Effekte zu erzeugen, die Segmente können dann weiter angepaßt werden."
+      "topology-explanation-2": "Die Vorauswahl kann benutzt werden, um typische Effekte zu erzeugen, die Segmente können dann weiter angepasst werden."
     },
     "apply-presets": "Vorauswahl anwenden",
     "flow-presets": "Verlauf Vorauswahl",
@@ -955,7 +955,7 @@
       "welcome-to-heraldicon": "Willkommen auf Heraldicon",
       "what-is-this-about?": "Worum geht es hier?",
       "heraldry-intro": "ist interessant und macht Spaß, doch sie hat eine Unzahl von Konventionen und Regeln, die sich mittlerweile fast ein Jahrtausend weiterentwickelt haben.",
-      "arms-creation-1-effort": "Ein Wappen zu erstellen, ist ein zeitaufwendiger Prozess, der fundiertes Wissen verschiedener Design-Werkzeuge benötigt. Aber selbst wenn du diese Zeit investierst, ist das Ergebnis meist statisch und kann ohne weiteren manuellen Aufwand nicht leicht angepaßt werden, zum Beispiel um den Schnitt (ein Linienstil), eine Tinktur oder die Schildform zu ändern.",
+      "arms-creation-1-effort": "Ein Wappen zu erstellen ist ein zeitaufwendiger Prozess, der fundiertes Wissen verschiedener Design-Werkzeuge benötigt. Aber selbst wenn du diese Zeit investierst, ist das Ergebnis meist statisch und kann ohne weiteren manuellen Aufwand nicht leicht angepasst werden, zum Beispiel um den Schnitt (ein Linienstil), eine Tinktur oder die Schildform zu ändern.",
       "arms-creation-2-with-heraldicon": "Das möchte Heraldicon verbessern. Du kannst hier Wappen beschreiben und das Interface kümmert sich um die grafische Darstellung. Danach kann es jederzeit ein neues Farbschema bekommen, ein anderes Schild kann benutzt werden, es kann für die Zusammensetzung andere Wappen benutzt werden, Wappenfiguren können durch andere Varianten verschiedener Stile ersetzt werden, etc..",
       "arms-creation-3-heraldicon-no-replacement-for-art": "Selbstverständlich wird es menschliche Fähigkeiten und Kunstfertigkeit nicht ersetzen, aber es kann einen Anfang bieten, um bestimmte Konzepte auszuprobieren und eine Basis von Dingen zu erschaffen, die automatisiert werden können, e.g. Schildteilungen, Heroldsbilder und die verschiedenen Schnitte.",
       "goals": "Ziele",
@@ -963,25 +963,25 @@
       "goal-2-open-arms-library": "Eine offene online Wappendatenbank zur Verfügung stellen, als Referenz oder für Forschung",
       "goal-3-support-heraldic-concepts": "So viele heraldische Konzepte und Elemente wie möglich unterstützen",
       "status": "Status",
-      "status-site-still-beta": "Die gesamte Webseite ist immer noch in einem \"beta\" Stadium, also sei bitte geduldig wenn du auf Bugs oder fehlende Features stößt. Auf der Kontakt-Seite gibt es Details, wo Bugs gemeldet oder Features gewünscht werden können.",
+      "status-site-still-beta": "Die gesamte Webseite ist immer noch im beta-Stadium, also sei bitte geduldig, wenn du auf Bugs oder fehlende Features stößt. Auf der Kontakt-Seite gibt es Details, wo Bugs gemeldet oder Features gewünscht werden können.",
       "licensing": "Lizenzierung",
-      "licensing-1-and-attribution-for-public-objects": "Wenn du Wappenfiguren und Wappen auf dieser Seite öffentlich machen möchtest, dann benötigen sie eine Creative Commons Lizenz oder müssen als \"gemeinfrei\" markiert werden. Abgeleitete Arbeit benötigt Attribuierung der Quelle, und die Quell-Lizenz muß mit der gewählten CC Lizenz kompatibel sein.",
+      "licensing-1-and-attribution-for-public-objects": "Wenn du Wappenfiguren und Wappen auf dieser Seite öffentlich machen möchtest, dann benötigen diese eine Creative Commons Lizenz oder müssen als \"gemeinfrei\" markiert werden. Abgeleitete Arbeit benötigt Attribuierung der Quelle, und die Quell-Lizenz muss mit der gewählten CC Lizenz kompatibel sein.",
       "licensing-2-how-to-specify-and-responsibility": "Du kannst diese Angaben beim Bearbeiten von Wappenfigur oder Wappen machen, und das Ansehen oder Exportieren der jeweiligen Arbeiten enthält alle Lizenz-Informationen und Attribuierungen. Es ist deine Verantwortung, diese Informationen anzugeben, wenn du deine Arbeit öffentlich machst.",
       "licensing-3-contact-if-you-see-your-work-unattributed": "Falls du deine eigene Arbeit OHNE ordentliche Attribuierung auf dieser Seite siehst, oder du die Implementierung nicht für ausreichend hältst, dann kontaktiere mich bitte.",
       "licensing-4-technical-info-on-attribution": "Achtung: SVGs bekommen ordentliche Metadaten von Lizenz/Attribuierung für Wappen und alle benutzten Wappenfiguren, bei PNGs ist das nicht so leicht und noch nicht der Fall, es ist aber in Arbeit."
     },
     "arms-library": {
-      "create-and-view-arms": "Hier kannst du Wappen erstellen und ansehen. Du mußt deine Wappen explizit als öffentlich markieren eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest.",
+      "create-and-view-arms": "Hier kannst du Wappen erstellen und ansehen. Du musst deine Wappen explizit als öffentlich markieren und eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest.",
       "svg-png-access-info": "SVG/PNG Links können auch für private Wappen geteilt und von jedem angesehen werden."
     },
     "charge-library": {
-      "create-and-view-charges": "Hier kannst du Wappenfiguren erstellen und ansehen, die in Wappen benutzt werden können. Deine Wappenfiguren sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich machen möchtest, dann mußt du eine Lizenz angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, dann gib auch die Quelle und die Lizenz der Quelle an."
+      "create-and-view-charges": "Hier kannst du Wappenfiguren erstellen und ansehen, die in Wappen benutzt werden können. Deine Wappenfiguren sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich machen möchtest, dann musst du eine Lizenz angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, dann gib auch die Quelle und die Lizenz der Quelle an."
     },
     "collection-library": {
-      "create-and-view-collections": "Hier kannst du Sammlungen von Wappen erstellen und ansehen. Du mußt deine Sammlungen explizit als öffentlich markieren eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest."
+      "create-and-view-collections": "Hier kannst du Sammlungen von Wappen erstellen und ansehen. Du musst deine Sammlungen explizit als öffentlich markieren und eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest."
     },
     "ribbon-library": {
-      "create-and-view-ribbons": "Hier kannst du Bänder für Mottos erstellen und ansehen, die in Wappen benutzt werden können. Deine Bänder sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich machen möchtest, dann mußt du eine Lizenz angeben."
+      "create-and-view-ribbons": "Hier kannst du Bänder für Mottos erstellen und ansehen, die in Wappen benutzt werden können. Deine Bänder sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich machen möchtest, dann musst du eine Lizenz angeben."
     },
     "contact": {
       "feel-free-to-contact-me": "Du kannst mich per Email erreichen: oliver [at] heraldry.digital, für Feedback, Fragen, Beschwerden, Feature-Wünsche oder tiefe und bedeutungsvolle Freundschaft.",
@@ -992,7 +992,7 @@
       "translation-not-yet-complete": "Nicht alle Texte sind übersetzt. Wenn du mithelfen, etwas korrigieren oder deine eigene Sprache hinzufügen möchtest, dann komm bei Discord vorbei oder direkt beim",
       "crowdin-project": "Crowdin-Projekt",
       "translation-credits": "Übsetzungsattribuierung",
-      "translation-credits-intro": "Danke an alle, die mithelfen! Wenn du auch hier gelistet werden möchtest, dann laß es mich wissen. :)"
+      "translation-credits-intro": "Danke an alle, die mithelfen! Wenn du auch hier gelistet werden möchtest, dann lass es mich wissen. :)"
     },
     "home": {
       "release-news-info-1": "In den meisten Fällen werden Features inkrementell freigegeben. Aber ab und an gruppiere ich die wichtigsten Features und neue Entwicklungen und fasse sie in einem Update hier zusammen, damit es einen Überblick gibt.",
