@@ -19,4 +19,8 @@
         (c/<< :render-options-path (conj form-db-path :data :achievement :render-options))
         (c/set-render-hint :select-component-fn
                            (fn [context]
-                             (rf/dispatch [::tree/select-node (:path context)]))))))
+                             (let [path (:path context)
+                                   path (if @(rf/subscribe [:get (conj path :field)])
+                                          (conj path :field)
+                                          path)]
+                               (rf/dispatch [::tree/select-node path])))))))
