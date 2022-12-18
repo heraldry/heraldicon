@@ -143,7 +143,8 @@
                                                      :ui/label :string.attribution/license-version})))
 
 (defn- full-url-raw [base entity-id version]
-  (str (config/get :heraldicon-url) base (id/for-url entity-id) "/" version))
+  (cond-> (str (config/get :heraldicon-url) base (id/for-url entity-id))
+    (not (zero? version)) (str "/" version)))
 
 (defn- base-path [entity-type]
   (case entity-type
@@ -161,5 +162,5 @@
 (defn full-url-for-username [username]
   (str (config/get :heraldicon-url) "/users/" username))
 
-(defn full-url-for-entity-data [{:keys [id version type]}]
-  (full-url-raw (base-path type) id version))
+(defn full-url-for-entity-data [{:keys [id version latest-version type]}]
+  (full-url-raw (base-path type) id (or latest-version version)))
