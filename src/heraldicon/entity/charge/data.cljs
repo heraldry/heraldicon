@@ -11,7 +11,7 @@
   (cond-> {:charge-type {:type :option.type/text
                          :ui/label :string.option/blazonry-name
                          :ui/tooltip :string.tooltip/blazonry-name
-                         :ui/placeholder "lion, flower, staff, etc."}
+                         :ui/placeholder "lion, rose, staff, etc."}
            :attributes {:ui/element :ui.element/attributes}
            :landscape? {:type :option.type/boolean
                         :ui/label :string.option/landscape?

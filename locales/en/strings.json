@@ -395,7 +395,7 @@
     "base-fields": "Base fields",
     "base-field-shift": "Base field shift",
     "base-line": "Base line",
-    "blazonry-name": "Blazonry name",
+    "blazonry-name": "Blazonry name (Engl.)",
     "column": "Column",
     "corner": "Corners",
     "corner-choice": {
@@ -612,7 +612,7 @@
     "remove": "remove",
     "smoothing": "This might smooth out some remaining corners, best used together with corner radius.",
     "undo": "undo",
-    "blazonry-name": "The English name the charge would be given in blazonry, e.g. lion, flower, staff",
+    "blazonry-name": "The English name the charge would be given in blazonry, e.g. lion, rose, staff",
     "landscape?": "Keep the SVG as-is, embedded graphics also are allowed. This is only a good idea if you want to use images as landscape backgrounds.",
     "fixed-tincture": "Gives the charge a fixed tincture, which can't be changed by a field. Such charges are not very flexible, so use them only in exceptional cases.",
     "charge-group-preview": "Click the slots to disable them or cycle through the available charges (added below).",
