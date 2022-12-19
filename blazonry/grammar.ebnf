@@ -505,6 +505,13 @@ tincture/ERMINES = #"\bermines\b"
 tincture/ERMINOIS = #"\berminois\b"
 tincture/PEAN = #"\bpean\b"
 
+pattern-option/BENDY
+    = #"\bbendy\b"
+    | #"\bbarry[- ]+bendy\b"
+pattern-option/BENDY-SINISTER
+    = #"\bbendy +sinister\b"
+    | #"\bbendy\b" #"\bsinister\b"
+
 partition/BARRY
     = #"\bbarry\b"
     | #"\bbarruly\b"
@@ -529,6 +536,9 @@ partition/CHEVRONNY
 partition/FRETTY = #"\bfretty\b"
 partition/GYRONNY = #"\bg[yi]ronny\b"
 partition/LOZENGY = #"\blozengy\b"
+partition/FUSILY
+    = #"\bfusily\b"
+    | #"\bfusilly\b"
 partition/MASONY
     = #"\bmasony\b"
     | #"\bmasoned\b"
@@ -1229,6 +1239,7 @@ partition-type
     | partition/FRETTY
     | partition/GYRONNY
     | partition/LOZENGY
+    | partition/FUSILY
     | partition/MASONY
     | partition/PALY
     | partition/PAPELLONY
@@ -1302,6 +1313,10 @@ partition-field
 partition-field-plain
     = (field-reference (AND* field-reference)*)? root-plain
 
+<pattern-option>
+    = pattern-option/BENDY
+    | pattern-option/BENDY-SINISTER
+
 partition
     = partition/PER-PALE
       line?
@@ -1360,11 +1375,13 @@ partition
       partition-field-plain AND+ partition-field-plain (AND+ partition-field-plain)*
 
     | (partition/LOZENGY
+       | partition/FUSILY
        | partition/VAIRY
        | partition/POTENTY
        | partition/PAPELLONY
        | partition/MASONY
        | partition/FRETTY)
+      pattern-option?
       OF? layout?
       partition-field-plain AND+ partition-field-plain
 
