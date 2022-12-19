@@ -9,8 +9,9 @@
 
 (defmethod interface/options :heraldicon.entity.charge/data [context]
   (cond-> {:charge-type {:type :option.type/text
-                         :ui/label :string.option/charge-type
-                         :ui/tooltip :string.tooltip/charge-type}
+                         :ui/label :string.option/blazonry-name
+                         :ui/tooltip :string.tooltip/blazonry-name
+                         :ui/placeholder "lion, flower, staff, etc."}
            :attributes {:ui/element :ui.element/attributes}
            :landscape? {:type :option.type/boolean
                         :ui/label :string.option/landscape?

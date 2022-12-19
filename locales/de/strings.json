@@ -395,7 +395,7 @@
     "base-fields": "Basisfelder",
     "base-field-shift": "Basisfeldversatz",
     "base-line": "Basislinie",
-    "charge-type": "Wappenfigurtyp",
+    "blazonry-name": "Blasonierung",
     "column": "Spalte",
     "corner": "Ecken",
     "corner-choice": {
@@ -611,7 +611,7 @@
     "remove": "entfernen",
     "smoothing": "Damit lassen sich einige kleine Hügel und Ecken ausgleichen, funktioniert am besten mit einem Rundungsradius für Ecken.",
     "undo": "rückgängig",
-    "charge-type": "Der Englische Name der Figur, der in der Blasonierung benutzt wird, e.g. lion, flower, staff",
+    "blazonry-name": "Der Englische Name der Figur, der in der Blasonierung benutzt wird, e.g. lion, flower, staff",
     "landscape?": "Übernimmmt die SVG wie sie ist, eingebettete Bilder sind erlaubt. Das ist nur nützlich wenn bestimmte Bilder als Landschaft/Hintergrundbild benutzt werden sollen.",
     "fixed-tincture": "Gibt der Figur eine fest gelegte Tinktur, die nicht geändert werden kann. Solche Wappenfiguren sind nicht sehr flexibel, die Option sollte also nur in Ausnahmefällen benutzt werden.",
     "charge-group-preview": "Klicke die Slots um zwischen den hinzugefügten Wappenfiguren umzuschalten oder den Slot abzuschalten.",
