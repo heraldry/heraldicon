@@ -3,7 +3,12 @@
    [heraldicon.options :as options]))
 
 (def ^:private theme-all
-  {:all true})
+  {:all true
+
+   ::name :string.theme/all
+   ::attribution {:license :public-domain
+                  :creator-name "Heraldicon"
+                  :creator-link "https://heraldicon.org"}})
 
 ;; colours taken from ;; https://github.com/drawshield/Drawshield-Code/blob/0d7ecc865e5ccd2ae8b17c11511c6afebb2ff6c9/svg/schemes/wappenwiki.txt
 (def ^:private theme-wappenwiki
@@ -35,7 +40,19 @@
    ;; special
    :helmet-light "#d8d8d8"
    :helmet-medium "#989898"
-   :helmet-dark "#585858"})
+   :helmet-dark "#585858"
+
+   ::name :string.theme/wappenwiki
+   ::attribution {:license :cc-attribution-non-commercial-share-alike
+                  :license-version :v3
+                  :creator-name "WappenWiki"
+                  :creator-link "https://wappenwiki.org"}})
+
+(def ^:private wiki-attribution
+  {:license :cc-attribution-share-alike
+   :license-version :v3
+   :creator-name "Wikipedia"
+   :creator-link "https://wikipedia.org"})
 
 (def ^:private theme-web
   {;; metals
@@ -50,7 +67,10 @@
    ;; stains
    :murrey "#5f005f" ;; 30% darkened purpure
    :sanguine "#b20000" ;; 30% darkened gules
-   :tenne "#c67000"})
+   :tenne "#c67000"
+
+   ::name :string.theme/web
+   ::attribution wiki-attribution})
 
 ;; Wikipedia themes: https://commons.wikimedia.org/wiki/Template:Tincture
 
@@ -73,7 +93,10 @@
    :bleu-celeste "#89c5e3"
    :carnation "#f2a772"
    :cendree "#999999"
-   :orange "#eb7711"})
+   :orange "#eb7711"
+
+   ::name :string.theme/wikipedia-default
+   ::attribution wiki-attribution})
 
 (def ^:private theme-wikipedia-web
   {;; metals
@@ -94,7 +117,10 @@
    :bleu-celeste "#33aaee"
    :carnation "#eebb99"
    :cendree "#779988"
-   :orange "#ff6600"})
+   :orange "#ff6600"
+
+   ::name :string.theme/wikipedia-web
+   ::attribution wiki-attribution})
 
 (def ^:private theme-wikipedia-bajuvarian
   {;; metals
@@ -115,7 +141,10 @@
    :bleu-celeste "#0099ff"
    :carnation "#ffbb99"
    :cendree "#778899"
-   :orange "#eb7711"})
+   :orange "#eb7711"
+
+   ::name :string.theme/wikipedia-bajuvarian
+   ::attribution wiki-attribution})
 
 (def ^:private theme-wikipedia-brandenburg
   {;; metals
@@ -130,7 +159,10 @@
    :sanguine "#a72c13" ;; 30% darkened gules
    :tenne "#884411"
    ;; nontraditional
-   :bleu-celeste "#89c5e3"})
+   :bleu-celeste "#89c5e3"
+
+   ::name :string.theme/wikipedia-brandenburg
+   ::attribution wiki-attribution})
 
 (def ^:private theme-wikipedia-wuerttemberg
   {;; metals
@@ -146,7 +178,10 @@
    :tenne "#884411"
    ;; nontraditional
    :bleu-celeste "#0081c9"
-   :carnation "#f2b398"})
+   :carnation "#f2b398"
+
+   ::name :string.theme/wikipedia-wurttemberg
+   ::attribution wiki-attribution})
 
 (def ^:private theme-wikipedia-switzerland
   {;; metals
@@ -159,7 +194,9 @@
    :sable "#000000"
    ;; stains
    :sanguine "#b61916" ;; 30% darkened gules
-   })
+
+   ::name :string.theme/wikipedia-switzerland
+   ::attribution wiki-attribution})
 
 (def ^:private theme-wikipedia-spain
   {;; metals
@@ -177,7 +214,10 @@
    :sanguine "#ab0d13" ;; 30% darkened gules
    ;; nontraditional
    :carnation "#fcd3bc"
-   :orange "#ff6600"})
+   :orange "#ff6600"
+
+   ::name :string.theme/wikipedia-spain
+   ::attribution wiki-attribution})
 
 (def ^:private theme-wikipedia-hungary
   {;; metals
@@ -193,7 +233,9 @@
    ;; stains
    :murrey "#7f066c" ;; 30% darkened purpure
    :sanguine "#9a1c15" ;; 30% darkened gules
-   })
+
+   ::name :string.theme/wikipedia-hungary
+   ::attribution wiki-attribution})
 
 (def ^:private theme-wikipedia-sweden
   {;; metals
@@ -211,7 +253,10 @@
    :sanguine "#940000" ;; 30% darkened gules
    ;; nontraditional
    :bleu-celeste "#3291d7"
-   :carnation "#eebb99"})
+   :carnation "#eebb99"
+
+   ::name :string.theme/wikipedia-sweden
+   ::attribution wiki-attribution})
 
 (def ^:private theme-ral-traffic
   {;; metals
@@ -233,7 +278,9 @@
    :carnation "#ffbb99"
    :cendree "#4f5250" ;; RAL 7043
    :orange "#de5307" ;; RAL 2009
-   })
+
+   ::name :string.theme/ral-traffic
+   ::attribution wiki-attribution})
 
 ;; https://fr.wikipedia.org/wiki/Projet:Blasons/Cr%C3%A9ation#Unification_des_couleurs
 
@@ -250,7 +297,16 @@
    ;; stains
    :murrey "#570b63"
    :sanguine "#a41619"
-   :tenne "#9d5324"})
+   :tenne "#9d5324"
+
+   ::name :string.theme/wikipedia-france
+   ::attribution wiki-attribution})
+
+(def ^:private taritoons-attribution
+  {:license :public-domain
+   :link "https://www.reddit.com/r/heraldry/comments/i8dy38/some_heraldic_tincture_palettes_for_you_to_use/"
+   :creator-name "TariToons"
+   :creator-link "https://www.reddit.com/user/TariToons/"})
 
 (def ^:private theme-community-pastell-puffs
   {;; metals
@@ -266,7 +322,9 @@
    :murrey "#803db4" ;; 30% darkened purpure
    :sanguine "#d32451" ;; 30% darkened gules
    :tenne "#b27400" ;; 60% darkened or
-   })
+
+   ::name "Pastell Puffs"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-jewelicious
   {;; metals
@@ -282,7 +340,9 @@
    :murrey "#5f3665" ;; 30% darkened purpure
    :sanguine "#6b1b1c" ;; 30% darkened gules
    :tenne "#9a6d04" ;; 60% darkened or
-   })
+
+   ::name "Jewelicious"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-main-seven
   {;; metals
@@ -298,7 +358,9 @@
    :murrey "#7c4391" ;; 30% darkened purpure
    :sanguine "#a60d2d" ;; 30% darkened gules
    :tenne "#a59a06" ;; 60% darkened or
-   })
+
+   ::name "Main Seven"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-cmwhyk
   {;; metals
@@ -314,7 +376,9 @@
    :murrey "#0008f1" ;; 30% darkened purpure
    :sanguine "#ea00f1" ;; 30% darkened gules
    :tenne "#8a7d00" ;; 60% darkened or
-   })
+
+   ::name "CMwhyK"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-mother-earth
   {;; metals
@@ -330,7 +394,9 @@
    :murrey "#6f2f45" ;; 30% darkened purpure
    :sanguine "#802e12" ;; 30% darkened gules
    :tenne "#916708" ;; 60% darkened or
-   })
+
+   ::name "Mother Earth"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-home-world
   {;; metals
@@ -346,7 +412,9 @@
    :murrey "#9439d1" ;; 30% darkened purpure
    :sanguine "#b81329" ;; 30% darkened gules
    :tenne "#746c06" ;; 60% darkened or
-   })
+
+   ::name "Home World"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-crystal-gems
   {;; metals
@@ -362,7 +430,9 @@
    :murrey "#8043a7" ;; 30% darkened purpure
    :sanguine "#c00353" ;; 30% darkened gules
    :tenne "#8d6e00" ;; 60% darkened or
-   })
+
+   ::name "Crystal Gems"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-pretty-soldier
   {;; metals
@@ -378,7 +448,9 @@
    :murrey "#533063" ;; 30% darkened purpure
    :sanguine "#98000c" ;; 30% darkened gules
    :tenne "#847b00" ;; 60% darkened or
-   })
+
+   ::name "Pretty Soldier"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-the-monet-maker
   {;; metals
@@ -394,7 +466,9 @@
    :murrey "#76476c" ;; 30% darkened purpure
    :sanguine "#722c2a" ;; 30% darkened gules
    :tenne "#97590d" ;; 60% darkened or
-   })
+
+   ::name "The Monet Maker"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-van-goes-vroem
   {;; metals
@@ -410,7 +484,9 @@
    :murrey "#68425a" ;; 30% darkened purpure
    :sanguine "#94422b" ;; 30% darkened gules
    :tenne "#97590d" ;; 60% darkened or
-   })
+
+   ::name "Van Goes Vroom"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-cotton-candy
   {;; metals
@@ -426,7 +502,9 @@
    :murrey "#af37e6" ;; 30% darkened purpure
    :sanguine "#ef2155" ;; 30% darkened gules
    :tenne "#ada10b" ;; 60% darkened or
-   })
+
+   ::name "Cotton Candy"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-rainbow-groom
   {;; metals
@@ -442,7 +520,9 @@
    :murrey "#7c498d" ;; 30% darkened purpure
    :sanguine "#a32908" ;; 30% darkened gules
    :tenne "#705d00" ;; 60% darkened or
-   })
+
+   ::name "Rainbow Groom"
+   ::attribution taritoons-attribution})
 
 (def ^:private theme-community-content-cranium
   {;; metals
@@ -458,7 +538,10 @@
    :murrey "#8f00a5" ;; 30% darkened purpure
    :sanguine "#b00000" ;; 30% darkened gules
    :tenne "#666400" ;; 60% darkened or
-   })
+
+   ::name "Content Cranium"
+   ::attribution {:license :public-domain
+                  :creator-name "Happy Skull#9393"}})
 
 (def ^:private theme-community-sodacan
   {;; metals
@@ -481,7 +564,11 @@
    :carnation "#fcbf8c"
    :cendree "#999999"
    :orange "#e35d03"
-   :rose "#df2ddf"})
+   :rose "#df2ddf"
+
+   ::name "Sodacan"
+   ::attribution {:license :public-domain
+                  :creator-name "Bananasplit1611"}})
 
 (def ^:private theme-community-custom-philippine
   {;; metals
@@ -497,7 +584,10 @@
    :murrey "#6b0035" ;; 30% darkened purpure
    :sanguine "#900b1a" ;; 30% darkened gules
    :tenne "#6c5801" ;; 60% darkened or
-   })
+
+   ::name "Custom Philippine"
+   ::attribution {:license :public-domain
+                  :creator-name "coinageFission"}})
 
 (def ^:private theme-community-soft-rage
   {;; metals
@@ -526,7 +616,11 @@
    ;; special
    :helmet-light "#cccccc"
    :helmet-medium "#707070"
-   :helmet-dark "#515151"})
+   :helmet-dark "#515151"
+
+   ::name "Soft Rage"
+   ::attribution {:license :public-domain
+                  :creator-name "Dughorm"}})
 
 (def ^:private theme-community-the-violet-herald-palette
   {;; metals
@@ -549,52 +643,62 @@
    :copper "#bf7532"
    :orange "#ff5500"
    :rose "#e63d6a"
-   :white "#ffffff"})
+   :white "#ffffff"
+
+   ::name "The Violet Herald"
+   ::attribution {:license :public-domain
+                  :creator-name "Violet Herald"}})
 
 (def ^:private themes
   [[:string.theme.group/general
-    [:string.theme/wappenwiki :wappenwiki theme-wappenwiki]
-    [:string.theme/web :web theme-web]
-    [:string.theme/ral-traffic :ral-traffic theme-ral-traffic]
-    [:string.theme/all :all theme-all]]
+    [:wappenwiki theme-wappenwiki]
+    [:web theme-web]
+    [:ral-traffic theme-ral-traffic]
+    [:all theme-all]]
    ["Wikipedia"
-    [:string.theme/wikipedia-default :wikipedia-default theme-wikipedia-default]
-    [:string.theme/wikipedia-web :wikipedia-web theme-wikipedia-web]
-    [:string.theme/wikipedia-bajuvarian :wikipedia-bajuvarian theme-wikipedia-bajuvarian]
-    [:string.theme/wikipedia-brandenburg :wikipedia-brandenburg theme-wikipedia-brandenburg]
-    [:string.theme/wikipedia-wurttemberg :wikipedia-wurttemberg theme-wikipedia-wuerttemberg]
-    [:string.theme/wikipedia-france :wikipedia-france theme-wikipedia-france]
-    [:string.theme/wikipedia-hungary :wikipedia-hungary theme-wikipedia-hungary]
-    [:string.theme/wikipedia-spain :wikipedia-spain theme-wikipedia-spain]
-    [:string.theme/wikipedia-sweden :wikipedia-sweden theme-wikipedia-sweden]
-    [:string.theme/wikipedia-switzerland :wikipedia-switzerland theme-wikipedia-switzerland]]
+    [:wikipedia-default theme-wikipedia-default]
+    [:wikipedia-web theme-wikipedia-web]
+    [:wikipedia-bajuvarian theme-wikipedia-bajuvarian]
+    [:wikipedia-brandenburg theme-wikipedia-brandenburg]
+    [:wikipedia-wurttemberg theme-wikipedia-wuerttemberg]
+    [:wikipedia-france theme-wikipedia-france]
+    [:wikipedia-hungary theme-wikipedia-hungary]
+    [:wikipedia-spain theme-wikipedia-spain]
+    [:wikipedia-sweden theme-wikipedia-sweden]
+    [:wikipedia-switzerland theme-wikipedia-switzerland]]
    [:string.theme.group/community
-    ["CMwhyK" :community-cmwhyk theme-community-cmwhyk]
-    ["Cotton Candy" :community-cotton-candy theme-community-cotton-candy]
-    ["Crystal Gems" :community-crystal-gems theme-community-crystal-gems]
-    ["Home World" :community-home-world theme-community-home-world]
-    ["Jewelicious" :community-jewelicious theme-community-jewelicious]
-    ["Main Seven" :community-main-seven theme-community-main-seven]
-    ["Mother Earth" :community-mother-earth theme-community-mother-earth]
-    ["Pastell Puffs" :community-pastell-puffs theme-community-pastell-puffs]
-    ["Pretty Soldier" :community-pretty-soldier theme-community-pretty-soldier]
-    ["Rainbow Groom" :community-rainbow-groom theme-community-rainbow-groom]
-    ["The Monet Maker" :community-the-monet-maker theme-community-the-monet-maker]
-    ["Van Goes Vroem" :community-van-goes-vroem theme-community-van-goes-vroem]
-    ["Content Cranium" :community-content-cranium theme-community-content-cranium]
-    ["Sodacan by Bananasplit1611" :community-sodacan theme-community-sodacan]
-    ["Custom Philippine by coinageFission" :community-custom-philippine theme-community-custom-philippine]
-    ["Soft Rage by Dughorm" :community-soft-rage theme-community-soft-rage]
-    ["The Violet Herald Palette" :community-the-violet-herald-palette theme-community-the-violet-herald-palette]]])
+    [:community-cmwhyk theme-community-cmwhyk]
+    [:community-cotton-candy theme-community-cotton-candy]
+    [:community-crystal-gems theme-community-crystal-gems]
+    [:community-home-world theme-community-home-world]
+    [:community-jewelicious theme-community-jewelicious]
+    [:community-main-seven theme-community-main-seven]
+    [:community-mother-earth theme-community-mother-earth]
+    [:community-pastell-puffs theme-community-pastell-puffs]
+    [:community-pretty-soldier theme-community-pretty-soldier]
+    [:community-rainbow-groom theme-community-rainbow-groom]
+    [:community-the-monet-maker theme-community-the-monet-maker]
+    [:community-van-goes-vroem theme-community-van-goes-vroem]
+    [:community-content-cranium theme-community-content-cranium]
+    [:community-sodacan theme-community-sodacan]
+    [:community-custom-philippine theme-community-custom-philippine]
+    [:community-soft-rage theme-community-soft-rage]
+    [:community-the-violet-herald-palette theme-community-the-violet-herald-palette]]])
 
 (def default
   :wappenwiki)
 
+(def ^:private kinds-map
+  (into {}
+        (for [[_ & items] themes
+              [key value] items]
+          [key value])))
+
 (def choices
   (mapv (fn [[group-name & items]]
           (into [group-name]
-                (map (fn [[display-name key _]]
-                       [display-name key]))
+                (map (fn [[key data]]
+                       [(::name data) key]))
                 items))
         themes))
 
@@ -604,11 +708,15 @@
 (def theme-data-map
   (into {}
         (mapcat (fn [[_group-name & items]]
-                  (map (fn [[_ key colours]]
-                         [key colours])
+                  (map (fn [[key data]]
+                         [key data])
                        items)))
         themes))
 
 (defn lookup-colour [tincture theme]
   (get-in theme-data-map [theme tincture]
           (get-in theme-data-map [default tincture])))
+
+(defn attribution [theme]
+  (let [{::keys [attribution name]} (get kinds-map theme)]
+    (assoc attribution :name name)))

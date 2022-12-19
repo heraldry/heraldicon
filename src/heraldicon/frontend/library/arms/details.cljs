@@ -56,11 +56,15 @@
    (interface/render-option :escutcheon base-context)
    @(rf/subscribe [::used-escutcheons (conj form-db-path :data :achievement)])])
 
+(defn- theme-attribution [_form-db-path]
+  [attribution/for-theme (interface/render-option :theme base-context)])
+
 (defn- attribution [form-db-path]
   [attribution/attribution {:path form-db-path}
    [charge-attribution form-db-path]
    [ribbon-attribution form-db-path]
-   [escutcheon-attribution form-db-path]])
+   [escutcheon-attribution form-db-path]
+   [theme-attribution form-db-path]])
 
 (defn- blazonry [form-db-path]
   [:div.blazonry
