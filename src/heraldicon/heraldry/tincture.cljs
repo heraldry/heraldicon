@@ -26,8 +26,8 @@
     [:string.tincture/erminois :erminois]
     [:string.tincture/pean :pean]]
    [:string.tincture.group/stain
-    [:string.tincture/sanguine :sanguine]
     [:string.tincture/murrey :murrey]
+    [:string.tincture/sanguine :sanguine]
     [:string.tincture/tenne :tenne]]
    [:string.tincture.group/helmet
     [:string.tincture/helmet-light :helmet-light]
