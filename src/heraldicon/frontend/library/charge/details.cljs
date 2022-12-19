@@ -146,6 +146,7 @@
     (let [width (bb/width bounding-box)
           height (bb/height bounding-box)
           existing-colours (get-in db (conj db-path :colours))]
+      (modal/stop-loading)
       {:db (update-in db db-path merge
                       (update-colours-map
                        {:colours existing-colours
@@ -189,6 +190,7 @@
                                     svg/add-ids)]
           (rf/dispatch [::set-svg-data db-path prepared-edn-data raw-svg-data bounding-box shapes]))
         (catch :default e
+          (modal/stop-loading)
           (log/error e "load svg file error"))))))
 
 (macros/reg-event-fx ::load-svg-file
@@ -316,8 +318,7 @@
       (let [reader (js/FileReader.)]
         (set! (.-onloadend reader) (fn []
                                      (let [raw-data (.-result reader)]
-                                       (rf/dispatch [::load-svg-file (conj form-db-path :data) raw-data]))
-                                     (modal/stop-loading)))
+                                       (rf/dispatch [::load-svg-file (conj form-db-path :data) raw-data]))))
         (set! (-> event .-target .-value) "")
         (.readAsText reader file)))))
 
