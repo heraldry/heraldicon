@@ -48,6 +48,35 @@
                   :creator-name "WappenWiki"
                   :creator-link "https://wappenwiki.org"}})
 
+(def ^:private theme-encyclopedia-heraldica
+  {;; metals
+   :argent "#ffffff"
+   :or "#fcc900"
+   ;; colours
+   :azure "#003d8f"
+   :vert "#037536"
+   :gules "#d40000"
+   :sable "#332e2d"
+   :purpure "#4e2f7a"
+   ;; stains
+   :murrey "#630727"
+   :sanguine "#800000"
+   :tenne "#bf7532"
+   ;; nontraditional
+   :carnation "#ebbb9a"
+   :cendree "#999999"
+   :rose "#e63d6a"
+   :bleu-celeste "#3581b9"
+   :orange "#ed5f00"
+   :copper "#953d02"
+   :buff "#ddc595"
+
+   ::name "Encyclopedia Heraldica"
+   ::attribution {:license :cc-attribution
+                  :license-version :v4
+                  :creator-name "Encyclopedia Heraldica"
+                  :creator-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"}})
+
 (def ^:private wiki-attribution
   {:license :cc-attribution-share-alike
    :license-version :v3
@@ -653,6 +682,7 @@
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
+    [:encyclopedia-heraldica theme-encyclopedia-heraldica]
     [:web theme-web]
     [:ral-traffic theme-ral-traffic]
     [:all theme-all]]
