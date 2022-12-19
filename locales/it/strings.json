@@ -395,7 +395,6 @@
     "base-fields": "Campo base",
     "base-field-shift": "Sposta campo base",
     "base-line": "Linea di Base",
-    "charge-type": "Tipo di figura",
     "column": "Colonna",
     "corner": "Angoli",
     "corner-choice": {
@@ -611,7 +610,7 @@
     "remove": "rimuovi",
     "smoothing": "Questo potrebbe lisciare alcuni angoli rimanenti, meglio utilizzato insieme al raggio dell'angolo.",
     "undo": "annulla",
-    "charge-type": "Il nome inglese della figura in blasonatura, ad esempio \"lion\" (leone), \"flower\" (fiore), staff (bastone)",
+    "blazonry-name": "Il nome inglese della figura in blasonatura, ad esempio \"lion\" (leone), \"flower\" (fiore), staff (bastone)",
     "landscape?": "Mantieni l'SVG così com'è, anche la grafica incorporata è permessa. Questa è una buona idea solo se vuoi usare immagini come sfondo paesaggio.",
     "fixed-tincture": "Fornisce alla figura una tintura fissa, che non può essere modificata da un campo. Tali figure non sono molto flessibili, quindi utilizzali sono in casi eccezionali.",
     "charge-group-preview": "Clicca sugli slot per disabilitarli o scorri attraverso le figure disponibili (aggiunte sotto).",

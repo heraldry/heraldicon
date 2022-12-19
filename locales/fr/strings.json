@@ -395,7 +395,6 @@
     "base-fields": "Champs de base",
     "base-field-shift": "Base field shift",
     "base-line": "Ligne de base",
-    "charge-type": "Type de charge",
     "column": "Colonne",
     "corner": "Sommets",
     "corner-choice": {
@@ -610,7 +609,7 @@
     "remove": "supprimer",
     "smoothing": "Peut lisser certains angles restants, à utiliser en combinaison avec les angles arrondis.",
     "undo": "annuler",
-    "charge-type": "Le nom qui serait donné à la charge en héraldique, en anglais, par ex. lion, fleur, bâton",
+    "blazonry-name": "Le nom qui serait donné à la charge en héraldique, en anglais, par ex. lion, fleur, bâton",
     "landscape?": "Conserver le SVG tel quel, les images incluses sont aussi autorisées. Ce n'est une bonne idée que si vous voulez utiliser des images comme paysages d'arrière-plan.",
     "fixed-tincture": "Donne à la charge une couleur fixe, qui ne peut pas être modifiée par un champ. De telles charges ne sont pas très flexibles, donc ne les utilisez que dans des cas exceptionnels.",
     "charge-group-preview": "Cliquez sur les emplacements pour les désactiver ou parcourir les charges disponibles (ajoutés en dessous).",

@@ -9,7 +9,7 @@
 (defn text-field [context & {:keys [on-change style]}]
   (when-let [option (interface/get-options context)]
     (let [{:keys [inherited default]
-           :ui/keys [label tooltip]} option
+           :ui/keys [label tooltip placeholder]} option
           current-value (interface/get-raw-data context)
           value (or current-value
                     inherited
@@ -22,6 +22,7 @@
        [:div.option
         [:input {:type "text"
                  :value value
+                 :placeholder (tr placeholder)
                  :on-change #(let [value (-> % .-target .-value)]
                                (if on-change
                                  (on-change value)
