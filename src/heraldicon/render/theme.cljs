@@ -604,6 +604,7 @@
    :sanguine "#c63943"
    :tenne "#e88c3c"
    ;; other
+   :amaranth "#dd2a6c"
    :bleu-celeste "#5ab7ce"
    :brunatre "#c67533"
    :buff "#ffe9d6"
@@ -618,7 +619,7 @@
    :helmet-medium "#707070"
    :helmet-dark "#515151"
 
-   ::name "Soft Rage"
+   ::name "Dughorm's Palette"
    ::attribution {:license :public-domain
                   :creator-name "Dughorm"}})
 
