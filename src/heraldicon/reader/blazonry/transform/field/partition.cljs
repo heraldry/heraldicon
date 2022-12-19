@@ -11,11 +11,12 @@
    [heraldicon.util.number :as number]))
 
 (def ^:private field-type-map
-  (into {}
-        (map (fn [[key _]]
-               [(keyword "partition" (-> key name s/upper-case))
-                key]))
-        field.options/field-map))
+  (-> (into {}
+            (map (fn [[key _]]
+                   [(keyword "partition" (-> key name s/upper-case))
+                    key]))
+            field.options/field-map)
+      (assoc :partition/FUSILY :heraldry.field.type/lozengy)))
 
 (defn- get-field-type [nodes]
   (some->> nodes
@@ -27,7 +28,10 @@
   (let [partition-options (some->> nodes
                                    (filter-nodes #{:ENHANCED
                                                    :DEHANCED
-                                                   :REVERSED})
+                                                   :REVERSED
+                                                   :pattern-option/BENDY
+                                                   :pattern-option/BENDY-SINISTER
+                                                   :partition/FUSILY})
                                    (map (fn [[key & nodes]]
                                           [key nodes]))
                                    (into {}))
@@ -75,7 +79,18 @@
                                           (= :tierced-per-pall
                                              partition-type) (assoc-in [:origin :point] :bottom)
                                           (= :per-pile
-                                             partition-type) (assoc-in [:anchor :point] :top)))))
+                                             partition-type) (assoc-in [:anchor :point] :top))
+
+      (get partition-options :partition/FUSILY) (update :layout (fn [{:keys [num-fields-x
+                                                                             num-fields-y]
+                                                                      :as layout}]
+                                                                  (let [num-fields-x (or num-fields-x 6)
+                                                                        num-fields-y (or num-fields-y (int (/ num-fields-x 2)))]
+                                                                    (assoc layout
+                                                                           :num-fields-x num-fields-x
+                                                                           :num-fields-y num-fields-y))))
+      (get partition-options :pattern-option/BENDY) (assoc-in [:layout :rotation] 45)
+      (get partition-options :pattern-option/BENDY-SINISTER) (assoc-in [:layout :rotation] -45))))
 
 (def ^:private field-reference-map
   {:barry {}
