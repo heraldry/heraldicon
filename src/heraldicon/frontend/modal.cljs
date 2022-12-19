@@ -30,7 +30,7 @@
   (rf/dispatch [::clear]))
 
 (defn start-loading []
-  (rf/dispatch [:set loader-db-path true]))
+  (rf/dispatch-sync [:set loader-db-path true]))
 
 (defn stop-loading []
   (rf/dispatch [:set loader-db-path nil]))
