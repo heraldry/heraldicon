@@ -3,12 +3,13 @@
    [cljs.core.async.interop :refer-macros [<p!]]
    [com.wsscode.async.async-cljs :refer [go-catch <?]]
    [heraldicon.math.bounding-box :as bb]
+   [heraldicon.math.curve.ramer-douglas-peucker :as ramer-douglas-peucker]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]
    [heraldicon.util.async :as util.async]
    [reagent.dom.server :as r-server]))
 
-(defn draw-svg [svg-data target-width target-height]
+(defn- draw-svg [svg-data target-width target-height]
   (go-catch
    (let [svg-data-str (r-server/render-to-static-markup
                        [:svg {:viewBox (str "0 0 " target-width " " target-height)
@@ -157,8 +158,10 @@
 
 (def ^:private max-depth 3)
 
-(defn- svg-bounding-box [svg-data base-bounding-box & {:keys [depth]
-                                                       :or {depth 0}}]
+(defn- svg-bounding-box [svg-data base-bounding-box & {:keys [depth
+                                                              draw-svg-fn]
+                                                       :or {depth 0
+                                                            draw-svg-fn draw-svg}}]
   (go-catch
    (let [target-width 256
          target-height 256
@@ -170,7 +173,7 @@
          shifted-svg-data [:g {:transform (str "scale(" scale "," scale ")"
                                                "translate(" (- (:x top-left)) "," (- (:y top-left)) ")")}
                            svg-data]
-         image (<? (draw-svg shifted-svg-data target-width target-height))
+         image (<? (draw-svg-fn shifted-svg-data target-width target-height))
          width (.-width image)
          painted-pixels (get-painted-pixels image)
          bounding-box (painted-bounding-box painted-pixels width)
@@ -180,7 +183,10 @@
        base-bounding-box
        (let [bounding-box (if (>= depth max-depth)
                             bounding-box
-                            (<? (svg-bounding-box shifted-svg-data bounding-box :depth (inc depth))))]
+                            (<? (svg-bounding-box shifted-svg-data bounding-box
+                                                  :depth (inc depth)
+                                                  :draw-svg-fn draw-svg-fn)))]
+
          (-> bounding-box
              (bb/scale (/ 1 scale))
              (bb/translate top-left)))))))
@@ -193,11 +199,32 @@
         (update :max-x inc)
         (update :max-y inc))))
 
-(defn svg-shapes-and-bounding-box [svg-data base-bounding-box]
+(defn- edges-to-path [edges]
+  (let [points (map (fn [{:keys [x y dir]}]
+                      (case dir
+                        :top (v/Vector. x y)
+                        :bottom (v/Vector. (inc x) (inc y))
+                        :left (v/Vector. x (inc y))
+                        :right (v/Vector. (inc x) y)))
+                    edges)
+        reduced-points (ramer-douglas-peucker/ramer-douglas-peucker points 2)
+        reduced-points (if (< (count reduced-points) 3)
+                         points
+                         reduced-points)]
+    (-> (reduce (fn [path point]
+                  (if path
+                    (conj path ["L" point])
+                    [["M" point]]))
+                nil reduced-points)
+        path/make-path
+        (str "z"))))
+
+(defn svg-shapes-and-bounding-box [svg-data base-bounding-box & {:keys [draw-svg-fn]
+                                                                 :or {draw-svg-fn draw-svg}}]
   (go-catch
    (let [target-width 1024
          target-height 1024
-         bounding-box (<? (svg-bounding-box svg-data base-bounding-box))
+         bounding-box (<? (svg-bounding-box svg-data base-bounding-box :draw-svg-fn draw-svg-fn))
          width (bb/width bounding-box)
          height (bb/height bounding-box)
          top-left (bb/top-left bounding-box)
@@ -206,7 +233,7 @@
          shifted-svg-data [:g {:transform (str "scale(" scale "," scale ")"
                                                "translate(" (- (:x top-left)) "," (- (:y top-left)) ")")}
                            svg-data]
-         image (<? (draw-svg shifted-svg-data target-width target-height))
+         image (<? (draw-svg-fn shifted-svg-data target-width target-height))
          width (.-width image)
          painted-pixels (get-painted-pixels image)
          shapes (painted-shapes painted-pixels width)
@@ -217,20 +244,10 @@
      {:bounding-box new-bounding-box
       :shapes (mapv (fn [paths]
                       (mapv (fn [edges]
-                              (str (path/make-path (apply concat
-                                                          (map-indexed (fn [index {:keys [x y dir]}]
-                                                                         [(if (zero? index)
-                                                                            "M"
-                                                                            "L")
-                                                                          (-> (v/Vector. x y)
-                                                                              (v/sub (bb/top-left pixel-bounding-box))
-                                                                              (v/add (case dir
-                                                                                       :left (v/Vector. 0 0.5)
-                                                                                       :right (v/Vector. 1 0.5)
-                                                                                       :top (v/Vector. 0.5 0)
-                                                                                       :bottom (v/Vector. 0.5 1)))
-                                                                              (v/div scale))])
-                                                                       edges)))
-                                   "z"))
+                              (-> (edges-to-path edges)
+                                  path/parse-path
+                                  (path/translate (v/mul (bb/top-left pixel-bounding-box) -1))
+                                  (path/scale (/ 1 scale) (/ 1 scale))
+                                  (path/to-svg)))
                             paths))
                     (vals shapes))})))

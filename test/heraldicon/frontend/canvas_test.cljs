@@ -245,3 +245,66 @@
          {:x 22 :y 8 :dir :bottom}
          {:x 22 :y 8 :dir :left}
          {:x 22 :y 7 :dir :left}]]}))
+
+(deftest edges-to-path
+  (are [edges path] (= (#'canvas/edges-to-path edges) path)
+
+    [{:x 1 :y 1 :dir :top}
+     {:x 2 :y 0 :dir :left}
+     {:x 2 :y 0 :dir :top}
+     {:x 3 :y 0 :dir :top}
+     {:x 3 :y 0 :dir :right}
+     {:x 4 :y 1 :dir :top}
+     {:x 4 :y 1 :dir :right}
+     {:x 5 :y 2 :dir :top}
+     {:x 5 :y 2 :dir :right}
+     {:x 5 :y 3 :dir :right}
+     {:x 5 :y 4 :dir :right}
+     {:x 5 :y 5 :dir :right}
+     {:x 5 :y 6 :dir :right}
+     {:x 5 :y 6 :dir :bottom}
+     {:x 5 :y 6 :dir :left}
+     {:x 5 :y 5 :dir :left}
+     {:x 5 :y 4 :dir :left}
+     {:x 4 :y 3 :dir :bottom}
+     {:x 4 :y 3 :dir :left}
+     {:x 3 :y 2 :dir :bottom}
+     {:x 2 :y 3 :dir :right}
+     {:x 2 :y 4 :dir :right}
+     {:x 2 :y 4 :dir :bottom}
+     {:x 1 :y 5 :dir :right}
+     {:x 1 :y 5 :dir :bottom}
+     {:x 0 :y 5 :dir :bottom}
+     {:x 0 :y 5 :dir :left}
+     {:x 0 :y 5 :dir :top}
+     {:x 1 :y 4 :dir :left}
+     {:x 1 :y 4 :dir :top}
+     {:x 2 :y 3 :dir :left}
+     {:x 1 :y 2 :dir :bottom}
+     {:x 1 :y 2 :dir :left}
+     {:x 1 :y 1 :dir :left}]
+    "M 1,1 h 1 v -1 h 2 v 1 h 1 v 1 h 1 v 5 h -1 v -3 h -1 v -1 h -1 v 2 h -1 v 1 h -2 v -1 h 1 v -1 h 1 v -1 h -1 v -2z"
+
+    [{:x 1 :y 1 :dir :top}
+     {:x 1 :y 1 :dir :right}
+     {:x 1 :y 1 :dir :bottom}
+     {:x 1 :y 1 :dir :left}]
+    "M 1,1 h 1 v 1 h -1 v -1z"
+
+    [{:x 1 :y 1 :dir :right}
+     {:x 1 :y 1 :dir :bottom}
+     {:x 1 :y 1 :dir :left}
+     {:x 1 :y 1 :dir :top}]
+    "M 2,1 v 1 h -1 v -1 h 1z"
+
+    [{:x 1 :y 1 :dir :bottom}
+     {:x 1 :y 1 :dir :left}
+     {:x 1 :y 1 :dir :top}
+     {:x 1 :y 1 :dir :right}]
+    "M 2,2 h -1 v -1 h 1 v 1z"
+
+    [{:x 1 :y 1 :dir :left}
+     {:x 1 :y 1 :dir :top}
+     {:x 1 :y 1 :dir :right}
+     {:x 1 :y 1 :dir :bottom}]
+    "M 1,2 v -1 h 1 v 1 h -1z"))
