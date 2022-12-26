@@ -321,7 +321,7 @@
       "colours": "Colori",
       "catching": "Monocromatico"
     },
-    "outline?": "Traccia il Contorno",
+    "outline?": "Traccia i contorni",
     "scope": "Scopo",
     "scope-choice": {
       "achievement": "Tutto (elmetti, ecc)",
@@ -929,18 +929,18 @@
     },
     "partition": {
       "barry-should-have-even-number-of-fields": "La fascia dovrebbe avere un numero pari di campi, per un numero dispari usare le barrette.",
-      "bendy-should-have-even-number-of-fields": "Le cotisse dovrebbero avere un numero pari di campi, per un numero dispari usa le barre.",
+      "bendy-should-have-even-number-of-fields": "Le cotisse dovrebbero avere un numero pari di campi, per un numero dispari usa le sbarre.",
       "paly-should-have-even-number-of-fields": "Le verghette dovrebbero avere un numero pari di campi, per un numero dispari usa i pali."
     },
     "rule-of-tincture": {
-      "colour-field-on-colour-field": "Il campo del colore (%s) sul campo del colore (%s) rompe le regole della tintura.",
+      "colour-field-on-colour-field": "Il colore (%s) sul colore (%s) rompe la regola di contrasto dei colori.",
       "colour-fimbriation-on-colour-field": "La fimbriazione del colore (%s) sul campo del colore (%s) rompe le regole della tintura.",
       "colour-fimbriation-touches-colour-field": "La fimbriazione del colore (%s) la quale tocca il campo del colore (%s) rompe le regole della tintura.",
       "fimbriation-tinctures-both-colour": "Le fimbriazioni delle tinture di tutte e due colori, (%s e %s), rompe le regole della tintura.",
       "fimbriation-tinctures-both-metal": "La fimbriazione del colore sono tutti e due metalli (%s and %s), rompendo le regole della tintura.",
       "metal-field-on-metal-field": "Il campo del metallo (%s) sul campo del metallo (%s) rompe le regole della tintura.",
       "metal-fimbriation-on-metal-field": "La fimbriazione del metallo (%s) sul campo del metallo (%s) rompe le regole della tintura.",
-      "metal-fimbriation-touches-metal-field": "La fimbriazione del metallo (%s) la quale tocca il campo del metallo (%s) rompe le regole della tintura."
+      "metal-fimbriation-touches-metal-field": "La fimbriazione del metallo (%s) che tocca il campo del metallo (%s) rompe la regola di contrasto dei colori."
     }
   },
   "text": {
