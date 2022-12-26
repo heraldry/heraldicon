@@ -73,6 +73,7 @@
     :admins #{"or"}
     :maintenance-mode? false
     :base-font-dir base-font-dir
+    :email-address "oliver@heraldicon.org"
     (or (some-> setting
                 name
                 s/upper-case

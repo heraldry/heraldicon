@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.contact
   (:require
+   [heraldicon.config :as config]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.title :as title]
    [re-frame.core :as rf]))
@@ -12,7 +13,11 @@
                  :max-width "60em"
                  :margin "auto"}}
    [:h2 [tr :string.menu/contact]]
-   [:p [tr :string.text.contact/feel-free-to-contact-me]]
+   [:p
+    [tr :string.text.contact/feel-free-to-contact-me]
+    " "
+    (let [email-address (config/get :email-address)]
+      [:a {:href (str "mailto:" email-address)} email-address])]
 
    [:p {:style {:margin-top "1em"}}
     [tr :string.text.contact/project-info]
