@@ -509,16 +509,16 @@
                                    :style {:opacity (:highlight tincture)}}]])])]]])]
 
          ;; show charge shape for debugging
-         #_(when preview-original?
-             (let [transform (str "translate(" (v/->str anchor-point) ")"
-                                  "rotate(" angle ")"
-                                  "scale(" scale-x "," scale-y ")"
-                                  "translate(" (v/->str top-left) ")")]
-               [:g {:transform transform}
-                (for [path charge-shapes]
-                  ^{:key path}
-                  [:path {:d (s/join " " path)
-                          :style {:stroke "#f0f"
-                                  :stroke-width 0.5
-                                  :fill "none"}}])]))])
+         (when preview-original?
+           (let [transform (str "translate(" (v/->str anchor-point) ")"
+                                "rotate(" angle ")"
+                                "scale(" scale-x "," scale-y ")"
+                                "translate(" (v/->str top-left) ")")]
+             [:g {:transform transform}
+              (for [path charge-shapes]
+                ^{:key path}
+                [:path {:d (s/join " " path)
+                        :style {:stroke "#f0f"
+                                :stroke-width 0.1
+                                :fill "none"}}])]))])
       [:<>])))
