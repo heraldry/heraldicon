@@ -199,6 +199,25 @@
         (update :max-x inc)
         (update :max-y inc))))
 
+(defn- remove-redundant-path-points [points]
+  (reduce (fn [new-points point]
+            (if (-> new-points count (< 2))
+              (conj new-points point)
+              (let [point0 (last new-points)
+                    point1 (get new-points (- (count new-points) 2))
+                    value (v/cross (v/sub point point0)
+                                   (v/sub point1 point0))]
+                (if (zero? value)
+                  (assoc new-points (dec (count new-points)) point)
+                  (conj new-points point)))))
+          [] points))
+
+(defn- repeat-until-fixed [f points]
+  (let [new-points (f points)]
+    (if (= points new-points)
+      points
+      (recur f new-points))))
+
 (defn- edges-to-path [edges]
   (let [points (map (fn [{:keys [x y dir]}]
                       (case dir
@@ -207,7 +226,9 @@
                         :left (v/Vector. x (inc y))
                         :right (v/Vector. (inc x) y)))
                     edges)
-        reduced-points (ramer-douglas-peucker/ramer-douglas-peucker points 2)
+        reduced-points (repeat-until-fixed #(remove-redundant-path-points
+                                             (ramer-douglas-peucker/ramer-douglas-peucker-convex % 2))
+                                           points)
         reduced-points (if (< (count reduced-points) 3)
                          points
                          reduced-points)]
@@ -248,6 +269,6 @@
                                   path/parse-path
                                   (path/translate (v/mul (bb/top-left pixel-bounding-box) -1))
                                   (path/scale (/ 1 scale) (/ 1 scale))
-                                  (path/to-svg)))
+                                  path/to-svg))
                             paths))
                     (vals shapes))})))

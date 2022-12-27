@@ -41,6 +41,9 @@
 (defn dot ^Vector [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
   (Vector. (* x1 x2) (* y1 y2)))
 
+(defn cross ^js/Number [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
+  (- (* x1 y2) (* x2 y1)))
+
 (defn abs ^js/Number [^Vector {:keys [x y]}]
   (Math/sqrt (+ (* x x) (* y y))))
 

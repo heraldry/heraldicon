@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.canvas-test
   (:require
+   ["paper" :refer [paper Size]]
    [cljs.test :refer-macros [are deftest]]
    [heraldicon.frontend.canvas :as canvas]))
 
@@ -247,6 +248,8 @@
          {:x 22 :y 7 :dir :left}]]}))
 
 (deftest edges-to-path
+  (.setup paper (new Size 500 500))
+
   (are [edges path] (= (#'canvas/edges-to-path edges) path)
 
     [{:x 1 :y 1 :dir :top}
@@ -283,28 +286,28 @@
      {:x 1 :y 2 :dir :bottom}
      {:x 1 :y 2 :dir :left}
      {:x 1 :y 1 :dir :left}]
-    "M 1,1 h 1 v -1 h 2 v 1 h 1 v 1 h 1 v 5 h -1 v -3 h -1 v -1 h -1 v 2 h -1 v 1 h -2 v -1 h 1 v -1 h 1 v -1 h -1 v -2z"
+    "M 1,1 L 2,0 L 4,0 L 6,2 L 6,7 L 5,7 L 4,4 L 4,3 L 3,5 L 2,6 L 0,6 L 0,5 L 1,2z"
 
     [{:x 1 :y 1 :dir :top}
      {:x 1 :y 1 :dir :right}
      {:x 1 :y 1 :dir :bottom}
      {:x 1 :y 1 :dir :left}]
-    "M 1,1 h 1 v 1 h -1 v -1z"
+    "M 1,1 L 2,1 L 2,2 L 1,2z"
 
     [{:x 1 :y 1 :dir :right}
      {:x 1 :y 1 :dir :bottom}
      {:x 1 :y 1 :dir :left}
      {:x 1 :y 1 :dir :top}]
-    "M 2,1 v 1 h -1 v -1 h 1z"
+    "M 2,1 L 2,2 L 1,2 L 1,1z"
 
     [{:x 1 :y 1 :dir :bottom}
      {:x 1 :y 1 :dir :left}
      {:x 1 :y 1 :dir :top}
      {:x 1 :y 1 :dir :right}]
-    "M 2,2 h -1 v -1 h 1 v 1z"
+    "M 2,2 L 1,2 L 1,1 L 2,1z"
 
     [{:x 1 :y 1 :dir :left}
      {:x 1 :y 1 :dir :top}
      {:x 1 :y 1 :dir :right}
      {:x 1 :y 1 :dir :bottom}]
-    "M 1,2 v -1 h 1 v 1 h -1z"))
+    "M 1,2 L 1,1 L 2,1 L 2,2z"))
