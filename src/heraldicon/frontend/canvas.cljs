@@ -261,14 +261,19 @@
          pixel-bounding-box (bounding-box-from-shape-points shapes)
          new-bounding-box (-> pixel-bounding-box
                               (bb/scale (/ 1 scale))
-                              (bb/translate top-left))]
+                              (bb/translate top-left))
+         processed-shapes (mapv (fn [paths]
+                                  (let [[main-shape & holes] (mapv edges-to-path paths)
+                                        relevant-holes (filter (fn [path]
+                                                                 (let [real-path (path/parse-path path)]
+                                                                   (<= 9 (Math/abs (.-area real-path)))))
+                                                               holes)]
+                                    (->> (into [main-shape] relevant-holes)
+                                         (mapv #(-> %
+                                                    path/parse-path
+                                                    (path/translate (v/mul (bb/top-left pixel-bounding-box) -1))
+                                                    (path/scale (/ 1 scale) (/ 1 scale))
+                                                    path/to-svg)))))
+                                (vals shapes))]
      {:bounding-box new-bounding-box
-      :shapes (mapv (fn [paths]
-                      (mapv (fn [edges]
-                              (-> (edges-to-path edges)
-                                  path/parse-path
-                                  (path/translate (v/mul (bb/top-left pixel-bounding-box) -1))
-                                  (path/scale (/ 1 scale) (/ 1 scale))
-                                  path/to-svg))
-                            paths))
-                    (vals shapes))})))
+      :shapes processed-shapes})))
