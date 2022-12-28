@@ -462,7 +462,8 @@
                :reverse-transform reverse-transform
                :scale (Math/abs (/ 1 scale-x))]
               [svg.metadata/attribution {:path charge-entity-path}]
-              [:g {:clip-path (str "url(#" charge-clip-path-id ")")}
+              [:g (when clip?
+                    {:clip-path (str "url(#" charge-clip-path-id ")")})
                (cond
                  preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)
                                      highlight-colours? (replace-colours
