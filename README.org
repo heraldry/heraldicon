@@ -41,6 +41,58 @@ the tool to wrap around it.
 I think [[https://github.com/edn-format/edn][EDN]] is perfect for this and will result in well-structured and concise
 representations.
 
+** Resources
+*** Community themes
+Themes are hardcoded for the time being for various reasons. If you want me to
+add one, then fill out this template with HTML colour codes (hexadecimal
+#rrggbb) and paste it into #feature-requests on the Discord server. If you leave
+any tinctures empty, then it'll default to colour in the default theme.
+#+begin_src clojure
+{;; metals
+ :argent "#" ;; gold, required
+ :or "#"     ;; silver, required
+
+ ;; colours
+ :azure "#"   ;; blue, required
+ :vert "#"    ;; green, required
+ :gules "#"   ;; red, required
+ :sable "#"   ;; black, required
+ :purpure "#" ;; purpur, required
+
+ ;; stains
+ :murrey "#"   ;; brown red
+ :sanguine "#" ;; blood red
+ :tenne "#"    ;; orange
+
+ ;; other
+ :amaranth "#"
+ :brunatre "#"     ;; brown
+ :buff "#"         ;; leather
+ :carnation "#"    ;; skin colour
+ :copper "#"
+ :orange "#"
+ :rose "#"
+ :white "#"
+ :cendree "#"      ;; iron colour
+ :bleu-celeste "#" ;; sky blue
+
+ ::name "<the name of your theme>"
+ ::attribution {:license :public-domain
+                 :creator-name "<the name you want to be credited with>"
+                 :creator-link "https://<an optional link for credits>"}}
+#+end_src
+
+*** Community escutcheons
+Escutcheons are hardcoded currently, if you want me to add one, then please send
+an SVG of just the shape (see this [[./docs/escutcheon-triangular.svg][example]]) and this template for attribution:
+#+begin_src clojure
+{:source-license :public-domain
+ :source-link "https://<the link of the source if you found it online>"
+ :source-name "<the name you want to give the escutcheon>"
+ :source-creator-name "<your name>"
+ :source-creator-link "https://<an optional link for credits>"}
+#+end_src
+
 ** Licensing/attribution
 Any arms, collection, charge, ribbon made public on the site must get a license
 from the creator, and it'll be attributed in SVGs and when viewing the thing or
