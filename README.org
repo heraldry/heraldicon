@@ -3,9 +3,8 @@
 TL;DR: https://heraldicon.org
 
 ** About
-I've started to learn about heraldry. There are many resources online, but I
-didn't find a lot of software to create coats of arms. And the software I found
-felt limited and hard to use.
+There are many heraldry resources online, but I didn't find a lot of software to
+create coats of arms. And the software I found felt limited and hard to use.
 
 There's a [[https://discord.gg/EGbMW8dth2][Discord server]] now for feature requests, bug reports, or general
 discussion. Feel free to say hello, if also helps getting a sense of who is
@@ -25,11 +24,7 @@ using this and what for, so future features can be prioritized accordingly. :)
 - An open database of historical coats of arms with their metadata and their
   rendering.
 
-** Design decisions
-*** Language
-Clojure(Script) is awesome.
-
-*** Intermediate data format
+** Intermediate data format
 It's no attempt to re-invent [[https://en.wikipedia.org/wiki/Blazon][Blazonry]], but the renderer will need some data
 representation of the coat of arms, and this data needs to be more precise than
 blazonry. It also should not care about heraldic rules, because it needs to be
