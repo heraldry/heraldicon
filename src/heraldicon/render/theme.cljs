@@ -679,6 +679,37 @@
    ::attribution {:license :public-domain
                   :creator-name "Violet Herald"}})
 
+(def ^:private theme-community-tinctures2go
+  {;; metals
+   :argent "#eeeeee"
+   :or "#ccab66"
+   ;; colours
+   :azure "#3d658f"
+   :vert "#3e8f4c"
+   :gules "#8f3d3e"
+   :sable "#333333"
+   :purpure "#833d8f"
+   ;; stains
+   :murrey "#6b2e44"
+   :sanguine "#6b2e2e"
+   :tenne "#997533"
+   ;; other
+   :amaranth "#8f3d74"
+   :brunatre "#6b4c2e"
+   :buff "#d1bd94"
+   :carnation "#c9ae9c"
+   :copper "#cc9c66ff"
+   :orange "#bf8540"
+   :rose "#c27070"
+   :white "#fcfcfc"
+   :cendree "#999999"
+   :bleu-celeste "#70bbc2"
+
+   ::name "Tinctures2Go"
+   ::attribution {:license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -714,7 +745,8 @@
     [:community-sodacan theme-community-sodacan]
     [:community-custom-philippine theme-community-custom-philippine]
     [:community-soft-rage theme-community-soft-rage]
-    [:community-the-violet-herald-palette theme-community-the-violet-herald-palette]]])
+    [:community-the-violet-herald-palette theme-community-the-violet-herald-palette]
+    [:community-tinctures2go theme-community-tinctures2go]]])
 
 (def default
   :wappenwiki)
