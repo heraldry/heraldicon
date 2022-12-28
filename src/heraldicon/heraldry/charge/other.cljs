@@ -440,8 +440,8 @@
                                        "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
                                        "rotate(" (- angle) ")"
                                        "translate(" (-> anchor-point (v/mul -1) v/->str) ")")
-                clip? true #_(not (or svg-export?
-                                      preview-original?))
+                clip? (not (or svg-export?
+                               preview-original?))
                 charge-clip-path-id (when clip?
                                       (uid/generate "shape-clip"))]
             [:<>
