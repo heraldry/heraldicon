@@ -65,7 +65,8 @@
 
 (defn- theme-credits [{:keys [name link
                               license license-version
-                              creator-name creator-link]}]
+                              creator-name creator-link
+                              source-name source-link]}]
   (let [license-url (attribution/license-url license license-version)
         license-display-name (attribution/license-display-name license license-version)]
     [:div.credit
@@ -88,7 +89,13 @@
        (case license
          :public-domain [tr :string.attribution/is-in-the-public-domain]
          [:<> [tr :string.attribution/is-licensed-under] " "
-          [:a {:href license-url :target "_blank"} license-display-name]])]]]))
+          [:a {:href license-url :target "_blank"} license-display-name]])
+       (when source-link
+         [:div.sub-credit
+          [tr :string.attribution/source]
+          ": "
+          [:a {:href source-link
+               :target "_blank"} " " source-name]])]]]))
 
 (defn for-entity [context]
   (let [id (interface/get-raw-data (c/++ context :id))]
