@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   preserveAspectRatio="xMidYMin slice"
+   viewBox="0 0 100 120"
+   version="1.1"
+   id="svg17"
+   sodipodi:docname="escutcheon-triangular.svg"
+   width="100"
+   height="120"
+   inkscape:version="1.2 (dc2aeda, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata
+     id="metadata23">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs21">
+    <defs
+       id="defs5">
+      <mask
+         id="a">
+        <path
+           id="path2"
+           d="m 50,0 h 50 V 33.333 A 100,100 0 0 1 50,119.936 100,100 0 0 1 0,33.333 V 0 Z"
+           inkscape:connector-curvature="0"
+           style="clip-rule:evenodd;fill:#ffffff;fill-rule:evenodd" />
+      </mask>
+    </defs>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1703"
+     inkscape:window-height="1009"
+     id="namedview19"
+     showgrid="true"
+     units="px"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="35.266951"
+     inkscape:cy="63.374446"
+     inkscape:window-x="1231"
+     inkscape:window-y="1520"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg17"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4527"
+       originx="-10"
+       originy="-10" />
+  </sodipodi:namedview>
+  <path
+     id="path13"
+     d="M 50,0 C 80,0 100,10 100,10 100,60 80,90 50,120 20,90 0,60.03607 0,10 0,10 20,0 50,0 Z"
+     inkscape:connector-curvature="0"
+     style="fill:#ff2a2a;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     sodipodi:nodetypes="scccs" />
+</svg>
