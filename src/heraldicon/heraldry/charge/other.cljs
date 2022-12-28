@@ -456,56 +456,56 @@
                    (for [path charge-shapes]
                      ^{:key path}
                      [:path {:d (s/join " " path)}]))]])
-             [:g {:transform transform
-                  :clip-path (str "url(#" charge-clip-path-id ")")}
+             [:g {:transform transform}
               [render/shape-fimbriation context
                :fimbriation-shape fimbriation-shape
                :reverse-transform reverse-transform
                :scale (Math/abs (/ 1 scale-x))]
               [svg.metadata/attribution {:path charge-entity-path}]
-              (cond
-                preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)
-                                    highlight-colours? (replace-colours
-                                                        (fn [colour]
-                                                          (highlight-colour
-                                                           colour ui-show-colours))))
-                landscape? unadjusted-charge
-                highlight-colours? adjusted-charge
-                :else [:g
-                       (when (= outline-mode :keep)
-                         [:g {:mask (str "url(#" mask-base-id ")")}
-                          [:rect {:transform reverse-transform
-                                  :x -500
-                                  :y -500
-                                  :width 1100
-                                  :height 1100
-                                  :fill (outline/color context)}]])
+              [:g {:clip-path (str "url(#" charge-clip-path-id ")")}
+               (cond
+                 preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)
+                                     highlight-colours? (replace-colours
+                                                         (fn [colour]
+                                                           (highlight-colour
+                                                            colour ui-show-colours))))
+                 landscape? unadjusted-charge
+                 highlight-colours? adjusted-charge
+                 :else [:g
+                        (when (= outline-mode :keep)
+                          [:g {:mask (str "url(#" mask-base-id ")")}
+                           [:rect {:transform reverse-transform
+                                   :x -500
+                                   :y -500
+                                   :width 1100
+                                   :height 1100
+                                   :fill (outline/color context)}]])
 
-                       (when render-field?
-                         [:g {:mask (str "url(#" mask-inverted-id ")")}
-                          [:g {:transform reverse-transform}
-                           [interface/render-component (c/++ context :field)]]])
-                       [:g {:mask (str "url(#" mask-id ")")}
-                        (svg/make-unique-ids coloured-charge)]
-                       (when render-shadow?
-                         [:g {:mask (str "url(#" shadow-mask-id ")")}
-                          [:rect {:transform reverse-transform
-                                  :x -500
-                                  :y -500
-                                  :width 1100
-                                  :height 1100
-                                  :fill "#001040"
-                                  :style {:opacity (:shadow tincture)}}]])
+                        (when render-field?
+                          [:g {:mask (str "url(#" mask-inverted-id ")")}
+                           [:g {:transform reverse-transform}
+                            [interface/render-component (c/++ context :field)]]])
+                        [:g {:mask (str "url(#" mask-id ")")}
+                         (svg/make-unique-ids coloured-charge)]
+                        (when render-shadow?
+                          [:g {:mask (str "url(#" shadow-mask-id ")")}
+                           [:rect {:transform reverse-transform
+                                   :x -500
+                                   :y -500
+                                   :width 1100
+                                   :height 1100
+                                   :fill "#001040"
+                                   :style {:opacity (:shadow tincture)}}]])
 
-                       (when render-highlight?
-                         [:g {:mask (str "url(#" highlight-mask-id ")")}
-                          [:rect {:transform reverse-transform
-                                  :x -500
-                                  :y -500
-                                  :width 1100
-                                  :height 1100
-                                  :fill "#ffffe8"
-                                  :style {:opacity (:highlight tincture)}}]])])]])]
+                        (when render-highlight?
+                          [:g {:mask (str "url(#" highlight-mask-id ")")}
+                           [:rect {:transform reverse-transform
+                                   :x -500
+                                   :y -500
+                                   :width 1100
+                                   :height 1100
+                                   :fill "#ffffe8"
+                                   :style {:opacity (:highlight tincture)}}]])])]]])]
 
          ;; show charge shape for debugging
          #_(when preview-original?
