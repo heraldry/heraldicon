@@ -710,6 +710,34 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private theme-community-commodore64
+  {;; metals
+   :argent "#adadad"
+   :or "#c9d487" ;; gold
+
+   ;; colours
+   :azure "#50459b"
+   :vert "#5cab5e"
+   :gules "#cb7e75"
+   :sable "#000000"
+   :purpure "#a057a3"
+
+   ;; stains
+   :sanguine "#9f4e44"
+   :tenne "#a1683c"
+
+   ;; other
+   :amaranth "#887ecb"
+   :brunatre "#6d5412"
+   :white "#ffffff"
+   :cendree "#626262"
+   :bleu-celeste "#6abfc6"
+
+   ::name "Commodore64"
+   ::attribution {:license :public-domain
+                  :creator-name "vairy"
+                  :creator-link "https://heraldicon.org/users/vairy"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -746,7 +774,8 @@
     [:community-custom-philippine theme-community-custom-philippine]
     [:community-soft-rage theme-community-soft-rage]
     [:community-the-violet-herald-palette theme-community-the-violet-herald-palette]
-    [:community-tinctures2go theme-community-tinctures2go]]])
+    [:community-tinctures2go theme-community-tinctures2go]
+    [:community-commodore64 theme-community-commodore64]]])
 
 (def default
   :wappenwiki)
