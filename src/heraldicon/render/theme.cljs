@@ -736,7 +736,9 @@
    ::name "Commodore64"
    ::attribution {:license :public-domain
                   :creator-name "vairy"
-                  :creator-link "https://heraldicon.org/users/vairy"}})
+                  :creator-link "https://heraldicon.org/users/vairy"
+                  :source-name "Lospec"
+                  :source-link "https://lospec.com/palette-list/commodore64"}})
 
 (def ^:private themes
   [[:string.theme.group/general
