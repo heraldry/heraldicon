@@ -49,8 +49,8 @@ add one, then fill out this template with HTML colour codes (hexadecimal
 any tinctures empty, then it'll default to colour in the default theme.
 #+begin_src clojure
 {;; metals
- :argent "#" ;; gold, required
- :or "#"     ;; silver, required
+ :argent "#" ;; silver, required
+ :or "#"     ;; gold, required
 
  ;; colours
  :azure "#"   ;; blue, required
@@ -62,7 +62,7 @@ any tinctures empty, then it'll default to colour in the default theme.
  ;; stains
  :murrey "#"   ;; brown red
  :sanguine "#" ;; blood red
- :tenne "#"    ;; orange
+ :tenne "#"    ;; light brown
 
  ;; other
  :amaranth "#"
