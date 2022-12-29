@@ -40,6 +40,7 @@
            :mantling-charge-id "charge:gTrIM7"}
 
     "staging" {:heraldicon-api-endpoint "https://lg0j98nuab.execute-api.eu-central-1.amazonaws.com/api"
+               :heraldicon-discord-api-endpoint "https://lg0j98nuab.execute-api.eu-central-1.amazonaws.com/discord"
                :heraldicon-url "https://staging.heraldicon.org"
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                      :ClientId "2v90eij0l4aluf2amqumqh9gko"
@@ -53,6 +54,7 @@
                :mantling-charge-id "charge:gTrIM7"}
 
     "prod" {:heraldicon-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
+            :heraldicon-discord-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/discord"
             :heraldicon-url "https://heraldicon.org"
             :cognito-pool-config {:UserPoolId "eu-central-1_WXqnJUEOT"
                                   :ClientId "21pvp6cc4l3gptoj4bl3jc9s7r"
