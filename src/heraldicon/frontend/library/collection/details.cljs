@@ -194,6 +194,9 @@
         [:g {:transform "scale(5,5)"}
          [interface/render-component context]]]])))
 
+(defn- attribution [form-db-path]
+  [attribution/attribution {:path form-db-path}])
+
 (defn- collection-form [form-db-path]
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
@@ -205,7 +208,8 @@
     [form/active]
     [message/display entity-type]
     [buttons/buttons entity-type]
-    [render-arms-preview form-db-path]]
+    [render-arms-preview form-db-path]
+    [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
     [tree/tree [form-db-path
