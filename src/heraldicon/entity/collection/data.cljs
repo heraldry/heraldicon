@@ -9,6 +9,6 @@
   {:num-columns {:type :option.type/range
                  :default 6
                  :min 1
-                 :max 10
+                 :max 15
                  :ui/label :string.option/number-of-columns}
    :font font/default-options})
