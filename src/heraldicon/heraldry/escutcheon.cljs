@@ -549,6 +549,24 @@
                  :license :public-domain
                  :username "Azure"}})
 
+(def ^:private community-pointy-iberian
+  {:shape "m 0,0 v 65 c 0,10 5,40 30,45 20,5 20,10 20,10 0,0 0,-5 20,-10 25,-5
+           30,-35 30,-45 V 0 Z"
+   :bounding-box (bb/BoundingBox. 0 100 0 120)
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "Korfi2Go"}})
+
+(def ^:private community-playful
+  {:shape "m 48,0 c 39.998852,0 47,8 47,8 5.00273,10 5,17 5,27 0,35.375221
+           -23.877758,56.959022 -48,65 C 22.000861,90 -2.9600564e-7,74.570288
+           -6.6413221e-8,40 0,30 -6.6413221e-8,20 4.9998565,10 4.9998565,10
+           18.000861,0 48,0 Z"
+   :bounding-box (bb/BoundingBox. 0 100 0 100)
+   :attribution {:nature :own-work
+                 :license :public-domain
+                 :username "Korfi2Go"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:string.escutcheon.type/heater #'heater]
@@ -574,6 +592,7 @@
     [:string.escutcheon.type/polish-19th-century #'polish-19th-century]]
    [:string.escutcheon.group/community
     ["Square Iberian Engrailed" #'community-square-iberian-engrailed]
+    ["Pointy Iberian" #'community-pointy-iberian]
     ["Angular" #'community-angular]
     ["Bulgy Heater" #'community-heater-bulgy]
     ["Pointed Heater" #'community-heater-pointed]
@@ -585,6 +604,7 @@
     ["Louisiana" #'community-louisiana]
     ["German" #'community-german]
     ["Innsbruck" #'community-innsbruck]
+    ["Playful" #'community-playful]
     ["Queen Consort" #'community-queen-consort]
     ["Queen Consort Modern" #'community-queen-consort-modern]
     ["Octolozenge" #'community-octolozenge]
