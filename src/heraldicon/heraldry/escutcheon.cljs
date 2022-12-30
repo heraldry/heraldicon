@@ -402,25 +402,24 @@
                  :username "vairy"}})
 
 (def ^:private community-heater-bulgy
-  {:shape "M 50,0 c 10,0 20,0 40,5 5,30 10,50 10,70 0,30 -25,45 -50,60 -25,-15 -50,-30 -50,-60
-           C -0.14921317,56.749847 5,35 10,5 c 20,-5 30,-5 40,-5 z"
+  {:shape "m 50,0 c 30,5 50,5 50,5 V 39 C 99.78125,75 80.940248,107.13664 50,125
+           19.059752,107.13664 0,75 0,39 V 5 C 0,5 20,5 50,0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 135)
    :attribution {:nature :own-work
                  :license :public-domain
                  :username "korfi2go"}})
 
 (def ^:private community-heater-rounded
-  {:shape "M 50,0 c 30,0 50,5 50,5 l 0.21875,34 C 100.21891,74.726721
-           80.940248,107.13664 50,125 19.059752,107.13664 -1.6239896e-4,74.726721
-           0,39 V 5 C 0,5 20,0 50,0 z"
+  {:shape "m 50,0 c 30,0 50,5 50,5 v 34 c 1.6e-4,35.726721 -19.059752,68.13664 -50,86
+           C 19.059752,107.13664 -1.624e-4,74.726721 0,39 V 5 C 0,5 20,0 50,0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 125)
    :attribution {:nature :own-work
                  :license :public-domain
                  :username "korfi2go"}})
 
 (def ^:private community-heater-pointed
-  {:shape "M 50,0 c 30,5 50,5 50,5 l 0.21875,34 C 100.21891,74.726721 80.940248,107.13664
-           50,125 19.059752,107.13664 0,74.726721 0,39 V 5 C 0,5 20,5 50,0 z"
+  {:shape "m 50,0 c 30,5 50,5 50,5 V 39 C 99.78125,75 80.940248,107.13664 50,125 19.059752,107.13664 0,75 0,39
+           V 5 C 0,5 20,5 50,0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 125)
    :attribution {:nature :own-work
                  :license :public-domain
