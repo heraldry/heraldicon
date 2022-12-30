@@ -109,7 +109,14 @@
     [:string.charge.tincture-modifier/slipped :slipped]]
    [:string.charge.tincture-modifier.group/helmet
     [:string.charge.tincture-modifier/barred :barred]
+    [:string.charge.tincture-modifier/lined :lined]
     [:string.charge.tincture-modifier/trimmed :trimmed]]
+   [:string.charge.tincture-modifier.group/edifice
+    [:string.charge.tincture-modifier/portcullised :portcullised]
+    [:string.charge.tincture-modifier/ported :ported]
+    [:string.charge.tincture-modifier/roofed :roofed]
+    [:string.charge.tincture-modifier/towered :towered]
+    [:string.charge.tincture-modifier/windowed :windowed]]
    [:string.charge.tincture-modifier.group/other
     [:string.charge.tincture-modifier/caparisoned :caparisoned]
     [:string.charge.tincture-modifier/collared :collared]
@@ -117,6 +124,7 @@
     [:string.charge.tincture-modifier/feathered :feathered]
     [:string.charge.tincture-modifier/flagged :flagged]
     [:string.charge.tincture-modifier/garnished :garnished]
+    [:string.charge.tincture-modifier/glazed :glazed]
     [:string.charge.tincture-modifier/handled :handled]
     [:string.charge.tincture-modifier/hilted :hilted]
     [:string.charge.tincture-modifier/illuminated :illuminated]
