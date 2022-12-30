@@ -6,7 +6,8 @@
   {:all true
 
    ::name :string.theme/all
-   ::attribution {:license :public-domain
+   ::attribution {:nature :own-work
+                  :license :public-domain
                   :creator-name "Heraldicon"
                   :creator-link "https://heraldicon.org"}})
 
@@ -43,7 +44,8 @@
    :helmet-dark "#585858"
 
    ::name :string.theme/wappenwiki
-   ::attribution {:license :cc-attribution-non-commercial-share-alike
+   ::attribution {:nature :own-work
+                  :license :cc-attribution-non-commercial-share-alike
                   :license-version :v3
                   :creator-name "WappenWiki"
                   :creator-link "https://wappenwiki.org"}})
@@ -72,13 +74,15 @@
    :buff "#ddc595"
 
    ::name "Encyclopedia Heraldica"
-   ::attribution {:license :cc-attribution
+   ::attribution {:nature :own-work
+                  :license :cc-attribution
                   :license-version :v4
                   :creator-name "Encyclopedia Heraldica"
                   :creator-link "https://1drv.ms/u/s!Anj4BrtS8clIaQi3EIOCPpnfKQE?e=AkQ8lW"}})
 
 (def ^:private wiki-attribution
-  {:license :cc-attribution-share-alike
+  {:nature :own-work
+   :license :cc-attribution-share-alike
    :license-version :v3
    :creator-name "Wikipedia"
    :creator-link "https://wikipedia.org"})
@@ -332,7 +336,8 @@
    ::attribution wiki-attribution})
 
 (def ^:private taritoons-attribution
-  {:license :public-domain
+  {:nature :own-work
+   :license :public-domain
    :link "https://www.reddit.com/r/heraldry/comments/i8dy38/some_heraldic_tincture_palettes_for_you_to_use/"
    :creator-name "TariToons"
    :creator-link "https://www.reddit.com/user/TariToons/"})
@@ -569,7 +574,8 @@
    :tenne "#666400" ;; 60% darkened or
 
    ::name "Content Cranium"
-   ::attribution {:license :public-domain
+   ::attribution {:nature :own-work
+                  :license :public-domain
                   :creator-name "Happy Skull#9393"}})
 
 (def ^:private theme-community-sodacan
@@ -596,7 +602,8 @@
    :rose "#df2ddf"
 
    ::name "Sodacan"
-   ::attribution {:license :public-domain
+   ::attribution {:nature :own-work
+                  :license :public-domain
                   :creator-name "Bananasplit1611"}})
 
 (def ^:private theme-community-custom-philippine
@@ -615,7 +622,8 @@
    :tenne "#6c5801" ;; 60% darkened or
 
    ::name "Custom Philippine"
-   ::attribution {:license :public-domain
+   ::attribution {:nature :own-work
+                  :license :public-domain
                   :creator-name "coinageFission"}})
 
 (def ^:private theme-community-soft-rage
@@ -649,7 +657,8 @@
    :helmet-dark "#515151"
 
    ::name "Dughorm's Palette"
-   ::attribution {:license :public-domain
+   ::attribution {:nature :own-work
+                  :license :public-domain
                   :creator-name "Dughorm"}})
 
 (def ^:private theme-community-the-violet-herald-palette
@@ -676,7 +685,8 @@
    :white "#ffffff"
 
    ::name "The Violet Herald"
-   ::attribution {:license :public-domain
+   ::attribution {:nature :own-work
+                  :license :public-domain
                   :creator-name "Violet Herald"}})
 
 (def ^:private theme-community-tinctures2go
@@ -706,7 +716,8 @@
    :bleu-celeste "#70bbc2"
 
    ::name "Tinctures2Go"
-   ::attribution {:license :public-domain
+   ::attribution {:nature :own-work
+                  :license :public-domain
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
@@ -734,11 +745,15 @@
    :bleu-celeste "#6abfc6"
 
    ::name "Commodore64"
-   ::attribution {:license :public-domain
+   ::attribution {:nature :derivative
+                  :license :public-domain
                   :creator-name "vairy"
                   :creator-link "https://heraldicon.org/users/vairy"
-                  :source-name "Lospec"
-                  :source-link "https://lospec.com/palette-list/commodore64"}})
+                  :source-license :public-domain
+                  :source-name "COMMODORE 64 PALETTE"
+                  :source-link "https://lospec.com/palette-list/commodore64"
+                  :source-creator-name "Lospec"
+                  :source-creator-link "https://lospec.com"}})
 
 (def ^:private themes
   [[:string.theme.group/general

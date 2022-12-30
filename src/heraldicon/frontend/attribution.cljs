@@ -11,6 +11,8 @@
    [re-frame.core :as rf]))
 
 (defn- credits [{:keys [url title username
+                        creator-name
+                        creator-link
                         nature
                         license license-version
                         source-license source-license-version
@@ -27,11 +29,22 @@
         [:a {:href url
              :target "_blank"} [tr title]]
         [:span [tr title]])
-      " "
-      [tr :string.miscellaneous/by]
-      " "
-      [:a {:href (attribution/full-url-for-username username)
-           :target "_blank"} username]
+      (if username
+        [:<>
+         " "
+         [tr :string.miscellaneous/by]
+         " "
+         [:a {:href (attribution/full-url-for-username username)
+              :target "_blank"} username]]
+        (when (-> creator-name count pos?)
+          [:<>
+           " "
+           [tr :string.miscellaneous/by]
+           " "
+           (if creator-link
+             [:a {:href creator-link
+                  :target "_blank"} creator-name]
+             [:span creator-name])]))
       " "
       (case (or license :none)
         :none [tr :string.attribution/is-private]
@@ -63,40 +76,6 @@
            [:<>
             " " [tr :string.attribution/modifications] ": " source-modification])])]]))
 
-(defn- theme-credits [{:keys [name link
-                              license license-version
-                              creator-name creator-link
-                              source-name source-link]}]
-  (let [license-url (attribution/license-url license license-version)
-        license-display-name (attribution/license-display-name license license-version)]
-    [:div.credit
-     [:<>
-      [:div.sub-credit
-       (if link
-         [:a {:href link
-              :target "_blank"} [tr name]]
-         [:span [tr name]])
-       (when (-> creator-name count pos?)
-         [:<>
-          " "
-          [tr :string.miscellaneous/by]
-          " "
-          (if creator-link
-            [:a {:href creator-link
-                 :target "_blank"} creator-name]
-            [:span creator-name])])
-       " "
-       (case license
-         :public-domain [tr :string.attribution/is-in-the-public-domain]
-         [:<> [tr :string.attribution/is-licensed-under] " "
-          [:a {:href license-url :target "_blank"} license-display-name]])
-       (when source-link
-         [:div.sub-credit
-          [tr :string.attribution/source]
-          ": "
-          [:a {:href source-link
-               :target "_blank"} " " source-name]])]]]))
-
 (defn for-entity [context]
   (let [id (interface/get-raw-data (c/++ context :id))]
     [:div.credit
@@ -123,8 +102,8 @@
 (defn for-theme [theme]
   [:<>
    [:h3 [tr :string.render-options/theme]]
-   [theme-credits (assoc (theme/attribution theme)
-                         :title (theme/theme-map theme))]])
+   [credits (assoc (theme/attribution theme)
+                   :title (theme/theme-map theme))]])
 
 (defn for-entities [entities]
   (let [entity-paths (keep (fn [{:keys [id version]}]

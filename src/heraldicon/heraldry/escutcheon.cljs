@@ -10,7 +10,8 @@
 (def ^:private heraldicon-attribution
   {:nature :own-work
    :license :public-domain
-   :username "Heraldicon"})
+   :creator-name "Heraldicon"
+   :creator-link "https://heraldicon.org"})
 
 (def ^:private heater
   {;; sqrt(3) / 2 * 6 ~ 5.196152422706632
@@ -22,7 +23,9 @@
                "v -2"
                "z")
    :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/heater
+   ::attribution heraldicon-attribution})
 
 (def ^:private square-french
   {:shape (str "m 0,0"
@@ -32,7 +35,9 @@
                "V 0"
                "z")
    :bounding-box (bb/BoundingBox. 0 (* 2 12) 0 (+ 15.7 13))
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/square-french
+   ::attribution heraldicon-attribution})
 
 (def ^:private square-iberian
   {:shape (str "m 0,0"
@@ -42,7 +47,9 @@
                "v -7"
                "z")
    :bounding-box (bb/BoundingBox. -5 5 0 (+ 7 5))
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/square-iberian
+   ::attribution heraldicon-attribution})
 
 (def ^:private square-czech
   {;; diff(sqrt(r*r - x*x))
@@ -53,7 +60,9 @@
                "a 24.156226 24.156226 0 0 1 -48,0"
                "z")
    :bounding-box (bb/BoundingBox. 0 56 0 56.5)
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/square-czech
+   ::attribution heraldicon-attribution})
 
 (def ^:private french-modern
   {:shape (str "m 0,0"
@@ -71,7 +80,9 @@
    :shape-bounding-box (bb/BoundingBox. -7 7 0 17)
    :bounding-box (bb/BoundingBox. -7 7 0 16)
    :points {:fess (v/Vector. 0 8)}
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/french-modern
+   ::attribution heraldicon-attribution})
 
 (def ^:private lozenge
   {:shape (str "m 0,0"
@@ -81,7 +92,9 @@
                "z")
    :bounding-box (bb/BoundingBox. -5 5 0 13)
    :points {:fess (v/Vector. 0 6.5)}
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/lozenge
+   ::attribution heraldicon-attribution})
 
 (def ^:private oval
   {:shape (str "m 0,0"
@@ -92,7 +105,9 @@
                "z")
    :bounding-box (bb/BoundingBox. -5 5 0 13)
    :points {:fess (v/Vector. 0 6.5)}
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/oval
+   ::attribution heraldicon-attribution})
 
 (def ^:private roundel
   {:shape (str "m 0,0"
@@ -101,7 +116,9 @@
                "z")
    :bounding-box (bb/BoundingBox. -5 5 0 10)
    :points {:fess (v/Vector. 0 5)}
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/roundel
+   ::attribution heraldicon-attribution})
 
 (def ^:private swiss
   {;; sqrt(3) / 2 * 6 ~ 5.196152422706632
@@ -114,7 +131,9 @@
                "a 6 6 0 0 0 3,0"
                "z")
    :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/swiss
+   ::attribution heraldicon-attribution})
 
 (def ^:private english
   {:shape (str "m 0,0"
@@ -134,7 +153,9 @@
    :shape-bounding-box (bb/BoundingBox. -8 8 0 17)
    :bounding-box (bb/BoundingBox. -7 7 0 16)
    :points {:fess (v/Vector. 0 8)}
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/english
+   ::attribution heraldicon-attribution})
 
 (def ^:private polish
   {:shape "m 43.402145,5e-7
@@ -154,13 +175,15 @@
            c 0,0 -1.680096,-2.50161599999999 -6.619239,-2.501616 z"
    :bounding-box (bb/BoundingBox. 0 100 0 130)
    :points {:fess (v/Vector. 50 60)}
-   :attribution (merge heraldicon-attribution
-                       {:nature :derivative
-                        :source-license :public-domain
-                        :source-link "https://commons.wikimedia.org/wiki/File:Polish_Escutcheon.svg"
-                        :source-name "Polish Escutcheon"
-                        :source-creator-name "Masur"
-                        :source-creator-link "https://commons.wikimedia.org/wiki/User:Masur"})})
+
+   ::name :string.escutcheon.type/polish
+   ::attribution (merge heraldicon-attribution
+                        {:nature :derivative
+                         :source-license :public-domain
+                         :source-link "https://commons.wikimedia.org/wiki/File:Polish_Escutcheon.svg"
+                         :source-name "Polish Escutcheon"
+                         :source-creator-name "Masur"
+                         :source-creator-link "https://commons.wikimedia.org/wiki/User:Masur"})})
 
 (def ^:private polish-19th-century
   {:shape "M 9.5919374,7.6420451e-7 6.7196191e-7,9.9320533
@@ -174,13 +197,15 @@
            z"
    :bounding-box (bb/BoundingBox. 0 100 0 120)
    :points {:fess (v/Vector. 50 60)}
-   :attribution (merge heraldicon-attribution
-                       {:nature :derivative
-                        :source-license :public-domain
-                        :source-link "https://commons.wikimedia.org/wiki/File:HerbTarczaPL_XIXc.svg"
-                        :source-name "HerbTarczaPL XIXc"
-                        :source-creator-name "NalesnikLD"
-                        :source-creator-link "https://commons.wikimedia.org/wiki/User:NalesnikLD"})})
+
+   ::name :string.escutcheon.type/polish-19th-century
+   ::attribution (merge heraldicon-attribution
+                        {:nature :derivative
+                         :source-license :public-domain
+                         :source-link "https://commons.wikimedia.org/wiki/File:HerbTarczaPL_XIXc.svg"
+                         :source-name "HerbTarczaPL XIXc"
+                         :source-creator-name "NalesnikLD"
+                         :source-creator-link "https://commons.wikimedia.org/wiki/User:NalesnikLD"})})
 
 (def ^:private renaissance
   {:shape "M 43.672061,112.35743
@@ -196,18 +221,23 @@
            z"
    :bounding-box (bb/BoundingBox. 0 100 0 117)
    :points {:fess (v/Vector. 50 55)}
-   :attribution (merge heraldicon-attribution
-                       {:source-license :public-domain
-                        :source-link "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Shield_Renaissance_7.svg"
-                        :source-name "Coa Illustration Shield Renaissance 7"
-                        :source-creator-name "Doc Taxon"
-                        :source-creator-link "https://commons.wikimedia.org/wiki/User:Doc_Taxon"})})
+
+   ::name :string.escutcheon.type/renaissance
+   ::attribution (merge heraldicon-attribution
+                        {:nature :derivative
+                         :source-license :public-domain
+                         :source-link "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Shield_Renaissance_7.svg"
+                         :source-name "Coa Illustration Shield Renaissance 7"
+                         :source-creator-name "Doc Taxon"
+                         :source-creator-link "https://commons.wikimedia.org/wiki/User:Doc_Taxon"})})
 
 (def ^:private rectangle
   {:shape "M 0,0 h 10 v 12 h -10 z"
    :bounding-box (bb/BoundingBox. 0 10 0 12)
    :points {:fess (v/Vector. 5 6)}
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/rectangle
+   ::attribution heraldicon-attribution})
 
 (def ^:private flag
   {:function (fn [width height swallow-tail tail-point-height tail-tongue]
@@ -233,7 +263,9 @@
    :shape "M 0,0 h 5 v 3 h -5 z"
    :bounding-box (bb/BoundingBox. 0 5 0 3)
    :points {:fess (v/Vector. 2.5 1.5)}
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/flag
+   ::attribution heraldicon-attribution})
 
 (def ^:private wedge
   {;; sqrt(3) / 2 * 6 + 2 ~ 7.196152422706632
@@ -248,7 +280,9 @@
                  "a " hole-x " " hole-y " 0 0 0 " hole-x "," (- hole-y)
                  "z"))
    :bounding-box (bb/BoundingBox. -3 3 0 7.196152422706632)
-   :attribution heraldicon-attribution})
+
+   ::name :string.escutcheon.type/wedge
+   ::attribution heraldicon-attribution})
 
 (def ^:private kite
   (let [width 1
@@ -274,12 +308,15 @@
                  "z")
      :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
      :points {:fess (v/Vector. 0 half-width)}
-     :attribution (merge heraldicon-attribution
-                         {:source-license :public-domain
-                          :source-link "https://commons.wikimedia.org/wiki/File:Kite_shield.svg"
-                          :source-name "Kite shield"
-                          :source-creator-name "Perhelion"
-                          :source-creator-link "https://commons.wikimedia.org/wiki/User:Perhelion"})}))
+
+     ::name :string.escutcheon.type/kite
+     ::attribution (merge heraldicon-attribution
+                          {:nature :derivative
+                           :source-license :public-domain
+                           :source-link "https://commons.wikimedia.org/wiki/File:Kite_shield.svg"
+                           :source-name "Kite shield"
+                           :source-creator-name "Perhelion"
+                           :source-creator-link "https://commons.wikimedia.org/wiki/User:Perhelion"})}))
 
 (def ^:private norman
   (let [width 5
@@ -296,7 +333,9 @@
                  "z")
      :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
      :points {:fess (v/Vector. 0 half-width)}
-     :attribution heraldicon-attribution}))
+
+     ::name :string.escutcheon.type/norman-late
+     ::attribution heraldicon-attribution}))
 
 (def ^:private norman-rounded
   (let [width 5
@@ -318,7 +357,9 @@
                  "z")
      :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
      :points {:fess (v/Vector. 0 half-width)}
-     :attribution heraldicon-attribution}))
+
+     ::name :string.escutcheon.type/rounded-norman-late
+     ::attribution heraldicon-attribution}))
 
 (def ^:private community-square-iberian-engrailed
   {:shape "M 0,0
@@ -329,13 +370,15 @@
            a 250,250 0 0 1 -250,-250
            z"
    :bounding-box (bb/BoundingBox. 0 500 0 600)
-   :attribution (merge heraldicon-attribution
-                       {:nature :derivative
-                        :source-license :public-domain
-                        :source-link "https://heraldicon.org"
-                        :source-name "Square Iberian Engrailed"
-                        :source-creator-name "coinageFission#1205"
-                        :source-creator-link "https://discord.com/channels/272117928298676225/272117928298676225"})})
+
+   ::name "Square Iberian Engrailed"
+   ::attribution (merge heraldicon-attribution
+                        {:nature :derivative
+                         :source-license :public-domain
+                         :source-link "https://heraldicon.org"
+                         :source-name "Square Iberian Engrailed"
+                         :source-creator-name "coinageFission#1205"
+                         :source-creator-link "https://discord.com/channels/272117928298676225/272117928298676225"})})
 
 (def ^:private community-kalasag
   {:shape "M 54.303084,263.03992 c 0.481806,0.77857 13.294025,21.48369
@@ -354,8 +397,12 @@
            1.612347,0 3.821948,1.24991 4.303754,2.02849 z"
    :bounding-box (bb/BoundingBox. 0 100 0 286.085)
    :points {:fess (v/Vector. 50 143.0425)}
-   :attribution {:license :public-domain
-                 :username "vairy"}})
+
+   ::name "Kalasag"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "vairy"
+                  :creator-link "https://heraldicon.org/users/vairy"}})
 
 (def ^:private community-louisiana
   {:shape "M 1.64826,87.810447 C 4.46558,85.281706 7.08513,82.261304
@@ -371,14 +418,17 @@
            12.48364,108.53128 1.64419,87.810447 z"
    :bounding-box (bb/BoundingBox. 0 100 0 110)
    :points {:fess (v/Vector. 50 55)}
-   :attribution {:license :public-domain
-                 :username "vairy"
-                 :nature :derivative
-                 :source-license :public-domain
-                 :source-link "https://en.wikipedia.org/wiki/File:Louisiana_state_coat_of_arms_(illustrated,_1876).jpg"
-                 :source-name "Louisiana state coat of arms (illustrated, 1876)"
-                 :source-creator-name "Godot13"
-                 :source-creator-link "https://commons.wikimedia.org/wiki/User:Godot13"}})
+
+   ::name "Louisiana"
+   ::attribution {:nature :derivative
+                  :license :public-domain
+                  :creator-name "vairy"
+                  :creator-link "https://heraldicon.org/users/vairy"
+                  :source-license :public-domain
+                  :source-link "https://en.wikipedia.org/wiki/File:Louisiana_state_coat_of_arms_(illustrated,_1876).jpg"
+                  :source-name "Louisiana state coat of arms (illustrated, 1876)"
+                  :source-creator-name "Godot13"
+                  :source-creator-link "https://commons.wikimedia.org/wiki/User:Godot13"}})
 
 (def ^:private community-french-slim
   {:shape "M 0,0 c -0.051,33.464218 0.2004,86.58878 0.096,100
@@ -388,8 +438,12 @@
            13.168,-0.39808 22.2049,-10.98376 22.1006,-24.82399 C
            99.8066,86.590696 100,33.464218 100,0 z"
    :bounding-box (bb/BoundingBox. 0 100 0 138.279)
-   :attribution {:license :public-domain
-                 :username "vairy"}})
+
+   ::name "French Slim"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "vairy"
+                  :creator-link "https://heraldicon.org/users/vairy"}})
 
 (def ^:private community-innsbruck
   {:shape "M 91.010471,0.47464845 C 66.714491,-1.6621576 0.810543,2.9581254
@@ -398,48 +452,67 @@
            38.6147,49.50558 42.60417,68.99182 13.01009,-22.07717 49.70929,-24.11915
            51.0587,-69.15807 0.513209,-17.12945 -4.30604,-41.002575 -8.95185,-52.36728155 z"
    :bounding-box (bb/BoundingBox. 0 100 0 122)
-   :attribution {:license :public-domain
-                 :username "vairy"}})
+
+   ::name "Innsbruck"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "vairy"
+                  :creator-link "https://heraldicon.org/users/vairy"}})
 
 (def ^:private community-heater-bulgy
   {:shape "m 50,0 c 30,5 50,5 50,5 V 39 C 99.78125,75 80.940248,107.13664 50,125
            19.059752,107.13664 0,75 0,39 V 5 C 0,5 20,5 50,0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 135)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "Bulgy Heater"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-heater-rounded
   {:shape "m 50,0 c 30,0 50,5 50,5 v 34 c 1.6e-4,35.726721 -19.059752,68.13664 -50,86
            C 19.059752,107.13664 -1.624e-4,74.726721 0,39 V 5 C 0,5 20,0 50,0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 125)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "Rounded Heater"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-heater-pointed
   {:shape "m 50,0 c 30,5 50,5 50,5 V 39 C 99.78125,75 80.940248,107.13664 50,125 19.059752,107.13664 0,75 0,39
            V 5 C 0,5 20,5 50,0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 125)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "Pointed Heater"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-angular
   {:shape "M 0,5 50,0 100,5 95,85 50,125 5,85 z"
    :bounding-box (bb/BoundingBox. 0 100 0 125)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "Angular"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-scutum
   {:shape "M 0,15 v 130 c 0,10 30,15 50,15 20,0 50,-5 50,-15
            V 15 C 100,5 66.749793,0 50,0 30,0 0,5 0,15 z"
    :bounding-box (bb/BoundingBox. 0 100 0 160)
    :points {:fess (v/Vector. 50 80)}
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "Scutum"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-american
   {:shape "M 15,0 0,15 c 0,0 10,5 10,15 0,15 -10,25 -10,50 0,15 5,30
@@ -447,17 +520,23 @@
            100,55 90,45 90,30 90,20 100,15 100,15 L 85,0 C 85,0 80,5 70,5
            55,5 50,0 50,0 50,0 45,5 30,5 20,5 15,0 15,0 z"
    :bounding-box (bb/BoundingBox. 0 100 0 125)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "American"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-triangular
   {:shape "M 50,0 C 80,0 100,10 100,10 100,60 80,90 50,120 20,90
            0,60.03607 0,10 0,10 20,0 50,0 z"
    :bounding-box (bb/BoundingBox. 0 100 0 120)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "Triangular"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-german
   {:shape "M 0,20 c 7,-5 20,-5 20,7 0,13 -13,13 -20,8 0,0 7,9 5,15 -2,5
@@ -465,27 +544,36 @@
            95,50 91,40 90,35 90,30 90,28 90,8 100,0 70,0 55,5 40,10 30,5
            25,4 15,5 0,7 0,17 0,20 z"
    :bounding-box (bb/BoundingBox. 0 100 0 120)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "German"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-african
   {:shape "M 45,0 C 45,0 0,15 0,80 c 0,65 45,80 45,80 0,0 45,-15 45,-80 C
            90,15 45,0 45,0 z"
    :bounding-box (bb/BoundingBox. 0 90 0 160)
    :points {:fess (v/Vector. 45 80)}
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "African"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-italian
   {:shape "M 50,0 C 35,0 25,10 25,10 15,20 0,20 0,20 c 0,60 15,70 15,70 0,0
            15,15 15,35 0,35 20,35 20,35 0,0 20,0 20,-35 0,-20 15,-35 15,-35
            0,0 15,-10 15,-70 0,0 -15,0 -25,-10 C 75,10 65,0 50,0 z"
    :bounding-box (bb/BoundingBox. 0 100 0 160)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "Italian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-nrw
   {:shape "M 10,7 C 5,7 0,5 0,5 0,5 2,10 2,15 v 65 c 0,15 13,25 23,30 20,10
@@ -493,16 +581,21 @@
            100,5 100,5 95,7 90,7 80,7 70,0 60,0 50,0 50,5 50,5 50,5 50,0 40,0
            30,0 20,7 10,7 z"
    :bounding-box (bb/BoundingBox. 0 100 0 125)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "korfi2go"}})
+
+   ::name "NRW"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-rhombus
   {:shape "M 50,0 L 100,50 L 50,100 L 0,50 z"
    :bounding-box (bb/BoundingBox. 0 100 0 100)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "Bananasplit1611"}})
+
+   ::name "Rhombus"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Bananasplit1611"}})
 
 (def ^:private community-queen-consort-modern
   {:shape "M 50,0 c 0,0 -9.494151,12.643461 -22.473589,10.987261 0,0 -4.767819,10.401769
@@ -513,9 +606,11 @@
            85.803143,52.723453 100,17.641479 100,17.641479 77.24141,21.38903
            72.473589,10.987261 72.473589,10.987261 59.494151,12.643461 50,0 50,0 z"
    :bounding-box (bb/BoundingBox. 0 100 0 110)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "Azure"}})
+
+   ::name "Queen Consort Modern"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Azure"}})
 
 (def ^:private community-queen-consort
   {:shape "M 27.525575,85.776231 C 8.76938,89.100699 1.1734521,78.586662 1.3765338,69.266866
@@ -530,9 +625,11 @@
            54.053414,94.72803 49.999999,99.999996 45.946585,94.72803
            28.8874,96.076868 27.525575,85.776231 z"
    :bounding-box (bb/BoundingBox. 0 100 0 100)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "Azure"}})
+
+   ::name "Queen Consort"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Azure"}})
 
 (def ^:private community-octolozenge
   {:shape "M 100,50 C 90.735009,54.857758 80.576139,71.934914 83.497312,83.456671
@@ -544,17 +641,22 @@
            72.003104,19.471509 83.497312,16.54333 80.576184,28.065088
            90.735009,45.142242 100,50 z"
    :bounding-box (bb/BoundingBox. 0 100 0 100)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "Azure"}})
+
+   ::name "Octolozenge"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Azure"}})
 
 (def ^:private community-pointy-iberian
   {:shape "m 0,0 v 65 c 0,10 5,40 30,45 20,5 20,10 20,10 0,0 0,-5 20,-10 25,-5
            30,-35 30,-45 V 0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 120)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "Korfi2Go"}})
+
+   ::name "Pointy Iberian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-playful
   {:shape "m 48,0 c 39.998852,0 47,8 47,8 5.00273,10 5,17 5,27 0,35.375221
@@ -562,78 +664,82 @@
            -6.6413221e-8,40 0,30 -6.6413221e-8,20 4.9998565,10 4.9998565,10
            18.000861,0 48,0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 100)
-   :attribution {:nature :own-work
-                 :license :public-domain
-                 :username "Korfi2Go"}})
+
+   ::name "Playful"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
-    [:string.escutcheon.type/heater #'heater]
-    [:string.escutcheon.type/square-french #'square-french]
-    [:string.escutcheon.type/square-iberian #'square-iberian]
-    [:string.escutcheon.type/square-czech #'square-czech]
-    [:string.escutcheon.type/french-modern #'french-modern]
-    [:string.escutcheon.type/english #'english]
-    [:string.escutcheon.type/kite #'kite]
-    [:string.escutcheon.type/rounded-norman-late #'norman-rounded]
-    [:string.escutcheon.type/norman-late #'norman]]
+    [:heater heater]
+    [:square-french square-french]
+    [:square-iberian square-iberian]
+    [:square-czech square-czech]
+    [:french-modern french-modern]
+    [:english english]
+    [:kite kite]
+    [:norman-rounded norman-rounded]
+    [:norman norman]]
    [:string.escutcheon.group/shapes
-    [:string.escutcheon.type/flag #'flag]
-    [:string.escutcheon.type/rectangle #'rectangle]
-    [:string.escutcheon.type/lozenge #'lozenge]
-    [:string.escutcheon.type/roundel #'roundel]
-    [:string.escutcheon.type/oval #'oval]]
+    [:flag flag]
+    [:rectangle rectangle]
+    [:lozenge lozenge]
+    [:roundel roundel]
+    [:oval oval]]
    [:string.escutcheon.group/decorative
-    [:string.escutcheon.type/wedge #'wedge]
-    [:string.escutcheon.type/swiss #'swiss]
-    [:string.escutcheon.type/renaissance #'renaissance]
-    [:string.escutcheon.type/polish #'polish]
-    [:string.escutcheon.type/polish-19th-century #'polish-19th-century]]
+    [:wedge wedge]
+    [:swiss swiss]
+    [:renaissance renaissance]
+    [:polish polish]
+    [:polish-19th-century polish-19th-century]]
    [:string.escutcheon.group/community
-    ["Square Iberian Engrailed" #'community-square-iberian-engrailed]
-    ["Pointy Iberian" #'community-pointy-iberian]
-    ["Angular" #'community-angular]
-    ["Bulgy Heater" #'community-heater-bulgy]
-    ["Pointed Heater" #'community-heater-pointed]
-    ["Rounded Heater" #'community-heater-rounded]
-    ["Triangular" #'community-triangular]
-    ["French Slim" #'community-french-slim]
-    ["NRW" #'community-nrw]
-    ["American" #'community-american]
-    ["Louisiana" #'community-louisiana]
-    ["German" #'community-german]
-    ["Innsbruck" #'community-innsbruck]
-    ["Playful" #'community-playful]
-    ["Queen Consort" #'community-queen-consort]
-    ["Queen Consort Modern" #'community-queen-consort-modern]
-    ["Octolozenge" #'community-octolozenge]
-    ["Rhombus" #'community-rhombus]
-    ["Italian" #'community-italian]
-    ["African" #'community-african]
-    ["Kalasag" #'community-kalasag]
-    ["Scutum" #'community-scutum]]])
+    [:community-square-iberian-engrailed community-square-iberian-engrailed]
+    [:community-pointy-iberian community-pointy-iberian]
+    [:community-angular community-angular]
+    [:community-heater-bulgy community-heater-bulgy]
+    [:community-heater-pointed community-heater-pointed]
+    [:community-heater-rounded community-heater-rounded]
+    [:community-triangular community-triangular]
+    [:community-french-slim community-french-slim]
+    [:community-nrw community-nrw]
+    [:community-american community-american]
+    [:community-louisiana community-louisiana]
+    [:community-german community-german]
+    [:community-innsbruck community-innsbruck]
+    [:community-playful community-playful]
+    [:community-queen-consort community-queen-consort]
+    [:community-queen-consort-modern community-queen-consort-modern]
+    [:community-octolozenge community-octolozenge]
+    [:community-rhombus community-rhombus]
+    [:community-italian community-italian]
+    [:community-african community-african]
+    [:community-kalasag community-kalasag]
+    [:community-scutum community-scutum]]])
 
 (def ^:private kinds-map
   (into {}
         (for [[_ & items] escutcheons
-              [_ v] items]
-          [(-> v meta :name keyword) @v])))
+              [key value] items]
+          [key value])))
 
 (def choices
   (into [[:string.escutcheon.type/none
           [:string.escutcheon.type/none :none]]]
         (map (fn [[group-name & items]]
                (into [group-name]
-                     (map (fn [[display-name v]]
-                            [display-name (-> v meta :name keyword)]))
+                     (map (fn [[key data]]
+                            [(::name data) key]))
                      items)))
         escutcheons))
 
 (def escutcheon-map
   (options/choices->map choices))
 
-(defn attribution [escutcheon-type]
-  (:attribution (get kinds-map escutcheon-type)))
+(defn attribution [escutcheon]
+  (let [{::keys [attribution name]} (get kinds-map escutcheon)]
+    (assoc attribution :name name)))
 
 (defn data [escutcheon-type flag-width flag-height swallow-tail tail-point-height tail-tongue]
   (let [escutcheon-data (get kinds-map escutcheon-type)
