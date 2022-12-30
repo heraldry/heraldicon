@@ -78,19 +78,35 @@ any tinctures empty, then it'll default to colour in the default theme.
 
  ::name "<the name of your theme>"
  ::attribution {:license :public-domain
-                 :creator-name "<the name you want to be credited with>"
-                 :creator-link "https://<an optional link for credits>"}}
+                :creator-name "<the name you want to be credited with>"
+                :creator-link "https://<an optional link for credits>"}}
 #+end_src
 
 *** Community escutcheons
 Escutcheons are hardcoded currently, if you want me to add one, then please send
-an SVG of just the shape (see this [[./docs/escutcheon-triangular.svg][example]]) and this template for attribution:
+an SVG of just the shape (see this [[./docs/escutcheon-triangular.svg][example]]) and this template for attribution
+if you made it yourself:
 #+begin_src clojure
-{:source-license :public-domain
- :source-link "https://<the link of the source if you found it online>"
- :source-name "<the name you want to give the escutcheon>"
- :source-creator-name "<your name>"
- :source-creator-link "https://<an optional link for credits>"}
+{::name "<the name you want to give the escutcheon>"
+ ::attribution {:nature :own-work
+                :license :public-domain
+                :creator-name "<your name>"
+                :creator-link "https://<an optional link for credits>"}}
+#+end_src
+or if you based it on a file you found online (ideally under a CC license):
+#+begin_src clojure
+{::name "<the name you want to give the escutcheon>"
+ ::attribution {:nature :derivative
+                :license :cc-attribution-share-alike
+                :license-version :v4
+                :creator-name "<your name>"
+                :creator-link "https://<an optional link for credits>"
+                :source-license :cc-attribution-share-alike
+                :source-license-version :v4
+                :source-link "https://<the link of the source if you found it online>"
+                :source-name "<the name of the source file>"
+                :source-creator-name "<the source creator's name>"
+                :source-creator-link "https://<a link to the source creator>"}}
 #+end_src
 
 ** Licensing/attribution
