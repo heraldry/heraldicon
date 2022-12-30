@@ -671,6 +671,36 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-bavarian
+  {:shape "m 46,-4 h 50 v 85 c 0,25 -10,35 -35,35 -5,0 -25,0 -30,0 C 6,116 -4,106 -4,81 V -4 Z"
+   :bounding-box (bb/BoundingBox. 0 100 0 120)
+
+   ::name "Bavarian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-berlin
+  {:shape "m 0,0 v 70 c 0,10 0.375,29 25,40 20,10 25,15 25,15 0,0 5,-5 25,-15 25,-10 25,-30 25,-40 V 0 Z"
+   :bounding-box (bb/BoundingBox. 0 100 0 125)
+
+   ::name "Berlin"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-gonfalon
+  {:shape "M 100,0 H 85 V 10 H 72 V 0 H 57 V 10 H 43 V 0 H 28 V 10 H 15 V 0 H 0 v 170 l 13,10 13,-10 v -10 l 9,5 v 20 l 15,10 15,-10 v -20 l 9,-5 v 10 l 13,10 13,-10 z"
+   :bounding-box (bb/BoundingBox. 0 100 0 195)
+
+   ::name "Gonfalon"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "ashoppio"
+                  :creator-link "https://heraldicon.org/users/ashoppio"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -686,6 +716,7 @@
     [:flag flag]
     [:rectangle rectangle]
     [:lozenge lozenge]
+    [:community-rhombus community-rhombus]
     [:roundel roundel]
     [:oval oval]]
    [:string.escutcheon.group/decorative
@@ -693,30 +724,32 @@
     [:swiss swiss]
     [:renaissance renaissance]
     [:polish polish]
-    [:polish-19th-century polish-19th-century]]
+    [:polish-19th-century polish-19th-century]
+    [:community-american community-american]]
    [:string.escutcheon.group/community
     [:community-square-iberian-engrailed community-square-iberian-engrailed]
     [:community-pointy-iberian community-pointy-iberian]
+    [:community-berlin community-berlin]
     [:community-angular community-angular]
     [:community-heater-bulgy community-heater-bulgy]
     [:community-heater-pointed community-heater-pointed]
     [:community-heater-rounded community-heater-rounded]
     [:community-triangular community-triangular]
+    [:community-playful community-playful]
+    [:community-bavarian community-bavarian]
     [:community-french-slim community-french-slim]
     [:community-nrw community-nrw]
-    [:community-american community-american]
-    [:community-louisiana community-louisiana]
     [:community-german community-german]
     [:community-innsbruck community-innsbruck]
-    [:community-playful community-playful]
+    [:community-louisiana community-louisiana]
     [:community-queen-consort community-queen-consort]
     [:community-queen-consort-modern community-queen-consort-modern]
     [:community-octolozenge community-octolozenge]
-    [:community-rhombus community-rhombus]
     [:community-italian community-italian]
     [:community-african community-african]
-    [:community-kalasag community-kalasag]
-    [:community-scutum community-scutum]]])
+    [:community-scutum community-scutum]
+    [:community-gonfalon community-gonfalon]
+    [:community-kalasag community-kalasag]]])
 
 (def ^:private kinds-map
   (into {}
