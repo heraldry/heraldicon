@@ -29,7 +29,6 @@
           {:target :node-library
            :exports {:handler heraldicon.backend.api.core/handler
                      :discord_handler heraldicon.backend.discord/handler
-                     :discord_register_handler heraldicon.backend.discord/register-handler
                      :site_handler heraldicon.backend.site/handler
                      :options_handler heraldicon.backend.api.core/options-handler
                      :migration_handler heraldicon.backend.migration.core/migrate-handler
