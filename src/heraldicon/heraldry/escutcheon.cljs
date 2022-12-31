@@ -460,8 +460,8 @@
                   :creator-link "https://heraldicon.org/users/vairy"}})
 
 (def ^:private community-heater-bulgy
-  {:shape "m 50,0 c 30,5 50,5 50,5 V 39 C 99.78125,75 80.940248,107.13664 50,125
-           19.059752,107.13664 0,75 0,39 V 5 C 0,5 20,5 50,0 Z"
+  {:shape "m 50,0 c 10,0 20,0 40,5 5,30 10,52 10,70 0,30 -25,45 -50,60
+           C 25,120 0,105 0,75 0,57 5,35 10,5 30,0 40,0 50,0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 135)
 
    ::name "Bulgy Heater"
