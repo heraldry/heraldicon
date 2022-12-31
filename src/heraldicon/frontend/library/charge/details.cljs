@@ -312,7 +312,7 @@
       [interface/render-component context]]]))
 
 (defn- upload-file [form-db-path event]
-  (modal/start-loading)
+  (modal/start-loading-sync)
   (let [file (-> event .-target .-files (.item 0))]
     (when file
       (let [reader (js/FileReader.)]
