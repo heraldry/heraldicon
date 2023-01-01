@@ -97,11 +97,11 @@
      [arms-highlight path x y width height]
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
       [interface/render-component context]
-      [:text {:x (/ width 2)
-              :y (+ height 10 font-size)
-              :text-anchor "middle"
-              :style {:font-family font
-                      :font-size font-size}}
+      [:text.arms-title {:x (/ width 2)
+                         :y (+ height 10 font-size)
+                         :text-anchor "middle"
+                         :style {:font-family font
+                                 :font-size font-size}}
        arms-name]]]))
 
 (defn- render-collection [form-db-path & {:keys [allow-adding?]}]
@@ -129,11 +129,11 @@
            :viewBox (str "0 0 " roll-width " " roll-height)
            :preserveAspectRatio "xMidYMin slice"}
      [:g
-      [:text {:x (/ roll-width 2)
-              :y 50
-              :text-anchor "middle"
-              :style {:font-family font
-                      :font-size 50}}
+      [:text.collection-title {:x (/ roll-width 2)
+                               :y 50
+                               :text-anchor "middle"
+                               :style {:font-family font
+                                       :font-size 50}}
        name]]
      [:g {:transform "translate(0,60)"}
       (into [:<>]
