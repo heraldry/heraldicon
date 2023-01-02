@@ -672,7 +672,7 @@
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-bavarian
-  {:shape "m 46,-4 h 50 v 85 c 0,25 -10,35 -35,35 -5,0 -25,0 -30,0 C 6,116 -4,106 -4,81 V -4 Z"
+  {:shape "m 50,0 h 50 v 85 c 0,25 -10,35 -35,35 -5,0 -25,0 -30,0 C 10,120 0,110 0,85 V 0 Z"
    :bounding-box (bb/BoundingBox. 0 100 0 120)
 
    ::name "Bavarian"
