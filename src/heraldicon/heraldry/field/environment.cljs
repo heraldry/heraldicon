@@ -5,7 +5,8 @@
    [clojure.string :as s]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log]
+   [heraldicon.svg.shape :as shape]))
 
 (defn create
   ([bounding-box] (create bounding-box nil))
@@ -68,7 +69,7 @@
                :fly fly}})))
 
 (defn- shape? [shape]
-  (-> shape count pos?))
+  (not (s/blank? shape)))
 
 (defn- apply-offset [shape distance join]
   (when (shape? shape)

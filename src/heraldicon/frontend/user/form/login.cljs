@@ -1,20 +1,20 @@
 (ns heraldicon.frontend.user.form.login
-  (:require
-   [cljs.core.async :refer [go]]
-   [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.aws.cognito :as cognito]
-   [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.message :as message]
-   [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.repository.api :as api]
-   [heraldicon.frontend.repository.core :as repository]
-   [heraldicon.frontend.user.form.change-temporary-password :as-alias change-temporary-password]
-   [heraldicon.frontend.user.form.confirmation :as-alias confirmation]
-   [heraldicon.frontend.user.form.core :as form]
-   [heraldicon.frontend.user.form.password-reset-confirmation :as-alias password-reset-confirmation]
-   [heraldicon.frontend.user.session :as session]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+  (:require [cljs.core.async :refer [go]]
+            [clojure.string :as s]
+            [com.wsscode.async.async-cljs :refer [<?]]
+            [heraldicon.frontend.aws.cognito :as cognito]
+            [heraldicon.frontend.language :refer [tr]]
+            [heraldicon.frontend.message :as message]
+            [heraldicon.frontend.modal :as modal]
+            [heraldicon.frontend.repository.api :as api]
+            [heraldicon.frontend.repository.core :as repository]
+            [heraldicon.frontend.user.form.change-temporary-password :as-alias change-temporary-password]
+            [heraldicon.frontend.user.form.confirmation :as-alias confirmation]
+            [heraldicon.frontend.user.form.core :as form]
+            [heraldicon.frontend.user.form.password-reset-confirmation :as-alias password-reset-confirmation]
+            [heraldicon.frontend.user.session :as session]
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log]))
 
 (defn- form []
   [:form.modal-form {:on-submit (form/on-submit-fn [::submit])}
@@ -46,8 +46,8 @@
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
     (let [{:keys [username password]} (form/data-from-db db ::id)
-          username? (-> username count pos?)
-          password? (-> password count pos?)]
+          username? (not (s/blank? username))
+          password? (not (s/blank? password))]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not username?) (update :dispatch-n conj
@@ -110,7 +110,7 @@
 (rf/reg-event-fx ::forgot-password-clicked
   (fn [{:keys [db]} _]
     (let [{:keys [username]} (form/data-from-db db ::id)
-          username? (-> username count pos?)]
+          username? (not (s/blank? username))]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not username?) (update :dispatch-n conj

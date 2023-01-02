@@ -1,12 +1,12 @@
 (ns heraldicon.frontend.component.entity.collection.element
-  (:require
-   [heraldicon.context :as c]
-   [heraldicon.frontend.component.core :as component]
-   [heraldicon.frontend.element.core :as element]
-   [heraldicon.frontend.macros :as macros]
-   [heraldicon.interface :as interface]
-   [heraldicon.localization.string :as string]
-   [re-frame.core :as rf]))
+  (:require [clojure.string :as s]
+            [heraldicon.context :as c]
+            [heraldicon.frontend.component.core :as component]
+            [heraldicon.frontend.element.core :as element]
+            [heraldicon.frontend.macros :as macros]
+            [heraldicon.interface :as interface]
+            [heraldicon.localization.string :as string]
+            [re-frame.core :as rf]))
 
 (def highlighted-element-path
   [:ui :collection-library :selected-element])
@@ -39,7 +39,7 @@
   (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
     {:title (string/str-tr (inc index) ": "
-                           (if (-> name count pos?)
+                           (if (not (s/blank? name))
                              name
                              :string.miscellaneous/no-name))}))
 

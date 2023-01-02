@@ -1,14 +1,14 @@
 (ns heraldicon.interface
-  (:require
-   [heraldicon.context :as c]
-   [heraldicon.heraldry.component :as component]
-   [heraldicon.heraldry.default :as default]
-   [heraldicon.heraldry.field.environment :as environment]
-   [heraldicon.math.bounding-box :as bb]
-   [heraldicon.options :as options]
-   [heraldicon.render.options :as render.options]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log])
+  (:require [clojure.string :as s]
+            [heraldicon.context :as c]
+            [heraldicon.heraldry.component :as component]
+            [heraldicon.heraldry.default :as default]
+            [heraldicon.heraldry.field.environment :as environment]
+            [heraldicon.math.bounding-box :as bb]
+            [heraldicon.options :as options]
+            [heraldicon.render.options :as render.options]
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
 (def ^:private cache
@@ -104,7 +104,7 @@
 
 (defn blazon [context]
   (let [manual-blazon (get-sanitized-data (c/++ context :manual-blazon))]
-    (if (-> manual-blazon count pos?)
+    (if (not (s/blank? manual-blazon))
       manual-blazon
       (blazon-component context))))
 

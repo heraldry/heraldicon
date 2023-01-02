@@ -76,7 +76,7 @@
                                      (-> sanitized-tincture-data
                                          :highlight
                                          pos?)) (conj :highlight)))
-            tinctures-title (if (-> tinctures-set count pos?)
+            tinctures-title (if (not (s/blank? tinctures-set))
                               (->> tinctures-set
                                    (keep (some-fn {:shadow :string.option/shadow
                                                    :highlight :string.option/highlight}

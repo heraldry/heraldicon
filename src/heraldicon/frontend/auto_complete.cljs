@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.auto-complete
-  (:require
-   [re-frame.core :as rf]))
+  (:require [clojure.string :as s]
+            [re-frame.core :as rf]))
 
 (def ^:private db-path
   [:ui :auto-complete])
@@ -34,7 +34,7 @@
                                                       (str "px"))
                                             :top (str "calc(" (:top position) "px + 5px + 1em)")}}]
             (keep (fn [[choice hint]]
-                    (when (-> choice count pos?)
+                    (when (not (s/blank? choice))
                       [:li.auto-complete-suggestion {:on-click (fn [event]
                                                                  (doto event
                                                                    .preventDefault

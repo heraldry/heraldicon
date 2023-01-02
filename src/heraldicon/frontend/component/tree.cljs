@@ -1,16 +1,16 @@
 (ns heraldicon.frontend.component.tree
-  (:require
-   [heraldicon.context :as c]
-   [heraldicon.frontend.component.core :as frontend.component]
-   [heraldicon.frontend.component.entity.collection.element :as collection.element]
-   [heraldicon.frontend.element.hover-menu :as hover-menu]
-   [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.js-event :as js-event]
-   [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.macros :as macros]
-   [heraldicon.frontend.validation :as validation]
-   [heraldicon.heraldry.component :as component]
-   [re-frame.core :as rf]))
+  (:require [clojure.string :as s]
+            [heraldicon.context :as c]
+            [heraldicon.frontend.component.core :as frontend.component]
+            [heraldicon.frontend.component.entity.collection.element :as collection.element]
+            [heraldicon.frontend.element.hover-menu :as hover-menu]
+            [heraldicon.frontend.element.submenu :as submenu]
+            [heraldicon.frontend.js-event :as js-event]
+            [heraldicon.frontend.language :refer [tr]]
+            [heraldicon.frontend.macros :as macros]
+            [heraldicon.frontend.validation :as validation]
+            [heraldicon.heraldry.component :as component]
+            [re-frame.core :as rf]))
 
 (defn node-data [{:keys [path] :as context}]
   (merge {:open? @(rf/subscribe [::node-open? path])
@@ -28,7 +28,7 @@
                 annotation
                 validation
                 icon]} (node-data context)
-        openable? (-> nodes count pos?)
+        openable? (not (s/blank? nodes))
         title (or node-title title)
         buttons (concat buttons parent-buttons)]
     [:<>

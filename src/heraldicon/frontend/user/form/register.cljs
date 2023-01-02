@@ -1,14 +1,14 @@
 (ns heraldicon.frontend.user.form.register
-  (:require
-   [heraldicon.frontend.aws.cognito :as cognito]
-   [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.message :as message]
-   [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.user.form.confirmation :as confirmation]
-   [heraldicon.frontend.user.form.core :as form]
-   [heraldicon.frontend.user.form.login :as-alias login]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+  (:require [clojure.string :as s]
+            [heraldicon.frontend.aws.cognito :as cognito]
+            [heraldicon.frontend.language :refer [tr]]
+            [heraldicon.frontend.message :as message]
+            [heraldicon.frontend.modal :as modal]
+            [heraldicon.frontend.user.form.confirmation :as confirmation]
+            [heraldicon.frontend.user.form.core :as form]
+            [heraldicon.frontend.user.form.login :as-alias login]
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log]))
 
 (defn- form []
   [:form.modal-form {:on-submit (form/on-submit-fn [::submit])}
@@ -42,9 +42,9 @@
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
     (let [{:keys [username email password password-again]} (form/data-from-db db ::id)
-          username? (-> username count pos?)
-          email? (-> email count pos?)
-          password? (-> password count pos?)]
+          username? (not (s/blank? username))
+          email? (not (s/blank? email))
+          password? (not (s/blank? password))]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not username?) (update :dispatch-n conj

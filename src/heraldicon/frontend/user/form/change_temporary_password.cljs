@@ -1,13 +1,13 @@
 (ns heraldicon.frontend.user.form.change-temporary-password
-  (:require
-   [heraldicon.frontend.aws.cognito :as cognito]
-   [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.frontend.message :as message]
-   [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.user.form.core :as form]
-   [heraldicon.frontend.user.form.login :as login]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+  (:require [clojure.string :as s]
+            [heraldicon.frontend.aws.cognito :as cognito]
+            [heraldicon.frontend.language :refer [tr]]
+            [heraldicon.frontend.message :as message]
+            [heraldicon.frontend.modal :as modal]
+            [heraldicon.frontend.user.form.core :as form]
+            [heraldicon.frontend.user.form.login :as login]
+            [re-frame.core :as rf]
+            [taoensso.timbre :as log]))
 
 (def ^:private db-path-user
   [:ui :user-form :user :password-reset-confirmation])
@@ -45,7 +45,7 @@
   (fn [{:keys [db]} _]
     (let [{:keys [new-password new-password-again]} (form/data-from-db db ::id)
           {:keys [user user-attributes]} (get-in db db-path-user)
-          new-password? (-> new-password count pos?)]
+          new-password? (not (s/blank? new-password))]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not new-password?) (update :dispatch-n conj
