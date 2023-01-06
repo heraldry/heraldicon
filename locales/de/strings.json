@@ -988,7 +988,9 @@
       "svg-png-access-info": "SVG/PNG Links können auch für private Wappen geteilt und von jedem angesehen werden."
     },
     "charge-library": {
-      "create-and-view-charges": "Hier kannst du Wappenfiguren erstellen und ansehen, die in Wappen benutzt werden können. Deine Wappenfiguren sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich machen möchtest, dann musst du eine Lizenz angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, dann gib auch die Quelle und die Lizenz der Quelle an."
+      "create-and-view-charges": "Hier kannst du Wappenfiguren erstellen und ansehen, die in Wappen benutzt werden können. Deine Wappenfiguren sind privat, nur du kannst sie sehen und benutzen. Wenn du sie öffentlich machen möchtest, dann musst du eine Lizenz angeben. Wenn du die Arbeit von anderen benutzt oder erweitert hast, dann gib auch die Quelle und die Lizenz der Quelle an.",
+      "no-colours-selected": "Du musst mindestens eine Farbe auswählen, um seine Schattierung zu erkennen",
+      "no-shading-reference": "Du musst die Schattierung einer Farbe als 0% Reference auswählen."
     },
     "collection-library": {
       "create-and-view-collections": "Hier kannst du Sammlungen von Wappen erstellen und ansehen. Du musst deine Sammlungen explizit als öffentlich markieren und eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest."
