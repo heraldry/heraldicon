@@ -173,6 +173,6 @@
   fill: #eee;
 }
 
-.charge-colours .selected {
+.dark .charge-colours .selected {
   background-color: #444;
 }
