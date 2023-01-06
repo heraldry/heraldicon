@@ -990,8 +990,8 @@
     },
     "charge-library": {
       "create-and-view-charges": "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work.",
-      "no-colours-selected": "Select at least one colour to detect its shading.",
-      "no-shading-reference": "Set one colour's shading as the 0% shading reference."
+      "no-colours-selected": "You need to select at least one colour to detect its shading.",
+      "no-shading-reference": "You need to set one colour's shading as the 0% shading reference."
     },
     "collection-library": {
       "create-and-view-collections": "Here you can view and create collections of coats of arms. You explicitly have to save your collection as public and add a license, if you want to share the link and allow others to view it."
