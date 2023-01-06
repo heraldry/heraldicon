@@ -6,6 +6,7 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.charge.details :as charge.details]
+   [heraldicon.frontend.macros :as macros]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
    [heraldicon.util.colour :as colour]
@@ -22,13 +23,41 @@
                  (second value))))
        vec))
 
-(defn- set-colour-function [context colour selected selected-colours]
-  (let [normalized-colour (colour/normalize colour)]
-    (if (get selected-colours normalized-colour)
-      (doseq [colour (keys @(rf/subscribe [:get (:path context)]))]
-        (when (get selected-colours (colour/normalize colour))
-          (rf/dispatch [:set (c/++ context colour) selected])))
-      (rf/dispatch [:set (c/++ context colour) selected]))))
+(macros/reg-event-db ::set-colour-value
+  (fn [db [_ context colour value selected-colours]]
+    (let [normalized-colour (colour/normalize colour)]
+      (if (get selected-colours normalized-colour)
+        (loop [db db
+               [colour & rest] (keys (get-in db (:path context)))]
+          (if colour
+            (let [new-db (cond-> db
+                           (get selected-colours (colour/normalize colour))
+                           (assoc-in (:path (c/++ context colour)) value))]
+              (recur new-db rest))
+            db))
+        (assoc-in db (:path (c/++ context colour)) value)))))
+
+(defn- set-colour-qualifier [current qualifier]
+  (let [[value _] (if (vector? current)
+                    current
+                    [current nil])]
+    (if (= qualifier :none)
+      value
+      [value qualifier])))
+
+(macros/reg-event-db ::set-colour-qualifier
+  (fn [db [_ context colour qualifier selected-colours]]
+    (let [normalized-colour (colour/normalize colour)]
+      (if (get selected-colours normalized-colour)
+        (loop [db db
+               [colour & rest] (keys (get-in db (:path context)))]
+          (if colour
+            (let [new-db (cond-> db
+                           (get selected-colours (colour/normalize colour))
+                           (update-in (:path (c/++ context colour)) set-colour-qualifier qualifier))]
+              (recur new-db rest))
+            db))
+        (update-in db (:path (c/++ context colour)) set-colour-qualifier qualifier)))))
 
 (defmethod element/element :ui.element/colours [{:keys [path] :as context}]
   (let [colours (interface/get-raw-data context)
@@ -112,11 +141,12 @@
 
                           [:td {:style {:padding-left "0.5em"}}
                            (into [:select {:value (util/keyword->str value)
-                                           :on-change #(set-colour-function
-                                                        context
-                                                        colour
-                                                        (keyword (-> % .-target .-value))
-                                                        selected-colours)
+                                           :on-change #(rf/dispatch
+                                                        [::set-colour-value
+                                                         context
+                                                         colour
+                                                         (keyword (-> % .-target .-value))
+                                                         selected-colours])
                                            :style {:vertical-align "top"}}]
                                  (map (fn [[group-name & group-choices]]
                                         (if (and (-> group-choices count (= 1))
@@ -144,10 +174,12 @@
                                         :highlight
                                         :layer-separator} value)
                              (into [:select {:value qualifier
-                                             :on-change #(let [selected (keyword (-> % .-target .-value))]
-                                                           (rf/dispatch [:set (c/++ context colour) (if (= selected :none)
-                                                                                                      value
-                                                                                                      [value selected])]))
+                                             :on-change #(rf/dispatch
+                                                          [::set-colour-qualifier
+                                                           context
+                                                           colour
+                                                           (keyword (-> % .-target .-value))
+                                                           selected-colours])
                                              :style {:vertical-align "top"}}]
                                    (map (fn [[group-name & group-choices]]
                                           (if (and (-> group-choices count (= 1))
