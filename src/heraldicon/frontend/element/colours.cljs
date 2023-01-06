@@ -25,17 +25,16 @@
 
 (macros/reg-event-db ::set-colour-value
   (fn [db [_ context colour value selected-colours]]
-    (let [normalized-colour (colour/normalize colour)]
-      (if (get selected-colours normalized-colour)
-        (loop [db db
-               [colour & rest] (keys (get-in db (:path context)))]
-          (if colour
-            (let [new-db (cond-> db
-                           (get selected-colours (colour/normalize colour))
-                           (assoc-in (:path (c/++ context colour)) value))]
-              (recur new-db rest))
-            db))
-        (assoc-in db (:path (c/++ context colour)) value)))))
+    (if (get selected-colours colour)
+      (loop [db db
+             [colour & rest] (keys (get-in db (:path context)))]
+        (if colour
+          (let [new-db (cond-> db
+                         (get selected-colours colour)
+                         (assoc-in (:path (c/++ context colour)) value))]
+            (recur new-db rest))
+          db))
+      (assoc-in db (:path (c/++ context colour)) value))))
 
 (defn- set-colour-qualifier [current qualifier]
   (let [[value _] (if (vector? current)
@@ -47,17 +46,16 @@
 
 (macros/reg-event-db ::set-colour-qualifier
   (fn [db [_ context colour qualifier selected-colours]]
-    (let [normalized-colour (colour/normalize colour)]
-      (if (get selected-colours normalized-colour)
-        (loop [db db
-               [colour & rest] (keys (get-in db (:path context)))]
-          (if colour
-            (let [new-db (cond-> db
-                           (get selected-colours (colour/normalize colour))
-                           (update-in (:path (c/++ context colour)) set-colour-qualifier qualifier))]
-              (recur new-db rest))
-            db))
-        (update-in db (:path (c/++ context colour)) set-colour-qualifier qualifier)))))
+    (if (get selected-colours colour)
+      (loop [db db
+             [colour & rest] (keys (get-in db (:path context)))]
+        (if colour
+          (let [new-db (cond-> db
+                         (get selected-colours colour)
+                         (update-in (:path (c/++ context colour)) set-colour-qualifier qualifier))]
+            (recur new-db rest))
+          db))
+      (update-in db (:path (c/++ context colour)) set-colour-qualifier qualifier))))
 
 (defmethod element/element :ui.element/colours [{:keys [path] :as context}]
   (let [colours (interface/get-raw-data context)
@@ -130,7 +128,7 @@
                        (let [[value qualifier] (if (vector? value)
                                                  value
                                                  [value :none])
-                             selected? (get selected-colours (colour/normalize colour))]
+                             selected? (get selected-colours colour)]
                          ^{:key colour}
                          [:tr {:class (when selected?
                                         "selected")}
