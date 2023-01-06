@@ -7,6 +7,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.library.charge.details :as charge.details]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
    [heraldicon.util.colour :as colour]
@@ -22,6 +23,13 @@
                           (-> value second keyword?))
                  (second value))))
        vec))
+
+(defn- supports-qualifier? [value]
+  (not (#{:keep
+          :outline
+          :shadow
+          :highlight
+          :layer-separator} value)))
 
 (macros/reg-event-db ::set-colour-value
   (fn [db [_ context colour value selected-colours]]
@@ -44,18 +52,83 @@
       value
       [value qualifier])))
 
+(defn- set-shading-reference [db context reference-colour]
+  (loop [db db
+         [colour & rest] (keys (get-in db (:path context)))]
+    (if colour
+      (recur (update-in db
+                        (:path (c/++ context colour))
+                        (fn [current]
+                          (let [[value qualifier] (attributes/parse-colour-value-and-qualifier current)
+                                qualifier (cond
+                                            (= colour reference-colour) :reference
+                                            (= qualifier :reference) nil
+                                            :else qualifier)]
+                            (if qualifier
+                              [value qualifier]
+                              value))))
+             rest)
+      db)))
+
 (macros/reg-event-db ::set-colour-qualifier
-  (fn [db [_ context colour qualifier selected-colours]]
-    (if (get selected-colours colour)
-      (loop [db db
-             [colour & rest] (keys (get-in db (:path context)))]
-        (if colour
-          (let [new-db (cond-> db
-                         (get selected-colours colour)
-                         (update-in (:path (c/++ context colour)) set-colour-qualifier qualifier))]
-            (recur new-db rest))
-          db))
+  (fn [db [_ context colour qualifier]]
+    (if (= qualifier :reference)
+      (set-shading-reference db context colour)
       (update-in db (:path (c/++ context colour)) set-colour-qualifier qualifier))))
+
+(defn- closest-shadow-qualifier [value]
+  (let [multiple-of-5 (int (* (Math/ceil (/ (Math/abs value) 5)) 5))]
+    (attributes/make-qualifier-keyword :shadow multiple-of-5)))
+
+(defn- closest-highlight-qualifier [value]
+  (let [multiple-of-5 (int (* (Math/ceil (/ (Math/abs value) 5)) 5))]
+    (attributes/make-qualifier-keyword :highlight multiple-of-5)))
+
+(defn- determine-qualifier [colour reference-brightness]
+  (let [brightness (colour/brightness colour)
+        reference-brightness (max reference-brightness 10)
+        brightness (max brightness 10)
+        difference (* (- (/ brightness reference-brightness) 1) 100)]
+    (cond
+      (neg? difference) (closest-shadow-qualifier difference)
+      (pos? difference) (closest-highlight-qualifier difference)
+      :else nil)))
+
+(defn- detect-shading [db context reference-colour selected-colours]
+  (let [reference-brightness (colour/brightness reference-colour)]
+    (loop [db db
+           [colour & rest] (keys (get-in db (:path context)))]
+      (if colour
+        (let [new-db (cond-> db
+                       (get selected-colours colour)
+                       (update-in (:path (c/++ context colour))
+                                  (fn [current]
+                                    (let [[value qualifier] (attributes/parse-colour-value-and-qualifier current)]
+                                      (if (= qualifier :reference)
+                                        current
+                                        (let [new-qualifier (when (supports-qualifier? value)
+                                                              (determine-qualifier colour reference-brightness))]
+                                          (if new-qualifier
+                                            [value new-qualifier]
+                                            value)))))))]
+          (recur new-db rest))
+        db))))
+
+(macros/reg-event-db ::detect-shading
+  (fn [db [_ context selected-colours]]
+    (let [reference-colour (first (keep (fn [[k v]]
+                                          (let [[_ qualifier] (attributes/parse-colour-value-and-qualifier v)]
+                                            (when (= qualifier :reference)
+                                              k)))
+                                        (get-in db (:path context))))]
+      (cond
+        (empty? selected-colours) (do
+                                    (js/alert (tr :string.text.charge-library/no-colours-selected))
+                                    db)
+        (not reference-colour) (do
+                                 (js/alert (tr :string.text.charge-library/no-shading-reference))
+                                 db)
+        :else (detect-shading db context reference-colour selected-colours)))))
 
 (defmethod element/element :ui.element/colours [{:keys [path] :as context}]
   (let [colours (interface/get-raw-data context)
@@ -89,16 +162,24 @@
         selected-colours @(rf/subscribe [::charge.details/selected-colours])]
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
-                               :white-space "nowrap"
-                               :max-height "30em"
-                               :overflow "scroll"}}
+                               :white-space "nowrap"}}
       [:label [tr :string.render-options.mode-choice/colours]]
-      [:div.option
+      [:div {:style {:display "inlinee-block"
+                     :float "right"}}
+       [:span {:style {:margin-right "0.25em"}}
+        [tooltip/info :string.tooltip/detect-shading]]
+       [:button {:on-click #(rf/dispatch [::detect-shading context selected-colours])}
+        [tr :string.button/detect-shading]]]
+      [:br]
+      [:div.option {:style {:transform "translate(-50%, 0)"
+                            :left "50%"
+                            :max-height "30em"
+                            :overflow "scroll"}}
        (if (seq colours)
          [:table.charge-colours {:cell-spacing 0}
           [:thead
            [:tr
-            [:td {:style (dissoc header-td-style :padding-left)}
+            [:td {:style header-td-style}
              [:a {:href "#"
                   :on-click (js-event/handled #(rf/dispatch [:set [:ui :colours :sort path] :colour]))} "#"
               (when (= sort-column :colour)
@@ -115,8 +196,7 @@
               [tr :string.option/shading]
               (when (= sort-column :qualifier)
                 [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
-            [:td {:style header-td-style}
-             [tr :string.option/highlight]]]
+            [:td {:style header-td-style}]]
            [:tr {:style {:height "0.5em"}}
             [:td]
             [:td]
@@ -125,14 +205,13 @@
                           :border-left "1px solid #888"}}]]]
           (into [:tbody]
                 (map (fn [[colour value]]
-                       (let [[value qualifier] (if (vector? value)
-                                                 value
-                                                 [value :none])
+                       (let [[value qualifier] (attributes/parse-colour-value-and-qualifier value)
                              selected? (get selected-colours colour)]
                          ^{:key colour}
                          [:tr {:class (when selected?
                                         "selected")}
-                          [:td {:style {:width "1.6em"}}
+                          [:td {:style {:width "2.1em"
+                                        :padding-left "0.7em"}}
                            [:div.colour-preview.tooltip {:style {:background-color colour}}
                             [:div.bottom {:style {:top "30px"}}
                              [:h3 {:style {:text-align "center"}} colour]]]]
@@ -166,18 +245,13 @@
 
                           [:td {:style {:padding-left "0.5em"
                                         :padding-right "0.5em"}}
-                           (when-not (#{:keep
-                                        :outline
-                                        :shadow
-                                        :highlight
-                                        :layer-separator} value)
+                           (when (supports-qualifier? value)
                              (into [:select {:value qualifier
                                              :on-change #(rf/dispatch
                                                           [::set-colour-qualifier
                                                            context
                                                            colour
-                                                           (keyword (-> % .-target .-value))
-                                                           selected-colours])
+                                                           (keyword (-> % .-target .-value))])
                                              :style {:vertical-align "top"}}]
                                    (map (fn [[group-name & group-choices]]
                                           (if (and (-> group-choices count (= 1))
@@ -196,6 +270,7 @@
                                              group-choices))))
                                    attributes/tincture-modifier-qualifier-choices))]
                           [:td {:style {:padding-left "1em"
+                                        :padding-right "0.5em"
                                         :border-left "1px solid #888"}}
                            [checkbox/checkbox (c/<< context :path (conj charge.details/show-colours-path colour))
                             :option {:type :option.type/boolean}]]])))

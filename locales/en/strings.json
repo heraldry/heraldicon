@@ -251,6 +251,9 @@
         "shadow": "Shadow (alpha)",
         "tertiary": "Tertiary"
       },
+      "shading": {
+        "reference": "0% Reference"
+      },
       "armed": "Armed",
       "attired": "Attired",
       "barbed": "Barbed",
@@ -625,7 +628,8 @@
     "fixed-tincture": "Gives the charge a fixed tincture, which can't be changed by a field. Such charges are not very flexible, so use them only in exceptional cases.",
     "charge-group-preview": "Click the slots to disable them or cycle through the available charges (added below).",
     "load-field-from-arms": "Replace the field with existing coat of arms.",
-    "size-reference": "The value used as a base reference when size options are percentages, e.g. line width"
+    "size-reference": "The value used as a base reference when size options are percentages, e.g. line width",
+    "detect-shading": "If you set the 0% reference shading on one colour (preferably Primary), then you can select multiple colours and click this button, the shading levels for those colours is then set based on their brightness."
   },
   "miscellaneous": {
     "and": "and",
@@ -674,7 +678,8 @@
     "colourize": "Colourize",
     "actions": "Actions",
     "export": "Export",
-    "share": "Share"
+    "share": "Share",
+    "detect-shading": "Detect shading"
   },
   "user": {
     "message": {
@@ -984,7 +989,9 @@
       "svg-png-access-info": "However, SVG/PNG links can be viewed by anyone."
     },
     "charge-library": {
-      "create-and-view-charges": "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
+      "create-and-view-charges": "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work.",
+      "no-colours-selected": "Select at least one colour to detect its shading.",
+      "no-shading-reference": "Set one colour's shading as the 0% shading reference."
     },
     "collection-library": {
       "create-and-view-collections": "Here you can view and create collections of coats of arms. You explicitly have to save your collection as public and add a license, if you want to share the link and allow others to view it."
