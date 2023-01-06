@@ -251,6 +251,9 @@
         "shadow": "Ombra (alpha)",
         "tertiary": "Terziario"
       },
+      "shading": {
+        "reference": "0% Riferenze"
+      },
       "armed": "Armato",
       "attired": "Ramoso",
       "barbed": "Punteggiato",
@@ -624,7 +627,8 @@
     "fixed-tincture": "Fornisce alla figura una tintura fissa, che non può essere modificata da un campo. Tali figure non sono molto flessibili, quindi utilizzali sono in casi eccezionali.",
     "charge-group-preview": "Clicca sugli slot per disabilitarli o scorri attraverso le figure disponibili (aggiunte sotto).",
     "load-field-from-arms": "Rimpiazza il campo con uno stemma esistente.",
-    "size-reference": "Il valore utilizzato come riferimento di base quando le opzioni di dimensione sono percentuali, ad esempio la larghezza della linea"
+    "size-reference": "Il valore utilizzato come riferimento di base quando le opzioni di dimensione sono percentuali, ad esempio la larghezza della linea",
+    "detect-shading": "Se imposti le referenze di un ombra a 0% su un colore (preferibilmente Primario), dopodiché puoi selezionare più colori e cliccare questo bottone, i livelli di ombreggiatura per questi colori è basata sulla loro luminosità."
   },
   "miscellaneous": {
     "and": "e",
@@ -673,7 +677,8 @@
     "colourize": "Colora",
     "actions": "Azioni",
     "export": "Esporta",
-    "share": "Condividi"
+    "share": "Condividi",
+    "detect-shading": "Rileva ombra"
   },
   "user": {
     "message": {
@@ -983,7 +988,9 @@
       "svg-png-access-info": "Tuttavia, i link SVG/PNG possono essere visualizzati da chiunque."
     },
     "charge-library": {
-      "create-and-view-charges": "Qui puoi visualizzare e creare figure per essere usate negli stemmi. Le figure sono private di predefinito, quindi solo te puoi vedere e usarle. Se vuoi renderle pubbliche, devi fornire una licenza e attribuzione, se è basato su un lavoro precedente."
+      "create-and-view-charges": "Qui puoi visualizzare e creare figure per essere usate negli stemmi. Le figure sono private di predefinito, quindi solo te puoi vedere e usarle. Se vuoi renderle pubbliche, devi fornire una licenza e attribuzione, se è basato su un lavoro precedente.",
+      "no-colours-selected": "You need to select at least one colour to detect its shading.",
+      "no-shading-reference": "You need to set one colour's shading as the 0% shading reference."
     },
     "collection-library": {
       "create-and-view-collections": "Qui puoi visualizzare e creare delle collezioni di stemmi. Puoi esplicitamente salvare la tua collezione come pubblica e aggiungere una licenza, se vuoi condividere il link e consentire a chiunque di vederlo."
