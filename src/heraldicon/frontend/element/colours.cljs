@@ -206,6 +206,7 @@
           (into [:tbody]
                 (map (fn [[colour value]]
                        (let [[value qualifier] (attributes/parse-colour-value-and-qualifier value)
+                             qualifier (or qualifier :none)
                              selected? (get selected-colours colour)]
                          ^{:key colour}
                          [:tr {:class (when selected?
