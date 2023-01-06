@@ -172,3 +172,7 @@
 .dark text.arms-title, .dark text.collection-title {
   fill: #eee;
 }
+
+.charge-colours .selected {
+  background-color: #444;
+}

@@ -197,7 +197,7 @@
   (fn [_ [_ db-path data]]
     {::process-svg-file [db-path data]}))
 
-(def ^:private show-colours-path
+(def show-colours-path
   [:ui :colours :show])
 
 (macros/reg-event-db ::toggle-select-colour

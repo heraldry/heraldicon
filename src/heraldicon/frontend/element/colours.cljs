@@ -68,7 +68,7 @@
       [:label [tr :string.render-options.mode-choice/colours]]
       [:div.option
        (if (seq colours)
-         [:table {:cell-spacing 0}
+         [:table.charge-colours {:cell-spacing 0}
           [:thead
            [:tr
             [:td {:style (dissoc header-td-style :padding-left)}
@@ -100,9 +100,11 @@
                 (map (fn [[colour value]]
                        (let [[value qualifier] (if (vector? value)
                                                  value
-                                                 [value :none])]
+                                                 [value :none])
+                             selected? (get selected-colours (colour/normalize colour))]
                          ^{:key colour}
-                         [:tr
+                         [:tr {:class (when selected?
+                                        "selected")}
                           [:td {:style {:width "1.6em"}}
                            [:div.colour-preview.tooltip {:style {:background-color colour}}
                             [:div.bottom {:style {:top "30px"}}
@@ -165,7 +167,7 @@
                                    attributes/tincture-modifier-qualifier-choices))]
                           [:td {:style {:padding-left "1em"
                                         :border-left "1px solid #888"}}
-                           [checkbox/checkbox (c/<< context :path [:ui :colours :show colour])
+                           [checkbox/checkbox (c/<< context :path (conj charge.details/show-colours-path colour))
                             :option {:type :option.type/boolean}]]])))
                 (sort-by sort-fn colours))]
          [tr :string.miscellaneous/none])]]]))
