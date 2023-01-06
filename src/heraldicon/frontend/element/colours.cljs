@@ -5,8 +5,10 @@
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.library.charge.details :as charge.details]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.interface :as interface]
+   [heraldicon.util.colour :as colour]
    [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
@@ -19,6 +21,14 @@
                           (-> value second keyword?))
                  (second value))))
        vec))
+
+(defn- set-colour-function [context colour selected selected-colours]
+  (let [normalized-colour (colour/normalize colour)]
+    (if (get selected-colours normalized-colour)
+      (doseq [colour (keys @(rf/subscribe [:get (:path context)]))]
+        (when (get selected-colours (colour/normalize colour))
+          (rf/dispatch [:set (c/++ context colour) selected])))
+      (rf/dispatch [:set (c/++ context colour) selected]))))
 
 (defmethod element/element :ui.element/colours [{:keys [path] :as context}]
   (let [colours (interface/get-raw-data context)
@@ -48,7 +58,8 @@
                   ;; default to the colour itself
                   first)
         header-td-style {:border-bottom "1px solid #888"
-                         :padding-left "0.5em"}]
+                         :padding-left "0.5em"}
+        selected-colours @(rf/subscribe [::charge.details/selected-colours])]
     [:<>
      [:div.ui-setting {:style {:margin-top "10px"
                                :white-space "nowrap"
@@ -99,8 +110,11 @@
 
                           [:td {:style {:padding-left "0.5em"}}
                            (into [:select {:value (util/keyword->str value)
-                                           :on-change #(let [selected (keyword (-> % .-target .-value))]
-                                                         (rf/dispatch [:set (c/++ context colour) selected]))
+                                           :on-change #(set-colour-function
+                                                        context
+                                                        colour
+                                                        (keyword (-> % .-target .-value))
+                                                        selected-colours)
                                            :style {:vertical-align "top"}}]
                                  (map (fn [[group-name & group-choices]]
                                         (if (and (-> group-choices count (= 1))
