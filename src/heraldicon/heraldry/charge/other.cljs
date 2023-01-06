@@ -99,7 +99,11 @@
 
 (defn- highlight-colour [colour highlight-colours]
   (if (-> colour colour/normalize highlight-colours)
-    "#00ff00"
+    (let [l (-> (colour/brightness colour)
+                (/ 250)
+                (* 200)
+                (+ 50))]
+      (colour/hex-colour 0 l 0))
     (colour/desaturate colour)))
 
 (def ^:private set-layer-separator-opacity

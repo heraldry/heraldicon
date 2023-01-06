@@ -150,7 +150,7 @@
       (str "#" r r g g b b))))
 
 (defn- to-hex-2 [v]
-  (let [s (.toString v 16)]
+  (let [s (.toString (int v) 16)]
     (if (-> s count (= 1))
       (str "0" s)
       s)))
@@ -178,11 +178,15 @@
       (convert-rgb colour)
       colour))
 
-(defn darken [colour]
+(defn- to-rgb [colour]
   (let [[_ r1 r2 g1 g2 b1 b2] (normalize colour)
         r (js/parseInt (str r1 r2) 16)
         g (js/parseInt (str g1 g2) 16)
-        b (js/parseInt (str b1 b2) 16)
+        b (js/parseInt (str b1 b2) 16)]
+    [r g b]))
+
+(defn darken [colour]
+  (let [[r g b] (to-rgb colour)
         new-r (quot r 2)
         new-g (quot g 2)
         new-b (quot b 2)]
@@ -190,10 +194,7 @@
 
 (defn desaturate [colour]
   ;; this is an approximation, but it should work for the purpose
-  (let [[_ r1 r2 g1 g2 b1 b2] (normalize colour)
-        r (js/parseInt (str r1 r2) 16)
-        g (js/parseInt (str g1 g2) 16)
-        b (js/parseInt (str b1 b2) 16)
+  (let [[r g b] (to-rgb colour)
         l (int (+ (* 0.3 r)
                   (* 0.6 g)
                   (* 0.1 b)))]
@@ -205,3 +206,9 @@
 
 (defn random []
   (hex-colour (rand-int 256) (rand-int 256) (rand-int 256)))
+
+(defn brightness [colour]
+  (let [[r g b] (to-rgb colour)]
+    (+ (* 0.2126 r)
+       (* 0.7152 g)
+       (* 0.0722 b))))

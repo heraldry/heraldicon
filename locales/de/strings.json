@@ -251,6 +251,9 @@
         "shadow": "Schatten (alpha)",
         "tertiary": "Tertiär"
       },
+      "shading": {
+        "reference": "0% Referenz"
+      },
       "armed": "Bewehrt",
       "attired": "Mit Geweih",
       "barbed": "Bebutzt",
@@ -624,7 +627,8 @@
     "fixed-tincture": "Gibt der Figur eine fest gelegte Tinktur, die nicht geändert werden kann. Solche Wappenfiguren sind nicht sehr flexibel, die Option sollte also nur in Ausnahmefällen benutzt werden.",
     "charge-group-preview": "Klicke die Slots um zwischen den hinzugefügten Wappenfiguren umzuschalten oder den Slot abzuschalten.",
     "load-field-from-arms": "Ersetzt das Feld durch ein existierendes Wappen.",
-    "size-reference": "Der als Basisreferenz verwendete Wert, wenn Größen als Prozente angegeben werden, z. B. Linienbreite"
+    "size-reference": "Der als Basisreferenz verwendete Wert, wenn Größen als Prozente angegeben werden, z. B. Linienbreite",
+    "detect-shading": "Wenn du einer Farbe die 0% Reference Schattierung gibst (am besten Primär), dann kannst du mehrere Farben auswählen und diesen Button klicken, die Schattierung wird dann automatisch basierend auf der Helligkeit der Farbe gesetzt."
   },
   "miscellaneous": {
     "and": "und",
@@ -673,7 +677,8 @@
     "colourize": "Einfärben",
     "actions": "Aktionen",
     "export": "Exportieren",
-    "share": "Teilen"
+    "share": "Teilen",
+    "detect-shading": "Schattierung erkennen"
   },
   "user": {
     "message": {

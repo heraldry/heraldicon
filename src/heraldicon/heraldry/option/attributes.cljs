@@ -162,15 +162,26 @@
 
 (defn tincture-modifier-qualifier [value]
   (if (vector? value)
-    (second value)
+    (let [qualifier (second value)]
+      (if (= qualifier :reference)
+        :none
+        qualifier))
     :none))
+
+(defn parse-colour-value-and-qualifier [current]
+  (if (vector? current)
+    current
+    [current nil]))
+
+(defn make-qualifier-keyword [kind percentage]
+  (let [keyword-suffix (gstring/format "%02d" percentage)]
+    (keyword (str (name kind) "-" keyword-suffix))))
 
 (defn- make-qualifier [kind percentage]
   (let [qualifier-name (str percentage "%")
-        keyword-suffix (gstring/format "%02d" percentage)
         colour (colour/percent-grey percentage)]
     {:kind :shadow
-     :key (keyword (str (name kind) "-" keyword-suffix))
+     :key (make-qualifier-keyword kind percentage)
      :name (string/str-tr qualifier-name " " (if (= kind :shadow)
                                                :string.option/shadow
                                                :string.option/highlight))
@@ -200,6 +211,7 @@
                            (let [{:keys [name key]} (make-qualifier :highlight percentage)]
                              [name key]))))
                [[:string.charge.tincture-modifier/none :none]]
+               [[:string.charge.tincture-modifier.shading/reference :reference]]
                (map (fn [percentage]
                       (let [{:keys [name key]} (make-qualifier :shadow percentage)]
                         [name key]))
