@@ -208,6 +208,16 @@
   (fn [db _]
     (assoc-in db show-colours-path nil)))
 
+(rf/reg-sub ::selected-colours
+  (fn [_ _]
+    (rf/subscribe [:get show-colours-path]))
+
+  (fn [colours _]
+    (set (keep (fn [[k v]]
+                 (when v
+                   k))
+               colours))))
+
 (defn- generate-new-colour [colours]
   (loop [new-colour (colour/random)]
     (if (contains? colours new-colour)
@@ -295,11 +305,7 @@
         context (-> context/default
                     (c/<< :path (conj base-path :coat-of-arms))
                     (c/<< :render-options-path (conj base-path :render-options))
-                    (c/set-render-hint :ui-show-colours (->> @(rf/subscribe [:get show-colours-path])
-                                                             (keep (fn [value]
-                                                                     (when (second value)
-                                                                       (first value))))
-                                                             set)
+                    (c/set-render-hint :ui-show-colours @(rf/subscribe [::selected-colours])
                                        :charge-preview? true
                                        :preview-original? original?))
         bounding-box (interface/get-bounding-box context)]
