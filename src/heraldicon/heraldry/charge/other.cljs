@@ -14,6 +14,7 @@
    [heraldicon.render.outline :as outline]
    [heraldicon.svg.core :as svg]
    [heraldicon.svg.metadata :as svg.metadata]
+   [heraldicon.svg.path :as path]
    [heraldicon.util.colour :as colour]
    [heraldicon.util.uid :as uid]))
 
@@ -205,17 +206,29 @@
   (let [variant (interface/get-raw-data (c/++ context :variant))
         {charge-entity :entity
          entity-path :path} (when variant (load-charge-data variant))
-        charge-data (-> charge-entity :data :edn-data)
-        base-width (js/parseFloat (-> charge-data :width (or "1")))
-        base-height (js/parseFloat (-> charge-data :height (or "1")))
-        unadjusted-charge (svg/strip-clip-paths (:data charge-data))]
+        {:keys [width
+                height
+                data
+                shapes]} (-> charge-entity :data :edn-data)
+        base-width (js/parseFloat (or width "1"))
+        base-height (js/parseFloat (or height "1"))
+        base-shape (if shapes
+                     (mapv (fn [path]
+                             (-> path
+                                 first
+                                 path/parse-path
+                                 (path/translate (v/Vector. (- (/ base-width 2)) (- (/ base-height 2))))
+                                 path/to-svg))
+                           shapes)
+                     [["M" (- (/ base-width 2)) (- (/ base-height 2))
+                       "h" base-width
+                       "v" base-height
+                       "h" (- base-width)
+                       "z"]])
+        unadjusted-charge (svg/strip-clip-paths data)]
     (charge.shared/process-shape
      context
-     {:base-shape [["M" (- (/ base-width 2)) (- (/ base-height 2))
-                    "h" base-width
-                    "v" base-height
-                    "h" (- base-width)
-                    "z"]]
+     {:base-shape base-shape
       :base-width base-width
       :base-height base-height
       :other? true
