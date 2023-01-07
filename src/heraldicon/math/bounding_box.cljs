@@ -36,13 +36,15 @@
 (defn from-points ^BoundingBox [[^v/Vector v & more]]
   (reduce combine (from-vector v) (map from-vector more)))
 
+(defn from-bounds ^BoundingBox [^js/Object bounds]
+  (from-vector-and-size (v/Vector. (.-x bounds) (.-y bounds)) (.-width bounds) (.-height bounds)))
+
 (defn from-paths ^BoundingBox [paths]
-  (let [points (mapcat
-                #(-> %
-                     path/parse-path
-                     (path/points 50))
-                paths)]
-    (from-points points)))
+  (reduce combine (map #(-> %
+                            path/parse-path
+                            .-bounds
+                            from-bounds)
+                       paths)))
 
 (defn rotate ^BoundingBox [^BoundingBox {x1 :min-x x2 :max-x
                                          y1 :min-y y2 :max-y}
