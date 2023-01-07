@@ -23,6 +23,8 @@
                  :or {outline-thickness 1}}]
   (when-let [points (interface/get-raw-data (c/++ context :points))]
     (let [{:keys [select-component-fn
+                  enter-component-fn
+                  leave-component-fn
                   svg-export?]} (c/render-hints context)
           thickness (interface/get-sanitized-data (c/++ context :thickness))
           edge-angle (interface/get-sanitized-data (c/++ context :edge-angle))
@@ -38,9 +40,18 @@
                               (tincture/pick tincture-background context))
           text-colour (tincture/pick tincture-text context)]
       (into [:g (when-not svg-export?
-                  {:on-click (when select-component-fn
+                  {:on-click (when (and (not svg-export?)
+                                        select-component-fn)
                                (js-event/handled
                                 #(select-component-fn (c/-- context))))
+                   :on-mouse-enter (when (and (not svg-export?)
+                                              enter-component-fn)
+                                     (js-event/handled
+                                      #(enter-component-fn (c/-- context))))
+                   :on-mouse-leave (when (and (not svg-export?)
+                                              enter-component-fn)
+                                     (js-event/handled
+                                      #(leave-component-fn (c/-- context))))
                    :style {:cursor "pointer"}})]
             (map (fn [[idx partial-curve]]
                    (let [top-edge (path/curve-to-relative partial-curve)

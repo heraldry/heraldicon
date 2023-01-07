@@ -1,12 +1,15 @@
 (ns heraldicon.heraldry.render
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
+   [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
-   [heraldicon.render.outline :as outline]))
+   [heraldicon.render.outline :as outline]
+   [re-frame.core :as rf]))
 
 (def ^:private overlap-width
   0.1)
@@ -127,3 +130,14 @@
            :scale scale
            :reverse-transform reverse-transform
            :corner (:corner fimbriation)]]))]))
+
+(defn shape-highlight [context]
+  (when (and (not (:svg-export? (c/render-hints context)))
+             (or @(rf/subscribe [::tree/node-highlighted? (conj (:path context) :field)])
+                 @(rf/subscribe [::tree/node-highlighted? (:path context)])))
+    [:path.node-highlighted {:d (s/join " " (:shape (interface/get-render-shape context)))
+                             :style {:stroke-width 1
+                                     :stroke-linecap "round"
+                                     :stroke-linejoin "round"
+                                     :fill "none"
+                                     :pointer-events "none"}}]))

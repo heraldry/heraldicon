@@ -14,6 +14,7 @@
 
 (defn node-data [{:keys [path] :as context}]
   (merge {:open? @(rf/subscribe [::node-open? path])
+          :highlighted? @(rf/subscribe [::node-highlighted? path])
           :selected? (= path @(rf/subscribe [::active-node-path]))
           :selectable? true}
          (frontend.component/node context)))
@@ -21,6 +22,7 @@
 (defn node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
   (let [{node-title :title
          :keys [open?
+                highlighted?
                 selected?
                 selectable?
                 nodes
@@ -33,10 +35,12 @@
         buttons (concat buttons parent-buttons)]
     [:<>
      [:div.node-name.clickable.no-select
-      {:class (str (when selected?
-                     "selected ")
-                   (when-not selectable?
-                     "unselectable "))
+      {:class [(when selected?
+                 "selected")
+               (when-not selectable?
+                 "unselectable")
+               (when highlighted?
+                 "node-highlighted")]
        :on-click #(do
                     (when (or (not open?)
                               (not selectable?)
@@ -136,6 +140,9 @@
 (def ^:private active-node-path
   [:ui :component-tree :selected-node])
 
+(def ^:private highlight-node-path
+  [:ui :component-tree :highlighted-node])
+
 (def ^:private node-selected-default-path
   [:ui :component-tree :selected-node-default])
 
@@ -169,6 +176,13 @@
 
   (fn [flag [_ path]]
     (node-open? flag path)))
+
+(rf/reg-sub ::node-highlighted?
+  (fn [[_ path] _]
+    (rf/subscribe [:get (conj highlight-node-path path)]))
+
+  (fn [highlighted? _]
+    highlighted?))
 
 (rf/reg-sub ::active-node-path
   ;; TODO: subscription here is a bug
@@ -222,6 +236,14 @@
                               (not open?) drop-last)))}
         (= component-type
            :heraldicon.entity.collection/element) (assoc :dispatch [::collection.element/highlight path])))))
+
+(macros/reg-event-fx ::highlight-node
+  (fn [{:keys [db]} [_ path]]
+    {:db (assoc-in db (conj highlight-node-path path) true)}))
+
+(macros/reg-event-fx ::unhighlight-node
+  (fn [{:keys [db]} [_ path]]
+    {:db (update-in db highlight-node-path dissoc path)}))
 
 (macros/reg-event-db ::node-select-default
   (fn [db [_ path valid-prefixes]]

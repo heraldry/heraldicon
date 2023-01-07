@@ -29,12 +29,14 @@
 (defn- render-cottise [context]
   (let [{:keys [num-cottise-parts]
          :or {num-cottise-parts 1}} (interface/get-properties (c/-- context 2))]
-    (into [:g]
-          (keep (fn [part]
-                  (let [part-context (set-cottise-part context part)]
-                    (when (interface/get-properties part-context)
-                      [interface/render-component part-context]))))
-          (range num-cottise-parts))))
+    [:<>
+     (into [:g]
+           (keep (fn [part]
+                   (let [part-context (set-cottise-part context part)]
+                     (when (interface/get-properties part-context)
+                       [interface/render-component part-context]))))
+           (range num-cottise-parts))
+     [render/shape-highlight context]]))
 
 (defmethod interface/render-component :heraldry/cottise [context]
   ((get-method interface/render-component :heraldry/ordinary) context))
@@ -83,4 +85,5 @@
             {:transform transform})
        [interface/render-component (c/++ context :field)]]]
      [render/ordinary-edges context]
-     [cottising context]]))
+     [cottising context]
+     [render/shape-highlight context]]))
