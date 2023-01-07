@@ -106,7 +106,9 @@
                                          transform]}]
   (let [{:keys [charge-preview?
                 svg-export?
-                select-component-fn]} (c/render-hints context)
+                select-component-fn
+                enter-component-fn
+                leave-component-fn]} (c/render-hints context)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
         pattern-scaling (interface/get-sanitized-data (c/++ context :pattern-scaling))
         pattern-rotation (interface/get-sanitized-data (c/++ context :pattern-rotation))
@@ -152,6 +154,14 @@
                                        select-component-fn)
                               (js-event/handled
                                #(select-component-fn context)))
+                  :on-mouse-enter (when (and (not svg-export?)
+                                             enter-component-fn)
+                                    (js-event/handled
+                                     #(enter-component-fn context)))
+                  :on-mouse-leave (when (and (not svg-export?)
+                                             enter-component-fn)
+                                    (js-event/handled
+                                     #(leave-component-fn context)))
                   :style (merge
                           (when-not charge-preview?
                             {:cursor "pointer"})

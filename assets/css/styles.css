@@ -766,6 +766,11 @@ label div {
   vertical-align: middle;
 }
 
+.node-highlighted {
+  color: #e58a39 !important;
+  stroke: #e58a39 !important;
+}
+
 .clickable {
   cursor: pointer;
 }

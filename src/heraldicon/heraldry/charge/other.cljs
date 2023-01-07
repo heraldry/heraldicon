@@ -3,6 +3,7 @@
    [clojure.string :as s]
    [clojure.walk :as walk]
    [heraldicon.context :as c]
+   [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
@@ -16,7 +17,8 @@
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
    [heraldicon.util.colour :as colour]
-   [heraldicon.util.uid :as uid]))
+   [heraldicon.util.uid :as uid]
+   [re-frame.core :as rf]))
 
 (defmethod charge.interface/options :heraldry.charge.type/other [context]
   (-> (charge.shared/options context)
@@ -244,7 +246,9 @@
                 preview-original?
                 charge-preview?
                 svg-export?
-                select-component-fn]} (c/render-hints context)
+                select-component-fn
+                enter-component-fn
+                leave-component-fn]} (c/render-hints context)
         charge-data (-> charge-entity :data :edn-data)
         charge-shapes (:shapes charge-data)
         base-width (js/parseFloat (-> charge-data :width (or "1")))
@@ -368,6 +372,12 @@
                {:on-click (when select-component-fn
                             (js-event/handled
                              #(select-component-fn context)))
+                :on-mouse-enter (when enter-component-fn
+                                  (js-event/handled
+                                   #(enter-component-fn context)))
+                :on-mouse-leave (when enter-component-fn
+                                  (js-event/handled
+                                   #(leave-component-fn context)))
                 :style {:cursor "pointer"}})
           [:defs
            (when render-shadow?
@@ -525,17 +535,19 @@
                                    :fill "#ffffe8"
                                    :style {:opacity (:highlight tincture)}}]])])]]])]
 
-         ;; show charge shape for debugging
-         #_(when preview-original?
-             (let [transform (str "translate(" (v/->str anchor-point) ")"
-                                  "rotate(" angle ")"
-                                  "scale(" scale-x "," scale-y ")"
-                                  "translate(" (v/->str top-left) ")")]
-               [:g {:transform transform}
-                (for [path charge-shapes]
-                  ^{:key path}
-                  [:path {:d (s/join " " path)
-                          :style {:stroke "#f0f"
-                                  :stroke-width 0.1
-                                  :fill "none"}}])]))])
+         (when (and (not svg-export?)
+                    @(rf/subscribe [::tree/node-highlighted? (conj (:path context) :field)]))
+           (let [transform (str "translate(" (v/->str anchor-point) ")"
+                                "rotate(" angle ")"
+                                "scale(" scale-x "," scale-y ")"
+                                "translate(" (v/->str top-left) ")")]
+             [:g {:transform transform}
+              (for [path charge-shapes]
+                ^{:key path}
+                [:path.node-highlighted {:d (s/join " " path)
+                                         :style {:stroke-width (/ 1 scale-x)
+                                                 :stroke-linecap "round"
+                                                 :stroke-linejoin "round"
+                                                 :fill "none"
+                                                 :pointer-events "none"}}])]))])
       [:<>])))

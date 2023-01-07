@@ -40,4 +40,5 @@
                 :mask
                 :clip-path) (str "url(#" shape-clip-path-id ")")}
           [interface/render-component (c/++ context :field)]]
-         [render/charge-edges context]])]]))
+         [render/charge-edges context]
+         [render/shape-highlight context]])]]))

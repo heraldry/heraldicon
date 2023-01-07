@@ -153,7 +153,8 @@
               :y -500
               :width 1100
               :height 1100
-              :fill (str "url(#" pattern-id ")")}]]]))
+              :fill (str "url(#" pattern-id ")")
+              :pointer-events "none"}]]]))
 
 (defmethod interface/blazon-component :heraldry/semy [context]
   (string/str-tr "semy of " (interface/blazon
