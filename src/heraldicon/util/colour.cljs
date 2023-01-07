@@ -155,7 +155,7 @@
       (str "0" s)
       s)))
 
-(defn- hex-colour [r g b]
+(defn hex-colour [r g b]
   (str "#"
        (to-hex-2 r)
        (to-hex-2 g)
