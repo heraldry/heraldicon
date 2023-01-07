@@ -7,7 +7,9 @@
    [heraldicon.util.uid :as uid]))
 
 (defmethod interface/render-component :heraldry/charge [context]
-  (let [{:keys [svg-export?]} (c/render-hints context)
+  (let [{:keys [svg-export?
+                self-below-shield?
+                render-pass-below-shield?]} (c/render-hints context)
         shape-clip-path-id (uid/generate "clip")
         vertical-mask-clip-path-id (uid/generate "clip")
         {:keys [vertical-mask-shape
@@ -29,16 +31,18 @@
               :clip-path) (str "url(#" vertical-mask-clip-path-id ")")})
       (if other?
         [other/render context properties]
-        [:<>
-         [:defs
-          [(if svg-export?
-             :mask
-             :clipPath) {:id shape-clip-path-id}
-           [render/shape-mask context]]]
-         [render/shape-fimbriation context]
-         [:g {(if svg-export?
-                :mask
-                :clip-path) (str "url(#" shape-clip-path-id ")")}
-          [interface/render-component (c/++ context :field)]]
-         [render/charge-edges context]
-         [render/shape-highlight context]])]]))
+        (when (= (boolean self-below-shield?)
+                 (boolean render-pass-below-shield?))
+          [:<>
+           [:defs
+            [(if svg-export?
+               :mask
+               :clipPath) {:id shape-clip-path-id}
+             [render/shape-mask context]]]
+           [render/shape-fimbriation context]
+           [:g {(if svg-export?
+                  :mask
+                  :clip-path) (str "url(#" shape-clip-path-id ")")}
+            [interface/render-component (c/++ context :field)]]
+           [render/charge-edges context]
+           [render/shape-highlight context]]))]]))
