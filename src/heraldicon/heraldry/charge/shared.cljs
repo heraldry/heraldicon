@@ -273,12 +273,8 @@
                            base-shape)
         {:keys [min-x max-x
                 min-y max-y]
-         :as bounding-box} (-> (bb/from-vector-and-size
-                                base-top-left base-width base-height)
-                               (bb/rotate angle
-                                          :middle v/zero
-                                          :scale (v/Vector. scale-x scale-y))
-                               (bb/translate anchor-point))]
+         :as bounding-box} (bb/from-paths charge-shape)]
+
     (apply-vertical-mask
      context
      (merge base-properties
