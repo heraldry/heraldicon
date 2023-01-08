@@ -67,7 +67,7 @@
                        %)
                     data))))
 
-(def ^:private remove-shading
+(def remove-shading
   (memoize
    (fn remove-shading [data placeholder-colours]
      (walk/postwalk #(if (and (vector? %)
@@ -78,7 +78,7 @@
                        %)
                     data))))
 
-(def ^:private remove-layer-separator
+(def remove-layer-separator
   (memoize
    (fn remove-layer-separator [data placeholder-colours]
      (walk/postwalk #(cond

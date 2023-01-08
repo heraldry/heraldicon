@@ -31,18 +31,28 @@
           :highlight
           :layer-separator} value)))
 
-(macros/reg-event-db ::set-colour-value
-  (fn [db [_ context colour value selected-colours]]
-    (if (get selected-colours colour)
-      (loop [db db
-             [colour & rest] (keys (get-in db (:path context)))]
-        (if colour
-          (let [new-db (cond-> db
-                         (get selected-colours colour)
-                         (assoc-in (:path (c/++ context colour)) value))]
-            (recur new-db rest))
-          db))
-      (assoc-in db (:path (c/++ context colour)) value))))
+(macros/reg-event-fx ::set-colour-value
+  (fn [{:keys [db]} [_ context colour value selected-colours]]
+    (let [colours-to-change (if (get selected-colours colour)
+                              selected-colours
+                              #{colour})
+          [new-db
+           reprocess-svg?] (loop [current-db db
+                                  reprocess-svg? false
+                                  [colour & rest] (keys (get-in db (:path context)))]
+                             (if colour
+                               (if (get colours-to-change colour)
+                                 (let [old-value (get-in current-db (:path (c/++ context colour)))
+                                       new-db (assoc-in current-db (:path (c/++ context colour)) value)
+                                       new-reprocess-svg? (or reprocess-svg?
+                                                              (= old-value :layer-separator)
+                                                              (= value :layer-separator))]
+                                   (recur new-db new-reprocess-svg? rest))
+                                 (recur current-db reprocess-svg? rest))
+                               [current-db reprocess-svg?]))]
+      (cond-> {:db new-db}
+        reprocess-svg? (assoc :fx [[:dispatch [::charge.details/reprocess-svg-file
+                                               (pop (:path context))]]])))))
 
 (defn- set-colour-qualifier [current qualifier]
   (let [[value _] (if (vector? current)

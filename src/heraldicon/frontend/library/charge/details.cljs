@@ -28,6 +28,7 @@
    [heraldicon.frontend.svgo-setup]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.session :as session]
+   [heraldicon.heraldry.charge.other :as other]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
@@ -115,10 +116,18 @@
                                     keys
                                     set)))))))
 
-(defn- determine-charge-boundaries [svg-data]
+(defn- remove-invisible-colours [svg-data placeholder-colours]
+  (if (empty? placeholder-colours)
+    svg-data
+    (-> svg-data
+        (other/remove-layer-separator placeholder-colours)
+        (other/remove-shading placeholder-colours))))
+
+(defn- determine-charge-boundaries [svg-data colours]
   (go-catch
    (let [width (parse-number-with-unit (get-in svg-data [1 :width]))
          height (parse-number-with-unit (get-in svg-data [1 :height]))
+         svg-data (remove-invisible-colours svg-data colours)
          [shift-x shift-y
           width height
           from-viewbox?] (let [[viewbox-x viewbox-y
@@ -158,7 +167,7 @@
        :dispatch [::clear-selected-colours]})))
 
 (rf/reg-fx ::process-svg-file
-  (fn [[db-path raw-svg-data]]
+  (fn [[db-path raw-svg-data colours]]
     (go
       (try
         (let [parsed-svg-data (-> raw-svg-data
@@ -179,7 +188,7 @@
                                   svg/fix-attribute-and-tag-names
                                   svg/remove-namespaced-elements)
               {:keys [bounding-box
-                      shapes]} (<? (determine-charge-boundaries parsed-svg-data))
+                      shapes]} (<? (determine-charge-boundaries parsed-svg-data colours))
               {shift-x :x
                shift-y :y} (bb/top-left bounding-box)
               prepared-edn-data (-> parsed-svg-data
@@ -193,9 +202,14 @@
           (modal/stop-loading)
           (log/error e "load svg file error"))))))
 
+(rf/reg-event-fx ::reprocess-svg-file
+  (fn [{:keys [db]} [_ db-path]]
+    (modal/start-loading)
+    {::process-svg-file [db-path (get-in db (conj db-path :svg-data)) (get-in db (conj db-path :colours))]}))
+
 (macros/reg-event-fx ::load-svg-file
-  (fn [_ [_ db-path data]]
-    {::process-svg-file [db-path data]}))
+  (fn [{:keys [db]} [_ db-path data]]
+    {::process-svg-file [db-path data (get-in db (conj db-path :colours))]}))
 
 (def show-colours-path
   [:ui :colours :show])
