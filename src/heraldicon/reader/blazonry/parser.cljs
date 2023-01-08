@@ -139,7 +139,7 @@
                                               valid-charge-type? (re-matches #"^[a-zA-Z0-9-]+$" charge-type-name)]
                                           (when (and valid-charge-type?
                                                      (-> clean-name count pos?)
-                                                     (not (contains? (:bad-charge-types default) clean-name)))
+                                                     #_(not (contains? (:bad-charge-types default) clean-name)))
                                             [rule-name (set [clean-name
                                                              (pluralize clean-name)])]))))
                                 (keys charge-map))
