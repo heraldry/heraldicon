@@ -669,7 +669,7 @@ line/ENGRAILED
     | #"\bingrailed\b"
     | #"\bsloped\b"
 line/EMBATTLED
-    = #"\b([ei]m)?mbattl(ed|y)\b"
+    = #"\b([ei]m)?battl(ed|y)\b"
 line/EMBATTLED-GRADY
     = #"\b([ei]m)?battl(ed|y) grady\b"
     | #"\b([ei]m)?battl(ed|y)-+grady\b"
