@@ -22,7 +22,6 @@
                "a 6 6 0 0 1 -3,-5.196152422706632"
                "v -2"
                "z")
-   :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))
 
    ::name :string.escutcheon.type/heater
    ::attribution heraldicon-attribution})
@@ -34,7 +33,6 @@
                "c 6,-1 12,-7 12,-13"
                "V 0"
                "z")
-   :bounding-box (bb/BoundingBox. 0 (* 2 12) 0 (+ 15.7 13))
 
    ::name :string.escutcheon.type/square-french
    ::attribution heraldicon-attribution})
@@ -46,7 +44,6 @@
                "a 5 5 0 0 1 -10,0"
                "v -7"
                "z")
-   :bounding-box (bb/BoundingBox. -5 5 0 (+ 7 5))
 
    ::name :string.escutcheon.type/square-iberian
    ::attribution heraldicon-attribution})
@@ -59,7 +56,6 @@
                "l -4,35"
                "a 24.156226 24.156226 0 0 1 -48,0"
                "z")
-   :bounding-box (bb/BoundingBox. 0 56 0 56.5)
 
    ::name :string.escutcheon.type/square-czech
    ::attribution heraldicon-attribution})
@@ -77,7 +73,6 @@
                "v -15"
                "h 7"
                "z")
-   :shape-bounding-box (bb/BoundingBox. -7 7 0 17)
    :bounding-box (bb/BoundingBox. -7 7 0 16)
    :points {:fess (v/Vector. 0 8)}
 
@@ -90,7 +85,6 @@
                "L 0,13"
                "L -5,6.5"
                "z")
-   :bounding-box (bb/BoundingBox. -5 5 0 13)
    :points {:fess (v/Vector. 0 6.5)}
 
    ::name :string.escutcheon.type/lozenge
@@ -103,7 +97,6 @@
                "A 5 6.8 0 0 1 -5,6.5"
                "A 5 6.8 0 0 1 0,0"
                "z")
-   :bounding-box (bb/BoundingBox. -5 5 0 13)
    :points {:fess (v/Vector. 0 6.5)}
 
    ::name :string.escutcheon.type/oval
@@ -114,7 +107,6 @@
                "a 5 5 0 0 1 0,10"
                "a 5 5 0 0 1 0,-10"
                "z")
-   :bounding-box (bb/BoundingBox. -5 5 0 10)
    :points {:fess (v/Vector. 0 5)}
 
    ::name :string.escutcheon.type/roundel
@@ -130,7 +122,6 @@
                "v -2"
                "a 6 6 0 0 0 3,0"
                "z")
-   :bounding-box (bb/BoundingBox. -3 3 0 (+ 2 5.196152422706632))
 
    ::name :string.escutcheon.type/swiss
    ::attribution heraldicon-attribution})
@@ -150,7 +141,6 @@
                "a 1 1 0 0 0 -1,-1"
                "h 8"
                "z")
-   :shape-bounding-box (bb/BoundingBox. -8 8 0 17)
    :bounding-box (bb/BoundingBox. -7 7 0 16)
    :points {:fess (v/Vector. 0 8)}
 
@@ -173,7 +163,6 @@
            70.661111,7.3213975 65.259687,5.0000001e-7 56.597858,5.0000001e-7
            51.658715,5.0000001e-7 50.021384,2.5016165 50.021384,2.5016165
            c 0,0 -1.680096,-2.50161599999999 -6.619239,-2.501616 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 130)
    :points {:fess (v/Vector. 50 60)}
 
    ::name :string.escutcheon.type/polish
@@ -186,16 +175,11 @@
                          :source-creator-link "https://commons.wikimedia.org/wiki/User:Masur"})})
 
 (def ^:private polish-19th-century
-  {:shape "M 9.5919374,7.6420451e-7 6.7196191e-7,9.9320533
-           C 13.91585,26.565128 6.4383768,51.856026 6.0545095,76.190405
-           5.7210271,97.330758 24.557556,120 50.136084,120 75.714614,120
-           94.551144,97.330758 94.217662,76.190405 93.833795,51.856026
-           86.356321,26.565129 100.27217,9.9320533
-           L 90.680234,7.6420451e-7
-           C 81.317854,12.169833 65.149597,3.8094085 50.136084,3.8094085
-           35.122571,3.8094085 18.954318,12.169833 9.5919374,7.6420451e-7
-           z"
-   :bounding-box (bb/BoundingBox. 0 100 0 120)
+  {:shape "M -0.43409869,-10 -10,-0.06794746 C 3.8780775,16.565127 -3.5790996,41.856025
+           -3.961925,66.190404 -4.2945022,87.330757 14.490898,110 39.999999,110 65.509101,110
+           84.294503,87.330757 83.961926,66.190404 83.579101,41.856025 76.121923,16.565128
+           90,-0.06794746 L 80.434099,-10 C 71.097132,2.1698322 54.97276,-6.1905923
+           39.999999,-6.1905923 25.027237,-6.1905923 8.9028695,2.1698322 -0.43409869,-10 Z"
    :points {:fess (v/Vector. 50 60)}
 
    ::name :string.escutcheon.type/polish-19th-century
@@ -219,7 +203,6 @@
            79.92307,107.21428 56.32792,112.35743 51.60688,113.38653 51.68278,114.71878 50,117
            c -1.68279,-2.28122 -1.60689,-3.61347 -6.327939,-4.64257
            z"
-   :bounding-box (bb/BoundingBox. 0 100 0 117)
    :points {:fess (v/Vector. 50 55)}
 
    ::name :string.escutcheon.type/renaissance
@@ -233,7 +216,6 @@
 
 (def ^:private rectangle
   {:shape "M 0,0 h 10 v 12 h -10 z"
-   :bounding-box (bb/BoundingBox. 0 10 0 12)
    :points {:fess (v/Vector. 5 6)}
 
    ::name :string.escutcheon.type/rectangle
@@ -261,7 +243,6 @@
                   :bounding-box (bb/BoundingBox. 0 width 0 height)
                   :points {:fess (v/Vector. (/ width 2) (/ height 2))}}))
    :shape "M 0,0 h 5 v 3 h -5 z"
-   :bounding-box (bb/BoundingBox. 0 5 0 3)
    :points {:fess (v/Vector. 2.5 1.5)}
 
    ::name :string.escutcheon.type/flag
@@ -279,7 +260,6 @@
                  "a 8 8 0 0 1 -3," (- (- height hole-y))
                  "a " hole-x " " hole-y " 0 0 0 " hole-x "," (- hole-y)
                  "z"))
-   :bounding-box (bb/BoundingBox. -3 3 0 7.196152422706632)
 
    ::name :string.escutcheon.type/wedge
    ::attribution heraldicon-attribution})
@@ -306,7 +286,6 @@
                  "a " R " " R " 0 0 1 " (- dx) " " (- (- height half-width dy))
                  "a " half-width " " half-width " 0 0 1 " dx " " (- (+ half-width dy))
                  "z")
-     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
      :points {:fess (v/Vector. 0 half-width)}
 
      ::name :string.escutcheon.type/kite
@@ -331,7 +310,6 @@
                  "a " R " " R " 0 0 1 " (- half-width) " " height
                  "a " R " " R " 0 0 1 " (- half-width) " " (- height)
                  "z")
-     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
      :points {:fess (v/Vector. 0 half-width)}
 
      ::name :string.escutcheon.type/norman-late
@@ -355,7 +333,6 @@
                  "a " R " " R " 0 0 1 " (- half-width) " " (- (- height d))
                  "a " r " " r " 0 0 1 " half-width " " (- d)
                  "z")
-     :bounding-box (bb/BoundingBox. (- half-width) half-width 0 height)
      :points {:fess (v/Vector. 0 half-width)}
 
      ::name :string.escutcheon.type/rounded-norman-late
@@ -369,7 +346,6 @@
            a 250,250 0 0 1 -250,250
            a 250,250 0 0 1 -250,-250
            z"
-   :bounding-box (bb/BoundingBox. 0 500 0 600)
 
    ::name "Square Iberian Engrailed"
    ::attribution (merge heraldicon-attribution
@@ -395,7 +371,6 @@
            20.298782,2.22508 0,0 12.812219,-20.70476 13.294025,-21.48369
            0.481791,-0.77863 2.691407,-2.02849 4.303755,-2.02849
            1.612347,0 3.821948,1.24991 4.303754,2.02849 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 286.085)
    :points {:fess (v/Vector. 50 143.0425)}
 
    ::name "Kalasag"
@@ -416,7 +391,6 @@
            2.5987,8.72332 5.41621,11.252202 C 87.51416,108.53152
            61.422,95.64892 49.99796,110 38.5758,95.64892
            12.48364,108.53128 1.64419,87.810447 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 110)
    :points {:fess (v/Vector. 50 55)}
 
    ::name "Louisiana"
@@ -437,7 +411,6 @@
            7.0052,-11.28472 14.6354,-12.62588 27.8034,-13.02397
            13.168,-0.39808 22.2049,-10.98376 22.1006,-24.82399 C
            99.8066,86.590696 100,33.464218 100,0 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 138.279)
 
    ::name "French Slim"
    ::attribution {:nature :own-work
@@ -451,7 +424,6 @@
            c 3.7562,2.19452 2.60989,8.7176 0.99465,22.11063 -5.305876,43.99443
            38.6147,49.50558 42.60417,68.99182 13.01009,-22.07717 49.70929,-24.11915
            51.0587,-69.15807 0.513209,-17.12945 -4.30604,-41.002575 -8.95185,-52.36728155 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 122)
 
    ::name "Innsbruck"
    ::attribution {:nature :own-work
@@ -462,7 +434,6 @@
 (def ^:private community-heater-bulgy
   {:shape "m 50,0 c 10,0 20,0 40,5 5,30 10,52 10,70 0,30 -25,45 -50,60
            C 25,120 0,105 0,75 0,57 5,35 10,5 30,0 40,0 50,0 Z"
-   :bounding-box (bb/BoundingBox. 0 100 0 135)
 
    ::name "Bulgy Heater"
    ::attribution {:nature :own-work
@@ -473,7 +444,6 @@
 (def ^:private community-heater-rounded
   {:shape "m 50,0 c 30,0 50,5 50,5 v 34 c 1.6e-4,35.726721 -19.059752,68.13664 -50,86
            C 19.059752,107.13664 -1.624e-4,74.726721 0,39 V 5 C 0,5 20,0 50,0 Z"
-   :bounding-box (bb/BoundingBox. 0 100 0 125)
 
    ::name "Rounded Heater"
    ::attribution {:nature :own-work
@@ -484,7 +454,6 @@
 (def ^:private community-heater-pointed
   {:shape "m 50,0 c 30,5 50,5 50,5 V 39 C 99.78125,75 80.940248,107.13664 50,125 19.059752,107.13664 0,75 0,39
            V 5 C 0,5 20,5 50,0 Z"
-   :bounding-box (bb/BoundingBox. 0 100 0 125)
 
    ::name "Pointed Heater"
    ::attribution {:nature :own-work
@@ -494,7 +463,6 @@
 
 (def ^:private community-angular
   {:shape "M 0,5 50,0 100,5 95,85 50,125 5,85 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 125)
 
    ::name "Angular"
    ::attribution {:nature :own-work
@@ -505,7 +473,6 @@
 (def ^:private community-scutum
   {:shape "M 0,15 v 130 c 0,10 30,15 50,15 20,0 50,-5 50,-15
            V 15 C 100,5 66.749793,0 50,0 30,0 0,5 0,15 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 160)
    :points {:fess (v/Vector. 50 80)}
 
    ::name "Scutum"
@@ -519,7 +486,6 @@
            25,35 15,3 25,10 25,10 0,0 10,-7 25,-10 20,-5 25,-20 25,-35 C
            100,55 90,45 90,30 90,20 100,15 100,15 L 85,0 C 85,0 80,5 70,5
            55,5 50,0 50,0 50,0 45,5 30,5 20,5 15,0 15,0 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 125)
 
    ::name "American"
    ::attribution {:nature :own-work
@@ -530,7 +496,6 @@
 (def ^:private community-triangular
   {:shape "M 50,0 C 80,0 100,10 100,10 100,60 80,90 50,120 20,90
            0,60.03607 0,10 0,10 20,0 50,0 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 120)
 
    ::name "Triangular"
    ::attribution {:nature :own-work
@@ -543,7 +508,6 @@
            -5,15 -5,30 0,40 40,40 50,40 10,0 50,0 50,-40 C 100,65 97,55
            95,50 91,40 90,35 90,30 90,28 90,8 100,0 70,0 55,5 40,10 30,5
            25,4 15,5 0,7 0,17 0,20 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 120)
 
    ::name "German"
    ::attribution {:nature :own-work
@@ -554,7 +518,6 @@
 (def ^:private community-african
   {:shape "M 45,0 C 45,0 0,15 0,80 c 0,65 45,80 45,80 0,0 45,-15 45,-80 C
            90,15 45,0 45,0 z"
-   :bounding-box (bb/BoundingBox. 0 90 0 160)
    :points {:fess (v/Vector. 45 80)}
 
    ::name "African"
@@ -567,7 +530,6 @@
   {:shape "M 50,0 C 35,0 25,10 25,10 15,20 0,20 0,20 c 0,60 15,70 15,70 0,0
            15,15 15,35 0,35 20,35 20,35 0,0 20,0 20,-35 0,-20 15,-35 15,-35
            0,0 15,-10 15,-70 0,0 -15,0 -25,-10 C 75,10 65,0 50,0 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 160)
 
    ::name "Italian"
    ::attribution {:nature :own-work
@@ -580,7 +542,6 @@
            25,15 25,15 0,0 5,-5 25,-15 10,-5 23,-15 23,-30 V 15 C 98,10 100,5
            100,5 100,5 95,7 90,7 80,7 70,0 60,0 50,0 50,5 50,5 50,5 50,0 40,0
            30,0 20,7 10,7 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 125)
 
    ::name "NRW"
    ::attribution {:nature :own-work
@@ -590,7 +551,6 @@
 
 (def ^:private community-rhombus
   {:shape "M 50,0 L 100,50 L 50,100 L 0,50 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 100)
 
    ::name "Rhombus"
    ::attribution {:nature :own-work
@@ -605,7 +565,6 @@
            C 80.12805,90.472834 96.206541,89.077027 96.206541,89.077027
            85.803143,52.723453 100,17.641479 100,17.641479 77.24141,21.38903
            72.473589,10.987261 72.473589,10.987261 59.494151,12.643461 50,0 50,0 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 110)
 
    ::name "Queen Consort Modern"
    ::attribution {:nature :own-work
@@ -624,7 +583,6 @@
            91.230619,89.100699 72.474424,85.776231 71.1126,96.076868
            54.053414,94.72803 49.999999,99.999996 45.946585,94.72803
            28.8874,96.076868 27.525575,85.776231 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 100)
 
    ::name "Queen Consort"
    ::attribution {:nature :own-work
@@ -640,7 +598,6 @@
            45.032001,9.2878843 49.999998,0 54.967999,9.2878843
            72.003104,19.471509 83.497312,16.54333 80.576184,28.065088
            90.735009,45.142242 100,50 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 100)
 
    ::name "Octolozenge"
    ::attribution {:nature :own-work
@@ -650,7 +607,6 @@
 (def ^:private community-pointy-iberian
   {:shape "m 0,0 v 65 c 0,10 5,40 30,45 20,5 20,10 20,10 0,0 0,-5 20,-10 25,-5
            30,-35 30,-45 V 0 Z"
-   :bounding-box (bb/BoundingBox. 0 100 0 120)
 
    ::name "Pointy Iberian"
    ::attribution {:nature :own-work
@@ -663,7 +619,6 @@
            -23.877758,56.959022 -48,65 C 22.000861,90 -2.9600564e-7,74.570288
            -6.6413221e-8,40 0,30 -6.6413221e-8,20 4.9998565,10 4.9998565,10
            18.000861,0 48,0 Z"
-   :bounding-box (bb/BoundingBox. 0 100 0 100)
 
    ::name "Playful"
    ::attribution {:nature :own-work
@@ -673,7 +628,6 @@
 
 (def ^:private community-bavarian
   {:shape "m 50,0 h 50 v 85 c 0,25 -10,35 -35,35 -5,0 -25,0 -30,0 C 10,120 0,110 0,85 V 0 Z"
-   :bounding-box (bb/BoundingBox. 0 100 0 120)
 
    ::name "Bavarian"
    ::attribution {:nature :own-work
@@ -683,7 +637,6 @@
 
 (def ^:private community-berlin
   {:shape "m 0,0 v 70 c 0,10 0.375,29 25,40 20,10 25,15 25,15 0,0 5,-5 25,-15 25,-10 25,-30 25,-40 V 0 Z"
-   :bounding-box (bb/BoundingBox. 0 100 0 125)
 
    ::name "Berlin"
    ::attribution {:nature :own-work
@@ -693,7 +646,6 @@
 
 (def ^:private community-gonfalon
   {:shape "M 100,0 H 85 V 10 H 72 V 0 H 57 V 10 H 43 V 0 H 28 V 10 H 15 V 0 H 0 v 170 l 13,10 13,-10 v -10 l 9,5 v 20 l 15,10 15,-10 v -20 l 9,-5 v 10 l 13,10 13,-10 z"
-   :bounding-box (bb/BoundingBox. 0 100 0 195)
 
    ::name "Gonfalon"
    ::attribution {:nature :own-work
@@ -777,29 +729,32 @@
 (defn data [escutcheon-type flag-width flag-height swallow-tail tail-point-height tail-tongue]
   (let [escutcheon-data (get kinds-map escutcheon-type)
         {:keys [bounding-box
-                shape-bounding-box
                 points shape]} (if (= escutcheon-type :flag)
                                  ((:function escutcheon-data) flag-width flag-height swallow-tail tail-point-height tail-tongue)
-                                 escutcheon-data)]
+                                 escutcheon-data)
+        bounding-box (or bounding-box (bb/from-paths [shape]))]
     {:shape shape
-     :shape-bounding-box (or shape-bounding-box bounding-box)
+     :bounding-box bounding-box
      :environment (environment/create bounding-box points :root? true)}))
 
-(defn transform-to-width [{:keys [shape environment shape-bounding-box]} target-width]
+(defn transform-to-width [{:keys [shape environment]} target-width]
   (let [width (:width environment)
-        top-left-shape (bb/top-left shape-bounding-box)
+        original-shape-bounding-box (bb/from-paths [shape])
+        top-left-shape (bb/top-left original-shape-bounding-box)
         effective-offset (v/sub top-left-shape)
         scale-factor (/ target-width width)
         transform-bb (fn [bb]
                        (-> bb
                            (bb/translate effective-offset)
-                           (bb/scale scale-factor)))]
-    {:shape (-> shape
-                path/parse-path
-                (path/translate (:x effective-offset) (:y effective-offset))
-                (path/scale scale-factor scale-factor)
-                path/to-svg)
-     :shape-bounding-box (transform-bb shape-bounding-box)
+                           (bb/scale scale-factor)))
+        transformed-shape (-> shape
+                              path/parse-path
+                              (path/translate (:x effective-offset) (:y effective-offset))
+                              (path/scale scale-factor scale-factor)
+                              path/to-svg)
+        shape-bounding-box (bb/from-paths [transformed-shape])]
+    {:shape transformed-shape
+     :shape-bounding-box shape-bounding-box
      :environment (-> environment
                       (update :width * scale-factor)
                       (update :height * scale-factor)
