@@ -12,6 +12,7 @@
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
+   [re-frame.subs :as r-subs]
    [reagent.dom :as r]
    [taoensso.timbre :as log]
    [taoensso.tufte :as tufte]))
@@ -41,6 +42,7 @@
   (start-stats-timer print-stats))
 
 (defn ^:export init []
+  (r-subs/clear-subscription-cache!)
   (rf/dispatch-sync [::state/initialize])
   (rf/dispatch-sync [::language/load-setting])
   (session/read-from-storage)
