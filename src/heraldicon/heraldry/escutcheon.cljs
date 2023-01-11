@@ -74,7 +74,7 @@
                "h 7"
                "z")
    :bounding-box (bb/BoundingBox. -7 7 0 16)
-   :points {:fess (v/Vector. 0 8)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/french-modern
    ::attribution heraldicon-attribution})
@@ -85,7 +85,7 @@
                "L 0,13"
                "L -5,6.5"
                "z")
-   :points {:fess (v/Vector. 0 6.5)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/lozenge
    ::attribution heraldicon-attribution})
@@ -97,7 +97,7 @@
                "A 5 6.8 0 0 1 -5,6.5"
                "A 5 6.8 0 0 1 0,0"
                "z")
-   :points {:fess (v/Vector. 0 6.5)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/oval
    ::attribution heraldicon-attribution})
@@ -107,7 +107,7 @@
                "a 5 5 0 0 1 0,10"
                "a 5 5 0 0 1 0,-10"
                "z")
-   :points {:fess (v/Vector. 0 5)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/roundel
    ::attribution heraldicon-attribution})
@@ -142,7 +142,7 @@
                "h 8"
                "z")
    :bounding-box (bb/BoundingBox. -7 7 0 16)
-   :points {:fess (v/Vector. 0 8)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/english
    ::attribution heraldicon-attribution})
@@ -163,7 +163,7 @@
            70.661111,7.3213975 65.259687,5.0000001e-7 56.597858,5.0000001e-7
            51.658715,5.0000001e-7 50.021384,2.5016165 50.021384,2.5016165
            c 0,0 -1.680096,-2.50161599999999 -6.619239,-2.501616 z"
-   :points {:fess (v/Vector. 50 60)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/polish
    ::attribution (merge heraldicon-attribution
@@ -180,7 +180,7 @@
            84.294503,87.330757 83.961926,66.190404 83.579101,41.856025 76.121923,16.565128
            90,-0.06794746 L 80.434099,-10 C 71.097132,2.1698322 54.97276,-6.1905923
            39.999999,-6.1905923 25.027237,-6.1905923 8.9028695,2.1698322 -0.43409869,-10 Z"
-   :points {:fess (v/Vector. 50 60)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/polish-19th-century
    ::attribution (merge heraldicon-attribution
@@ -203,7 +203,7 @@
            79.92307,107.21428 56.32792,112.35743 51.60688,113.38653 51.68278,114.71878 50,117
            c -1.68279,-2.28122 -1.60689,-3.61347 -6.327939,-4.64257
            z"
-   :points {:fess (v/Vector. 50 55)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/renaissance
    ::attribution (merge heraldicon-attribution
@@ -216,7 +216,7 @@
 
 (def ^:private rectangle
   {:shape "M 0,0 h 10 v 12 h -10 z"
-   :points {:fess (v/Vector. 5 6)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/rectangle
    ::attribution heraldicon-attribution})
@@ -243,7 +243,7 @@
                   :bounding-box (bb/BoundingBox. 0 width 0 height)
                   :points {:fess (v/Vector. (/ width 2) (/ height 2))}}))
    :shape "M 0,0 h 5 v 3 h -5 z"
-   :points {:fess (v/Vector. 2.5 1.5)}
+   :center-fess? true
 
    ::name :string.escutcheon.type/flag
    ::attribution heraldicon-attribution})
@@ -310,7 +310,6 @@
                  "a " R " " R " 0 0 1 " (- half-width) " " height
                  "a " R " " R " 0 0 1 " (- half-width) " " (- height)
                  "z")
-     :points {:fess (v/Vector. 0 half-width)}
 
      ::name :string.escutcheon.type/norman-late
      ::attribution heraldicon-attribution}))
@@ -333,7 +332,6 @@
                  "a " R " " R " 0 0 1 " (- half-width) " " (- (- height d))
                  "a " r " " r " 0 0 1 " half-width " " (- d)
                  "z")
-     :points {:fess (v/Vector. 0 half-width)}
 
      ::name :string.escutcheon.type/rounded-norman-late
      ::attribution heraldicon-attribution}))
@@ -371,7 +369,7 @@
            20.298782,2.22508 0,0 12.812219,-20.70476 13.294025,-21.48369
            0.481791,-0.77863 2.691407,-2.02849 4.303755,-2.02849
            1.612347,0 3.821948,1.24991 4.303754,2.02849 z"
-   :points {:fess (v/Vector. 50 143.0425)}
+   :center-fess? true
 
    ::name "Kalasag"
    ::attribution {:nature :own-work
@@ -391,7 +389,7 @@
            2.5987,8.72332 5.41621,11.252202 C 87.51416,108.53152
            61.422,95.64892 49.99796,110 38.5758,95.64892
            12.48364,108.53128 1.64419,87.810447 z"
-   :points {:fess (v/Vector. 50 55)}
+   :center-fess? true
 
    ::name "Louisiana"
    ::attribution {:nature :derivative
@@ -473,7 +471,7 @@
 (def ^:private community-scutum
   {:shape "M 0,15 v 130 c 0,10 30,15 50,15 20,0 50,-5 50,-15
            V 15 C 100,5 66.749793,0 50,0 30,0 0,5 0,15 z"
-   :points {:fess (v/Vector. 50 80)}
+   :center-fess? true
 
    ::name "Scutum"
    ::attribution {:nature :own-work
@@ -518,7 +516,7 @@
 (def ^:private community-african
   {:shape "M 45,0 C 45,0 0,15 0,80 c 0,65 45,80 45,80 0,0 45,-15 45,-80 C
            90,15 45,0 45,0 z"
-   :points {:fess (v/Vector. 45 80)}
+   :center-fess? true
 
    ::name "African"
    ::attribution {:nature :own-work
@@ -729,10 +727,14 @@
 (defn data [escutcheon-type flag-width flag-height swallow-tail tail-point-height tail-tongue]
   (let [escutcheon-data (get kinds-map escutcheon-type)
         {:keys [bounding-box
-                points shape]} (if (= escutcheon-type :flag)
+                points
+                shape
+                center-fess?]} (if (= escutcheon-type :flag)
                                  ((:function escutcheon-data) flag-width flag-height swallow-tail tail-point-height tail-tongue)
                                  escutcheon-data)
-        bounding-box (or bounding-box (bb/from-paths [shape]))]
+        bounding-box (or bounding-box (bb/from-paths [shape]))
+        points (cond-> points
+                 center-fess? (assoc :fess (bb/center bounding-box)))]
     {:shape shape
      :bounding-box bounding-box
      :environment (environment/create bounding-box points :root? true)}))
