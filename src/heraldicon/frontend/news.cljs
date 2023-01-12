@@ -27,6 +27,26 @@
     [:p [tr :string.text.home/release-news-info-1]]
     [:p [tr :string.text.home/release-news-info-2]]]
 
+   [:h3 "2023-01-12 - Escutcheon adjustments"]
+   [:div.release-row
+    [:div.info
+     [:p "I just went over all the existing escutcheons and improved their shapes and how they define the field and where the fess point is."]
+     [:p "This changed some of the escutcheons quite a bit, and even tho the vast majority of existing coats of arms is not affected, "
+      [:span {:style {:color "darkred"}} [:b "some of your coats of arms may look different now if they use these escutcheons"]] "."]
+     [:p "Please have a look and maybe adjust ordinaries or charges if necessary, I apologize for the inconvenience. This kind of change should be a very rare event."]]]
+
+   [:h3 "2023-01-05 - Happy new year!"]
+   [:div.release-row
+    [:div.info
+     [:p "I hope everybody had a good start into the year."]
+     [:p "Heraldicon recently reached a few milestones, there are now:"]
+     [:ul
+      [:li "over 1,200 users"]
+      [:li "over 1,700 public arms, over 10,000 private arms"]
+      [:li "over 1,000 public charges, over 3,200 private charges"]
+      [:li "over 50 public collections, over 280 private collections"]]
+     [:p "Thanks to everybody who helped with feedback, feature requests, charge creations, especially public ones, community themes, community escutcheons, and all the other ways many of you contributed!"]]]
+
    [:h3 "2022-09-01 - New rendering engine and various improvements"]
    [:div.release-row
     [:div.info
