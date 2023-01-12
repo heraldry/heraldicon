@@ -681,6 +681,52 @@
                   :creator-name "ashoppio"
                   :creator-link "https://heraldicon.org/users/ashoppio"}})
 
+(def ^:private community-flag-standard
+  {:shape "m 0,0 v 30 h 90 c 0,0 10,0 10,-10 0,-9 -10,-10 -10,-10 z"
+   :center-fess? true
+
+   ::name "Standard"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-coffin
+  {:shape "M 28,0 C 24.95507,0.08426855 24,3 23,5 L 2,50 c -1,2 -2.08426855,4.011223
+           -2,5 0,1 0,1 1,5 l 22,95 c 1,4 2,5 4,5 h 46 c 2,0 3,-1 4,-5 L 99,60
+           c 1,-4 1,-4 1,-5 0,-1 -1,-3 -2,-5 L 77,5 C 76,3 75,0 72,0 Z"
+   :points {:fess (v/Vector. 50 55)}
+
+   ::name "Coffin Shield"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-hexagonal
+  {:shape "M 22,0 C 20,0 19,1 18,5 L 1,75 c -1,4 -1,4 -1,5 0,1 -0.02418979,1.012539 1,5
+           l 17,70 c 1,4 2,5 4,5 h 56 c 2,0 3,-1 4,-5 L 99,85 c 0.927141,-3.953924 1,-4 1,-5
+           0,-1 0,-1 -1,-5 L 82,5 C 81,1 80,0 78,0 Z"
+   :center-fess? true
+
+   ::name "Hexagonal"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-pavise
+  {:shape "M 10.529661,150 H 90 c 2,0 4.791667,0 5,-5 l 5,-120 c 0,-3 -3,-4 -5,-5 L 56,2
+           C 54,1 52,0 50,0 48,0 45.992856,1.04049 44,2 L 5,20 c -2,1 -5,2 -5,5 l 5,120
+           c 0.2083333,5 3,5 5.529661,5 z"
+   :center-fess? true
+
+   ::name "Pavise"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -728,8 +774,12 @@
     [:community-italian community-italian]
     [:community-african community-african]
     [:community-scutum community-scutum]
+    [:community-coffin community-coffin]
+    [:community-hexagonal community-hexagonal]
+    [:community-pavise community-pavise]
+    [:community-kalasag community-kalasag]
     [:community-gonfalon community-gonfalon]
-    [:community-kalasag community-kalasag]]])
+    [:community-flag-standard community-flag-standard]]])
 
 (def ^:private kinds-map
   (into {}
