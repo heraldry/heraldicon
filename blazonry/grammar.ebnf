@@ -990,6 +990,11 @@ tincture-modifier/BEAKED
 tincture-modifier/COMBED
     = #"\bcombed\b"
     | #"\bcrested\b"
+tincture-modifier/CROWNED
+    = #"\bcrowned\b"
+    | #"\bensigned\b"
+    | #"\benthronized\b"
+    | #"\bhonoured\b"
 tincture-modifier/EYED
     = #"\beyed\b"
 tincture-modifier/EYED-PEACOCK
@@ -1017,7 +1022,10 @@ tincture-modifier/ORBED
     | #"\ballum[ée](?=([ ,&]|$))"
     | #"\banim[ée](?=([ ,&]|$))"
 tincture-modifier/TAILED = #"\btailed\b"
-tincture-modifier/TOOTHED = #"\btoothed\b"
+tincture-modifier/TOOTHED
+    = #"\btoothed\b"
+    | #"\bteethed\b"
+    | #"\bdented\b"
 tincture-modifier/UNGULED
     = #"\bunguled\b"
     | #"\bcleyed\b"
@@ -1043,8 +1051,10 @@ tincture-modifier/BARBED
     | #"\bbearded\b"
 tincture-modifier/BLADED
     = #"\bbladed\b"
-    | #"\bstalked\b"
     | #"\btig[ée](?=([ ,&]|$))"
+tincture-modifier/CLASPED = #"\bclasped\b"
+tincture-modifier/BUCKLED = #"\bbuckled\b"
+tincture-modifier/ERADICATED = #"\beradicated\b"
 tincture-modifier/FRUCTED = #"\bfructed\b"
 tincture-modifier/LEAVED
     = #"\bleaved\b"
@@ -1090,7 +1100,120 @@ tincture-modifier/MASONED
     = #"\bmasoned\b"
     | #"\bmassoned\b"
 tincture-modifier/POMMELED = #"\bpommeled\b"
-tincture-modifier/STRINGED = #"\bstringed\b"
+tincture-modifier/STRINGED
+    = #"\bstringed\b"
+    | #"\bcorded\b"
+tincture-modifier/VESTED
+    = #"\bvested\b"
+    | #"\bhabited\b"
+tincture-modifier/MUZZLED
+    = #"\bmuzzled\b"
+    | #"\bemmusel[ée](?=([ ,&]|$))"
+tincture-modifier/ENFLAMED
+    = #"\benflamed\b"
+    | #"\binflamed\b"
+    | #"\bardent\b"
+    | #"\bburning\b"
+    | #"\bfired\b"
+    | #"\bflamant\b"
+tincture-modifier/HORNED
+    = #"\bhorned\b"
+    | #"\baccorn[ée](?=([ ,&]|$))"
+tincture-modifier/CABLED
+    = #"\bcabled\b"
+    | #"\bgum[èe]ne\b"
+tincture-modifier/CHAINED = #"\bchained\b"
+tincture-modifier/FLOWERED
+    = #"\bflowered\b"
+    | #"\bpetalled\b"
+    | #"\bwith +blossoms\b"
+    | #"\bblossomed\b"
+tincture-modifier/TIPPED
+    = #"\btipped\b"
+    | #"\bfinial\b"
+tincture-modifier/WREATHED
+    = #"\bwreathed\b"
+    | #"\btorqued\b"
+tincture-modifier/NIMBED
+    = #"\bnimbed\b"
+    | #"\bnimbussed\b"
+    | #"\bwith +halo\b"
+    | #"\bwith +nimbus\b"
+    | #"\bcircle +of +glory\b"
+tincture-modifier/SADDLED
+    = #"\bsaddled\b"
+    | #"\bsell[ée](?=([ ,&]|$))"
+tincture-modifier/BRIDLED
+    = #"\bbridgled\b"
+    | #"\bbarded\b"
+tincture-modifier/ARMOURED
+    = #"\barmoured\b"
+    | #"\barmored\b"
+    | #"\bbraced\b"
+    | #"\bequipped\b"
+    | #"\bharnysed\b"
+    | #"\bin +armour\b"
+    | #"\bin +armor\b"
+    | #"\bvambraced\b"
+tincture-modifier/IRRADIATED
+    = #"\birradiated\b"
+    | #"\ben +soleil\b"
+    | #"\bfulgent\b"
+    | #"\bradiated\b"
+tincture-modifier/TUSKED = #"\btusked\b"
+tincture-modifier/TASSELLED = #"\btasselled\b"
+tincture-modifier/FRINGED = #"\bfringed\b"
+tincture-modifier/IMBRUED
+    = #"\bimbrued\b"
+    | #"\bbloodstained\b"
+    | #"\bembrued\b"
+    | #"\bsangliant\b"
+    | #"\bdistilling +drops +of +blood\b"
+tincture-modifier/MARKED
+    = #"\bmarked\b"
+    | #"\bspotted\b"
+tincture-modifier/FLAGGED = #"\bflagged\b"
+tincture-modifier/PENNONED = #"\bpennoned\b"
+tincture-modifier/SHAFTED = #"\bshafted\b"
+tincture-modifier/RINGED
+    = #"\bringed\b"
+    | #"\bannelled\b"
+tincture-modifier/FEATHERED
+    = #"\bfeathered\b"
+    | #"\bflighted\b"
+    | #"\bplumed\b"
+tincture-modifier/GEMMED
+    = #"\bgemmed\b"
+    | #"\bstoned\b"
+tincture-modifier/TURNED-UP
+    = #"\bturned-up\b"
+    | #"\bturned +up\b"
+    | #"\bcuffed\b"
+tincture-modifier/BEARDED
+    = #"\bbearded\b"
+    | #"\bwhiskered\b"
+tincture-modifier/TUFTED = #"\btufted\b"
+tincture-modifier/ACORNED = #"\bacorned\b"
+tincture-modifier/LIGHTED
+    = #"\blighted\b"
+    | #"\benglant[ée](?=([ ,&]|$))"
+tincture-modifier/PORTCULLISED = #"\bportcullised\b"
+tincture-modifier/PORTED = #"\bported\b"
+tincture-modifier/GLOVED = #"\bgloved\b"
+tincture-modifier/JESSED
+    = #"\bjessed\b"
+    | #"\bvervelled\b"
+tincture-modifier/SPURRED = #"\bspurred\b"
+tincture-modifier/BELTED = #"\bbelted\b"
+tincture-modifier/SEALED = #"\bsealed\b"
+tincture-modifier/RIGGED = #"\brigged\b"
+tincture-modifier/GAUNTLETED = #"\bgauntleted\b"
+tincture-modifier/SCALED
+    = #"\bscaled\b"
+    | #"\becaill[ée](?=([ ,&]|$))"
+tincture-modifier/VEINED
+    = #"\bveined\b"
+    | #"\bnerved\b"
 
 MIRRORED = #"\bmirrored\b"
 ERASED
@@ -1835,6 +1958,7 @@ tincture-modifier-type
     | tincture-modifier/WINGED
     | tincture-modifier/BARBED
     | tincture-modifier/BLADED
+    | tincture-modifier/ERADICATED
     | tincture-modifier/FRUCTED
     | tincture-modifier/LEAVED
     | tincture-modifier/SEEDED
@@ -1852,6 +1976,49 @@ tincture-modifier-type
     | tincture-modifier/MASONED
     | tincture-modifier/POMMELED
     | tincture-modifier/STRINGED
+    | tincture-modifier/CLASPED
+    | tincture-modifier/BUCKLED
+    | tincture-modifier/VESTED
+    | tincture-modifier/MUZZLED
+    | tincture-modifier/ENFLAMED
+    | tincture-modifier/CABLED
+    | tincture-modifier/CHAINED
+    | tincture-modifier/FLOWERED
+    | tincture-modifier/HORNED
+    | tincture-modifier/TIPPED
+    | tincture-modifier/WREATHED
+    | tincture-modifier/NIMBED
+    | tincture-modifier/SADDLED
+    | tincture-modifier/BRIDLED
+    | tincture-modifier/ARMOURED
+    | tincture-modifier/IRRADIATED
+    | tincture-modifier/TUSKED
+    | tincture-modifier/TASSELLED
+    | tincture-modifier/FRINGED
+    | tincture-modifier/IMBRUED
+    | tincture-modifier/MARKED
+    | tincture-modifier/FLAGGED
+    | tincture-modifier/PENNONED
+    | tincture-modifier/SHAFTED
+    | tincture-modifier/RINGED
+    | tincture-modifier/FEATHERED
+    | tincture-modifier/GEMMED
+    | tincture-modifier/TURNED-UP
+    | tincture-modifier/BEARDED
+    | tincture-modifier/TUFTED
+    | tincture-modifier/ACORNED
+    | tincture-modifier/LIGHTED
+    | tincture-modifier/PORTCULLISED
+    | tincture-modifier/PORTED
+    | tincture-modifier/GLOVED
+    | tincture-modifier/JESSED
+    | tincture-modifier/SPURRED
+    | tincture-modifier/BELTED
+    | tincture-modifier/SEALED
+    | tincture-modifier/RIGGED
+    | tincture-modifier/GAUNTLETED
+    | tincture-modifier/SCALED
+    | tincture-modifier/VEINED
 
 tincture-modifier
     = (AND* tincture-modifier-type)+ tincture
