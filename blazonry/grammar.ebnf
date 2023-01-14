@@ -1194,9 +1194,6 @@ tincture-modifier/BEARDED
     | #"\bwhiskered\b"
 tincture-modifier/TUFTED = #"\btufted\b"
 tincture-modifier/ACORNED = #"\bacorned\b"
-tincture-modifier/LIGHTED
-    = #"\blighted\b"
-    | #"\benglant[ée](?=([ ,&]|$))"
 tincture-modifier/PORTCULLISED = #"\bportcullised\b"
 tincture-modifier/PORTED = #"\bported\b"
 tincture-modifier/GLOVED = #"\bgloved\b"
@@ -1214,6 +1211,12 @@ tincture-modifier/SCALED
 tincture-modifier/VEINED
     = #"\bveined\b"
     | #"\bnerved\b"
+tincture-modifier/WINDOWED
+    = #"\bwindowed\b"
+    | #"\bwindows\b"
+    | #"\blighted\b"
+    | #"\blitten\b"
+    | #"\bajour[ée](?=([ ,&]|$))"
 
 MIRRORED = #"\bmirrored\b"
 ERASED
@@ -2007,7 +2010,6 @@ tincture-modifier-type
     | tincture-modifier/BEARDED
     | tincture-modifier/TUFTED
     | tincture-modifier/ACORNED
-    | tincture-modifier/LIGHTED
     | tincture-modifier/PORTCULLISED
     | tincture-modifier/PORTED
     | tincture-modifier/GLOVED
@@ -2019,6 +2021,7 @@ tincture-modifier-type
     | tincture-modifier/GAUNTLETED
     | tincture-modifier/SCALED
     | tincture-modifier/VEINED
+    | tincture-modifier/WINDOWED
 
 tincture-modifier
     = (AND* tincture-modifier-type)+ tincture

@@ -128,7 +128,6 @@
     [:string.charge.tincture-modifier/trimmed :trimmed]]
    [:string.charge.tincture-modifier.group/edifice
     [:string.charge.tincture-modifier/flagged :flagged]
-    [:string.charge.tincture-modifier/lighted :lighted]
     [:string.charge.tincture-modifier/masoned :masoned]
     [:string.charge.tincture-modifier/portcullised :portcullised]
     [:string.charge.tincture-modifier/ported :ported]
