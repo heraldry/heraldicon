@@ -167,7 +167,8 @@
                                     (js-event/handled
                                      #(leave-component-fn context)))
                   :style (merge
-                          (when-not charge-preview?
+                          (when (and (not charge-preview?)
+                                     (not svg-export?))
                             {:cursor "pointer"})
                           (when animation
                             {:animation (str animation " linear 20s infinite")}))}]
