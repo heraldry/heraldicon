@@ -212,8 +212,8 @@
                                                       parent-shape :default? true)
         edge-right-end (v/last-intersection-with-shape edge-start right-point
                                                        parent-shape :default? true)
-        line-length (max (v/abs (v/sub anchor-point edge-left-end))
-                         (v/abs (v/sub anchor-point edge-right-end)))]
+        line-length (max (v/abs (v/sub edge-start edge-left-end))
+                         (v/abs (v/sub edge-start edge-right-end)))]
     (post-process/properties
      {:type field-type
       :edge-start edge-start
