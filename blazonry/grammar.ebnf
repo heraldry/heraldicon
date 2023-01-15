@@ -1016,6 +1016,7 @@ tincture-modifier/LEGGED
     | #"\bmembered\b"
 tincture-modifier/MANED
     = #"\bmaned\b"
+    | #"\bhaired\b"
     | #"\bcrined\b"
 tincture-modifier/ORBED
     = #"\borbed\b"
