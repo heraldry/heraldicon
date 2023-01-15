@@ -189,6 +189,7 @@
          [:table.charge-colours {:cell-spacing 0}
           [:thead
            [:tr
+            [:td {:style header-td-style}]
             [:td {:style header-td-style}
              [:a {:href "#"
                   :on-click (js-event/handled #(rf/dispatch [:set [:ui :colours :sort path] :colour]))} "#"
@@ -205,14 +206,12 @@
                   :on-click (js-event/handled #(rf/dispatch [:set [:ui :colours :sort path] :qualifier]))}
               [tr :string.option/shading]
               (when (= sort-column :qualifier)
-                [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]
-            [:td {:style header-td-style}]]
+                [:i.fas.fa-sort {:style {:margin-left "5px"}}])]]]
            [:tr {:style {:height "0.5em"}}
             [:td]
             [:td]
             [:td]
-            [:td {:style {:padding-left "1em"
-                          :border-left "1px solid #888"}}]]]
+            [:td]]]
           (into [:tbody]
                 (map (fn [[colour value]]
                        (let [[value qualifier] (attributes/parse-colour-value-and-qualifier value)
@@ -221,6 +220,9 @@
                          ^{:key colour}
                          [:tr {:class (when selected?
                                         "selected")}
+                          [:td {:style {:padding-left "0.5em"}}
+                           [checkbox/checkbox (c/<< context :path (conj charge.details/show-colours-path colour))
+                            :option {:type :option.type/boolean}]]
                           [:td {:style {:width "2.1em"
                                         :padding-left "0.7em"}}
                            [:div.colour-preview.tooltip
@@ -283,11 +285,6 @@
                                                     [:option {:value (util/keyword->str key)}
                                                      (tr display-name)]))
                                              group-choices))))
-                                   attributes/tincture-modifier-qualifier-choices))]
-                          [:td {:style {:padding-left "1em"
-                                        :padding-right "0.5em"
-                                        :border-left "1px solid #888"}}
-                           [checkbox/checkbox (c/<< context :path (conj charge.details/show-colours-path colour))
-                            :option {:type :option.type/boolean}]]])))
+                                   attributes/tincture-modifier-qualifier-choices))]])))
                 (sort-by sort-fn colours))]
          [tr :string.miscellaneous/none])]]]))
