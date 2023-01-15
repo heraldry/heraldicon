@@ -744,6 +744,39 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-elven
+  {:shape "M 50,0 C 45,5 25.5,15 20,25
+           14.5,35 5,50 0,55
+           5,60 15,85 20,100
+           c 5,15 25,35 30,40 5,-5 25,-25 30,-40
+           C 85,85 95,60 100,55
+             95,50 85.5,35 80,25
+             74.5,15 55,5 50,0
+           Z"
+   :points {:fess (v/Vector. 50 60)}
+
+   ::name "Elven"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-orcish
+  {:shape "m 50,0 c -10,15 -20,15 -25,10 -5,5 -10,10 -25,0
+           15,20 10,35 5,40 5,5 15,20 5,35 15,0 15,10 15,15
+           5.26516,0.44194 14.125006,0.12502 20,20 0,-5 0,-10 5,-15
+           5,5 5,10 5,15 5.874994,-19.87498 14.73484,-19.55806 20,-20
+           0,-5 0,-15 15,-15 -10,-15 0,-30 5,-35
+           -5,-5 -10,-20 5,-40 -15,10 -20,5 -25,0
+           -5,5 -15,5 -25,-10 z"
+   :bounding-box (bb/BoundingBox. 5 95 15 105)
+
+   ::name "Orcish"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -797,6 +830,8 @@
     [:community-kalasag community-kalasag]
     [:community-gonfalon community-gonfalon]
     [:community-african community-african]
+    [:community-elven community-elven]
+    [:community-orcish community-orcish]
     [:community-flag-standard community-flag-standard]]])
 
 (def ^:private kinds-map
