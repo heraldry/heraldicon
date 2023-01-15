@@ -3,11 +3,13 @@
    [clojure.string :as s]
    [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
+   [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.render.hatching :as hatching]
-   [heraldicon.render.theme :as theme]))
+   [heraldicon.render.theme :as theme]
+   [re-frame.core :as rf]))
 
 (def choices
   [[:string.tincture.group/metal
@@ -126,7 +128,9 @@
                                         (get :wappenwiki)
                                         (get effective-tincture)))
                              [nil (str "all-theme-transition-" (name effective-tincture))]
-                             [(pick tincture context) nil])]
+                             [(pick tincture context) nil])
+        selected? @(rf/subscribe [::tree/node-highlighted? (:path context)])
+        selected-pattern-id "selected-pattern"]
     (conj (if mask-id
             [:g {:mask (str "url(#" mask-id ")")}]
             [:<>])
@@ -166,4 +170,35 @@
                           (when-not charge-preview?
                             {:cursor "pointer"})
                           (when animation
-                            {:animation (str animation " linear 20s infinite")}))}])))
+                            {:animation (str animation " linear 20s infinite")}))}]
+          (when selected?
+            [:<>
+             [:defs
+              (let [size 2
+                    r 0.25]
+                [:pattern {:id selected-pattern-id
+                           :width size
+                           :height size
+                           :pattern-units "userSpaceOnUse"}
+                 [:g.area-highlighted
+                  [:circle {:cx 0
+                            :cy 0
+                            :r r}]
+                  [:circle {:cx size
+                            :cy 0
+                            :r r}]
+                  [:circle {:cx 0
+                            :cy size
+                            :r r}]
+                  [:circle {:cx size
+                            :cy size
+                            :r r}]
+                  [:circle {:cx (/ size 2)
+                            :cy (/ size 2)
+                            :r r}]]])]
+             [:rect {:x -500
+                     :y -500
+                     :width 1100
+                     :height 1100
+                     :fill (str "url(#" selected-pattern-id ")")
+                     :style {:pointer-events "none"}}]]))))

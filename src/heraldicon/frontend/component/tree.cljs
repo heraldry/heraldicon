@@ -179,10 +179,17 @@
 
 (rf/reg-sub ::node-highlighted?
   (fn [[_ path] _]
-    (rf/subscribe [:get (conj highlight-node-path path)]))
+    [(rf/subscribe [:get (conj highlight-node-path path)])
+     (rf/subscribe [:get (conj highlight-node-path (drop-last path))])
+     (rf/subscribe [:get (conj highlight-node-path (conj path :field))])])
 
-  (fn [highlighted? _]
-    highlighted?))
+  (fn [[highlighted?
+        parent-component-highlighted?
+        child-field-highlighted?] [_ path]]
+    (or highlighted?
+        (and (= (last path) :field)
+             parent-component-highlighted?)
+        child-field-highlighted?)))
 
 (rf/reg-sub ::active-node-path
   ;; TODO: subscription here is a bug
