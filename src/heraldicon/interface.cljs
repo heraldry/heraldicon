@@ -130,7 +130,8 @@
 (defmulti properties effective-component-type)
 
 (defmethod properties :default [context]
-  (log/warn :not-implemented "interface.properties" context))
+  (when context
+    (log/warn :not-implemented "interface.properties" context)))
 
 (rf/reg-sub-raw ::properties
   (fn [_app-db [_ context]]
