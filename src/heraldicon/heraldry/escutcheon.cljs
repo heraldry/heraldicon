@@ -681,6 +681,24 @@
                   :creator-name "ashoppio"
                   :creator-link "https://heraldicon.org/users/ashoppio"}})
 
+(def ^:private community-italian-2
+  {:shape "M 0,36.464087
+           c 16.666666,23.20442 23.333333,43.093922 20,66.298343
+             13.333333,0 23.333333,6.62983 29.999999,17.23757
+           C 56.666666,109.39226 70,102.76243 80,102.76243
+             76.666667,79.558009 83.333334,59.668507 100,36.464087
+           A 58,57.679558 0 0 1 76.666667,0
+           C 59.999999,1.988945 40,1.988945 23.333333,0
+             20,13.259668 16.666666,23.204419 0,36.464087
+           Z"
+   :points {:fess (v/Vector. 50 36.464087)}
+
+   ::name "Italian 2"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "ashoppio"
+                  :creator-link "https://heraldicon.org/users/ashoppio"}})
+
 (def ^:private community-flag-standard
   {:shape "m 0,0 v 30 h 90 c 0,0 10,0 10,-10 0,-9 -10,-10 -10,-10 z"
    :center-fess? true
@@ -772,6 +790,7 @@
     [:community-queen-consort-modern community-queen-consort-modern]
     [:community-octolozenge community-octolozenge]
     [:community-italian community-italian]
+    [:community-italian-2 community-italian-2]
     [:community-african community-african]
     [:community-scutum community-scutum]
     [:community-coffin community-coffin]
