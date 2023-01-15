@@ -20,10 +20,10 @@
         tr (- 1 t)
         tr2 (* tr tr)
         tr3 (* tr2 tr)]
-    (v/add (v/mul p1 tr3)
-           (v/mul cp1 3 tr2 t)
-           (v/mul cp2 3 tr t2)
-           (v/mul p2 t3))))
+    (-> (v/mul p1 tr3)
+        (v/add (v/mul cp1 (* 3 tr2 t)))
+        (v/add (v/mul cp2 (* 3 tr t2)))
+        (v/add (v/mul p2 t3)))))
 
 (defn calculate-tangent-points [[^v/Vector p1
                                  ^v/Vector cp1

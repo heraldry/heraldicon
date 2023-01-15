@@ -367,9 +367,9 @@
                                          (min (- max-y adjusted-spacing total-height))))]
                        (map (fn [{:keys [anchor-point]
                                   :as bar}]
-                              (let [anchor-point (v/add anchor-point
-                                                        (v/Vector. 0 start-y)
-                                                        (v/Vector. offset-x (- offset-y)))
+                              (let [anchor-point (-> anchor-point
+                                                     (v/add (v/Vector. 0 start-y))
+                                                     (v/add (v/Vector. offset-x (- offset-y))))
                                     arm-point (-> (v/Vector. 0 1)
                                                   (v/rotate arm-angle)
                                                   (v/add anchor-point))]

@@ -96,10 +96,10 @@
                    (* middle-y stretch-y))]
     {:type :heraldry/semy
      :rectangular? rectangular?
-     :top-left (v/add top-left
-                      (v/dot (v/Vector. offset-x offset-y)
-                             (v/Vector. part-width part-height))
-                      (v/Vector. shift-x shift-y))
+     :top-left (-> top-left
+                   (v/add (v/dot (v/Vector. offset-x offset-y)
+                                 (v/Vector. part-width part-height)))
+                   (v/add (v/Vector. shift-x shift-y)))
      :part-width part-width
      :part-height part-height
      :rotation rotation
