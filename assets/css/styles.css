@@ -771,6 +771,10 @@ label div {
   stroke: #e58a39 !important;
 }
 
+.area-highlighted {
+  fill: #e58a39 !important;
+}
+
 .clickable {
   cursor: pointer;
 }
