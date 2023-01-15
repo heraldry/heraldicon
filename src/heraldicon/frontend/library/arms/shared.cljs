@@ -17,6 +17,6 @@
     (-> context/default
         (c/<< :path form-db-path)
         (c/<< :render-options-path (conj form-db-path :data :achievement :render-options))
-        (c/set-render-hint :select-component-fn #(rf/dispatch [::tree/select-node (:path %)])
+        (c/set-render-hint :select-component-fn #(rf/dispatch [::tree/select-node-from-preview (:path %)])
                            :enter-component-fn #(rf/dispatch [::tree/highlight-node (:path %)])
                            :leave-component-fn #(rf/dispatch [::tree/unhighlight-node (:path %)])))))
