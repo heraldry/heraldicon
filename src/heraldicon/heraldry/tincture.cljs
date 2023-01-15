@@ -135,9 +135,12 @@
     (conj (if mask-id
             [:g {:mask (str "url(#" mask-id ")")}]
             [:<>])
-          [:rect {:x (if svg-export?
-                       -1000
-                       -500)
+          [:rect {:x (+ (if svg-export?
+                          -1000
+                          -500)
+                        ;; this is a hack that seems to force Firefox to re-render after a mouse leave event,
+                        ;; otherwise it keeps the highlight effect in many situations, it's not quite clear why
+                        (when selected? 1))
                   :y (if svg-export?
                        -1000
                        -500)
@@ -173,7 +176,7 @@
                             {:cursor "pointer"})
                           (when animation
                             {:animation (str animation " linear 20s infinite")}))}]
-          (if selected?
+          (when selected?
             [:<>
              [:defs
               (let [size 2
@@ -198,13 +201,9 @@
                   [:circle {:cx (/ size 2)
                             :cy (/ size 2)
                             :r r}]]])]
-             [:svg:rect {:x -500
-                         :y -500
-                         :width 1100
-                         :height 1100
-                         :fill (str "url(#" selected-pattern-id ")")
-                         :style {:pointer-events "none"}}]]
-            (when (not svg-export?)
-              ;; this is a hack that seems to force Firefox to re-render after a mouse leave event,
-              ;; otherwise it keeps the highlight effect in many situations, it's not quite clear why
-              [:<> [:text {:style {:color "transparent"}} "."]])))))
+             [:rect {:x -500
+                     :y -500
+                     :width 1100
+                     :height 1100
+                     :fill (str "url(#" selected-pattern-id ")")
+                     :style {:pointer-events "none"}}]]))))
