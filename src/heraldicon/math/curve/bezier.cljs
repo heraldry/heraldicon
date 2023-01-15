@@ -82,7 +82,7 @@
                                   u
                                   (+ (* (- (* h (/ 2 3)) f) u)
                                      (* (- e (* g (/ 2 3))) v))
-                                  (+ d (- f) + (/ h 3)))]
+                                  (+ d (- f) (/ h 3)))]
               (when (or (and (not (math/close-to-zero? determinant3))
                              (not (math/close-to-zero? bottom-term)))
                         (and (math/close-to-zero? determinant4)
