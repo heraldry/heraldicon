@@ -129,7 +129,8 @@
                                         (get effective-tincture)))
                              [nil (str "all-theme-transition-" (name effective-tincture))]
                              [(pick tincture context) nil])
-        selected? @(rf/subscribe [::tree/node-highlighted? (:path context)])
+        selected? (and (not svg-export?)
+                       @(rf/subscribe [::tree/node-highlighted? (:path context)]))
         selected-pattern-id "selected-pattern"]
     (conj (if mask-id
             [:g {:mask (str "url(#" mask-id ")")}]
