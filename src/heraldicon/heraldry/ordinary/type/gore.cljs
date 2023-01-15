@@ -118,12 +118,8 @@
         [intersection-left intersection-right] (if sinister?
                                                  [intersection-right intersection-left]
                                                  [intersection-left intersection-right])
-        line-length (apply max (map (fn [v]
-                                      (-> v
-                                          (v/sub v anchor-point)
-                                          v/abs))
-                                    [intersection-left
-                                     intersection-right]))]
+        line-length (max (v/abs (v/sub intersection-left anchor.point))
+                         (v/abs (v/sub intersection-right anchor-point)))]
     (post-process/properties
      {:type ordinary-type
       :edge [intersection-left anchor-point intersection-right]
