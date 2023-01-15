@@ -225,12 +225,8 @@
         intersection-right (v/last-intersection-with-shape point right-point parent-shape :default? true)
         joint-angle (angle/normalize (v/angle-between-vectors (v/sub intersection-left point)
                                                               (v/sub intersection-right point)))
-        line-length (apply max (map (fn [v]
-                                      (-> v
-                                          (v/sub v point)
-                                          v/abs))
-                                    [intersection-left
-                                     intersection-right]))]
+        line-length (max (v/abs (v/sub intersection-left point))
+                         (v/abs (v/sub intersection-right point)))]
     (post-process/properties
      {:type ordinary-type
       :upper [intersection-left point intersection-right]
