@@ -225,9 +225,21 @@
       (close-node db path)
       (open-node db path))))
 
+(defn- determine-component-path [db path]
+  (let [path (if (get-in db (conj path :field))
+               (conj path :field)
+               path)
+        ;; if this is the field of a subfield, then use the path of the subfield,
+        ;; because that's the node displayed in the tree
+        path (if (= (first (take-last 3 path)) :fields)
+               (vec (drop-last path))
+               path)]
+    path))
+
 (macros/reg-event-fx ::select-node
   (fn [{:keys [db]} [_ path open?]]
-    (let [raw-type (get-in db (conj path :type))
+    (let [path (determine-component-path db path)
+          raw-type (get-in db (conj path :type))
           component-type (component/effective-type raw-type)]
       (cond->
         {:db (-> db
@@ -239,11 +251,13 @@
 
 (macros/reg-event-fx ::highlight-node
   (fn [{:keys [db]} [_ path]]
-    {:db (assoc-in db (conj highlight-node-path path) true)}))
+    (let [path (determine-component-path db path)]
+      {:db (assoc-in db (conj highlight-node-path path) true)})))
 
 (macros/reg-event-fx ::unhighlight-node
   (fn [{:keys [db]} [_ path]]
-    {:db (update-in db highlight-node-path dissoc path)}))
+    (let [path (determine-component-path db path)]
+      {:db (update-in db highlight-node-path dissoc path)})))
 
 (macros/reg-event-db ::node-select-default
   (fn [db [_ path valid-prefixes]]
