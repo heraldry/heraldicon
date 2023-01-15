@@ -59,7 +59,7 @@
 
 (defn avg
   (^Vector [^Vector v1 ^Vector v2] (div (add v1 v2) 2))
-  (^Vector [^Vector v1 ^Vector v2 & more] (div (apply add v1 v2 more) (+ (count more) 2))))
+  (^Vector [^Vector v1 ^Vector v2 & more] (div (reduce add (add v1 v2) more) (+ (count more) 2))))
 
 (defn rotate ^Vector [{:keys [x y]} ^js/Number angle]
   (let [rad (angle/to-rad angle)]
