@@ -223,7 +223,11 @@
                                         "selected")}
                           [:td {:style {:width "2.1em"
                                         :padding-left "0.7em"}}
-                           [:div.colour-preview.tooltip {:style {:background-color colour}}
+                           [:div.colour-preview.tooltip
+                            {:on-click (js-event/handled
+                                        #(rf/dispatch [::charge.details/toggle-select-colour colour]))
+                             :style {:background-color colour
+                                     :cursor "pointer"}}
                             [:div.bottom {:style {:top "30px"}}
                              [:h3 {:style {:text-align "center"}} colour]]]]
 
