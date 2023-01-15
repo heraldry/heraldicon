@@ -98,12 +98,15 @@ check-debug-print-backend:
 	! rg println src backend/src --glob=!src/**/*test*.cljs --glob=!backend/src/heraldicon/manage.cljs
 	! rg '\(js/console' backend/src
 
+check-linting:
+	clj-kondo --lint src test
+
 check-dirty-backend:
 	cd backend && git diff --quiet || (echo "backend is dirty" && false)
 
-check-before-deploy-frontend: check-debug-print-frontend check-dirty-frontend
+check-before-deploy-frontend: check-linting check-debug-print-frontend check-dirty-frontend
 
-check-before-deploy-backend: check-debug-print-frontend check-dirty-frontend check-debug-print-backend check-dirty-backend
+check-before-deploy-backend: check-linting check-debug-print-frontend check-dirty-frontend check-debug-print-backend check-dirty-backend
 
 check-outdated:
 	clojure -Sdeps '{:deps {olical/depot {:mvn/version "RELEASE"}}}' -M -m depot.outdated.main
