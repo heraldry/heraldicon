@@ -416,7 +416,9 @@
         filter-ownership (if-not hide-ownership-filter?
                            @(rf/subscribe [:get filter-ownership-path])
                            ownership-default)
+        logged-in? (:username session)
         consider-filter-access? (and (not hide-access-filter?)
+                                     logged-in?
                                      (or (= filter-ownership :mine)
                                          (entity.user/admin? session)))
         stored-selected-item @(rf/subscribe [:get selected-item-path])]
@@ -438,15 +440,15 @@
       [list-mode-choice filter-list-mode-path default-list-mode]
       [results-count id session items-subscription filter-keys options]]
      [:div.filter-component-filters
-      (when-not hide-ownership-filter?
+      (when (and (not hide-ownership-filter?)
+                 logged-in?)
         [radio-select/radio-select {:path filter-ownership-path}
          :option {:type :option.type/choice
                   :default ownership-default
-                  :choices (concat [[:string.option.ownership-filter-choice/all :all]
+                  :choices (cond-> [[:string.option.ownership-filter-choice/all :all]
                                     [:string.option.ownership-filter-choice/mine :mine]]
-                                   (when (#{:charge :ribbon} kind)
-                                     [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
-                                      [:string.option.ownership-filter-choice/community :community]]))}])
+                             (#{:charge :ribbon} kind) (concat [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
+                                                                [:string.option.ownership-filter-choice/community :community]]))}])
 
       (when consider-filter-access?
         [radio-select/radio-select {:path filter-access-path}
