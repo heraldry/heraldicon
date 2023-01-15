@@ -243,10 +243,15 @@
                path)]
     path))
 
+(macros/reg-event-fx ::select-node-from-preview
+  (fn [{:keys [db]} [_ path open?]]
+    (let [path (determine-component-path db path)]
+      {:db db
+       :dispatch [::select-node path open?]})))
+
 (macros/reg-event-fx ::select-node
   (fn [{:keys [db]} [_ path open?]]
-    (let [path (determine-component-path db path)
-          raw-type (get-in db (conj path :type))
+    (let [raw-type (get-in db (conj path :type))
           component-type (component/effective-type raw-type)]
       (cond->
         {:db (-> db
