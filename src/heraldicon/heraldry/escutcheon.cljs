@@ -791,13 +791,13 @@
     [:community-octolozenge community-octolozenge]
     [:community-italian community-italian]
     [:community-italian-2 community-italian-2]
-    [:community-african community-african]
-    [:community-scutum community-scutum]
     [:community-coffin community-coffin]
     [:community-hexagonal community-hexagonal]
     [:community-pavise community-pavise]
+    [:community-scutum community-scutum]
     [:community-kalasag community-kalasag]
     [:community-gonfalon community-gonfalon]
+    [:community-african community-african]
     [:community-flag-standard community-flag-standard]]])
 
 (def ^:private kinds-map
