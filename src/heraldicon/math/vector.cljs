@@ -1,4 +1,5 @@
 (ns heraldicon.math.vector
+  (:refer-clojure :exclude [abs])
   (:require
    ["paper" :refer [Path]]
    [heraldicon.math.angle :as angle]))
@@ -12,31 +13,23 @@
   (^Vector [] zero)
   (^Vector [^Vector v] v)
   (^Vector [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
-   (Vector. (+ x1 x2) (+ y1 y2)))
-  (^Vector [^Vector v1 ^Vector v2 & more]
-   (reduce add (add v1 v2) more)))
+   (Vector. (+ x1 x2) (+ y1 y2))))
 
 (defn sub
   (^Vector [] zero)
   (^Vector [^Vector {x :x y :y}] (Vector. (- x) (- y)))
   (^Vector [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
-   (Vector. (- x1 x2) (- y1 y2)))
-  (^Vector [^Vector v1 ^Vector v2 & more]
-   (reduce sub (sub v1 v2) more)))
+   (Vector. (- x1 x2) (- y1 y2))))
 
 (defn mul
   (^Vector [^Vector v] v)
   (^Vector [^Vector {x :x y :y} ^js/Number f]
-   (Vector. (* x f) (* y f)))
-  (^Vector [^Vector v ^js/Number f & more]
-   (reduce mul (mul v f) more)))
+   (Vector. (* x f) (* y f))))
 
 (defn div
   (^Vector [^Vector v] v)
   (^Vector [^Vector {x :x y :y} ^js/Number f]
-   (Vector. (/ x f) (/ y f)))
-  (^Vector [^Vector v ^js/Number f & more]
-   (reduce div (div v f) more)))
+   (Vector. (/ x f) (/ y f))))
 
 (defn dot ^Vector [^Vector {x1 :x y1 :y} ^Vector {x2 :x y2 :y}]
   (Vector. (* x1 x2) (* y1 y2)))

@@ -1,6 +1,5 @@
 (ns heraldicon.heraldry.ordinary.type.pall
   (:require
-   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
