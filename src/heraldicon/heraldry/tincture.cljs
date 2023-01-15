@@ -164,7 +164,7 @@
                                     (js-event/handled
                                      #(enter-component-fn context)))
                   :on-mouse-leave (when (and (not svg-export?)
-                                             enter-component-fn)
+                                             leave-component-fn)
                                     (js-event/handled
                                      #(leave-component-fn context)))
                   :style (merge
