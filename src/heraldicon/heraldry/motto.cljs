@@ -146,13 +146,15 @@
             tincture-text (interface/get-sanitized-data (c/++ context :tincture-text))
             outline-thickness (/ outline/stroke-width
                                  2
-                                 ribbon-scale)]
-        [:g {:transform (str "translate(" (v/->str anchor-point) ")"
-                             "scale(" ribbon-scale "," ribbon-scale ")"
-                             "translate(" (v/->str ribbon-offset) ")")}
+                                 ribbon-scale)
+            transform (str "translate(" (v/->str anchor-point) ")"
+                           "scale(" ribbon-scale "," ribbon-scale ")"
+                           "translate(" (v/->str ribbon-offset) ")")]
+        [:g {:transform transform}
          [render.ribbon/render
           (c/++ context :ribbon)
           tincture-foreground
           tincture-background
           tincture-text
-          :outline-thickness outline-thickness]]))))
+          :outline-thickness outline-thickness
+          :ribbon-scale ribbon-scale]]))))
