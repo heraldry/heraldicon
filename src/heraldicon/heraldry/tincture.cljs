@@ -4,6 +4,7 @@
    [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
+   [heraldicon.frontend.highlight :as highlight]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
@@ -130,8 +131,7 @@
                              [nil (str "all-theme-transition-" (name effective-tincture))]
                              [(pick tincture context) nil])
         selected? (and (not svg-export?)
-                       @(rf/subscribe [::tree/node-highlighted? (:path context)]))
-        selected-pattern-id "selected-pattern"]
+                       @(rf/subscribe [::tree/node-highlighted? (:path context)]))]
     (conj (if mask-id
             [:g {:mask (str "url(#" mask-id ")")}]
             [:<>])
@@ -178,32 +178,10 @@
                             {:animation (str animation " linear 20s infinite")}))}]
           (when selected?
             [:<>
-             [:defs
-              (let [size 2
-                    r 0.25]
-                [:pattern {:id selected-pattern-id
-                           :width size
-                           :height size
-                           :pattern-units "userSpaceOnUse"}
-                 [:g.area-highlighted
-                  [:circle {:cx 0
-                            :cy 0
-                            :r r}]
-                  [:circle {:cx size
-                            :cy 0
-                            :r r}]
-                  [:circle {:cx 0
-                            :cy size
-                            :r r}]
-                  [:circle {:cx size
-                            :cy size
-                            :r r}]
-                  [:circle {:cx (/ size 2)
-                            :cy (/ size 2)
-                            :r r}]]])]
+             [highlight/defs]
              [:rect {:x -500
                      :y -500
                      :width 1100
                      :height 1100
-                     :fill (str "url(#" selected-pattern-id ")")
+                     :fill highlight/fill-url
                      :style {:pointer-events "none"}}]]))))
