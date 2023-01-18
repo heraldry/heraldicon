@@ -3,6 +3,8 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
+   [heraldicon.frontend.component.tree :as tree]
+   [heraldicon.frontend.highlight :as highlight]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.heraldry.tincture :as tincture]
@@ -13,13 +15,15 @@
    [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.util.colour :as colour]
-   [heraldicon.util.uid :as uid]))
+   [heraldicon.util.uid :as uid]
+   [re-frame.core :as rf]))
 
 (defn render [context
               tincture-foreground
               tincture-background
               tincture-text
-              & {:keys [outline-thickness]
+              & {:keys [outline-thickness
+                        ribbon-scale]
                  :or {outline-thickness 1}}]
   (when-let [points (interface/get-raw-data (c/++ context :points))]
     (let [{:keys [select-component-fn
@@ -38,7 +42,9 @@
           background-colour (if (= tincture-background :none)
                               (colour/darken foreground-colour)
                               (tincture/pick tincture-background context))
-          text-colour (tincture/pick tincture-text context)]
+          text-colour (tincture/pick tincture-text context)
+          selected? (and (not svg-export?)
+                         @(rf/subscribe [::tree/node-highlighted? (drop-last (:path context))]))]
       (into [:g (when-not svg-export?
                   {:on-click (when (and (not svg-export?)
                                         select-component-fn)
@@ -52,7 +58,10 @@
                                               enter-component-fn)
                                      (js-event/handled
                                       #(leave-component-fn (c/-- context))))
-                   :style {:cursor "pointer"}})]
+                   :style {:cursor "pointer"}})
+             (when selected?
+               [highlight/defs :scale (/ 1 ribbon-scale)])]
+
             (map (fn [[idx partial-curve]]
                    (let [top-edge (path/curve-to-relative partial-curve)
                          [first-edge-vector second-edge-vector] (get edge-vectors idx)
@@ -122,6 +131,10 @@
                                             {:fill (if foreground?
                                                      foreground-colour
                                                      background-colour)})}]
+                      (when selected?
+                        [:path {:d full-path
+                                :fill highlight/fill-url
+                                :style {:pointer-events "none"}}])
                       (when text?
                         (let [path-id (uid/generate "path")
                               spacing (interface/get-sanitized-data (c/++ segment-context :spacing))
