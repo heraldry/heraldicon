@@ -87,11 +87,15 @@
       (update-in db (:path (c/++ context colour)) set-colour-qualifier qualifier))))
 
 (defn- closest-shadow-qualifier [value]
-  (let [multiple-of-5 (int (* (Math/ceil (/ (Math/abs value) 5)) 5))]
+  (let [multiple-of-5 (-> (int (* (Math/ceil (/ (Math/abs value) 5)) 5))
+                          (max 0)
+                          (min 95))]
     (attributes/make-qualifier-keyword :shadow multiple-of-5)))
 
 (defn- closest-highlight-qualifier [value]
-  (let [multiple-of-5 (int (* (Math/ceil (/ (Math/abs value) 5)) 5))]
+  (let [multiple-of-5 (-> (int (* (Math/ceil (/ (Math/abs value) 5)) 5))
+                          (max 0)
+                          (min 95))]
     (attributes/make-qualifier-keyword :highlight multiple-of-5)))
 
 (defn- determine-qualifier [colour reference-brightness]
