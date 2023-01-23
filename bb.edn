@@ -1,0 +1,133 @@
+{:tasks
+ {:requires ([babashka.fs :as fs]
+             [clojure.string :as str])
+
+  :init (do
+          (def COMMIT-HASH
+            (-> (shell {:out :string} "git rev-parse --short HEAD")
+                :out
+                str/trim))
+
+          (def PROD-FRONTEND-DIR "build/prod")
+          (def PROD-BACKEND-DIR "backend/build/prod")
+          (def PROD-CONFIG {:closure-defines {'heraldicon.config/stage "prod"
+                                              'heraldicon.config/commit COMMIT-HASH}})
+
+          (def STAGING-FRONTEND-DIR "build/staging")
+          (def STAGING-BACKEND-DIR "backend/build/staging")
+          (def STAGING-CONFIG {:closure-defines {'heraldicon.config/stage "staging"
+                                                 'heraldicon.config/commit COMMIT-HASH}})
+
+          (defn build-frontend-release [build-dir config]
+            (fs/delete-tree STAGING-FRONTEND-DIR)
+            (fs/delete-tree PROD-FRONTEND-DIR)
+
+            (fs/create-dirs build-dir)
+            (doseq [file (fs/list-dir "assets")]
+              (if (fs/directory? file)
+                (fs/copy-tree file (fs/path build-dir (fs/file-name file)) {:replace-existing true})
+                (fs/copy file build-dir {:replace-existing true})))
+
+            (def output-dir
+              (str (fs/path build-dir "js/generated")))
+            (fs/delete-tree output-dir)
+
+            (fs/update-file (str (fs/path build-dir "index.html"))
+                            (fn [content]
+                              (str/replace content (re-pattern "__GIT-COMMIT-HASH__") COMMIT-HASH)))
+
+            (shell "npx shadow-cljs release frontend --config-merge"
+                   (prn-str (merge config {:output-dir output-dir}))))
+
+          (defn deploy-frontend [build-dir target]
+            (shell "scripts/sync-with-s3.py" build-dir target)
+            (shell (format "aws --profile heraldry-serverless s3 cp --acl public-read
+                           '%s/index.html' 's3://%s/index.html'
+                           --metadata-directive REPLACE
+                           --cache-control max-age=0,no-cache,no-store,must-revalidate
+                           --content-type text/html"
+                           build-dir target))
+            (shell "scripts/invalidate-distribution.sh" target)))
+
+  check-clj-kondo (shell "clj-kondo --parallel --lint src test backend/src")
+  check-cljfmt (shell "cljfmt --parallel check src test backend/src")
+
+  check-debug-print-frontend (-> (shell {:continue true}
+                                        "rg '(println|\\(js/console)' src")
+                                 :exit
+                                 (= 1)
+                                 (or (throw (Exception. "found debug prints in frontend"))))
+  check-debug-print-backend (-> (shell {:continue true}
+                                       "rg '(println|\\(js/console)' backend/src --glob=!backend/src/heraldicon/manage.cljs")
+                                :exit
+                                (= 1)
+                                (or (throw (Exception. "fount debug prints in backend"))))
+
+  check-json (-> (shell {:out :string} "find locales -iname '*.json'")
+                 (shell {:out :string} "xargs jq ."))
+
+  check-dirty-frontend (-> (shell {:continue true} "git diff --quiet")
+                           :exit
+                           (= 0)
+                           (or (throw (Exception. ". is dirty"))))
+
+  check-dirty-backend (-> (shell {:continue true
+                                  :dir "backend"} "git diff --quiet")
+                          :exit
+                          (= 0)
+                          (or (throw (Exception. "backend is dirty"))))
+
+  check-all {:depends [check-clj-kondo
+                       check-cljfmt
+                       check-debug-print-frontend
+                       check-debug-print-backend
+                       check-json]}
+
+  dev-local (shell "npx shadow-cljs watch frontend backend test manage")
+
+  staging-backend-release (do
+                            (fs/delete-tree STAGING-BACKEND-DIR)
+                            (fs/delete-tree PROD-BACKEND-DIR)
+                            (shell "npx shadow-cljs release backend --config-merge"
+                                   (prn-str (merge STAGING-CONFIG
+                                                   {:output-to (str (fs/path STAGING-BACKEND-DIR "backend.js"))}))))
+
+  staging-backend-deploy (do
+                           (run 'staging-backend-release)
+                           (shell {:dir "backend"} "npx sls deploy --stage staging"))
+
+  staging-frontend-release (build-frontend-release STAGING-FRONTEND-DIR STAGING-CONFIG)
+
+  staging-frontend-deploy (do
+                            (run 'staging-frontend-release)
+                            (deploy-frontend STAGING-FRONTEND-DIR "cdn.staging.heraldicon.org"))
+
+  prod-backend-release (do
+                         (fs/delete-tree STAGING-BACKEND-DIR)
+                         (fs/delete-tree PROD-BACKEND-DIR)
+                         (shell "npx shadow-cljs release backend --config-merge"
+                                (prn-str
+                                 (merge PROD-CONFIG
+                                        {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))}))))
+
+  prod-backend-deploy {:depends [check-clj-kondo
+                                 check-cljfmt
+                                 check-debug-print-frontend
+                                 check-debug-print-backend
+                                 check-json
+                                 check-dirty-frontend
+                                 check-dirty-backend]
+                       :task (do
+                               (run 'prod-backend-release)
+                               (shell {:dir "backend"} "npx sls deploy --stage prod"))}
+
+  prod-frontend-release (build-frontend-release PROD-FRONTEND-DIR PROD-CONFIG)
+
+  prod-frontend-deploy {:depends [check-clj-kondo
+                                  check-cljfmt
+                                  check-debug-print-frontend
+                                  check-json
+                                  check-dirty-frontend]
+                        :task (do
+                                (run 'prod-frontend-release)
+                                (deploy-frontend PROD-FRONTEND-DIR "cdn.heraldicon.org"))}}}
