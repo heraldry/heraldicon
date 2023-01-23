@@ -40,7 +40,7 @@
                    (prn-str (merge config {:output-dir output-dir}))))
 
           (defn deploy-frontend [build-dir target]
-            (shell "scripts/sync-with-s3.py" build-dir target)
+            (shell "scripts/sync-with-s3" build-dir target)
             (shell (format "aws --profile heraldry-serverless s3 cp --acl public-read
                            '%s/index.html' 's3://%s/index.html'
                            --metadata-directive REPLACE
