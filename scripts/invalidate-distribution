@@ -1,0 +1,26 @@
+#!/usr/bin/env bb
+(require '[babashka.process :as process])
+(require '[cheshire.core :as json])
+
+(defn- get-distribution-id [server]
+  (-> (process/shell {:out :string} "aws --profile heraldry cloudfront list-distributions")
+      :out
+      (json/parse-string true)
+      :DistributionList
+      :Items
+      (as-> items
+            (filter (fn [item]
+                      (-> item
+                          :Aliases
+                          :Items
+                          set
+                          (get server)))
+                    items))
+      first
+      :Id))
+
+(let [server (first *command-line-args*)
+      _ (assert server)
+      distribution-id (get-distribution-id server)]
+  (process/shell (format "aws --profile heraldry cloudfront create-invalidation --distribution-id '%s' --paths '/*'" distribution-id)))
+nil

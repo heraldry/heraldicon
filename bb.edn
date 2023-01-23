@@ -47,7 +47,7 @@
                            --cache-control max-age=0,no-cache,no-store,must-revalidate
                            --content-type text/html"
                            build-dir target))
-            (shell "scripts/invalidate-distribution.sh" target)))
+            (shell "scripts/invalidate-distribution" target)))
 
   check-clj-kondo (shell "clj-kondo --parallel --lint src test backend/src")
   check-cljfmt (shell "cljfmt --parallel check src test backend/src")
