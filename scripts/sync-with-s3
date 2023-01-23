@@ -1,0 +1,44 @@
+#!/usr/bin/env bb
+(require '[babashka.fs :as fs])
+(require '[babashka.process :as process])
+(require '[cheshire.core :as json])
+(require '[clojure.string :as str])
+
+(defn- md5 [file]
+  (-> (process/shell {:out :string} "md5sum" (str file))
+      :out
+      str/trim
+      (str/split #" ")
+      first))
+
+(defn- sync-bucket [directory bucket]
+  (let [objects (-> (process/shell {:out :string}
+                                   "aws --profile heraldry-serverless s3api list-objects-v2 --bucket"
+                                   bucket)
+                    :out
+                    (json/parse-string true)
+                    :Contents)
+        etag-map (into {}
+                       (map (fn [{:keys [Key ETag]}]
+                              [Key (str/replace ETag #"\"" "")]))
+                       objects)
+        files-to-sync (transient [])
+        _ (fs/walk-file-tree directory {:visit-file (fn [file _attributes]
+                                                      (let [etag (md5 file)
+                                                            relative-file (str (fs/relativize directory file))]
+                                                        (when (not= etag (get etag-map relative-file))
+                                                          (conj! files-to-sync relative-file)))
+                                                      :continue)})
+        files-to-sync (persistent! files-to-sync)]
+    (when (< (count files-to-sync) (/ (count etag-map) 2))
+      (doseq [filename files-to-sync]
+        (process/shell (format "aws --profile heraldry-serverless s3 cp --acl public-read '%s' s3://%s/%s"
+                               (fs/path directory filename) bucket filename)))
+      (process/shell (format "aws --profile heraldry-serverless s3 sync --acl public-read '%s' s3://%s/"
+                             directory bucket)))
+    nil))
+
+(let [[directory bucket] *command-line-args*]
+  (assert directory)
+  (assert bucket)
+  (sync-bucket directory bucket))
