@@ -1,6 +1,6 @@
 #!/usr/bin/env bb
-(require '[babashka.process :as process])
-(require '[cheshire.core :as json])
+(require '[babashka.process :as process]
+         '[cheshire.core :as json])
 
 (defn- get-distribution-id [server]
   (-> (process/shell {:out :string} "aws --profile heraldry cloudfront list-distributions")
