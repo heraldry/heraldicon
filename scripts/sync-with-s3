@@ -1,8 +1,8 @@
 #!/usr/bin/env bb
-(require '[babashka.fs :as fs])
-(require '[babashka.process :as process])
-(require '[cheshire.core :as json])
-(require '[clojure.string :as str])
+(require '[babashka.fs :as fs]
+         '[babashka.process :as process]
+         '[cheshire.core :as json]
+         '[clojure.string :as str])
 
 (defn- md5 [file]
   (-> (process/shell {:out :string} "md5sum" (str file))
