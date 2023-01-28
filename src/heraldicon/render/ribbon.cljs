@@ -3,7 +3,7 @@
    [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
-   [heraldicon.frontend.component.tree :as tree]
+   [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.frontend.highlight :as highlight]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.heraldry.ribbon :as ribbon]
