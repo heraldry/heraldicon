@@ -164,6 +164,10 @@
                       (cond->
                         sinister? (v/dot (v/Vector. 1 -1))))
         angle (v/angle-to-point v/zero direction)
+        transform-fn (fn transform-fn [v]
+                       (if (instance? v/Vector v)
+                         (v/rotate v angle)
+                         (path/rotate v angle)))
         reverse-transform-fn (fn reverse-transform-fn [v]
                                (if (instance? v/Vector v)
                                  (v/rotate v (- angle))
@@ -210,6 +214,7 @@
       :end-x end-x
       :line-length line-length
       :transform (str "rotate(" angle ")")
+      :transform-fn transform-fn
       :reverse-transform-fn reverse-transform-fn
       :num-subfields num-fields-y}
      context)))
