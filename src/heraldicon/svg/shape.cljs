@@ -1,5 +1,6 @@
 (ns heraldicon.svg.shape
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
@@ -45,8 +46,17 @@
                {:path (conj path (infinity center current next-point :shortest? shortest?))
                 :current next-point})))
 
+(defn- subfield-context? [context]
+  (and (-> context :path last integer?)
+       (-> context :path drop-last last (= :fields))))
+
+(defn- transform-fn [context]
+  (when (subfield-context? context)
+    (:transform-fn (interface/get-properties (c/-- context 2)))))
+
 (defn build-shape [context & parts]
-  (let [center (bb/center (interface/get-bounding-box context))]
+  (let [transform-fn* (or (transform-fn context) identity)
+        center (transform-fn* (bb/center (interface/get-bounding-box context)))]
     (->> (partition 2 1 parts parts)
          (reduce (fn [state [part next-part]]
                    (let [part (inspect-part part)
