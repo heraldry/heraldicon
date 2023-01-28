@@ -1,6 +1,8 @@
 #!/usr/bin/env bb
-(require '[babashka.process :as process]
-         '[cheshire.core :as json])
+#_{:clj-kondo/ignore [:namespace-name-mismatch]}
+(ns invalidate-distribution
+  (:require [babashka.process :as process]
+            [cheshire.core :as json]))
 
 (defn- get-distribution-id [server]
   (-> (process/shell {:out :string} "aws --profile heraldry cloudfront list-distributions")
