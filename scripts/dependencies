@@ -1,0 +1,98 @@
+#!/usr/bin/env bb
+(ns dependencies
+  (:require [babashka.fs :as fs]
+            [clojure.java.io :as io]
+            [clojure.string :as str])
+  (:import [java.io PushbackReader]))
+
+(defn- read-requires [file]
+  (with-open [xin (io/reader (str file))
+              bin (PushbackReader. xin)]
+    (loop []
+      (let [obj (read bin)]
+        (if (and (list? obj)
+                 (-> obj first (= 'ns)))
+          (->> (keep (fn [form]
+                       (when (and (sequential? form)
+                                  (= (first form) :require))
+                         (keep (fn [require]
+                                 (when (and (vector? require)
+                                            (not (some (fn [v]
+                                                         (= v :as-alias))
+                                                       require)))
+                                   (let [dependency (first require)]
+
+                                     (when (or (symbol? dependency)
+                                               (string? dependency))
+                                       dependency))))
+                               form)))
+                     obj)
+               (apply concat))
+          (recur))))))
+
+(def ^:private clj-extension
+  #"\.clj[cs]?$")
+
+(defn- process-file [path file]
+  (let [ns (-> (fs/relativize path file)
+               str
+               (str/replace clj-extension "")
+               (str/replace #"_" "-")
+               (str/replace #"/" ".")
+               symbol)
+        requires (read-requires file)]
+    {:ns ns
+     :requires requires}))
+
+(defn- invert-dependencies [dependency-map]
+  (->> (mapcat (fn [[k v]]
+                 (map (fn [require]
+                        [require k])
+                      v))
+               dependency-map)
+       (group-by first)
+       (map (fn [[k v]]
+              [k (map second v)]))
+       (into {})))
+
+(defn- find-paths [dependency-map dependency]
+  (let [dependency-lookup (invert-dependencies dependency-map)]
+    (loop [paths [[dependency]]]
+      (let [new-paths (vec (mapcat (fn [[ns & rest
+                                         :as path]]
+                                     (if-let [required-in (get dependency-lookup ns)]
+                                       (mapv (fn [inverse-dependency]
+                                               (vec (concat [inverse-dependency ns] rest)))
+                                             required-in)
+                                       [path]))
+                                   paths))]
+        (if (= new-paths paths)
+          new-paths
+          (recur new-paths))))))
+
+(defn- print-dependency-path [path]
+  (loop [indent 0
+         [ns & rest] path]
+    (when ns
+      (print (apply str (repeat indent " ")) (prn-str ns))
+      (recur (+ indent 2) rest)))
+  (println))
+
+(defn- build-tree [paths dependency]
+  (let [dependency-data (transient [])
+        _ (doseq [path paths]
+            (fs/walk-file-tree path {:visit-file (fn [file _attributes]
+                                                   (when (re-find clj-extension (str file))
+                                                     (let [{:keys [ns requires]} (process-file path file)]
+                                                       (conj! dependency-data [ns requires])))
+                                                   :continue)}))
+        dependency-data (persistent! dependency-data)
+        dependency-map (into {}
+                             (map (fn [[k v]]
+                                    [k (apply concat (map second v))]))
+                             (group-by first dependency-data))
+        dependency-paths (find-paths dependency-map dependency)]
+    (doseq [path dependency-paths]
+      (print-dependency-path path))))
+
+(build-tree ["src" "test"] 'hodgepodge.core)
