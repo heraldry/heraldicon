@@ -200,7 +200,7 @@
                        interface/get-parent-field-environment
                        :parent-environment-override))
 
-(defmethod interface/exact-shape :heraldry/field [context]
+(defmethod interface/exact-shape :heraldry/field [context & {:keys [for-subfields?]}]
   (let [{:keys [reverse-transform-fn]} (interface/get-properties (-> context
                                                                      interface/parent
                                                                      interface/parent))
@@ -209,7 +209,8 @@
                                    interface/get-parent-field-shape
                                    :parent-shape)]
     (cond-> shape
-      reverse-transform-fn (->
-                             path/parse-path
-                             reverse-transform-fn
-                             path/to-svg))))
+      (and (not for-subfields?)
+           reverse-transform-fn) (->
+                                   path/parse-path
+                                   reverse-transform-fn
+                                   path/to-svg))))
