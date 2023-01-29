@@ -24,5 +24,7 @@
 (let [server (first *command-line-args*)
       _ (assert server)
       distribution-id (get-distribution-id server)]
-  (process/shell (format "aws --profile heraldry cloudfront create-invalidation --distribution-id '%s' --paths '/*'" distribution-id)))
-nil
+  (-> (process/process {:out :string} (format "aws --profile heraldry cloudfront create-invalidation --distribution-id '%s' --paths '/*'" distribution-id))
+      deref
+      :out
+      println))
