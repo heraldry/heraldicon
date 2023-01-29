@@ -403,8 +403,11 @@
 (defmulti parent-field-environment effective-component-type)
 
 (defmethod parent-field-environment :default [context]
-  (let [parent-context (parent context)]
-    (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+  (let [parent-context (parent context)
+        context-for-adapt-check (if (isa? (effective-component-type context) :heraldry/subfield)
+                                  parent-context
+                                  context)]
+    (if (get-sanitized-data (c/++ context-for-adapt-check :adapt-to-ordinaries?))
       (get-impacted-environment parent-context)
       (get-environment parent-context))))
 
@@ -422,8 +425,11 @@
 (defmulti parent-field-shape effective-component-type)
 
 (defmethod parent-field-shape :default [context]
-  (let [parent-context (parent context)]
-    (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+  (let [parent-context (parent context)
+        context-for-adapt-check (if (isa? (effective-component-type context) :heraldry/subfield)
+                                  parent-context
+                                  context)]
+    (if (get-sanitized-data (c/++ context-for-adapt-check :adapt-to-ordinaries?))
       (get-exact-impacted-shape parent-context)
       (get-exact-shape parent-context))))
 
