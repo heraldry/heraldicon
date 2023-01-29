@@ -32,7 +32,7 @@
                                                           (conj! files-to-sync relative-file)))
                                                       :continue)})
         files-to-sync (persistent! files-to-sync)]
-    (when (< (count files-to-sync) (/ (count etag-map) 2))
+    (if (< (count files-to-sync) (/ (count etag-map) 2))
       (doseq [filename files-to-sync]
         (process/shell (format "aws --profile heraldry-serverless s3 cp --acl public-read '%s' s3://%s/%s"
                                (fs/path directory filename) bucket filename)))
