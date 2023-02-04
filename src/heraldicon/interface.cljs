@@ -19,9 +19,9 @@
 
 (defn- reaction-or-cache [id
                           {:keys [cache-subscriptions?]
-                           :as context} f & args]
+                           :as context} f]
   (if cache-subscriptions?
-    (let [key [id context args]
+    (let [key [id context]
           value (or (get @cache key) (f))]
       (swap! cache assoc key value)
       (reaction value))
@@ -221,21 +221,21 @@
 
 (defmulti exact-shape effective-component-type)
 
-(defn get-exact-shape [context & {:as opts}]
-  @(rf/subscribe [::exact-shape (c/scrub-render-hints context) opts]))
+(defn get-exact-shape [context]
+  @(rf/subscribe [::exact-shape (c/scrub-render-hints context)]))
 
 (defn get-exact-parent-shape [context]
   (or (c/get-key context :parent-shape)
       @(rf/subscribe [::exact-shape (c/scrub-render-hints (parent context))])))
 
 (rf/reg-sub-raw ::exact-impacted-shape
-  (fn [_app-db [_ context opts]]
+  (fn [_app-db [_ context]]
     (reaction-or-cache
      ::exact-impacted-shape
      context
      (fn []
        (let [context (resolve-context context)
-             shape (exact-shape context opts)
+             shape (exact-shape context)
              components-context (c/++ context :components)
              num-components (get-list-size components-context)
              impactful-ordinary-contexts (into []
@@ -268,8 +268,7 @@
                                 first)]
          (cond-> shape
            chief-shape (environment/subtract-shape chief-shape)
-           base-shape (environment/subtract-shape base-shape))))
-     opts)))
+           base-shape (environment/subtract-shape base-shape)))))))
 
 (defn get-exact-impacted-shape [context & {:as opts}]
   @(rf/subscribe [::exact-impacted-shape (c/scrub-render-hints context) opts]))
@@ -288,9 +287,6 @@
 (defmethod exact-shape :default [context]
   (fallback-exact-shape context))
 
-(defmethod exact-shape :heraldry/subfield [context]
-  (fallback-exact-shape context))
-
 (defmethod exact-shape :heraldry/ordinary [context]
   (fallback-exact-shape context))
 
@@ -300,13 +296,12 @@
   (-> (get-render-shape context) :shape first))
 
 (rf/reg-sub-raw ::exact-shape
-  (fn [_app-db [_ context opts]]
+  (fn [_app-db [_ context]]
     (reaction-or-cache
      ::exact-shape
      context
      #(let [context (resolve-context context)]
-        (exact-shape context opts))
-     opts)))
+        (exact-shape context)))))
 
 (rf/reg-sub-raw ::field-edges
   (fn [_app-db [_ context]]
@@ -461,8 +456,8 @@
      ::subfields-shape
      context
      #(if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
-        (get-exact-impacted-shape context :for-subfields? true)
-        (get-exact-shape context :for-subfields? true)))))
+        (get-exact-impacted-shape context)
+        (get-exact-shape context)))))
 
 (defn get-subfields-shape [context]
   @(rf/subscribe [::subfields-shape (c/scrub-render-hints context)]))
