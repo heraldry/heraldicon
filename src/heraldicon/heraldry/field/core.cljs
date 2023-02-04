@@ -8,7 +8,6 @@
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
-   [heraldicon.svg.path :as path]
    [heraldicon.util.number :as number]))
 
 (defn mandatory-part-count [context]
@@ -200,17 +199,8 @@
                        interface/get-parent-field-environment
                        :parent-environment-override))
 
-(defmethod interface/exact-shape :heraldry/field [context & {:keys [for-subfields?]}]
-  (let [{:keys [reverse-transform-fn]} (interface/get-properties (-> context
-                                                                     interface/parent
-                                                                     interface/parent))
-        shape (component-attribute context
-                                   interface/get-exact-shape
-                                   interface/get-parent-field-shape
-                                   :parent-shape)]
-    (cond-> shape
-      (and (not for-subfields?)
-           reverse-transform-fn) (->
-                                   path/parse-path
-                                   reverse-transform-fn
-                                   path/to-svg))))
+(defmethod interface/exact-shape :heraldry/field [context]
+  (component-attribute context
+                       interface/get-exact-shape
+                       interface/get-parent-field-shape
+                       :parent-shape))

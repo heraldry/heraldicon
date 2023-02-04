@@ -1,8 +1,10 @@
 (ns heraldicon.heraldry.subfield
   (:require
    [heraldicon.context :as c]
+   [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.render :as render]
    [heraldicon.interface :as interface]
+   [heraldicon.svg.path :as path]
    [heraldicon.util.uid :as uid]))
 
 (derive :heraldry.subfield.type/field :heraldry.subfield/type)
@@ -24,15 +26,29 @@
 (defmethod interface/properties :heraldry/subfield [_context]
   {:type :heraldry/subfield})
 
-(defmethod interface/environment :heraldry/subfield [context]
-  (let [subfield-environments (interface/get-subfield-environments (interface/parent context))
+(defn- component-attribute [context get-attribute-fn]
+  (let [subfield-environments (get-attribute-fn (interface/parent context))
         subfield-index (-> context :path last)]
     (get (:subfields subfield-environments) subfield-index)))
 
+(defmethod interface/environment :heraldry/subfield [context]
+  (component-attribute context interface/get-subfield-environments))
+
 (defmethod interface/render-shape :heraldry/subfield [context]
-  (let [subfield-render-shapes (interface/get-subfield-render-shapes (interface/parent context))
-        subfield-index (-> context :path last)]
-    (get (:subfields subfield-render-shapes) subfield-index)))
+  (component-attribute context interface/get-subfield-render-shapes))
+
+(defmethod interface/exact-shape :heraldry/subfield [context]
+  (let [{:keys [reverse-transform-fn]} (interface/get-properties (interface/parent context))
+        shape-path (:shape (component-attribute context interface/get-subfield-render-shapes))
+        shape-path (if (vector? shape-path)
+                     (first shape-path)
+                     shape-path)
+        parent-shape (interface/get-parent-field-shape context)]
+    (cond-> (environment/intersect-shapes shape-path parent-shape)
+      reverse-transform-fn (->
+                             path/parse-path
+                             reverse-transform-fn
+                             path/to-svg))))
 
 (defn- effective-field-context [context]
   (let [subfield-type (interface/get-raw-data (c/++ context :type))]
