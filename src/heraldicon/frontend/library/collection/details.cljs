@@ -105,7 +105,9 @@
        arms-name]]]))
 
 (defn- render-collection [form-db-path & {:keys [allow-adding?]}]
-  (let [font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
+  (let [font-title (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font-title)})
+                           font/css-string)
+        font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
                      font/css-string)
         num-columns (interface/get-sanitized-data {:path (conj form-db-path :data :num-columns)})
         num-elements (interface/get-list-size {:path (conj form-db-path :data :elements)})
@@ -132,7 +134,7 @@
       [:text.collection-title {:x (/ roll-width 2)
                                :y 50
                                :text-anchor "middle"
-                               :style {:font-family font
+                               :style {:font-family font-title
                                        :font-size 50}}
        name]]
      [:g {:transform "translate(0,60)"}
