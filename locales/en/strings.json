@@ -482,6 +482,7 @@
     "flipped?": "Flipped",
     "font": "Font",
     "font-scale": "Font scale",
+    "font-title": "Font for title",
     "function": "Function",
     "geometry": "Geometry",
     "height": "Height",

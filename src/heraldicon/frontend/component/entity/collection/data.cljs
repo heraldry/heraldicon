@@ -12,6 +12,7 @@
   (element/elements
    context
    [:num-columns
+    :font-title
     :font]))
 
 (defmethod component/node :heraldicon.entity.collection/data [context]

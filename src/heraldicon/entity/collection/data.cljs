@@ -11,4 +11,5 @@
                  :min 1
                  :max 15
                  :ui/label :string.option/number-of-columns}
-   :font font/default-options})
+   :font font/default-options
+   :font-title (assoc font/default-options :ui/label :string.option/font-title)})

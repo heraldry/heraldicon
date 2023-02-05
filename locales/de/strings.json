@@ -481,6 +481,7 @@
     "flag-width": "Flaggenbreite",
     "flipped?": "Umgedreht",
     "font": "Schriftart",
+    "font-title": "Schriftart für Titel",
     "font-scale": "Schrift-Faktor",
     "function": "Funktion",
     "geometry": "Geometrie",
