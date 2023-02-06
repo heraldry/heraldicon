@@ -340,7 +340,7 @@
    :license :public-domain
    :link "https://www.reddit.com/r/heraldry/comments/i8dy38/some_heraldic_tincture_palettes_for_you_to_use/"
    :creator-name "TariToons"
-   :creator-link "https://www.reddit.com/user/TariToons/"})
+   :creator-link "https://www.taritoons.de/"})
 
 (def ^:private theme-community-pastell-puffs
   {;; metals
@@ -557,6 +557,26 @@
 
    ::name "Rainbow Groom"
    ::attribution taritoons-attribution})
+
+(def ^:private theme-community-main-72
+  {;; metals
+   :argent "#ffffff"
+   :or "#fcf7b2"
+   ;; colours
+   :azure "#367ec1"
+   :vert "#60b866"
+   :gules "#dc2764"
+   :sable "#513951"
+   :purpure "#aa63c4"
+   ;; stains
+   :murrey "#7d3996" ;; 30% darkened purpure
+   :sanguine "#9c1945" ;; 30% darkened gules
+   :tenne "#a69b06" ;; 60% darkened or
+
+   ::name "Main 72"
+   ::attribution {:license :public-domain
+                  :creator-name "TariToons"
+                  :creator-link "https://www.taritoons.de/"}})
 
 (def ^:private theme-community-content-cranium
   {;; metals
@@ -780,6 +800,7 @@
     [:community-home-world theme-community-home-world]
     [:community-jewelicious theme-community-jewelicious]
     [:community-main-seven theme-community-main-seven]
+    [:community-main-72 theme-community-main-72]
     [:community-mother-earth theme-community-mother-earth]
     [:community-pastell-puffs theme-community-pastell-puffs]
     [:community-pretty-soldier theme-community-pretty-soldier]
