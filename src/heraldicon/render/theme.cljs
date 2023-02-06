@@ -754,6 +754,7 @@
    :purpure "#a057a3"
 
    ;; stains
+   :murrey "#703d72" ;; 30% darkened purpure
    :sanguine "#9f4e44"
    :tenne "#a1683c"
 
