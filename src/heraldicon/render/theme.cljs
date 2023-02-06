@@ -745,19 +745,16 @@
   {;; metals
    :argent "#adadad"
    :or "#c9d487" ;; gold
-
    ;; colours
    :azure "#50459b"
    :vert "#5cab5e"
    :gules "#cb7e75"
    :sable "#000000"
    :purpure "#a057a3"
-
    ;; stains
    :murrey "#703d72" ;; 30% darkened purpure
    :sanguine "#9f4e44"
    :tenne "#a1683c"
-
    ;; other
    :amaranth "#887ecb"
    :brunatre "#6d5412"
