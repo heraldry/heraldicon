@@ -117,8 +117,8 @@
                        :ui/label :string.option/size
                        :ui/step 0.1}
                 :stretch {:type :option.type/range
-                          :min 0.33
-                          :max 3
+                          :min 0.1
+                          :max 10
                           :default 1
                           :ui/label :string.option/stretch
                           :ui/step 0.01}
