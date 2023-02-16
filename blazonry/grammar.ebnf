@@ -1535,9 +1535,9 @@ components
 
 component
     = ordinary-group
-    | ordinary-with-components
-    | charge-group
-    | semy
+    / ordinary-with-components
+    / charge-group
+    / semy
 
 number-word
     = number/DIGIT-WORD
