@@ -473,6 +473,26 @@
                :field {:type :heraldry.field.type/plain
                        :tincture :azure}}]}
 
+    "vairy ancien or and azure"
+    {:type :heraldry.field.type/vairy
+     :variant :ancien
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}]}
+
+    "potenty en-point or and azure"
+    {:type :heraldry.field.type/potenty
+     :variant :en-point
+     :fields [{:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :or}}
+              {:type :heraldry.subfield.type/field
+               :field {:type :heraldry.field.type/plain
+                       :tincture :azure}}]}
+
     "papellony of three times twenty-eight tracts or and azure"
     {:type :heraldry.field.type/papellony
      :layout {:num-fields-x 3

@@ -586,6 +586,15 @@ partition/TIERCED-PER-PALE = #"\btierced +per +pale\b"
 partition/TIERCED-PER-PALL = #"\btierced +per +pall\b"
 partition/VAIRY = #"\bvairy\b"
 
+vairy-variant/COUNTER = #"\bcounter\b"
+vairy-variant/IN-PALE = #"\bin[ -]+pale\b"
+vairy-variant/EN-POINT = #"\ben[ -]point\b"
+vairy-variant/ANCIEN = #"\bancien\b"
+
+potenty-variant/COUNTER = #"\bcounter\b"
+potenty-variant/IN-PALE = #"\bin[ -]+pale\b"
+potenty-variant/EN-POINT = #"\ben[ -]point\b"
+
 ordinary/PALE = #"\bpales?\b"
 ordinary/PALLET = #"\bpall?ets?\b"
 ordinary/FESS
@@ -1444,6 +1453,17 @@ partition-field-plain
     = pattern-option/BENDY
     | pattern-option/BENDY-SINISTER
 
+<vairy-variant>
+    = vairy-variant/COUNTER
+    | vairy-variant/IN-PALE
+    | vairy-variant/EN-POINT
+    | vairy-variant/ANCIEN
+
+<potenty-variant>
+    = potenty-variant/COUNTER
+    | potenty-variant/IN-PALE
+    | potenty-variant/EN-POINT
+
 partition
     = partition/PER-PALE
       line?
@@ -1508,6 +1528,18 @@ partition
        | partition/PAPELLONY
        | partition/MASONY
        | partition/FRETTY)
+      pattern-option?
+      OF? layout?
+      partition-field-plain AND+ partition-field-plain
+
+    | partition/VAIRY
+      vairy-variant?
+      pattern-option?
+      OF? layout?
+      partition-field-plain AND+ partition-field-plain
+
+    | partition/POTENTY
+      potenty-variant?
       pattern-option?
       OF? layout?
       partition-field-plain AND+ partition-field-plain
