@@ -1510,7 +1510,7 @@ partition
       (OF? horizontal-layout)?
       (enhanced-dehanced* line?
        | line? enhanced-dehanced*)
-      partition-field AND+ partition-field (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)? (AND+ partition-field)?
+      partition-field AND+ partition-field (AND+ partition-field)*
 
     | partition/QUARTERED
       (OF? layout)?
