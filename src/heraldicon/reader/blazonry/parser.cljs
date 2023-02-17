@@ -138,10 +138,13 @@
                                                                  s/trim)
                                               valid-charge-type? (re-matches #"^[a-zA-Z0-9-]+$" charge-type-name)]
                                           (when (and valid-charge-type?
-                                                     (-> clean-name count pos?)
-                                                     #_(not (contains? (:bad-charge-types default) clean-name)))
-                                            [rule-name (set [clean-name
-                                                             (pluralize clean-name)])]))))
+                                                     (-> clean-name count pos?))
+                                            (if (contains? (:bad-charge-types default) clean-name)
+                                              [rule-name (let [clean-name (str "charge " clean-name)]
+                                                           (set [clean-name
+                                                                 (pluralize clean-name)]))]
+                                              [rule-name (set [clean-name
+                                                               (pluralize clean-name)])])))))
                                 (keys charge-map))
         default-parser (:parser default)
         new-parser (inject-charge-type-rules
