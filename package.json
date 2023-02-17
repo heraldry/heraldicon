@@ -11,7 +11,7 @@
     "genex": "^1.1.0",
     "paper-jsdom": "^0.12.17",
     "paperjs-offset": "^1.0.8",
-    "random": "^4.1.0",
+    "random": "^3.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
