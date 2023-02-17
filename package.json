@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "amazon-cognito-identity-js": "^5.2.10",
+    "amazon-cognito-identity-js": "^6.1.2",
     "copy-to-clipboard": "^3.3.3",
     "crypto-browserify": "^3.12.0",
     "css": "^3.0.0",
