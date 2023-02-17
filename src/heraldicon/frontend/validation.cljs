@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.validation
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.tooltip :as tooltip]
@@ -236,7 +236,7 @@
                (seq (filter (fn [value]
                               (if (keyword? value)
                                 (= value :none)
-                                (s/blank? value))) source-fields)))
+                                (str/blank? value))) source-fields)))
       [{:level :error
         :message :string.validation.attribution/all-source-fields-required}])))
 

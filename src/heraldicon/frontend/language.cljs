@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.language
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.frontend.header :as-alias header]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.macros :as macros]
@@ -26,7 +26,7 @@
                                   keys
                                   set)]
       (or (get known-language-keys (keyword language))
-          (get known-language-keys (-> language (s/split #"-") first keyword))))))
+          (get known-language-keys (-> language (str/split #"-") first keyword))))))
 
 (defn- store-language-setting [language]
   (set-item local-storage local-storage-language-name language))
@@ -52,9 +52,9 @@
     (browser-preferred-language)
     (let [loaded-language (get-item local-storage local-storage-language-name ":en")
           loaded-language (cond-> loaded-language
-                            (s/starts-with? loaded-language ":") (->
-                                                                   (subs 1)
-                                                                   keyword))]
+                            (str/starts-with? loaded-language ":") (->
+                                                                     (subs 1)
+                                                                     keyword))]
       (if loaded-language
         (set-language db loaded-language)
         (set-language db (browser-preferred-language))))))

@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.ordinary.type.fess
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
@@ -270,7 +270,7 @@
                                                         reference-lower-line :opposite-line}]
   (let [kind (cottising/kind context)
         opposite? (or flip-cottise?
-                      (-> kind name (s/starts-with? "cottise-opposite")))
+                      (-> kind name (str/starts-with? "cottise-opposite")))
         reference-line (if opposite?
                          reference-lower-line
                          reference-upper-line)

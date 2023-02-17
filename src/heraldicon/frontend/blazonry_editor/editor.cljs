@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.blazonry-editor.editor
   (:require
    ["draft-js" :as draft-js]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.blazonry-editor.dom :as dom]
    [heraldicon.frontend.blazonry-editor.parser :as parser]
@@ -67,7 +67,7 @@
           cursor-index (-> (state/cursor-index state)
                            (max index)
                            (min (count text)))
-          substring-since-error (s/trim (subs text index cursor-index))]
+          substring-since-error (str/trim (subs text index cursor-index))]
       {:db (-> db
                (update-in state-path state/highlight-unknown-string index)
                (assoc-in last-parsed-path text)

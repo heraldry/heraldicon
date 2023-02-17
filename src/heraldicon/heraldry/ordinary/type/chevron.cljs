@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.ordinary.type.chevron
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
@@ -576,7 +576,7 @@
         thickness (interface/get-sanitized-data (c/++ context :thickness))
         band-size (math/percent-of percentage-base thickness)
         opposite? (or flip-cottise?
-                      (-> kind name (s/starts-with? "cottise-opposite")))
+                      (-> kind name (str/starts-with? "cottise-opposite")))
         reference-line (if opposite?
                          reference-lower-line
                          reference-upper-line)

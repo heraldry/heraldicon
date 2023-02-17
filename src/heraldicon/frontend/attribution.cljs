@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.attribution
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.language :refer [tr]]
@@ -22,7 +22,7 @@
         license-display-name (attribution/license-display-name license license-version)
         source-license-url (attribution/license-url source-license source-license-version)
         source-license-display-name (attribution/license-display-name source-license source-license-version)
-        source-modification (s/trim (or source-modification ""))]
+        source-modification (str/trim (or source-modification ""))]
     [:div.credit
      [:<>
       (if url
@@ -36,7 +36,7 @@
          " "
          [:a {:href (attribution/full-url-for-username username)
               :target "_blank"} username]]
-        (when-not (s/blank? creator-name)
+        (when-not (str/blank? creator-name)
           [:<>
            " "
            [tr :string.miscellaneous/by]
@@ -55,11 +55,11 @@
         [:div.sub-credit
          [tr :string.attribution/source]
          ": "
-         (if (s/blank? source-name)
+         (if (str/blank? source-name)
            [tr :string.miscellaneous/unnamed]
            [:a {:href source-link
                 :target "_blank"} " " source-name])
-         (when-not (s/blank? source-creator-name)
+         (when-not (str/blank? source-creator-name)
            [:<>
             " "
             [tr :string.miscellaneous/by]
@@ -72,7 +72,7 @@
            :public-domain [tr :string.attribution/is-in-the-public-domain]
            [:<> [tr :string.attribution/is-licensed-under] " "
             [:a {:href source-license-url :target "_blank"} source-license-display-name]])
-         (when-not (s/blank? source-modification)
+         (when-not (str/blank? source-modification)
            [:<>
             " " [tr :string.attribution/modifications] ": " source-modification])])]]))
 

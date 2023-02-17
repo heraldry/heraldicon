@@ -1,7 +1,7 @@
 (ns heraldicon.svg.core
   (:require
    ["css" :as css]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.util.uid :as uid]
@@ -10,13 +10,13 @@
 (defn- split-style-value [value]
   (into {}
         (keep (fn [chunk]
-                (let [[k v] (s/split chunk #":" 2)
-                      k (some-> k s/trim)
-                      v (some-> v s/trim)]
-                  (when-not (or (s/blank? k)
-                                (s/blank? v))
+                (let [[k v] (str/split chunk #":" 2)
+                      k (some-> k str/trim)
+                      v (some-> v str/trim)]
+                  (when-not (or (str/blank? k)
+                                (str/blank? v))
                     [(keyword k) v]))))
-        (s/split value #";")))
+        (str/split value #";")))
 
 (defn fix-string-style-values [data]
   (walk/postwalk #(if (and (vector? %)
@@ -56,7 +56,7 @@
 
 (defn- svg-namespaced-tag-or-attribute? [tag]
   (and (keyword? tag)
-       (-> tag name (s/includes? ":"))))
+       (-> tag name (str/includes? ":"))))
 
 (defn remove-namespaced-elements [data]
   (walk/postwalk
@@ -216,7 +216,7 @@
                      (into {}
                            (remove (fn [[_ v]]
                                      (and (string? v)
-                                          (-> v s/lower-case (= "currentcolor")))))
+                                          (-> v str/lower-case (= "currentcolor")))))
                            value)
                      value))
                  data))

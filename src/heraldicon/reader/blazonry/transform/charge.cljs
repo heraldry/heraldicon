@@ -1,6 +1,6 @@
 (ns heraldicon.reader.blazonry.transform.charge
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
@@ -11,7 +11,7 @@
        (map (fn [[key _]]
               [(->> key
                     name
-                    s/upper-case
+                    str/upper-case
                     (keyword "attitude"))
                key]))
        (into {})))
@@ -25,7 +25,7 @@
 (def ^:private facing-map
   (into {}
         (map (fn [[key _]]
-               [(keyword "facing" (-> key name s/upper-case))
+               [(keyword "facing" (-> key name str/upper-case))
                 key]))
         attributes/facing-map))
 
@@ -63,7 +63,7 @@
 (def ^:private charge-type-map
   (into {:charge/ESTOILE :heraldry.charge.type/star}
         (map (fn [[key _]]
-               [(keyword "charge" (-> key name s/upper-case))
+               [(keyword "charge" (-> key name str/upper-case))
                 key]))
         charge.options/charge-map))
 

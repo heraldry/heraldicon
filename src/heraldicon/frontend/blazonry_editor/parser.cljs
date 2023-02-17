@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.blazonry-editor.parser
   (:require
    ["genex" :as genex]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.frontend.blazonry-editor.editor :as-alias editor]
    [heraldicon.frontend.blazonry-editor.shared :as shared]
    [heraldicon.frontend.language :refer [tr]]
@@ -41,13 +41,13 @@
                                                      genex
                                                      .generate
                                                      js->clj))))
-                             (map s/trim)
+                             (map str/trim)
                              (map (fn [word]
-                                    (let [new-word (s/replace word #"[,&]" "")]
-                                      (if (s/blank? new-word)
+                                    (let [new-word (str/replace word #"[,&]" "")]
+                                      (if (str/blank? new-word)
                                         word
                                         new-word))))
-                             (remove s/blank?)
+                             (remove str/blank?)
                              sort
                              dedupe
                              (map (fn [choice]

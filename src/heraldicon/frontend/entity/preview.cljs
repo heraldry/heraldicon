@@ -1,13 +1,13 @@
 (ns heraldicon.frontend.entity.preview
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.config :as config]
    [re-frame.core :as rf]))
 
 (defn url [kind {:keys [id version]} & {:keys [width height]}]
   (let [url (or (config/get :heraldicon-site-url)
                 (config/get :heraldicon-url))]
-    (str url "/preview/" (name kind) "/" (-> id (s/split #":") last) "/" (or version 0) "/preview.png"
+    (str url "/preview/" (name kind) "/" (-> id (str/split #":") last) "/" (or version 0) "/preview.png"
          (when (and width height)
            (str "?width=" width "&height=" height)))))
 

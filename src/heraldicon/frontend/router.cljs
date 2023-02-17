@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.router
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.frontend.account :as account]
    [heraldicon.frontend.contact :as contact]
    [heraldicon.frontend.home :as home]
@@ -140,7 +140,7 @@
   (-> @current-state :data :name))
 
 (defn- section [route]
-  (some-> route namespace (s/split #"[.]") second))
+  (some-> route namespace (str/split #"[.]") second))
 
 (defn- current-section []
   (section (current-route)))

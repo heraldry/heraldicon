@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.ordinary.type.bend
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
@@ -558,7 +558,7 @@
         use-parent-environment? (or counterchanged?
                                     inherit-environment?)
         opposite? (or flip-cottise?
-                      (-> kind name (s/starts-with? "cottise-opposite")))
+                      (-> kind name (str/starts-with? "cottise-opposite")))
         reference-line (if opposite?
                          reference-lower-line
                          reference-upper-line)

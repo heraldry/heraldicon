@@ -1,6 +1,6 @@
 (ns heraldicon.reader.blazonry.transform.line
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first transform-all]]))
 
@@ -8,7 +8,7 @@
   (let [raw-type (-> node
                      first
                      name
-                     s/lower-case
+                     str/lower-case
                      keyword)]
     (get {:rayonny :rayonny-flaming}
          raw-type raw-type)))

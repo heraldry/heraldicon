@@ -1,7 +1,7 @@
 (ns heraldicon.config
   (:refer-clojure :exclude [get])
   (:require
-   [clojure.string :as s]))
+   [clojure.string :as str]))
 
 (defn- js->clj+
   "For cases when built-in js->clj doesn't work. Source: https://stackoverflow.com/a/32583549/4839573"
@@ -78,8 +78,8 @@
     :email-address "oliver@heraldicon.org"
     (or (some-> setting
                 name
-                s/upper-case
-                (s/replace "-" "_")
+                str/upper-case
+                (str/replace "-" "_")
                 keyword
                 env)
         (clojure.core/get config-data setting))))

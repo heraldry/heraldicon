@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.render
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.heraldry.line.core :as line]
@@ -135,7 +135,7 @@
   (when (and (not (:svg-export? (c/render-hints context)))
              (or @(rf/subscribe [::tree/node-highlighted? (conj (:path context) :field)])
                  @(rf/subscribe [::tree/node-highlighted? (:path context)])))
-    [:path.node-highlighted {:d (s/join " " (:shape (interface/get-render-shape context)))
+    [:path.node-highlighted {:d (str/join " " (:shape (interface/get-render-shape context)))
                              :style {:stroke-width 1
                                      :stroke-linecap "round"
                                      :stroke-linejoin "round"

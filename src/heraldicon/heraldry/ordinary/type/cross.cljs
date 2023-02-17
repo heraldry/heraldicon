@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.ordinary.type.cross
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
@@ -277,7 +277,7 @@
                                                                edge-bottom-left edge-bottom-right
                                                                humetty]
                                                         reference-line :line}]
-  (when-not (-> (cottising/kind context) name (s/starts-with? "cottise-opposite"))
+  (when-not (-> (cottising/kind context) name (str/starts-with? "cottise-opposite"))
     (let [distance (interface/get-sanitized-data (c/++ context :distance))
           distance (math/percent-of percentage-base distance)
           thickness (interface/get-sanitized-data (c/++ context :thickness))

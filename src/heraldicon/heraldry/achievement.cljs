@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.achievement
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.heraldry.field.environment :as environment]
@@ -142,8 +142,8 @@
                 1)
         [document-width document-height] [(* result-width scale) (* result-height scale)]]
     [:svg (merge
-           {:viewBox (s/join " " (map str [(- margin) (- margin)
-                                           result-width result-height]))}
+           {:viewBox (str/join " " (map str [(- margin) (- margin)
+                                             result-width result-height]))}
            (if svg-export?
              {:xmlns "http://www.w3.org/2000/svg"
               :xmlnsXlink "http://www.w3.org/1999/xlink"

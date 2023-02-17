@@ -2,7 +2,7 @@
   (:require
    ["paper" :refer [Path]]
    ["paperjs-offset" :refer [PaperOffset]]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
    [taoensso.timbre :as log]))
@@ -68,7 +68,7 @@
                :fly fly}})))
 
 (defn- shape? [shape]
-  (not (s/blank? shape)))
+  (not (str/blank? shape)))
 
 (defn- apply-offset [shape distance join]
   (when (shape? shape)
@@ -82,7 +82,7 @@
           ;; there might be multiple closed paths in the result, find the one with the largest area
           ;; and assume that's the one we want
           sub-paths (some-> path
-                            (s/split #"[zZ]"))
+                            (str/split #"[zZ]"))
           longest (some->> sub-paths
                            (sort-by (fn [path]
                                       (-> (new Path (str path "z"))
