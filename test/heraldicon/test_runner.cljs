@@ -51,6 +51,7 @@
 
   (if (-> expected first (= '=))
     (let [[_ actual-value expected-value] (second actual)]
+      (print (prn-str (second expected)))
       (print (with-out-str
                (ddiff/pretty-print
                 (ddiff/diff expected-value actual-value)
