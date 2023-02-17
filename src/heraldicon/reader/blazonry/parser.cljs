@@ -138,7 +138,7 @@
                                                                  s/trim)
                                               valid-charge-type? (re-matches #"^[a-zA-Z0-9-]+$" charge-type-name)]
                                           (when (and valid-charge-type?
-                                                     (-> clean-name count pos?))
+                                                     (not (s/blank? clean-name)))
                                             (if (contains? (:bad-charge-types default) clean-name)
                                               [rule-name (let [clean-name (str "charge " clean-name)]
                                                            (set [clean-name

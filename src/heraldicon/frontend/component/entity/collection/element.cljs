@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.component.entity.collection.element
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.element.core :as element]
@@ -39,9 +40,9 @@
   (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
     {:title (string/str-tr (inc index) ": "
-                           (if (-> name count pos?)
-                             name
-                             :string.miscellaneous/no-name))}))
+                           (if (s/blank? name)
+                             :string.miscellaneous/no-name
+                             name))}))
 
 (defmethod component/form :heraldicon.entity.collection/element [_context]
   form)

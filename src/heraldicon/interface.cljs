@@ -1,5 +1,6 @@
 (ns heraldicon.interface
   (:require
+   [clojure.string :as s]
    [heraldicon.context :as c]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.default :as default]
@@ -104,9 +105,9 @@
 
 (defn blazon [context]
   (let [manual-blazon (get-sanitized-data (c/++ context :manual-blazon))]
-    (if (-> manual-blazon count pos?)
-      manual-blazon
-      (blazon-component context))))
+    (if (s/blank? manual-blazon)
+      (blazon-component context)
+      manual-blazon)))
 
 (defn parent [context]
   (some-> (cond

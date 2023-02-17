@@ -111,7 +111,7 @@
                 :type "text"
                 :style {:margin-right "0.5em"}}]
        [:button
-        {:disabled (-> value (or "") s/trim count zero?)
+        {:disabled (s/blank? value)
          :on-click on-click
          :type "button"}
         [tr :string.button/add]]

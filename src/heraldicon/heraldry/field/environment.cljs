@@ -68,7 +68,7 @@
                :fly fly}})))
 
 (defn- shape? [shape]
-  (-> shape count pos?))
+  (not (s/blank? shape)))
 
 (defn- apply-offset [shape distance join]
   (when (shape? shape)

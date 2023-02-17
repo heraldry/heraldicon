@@ -36,7 +36,7 @@
          " "
          [:a {:href (attribution/full-url-for-username username)
               :target "_blank"} username]]
-        (when (-> creator-name count pos?)
+        (when-not (s/blank? creator-name)
           [:<>
            " "
            [tr :string.miscellaneous/by]
@@ -55,11 +55,11 @@
         [:div.sub-credit
          [tr :string.attribution/source]
          ": "
-         (if (-> source-name count pos?)
+         (if (s/blank? source-name)
+           [tr :string.miscellaneous/unnamed]
            [:a {:href source-link
-                :target "_blank"} " " source-name]
-           [tr :string.miscellaneous/unnamed])
-         (when (-> source-creator-name count pos?)
+                :target "_blank"} " " source-name])
+         (when-not (s/blank? source-creator-name)
            [:<>
             " "
             [tr :string.miscellaneous/by]
@@ -72,7 +72,7 @@
            :public-domain [tr :string.attribution/is-in-the-public-domain]
            [:<> [tr :string.attribution/is-licensed-under] " "
             [:a {:href source-license-url :target "_blank"} source-license-display-name]])
-         (when (-> source-modification count pos?)
+         (when-not (s/blank? source-modification)
            [:<>
             " " [tr :string.attribution/modifications] ": " source-modification])])]]))
 
