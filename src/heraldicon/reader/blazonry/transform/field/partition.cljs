@@ -92,6 +92,23 @@
       (get partition-options :pattern-option/BENDY) (assoc-in [:layout :rotation] 45)
       (get partition-options :pattern-option/BENDY-SINISTER) (assoc-in [:layout :rotation] -45))))
 
+(def ^:private variant-map
+  {:vairy-variant/COUNTER :counter
+   :vairy-variant/IN-PALE :in-pale
+   :vairy-variant/EN-POINT :en-point
+   :vairy-variant/ANCIEN :ancien
+   :potenty-variant/COUNTER :counter
+   :potenty-variant/IN-PALE :in-pale
+   :potenty-variant/EN-POINT :en-point})
+
+(defn- add-variant [hdn nodes]
+  (let [variant (some->> nodes
+                         (filter-nodes variant-map)
+                         ffirst
+                         variant-map)]
+    (cond-> hdn
+      variant (assoc :variant variant))))
+
 (def ^:private field-reference-map
   {:barry {}
    :bendy {}
@@ -350,4 +367,5 @@
         (add-lines nodes)
         (cond->
           layout (assoc :layout layout))
-        (add-partition-options nodes))))
+        (add-partition-options nodes)
+        (add-variant nodes))))
