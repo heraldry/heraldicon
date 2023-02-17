@@ -13,8 +13,8 @@
                 (let [[k v] (s/split chunk #":" 2)
                       k (some-> k s/trim)
                       v (some-> v s/trim)]
-                  (when (and (some-> k count pos?)
-                             (some-> v count pos?))
+                  (when-not (or (s/blank? k)
+                                (s/blank? v))
                     [(keyword k) v]))))
         (s/split value #";")))
 

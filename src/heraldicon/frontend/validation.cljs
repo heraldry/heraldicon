@@ -236,7 +236,7 @@
                (seq (filter (fn [value]
                               (if (keyword? value)
                                 (= value :none)
-                                (-> value (or "") s/trim count zero?))) source-fields)))
+                                (s/blank? value))) source-fields)))
       [{:level :error
         :message :string.validation.attribution/all-source-fields-required}])))
 

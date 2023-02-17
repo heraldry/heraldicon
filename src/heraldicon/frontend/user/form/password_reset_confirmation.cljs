@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.user.form.password-reset-confirmation
   (:require
+   [clojure.string :as s]
    [heraldicon.frontend.aws.cognito :as cognito]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
@@ -46,7 +47,7 @@
   (fn [{:keys [db]} _]
     (let [{:keys [code new-password new-password-again]} (form/data-from-db db ::id)
           user (get-in db db-path)
-          new-password? (-> new-password count pos?)]
+          new-password? (not (s/blank? new-password))]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not new-password?) (update :dispatch-n conj

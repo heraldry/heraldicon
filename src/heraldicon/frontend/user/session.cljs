@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.user.session
   (:require
+   [clojure.string :as s]
    [heraldicon.entity.user :as user]
    [heraldicon.frontend.repository.core :as repository]
    [hodgepodge.core :as hp]
@@ -40,12 +41,12 @@
 
 (rf/reg-fx ::set-cookie
   (fn [[session-id]]
-    (if (some-> session-id count pos?)
-      (set! js/document.cookie (str "session-id=" session-id
-                                    ";path=/"))
+    (if (s/blank? session-id)
       (set! js/document.cookie (str "session-id="
                                     ";path=/"
-                                    ";Max-Age=-99999999")))))
+                                    ";Max-Age=-99999999"))
+      (set! js/document.cookie (str "session-id=" session-id
+                                    ";path=/")))))
 
 (rf/reg-fx ::write-to-local-storage
   (fn [[{:keys [session-id username user-id dark-mode?]}]]

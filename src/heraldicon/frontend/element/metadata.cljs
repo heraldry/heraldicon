@@ -93,8 +93,8 @@
                        :type "text"
                        :style {:margin-right "0.5em"}}]
               [:button
-               {:disabled (or (-> name-value (or "") s/trim count zero?)
-                              (-> value-value (or "") s/trim count zero?))
+               {:disabled (or (s/blank? name-value)
+                              (s/blank? value-value))
                 :on-click (js-event/handled
                            #(do
                               (rf/dispatch [::add-metadata context name-value value-value])
