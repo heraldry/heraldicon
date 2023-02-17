@@ -4,7 +4,7 @@
    [cljs.core.async :refer [go]]
    [cljs.core.async.interop :refer-macros [<p!]]
    [clojure.set :as set]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.context :as c]
@@ -56,10 +56,10 @@
        (map second)
        (filter #(and (string? %)
                      (not= % "none")
-                     (-> % (s/starts-with? "url") not)))
-       (map s/lower-case)
+                     (-> % (str/starts-with? "url") not)))
+       (map str/lower-case)
        (map colour/normalize)
-       (map s/lower-case)
+       (map str/lower-case)
        (filter #(re-matches #"^#[a-f0-9]{6}$" %))
        set))
 
@@ -69,7 +69,7 @@
           value (if (-> num count (= 0))
                   0
                   (js/parseFloat num))
-          factor (case (s/lower-case unit)
+          factor (case (str/lower-case unit)
                    "px" 1
                    "in" 96
                    "cm" 37.795

@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.element.metadata
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.entity.metadata :as metadata]
    [heraldicon.frontend.element.core :as element]
@@ -93,8 +93,8 @@
                        :type "text"
                        :style {:margin-right "0.5em"}}]
               [:button
-               {:disabled (or (s/blank? name-value)
-                              (s/blank? value-value))
+               {:disabled (or (str/blank? name-value)
+                              (str/blank? value-value))
                 :on-click (js-event/handled
                            #(do
                               (rf/dispatch [::add-metadata context name-value value-value])

@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.component.entity.collection.element
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.element.core :as element]
@@ -40,7 +40,7 @@
   (let [name (interface/get-raw-data (c/++ context :name))
         index (last path)]
     {:title (string/str-tr (inc index) ": "
-                           (if (s/blank? name)
+                           (if (str/blank? name)
                              :string.miscellaneous/no-name
                              name))}))
 

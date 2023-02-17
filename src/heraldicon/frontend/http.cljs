@@ -2,14 +2,14 @@
   (:require
    [cljs-http.client :as http]
    [cljs.reader :as reader]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]))
 
 (defn fetch [url]
   (go-catch
    (let [{:keys [status body]} (<? (http/get url))]
      (if (= status 200)
-       (if (and (s/ends-with? url ".edn")
+       (if (and (str/ends-with? url ".edn")
                 (string? body))
          (reader/read-string body)
          body)

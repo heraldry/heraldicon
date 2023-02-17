@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.element.tincture-modifiers
   (:require
    [clojure.set :as set]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.charge :as charge]
    [heraldicon.frontend.element.core :as element]
@@ -83,7 +83,7 @@
                                                   attributes/tincture-modifier-for-charge-map))
                                    (string/combine ", ")
                                    tr
-                                   s/lower-case
+                                   str/lower-case
                                    string/upper-case-first)
                               :string.charge.tincture-modifier/none)
             link-name (if (and (string? tinctures-title)

@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.tincture
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
@@ -66,7 +66,7 @@
     (#{:ermine :ermines :erminois :pean} tincture) :fur
     (-> tincture
         name
-        (s/starts-with? "helmet")) :special
+        (str/starts-with? "helmet")) :special
     :else :colour))
 
 (def fixed-tincture-map

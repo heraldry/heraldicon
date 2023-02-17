@@ -1,6 +1,6 @@
 (ns heraldicon.reader.blazonry.transform.ordinary
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.reader.blazonry.transform.cottising :refer [add-cottising]]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
@@ -15,7 +15,7 @@
          :ordinary/BENDLET :heraldry.ordinary.type/bend
          :ordinary/BENDLET-SINISTER :heraldry.ordinary.type/bend-sinister}
         (map (fn [[key _]]
-               [(keyword "ordinary" (-> key name s/upper-case))
+               [(keyword "ordinary" (-> key name str/upper-case))
                 key]))
         ordinary.options/ordinary-map))
 

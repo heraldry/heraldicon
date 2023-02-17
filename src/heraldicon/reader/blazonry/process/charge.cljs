@@ -1,6 +1,6 @@
 (ns heraldicon.reader.blazonry.process.charge
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [clojure.walk :as walk]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.reader.blazonry.result :as result]))
@@ -17,7 +17,7 @@
                                                           (= attitude)))))
         charge-name (-> short-charge-type
                         name
-                        (s/replace "-" " "))
+                        (str/replace "-" " "))
         [attitude-warning
          candidates] (if (and attitude
                               (seq candidates)
@@ -27,7 +27,7 @@
                              "' found with attitude '"
                              (-> attitude
                                  name
-                                 (s/replace "-" " "))
+                                 (str/replace "-" " "))
                              "', using best match.")
                         candidates]
                        [nil
@@ -48,7 +48,7 @@
                              "' found facing '"
                              (-> facing
                                  name
-                                 (s/replace "-" " "))
+                                 (str/replace "-" " "))
                              "', using best match.")
                         candidates]
                        [nil

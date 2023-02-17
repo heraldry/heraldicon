@@ -1,6 +1,6 @@
 (ns heraldicon.reader.blazonry.transform.tincture-modifier
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.heraldry.option.attributes :as attributes]
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first transform-all]]))
 
@@ -9,7 +9,7 @@
        (map (fn [[key _]]
               [(->> key
                     name
-                    s/upper-case
+                    str/upper-case
                     (keyword "tincture-modifier"))
                key]))
        (into {})))

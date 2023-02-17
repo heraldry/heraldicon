@@ -1,7 +1,7 @@
 (ns heraldicon.reader.blazonry.transform.field.partition
   (:require
    [clojure.set :as set]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [clojure.walk :as walk]
    [heraldicon.heraldry.field.core :as field]
    [heraldicon.heraldry.field.options :as field.options]
@@ -13,7 +13,7 @@
 (def ^:private field-type-map
   (-> (into {}
             (map (fn [[key _]]
-                   [(keyword "partition" (-> key name s/upper-case))
+                   [(keyword "partition" (-> key name str/upper-case))
                     key]))
             field.options/field-map)
       (assoc :partition/FUSILY :heraldry.field.type/lozengy)))
@@ -276,27 +276,27 @@
                                                                            (> 1))
                                                                    "s")
                                                                  " for partition missing: "
-                                                                 (s/join ", " (map reference-to-string
-                                                                                   (sort-by field-reference-sort-key
-                                                                                            missing-mandatory-references)))))
+                                                                 (str/join ", " (map reference-to-string
+                                                                                     (sort-by field-reference-sort-key
+                                                                                              missing-mandatory-references)))))
                    (seq unknown-references) (conj (str "Field"
                                                        (when (-> unknown-references
                                                                  count
                                                                  (> 1))
                                                          "s")
                                                        " not found in partition: "
-                                                       (s/join ", " (map reference-to-string
-                                                                         (sort-by field-reference-sort-key
-                                                                                  unknown-references)))))
+                                                       (str/join ", " (map reference-to-string
+                                                                           (sort-by field-reference-sort-key
+                                                                                    unknown-references)))))
                    (seq multi-references) (conj (str "Field"
                                                      (when (-> multi-references
                                                                count
                                                                (> 1))
                                                        "s")
                                                      " for partition mentioned more than once: "
-                                                     (s/join ", " (map reference-to-string
-                                                                       (sort-by field-reference-sort-key
-                                                                                multi-references))))))]
+                                                     (str/join ", " (map reference-to-string
+                                                                         (sort-by field-reference-sort-key
+                                                                                  multi-references))))))]
     (cond-> hdn
       (seq warnings) (assoc ::result/warnings warnings))))
 

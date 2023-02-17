@@ -1,6 +1,6 @@
 (ns heraldicon.render.ribbon
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.frontend.component.tree :as-alias tree]
@@ -115,10 +115,10 @@
                          foreground? (#{:heraldry.ribbon.segment.type/foreground
                                         :heraldry.ribbon.segment.type/foreground-with-text} segment-type)
                          text (some-> (interface/get-sanitized-data (c/++ segment-context :text))
-                                      (s/replace #"[*]" "⬪"))
+                                      (str/replace #"[*]" "⬪"))
                          text? (and (= segment-type :heraldry.ribbon.segment.type/foreground-with-text)
                                     (some-> text
-                                            s/trim
+                                            str/trim
                                             count
                                             pos?))]
                      ^{:key idx}

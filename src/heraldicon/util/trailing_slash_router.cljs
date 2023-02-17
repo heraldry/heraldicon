@@ -1,6 +1,6 @@
 (ns heraldicon.util.trailing-slash-router
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [reitit.core :as r]
    [reitit.frontend :as reif]))
 
@@ -20,7 +20,7 @@
         (r/route-names parent))
       (match-by-path [_ path]
         (or (r/match-by-path parent path)
-            (if (s/ends-with? path "/")
+            (if (str/ends-with? path "/")
               (r/match-by-path parent (subs path 0 (dec (count path))))
               (r/match-by-path parent (str path "/")))))
       (match-by-name [_ name]

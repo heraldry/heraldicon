@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.ordinary.type.pale
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.cottising :as cottising]
    [heraldicon.heraldry.field.environment :as environment]
@@ -271,7 +271,7 @@
         distance (math/percent-of percentage-base distance)
         thickness (interface/get-sanitized-data (c/++ context :thickness))
         band-size (math/percent-of percentage-base thickness)
-        opposite? (-> kind name (s/starts-with? "cottise-opposite"))
+        opposite? (-> kind name (str/starts-with? "cottise-opposite"))
         reference-line (if opposite?
                          reference-right-line
                          reference-left-line)

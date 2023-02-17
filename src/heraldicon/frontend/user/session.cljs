@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.user.session
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.entity.user :as user]
    [heraldicon.frontend.repository.core :as repository]
    [hodgepodge.core :as hp]
@@ -41,7 +41,7 @@
 
 (rf/reg-fx ::set-cookie
   (fn [[session-id]]
-    (if (s/blank? session-id)
+    (if (str/blank? session-id)
       (set! js/document.cookie (str "session-id="
                                     ";path=/"
                                     ";Max-Age=-99999999"))

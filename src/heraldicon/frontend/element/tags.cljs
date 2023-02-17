@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.element.tags
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.entity.tag :as tag]
    [heraldicon.frontend.element.core :as element]
@@ -40,9 +40,9 @@
 (defn- add-tag-clicked [path value]
   (let [tags (-> value
                  (or "")
-                 s/trim
-                 s/lower-case
-                 (s/split #"[^a-z0-9-]+")
+                 str/trim
+                 str/lower-case
+                 (str/split #"[^a-z0-9-]+")
                  (->> (keep tag/clean)))]
     (rf/dispatch [::add path tags])
     (rf/dispatch [:set value-path nil])))
@@ -111,7 +111,7 @@
                 :type "text"
                 :style {:margin-right "0.5em"}}]
        [:button
-        {:disabled (s/blank? value)
+        {:disabled (str/blank? value)
          :on-click on-click
          :type "button"}
         [tr :string.button/add]]

@@ -1,15 +1,15 @@
 (ns heraldicon.entity.id
   (:require
-   [clojure.string :as s]))
+   [clojure.string :as str]))
 
 (defn for-url [id]
   (some-> id
-          (s/split #":" 2)
+          (str/split #":" 2)
           second))
 
 (defn type-from-id [entity-id]
   (case (some-> entity-id
-                (s/split #":")
+                (str/split #":")
                 first)
     "arms" :heraldicon.entity.type/arms
     "charge" :heraldicon.entity.type/charge

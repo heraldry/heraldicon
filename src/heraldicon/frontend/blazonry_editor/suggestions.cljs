@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.blazonry-editor.suggestions
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [re-frame.core :as rf]))
 
@@ -26,7 +26,7 @@
 (defn- filter-choices [choices s]
   (->> choices
        (filter (fn [[choice _]]
-                 (s/starts-with? choice s)))
+                 (str/starts-with? choice s)))
        (sort-by (fn [[choice hint]]
                   [(get hint-order hint 1000) choice]))))
 

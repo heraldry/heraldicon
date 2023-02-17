@@ -1,6 +1,6 @@
 (ns heraldicon.localization.string
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.localization.locale :as locale]))
 
 (defn tr-raw [data language]
@@ -26,7 +26,7 @@
                                       (map (fn [s]
                                              (tr-raw s language)))
                                       (filter (comp pos? count))
-                                      (s/join (tr-raw separator language)))]))
+                                      (str/join (tr-raw separator language)))]))
                          (keys locale/all))]
     (if (-> translated
             vals
@@ -44,7 +44,7 @@
                                       (map (fn [s]
                                              (tr-raw s language)))
                                       (filter (comp pos? count))
-                                      s/join)]))
+                                      str/join)]))
                          (keys locale/all))]
     (if (-> translated
             vals
@@ -66,11 +66,11 @@
          (first s1) (cons (first s1)))))))
 
 (defn format-tr [s & args]
-  (let [chunks (s/split s "%s")]
+  (let [chunks (str/split s "%s")]
     (apply str-tr (interleave-all chunks args))))
 
 (defn- upper-case-first-str [s]
-  (str (s/upper-case (or (first s) "")) (subs s 1)))
+  (str (str/upper-case (or (first s) "")) (subs s 1)))
 
 (defn upper-case-first [s]
   (if (map? s)

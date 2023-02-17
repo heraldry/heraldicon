@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.element.flag-aspect-ratio-preset-select
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.select :as select]
@@ -24,7 +24,7 @@
        :on-change (fn [value]
                     (let [[_ height width] (-> value
                                                name
-                                               (s/split "-"))]
+                                               (str/split "-"))]
                       (rf/dispatch [::set-flag-width-and-height
                                     context
                                     (js/parseInt width)

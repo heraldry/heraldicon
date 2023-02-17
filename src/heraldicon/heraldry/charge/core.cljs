@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.charge.core
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
@@ -35,7 +35,7 @@
                            "a")
                          (string/str-tr charge-name
                                         (when pluralize?
-                                          (if (s/ends-with? charge-name "s")
+                                          (if (str/ends-with? charge-name "s")
                                             "es"
                                             "s")))
                          (when-not (= attitude :none)

@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.line.core
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.line.type.angled :as angled]
@@ -141,7 +141,7 @@
    #'enarched/pattern])
 
 (defn- get-line-identifier [pattern]
-  (-> pattern meta :ns name (s/split ".") last keyword))
+  (-> pattern meta :ns name (str/split ".") last keyword))
 
 (def kinds-pattern-map
   (into {}

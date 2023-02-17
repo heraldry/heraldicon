@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.charge.other
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [clojure.walk :as walk]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
@@ -61,7 +61,7 @@
    (fn remove-outlines [data placeholder-colours]
      (walk/postwalk #(if (and (vector? %)
                               (->> % first (get #{:stroke :fill :stop-color}))
-                              (or (-> % second (s/starts-with? "url"))
+                              (or (-> % second (str/starts-with? "url"))
                                   (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) (= :outline))))
                        [(first %) "none"]
                        %)
@@ -72,7 +72,7 @@
    (fn remove-shading [data placeholder-colours]
      (walk/postwalk #(if (and (vector? %)
                               (->> % first (get #{:stroke :fill :stop-color}))
-                              (or (-> % second (s/starts-with? "url"))
+                              (or (-> % second (str/starts-with? "url"))
                                   (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) #{:shadow :highlight})))
                        [(first %) "none"]
                        %)
@@ -147,7 +147,7 @@
      (let [mask (replace-colours
                  data
                  (fn [colour]
-                   (if (s/starts-with? colour "url")
+                   (if (str/starts-with? colour "url")
                      "none"
                      (let [colour-lower (colour/normalize colour)
                            kind (placeholder-colour-modifier placeholder-colours colour-lower)
@@ -165,7 +165,7 @@
            mask-base (replace-colours
                       data
                       (fn [colour]
-                        (if (s/starts-with? colour "url")
+                        (if (str/starts-with? colour "url")
                           "none"
                           (let [colour-lower (colour/normalize colour)
                                 kind (placeholder-colour-modifier placeholder-colours colour-lower)]
@@ -178,7 +178,7 @@
            mask-inverted (replace-colours
                           data
                           (fn [colour]
-                            (if (s/starts-with? colour "url")
+                            (if (str/starts-with? colour "url")
                               "none"
                               (let [colour-lower (colour/normalize colour)
                                     kind (placeholder-colour-modifier placeholder-colours colour-lower)
@@ -387,7 +387,7 @@
                 (-> adjusted-charge-without-shading
                     (replace-colours
                      (fn [colour]
-                       (if (s/starts-with? colour "url")
+                       (if (str/starts-with? colour "url")
                          "none"
                          (let [colour-lower (colour/normalize colour)
                                kind (placeholder-colour-modifier placeholder-colours colour-lower)]
@@ -402,7 +402,7 @@
                (-> adjusted-charge
                    (replace-colours
                     (fn [colour]
-                      (if (s/starts-with? colour "url")
+                      (if (str/starts-with? colour "url")
                         colour
                         (let [colour-lower (colour/normalize colour)
                               kind (placeholder-colour-modifier placeholder-colours colour-lower)
@@ -422,7 +422,7 @@
                 (-> adjusted-charge-without-shading
                     (replace-colours
                      (fn [colour]
-                       (if (s/starts-with? colour "url")
+                       (if (str/starts-with? colour "url")
                          "none"
                          (let [colour-lower (colour/normalize colour)
                                kind (placeholder-colour-modifier placeholder-colours colour-lower)]
@@ -437,7 +437,7 @@
                (-> adjusted-charge
                    (replace-colours
                     (fn [colour]
-                      (if (s/starts-with? colour "url")
+                      (if (str/starts-with? colour "url")
                         colour
                         (let [colour-lower (colour/normalize colour)
                               kind (placeholder-colour-modifier placeholder-colours colour-lower)
@@ -482,7 +482,7 @@
                            :height base-height}]
                    (for [path charge-shapes]
                      ^{:key path}
-                     [:path {:d (s/join " " path)}]))]])
+                     [:path {:d (str/join " " path)}]))]])
              [:g {:transform transform}
               [render/shape-fimbriation context
                :fimbriation-shape fimbriation-shape
@@ -544,7 +544,7 @@
              [:g {:transform transform}
               (for [path charge-shapes]
                 ^{:key path}
-                [:path.node-highlighted {:d (s/join " " path)
+                [:path.node-highlighted {:d (str/join " " path)
                                          :style {:stroke-width (/ 1 scale-x)
                                                  :stroke-linecap "round"
                                                  :stroke-linejoin "round"

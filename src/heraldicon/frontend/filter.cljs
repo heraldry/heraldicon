@@ -2,7 +2,7 @@
   (:require
    ["react-infinite-scroll-component" :as InfiniteScroll]
    [clojure.set :as set]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.core :as entity]
@@ -34,19 +34,19 @@
 (defn- normalize-string-for-sort [s]
   (some-> s
           normalize-string
-          s/lower-case))
+          str/lower-case))
 
 (defn- normalize-string-for-match [s]
   (some-> s
           normalize-string
-          (s/replace #"[\u0300-\u036f]" "")
-          s/lower-case))
+          (str/replace #"[\u0300-\u036f]" "")
+          str/lower-case))
 
 (defn- matches-word [data word]
   (cond
     (keyword? data) (-> data name (matches-word word))
     (string? data) (-> data normalize-string-for-match
-                       (s/includes? word))
+                       (str/includes? word))
     (vector? data) (some (fn [e]
                            (matches-word e word)) data)
     (map? data) (some (fn [[k v]]
@@ -60,7 +60,7 @@
 (defn- filter-items [session item-list filter-keys filter-string filter-tags filter-access filter-ownership]
   (let [words (-> filter-string
                   normalize-string-for-match
-                  (s/split #" +"))
+                  (str/split #" +"))
         filter-tags-set (-> filter-tags
                             keys
                             set)]

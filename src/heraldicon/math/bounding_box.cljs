@@ -1,6 +1,6 @@
 (ns heraldicon.math.bounding-box
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]))
 
@@ -119,7 +119,7 @@
                                  :or {margin 0}}]
   (let [{:keys [min-x min-y]
          :as dilated} (dilate bounding-box margin)]
-    (s/join " " (map str [min-x min-y (width dilated) (height dilated)]))))
+    (str/join " " (map str [min-x min-y (width dilated) (height dilated)]))))
 
 (defn top-left ^v/Vector [^BoundingBox {:keys [min-x min-y]}]
   (v/Vector. min-x min-y))

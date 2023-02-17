@@ -1,6 +1,6 @@
 (ns heraldicon.blazonry
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.localization.string :as string]))
 
 ;; TODO: this could become a multi method based on a keyword hierarchy,
@@ -10,9 +10,9 @@
   (when keyword
     (-> keyword
         name
-        (s/replace "-" " ")
-        (s/replace "fleur de lis" "fleur-de-lis")
-        (s/replace "fleur de lys" "fleur-de-lys"))))
+        (str/replace "-" " ")
+        (str/replace "fleur de lis" "fleur-de-lis")
+        (str/replace "fleur de lys" "fleur-de-lys"))))
 
 (defn translate-line [{:keys [type]}]
   (when (not= type :straight)

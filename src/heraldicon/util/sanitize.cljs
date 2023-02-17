@@ -1,12 +1,12 @@
 (ns heraldicon.util.sanitize
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [clojure.walk :as walk]))
 
 (defn sanitize-string-or-nil [data]
   (some-> data
-          (s/replace #"  *" " ")
-          s/trim))
+          (str/replace #"  *" " ")
+          str/trim))
 
 (defn sanitize-string [data]
   (or (sanitize-string-or-nil data)
@@ -17,10 +17,10 @@
         (name data)
         data)
       sanitize-string
-      s/lower-case
-      (s/replace #"[^a-z-]" "-")
-      (s/replace #"^--*" "")
-      (s/replace #"--*$" "")
+      str/lower-case
+      (str/replace #"[^a-z-]" "-")
+      (str/replace #"^--*" "")
+      (str/replace #"--*$" "")
       keyword))
 
 (defn remove-nil-values-and-empty-maps [m]

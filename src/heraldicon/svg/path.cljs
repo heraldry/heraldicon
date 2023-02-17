@@ -2,14 +2,14 @@
   (:refer-clojure :exclude [reverse])
   (:require
    ["paper" :refer [Path Point]]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.vector :as v]))
 
 (defn stitch [path]
   ;; TODO: this can be improved, it already broke some things and caused unexpected behaviour,
   ;; because the 'e' was not part of the pattern
-  (s/replace path #"^M[ ]*-?[0-9.e]+[, ] *-?[0-9.e]+" ""))
+  (str/replace path #"^M[ ]*-?[0-9.e]+[, ] *-?[0-9.e]+" ""))
 
 (defn make-path [v]
   (cond
@@ -17,7 +17,7 @@
     (and (map? v)
          (:x v)
          (:y v)) (v/->str v)
-    (sequential? v) (s/join " " (map make-path v))
+    (sequential? v) (str/join " " (map make-path v))
     :else (str v)))
 
 (defn parse-path [path]
@@ -66,8 +66,8 @@
 
 (defn curve-to-relative [curve]
   (let [start (ffirst curve)]
-    (s/join "" (concat [(move-to start)]
-                       (map bezier-to-relative curve)))))
+    (str/join "" (concat [(move-to start)]
+                         (map bezier-to-relative curve)))))
 
 (defn points [^js/Object path n & {:keys [start-offset]}]
   (let [length (.-length path)

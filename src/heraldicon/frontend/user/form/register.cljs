@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.user.form.register
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.frontend.aws.cognito :as cognito]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
@@ -43,9 +43,9 @@
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
     (let [{:keys [username email password password-again]} (form/data-from-db db ::id)
-          username? (not (s/blank? username))
-          email? (not (s/blank? email))
-          password? (not (s/blank? password))]
+          username? (not (str/blank? username))
+          email? (not (str/blank? email))
+          password? (not (str/blank? password))]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not username?) (update :dispatch-n conj

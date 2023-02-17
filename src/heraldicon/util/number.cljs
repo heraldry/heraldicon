@@ -1,6 +1,6 @@
 (ns heraldicon.util.number
   (:require
-   [clojure.string :as s]))
+   [clojure.string :as str]))
 
 ;; https://gist.github.com/jimweirich/1388782
 (def ^:private roman-reductions
@@ -19,7 +19,7 @@
                                (list 0 number)
                                (map first roman-reductions))))
         glyphs (map second roman-reductions)]
-    (s/join
+    (str/join
      (flatten
       (map (fn [[c g]] (take c (repeat g)))
            (map vector counts glyphs))))))
@@ -39,7 +39,7 @@
    \M 1000})
 
 (defn from-roman [s]
-  (reduce add-numeral (map numerals (reverse (s/upper-case s)))))
+  (reduce add-numeral (map numerals (reverse (str/upper-case s)))))
 
 (def ^:private digits
   #{\0 \1 \2 \3 \4 \5 \6 \7 \8 \9})
@@ -77,20 +77,20 @@
 
 (defn from-string [s]
   (cond
-    (s/blank? s) nil
+    (str/blank? s) nil
     (every? digits s) (js/parseInt s)
-    (every? numerals (some-> s s/upper-case)) (from-roman s)
-    :else (get number-strings (some-> s s/lower-case))))
+    (every? numerals (some-> s str/upper-case)) (from-roman s)
+    :else (get number-strings (some-> s str/lower-case))))
 
 (defn- ordinal-plain [s]
-  (when-let [s (some-> s s/trim)]
+  (when-let [s (some-> s str/trim)]
     (cond
-      (or (s/ends-with? s ".")
-          (s/ends-with? s ":")) (from-string (subs s 0 (dec (count s))))
-      (or (s/ends-with? s "st")
-          (s/ends-with? s "nd")
-          (s/ends-with? s "rd")
-          (s/ends-with? s "th")) (from-string (subs s 0 (- (count s) 2)))
+      (or (str/ends-with? s ".")
+          (str/ends-with? s ":")) (from-string (subs s 0 (dec (count s))))
+      (or (str/ends-with? s "st")
+          (str/ends-with? s "nd")
+          (str/ends-with? s "rd")
+          (str/ends-with? s "th")) (from-string (subs s 0 (- (count s) 2)))
       :else nil)))
 
 (def ^:private ordinals

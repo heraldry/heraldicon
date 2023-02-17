@@ -1,7 +1,7 @@
 (ns heraldicon.frontend.user.form.login
   (:require
    [cljs.core.async :refer [go]]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.aws.cognito :as cognito]
    [heraldicon.frontend.language :refer [tr]]
@@ -47,8 +47,8 @@
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
     (let [{:keys [username password]} (form/data-from-db db ::id)
-          username? (not (s/blank? username))
-          password? (not (s/blank? password))]
+          username? (not (str/blank? username))
+          password? (not (str/blank? password))]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not username?) (update :dispatch-n conj
@@ -111,7 +111,7 @@
 (rf/reg-event-fx ::forgot-password-clicked
   (fn [{:keys [db]} _]
     (let [{:keys [username]} (form/data-from-db db ::id)
-          username? (not (s/blank? username))]
+          username? (not (str/blank? username))]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not username?) (update :dispatch-n conj

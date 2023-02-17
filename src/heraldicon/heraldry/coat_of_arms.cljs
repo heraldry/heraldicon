@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.coat-of-arms
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.escutcheon :as escutcheon]
    [heraldicon.interface :as interface]
@@ -133,7 +133,7 @@
          :mask
          :clipPath)
        {:id mask-id}
-       [:path {:d (s/join "" shape-paths)
+       [:path {:d (str/join "" shape-paths)
                :clip-rule "evenodd"
                :fill-rule "evenodd"
                :fill "#fff"
@@ -144,11 +144,11 @@
       [:g {:filter (when texture-link (str "url(#" texture-id ")"))}
        [:g {:filter (when shiny?
                       (str "url(#" shiny-id ")"))}
-        [:path {:d (s/join "" shape-paths)
+        [:path {:d (str/join "" shape-paths)
                 :fill-rule "evenodd"
                 :fill "#f0f0f0"}]
         [interface/render-component (c/++ context :field)]]]]
      (when (or escutcheon-outline?
                outline?)
        [:g (outline/style context)
-        [:path {:d (s/join "" shape-paths)}]])]))
+        [:path {:d (str/join "" shape-paths)}]])]))

@@ -1,13 +1,13 @@
 (ns heraldicon.reader.blazonry.transform.tincture
   (:require
-   [clojure.string :as s]
+   [clojure.string :as str]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn get-child transform-first]]))
 
 (def ^:private tincture-map
   (into {:tincture/PROPER :void}
         (map (fn [[key _]]
-               [(keyword "tincture" (-> key name s/upper-case))
+               [(keyword "tincture" (-> key name str/upper-case))
                 key]))
         tincture/tincture-map))
 

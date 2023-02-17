@@ -1,7 +1,7 @@
 (ns heraldicon.reader.blazonry.parser
   (:require
    ["genex" :as genex]
-   [clojure.string :as s]
+   [clojure.string :as str]
    [clojure.walk :as walk]
    [heraldicon.reader.blazonry.transform.tincture :as tincture]
    [instaparse.core :as insta])
@@ -9,7 +9,7 @@
    [heraldicon.reader.blazonry.parser :refer [default-parser]]))
 
 (defn- pluralize [charge-type]
-  (if (s/ends-with? charge-type "s")
+  (if (str/ends-with? charge-type "s")
     (str charge-type "es")
     (str charge-type "s")))
 
@@ -24,7 +24,7 @@
                                         genex
                                         .generate
                                         js->clj))))
-                (map s/trim))
+                (map str/trim))
           (:reason result))))
 
 (defn- suggestion-classifications [parser]
@@ -64,8 +64,8 @@
     :parsers (mapcat
               (fn [terminal]
                 (->> [[terminal]
-                      [(s/replace terminal #" " "-")]
-                      (s/split terminal #" ")]
+                      [(str/replace terminal #" " "-")]
+                      (str/split terminal #" ")]
                      set
                      (keep
                       (fn [terminal-words]
@@ -111,8 +111,8 @@
                                                    0
                                                    1)
                                                  (cond
-                                                   (-> charge :name s/lower-case (s/includes? "ww")) 0
-                                                   (-> charge :name s/lower-case (s/includes? "sodacan")) 1
+                                                   (-> charge :name str/lower-case (str/includes? "ww")) 0
+                                                   (-> charge :name str/lower-case (str/includes? "sodacan")) 1
                                                    :else 2)
                                                  (case (-> charge :data :attitude)
                                                    :none [0 :_]
@@ -133,12 +133,12 @@
                                         (let [charge-type-name (name charge-type)
                                               rule-name (keyword "charge-other-type" charge-type-name)
                                               clean-name (some-> charge-type-name
-                                                                 s/lower-case
-                                                                 (s/replace #"[^a-z0-9]+" " ")
-                                                                 s/trim)
+                                                                 str/lower-case
+                                                                 (str/replace #"[^a-z0-9]+" " ")
+                                                                 str/trim)
                                               valid-charge-type? (re-matches #"^[a-zA-Z0-9-]+$" charge-type-name)]
                                           (when (and valid-charge-type?
-                                                     (not (s/blank? clean-name)))
+                                                     (not (str/blank? clean-name)))
                                             (if (contains? (:bad-charge-types default) clean-name)
                                               [rule-name (let [clean-name (str "charge " clean-name)]
                                                            (set [clean-name
@@ -188,7 +188,7 @@
 
 (defn parse [s {:keys [parser]}]
   (let [result (-> s
-                   s/lower-case
+                   str/lower-case
                    parser
                    clean-ast)]
     (if (vector? result)
