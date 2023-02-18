@@ -946,25 +946,6 @@
       "create-collection": "Créer une collection",
       "create-ribbon": "Créer un listel"
     },
-    "about": {
-      "welcome-to-heraldicon": "Bienvenue sur Heraldicon",
-      "what-is-this-about?": "De quoi s'agit-il ?",
-      "heraldry-intro": "est intéressant et amusant, mais il a une myriade de conventions et de règles, depuis près d'un millénaire.",
-      "arms-creation-1-effort": "La création d’un blason est un processus qui demande beaucoup de temps et nécessite la connaissance de différents outils de conception. Mais même si vous mettez ce temps, le résultat est généralement quelque peu statique, il ne peut pas facilement être ajusté sans plus de travail manuel, par exemple pour changer le style, les couleurs ou la forme de l'écu.",
-      "arms-creation-2-with-heraldicon": "C'est ce que Heraldicon veut améliorer. Vous pouvez décrire un blason et laisser le moteur de rendu faire le reste. Après quoi un thème peut être appliqué, l'écu peut être changé, il peut être utilisé dans d'autres blasons, les chargent peuvent être échangés avec d'autres variantes d'un style différent, etc.",
-      "arms-creation-3-heraldicon-no-replacement-for-art": "Évidemment, cela ne remplacera pas les compétences humaines et artistiques, mais cela peut fournir un point de départ pour essayer certains concepts et générer une base de choses pouvant être automatisées, par ex. les divisions, les pièces et les styles de lignes.",
-      "goals": "Objectifs",
-      "goal-1-open-charge-library": "Fournir une bibliothèque de charges, à laquelle n'importe qui peut contribuer",
-      "goal-2-open-arms-library": "Fournir des moyens de créer des armoiries en ligne pour référence ou pour la recherche",
-      "goal-3-support-heraldic-concepts": "Supporter autant de concepts et d’éléments héraldiques que possible",
-      "status": "Statut",
-      "status-site-still-beta": "L'ensemble de ce site est encore en bêta, donc soyez patient(e) si vous rencontrez des bugs ou des fonctionnalités manquantes. Voir mes coordonnées ci-dessous pour signaler quoi que ce soit de bizarre.",
-      "licensing": "Licence",
-      "licensing-1-and-attribution-for-public-objects": "Les charges et les armes rendues publiques sur ce site exigent une licence Creative Commons ou d'être déclarées dans le domaine public. Le travail dérivé nécessite l'attribution de la source et la licence source doit être compatible avec la licence CC choisie.",
-      "licensing-2-how-to-specify-and-responsibility": "Vous pouvez spécifier cela en modifiant une charge ou des armes, et la visualisation ou l'exportation du travail inclura la licence et l'attribution. Il est de votre responsabilité de fournir ces renseignements si vous rendez le travail public.",
-      "licensing-3-contact-if-you-see-your-work-unattributed": "Si vous voyez votre travail SANS attribution appropriée ou si vous avez d'autres préoccupations ou commentaires concernant la mise en œuvre de ces fonctionnalités, merci de me contacter.",
-      "licensing-4-technical-info-on-attribution": "Note : Les SVG obtiennent les métadonnées appropriées de la licence/attribution des armoiries et de toutes les charges utilisées, pour les PNG, c'est en cours."
-    },
     "arms-library": {
       "create-and-view-arms": "Ici vous pouvez créer et voir des blasons. Vous devez explicitement sauvegarder votre blason en public et ajouter une licence, si vous voulez partager le lien et permettre à d'autres de le voir.",
       "svg-png-access-info": "Cependant, les liens SVG/PNG peuvent être consultés par tout le monde."
@@ -977,19 +958,6 @@
     },
     "ribbon-library": {
       "create-and-view-ribbons": "Ici vous pouvez voir et créer des listels à utiliser dans les armoiries. Par défaut, vos listels sont privés, donc vous seul(e) pouvez les voir et les utiliser. Si vous voulez les rendre publics, vous devez fournir une licence."
-    },
-    "contact": {
-      "feel-free-to-contact-me": "Vous pouvez m'écrire pour toutes remarques, questions, complaintes, demandes de fonctionnalité ou une amitié profonde et significative:",
-      "project-info": "Le projet se trouve ici, si vous voulez contribuer",
-      "developer-info": "Je peux être trouvé ici",
-      "my-username-is": "mon nom d'utilisateur est",
-      "translation": "Traduction",
-      "translation-not-yet-complete": "Toutes les chaînes n'ont pas encore été traduites. Si vous voulez aider ou corriger quelque chose, ou si vous voulez ajouter votre propre langue, contactez Discord ou le",
-      "crowdin-project": "Projet Crowdin"
-    },
-    "home": {
-      "release-news-info-1": "Dans de nombreux cas, de nouvelles fonctionnalités sont déployées de manière incrémentale, sans grande annonce. Mais occasionnellement, je vais regrouper quelques fonctionnalités et de nouveaux développements et publier une mise à jour ici, pour qu'il soit facile de rester informé.",
-      "release-news-info-2": "Ces mises à jour ne sont pas traduites, car ce serait beaucoup de travail. Peut-être un jour... :)"
     }
   },
   "blazonry-editor": {

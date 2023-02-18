@@ -1004,25 +1004,6 @@
       "create-collection": "Crea Collezione",
       "create-ribbon": "Crea Nastro"
     },
-    "about": {
-      "welcome-to-heraldicon": "Benvenuto su Heraldicon",
-      "what-is-this-about?": "Di cosa si tratta?",
-      "heraldry-intro": "è interessante e divertente, ma ha una miriade di regole e convenzioni, dato che è esistita per almeno un millennio.",
-      "arms-creation-1-effort": "La creazione di uno stemma è un processo che richiede tempo e conoscenza di vari strumenti di design. Anche se ci si mette nel tempo, il risultato è solitamente qualcosa di statico, e non può essere aggiustato senza un lavoro manuale, ad esempio per cambiare lo stile, i colori, o la forma dello scudo.",
-      "arms-creation-2-with-heraldicon": "Questo è quello che Heraldicon vuole migliorare, puoi descrivere uno stemma e lasciare che il rendering faccia il resto. Dopo quello può essere modificato, lo scudo può essere cambiato, può essere usato per l'impalamento in altri capi, le figure possono essesre scambiato per varianti di uno stile differente, eccetera..",
-      "arms-creation-3-heraldicon-no-replacement-for-art": "Ovviamente non può sostituire le abilità umane e artistiche, ma può fornire un punto di partenza per provare qualche concetto e generare una base di cose che possono essere automatizzate, ad esempio: divisioni, ordinari, e tipi di linee.",
-      "goals": "Obbiettivi",
-      "goal-1-open-charge-library": "Fornire una libreria di figure di pubblico dominio, di cui tutti quanti possono contribuire",
-      "goal-2-open-arms-library": "Fornire strumenti per creare stemmi per riferimenti o ricerca",
-      "goal-3-support-heraldic-concepts": "Supportare il maggior numero di concetti ed elementi araldici",
-      "status": "Stato",
-      "status-site-still-beta": "L'intero sito è ancora in beta, quindi sii paziente e se incappi in bug o funzioni mancanti, Vedi i miei dettagli di contatto qua sotto per riportare se succede qualcosa di strano.",
-      "licensing": "Licenza",
-      "licensing-1-and-attribution-for-public-objects": "Le figure e gli stemmi resi pubblici su questo sito richiedono la licenza Creative Commons o devono essere dichiariti nel dominio pubblico. Il lavoro derivato richiede l'attribuzione della fonte, e la licenza della fonte deve essere compatibile con una licenza CC.",
-      "licensing-2-how-to-specify-and-responsibility": "Puoi specificare questo nella modifica della figura o dello stemma, e visualizzando o esportando il lavoro includerà la licenza e l'attribuzione. La responsabilità è tua se fornisci questa informazione, se rendi il tuo lavoro pubblico.",
-      "licensing-3-contact-if-you-see-your-work-unattributed": "Se vedi il tuo lavoro SENZA una attribuzione adatta, o hai altri riguardi o un feedback riguardo l'implementazione di queste funzionalità, perfavore contattami.",
-      "licensing-4-technical-info-on-attribution": "Nota: i file SVG ottengono i metadati adeguati della licenza/attribuzione dello stemma e di tutte le figure usate, d'altro canto i file PNG sono ancora in sviluppo."
-    },
     "arms-library": {
       "create-and-view-arms": "Qui puoi creare e visualizzare stemmi. Devi esplicitamente salvate il tuo stemma come pubblico e aggiungerci una licenza, se vuoi condividere il link e consentire ad esterni di visualizzarlo.",
       "svg-png-access-info": "Tuttavia, i link SVG/PNG possono essere visualizzati da chiunque."
@@ -1037,21 +1018,6 @@
     },
     "ribbon-library": {
       "create-and-view-ribbons": "Qui puoi visualizzare e creare dei nastri. Di base i tuoi nastri sono privati, quindi solo te puoi visualizzarli e usarli. Se vuoi renderli pubblici, devi fornire una licenza."
-    },
-    "contact": {
-      "feel-free-to-contact-me": "Puoi contattarmi via email per feedback, domande, contestazioni, richieste di funzioni, o un amicizia profonda e piena di significato:",
-      "project-info": "Il progetto può essere trovato qui, se vuoi contribuire",
-      "developer-info": "Posso essere trovato qui",
-      "my-username-is": "il nome utente è",
-      "translation": "Traduzione",
-      "translation-not-yet-complete": "Non tutte le stringhe sono state già tradotte, se vuoi aiutare o correggere qualcosa, o vuoi aggiungere la tua lingua, entra nel Discord o il progetto Crowdin",
-      "crowdin-project": "Progetto Crowdin",
-      "translation-credits": "Riconoscimenti per le Traduzioni",
-      "translation-credits-intro": "Grazie a tutti quelli che hanno aiutato! Fatemi sapere se volete essere menzionati qui e come :) (ad esempio: nome e cognome, tag di discord, email, ecc.)"
-    },
-    "home": {
-      "release-news-info-1": "In molti casi le funzioni nuove vengono sviluppate incrementando, senza un aggiornamento grande. Ma d'ora in poi inizierò a raggruppare alcune funzioni, e pubblicare gli aggiornamenti dello sviluppo qui, quindi è più facile stare informato.",
-      "release-news-info-2": "Questi annunci non sono tradotti, perchè sarebbe moltissimo lavoro. Magari un giorno... :)"
     }
   },
   "blazonry-editor": {

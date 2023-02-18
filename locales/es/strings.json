@@ -1004,25 +1004,6 @@
       "create-collection": "Crear colección",
       "create-ribbon": "Crear cinta"
     },
-    "about": {
-      "welcome-to-heraldicon": "Bienvenido a Heraldicon",
-      "what-is-this-about?": "¿De qué se trata esto?",
-      "heraldry-intro": "es interesante y divertido, pero tiene un sinfín de convenciones y reglas, ya que ha existido durante casi un milenio.",
-      "arms-creation-1-effort": "Crear un bláson es un proceso que consume mucho tiempo y requiere conocimiento de varias herramientas de diseño. Pero incluso si se pone en ese tiempo, el resultado suele ser algo estático, no se puede ajustar fácilmente sin más trabajo manual. por ejemplo para cambiar el estilo, las tinturas, o la forma del escudo.",
-      "arms-creation-2-with-heraldicon": "Eso es lo que Heraldicon quiere mejorar. Puedes describir un escudo de armas y dejar que el renderizado averigüe el resto. Después de eso puede ser temático, el escudo puede ser cambiado, puede ser utilizado para empalarse en otros escudos, las figuras pueden ser cambiadas por otras variantes de un estilo diferente, etc..",
-      "arms-creation-3-heraldicon-no-replacement-for-art": "Obviamente, no reemplazará las habilidades y el arte humano, pero podría proporcionar un punto de partida para probar algunos conceptos y generar una base de cosas que pueden ser automatizadas, ejemplo: Particiones, piezas y estilos de líneas.",
-      "goals": "Metas",
-      "goal-1-open-charge-library": "Proporcionar una biblioteca abierta de figuras heráldicas, a la que cualquiera puede agregar",
-      "goal-2-open-arms-library": "Proporcionar medios para crear Escudos en línea para referencia o investigación",
-      "goal-3-support-heraldic-concepts": "Apoyar tantos conceptos y elementos heráldicos como sea posible",
-      "status": "Estado",
-      "status-site-still-beta": "Todo este sitio web está en un estado bastante beta, así que por favor ten paciencia si encuentras errores o faltan características. Ver mis datos de contacto a continuación para informar de cualquier cosa extraña.",
-      "licensing": "Licencias",
-      "licensing-1-and-attribution-for-public-objects": "Las figuras y escudos hechas públicas en este sitio requieren de una licencia de Creative Commons o ser declaradas en el dominio público. Trabajo derivado requiere atribución de la fuente de origen, y la licencia de la fuente de origen debe ser compatible con la licencia CC elegida.",
-      "licensing-2-how-to-specify-and-responsibility": "Puede especificar esto mientras edita una figura o escudo, y ver o exportar trabajos incluirá la licencia y atribución. Es su responsabilidad proporcionar esta información, si hace pública la obra.",
-      "licensing-3-contact-if-you-see-your-work-unattributed": "Si usted ve su trabajo SIN la atribución adecuada o tiene otras preocupaciones o comentarios con respecto a la implementación de estas características, por favor póngase en contacto conmigo.",
-      "licensing-4-technical-info-on-attribution": "Nota: Los SVG obtienen los metadatos adecuados de licencia/atribución para el escudo y todas las figuras utilizadas, los PNG son un trabajo en curso."
-    },
     "arms-library": {
       "create-and-view-arms": "Aquí puedes crear y ver escudos de armas. Usted tiene que guardar explícitamente su escudo de armas como público y agregar una licencia, si quiere compartir el enlace y permitir que otros lo vean.",
       "svg-png-access-info": "Sin embargo, los enlaces SVG/PNG pueden ser vistos por cualquiera."
@@ -1037,21 +1018,6 @@
     },
     "ribbon-library": {
       "create-and-view-ribbons": "Aquí puedes ver y crear listones para ser utilizadas en escudos. Por defecto, sus listones son privados, así que solo usted puede verlos y usarlos. Si desea hacerlos públicos, entonces debe proporcionar una licencia y atribución, si se basa en trabajos anteriores."
-    },
-    "contact": {
-      "feel-free-to-contact-me": "Puedes enviarme un correo electrónico a para comentarios, preguntas, reclamaciones, solicitudes de características o para entablar una amistad profunda y significativa:",
-      "project-info": "El proyecto se puede encontrar aquí, si quieres involucrarte",
-      "developer-info": "Puedo ser encontrado por aquí",
-      "my-username-is": "Mi nombre de usuario es",
-      "translation": "Traducción",
-      "translation-not-yet-complete": "Todavía no se han traducido todas las cadenas. Si quieres ayudar o corregir algo, o quieres añadir tu propio idioma, entonces contacta con Discord o con",
-      "crowdin-project": "Proyecto Crowdin",
-      "translation-credits": "Créditos de traducción",
-      "translation-credits-intro": "¡Gracias a todo el mundo ayudando! Déjame saber si quieres estar listado aquí y cómo. :)"
-    },
-    "home": {
-      "release-news-info-1": "En muchos casos las nuevas características se extienden incrementalmente, sin una gran actualización. Pero de vez en cuando voy a agrupar algunas características y el nuevo avance y publicaré una actualización aquí, por lo que es fácil mantenerse informado.",
-      "release-news-info-2": "Estas actualizaciones no están traducidas, porque eso sería mucho trabajo. Tal vez algún día... :)"
     }
   },
   "blazonry-editor": {
