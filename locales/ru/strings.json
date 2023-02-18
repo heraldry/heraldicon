@@ -182,7 +182,6 @@
     },
     "attitude": {
       "group": {
-        "none": "None",
         "beasts": "Звери",
         "sea-creatures": "морские твари",
         "serpents": "змеи",
@@ -491,7 +490,6 @@
       "hoist": "Hoist",
       "fly": "Fly"
     },
-    "position": "Position",
     "radius": "Радиус",
     "rectangular?": "Rectangular grid",
     "reversed?": "Reversed",
@@ -592,14 +590,11 @@
     "show-more": "Show more",
     "not-found": "Не найдено",
     "manual": "Manual",
-    "mine-only": "Mine only",
     "no-name": "<no name>",
     "none": "None",
     "no-item-selected": "No item selected",
     "opposite": "opposite",
     "svg-file": "SVG file",
-    "private": "private",
-    "public": "public",
     "right": "Right",
     "semy-of": "Semy of",
     "shield-layer": "Shield layer",
@@ -626,7 +621,6 @@
   },
   "user": {
     "message": {
-      "arms-need-to-be-public-and-saved-for-exporting": "Чтобы сохранить и экспортировать герб, откройте публичный доступ к нему.",
       "arms-need-to-be-public-and-saved-for-sharing": "Нужно сохранить герб и открыть публичный доступ, прежде чем делиться.",
       "arms-saved": "Герб сохранен. Новая версия:",
       "charge-saved": "Изменения сохранены. Новая версия:",
@@ -637,11 +631,9 @@
       "created-unsaved-copy": "Created an unsaved copy.",
       "email-required": "Email required.",
       "need-to-be-logged-in": "Вы должны ввойти.",
-      "need-to-be-logged-in-and-arms-must-be-saved": "Вы должны ввойти и сохранить герб.",
-      "need-to-be-logged-in-and-charge-must-be-saved": "Need to be logged in and charge must be saved.",
       "need-to-be-logged-in-and-own-the-arms": "Вы должны ввойти и быть владельцем герба.",
-      "need-to-be-logged-in-and-own-the-charge.": "Need to be logged in and own the charge.",
-      "need-to-be-logged-in-and-own-the-collection.": "Need to be logged in and own the collection.",
+      "need-to-be-logged-in-and-own-the-charge": "Need to be logged in and own the charge.",
+      "need-to-be-logged-in-and-own-the-collection": "Need to be logged in and own the collection.",
       "new-confirmation-code-sent": "Новый код отправлен на ваш адресс электронной почты.",
       "password-reset-completed": "Пароль сменён",
       "password-reset-confirmation-code-sent": "A password reset confirmation code was sent to your email address.",
@@ -650,8 +642,7 @@
       "registration-completed": "Регистрацию завершено",
       "ribbon-saved": "Ribbon saved, new version:",
       "save-changes-first": "Сначала сохраните изменения.",
-      "username-required": "Username required.",
-      "username-required-for-password-reset": "Для сброса пароля нужно имя пользователя"
+      "username-required": "Username required."
     },
     "button": {
       "change": "Сменить",
@@ -761,15 +752,12 @@
     "charge-group": "Группа фигур",
     "crest-charge": "Crest charge",
     "crest-charge-group": "Crest charge group",
-    "collection": "Collection",
     "collections": "Коллекции",
-    "cottising": "Cottising",
     "cottise": "Cottise",
     "extra-line": "Extra line",
     "helm": "Helm",
     "helmet": "Helmet",
     "helms-and-crests": "Helms and crests",
-    "heraldry": "Геральдика",
     "line": "Line",
     "main-line": "Main line",
     "metadata": "Metadata",
@@ -779,12 +767,10 @@
     "ribbon": "Лента",
     "semy": "Semy",
     "slogan": "Слоган",
-    "tag": "Tag",
     "tags": "Tags",
     "tincture": "Tincture",
     "tinctures": "Tinctures",
-    "torse": "Torse",
-    "user": "Пользователь"
+    "torse": "Torse"
   },
   "submenu-summary": {
     "adjusted": "adjusted",

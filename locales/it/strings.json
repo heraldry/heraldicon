@@ -183,7 +183,6 @@
     },
     "attitude": {
       "group": {
-        "none": "Nessuno",
         "beasts": "Animali",
         "sea-creatures": "Creature Marine",
         "serpents": "Serpenti",
@@ -550,7 +549,6 @@
       "hoist": "Inferitura",
       "fly": "Battente"
     },
-    "position": "Posizione",
     "positioning-mode": "Posizionamento",
     "positioning-mode-choice": {
       "automatic": "Automatico",
@@ -688,7 +686,6 @@
     "show-more": "Mostra di più",
     "not-found": "Non trovato",
     "manual": "Manuale",
-    "mine-only": "Solo i miei",
     "no-name": "<nessun nome>",
     "none": "Nessuno",
     "no-item-selected": "Nessun oggetto selezionato",
@@ -722,7 +719,6 @@
   },
   "user": {
     "message": {
-      "arms-need-to-be-public-and-saved-for-exporting": "Lo stemma deve essere pubblico e salvato per l'esportazione.",
       "arms-need-to-be-public-and-saved-for-sharing": "Lo stemma deve essere pubblico e salvato per condividere.",
       "arms-saved": "Stemma salvato, nuova versione:",
       "charge-saved": "Figura salvata, nuova versione:",
@@ -733,11 +729,9 @@
       "created-unsaved-copy": "Creata una copia non salvata.",
       "email-required": "Email richiesta.",
       "need-to-be-logged-in": "Devi essere connesso.",
-      "need-to-be-logged-in-and-arms-must-be-saved": "Devi essere connesso e lo stemma deve essere salvato.",
-      "need-to-be-logged-in-and-charge-must-be-saved": "Devi essere connesso e la figura deve essere salvata.",
       "need-to-be-logged-in-and-own-the-arms": "Devi essere connesso e possedere lo stemma.",
-      "need-to-be-logged-in-and-own-the-charge.": "Devi essere connesso e possedere la figura.",
-      "need-to-be-logged-in-and-own-the-collection.": "Devi essere connesso e possedere la collezione.",
+      "need-to-be-logged-in-and-own-the-charge": "Devi essere connesso e possedere la figura.",
+      "need-to-be-logged-in-and-own-the-collection": "Devi essere connesso e possedere la collezione.",
       "new-confirmation-code-sent": "Un codice nuovo è stato inviato al tuo indirizzo di posta elettronica.",
       "password-reset-completed": "Ripristino della Password completato",
       "password-reset-confirmation-code-sent": "Un codice di ripristino per la password è stato inviato al tuo indirizzo di posta elettronica.",
@@ -746,8 +740,7 @@
       "registration-completed": "Registrazione completata",
       "ribbon-saved": "Nastro salvato, nuova versione:",
       "save-changes-first": "Salva le tue modifiche prima.",
-      "username-required": "Nome utente richiesto.",
-      "username-required-for-password-reset": "Nome utente richiesto per il ripristino della password."
+      "username-required": "Nome utente richiesto."
     },
     "button": {
       "change": "Modifica",
@@ -857,15 +850,12 @@
     "charge-group": "Gruppo di figure",
     "crest-charge": "Figura di Cimiero",
     "crest-charge-group": "Gruppo di Figure di Cimiero",
-    "collection": "Collezione",
     "collections": "Collezioni",
-    "cottising": "Cotissato",
     "cottise": "Cotissa",
     "extra-line": "Linea extra",
     "helm": "Elmetto",
     "helmet": "Elmetto",
     "helms-and-crests": "Elmetto e Cimiero",
-    "heraldry": "L'Araldica",
     "line": "Linea",
     "main-line": "Linea principale",
     "metadata": "Metadati",
@@ -876,12 +866,10 @@
     "ribbons": "Motti",
     "semy": "Seminato",
     "slogan": "Motto Superiore",
-    "tag": "Etichetta",
     "tags": "Etichette",
     "tincture": "Colore",
     "tinctures": "Attributi",
-    "torse": "Cercine",
-    "user": "Utente"
+    "torse": "Cercine"
   },
   "submenu-summary": {
     "adjusted": "aggiustato",

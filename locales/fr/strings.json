@@ -183,7 +183,6 @@
     },
     "attitude": {
       "group": {
-        "none": "Aucun",
         "beasts": "Mammifères",
         "sea-creatures": "Animaux aquatiques",
         "serpents": "Serpents",
@@ -497,7 +496,6 @@
       "hoist": "Guindant",
       "fly": "Battant"
     },
-    "position": "Position",
     "positioning-mode": "Positioning",
     "positioning-mode-choice": {
       "automatic": "Automatic",
@@ -634,7 +632,6 @@
     "show-more": "Voir plus",
     "not-found": "Non trouvé",
     "manual": "Manuel",
-    "mine-only": "Seulement les miens",
     "no-name": "<sans nom>",
     "none": "Aucun",
     "no-item-selected": "Aucun élément sélectionné",
@@ -666,7 +663,6 @@
   },
   "user": {
     "message": {
-      "arms-need-to-be-public-and-saved-for-exporting": "Les armes doivent être publiques et sauvegardées pour être exportées.",
       "arms-need-to-be-public-and-saved-for-sharing": "Les armes doivent être publiques et sauvegardées pour être partagées.",
       "arms-saved": "Armes sauvegardées, nouvelle version :",
       "charge-saved": "Charge sauvegardée, nouvelle version :",
@@ -677,11 +673,9 @@
       "created-unsaved-copy": "Une copie non sauvegardée a été créée.",
       "email-required": "E-mail requis.",
       "need-to-be-logged-in": "Vous devez être connecté(e).",
-      "need-to-be-logged-in-and-arms-must-be-saved": "Vous devez être connecté(e) et les armes doivent être enregistrées.",
-      "need-to-be-logged-in-and-charge-must-be-saved": "Vous devez être connecté(e) et la charge doit être enregistrée.",
       "need-to-be-logged-in-and-own-the-arms": "Vous devez être connecté(e) et posséder les armes.",
-      "need-to-be-logged-in-and-own-the-charge.": "Vous devez être connecté(e) et posséder la charge.",
-      "need-to-be-logged-in-and-own-the-collection.": "Vous devez être connecté(e) et posséder la collection.",
+      "need-to-be-logged-in-and-own-the-charge": "Vous devez être connecté(e) et posséder la charge.",
+      "need-to-be-logged-in-and-own-the-collection": "Vous devez être connecté(e) et posséder la collection.",
       "new-confirmation-code-sent": "Un nouveau code a été envoyé à votre adresse e-mail.",
       "password-reset-completed": "Mot de passe réinitialisé",
       "password-reset-confirmation-code-sent": "Un code de confirmation de réinitialisation du mot de passe a été envoyé à votre adresse e-mail.",
@@ -690,8 +684,7 @@
       "registration-completed": "Inscription terminée",
       "ribbon-saved": "Listel sauvegardé, nouvelle version :",
       "save-changes-first": "Sauvegardez d'abord vos modifications.",
-      "username-required": "Nom d'utilisateur requis.",
-      "username-required-for-password-reset": "Nom d'utilisateur requis pour réinitialiser le mot de passe."
+      "username-required": "Nom d'utilisateur requis."
     },
     "button": {
       "change": "Modifier",
@@ -801,15 +794,12 @@
     "charge-group": "Groupe de charges",
     "crest-charge": "Charge du cimier",
     "crest-charge-group": "Groupe de charges du cimier",
-    "collection": "Collection",
     "collections": "Collections",
-    "cottising": "Coticé",
     "cottise": "Cotice",
     "extra-line": "Ligne supplémentaire",
     "helm": "Heaume",
     "helmet": "Casque",
     "helms-and-crests": "Heaumes et cimiers",
-    "heraldry": "Héraldique",
     "line": "Ligne",
     "main-line": "Ligne principale",
     "metadata": "Métadonnées",
@@ -820,12 +810,10 @@
     "ribbons": "Banderoles",
     "semy": "Semé",
     "slogan": "Devise",
-    "tag": "Mot-clé",
     "tags": "Mots-clés",
     "tincture": "Couleur",
     "tinctures": "Couleurs",
-    "torse": "Bourrelet",
-    "user": "Utilisateur"
+    "torse": "Bourrelet"
   },
   "submenu-summary": {
     "adjusted": "ajusté",
