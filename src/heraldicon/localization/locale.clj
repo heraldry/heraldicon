@@ -43,17 +43,22 @@
   (let [json-data (load-locale "en/strings.json")
         files (into []
                     (filter #(re-matches #".*\.cljs" (.getName %)))
-                    (file-seq (io/file "src")))]
-    (doseq [file files]
-      (let [string-keys (->> file
-                             .getAbsolutePath
-                             slurp
-                             (re-seq #":(string[.][a-z0-9.?-]+/[a-z0-9.?-]+)")
-                             (map second))]
-        (doseq [s string-keys]
-          (let [k (keyword s)]
-            (when-not (contains? json-data k)
-              (log/warn (str "Unknown key '" k "'")))))))
+                    (file-seq (io/file "src")))
+        used-keywords (into #{}
+                            (apply concat
+                                   (for [file files]
+                                     (->> file
+                                          .getAbsolutePath
+                                          slurp
+                                          (re-seq #":(string[.][a-z0-9.?-]+)/([a-z0-9.?-]+)")
+                                          (map (fn [[_ namespace key]]
+                                                 (keyword namespace key)))))))]
+    (doseq [k used-keywords]
+      (when-not (contains? json-data k)
+        (log/warn (str "Unknown string key '" k "'"))))
+    (doseq [k (keys json-data)]
+      (when-not (contains? used-keywords k)
+        (log/warn (str "Unused string key '" k "'"))))
     nil))
 
 (comment
