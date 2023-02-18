@@ -1,6 +1,5 @@
 (ns heraldicon.frontend.news
   (:require
-   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.title :as title]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
@@ -21,11 +20,10 @@
             :min-width "30em"
             :max-width "60em"
             :margin "auto"}}
-   [:div {:style {:text-align "justify"
-                  :max-width "40em"}}
-    [:h2 [tr :string.menu/news]]
-    [:p [tr :string.text.home/release-news-info-1]]
-    [:p [tr :string.text.home/release-news-info-2]]]
+   [:div.release-row
+    [:div.info
+     [:h2 "News"]
+     [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
    [:h3 "2023-01-12 - Escutcheon adjustments"]
    [:div.release-row
