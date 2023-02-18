@@ -183,7 +183,6 @@
     },
     "attitude": {
       "group": {
-        "none": "Ninguno",
         "beasts": "Bestias",
         "sea-creatures": "Criaturas Marinas",
         "serpents": "Serpents",
@@ -550,7 +549,6 @@
       "hoist": "Al izado",
       "fly": "Al contra izado"
     },
-    "position": "Posición",
     "positioning-mode": "Posicionar",
     "positioning-mode-choice": {
       "automatic": "Automático",
@@ -688,7 +686,6 @@
     "show-more": "Mostrar más",
     "not-found": "No encontrado",
     "manual": "Manual",
-    "mine-only": "Solo mío",
     "no-name": "<Sin nombre>",
     "none": "Ninguno",
     "no-item-selected": "Ningún elemento seleccionado",
@@ -722,7 +719,6 @@
   },
   "user": {
     "message": {
-      "arms-need-to-be-public-and-saved-for-exporting": "Las armas deben ser públicas y guardarse para exportar.",
       "arms-need-to-be-public-and-saved-for-sharing": "Las armas deben ser públicas y guardarse para compartir.",
       "arms-saved": "Armas guardadas, nueva versión:",
       "charge-saved": "Figura guardada, nueva versión:",
@@ -733,11 +729,9 @@
       "created-unsaved-copy": "Se ha creado una copia sin guardar.",
       "email-required": "Se requiere Email.",
       "need-to-be-logged-in": "Es necesario haber iniciado una sesión.",
-      "need-to-be-logged-in-and-arms-must-be-saved": "Necesitas estar con la sesión iniciada para que los escudos se guarden.",
-      "need-to-be-logged-in-and-charge-must-be-saved": "Necesitas estar con la sesión iniciada para que las figuras se guarden.",
       "need-to-be-logged-in-and-own-the-arms": "Necesitas estar con la sesión iniciada y poseer los escudos.",
-      "need-to-be-logged-in-and-own-the-charge.": "Necesitas estar con la sesión iniciada y poseer las figuras.",
-      "need-to-be-logged-in-and-own-the-collection.": "Necesitas estar con la sesión iniciada y poseer la colección.",
+      "need-to-be-logged-in-and-own-the-charge": "Necesitas estar con la sesión iniciada y poseer las figuras.",
+      "need-to-be-logged-in-and-own-the-collection": "Necesitas estar con la sesión iniciada y poseer la colección.",
       "new-confirmation-code-sent": "Se le ha enviado un nuevo código de acceso a su dirección de correo electrónico.",
       "password-reset-completed": "Restablecimiento de la contraseña completo",
       "password-reset-confirmation-code-sent": "Se ha enviado un código de confirmación a su dirección de e-mail.",
@@ -746,8 +740,7 @@
       "registration-completed": "Registro completado",
       "ribbon-saved": "Cinta guardada, nueva versión:",
       "save-changes-first": "Guarde su figura primero.",
-      "username-required": "Nombre de usuario requerido.",
-      "username-required-for-password-reset": "Nombre de usuario necesario para restablecer la contraseña."
+      "username-required": "Nombre de usuario requerido."
     },
     "button": {
       "change": "Cambio",
@@ -857,15 +850,12 @@
     "charge-group": "Grupo de figuras",
     "crest-charge": "Figura de cimera",
     "crest-charge-group": "Grupo de cargas de cimera",
-    "collection": "Colección",
     "collections": "Colecciones",
-    "cottising": "Cotizado",
     "cottise": "Cotizado",
     "extra-line": "Línea Adicional",
     "helm": "Yelmo",
     "helmet": "Yelmo",
     "helms-and-crests": "Timbre",
-    "heraldry": "Heráldica",
     "line": "Línea",
     "main-line": "Línea principal",
     "metadata": "Metadatos",
@@ -876,12 +866,10 @@
     "ribbons": "Bandas",
     "semy": "Sembrado",
     "slogan": "Lema",
-    "tag": "Etiqueta",
     "tags": "Etiquetas",
     "tincture": "Esmalte",
     "tinctures": "Esmaltes",
-    "torse": "Burelete",
-    "user": "Usuario"
+    "torse": "Burelete"
   },
   "submenu-summary": {
     "adjusted": "Ajustado",

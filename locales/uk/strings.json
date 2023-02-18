@@ -183,7 +183,6 @@
     },
     "attitude": {
       "group": {
-        "none": "Немає",
         "beasts": "Звірі",
         "sea-creatures": "Морські істоти",
         "serpents": "Змієподібні істоти",
@@ -551,7 +550,6 @@
       "hoist": "Біля древка",
       "fly": "Вільний край"
     },
-    "position": "Розміщення",
     "positioning-mode": "Розміщення",
     "positioning-mode-choice": {
       "automatic": "Автоматично",
@@ -689,7 +687,6 @@
     "show-more": "Більше",
     "not-found": "Не знайдено",
     "manual": "Вручну",
-    "mine-only": "Тільки мої",
     "no-name": "<no name>",
     "none": "Немає",
     "no-item-selected": "Нічого не вибрано",
@@ -723,7 +720,6 @@
   },
   "user": {
     "message": {
-      "arms-need-to-be-public-and-saved-for-exporting": "Герб необхідно зробити публічним та зберегти, перш ніж його можна буде експортувати.",
       "arms-need-to-be-public-and-saved-for-sharing": "Герб необхідно зробити публічним та зберегти, перш ніж ним можна буде поділитися.",
       "arms-saved": "Герб збережено. Нова версія:",
       "charge-saved": "Фігуру збережено. Нова версія:",
@@ -734,11 +730,9 @@
       "created-unsaved-copy": "Створено незбережену копію.",
       "email-required": "Необхідна адреса електронної пошти.",
       "need-to-be-logged-in": "Потрібно ввійти.",
-      "need-to-be-logged-in-and-arms-must-be-saved": "Потрібно ввійти та зберегти герб.",
-      "need-to-be-logged-in-and-charge-must-be-saved": "Потрібно ввійти та зберегти фігуру.",
       "need-to-be-logged-in-and-own-the-arms": "Потрібно ввійти та бути власником герба.",
-      "need-to-be-logged-in-and-own-the-charge.": "Потрібно ввійти та бути власником фігури.",
-      "need-to-be-logged-in-and-own-the-collection.": "Потрібно ввійти та бути власником колекції.",
+      "need-to-be-logged-in-and-own-the-charge": "Потрібно ввійти та бути власником фігури.",
+      "need-to-be-logged-in-and-own-the-collection": "Потрібно ввійти та бути власником колекції.",
       "new-confirmation-code-sent": "Новий код надіслано на вашу електронну адресу.",
       "password-reset-completed": "Скидання пароля завершено",
       "password-reset-confirmation-code-sent": "Код підтвердження зміни пароля надіслано на вашу електронну адресу.",
@@ -747,8 +741,7 @@
       "registration-completed": "Реєстрацію завершено",
       "ribbon-saved": "Стрічку збережено. Нова версія:",
       "save-changes-first": "Спочатку збережіть зміни.",
-      "username-required": "Необхідно вказати ім'я користувача.",
-      "username-required-for-password-reset": "Для скидання пароля потрібне ім'я користувача."
+      "username-required": "Необхідно вказати ім'я користувача."
     },
     "button": {
       "change": "Змінити",
@@ -858,15 +851,12 @@
     "charge-group": "Група фігур",
     "crest-charge": "Фігура в нашоломнику",
     "crest-charge-group": "Група фігур нашоломника",
-    "collection": "Колекція",
     "collections": "Колекції",
-    "cottising": "Смуги вздовж країв",
     "cottise": "Смуга вздовж краю",
     "extra-line": "Додаткова лінія",
     "helm": "Шолом",
     "helmet": "Шолом",
     "helms-and-crests": "Шоломи та нашоломники",
-    "heraldry": "Геральдика",
     "line": "Лінія",
     "main-line": "Головна лінія",
     "metadata": "Метадані",
@@ -877,12 +867,10 @@
     "ribbons": "Стрічки",
     "semy": "Усіяно фігурами",
     "slogan": "Гасло",
-    "tag": "Мітка",
     "tags": "Мітки",
     "tincture": "Колір",
     "tinctures": "Кольори",
-    "torse": "Бурелет",
-    "user": "Користувач"
+    "torse": "Бурелет"
   },
   "submenu-summary": {
     "adjusted": "змінено",

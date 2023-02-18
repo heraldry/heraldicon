@@ -183,7 +183,6 @@
     },
     "attitude": {
       "group": {
-        "none": "Keins",
         "beasts": "Tiere",
         "sea-creatures": "Wasser-Kreaturen",
         "serpents": "Schlangen",
@@ -552,7 +551,6 @@
       "hoist": "Liekseite",
       "fly": "Flugseite"
     },
-    "position": "Position",
     "positioning-mode": "Positionierung",
     "positioning-mode-choice": {
       "automatic": "Automatisch",
@@ -690,7 +688,6 @@
     "show-more": "Mehr anzeigen",
     "not-found": "Nicht gefunden",
     "manual": "Manuell",
-    "mine-only": "Nur meine",
     "no-name": "<unbenannt>",
     "none": "Keins",
     "no-item-selected": "Nichts ausgewählt",
@@ -724,7 +721,6 @@
   },
   "user": {
     "message": {
-      "arms-need-to-be-public-and-saved-for-exporting": "Das Wappen muß öffentlich und gespeichert sein zum Exportieren.",
       "arms-need-to-be-public-and-saved-for-sharing": "Das Wappen muß öffentlich und gespeichert sein zum Teilen.",
       "arms-saved": "Wappen gespeichert, neue Version:",
       "charge-saved": "Wappenfigur gespeichert, neue Version:",
@@ -735,11 +731,9 @@
       "created-unsaved-copy": "Ungespeicherte Kopie erstellt.",
       "email-required": "Email erforderlich.",
       "need-to-be-logged-in": "Du musst eingeloggt sein.",
-      "need-to-be-logged-in-and-arms-must-be-saved": "Du musst eingeloggt sein und das Wappen gespeichert haben.",
-      "need-to-be-logged-in-and-charge-must-be-saved": "Du musst eingeloggt sein und die Wappenfigur gespeichert haben.",
       "need-to-be-logged-in-and-own-the-arms": "Du musst eingeloggt und der Besitzer des Wappens sein.",
-      "need-to-be-logged-in-and-own-the-charge.": "Du musst eingeloggt und der Besitzer der Wappenfigur sein.",
-      "need-to-be-logged-in-and-own-the-collection.": "Du musst eingeloggt und der Besitzer der Sammlung sein.",
+      "need-to-be-logged-in-and-own-the-charge": "Du musst eingeloggt und der Besitzer der Wappenfigur sein.",
+      "need-to-be-logged-in-and-own-the-collection": "Du musst eingeloggt und der Besitzer der Sammlung sein.",
       "new-confirmation-code-sent": "Ein neuer Bestätigungscode wurde an deine Emailadresse geschickt.",
       "password-reset-completed": "Password zurückgesetzt",
       "password-reset-confirmation-code-sent": "Ein Bestätigungscode für das Zurücksetzen des Passworts wurde an deine Emailadresse geschickt.",
@@ -748,8 +742,7 @@
       "registration-completed": "Registrierung abgeschlossen",
       "ribbon-saved": "Band gespeichert, neue Version:",
       "save-changes-first": "Speichere deine Änderungen erst.",
-      "username-required": "Benutzername erforderlich.",
-      "username-required-for-password-reset": "Benutzername benötigt für Passwort zurücksetzen."
+      "username-required": "Benutzername erforderlich."
     },
     "button": {
       "change": "Ändern",
@@ -859,15 +852,12 @@
     "charge-group": "Wappenfigurengruppe",
     "crest-charge": "Helmzier Figur",
     "crest-charge-group": "Helmzier Figurengruppe",
-    "collection": "Sammlung",
     "collections": "Sammlungen",
-    "cottising": "Leisten",
     "cottise": "Leiste",
     "extra-line": "Extralinie",
     "helm": "Helmzier",
     "helmet": "Helm",
     "helms-and-crests": "Helme und Helmzier",
-    "heraldry": "Heraldik",
     "line": "Linie",
     "main-line": "Hauptlinie",
     "metadata": "Metadaten",
@@ -878,12 +868,10 @@
     "ribbons": "Bänder",
     "semy": "Besähung",
     "slogan": "Schlachtruf",
-    "tag": "Tag",
     "tags": "Tags",
     "tincture": "Tinktur",
     "tinctures": "Tinkturen",
-    "torse": "Helmwulst",
-    "user": "Benutzer"
+    "torse": "Helmwulst"
   },
   "submenu-summary": {
     "adjusted": "angepasst",

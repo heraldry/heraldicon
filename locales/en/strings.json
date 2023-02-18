@@ -183,7 +183,6 @@
     },
     "attitude": {
       "group": {
-        "none": "None",
         "beasts": "Beasts",
         "sea-creatures": "Sea creatures",
         "serpents": "Serpents",
@@ -553,7 +552,6 @@
       "hoist": "Hoist",
       "fly": "Fly"
     },
-    "position": "Position",
     "positioning-mode": "Positioning",
     "positioning-mode-choice": {
       "automatic": "Automatic",
@@ -691,7 +689,6 @@
     "show-more": "Show more",
     "not-found": "Not found",
     "manual": "Manual",
-    "mine-only": "Mine only",
     "no-name": "<no name>",
     "none": "None",
     "no-item-selected": "No item selected",
@@ -725,7 +722,6 @@
   },
   "user": {
     "message": {
-      "arms-need-to-be-public-and-saved-for-exporting": "Arms need to be public and saved for exporting.",
       "arms-need-to-be-public-and-saved-for-sharing": "Arms need to be public and saved for sharing.",
       "arms-saved": "Arms saved, new version:",
       "charge-saved": "Charge saved, new version:",
@@ -736,11 +732,9 @@
       "created-unsaved-copy": "Created an unsaved copy.",
       "email-required": "Email required.",
       "need-to-be-logged-in": "You need to be logged in.",
-      "need-to-be-logged-in-and-arms-must-be-saved": "Need to be logged in and arms must be saved.",
-      "need-to-be-logged-in-and-charge-must-be-saved": "Need to be logged in and charge must be saved.",
       "need-to-be-logged-in-and-own-the-arms": "Need to be logged in and own the arms.",
-      "need-to-be-logged-in-and-own-the-charge.": "Need to be logged in and own the charge.",
-      "need-to-be-logged-in-and-own-the-collection.": "Need to be logged in and own the collection.",
+      "need-to-be-logged-in-and-own-the-charge": "Need to be logged in and own the charge.",
+      "need-to-be-logged-in-and-own-the-collection": "Need to be logged in and own the collection.",
       "new-confirmation-code-sent": "A new code was sent to your email address.",
       "password-reset-completed": "Password reset completed",
       "password-reset-confirmation-code-sent": "A password reset confirmation code was sent to your email address.",
@@ -749,8 +743,7 @@
       "registration-completed": "Registration completed",
       "ribbon-saved": "Ribbon saved, new version:",
       "save-changes-first": "Save your changes first.",
-      "username-required": "Username required.",
-      "username-required-for-password-reset": "Username required for password reset."
+      "username-required": "Username required."
     },
     "button": {
       "change": "Change",
@@ -860,15 +853,12 @@
     "charge-group": "Charge group",
     "crest-charge": "Crest charge",
     "crest-charge-group": "Crest charge group",
-    "collection": "Collection",
     "collections": "Collections",
-    "cottising": "Cottising",
     "cottise": "Cottise",
     "extra-line": "Extra line",
     "helm": "Helm",
     "helmet": "Helmet",
     "helms-and-crests": "Helms and crests",
-    "heraldry": "Heraldry",
     "line": "Line",
     "main-line": "Main line",
     "metadata": "Metadata",
@@ -879,12 +869,10 @@
     "ribbons": "Ribbons",
     "semy": "Semy",
     "slogan": "Slogan",
-    "tag": "Tag",
     "tags": "Tags",
     "tincture": "Tincture",
     "tinctures": "Tinctures",
-    "torse": "Torse",
-    "user": "User"
+    "torse": "Torse"
   },
   "submenu-summary": {
     "adjusted": "adjusted",
