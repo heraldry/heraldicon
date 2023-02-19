@@ -107,7 +107,7 @@
   (let [manual-blazon (get-sanitized-data (c/++ context :manual-blazon))]
     (if (str/blank? manual-blazon)
       (blazon-component context)
-      manual-blazon)))
+      (str "[" manual-blazon "]"))))
 
 (defn parent [context]
   (some-> (cond
