@@ -1,7 +1,6 @@
 (ns heraldicon.heraldry.field.render
   (:require
    [heraldicon.context :as c]
-   [heraldicon.frontend.counterchange :as counterchange]
    [heraldicon.heraldry.render :as render]
    [heraldicon.heraldry.subfield :as subfield]
    [heraldicon.heraldry.tincture :as tincture]
@@ -49,7 +48,7 @@
 (defn- render-counterchanged-field [{:keys [path]
                                      :as context} _properties]
   (when-let [parent-field-context (interface/parent (interface/parent context))]
-    (let [counterchange-tinctures (counterchange/tinctures parent-field-context)
+    (let [counterchange-tinctures (interface/counterchanged-tinctures parent-field-context)
           counterchanged-context (-> parent-field-context
                                      (c/add-counterchanged-path path)
                                      (c/add-counterchanged-tinctures counterchange-tinctures))]
