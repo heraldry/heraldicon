@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.component :as component]
+   [heraldicon.heraldry.counterchange :as counterchange]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.math.bounding-box :as bb]
@@ -462,3 +463,18 @@
 
 (defn get-subfields-shape [context]
   @(rf/subscribe [::subfields-shape (c/scrub-render-hints context)]))
+
+(defn counterchanged-tinctures [context]
+  @(rf/subscribe [::counterchanged-tinctures context]))
+
+(rf/reg-sub-raw ::counterchanged-tinctures
+  (fn [_app-db [_ context]]
+    (reaction-or-cache
+     ::counterchanged-tinctures
+     context
+     #(if (= (get-sanitized-data (c/++ context :type))
+             :heraldry.field.type/counterchanged)
+        (-> (counterchanged-tinctures (parent (parent context)))
+            reverse
+            vec)
+        (counterchange/get-tinctures @(rf/subscribe [:get context]) context)))))
