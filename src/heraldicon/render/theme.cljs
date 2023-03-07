@@ -773,6 +773,40 @@
                   :source-creator-name "Lospec"
                   :source-creator-link "https://lospec.com"}})
 
+(def ^:private theme-community-minecraft
+  {;; metal
+   :argent "#eaeded"
+   :or "#f9c629"
+
+   ;; color
+   :azure "#353a9e"
+   :vert "#556e1c"
+   :gules "#a12823"
+   :sable "#16161b"
+   :purpure "#7b2bad"
+
+   ;; stain
+   :murrey "#972947"
+   :sanguine "#720000"
+   :tenne "#a25426"
+
+   ;; other
+   :amaranth "#a9309f"
+   :brunatre "#734829"
+   :buff "#4d3324"
+   :carnation "#d2b2a1"
+   :copper "#e77c56"
+   :orange "#f17716"
+   :rose "#ee90ad"
+   :white "#ffffff"
+   :cendree "#8e8f87"
+   :bleu-celeste "#3cb0da"
+
+   ::name "Minecraft"
+   ::attribution {:license :public-domain
+                  :creator-name "abf3427"
+                  :creator-link "https://twitter.com/abf3427"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -811,7 +845,8 @@
     [:community-soft-rage theme-community-soft-rage]
     [:community-the-violet-herald-palette theme-community-the-violet-herald-palette]
     [:community-tinctures2go theme-community-tinctures2go]
-    [:community-commodore64 theme-community-commodore64]]])
+    [:community-commodore64 theme-community-commodore64]
+    [:community-minecraft theme-community-minecraft]]])
 
 (def default
   :wappenwiki)
