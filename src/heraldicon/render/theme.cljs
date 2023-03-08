@@ -807,6 +807,40 @@
                   :creator-name "abf3427"
                   :creator-link "https://twitter.com/abf3427"}})
 
+(def ^:private theme-community-ahtinctures
+  {;; metals
+   :argent "#fffefe" ;; silver
+   :or "#ffe66e" ;; gold
+
+   ;; colours
+   :azure "#0350b6"
+   :vert "#53872c"
+   :gules "#ce0001"
+   :sable "#323233"
+   :purpure "#a84078"
+
+   ;; stains
+   :murrey "#670000"
+   :sanguine "#900000"
+   :tenne "#ce7e19"
+
+   ;; other
+   :amaranth "#b51872"
+   :brunatre "#745a49"
+   :buff "#ebb24c"
+   :carnation "#fab587"
+   :copper "#AB6334"
+   :orange "#E48634"
+   :rose "#D99392"
+   :white "#FFFFFF"
+   :cendree "#f0f1ea"
+   :bleu-celeste "#9bd2fe"
+
+   ::name "aHTinctures"
+   ::attribution {:license :public-domain
+                  :creator-name "ashoppio"
+                  :creator-link "https://heraldicon.org/users/ashoppio"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -846,7 +880,8 @@
     [:community-the-violet-herald-palette theme-community-the-violet-herald-palette]
     [:community-tinctures2go theme-community-tinctures2go]
     [:community-commodore64 theme-community-commodore64]
-    [:community-minecraft theme-community-minecraft]]])
+    [:community-minecraft theme-community-minecraft]
+    [:community-ahtinctures theme-community-ahtinctures]]])
 
 (def default
   :wappenwiki)
