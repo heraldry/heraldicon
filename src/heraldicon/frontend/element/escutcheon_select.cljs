@@ -46,7 +46,7 @@
            [value-mode-select/value-mode-select context]]
           [:div {:style {:transform "translate(-0.333em,0)"}}
            [escutcheon-choice context value choice-name :clickable? false]]]
-         {:style {:width "26em"
+         {:style {:width "33.5em"
                   :vertical-align "top"}}
          (into [:<>]
                (map (fn [[group-name & group]]
