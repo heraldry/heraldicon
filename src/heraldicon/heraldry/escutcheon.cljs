@@ -777,9 +777,23 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-waisted-french
+  {:shape "M 0,0.26171875
+           C 5.777952,17.102504 5.076671,34.052213 0,51.257812 11.131037,106.1402 50,106.02539 50,106.02539
+           c 0,0 38.868963,0.11481 50,-54.767578 -5.076671,-17.205599 -5.777952,-34.155308 0,-50.99609325
+             -34.290176,2.36055605 -68.179582,2.38739475 -100,0 z"
+
+   ::name "Waisted French"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Maximilian 'NervousNullPtr' Schleicher"
+                  :creator-link "https://github.com/NervousNullPtr"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
+    [:community-heater-pointed community-heater-pointed]
+    [:community-heater-rounded community-heater-rounded]
     [:square-french square-french]
     [:square-iberian square-iberian]
     [:square-czech square-czech]
@@ -798,6 +812,7 @@
    [:string.escutcheon.group/decorative
     [:wedge wedge]
     [:swiss swiss]
+    [:community-nrw community-nrw]
     [:renaissance renaissance]
     [:polish polish]
     [:polish-19th-century polish-19th-century]
@@ -807,31 +822,29 @@
     [:community-pointy-iberian community-pointy-iberian]
     [:community-berlin community-berlin]
     [:community-angular community-angular]
+    [:community-waisted-french community-waisted-french]
     [:community-heater-bulgy community-heater-bulgy]
-    [:community-heater-pointed community-heater-pointed]
-    [:community-heater-rounded community-heater-rounded]
     [:community-triangular community-triangular]
     [:community-playful community-playful]
     [:community-bavarian community-bavarian]
     [:community-french-slim community-french-slim]
-    [:community-nrw community-nrw]
     [:community-german community-german]
     [:community-innsbruck community-innsbruck]
+    [:community-coffin community-coffin]
+    [:community-hexagonal community-hexagonal]
+    [:community-pavise community-pavise]
+    [:community-scutum community-scutum]
     [:community-louisiana community-louisiana]
     [:community-queen-consort community-queen-consort]
     [:community-queen-consort-modern community-queen-consort-modern]
     [:community-octolozenge community-octolozenge]
     [:community-italian community-italian]
     [:community-italian-2 community-italian-2]
-    [:community-coffin community-coffin]
-    [:community-hexagonal community-hexagonal]
-    [:community-pavise community-pavise]
-    [:community-scutum community-scutum]
+    [:community-elven community-elven]
+    [:community-orcish community-orcish]
     [:community-kalasag community-kalasag]
     [:community-gonfalon community-gonfalon]
     [:community-african community-african]
-    [:community-elven community-elven]
-    [:community-orcish community-orcish]
     [:community-flag-standard community-flag-standard]]])
 
 (def ^:private kinds-map
