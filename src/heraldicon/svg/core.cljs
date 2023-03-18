@@ -236,6 +236,13 @@
                           (-> value second :fill)) (assoc-in [1 :id] (uid/generate "id"))))
                  data))
 
+(defn strip-ids [data]
+  (walk/postwalk (fn [value]
+                   (cond-> value
+                     (and (vector? value)
+                          (-> value second map?)) (update 1 dissoc :id)))
+                 data))
+
 (defn strip-clip-paths [data]
   (walk/postwalk (fn [value]
                    (if (and (vector? value)

@@ -43,6 +43,14 @@
 (defmethod load-editing-data :default [entity]
   (go entity))
 
+(defmulti ^:private prepare-entity-data-for-saving :type)
+
+(defmethod prepare-entity-data-for-saving :heraldicon.entity.type/charge [entity]
+  (update-in entity [:data :edn-data] svg/strip-ids))
+
+(defmethod prepare-entity-data-for-saving :default [entity]
+  entity)
+
 (defn- prepare-for-editing [entity]
   (go
     (let [query-id [::prepare-for-editing (:id entity) (:version entity)]]
@@ -80,7 +88,8 @@
 
 (rf/reg-event-fx ::save
   (fn [{:keys [db]} [_ entity {:keys [on-start on-complete on-success on-error]}]]
-    (let [session (session/data-from-db db)]
+    (let [session (session/data-from-db db)
+          entity (prepare-entity-data-for-saving entity)]
       (go
         (when on-start
           (on-start))
