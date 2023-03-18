@@ -15,6 +15,7 @@
    [heraldicon.heraldry.line.type.fir-tree-topped :as fir-tree-topped]
    [heraldicon.heraldry.line.type.fir-twigged :as fir-twigged]
    [heraldicon.heraldry.line.type.flory :as flory]
+   [heraldicon.heraldry.line.type.flory-counter-flory :as flory-counter-flory]
    [heraldicon.heraldry.line.type.indented :as indented]
    [heraldicon.heraldry.line.type.invected :as invected]
    [heraldicon.heraldry.line.type.nebuly :as nebuly]
@@ -135,9 +136,10 @@
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern
    #'wolf-toothed/pattern
+   #'flory/pattern
    #'rayonny-flaming/pattern
    #'rayonny-spiked/pattern
-   #'flory/pattern
+   #'flory-counter-flory/pattern
    #'angled/pattern
    #'bevilled/pattern
    #'enarched/pattern])
@@ -343,6 +345,16 @@
                                   [:base-line]]
                                  {[:spacing :default] 1.0
                                   [:offset :default] -0.5})
+            :flory-counter-flory (options/pick default-options
+                                               [[:eccentricity]
+                                                [:height]
+                                                [:size-reference]
+                                                [:width]
+                                                [:spacing]
+                                                [:offset]
+                                                [:flipped?]
+                                                [:base-line]]
+                                               {[:offset :default] 0.25})
             :raguly (options/pick default-options
                                   [[:eccentricity]
                                    [:height]
