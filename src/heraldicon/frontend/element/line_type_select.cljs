@@ -45,7 +45,7 @@
            [value-mode-select/value-mode-select context]]
           [:div {:style {:transform "translate(-0.6em,0)"}}
            [line-type-choice context value choice-name :clickable? false]]]
-         {:style {:width "24em"}}
+         {:style {:width "31.5em"}}
          (into [:<>]
                (map (fn [[display-name key]]
                       ^{:key display-name}

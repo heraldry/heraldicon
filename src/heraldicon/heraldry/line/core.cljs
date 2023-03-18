@@ -136,9 +136,9 @@
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern
    #'wolf-toothed/pattern
-   #'flory/pattern
    #'rayonny-flaming/pattern
    #'rayonny-spiked/pattern
+   #'flory/pattern
    #'flory-counter-flory/pattern
    #'angled/pattern
    #'bevilled/pattern
