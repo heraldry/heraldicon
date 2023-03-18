@@ -9,9 +9,9 @@
       (let [next-node (first queue)]
         (if (branch? next-node)
           (recur (conj result next-node)
-                 (into (next queue) (children next-node)))
+                 (into (vec (next queue)) (children next-node)))
           (recur (conj result next-node)
-                 (next queue))))
+                 (vec (next queue)))))
       result)))
 
 (defn- collect-tinctures [field context]
