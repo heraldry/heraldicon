@@ -240,13 +240,15 @@
       new-colour)))
 
 (defn- colourize-element [element-id colour data]
-  (walk/postwalk (fn [element]
-                   (if (and (vector? element)
-                            (-> element second map?)
-                            (-> element second :id (= element-id)))
-                     (assoc-in element [1 :fill] colour)
-                     element))
-                 data))
+  (if element-id
+    (walk/postwalk (fn [element]
+                     (if (and (vector? element)
+                              (-> element second map?)
+                              (-> element second :id (= element-id)))
+                       (assoc-in element [1 :fill] colour)
+                       element))
+                   data)
+    data))
 
 (macros/reg-event-db ::colourize-element
   (fn [db [_ form-db-path element-id]]
