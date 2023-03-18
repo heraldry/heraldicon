@@ -8,6 +8,7 @@
    [heraldicon.frontend.repository.entity :as entity]
    [heraldicon.frontend.repository.query :as query]
    [heraldicon.frontend.user.session :as session]
+   [heraldicon.svg.core :as svg]
    [heraldicon.util.core :as util]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
@@ -36,7 +37,7 @@
    (let [edn-data (get-in entity [:data :edn-data])
          svg-data (get-in entity [:data :svg-data])]
      (cond-> entity
-       (not edn-data) (assoc-in [:data :edn-data] (<? (http/fetch (-> entity :data :edn-data-url))))
+       (not edn-data) (assoc-in [:data :edn-data] (svg/add-ids (<? (http/fetch (-> entity :data :edn-data-url)))))
        (not svg-data) (assoc-in [:data :svg-data] (<? (http/fetch (-> entity :data :svg-data-url))))))))
 
 (defmethod load-editing-data :default [entity]
