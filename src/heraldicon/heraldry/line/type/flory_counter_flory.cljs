@@ -102,5 +102,5 @@
                                         counter-flory))
 
                   :min (:y tip)
-                  :max 0
+                  :max (:y (flip tip))
                   :remaining-spacing (* width (/ spacing 2))}))})
