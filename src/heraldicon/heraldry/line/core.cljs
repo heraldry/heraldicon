@@ -344,9 +344,7 @@
                                   [:spacing]
                                   [:offset]
                                   [:flipped?]
-                                  [:base-line]]
-                                 {[:spacing :default] 1.0
-                                  [:offset :default] -0.5})
+                                  [:base-line]])
             :flory-counter-flory (options/pick default-options
                                                [[:eccentricity]
                                                 [:height]
@@ -355,8 +353,7 @@
                                                 [:spacing]
                                                 [:offset]
                                                 [:flipped?]
-                                                [:base-line]]
-                                               {[:offset :default] -0.25})
+                                                [:base-line]])
             :raguly (options/pick default-options
                                   [[:eccentricity]
                                    [:height]

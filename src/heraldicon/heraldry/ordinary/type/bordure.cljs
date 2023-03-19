@@ -14,11 +14,35 @@
 
 (def ordinary-type :heraldry.ordinary.type/bordure)
 
+(defn override-offset-default [line-type line-options]
+  (if (:offset line-options)
+    (cond
+      (#{:wavy
+         :indented
+         :dancetty
+         :nebuly
+         :urdy
+         :fir-tree-topped
+         :fir-twigged
+         :rayonny-flaming} line-type) (assoc-in line-options [:offset :default] 0.25)
+      (#{:flory-counter-flory} line-type) (assoc-in line-options [:offset :default] -0.25)
+      (#{:invected
+         :engrailed
+         :urdy
+         :wolf-toothed} line-type) (assoc-in line-options [:offset :default] 0.5)
+      (:spacing line-options) (assoc-in line-options [:offset :default] -0.5)
+      :else line-options)
+    line-options))
+
 (defmethod ordinary.interface/display-name ordinary-type [_] :string.ordinary.type/bordure)
 
 (defmethod ordinary.interface/options ordinary-type [context]
   (let [line-type (or (interface/get-raw-data (c/++ context :line :type))
-                      :straight)]
+                      :straight)
+        line-options (override-offset-default
+                      line-type
+                      (line/options (c/++ context :line)
+                                    :corner-damping? true))]
     {:thickness {:type :option.type/range
                  :min 0.1
                  :max 35
@@ -40,8 +64,7 @@
                  :ui/label :string.option/smoothing
                  :ui/tooltip :string.tooltip/smoothing
                  :ui/step 0.1}
-     :line (-> (line/options (c/++ context :line)
-                             :corner-damping? true)
+     :line (-> line-options
                (dissoc :flipped?)
                (update-in [:type :choices]
                           (fn [choices]
