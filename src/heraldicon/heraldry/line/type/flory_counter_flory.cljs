@@ -98,8 +98,9 @@
                                          flory)]
 
                  {:pattern (vec (concat flory
-                                        ["l" (* width spacing) 0]
+                                        ["l" (* width (/ spacing 2)) 0]
                                         counter-flory))
 
                   :min (:y tip)
-                  :max 0}))})
+                  :max 0
+                  :remaining-spacing (* width (/ spacing 2))}))})

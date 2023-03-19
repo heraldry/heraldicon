@@ -60,17 +60,19 @@
                                   :as line}
                                  length line-function {:keys [reversed? mirrored?
                                                               num-repetitions] :as line-options}]
-  (let [{line-pattern :pattern
+  (let [{:keys [remaining-spacing]
+         line-pattern :pattern
          :as pattern-data} (line-function line line-options)
         effective-mirrored? (-> line-mirrored?
                                 (util/xor mirrored?)
                                 (util/xor reversed?))
         real-spacing (* spacing pattern-width)
+        remaining-spacing (or remaining-spacing real-spacing)
         line-pattern (cond-> line-pattern
                        (pos? real-spacing) (cond->
-                                             (not effective-mirrored?) (conj "h" real-spacing)
+                                             (not effective-mirrored?) (conj "h" remaining-spacing)
                                              effective-mirrored? (->>
-                                                                   (concat ["h" real-spacing]))))
+                                                                   (concat ["h" remaining-spacing]))))
         line-pattern (if effective-mirrored?
                        [(-> (into ["M" 0 0]
                                   line-pattern)
@@ -354,7 +356,7 @@
                                                 [:offset]
                                                 [:flipped?]
                                                 [:base-line]]
-                                               {[:offset :default] 0.25})
+                                               {[:offset :default] -0.25})
             :raguly (options/pick default-options
                                   [[:eccentricity]
                                    [:height]
@@ -776,6 +778,7 @@
   (memoize
    (fn modify-path [path {:keys [type
                                  width
+                                 spacing
                                  corner-damping-radius
                                  corner-damping-mode]
                           :as line} environment & {:keys [outer-shape?]}]
@@ -788,32 +791,32 @@
            full-length (-> guiding-path
                            path/parse-path
                            path/length)
-           repetitions (-> (/ full-length width)
+           repetitions (-> (/ full-length (* width (+ 1 (or spacing 0))))
                            Math/floor
                            inc)
            pattern-width (/ full-length repetitions)
+           pattern-width-without-spacing (/ pattern-width (+ 1 (or spacing 0)))
            precision 0.05
            line-function (:function pattern-data)
            {line-data :line
             line-start :line-start
             real-pattern-width :pattern-width} (pattern-line-with-offset
                                                 (assoc line
-                                                       :width pattern-width
+                                                       :width pattern-width-without-spacing
                                                        :offset 0)
-                                                pattern-width
+                                                pattern-width-without-spacing
                                                 line-function
                                                 {:num-repetitions 1})
            offset (-> line
                       :offset
                       (or 0)
-                      (* pattern-width))
+                      (* pattern-width-without-spacing))
            fess (-> environment :points :fess)
            top (-> environment :points :top)
            intersection (v/last-intersection-with-shape fess top guiding-path)
            start-offset (-> intersection
                             :t2
-                            (* full-length)
-                            (+ offset))
+                            (* full-length))
            path-points (-> guiding-path
                            (path/sample-path :precision precision
                                              :start-offset start-offset)
