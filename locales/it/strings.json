@@ -79,6 +79,8 @@
       "engrailed": "Spinato",
       "fir-tree-topped": "A Pino",
       "fir-twigged": "Ramo di Abete",
+      "flory": "Gigliato",
+      "flory-counter-flory": "Contro-gigliato",
       "indented": "Dentato",
       "invected": "Cannellato",
       "nebuly": "Innestato",
@@ -480,6 +482,7 @@
     "flipped?": "Sottosopra",
     "font": "Carattere",
     "font-scale": "Dimensione carattere",
+    "font-title": "Carattere per titolo",
     "function": "Funzione",
     "geometry": "Geometria",
     "height": "Altezza",
@@ -835,7 +838,7 @@
       "three-below-bend": "Tre sotto la banda",
       "three-columns": "Tre (colonne)",
       "three-columns-inverted": "Tre (colonne, invertito)",
-      "three-inverted": "Tre (invertito)"
+      "three-inverted": "Male ordinate"
     },
     "charge-group-of": "Gruppo di",
     "select-charge-group-preset": "Seleziona la preimpostazione del gruppo delle figure",
