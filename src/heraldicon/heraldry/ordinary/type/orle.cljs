@@ -7,6 +7,7 @@
    [heraldicon.heraldry.ordinary.auto-arrange :as auto-arrange]
    [heraldicon.heraldry.ordinary.interface :as ordinary.interface]
    [heraldicon.heraldry.ordinary.post-process :as post-process]
+   [heraldicon.heraldry.ordinary.type.bordure :as bordure]
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
    [heraldicon.options :as options]
@@ -32,6 +33,15 @@
                       :straight)
         opposite-line-type (or (interface/get-raw-data (c/++ context :opposite-line :type))
                                :straight)
+        line-options (bordure/override-offset-default
+                      line-type
+                      (line/options (c/++ context :line)
+                                    :corner-damping? true))
+        opposite-line-options (bordure/override-offset-default
+                               line-type
+                               (line/options (c/++ context :opposite-line)
+                                             :fimbriation? false
+                                             :corner-damping? true))
         adjust-line-style #(-> %
                                (update-in [:type :choices]
                                           (fn [choices]
@@ -80,13 +90,8 @@
                  :ui/label :string.option/smoothing
                  :ui/tooltip :string.tooltip/smoothing
                  :ui/step 0.1}
-     :line (adjust-line-style
-            (line/options (c/++ context :line)
-                          :corner-damping? true))
-     :opposite-line (adjust-line-style
-                     (line/options (c/++ context :opposite-line)
-                                   :fimbriation? false
-                                   :corner-damping? true))
+     :line (adjust-line-style line-options)
+     :opposite-line (adjust-line-style opposite-line-options)
      :outline? options/plain-outline?-option}))
 
 (defn- add-orle [{:keys [current-distance]
