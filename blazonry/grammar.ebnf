@@ -688,6 +688,12 @@ line/EMBATTLED-IN-CROSSES
     | #"\b([ei]m)?battl(ed|y)-+in-+crosses\b"
     | #"\b([ei]m)?battl(ed|y)\b" #"\bin crosses\b"
 line/POTENTY = #"\bpotenty\b"
+line/FLORY
+    = #"\bflory\b"
+    | #"\bfleury\b"
+line/FLORY-COUNTER-FLORY
+    = #"\bflory[ -]+counter[ -]+flory\b"
+    | #"\bfleury[ -]+counter[ -]+fleury\b"
 line/INDENTED
     = #"\bindented\b"
     | #"\bendented\b"
@@ -1791,6 +1797,8 @@ line-type
     | line/EMBATTLED-GRADY
     | line/EMBATTLED-IN-CROSSES
     | line/POTENTY
+    | line/FLORY
+    | line/FLORY-COUNTER-FLORY
     | line/INDENTED
     | line/DANCETTY
     | line/WAVY
