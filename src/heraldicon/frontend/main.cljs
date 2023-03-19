@@ -13,7 +13,7 @@
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [re-frame.subs :as r-subs]
-   [reagent.dom :as r]
+   [reagent.dom.client :as r]
    [taoensso.timbre :as log]
    [taoensso.tufte :as tufte]))
 
@@ -48,9 +48,7 @@
   (session/read-from-storage)
   #_(print-stats)
   (router/start)
-  (r/render
-   [app]
-   (.getElementById js/document "app"))
-  (r/render
-   [title/title]
-   (first (.getElementsByTagName js/document "title"))))
+  (let [root (r/create-root (.getElementById js/document "app"))]
+    (r/render root [app]))
+  (let [title-root (r/create-root (first (.getElementsByTagName js/document "title")))]
+    (r/render title-root [title/title])))
