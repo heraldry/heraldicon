@@ -25,6 +25,15 @@
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
+   [:h3 "2023-03-19 - Bordure/orle line style adjustments and flory line styles"]
+   [:div.release-row
+    [:div.info
+     [:p "Flory and flory-counter-flory are now available line styles."]
+     [:p "Introducing those new line styles made me realize that the previous offsetting and spacing of line styles for bordures and orles was a bit unpredictable and difficult. This is now greatly improved, I believe. With a reasonable default offset being chosen to align the line style with the top center of the surrounding field shape."]
+     [:p
+      [:span {:style {:color "darkred"}} [:b "Some of your coats of arms may look different now if they use orles or bordures with line styles."]] "."]
+     [:p "Please have a look and maybe adjust ordinaries or charges if necessary, unfortunately this was another case that was difficult to migrate without breaking some existing arms."]]]
+
    [:h3 "2023-01-12 - Escutcheon adjustments"]
    [:div.release-row
     [:div.info
