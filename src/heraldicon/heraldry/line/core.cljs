@@ -12,6 +12,7 @@
    [heraldicon.heraldry.line.type.embattled-in-crosses :as embattled-in-crosses]
    [heraldicon.heraldry.line.type.enarched :as enarched]
    [heraldicon.heraldry.line.type.engrailed :as engrailed]
+   [heraldicon.heraldry.line.type.erably :as erably]
    [heraldicon.heraldry.line.type.fir-tree-topped :as fir-tree-topped]
    [heraldicon.heraldry.line.type.fir-twigged :as fir-twigged]
    [heraldicon.heraldry.line.type.flory :as flory]
@@ -137,6 +138,7 @@
    #'urdy/pattern
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern
+   #'erably/pattern
    #'wolf-toothed/pattern
    #'rayonny-flaming/pattern
    #'rayonny-spiked/pattern
@@ -336,6 +338,13 @@
                                        [:offset]
                                        [:flipped?]
                                        [:base-line]])
+            :erably (options/pick default-options
+                                  [[:height]
+                                   [:size-reference]
+                                   [:width]
+                                   [:offset]
+                                   [:flipped?]
+                                   [:base-line]])
             :flory (options/pick default-options
                                  [[:eccentricity]
                                   [:height]
