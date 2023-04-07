@@ -137,7 +137,9 @@
                            (if (and viewbox-width viewbox-height)
                              [viewbox-x viewbox-y viewbox-width viewbox-height true]
                              [0 0 width height false]))
-         edn-data (assoc svg-data 0 :g)
+         edn-data (assoc svg-data
+                         0 :g
+                         1 nil)
          naive-bounding-box (bb/from-vector-and-size
                              (v/Vector. shift-x shift-y)
                              width height)
@@ -192,7 +194,8 @@
               {shift-x :x
                shift-y :y} (bb/top-left bounding-box)
               prepared-edn-data (-> parsed-svg-data
-                                    (assoc 0 :g)
+                                    (assoc 0 :g
+                                           1 nil)
                                     svg/fix-stroke-and-fill
                                     (assoc-in [1 :transform]
                                               (str "translate(" (- shift-x) "," (- shift-y) ")"))
