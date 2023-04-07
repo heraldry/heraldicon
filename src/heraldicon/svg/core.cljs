@@ -203,11 +203,16 @@
                      value))
                  data))
 
-(defn- strip-switch-elements [data]
+(defn- replace-switch-elements [data]
   (walk/postwalk (fn [value]
-                   (cond-> value
-                     (and (vector? value)
-                          (= (first value) :switch)) last))
+                   (if (and (vector? value)
+                            (= (first value) :switch))
+                     (let [second-element (when (-> value count (> 1))
+                                            (get value 1))
+                           attributes (when (map? second-element)
+                                        second-element)]
+                       [:g attributes (last value)])
+                     value))
                  data))
 
 (defn- strip-currentcolor [data]
@@ -224,7 +229,7 @@
 (defn strip-unnecessary-parts [svg-data]
   (-> svg-data
       (strip-elements #{:style :foreignObject :foreign-object :foreignobject})
-      strip-switch-elements
+      replace-switch-elements
       strip-classes-and-ids
       strip-currentcolor))
 
