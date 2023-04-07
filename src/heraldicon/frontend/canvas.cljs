@@ -245,6 +245,9 @@
   (go-catch
    (let [target-width 1024
          target-height 1024
+         svg-data (assoc svg-data
+                         0 :g
+                         1 nil)
          bounding-box (<? (svg-bounding-box svg-data base-bounding-box :draw-svg-fn draw-svg-fn))
          width (bb/width bounding-box)
          height (bb/height bounding-box)
