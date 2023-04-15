@@ -214,7 +214,7 @@
                 shapes]} (-> charge-entity :data :edn-data)
         base-width (js/parseFloat (or width "1"))
         base-height (js/parseFloat (or height "1"))
-        base-shape (if shapes
+        base-shape (if (seq shapes)
                      (mapv (fn [path]
                              (-> path
                                  first
