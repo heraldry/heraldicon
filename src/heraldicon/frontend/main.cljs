@@ -13,9 +13,7 @@
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [re-frame.subs :as r-subs]
-   [reagent.dom.client :as r]
-   [taoensso.timbre :as log]
-   [taoensso.tufte :as tufte]))
+   [reagent.dom.client :as r]))
 
 (defn app []
   [:<>
@@ -25,28 +23,11 @@
     [modal/render]
     [auto-complete/render]]])
 
-(defonce ^:private stats-accumulator (tufte/add-accumulating-handler! {:ns-pattern "*"}))
-
-(defn- start-stats-timer [f]
-  (rf/dispatch-sync [:set [:ui :timer] (js/setTimeout f 5000)]))
-
-(defn ^:export print-stats []
-  (log/debug :print-stats)
-  (when-let [timer @(rf/subscribe [:get [:ui :timer]])]
-    (js/clearTimeout timer))
-  (when-let [m (not-empty @stats-accumulator)]
-    (log/info "profile\n" (tufte/format-grouped-pstats
-                           m
-                           {:format-pstats-opts {:columns [:n-calls :min :p50 :p90 :max :mean :clock :total]}})))
-
-  (start-stats-timer print-stats))
-
 (defn ^:export init []
   (r-subs/clear-subscription-cache!)
   (rf/dispatch-sync [::state/initialize])
   (rf/dispatch-sync [::language/load-setting])
   (session/read-from-storage)
-  #_(print-stats)
   (router/start)
   (let [root (r/create-root (.getElementById js/document "app"))]
     (r/render root [app]))
