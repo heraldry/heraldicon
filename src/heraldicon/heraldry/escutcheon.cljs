@@ -777,6 +777,54 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-orcish2
+  {:shape "M 20,120 C 20,45 0,30 0,30 35,40 25,5 25,5 c 0,0 20,5 25,-5 0,0
+           0,15 50,10 0,0 -15,10 -10,80 0,0 -15,-5 -20,10 0,0 -5,-10 -25,-10 -20,0 -25,30 -25,30 z"
+   :bounding-box (bb/BoundingBox. 15 90 15 90)
+   :center-fess? true
+
+   ::name "Orcish2"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-dwarven
+  {:shape "M 30,120 10,85 0,15 20,0 h 60 l 20,15 -10,70 -20,35 z"
+   :bounding-box (bb/BoundingBox. 5 95 0 120)
+   :points {:fess (v/Vector. 50 55)}
+
+   ::name "Dwarven"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-arrowhead
+  {:shape "m 50,5 c 30,0 45,-5 45,-5 0,0 5,10 5,40 0,30 -20,65 -50,85
+           C 20,105 0,70 0,40 0,10 5,0 5,0 5,0 20,5 50,5 Z"
+   :bounding-box (bb/BoundingBox. 5 95 0 125)
+   :points {:fess (v/Vector. 50 50)}
+
+   ::name "Arrowhead"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-dragonborn
+  {:shape "M 30,150 C 30,150 25,95 15,85 5,75 0,80 0,80 0,80 5,70 0,60 0,60 5,50
+           0,40 0,40 5,30 0,20 c 0,0 5,5 15,-5 0,0 10,-10 35,-15 25,5 35,15 35,15 10,10
+           15,5 15,5 -5,10 0,20 0,20 -5,10 0,20 0,20 -5,10 0,20 0,20 0,0 -5,-5 -15,5
+           -10,10 -15,65 -15,65 -10,0 -20,10 -20,10 0,0 -10,-10 -20,-10 z"
+   :bounding-box (bb/BoundingBox. 0 100 0 160)
+
+   ::name "Dragonborn"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private community-waisted-french
   {:shape "M 0,0.26171875
            C 5.777952,17.102504 5.076671,34.052213 0,51.257812 11.131037,106.1402 50,106.02539 50,106.02539
@@ -804,6 +852,7 @@
     [:norman norman]]
    [:string.escutcheon.group/shapes
     [:flag flag]
+    [:community-flag-standard community-flag-standard]
     [:rectangle rectangle]
     [:lozenge lozenge]
     [:community-rhombus community-rhombus]
@@ -812,6 +861,7 @@
    [:string.escutcheon.group/decorative
     [:wedge wedge]
     [:swiss swiss]
+    [:community-arrowhead community-arrowhead]
     [:community-nrw community-nrw]
     [:renaissance renaissance]
     [:polish polish]
@@ -840,12 +890,14 @@
     [:community-octolozenge community-octolozenge]
     [:community-italian community-italian]
     [:community-italian-2 community-italian-2]
+    [:community-dragonborn community-dragonborn]
+    [:community-dwarven community-dwarven]
     [:community-elven community-elven]
     [:community-orcish community-orcish]
-    [:community-kalasag community-kalasag]
-    [:community-gonfalon community-gonfalon]
+    [:community-orcish2 community-orcish2]
     [:community-african community-african]
-    [:community-flag-standard community-flag-standard]]])
+    [:community-gonfalon community-gonfalon]
+    [:community-kalasag community-kalasag]]])
 
 (def ^:private kinds-map
   (into {}
