@@ -773,6 +773,40 @@
                   :source-creator-name "Lospec"
                   :source-creator-link "https://lospec.com"}})
 
+(def ^:private theme-community-mutcd
+  {;; metals
+   :argent "#cdcdcd" ;;
+   :or "#ffcd00" ;; 116C
+
+   ;; colours
+   :azure "#003f87" ;; 294C
+   :vert "#006747" ;; 342C
+   :gules "#bf2033" ;; 187C
+   :sable "#000000" ;;
+   :purpure "#6d2077" ;; 259C
+
+   ;; other
+   :amaranth "#df4661" ;;
+   :brunatre "#693f23" ;; 469C
+   :buff "#ddcba4" ;; 468C
+   :carnation "#" ;;
+   :copper "#c4d600" ;;
+   :orange "#f38f00" ;;
+   :rose "#" ;;
+   :white "#ffffff" ;;
+   :cendree "#" ;;
+   :bleu-celeste "#" ;;
+
+   ::name "MUTCD"
+   ::attribution {:license :public-domain
+                  :creator-name "vairy"
+                  :creator-link "https://heraldicon.org/users/vairy"
+                  :source-license :public-domain
+                  :source-name "MUTCD colors"
+                  :source-link "https://commons.wikimedia.org/wiki/commons:WikiProject_U.S._Roads/Shields#MUTCD_colors"
+                  :source-creator-name "FHWA"
+                  :source-creator-link "https://highways.dot.gov/"}})
+
 (def ^:private theme-community-minecraft
   {;; metal
    :argent "#eaeded"
@@ -881,7 +915,8 @@
     [:community-tinctures2go theme-community-tinctures2go]
     [:community-commodore64 theme-community-commodore64]
     [:community-minecraft theme-community-minecraft]
-    [:community-ahtinctures theme-community-ahtinctures]]])
+    [:community-ahtinctures theme-community-ahtinctures]
+    [:community-mutcd theme-community-mutcd]]])
 
 (def default
   :wappenwiki)
