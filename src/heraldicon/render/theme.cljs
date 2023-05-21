@@ -790,13 +790,8 @@
    :amaranth "#df4661" ;;
    :brunatre "#693f23" ;; 469C
    :buff "#ddcba4" ;; 468C
-   :carnation "#" ;;
    :copper "#c4d600" ;;
    :orange "#f38f00" ;;
-   :rose "#" ;;
-   :white "#ffffff" ;;
-   :cendree "#" ;;
-   :bleu-celeste "#" ;;
 
    ::name "MUTCD"
    ::attribution {:license :public-domain
