@@ -734,7 +734,12 @@
    :rose "#c27070"
    :white "#fcfcfc"
    :cendree "#999999"
-   :bleu-celeste "#70bbc2"
+   :bleu-celeste "#70a7c2"
+   :teal "#3d8f8f"
+   ;; special
+   :helmet-light "#bfbfbf"
+   :helmet-medium "#919191"
+   :helmet-dark "#626262"
 
    ::name "Tinctures2Go"
    ::attribution {:nature :own-work
