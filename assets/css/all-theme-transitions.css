@@ -463,6 +463,11 @@
   100% { fill: #cbcaca;}
 }
 
+@keyframes all-theme-transition-teal {
+  0% { fill: #00b5b8;}
+  100% { fill: #00b5b8;}
+}
+
 @keyframes all-theme-transition-buff {
   0% { fill: #ddc595;}
   14.285714285714286% { fill: #dfad42;}
