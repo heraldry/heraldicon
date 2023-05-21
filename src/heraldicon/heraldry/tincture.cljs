@@ -46,6 +46,7 @@
     [:string.tincture/copper :copper]
     [:string.tincture/orange :orange]
     [:string.tincture/rose :rose]
+    [:string.tincture/teal :teal]
     [:string.tincture/white :white]]])
 
 (def tincture-map

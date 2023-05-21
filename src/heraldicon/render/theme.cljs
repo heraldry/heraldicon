@@ -38,6 +38,7 @@
    :buff "#ddc595"
    :white "#ffffff"
    :amaranth "#b51973"
+   :teal "#00b5b8"
    ;; special
    :helmet-light "#d8d8d8"
    :helmet-medium "#989898"
