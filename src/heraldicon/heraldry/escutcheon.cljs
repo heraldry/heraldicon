@@ -800,6 +800,48 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-gnomish
+  {:shape "M 100,55 C 100,25 90,0 90,0 10,0 5,10 5,10 c 0,0 -5,15 -5,45 0,45 20,60 25,70 5,-10 75,-15 75,-70 z"
+   :bounding-box (bb/BoundingBox. 0 100 5 120)
+
+   ::name "Gnomish"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-halfling
+  {:shape "M 50,125 C 20,115 0,75 0,50 0,15 15,0 50,0 c 35,0 50,15 50,50 0,25 -20,65 -50,75 z"
+   :bounding-box (bb/BoundingBox. 0 100 0 125)
+
+   ::name "Halfling"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-halfling-pavise
+  {:shape "M 20,150 C 5,145 0,75 0,50 0,15 15,0 50,0 c 35,0 50,15 50,50 0,25 -5,95 -20,100 z"
+   :bounding-box (bb/BoundingBox. 0 100 0 150)
+   :center-fess? true
+
+   ::name "Halfling Pavise"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-owlfolk
+  {:shape "M 90,0 C 90,20 100,25 100,60 100,95 60,105 60,105 c 0,0 -5,1 -10,5 -5,-4 -10,-5 -10,-5 C 40,105 0,95 0,60 0,25 10,20 10,0 10,0 25,10 50,10 75,10 90,0 90,0 Z"
+   :bounding-box (bb/BoundingBox. 5 95 5 106)
+   :center-fess? true
+
+   ::name "Owlfolk"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private community-arrowhead
   {:shape "m 50,5 c 30,0 45,-5 45,-5 0,0 5,10 5,40 0,30 -20,65 -50,85
            C 20,105 0,70 0,40 0,10 5,0 5,0 5,0 20,5 50,5 Z"
@@ -895,6 +937,10 @@
     [:community-elven community-elven]
     [:community-orcish community-orcish]
     [:community-orcish2 community-orcish2]
+    [:community-owlfolk community-owlfolk]
+    [:community-gnomish community-gnomish]
+    [:community-halfling community-halfling]
+    [:community-halfling-pavise community-halfling-pavise]
     [:community-african community-african]
     [:community-gonfalon community-gonfalon]
     [:community-kalasag community-kalasag]]])
