@@ -37,3 +37,18 @@
 
 (defn iso-now []
   (format/unparse (:date-time format/formatters) (time/time-now)))
+
+(defn interpolate [key-values value]
+  (loop [[[[key1 v1] [key2 v2]] & rest] (partition 2 1 [nil] key-values)]
+    (cond
+      (<= value key1) v1
+      (and (<= key1 value)
+           (not key2)) v1
+      (and (<= key1 value)
+           (< value key2)) (+ v1
+                              (* (- value key1)
+                                 (/ (- v2 v1)
+                                    (- key2 key1))))
+      :else (if (empty? rest)
+              0
+              (recur rest)))))
