@@ -73,10 +73,15 @@
       "dancetty": "Ламана",
       "dovetailed": "У ластівчин хвіст",
       "embattled": "Зубчаста",
+      "embattled-alise": "Закруглено-зубчаста",
+      "embattled-cupola": "Маківково-зубчаста",
+      "embattled-fitchy-double": "Зазублено-зубчаста",
+      "embattled-ghibelline": "Ґібелінська зубчаста",
       "embattled-grady": "Східчасто-зубчаста",
       "embattled-in-crosses": "Хрещато-зубчаста",
       "enarched": "Вигнута / увігнута",
       "engrailed": "Шипоподібна",
+      "erably": "Кленово-листяна",
       "fir-tree-topped": "Ялиноподібна",
       "fir-twigged": "Ялиново-гілляста",
       "flory": "Лілієподібна",
@@ -135,7 +140,8 @@
     "orange": "Помаранчевий",
     "rose": "Рожевий",
     "white": "Білий",
-    "amaranth": "Малиновий"
+    "amaranth": "Малиновий",
+    "teal": "Синьо-зелений"
   },
   "theme": {
     "group": {
