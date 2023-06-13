@@ -876,6 +876,31 @@
                   :creator-name "ashoppio"
                   :creator-link "https://heraldicon.org/users/ashoppio"}})
 
+(def ^:private theme-community-finnish-midtones
+  {;; metals
+   :argent "#cccccc"
+   :or "#cc9933"
+
+   ;; colours
+   :azure "#3366ff"
+   :vert "#006633"
+   :gules "#cc3333"
+   :sable "#000000"
+   :purpure "#993366"
+
+   ;; stains
+   :murrey "#660033"
+   :sanguine "#993333"
+   :tenne "#cc6633"
+
+   :brunatre "#663300"
+   :orange "#ff9933"
+
+   ::name "Finnish Midtones"
+   ::attribution {:license :public-domain
+                  :creator-name "TwelveSilverPennies"
+                  :creator-link "https://heraldicon.org/users/twelvesilverpennies"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -917,7 +942,8 @@
     [:community-commodore64 theme-community-commodore64]
     [:community-minecraft theme-community-minecraft]
     [:community-ahtinctures theme-community-ahtinctures]
-    [:community-mutcd theme-community-mutcd]]])
+    [:community-mutcd theme-community-mutcd]
+    [:community-theme-finnish-midtones theme-community-finnish-midtones]]])
 
 (def default
   :wappenwiki)
