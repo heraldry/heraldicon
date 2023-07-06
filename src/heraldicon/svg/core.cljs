@@ -270,7 +270,8 @@
   ;; would default to one of width 1
   (let [new-data (assoc data 1 {:fill "#000000"
                                 :stroke "none"
-                                :stroke-width 0})]
+                                :stroke-width 0
+                                :style {:clip-rule "evenodd"}})]
     (walk/postwalk
      (fn [data]
        ;; as a follow up to above comment:

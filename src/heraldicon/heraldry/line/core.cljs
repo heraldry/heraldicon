@@ -9,9 +9,7 @@
    [heraldicon.heraldry.line.type.dovetailed :as dovetailed]
    [heraldicon.heraldry.line.type.embattled :as embattled]
    [heraldicon.heraldry.line.type.embattled-alise :as embattled-alise]
-   [heraldicon.heraldry.line.type.embattled-cupola :as embattled-cupola]
    [heraldicon.heraldry.line.type.embattled-fitchy-double :as embattled-fitchy-double]
-   [heraldicon.heraldry.line.type.embattled-ghibelline :as embattled-ghibelline]
    [heraldicon.heraldry.line.type.embattled-grady :as embattled-grady]
    [heraldicon.heraldry.line.type.embattled-in-crosses :as embattled-in-crosses]
    [heraldicon.heraldry.line.type.enarched :as enarched]
@@ -132,8 +130,6 @@
    #'embattled-grady/pattern
    #'embattled-in-crosses/pattern
    #'embattled-alise/pattern
-   #'embattled-cupola/pattern
-   #'embattled-ghibelline/pattern
    #'embattled-fitchy-double/pattern
    #'potenty/pattern
    #'indented/pattern
@@ -320,15 +316,6 @@
                                             [:offset]
                                             [:flipped?]
                                             [:base-line]])
-            :embattled-cupola (options/pick default-options
-                                            [[:eccentricity]
-                                             [:height]
-                                             [:size-reference]
-                                             [:width]
-                                             [:spacing]
-                                             [:offset]
-                                             [:flipped?]
-                                             [:base-line]])
             :embattled-fitchy-double (options/pick default-options
                                                    [[:eccentricity]
                                                     [:height]
@@ -338,15 +325,6 @@
                                                     [:offset]
                                                     [:flipped?]
                                                     [:base-line]])
-            :embattled-ghibelline (options/pick default-options
-                                                [[:eccentricity]
-                                                 [:height]
-                                                 [:size-reference]
-                                                 [:width]
-                                                 [:spacing]
-                                                 [:offset]
-                                                 [:flipped?]
-                                                 [:base-line]])
             :embattled-grady (options/pick default-options
                                            [[:height]
                                             [:size-reference]
