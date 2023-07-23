@@ -28,6 +28,7 @@
     [:string.charge.attitude/closed :closed]
     [:string.charge.attitude/displayed :displayed]
     [:string.charge.attitude/in-her-piety :in-her-piety]
+    [:string.charge.attitude/in-his-pride :in-his-pride]
     [:string.charge.attitude/issuant :issuant]
     [:string.charge.attitude/overt :overt]
     [:string.charge.attitude/recursant :recursant]
