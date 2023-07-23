@@ -938,6 +938,14 @@ attitude/IN-HER-PIETY
     | #"\bin-her-piety\b"
     | #"\bpiety\b"
     | #"\bvulning\b"
+attitude/IN-HIS-PRIDE
+    = #"\bin his pride\b"
+    | #"\bin-his-pride\b"
+    | #"\bin her pride\b"
+    | #"\bin-her-pride\b"
+    | #"\bin its pride\b"
+    | #"\bin-its-pride\b"
+    | #"\bpride\b"
 attitude/RECURSANT
     = #"\brecursant\b"
 attitude/ISSUANT
@@ -1964,6 +1972,7 @@ attitude
     | attitude/CLOSED
     | attitude/DISPLAYED
     | attitude/IN-HER-PIETY
+    | attitude/IN-HIS-PRIDE
     | attitude/ISSUANT
     | attitude/OVERT
     | attitude/RECURSANT
