@@ -56,7 +56,7 @@
                                                        :source-license :cc-attribution-non-commercial-share-alike
                                                        :source-license-version :v3
                                                        :source-creator-name "WappenWiki"
-                                                       :source-creator-link "http://wappenwiki.org"}])
+                                                       :source-creator-link "https://wappenwiki.org"}])
                             :wikimedia (rf/dispatch [::set-preset
                                                      path
                                                      {:nature :derivative
