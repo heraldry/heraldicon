@@ -7,6 +7,11 @@
    [shadow.test :as st]
    [shadow.test.env :as env]))
 
+(defmethod ct/report [::reporter :end-run-tests] [m]
+  (if (ct/successful? m)
+    (js/process.exit 0)
+    (js/process.exit 1)))
+
 (defmethod ct/report [::reporter :begin-test-ns] [m]
   (println "Testing" (name (:ns m))))
 
