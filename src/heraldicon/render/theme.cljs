@@ -901,6 +901,38 @@
                   :creator-name "TwelveSilverPennies"
                   :creator-link "https://heraldicon.org/users/twelvesilverpennies"}})
 
+(def ^:private theme-community-midtones
+  {;; metals
+   :argent "#f4f7f9"
+   :or "#fcca58"
+
+   ;; colours
+   :azure "#3d89c3"
+   :vert "#3ba072"
+   :gules "#dc2e44"
+   :sable "#292f33"
+   :purpure "#9166cb"
+
+   ;; stains
+   :murrey "#dc2e44"
+   :sanguine "#bd1931"
+   :tenne "#ae7e57"
+
+   ;; other
+   :brunatre "#c0694f"
+   :buff "#f0dbf0"
+   :carnation "#f6ddcd"
+   :copper "#fe893b"
+   :orange "#feab33"
+   :rose "#f3aab9"
+   :white "#ffffff"
+   :cendree "#98a9b4"
+   :bleu-celeste "#87c8f8"
+
+   ::name "Midtones"
+   ::attribution {:license :public-domain
+                  :creator-name "anonymous"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -943,7 +975,8 @@
     [:community-minecraft theme-community-minecraft]
     [:community-ahtinctures theme-community-ahtinctures]
     [:community-mutcd theme-community-mutcd]
-    [:community-theme-finnish-midtones theme-community-finnish-midtones]]])
+    [:community-theme-finnish-midtones theme-community-finnish-midtones]
+    [:community-theme-midtones theme-community-midtones]]])
 
 (def default
   :wappenwiki)
