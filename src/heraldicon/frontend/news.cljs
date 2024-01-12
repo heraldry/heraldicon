@@ -25,6 +25,18 @@
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
+   [:h3 "2024-01-12 - Happy new year!"]
+   [:div.release-row
+    [:div.info
+     [:p "I wish you all health and a splendid upcoming year."]
+     [:p "There weren't as many visible changes this year, but there were several improvements in the backend and a lot of new arms and charges created by many of you:"]
+     [:ul
+      [:li "2,400+ users"]
+      [:li "30,000+ arms, over 3,000 of them public"]
+      [:li "7,000+ charges, over 3,000 of them public"]
+      [:li "600+ collections, over 100 of them public"]]
+     [:p "Just as last year: thanks to everybody who helped with feedback, feature requests, charge creations, especially public ones, community themes, community escutcheons, and all the other ways many of you contributed!"]]]
+
    [:h3 "2023-03-19 - Bordure/orle line style adjustments and flory line styles"]
    [:div.release-row
     [:div.info
