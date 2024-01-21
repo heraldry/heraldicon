@@ -126,15 +126,15 @@
         margin 10
         font-size 20
         result-width (cond-> (+ result-width (* 2 margin))
-                       escutcheon-shadow? (+ (* 2 10)))
+                       escutcheon-shadow? (+ (* 2 15)))
         result-height (-> (+ result-height (* 2 margin))
                           (cond->
-                            escutcheon-shadow? (+ 10)
+                            escutcheon-shadow? (+ 15)
                             short-url (+ font-size margin)))
         margin-left (cond-> margin
-                      escutcheon-shadow? (+ 10))
+                      escutcheon-shadow? (+ 5))
         margin-top (cond-> margin
-                     escutcheon-shadow? (+ 10))
+                     escutcheon-shadow? (+ 5))
 
         scale (if (and svg-export?
                        (or target-width
