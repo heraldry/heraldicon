@@ -125,11 +125,16 @@
                                     :max-aspect-ratio 1.5)
         margin 10
         font-size 20
-        result-width (+ result-width (* 2 margin))
+        result-width (cond-> (+ result-width (* 2 margin))
+                       escutcheon-shadow? (+ (* 2 10)))
         result-height (-> (+ result-height (* 2 margin))
                           (cond->
                             escutcheon-shadow? (+ 10)
                             short-url (+ font-size margin)))
+        margin-left (cond-> margin
+                      escutcheon-shadow? (+ 10))
+        margin-top (cond-> margin
+                     escutcheon-shadow? (+ 10))
 
         scale (if (and svg-export?
                        (or target-width
@@ -144,8 +149,9 @@
                       scale-height))
                 1)
         [document-width document-height] [(* result-width scale) (* result-height scale)]]
+
     [:svg (merge
-           {:viewBox (str/join " " (map str [(- margin) (- margin)
+           {:viewBox (str/join " " (map str [(- margin-left) (- margin-top)
                                              result-width result-height]))}
            (if svg-export?
              {:xmlns "http://www.w3.org/2000/svg"
