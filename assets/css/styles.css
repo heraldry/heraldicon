@@ -1239,3 +1239,9 @@ ul.parser-warnings li {
 .charge-colours .selected {
   background-color: #ddd;
 }
+
+.height-limited,
+.height-limited svg {
+  max-height: 100%;
+  height: 100%;
+}

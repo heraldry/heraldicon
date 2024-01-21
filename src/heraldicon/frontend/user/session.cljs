@@ -21,6 +21,9 @@
 (def ^:private local-storage-dark-mode-name
   "cl-dark-mode")
 
+(def ^:private local-storage-height-limit-mode-name
+  "cl-height-limit-mode")
+
 (defn- set-storage-item [key value]
   (if value
     (hp/set-item hp/local-storage key value)
@@ -33,11 +36,13 @@
   (let [session-id (get-storage-item local-storage-session-id-name)
         user-id (get-storage-item local-storage-user-id-name)
         username (get-storage-item local-storage-username-name)
-        dark-mode? (= (get-storage-item local-storage-dark-mode-name) "true")]
+        dark-mode? (= (get-storage-item local-storage-dark-mode-name) "true")
+        height-limit-mode? (= (get-storage-item local-storage-height-limit-mode-name) "true")]
     (rf/dispatch-sync [::store {:username username
                                 :session-id session-id
                                 :user-id user-id
-                                :dark-mode? dark-mode?}])))
+                                :dark-mode? dark-mode?
+                                :height-limit-mode? height-limit-mode?}])))
 
 (rf/reg-fx ::set-cookie
   (fn [[session-id]]
@@ -49,12 +54,14 @@
                                     ";path=/")))))
 
 (rf/reg-fx ::write-to-local-storage
-  (fn [[{:keys [session-id username user-id dark-mode?]}]]
+  (fn [[{:keys [session-id username user-id dark-mode? height-limit-mode?]}]]
     (set-storage-item local-storage-session-id-name session-id)
     (set-storage-item local-storage-username-name username)
     (set-storage-item local-storage-user-id-name user-id)
     (set-storage-item local-storage-dark-mode-name (when dark-mode?
-                                                     "true"))))
+                                                     "true"))
+    (set-storage-item local-storage-height-limit-mode-name (when height-limit-mode?
+                                                             "true"))))
 
 (rf/reg-event-fx ::store
   (fn [{:keys [db]} [_ session-data]]
@@ -84,6 +91,13 @@
   (fn [dark-mode? _]
     dark-mode?))
 
+(rf/reg-sub ::height-limit-mode?
+  (fn [_ _]
+    (rf/subscribe [:get (conj db-path :height-limit-mode?)]))
+
+  (fn [height-limit-mode? _]
+    height-limit-mode?))
+
 (defn data-from-db [db]
   (get-in db db-path))
 
@@ -111,6 +125,13 @@
 (rf/reg-event-fx ::toggle-dark-mode
   (fn [{:keys [db]} _]
     (let [new-db (update-in db (conj db-path :dark-mode?) not)
+          session-data (get-in new-db db-path)]
+      {:db new-db
+       ::write-to-local-storage [session-data]})))
+
+(rf/reg-event-fx ::toggle-height-limit-mode
+  (fn [{:keys [db]} _]
+    (let [new-db (update-in db (conj db-path :height-limit-mode?) not)
           session-data (get-in new-db db-path)]
       {:db new-db
        ::write-to-local-storage [session-data]})))

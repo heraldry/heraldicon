@@ -11,6 +11,7 @@
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.details :as details]
+   [heraldicon.frontend.height-limit-mode :as height-limit-mode]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.http :as http]
    [heraldicon.frontend.language :refer [tr]]
@@ -19,6 +20,7 @@
    [heraldicon.frontend.library.arms.shared :refer [entity-type base-context]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.title :as title]
+   [heraldicon.frontend.user.session :as session]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
@@ -82,7 +84,16 @@
                 :string.text.title/create-arms])
   (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path]])
   (layout/three-columns
-   [interface/render-component (c/++ base-context :data :achievement)]
+   [:<>
+    [:div {:class (when @(rf/subscribe [::session/height-limit-mode?])
+                    "height-limited")}
+     [interface/render-component (c/++ base-context :data :achievement)]]
+    [:div {:style {:position "absolute"
+                   :left "15px"
+                   :bottom "15px"
+                   :font-size "2em"
+                   :display "inline"}}
+     [height-limit-mode/selector]]]
    [:<>
     [form/active base-context]
     [message/display entity-type]
