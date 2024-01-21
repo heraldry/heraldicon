@@ -60,6 +60,8 @@
                 target-width
                 target-height
                 embed-fonts]} (c/render-hints context)
+        escutcheon-shadow? (when-not svg-export?
+                             (interface/render-option :escutcheon-shadow? context))
         short-url-font :deja-vu-sans
         scope (interface/render-option :scope context)
         coat-of-arms-angle (if (= scope :coat-of-arms)
@@ -126,6 +128,7 @@
         result-width (+ result-width (* 2 margin))
         result-height (-> (+ result-height (* 2 margin))
                           (cond->
+                            escutcheon-shadow? (+ 10)
                             short-url (+ font-size margin)))
 
         scale (if (and svg-export?
