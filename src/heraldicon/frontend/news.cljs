@@ -25,6 +25,14 @@
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
+   [:h3 "2024-01-26 - Vairy/lozengy/potenty/papellony/masony rendering improved"]
+   [:div.release-row
+    [:div.info
+     [:p "A user informed me that vairy in particular wasn't rendered correctly. The tinctures, as given in the blazon, were swapped. This affected all variants of the field type."]
+     [:p "While fixing this I also noticed that a similar issue existed for lozengy, potenty, papellony, and masony. This has been fixed as well."]
+     [:p [:span {:style {:color "darkred"}} [:b "Some of your coats of arms may look different now if they use these field types"]]]
+     [:p "Please have a look and adjust your arms if necessary, I apologize for the inconvenience."]]]
+
    [:h3 "2024-01-12 - Happy new year!"]
    [:div.release-row
     [:div.info
