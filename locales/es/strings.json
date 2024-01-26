@@ -3,7 +3,7 @@
     "news": "Noticias",
     "about": "Acerca de",
     "collection-library": "Colecciones",
-    "arms-library": "Blasón",
+    "arms-library": "Blasones",
     "charge-library": "Figuras",
     "ribbon-library": "Bandas",
     "users": "Usuarios",
@@ -73,12 +73,17 @@
       "dancetty": "Dantelada",
       "dovetailed": "Cola de Golondrina",
       "embattled": "Almenado",
-      "embattled-grady": "Almenada potenzada",
+      "embattled-alise": "Almena curva",
+      "embattled-fitchy-double": "Almena muescada",
+      "embattled-grady": "Almena potenzada",
       "embattled-in-crosses": "Almenada en cruces",
       "enarched": "Curvo renversado",
       "engrailed": "Engrilada",
+      "erably": "Hoja de Maple",
       "fir-tree-topped": "Punta de árbol",
       "fir-twigged": "Rama de abeto",
+      "flory": "Floreteado",
+      "flory-counter-flory": "Floreado contra-floreado",
       "indented": "Dentellado",
       "invected": "Canalado",
       "nebuly": "Nebulado",
@@ -133,7 +138,8 @@
     "orange": "Naranja",
     "rose": "Rosa",
     "white": "Blanco",
-    "amaranth": "Amaranto"
+    "amaranth": "Amaranto",
+    "teal": "Turquesa"
   },
   "theme": {
     "group": {
@@ -200,6 +206,7 @@
       "glissant": "Ondulado",
       "hauriant": "Rígido",
       "in-her-piety": "Con la piedad",
+      "in-his-pride": "Ruante",
       "issuant": "Naciente",
       "naiant": "Nadando",
       "none": "Ninguno",
@@ -480,6 +487,7 @@
     "flipped?": "Invertido",
     "font": "Tipo de fuente",
     "font-scale": "Tamaño del texto",
+    "font-title": "Fuente del título",
     "function": "Función",
     "geometry": "Geometría",
     "height": "Altura",
@@ -666,7 +674,9 @@
     "charge-group-preview": "Haga clic en las ranuras para desactivarlas o realizar un ciclo a través de las figuras disponibles (añadidas a continuación).",
     "load-field-from-arms": "Reemplaza el campo con un escudo existente.",
     "size-reference": "El valor utilizado como referencia base cuando las opciones de tamaño son porcentajes, por ejemplo, el ancho de línea",
-    "detect-shading": "Si establece el 0% de referencia de sombreado en un color (preferiblemente primario), entonces puedes seleccionar varios colores y hacer clic en este botón, los niveles de sombreado para esos colores se ajustan a partir de su brillo."
+    "detect-shading": "Si establece el 0% de referencia de sombreado en un color (preferiblemente primario), entonces puedes seleccionar varios colores y hacer clic en este botón, los niveles de sombreado para esos colores se ajustan a partir de su brillo.",
+    "expand": "expandir",
+    "fit-in-window": "Ajustar a la ventana"
   },
   "miscellaneous": {
     "and": "y",
