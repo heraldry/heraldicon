@@ -408,8 +408,8 @@
                             :width (+ pattern-width 2)
                             :height (+ pattern-height 2)
                             :shape-rendering "crispEdges"
-                            :fill (get ["#000000" "#ffffff"] idx)}]
-                    [:g {:fill (get ["#ffffff" "#000000"] idx)}
+                            :fill (get ["#ffffff" "#000000"] idx)}]
+                    [:g {:fill (get ["#000000" "#ffffff"] idx)}
                      potent-pattern]]))
             (range 2))]
      (into [:<>]
