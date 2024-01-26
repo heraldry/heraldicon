@@ -675,7 +675,9 @@
     "charge-group-preview": "Klicke die Slots um zwischen den hinzugefügten Wappenfiguren umzuschalten oder den Slot abzuschalten.",
     "load-field-from-arms": "Ersetzt das Feld durch ein existierendes Wappen.",
     "size-reference": "Der als Basisreferenz verwendete Wert, wenn Größen als Prozente angegeben werden, z. B. Linienbreite",
-    "detect-shading": "Wenn du einer Farbe die 0% Reference Schattierung gibst (am besten Primär), dann kannst du mehrere Farben auswählen und diesen Button klicken, die Schattierung wird dann automatisch basierend auf der Helligkeit der Farbe gesetzt."
+    "detect-shading": "Wenn du einer Farbe die 0% Reference Schattierung gibst (am besten Primär), dann kannst du mehrere Farben auswählen und diesen Button klicken, die Schattierung wird dann automatisch basierend auf der Helligkeit der Farbe gesetzt.",
+    "expand": "vergrößern",
+    "fit-in-window": "dem Fenster anpassen"
   },
   "miscellaneous": {
     "and": "und",
