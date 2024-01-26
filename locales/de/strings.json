@@ -751,7 +751,8 @@
       "registration-completed": "Registrierung abgeschlossen",
       "ribbon-saved": "Band gespeichert, neue Version:",
       "save-changes-first": "Speichere deine Änderungen erst.",
-      "username-required": "Benutzername erforderlich."
+      "username-required": "Benutzername erforderlich.",
+      "username-contains-invalid-characters": "Benutzername enthält unerlaubte Zeichen. Erlaubt: a-z, A-Z, 0-9, _, -"
     },
     "button": {
       "change": "Ändern",

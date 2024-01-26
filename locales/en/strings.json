@@ -752,7 +752,8 @@
       "registration-completed": "Registration completed",
       "ribbon-saved": "Ribbon saved, new version:",
       "save-changes-first": "Save your changes first.",
-      "username-required": "Username required."
+      "username-required": "Username required.",
+      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -"
     },
     "button": {
       "change": "Change",

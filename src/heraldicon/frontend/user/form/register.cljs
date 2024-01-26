@@ -40,17 +40,25 @@
                 [form]
                 #(rf/dispatch [::form/clear ::id])]}))
 
+(defn- valid-username?
+  [username]
+  (re-matches #"^[a-zA-Z0-9_-]+$" username))
+
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
     (let [{:keys [username email password password-again]} (form/data-from-db db ::id)
           username? (not (str/blank? username))
           email? (not (str/blank? email))
-          password? (not (str/blank? password))]
+          password? (not (str/blank? password))
+          valid-username? (valid-username? username)]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not username?) (update :dispatch-n conj
                                 [::message/set-error (form/message-id ::id :username)
                                  :string.user.message/username-required])
+        (not valid-username?) (update :dispatch-n conj
+                                      [::message/set-error (form/message-id ::id :username)
+                                       :string.user.message/username-contains-invalid-characters])
         (not email?) (update :dispatch-n conj
                              [::message/set-error (form/message-id ::id :email)
                               :string.user.message/email-required])
