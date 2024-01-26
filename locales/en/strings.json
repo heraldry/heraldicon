@@ -676,7 +676,9 @@
     "charge-group-preview": "Click the slots to disable them or cycle through the available charges (added below).",
     "load-field-from-arms": "Replace the field with existing coat of arms.",
     "size-reference": "The value used as a base reference when size options are percentages, e.g. line width",
-    "detect-shading": "If you set the 0% reference shading on one colour (preferably Primary), then you can select multiple colours and click this button, the shading levels for those colours is then set based on their brightness."
+    "detect-shading": "If you set the 0% reference shading on one colour (preferably Primary), then you can select multiple colours and click this button, the shading levels for those colours is then set based on their brightness.",
+    "expand": "expand",
+    "fit-in-window": "fit in window"
   },
   "miscellaneous": {
     "and": "and",
