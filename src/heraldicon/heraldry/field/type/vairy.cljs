@@ -273,9 +273,9 @@
      :height height
      :pattern [:<>
                                ;; (1, 1) extra to prevent anti-aliasing
-               [:path {:d (str "M -1,-1"
+               [:path {:d (str "M -1," (str (inc height))
                                ;; (1, 1) extra to prevent anti-aliasing
-                               "L" (inc width) ",-1"
+                               "L" (inc width) "," (str (inc height))
                                ;; (1, 0) extra to prevent anti-aliasing
                                "L" (inc width) "," (- height (* dy h))
                                "L" width "," (- height (* dy h))
@@ -339,8 +339,8 @@
                             :width (+ pattern-width 2)
                             :height (+ pattern-height 2)
                             :shape-rendering "crispEdges"
-                            :fill (get ["#000000" "#ffffff"] idx)}]
-                    [:g {:fill (get ["#ffffff" "#000000"] idx)}
+                            :fill (get ["#ffffff" "#000000"] idx)}]
+                    [:g {:fill (get ["#000000" "#ffffff"] idx)}
                      vair-pattern]]))
             (range 2))]
      (into [:<>]

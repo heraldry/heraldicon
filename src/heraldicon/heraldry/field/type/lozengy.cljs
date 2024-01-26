@@ -95,9 +95,9 @@
                :width part-width
                :height part-height
                :shape-rendering "crispEdges"
-               :fill "#000000"}]
+               :fill "#ffffff"}]
        [:path {:d lozenge-shape
-               :fill "#ffffff"}]]
+               :fill "#000000"}]]
       [:pattern {:id (str pattern-id "-1")
                  :width part-width
                  :height part-height
@@ -109,9 +109,9 @@
                :width part-width
                :height part-height
                :shape-rendering "crispEdges"
-               :fill "#ffffff"}]
+               :fill "#000000"}]
        [:path {:d lozenge-shape
-               :fill "#000000"}]]]
+               :fill "#ffffff"}]]]
      [:g {:transform (str "rotate(" (- rotation) ")")}
       (into [:<>]
             (map (fn [idx]
