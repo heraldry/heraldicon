@@ -9,9 +9,7 @@
                                              [:UserPoolId :ClientId]))))
 
 (defn login [username password & {:keys [on-success on-failure on-new-password-required on-confirmation-needed]}]
-  (let [username (or username "")
-        password (or password "")
-        user (new CognitoUser (clj->js {:Username username
+  (let [user (new CognitoUser (clj->js {:Username username
                                         :Pool user-pool}))
         auth-details (new AuthenticationDetails (clj->js {:Username username
                                                           :Password password}))]
@@ -31,9 +29,7 @@
                                         (on-new-password-required user user-attributes)))}))))
 
 (defn sign-up [username password email & {:keys [on-success on-failure on-confirmation-needed]}]
-  (let [username (or username "")
-        password (or password "")
-        attributes [{:Name "email"
+  (let [attributes [{:Name "email"
                      :Value email}]]
     (.signUp
      user-pool
