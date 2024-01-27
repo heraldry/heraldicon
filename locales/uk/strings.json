@@ -750,7 +750,8 @@
       "registration-completed": "Реєстрацію завершено",
       "ribbon-saved": "Стрічку збережено. Нова версія:",
       "save-changes-first": "Спочатку збережіть зміни.",
-      "username-required": "Необхідно вказати ім'я користувача."
+      "username-required": "Необхідно вказати ім'я користувача.",
+      "username-contains-invalid-characters": "Ім'я користувача містить недозволені символи. Дозволено: a-z, A-Z, 0-9, _ та -"
     },
     "button": {
       "change": "Змінити",
