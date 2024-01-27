@@ -47,7 +47,20 @@
                            --cache-control max-age=0,no-cache,no-store,must-revalidate
                            --content-type text/html"
                            build-dir target))
-            (shell "scripts/invalidate-distribution" target)))
+            (shell "scripts/invalidate-distribution" target))
+
+          (defn timestamp []
+            (-> (shell {:out :string} "date" "+%Y-%m-%d_%H-%M-%S")
+                :out
+                str/trim))
+
+          (defn tag-frontend-deploy []
+            (shell "git" "tag" (str "deploy-frontend-" (timestamp))))
+
+          (defn tag-backend-deploy []
+            (let [tag (str "deploy-backend-" (timestamp))]
+              (shell "git" "tag" tag)
+              (shell {:dir "backend"} "git" "tag" tag))))
 
   check-clj-kondo (shell "clj-kondo --parallel --lint src test backend/src")
   check-cljfmt (shell "cljfmt --parallel check src test backend/src")
@@ -119,7 +132,8 @@
                                  check-dirty-backend]
                        :task (do
                                (run 'prod-backend-release)
-                               (shell {:dir "backend"} "npx sls deploy --stage prod"))}
+                               (shell {:dir "backend"} "npx sls deploy --stage prod")
+                               (tag-backend-deploy))}
 
   prod-frontend-release (build-frontend-release PROD-FRONTEND-DIR PROD-CONFIG)
 
@@ -130,4 +144,5 @@
                                   check-dirty-frontend]
                         :task (do
                                 (run 'prod-frontend-release)
-                                (deploy-frontend PROD-FRONTEND-DIR "cdn.heraldicon.org"))}}}
+                                (deploy-frontend PROD-FRONTEND-DIR "cdn.heraldicon.org")
+                                (tag-frontend-deploy))}}}
