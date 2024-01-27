@@ -54,7 +54,11 @@
       "Italiano: "
       [:a {:href "https://commons.wikimedia.org/wiki/User:Ashoppio"
            :target "_blank"}
-       "ashoppio#2022"]]]]
+       "ashoppio#2022"]]
+     [:li "Deutsch (support): "
+      [:a {:href "https://github.com/NervousNullPtr"
+           :target "_blank"}
+       "NervousNullPtr"]]]]
    [:div {:style {:padding "10px"
                   :float "right"
                   :text-align "justify"
