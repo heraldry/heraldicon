@@ -58,7 +58,11 @@
      [:li "Deutsch (support): "
       [:a {:href "https://github.com/NervousNullPtr"
            :target "_blank"}
-       "NervousNullPtr"]]]]
+       "NervousNullPtr"]]
+     [:li "Español: "
+      [:a {:href "https://www.reddit.com/u/PredadorGod/s/5twWpB2lIx"
+           :target "_blank"}
+       "PredadorGodX"]]]]
    [:div {:style {:padding "10px"
                   :float "right"
                   :text-align "justify"
