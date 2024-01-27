@@ -3,6 +3,7 @@
    [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.dark-mode :as dark-mode]
    [heraldicon.frontend.js-event :as js-event]
+   [heraldicon.frontend.ko-fi :as ko-fi]
    [heraldicon.frontend.language :as language :refer [tr]]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.user.form.login :as form.login]
@@ -57,6 +58,8 @@
             :style {:padding-right "5px"}} "Heraldicon"]]
       [:sup {:style {:color "#d82"}} "beta"]]
      [:ul.nav-menu {:style {:flex 1}}
+      [:li {:style {:margin "auto"}}
+       [ko-fi/small-button]]
       [menu-item :route.home/main :string.menu/about]
       [menu-item :route.news/main :string.menu/news]
       [menu-item :route.collection/list :string.menu/collection-library]
