@@ -43,7 +43,8 @@
    :id field-id})
 
 (defn text-field [form-id field-id placeholder & {:keys [type
-                                                         label]
+                                                         label
+                                                         help]
                                                   :or {type "text"}}]
   (let [message-id (message-id form-id field-id)]
     [:div {:class (when @(rf/subscribe [::message/error? message-id])
@@ -51,14 +52,26 @@
      [message/display message-id]
      [:div
       (when label
-        [:label {:for (name field-id)} [tr label]])
-      [:input {:id (name field-id)
-               :name (name field-id)
-               :value @(rf/subscribe [::field-value form-id field-id])
-               :on-change #(let [new-value (-> % .-target .-value)]
-                             (rf/dispatch-sync [::set-field-value form-id field-id new-value]))
-               :placeholder (tr placeholder)
-               :type type}]]]))
+        [:label {:for (name field-id)
+                 :style {:margin-top "5px"}}
+         [tr label]])
+      [:div {:style {:display "inline-block"
+                     :vertical-align "top"}}
+       [:input {:id (name field-id)
+                :name (name field-id)
+                :value @(rf/subscribe [::field-value form-id field-id])
+                :on-change #(let [new-value (-> % .-target .-value)]
+                              (rf/dispatch-sync [::set-field-value form-id field-id new-value]))
+                :placeholder (tr placeholder)
+                :type type
+                :style {:display "block"}}]
+       (when help
+         [:span {:style {:display "block"
+                         :color "#aaa"
+                         :font-size "0.8em"
+                         :width "200px"
+                         :margin-bottom "5px"}}
+          [tr help]])]]]))
 
 (defn password-field [form-id field-id placeholder & {:as options}]
   (text-field form-id field-id placeholder (assoc options :type "password")))

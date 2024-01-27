@@ -770,7 +770,8 @@
     "password-again": "Passwort nochmal",
     "register-confirmation": "Registrierung bestätigen",
     "reset-forgotten-password": "Vergessenes Passwort zurücksetzen",
-    "username": "Benutzername"
+    "username": "Benutzername",
+    "username-help": "Öffentlich sichtbar, erlaubte Zeichen: a-z, A-Z, 0-9, _, -"
   },
   "attribution": {
     "title": "Attribuierung",
