@@ -771,7 +771,8 @@
     "password-again": "Password again",
     "register-confirmation": "Register Confirmation",
     "reset-forgotten-password": "Reset Forgotten Password",
-    "username": "Username"
+    "username": "Username",
+    "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -"
   },
   "attribution": {
     "title": "Attribution",

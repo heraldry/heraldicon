@@ -15,7 +15,8 @@
   [:form.modal-form {:on-submit (form/on-submit-fn [::submit])}
    [message/display ::id]
    [form/text-field ::id :username :string.user/username
-    :label :string.user/username]
+    :label :string.user/username
+    :help :string.user/username-help]
    [form/text-field ::id :email :string.user/email
     :label :string.user/email]
    [form/password-field ::id :password :string.user/password
