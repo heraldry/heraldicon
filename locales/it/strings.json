@@ -73,10 +73,13 @@
       "dancetty": "Increspato",
       "dovetailed": "Innestato ad Incastro",
       "embattled": "Merlato",
+      "embattled-alise": "Merlato a cerchio",
+      "embattled-fitchy-double": "Merlato doppio-aguzzato",
       "embattled-grady": "Merlato Potente",
       "embattled-in-crosses": "Merlato in Croce",
       "enarched": "Convesso",
       "engrailed": "Spinato",
+      "erably": "Acerato",
       "fir-tree-topped": "A Pino",
       "fir-twigged": "Ramo di Abete",
       "flory": "Gigliato",
@@ -135,7 +138,8 @@
     "orange": "Aranciato",
     "rose": "Rosa",
     "white": "Bianco",
-    "amaranth": "Amaranto"
+    "amaranth": "Amaranto",
+    "teal": "Verde petrolio"
   },
   "theme": {
     "group": {
@@ -202,6 +206,7 @@
       "glissant": "Ondeggiante",
       "hauriant": "Atteggiamento di Pesce",
       "in-her-piety": "Nella sua pietà",
+      "in-his-pride": "In rosta",
       "issuant": "Nascente",
       "naiant": "Nuotante",
       "none": "Nessuno",
@@ -669,7 +674,9 @@
     "charge-group-preview": "Clicca sugli slot per disabilitarli o scorri attraverso le figure disponibili (aggiunte sotto).",
     "load-field-from-arms": "Rimpiazza il campo con uno stemma esistente.",
     "size-reference": "Il valore utilizzato come riferimento di base quando le opzioni di dimensione sono percentuali, ad esempio la larghezza della linea",
-    "detect-shading": "Se imposti le referenze di un ombra a 0% su un colore (preferibilmente Primario), dopodiché puoi selezionare più colori e cliccare questo bottone, i livelli di ombreggiatura per questi colori è basata sulla loro luminosità."
+    "detect-shading": "Se imposti le referenze di un ombra a 0% su un colore (preferibilmente Primario), dopodiché puoi selezionare più colori e cliccare questo bottone, i livelli di ombreggiatura per questi colori è basata sulla loro luminosità.",
+    "expand": "espandi",
+    "fit-in-window": "adatta alla finestra"
   },
   "miscellaneous": {
     "and": "e",
@@ -743,7 +750,8 @@
       "registration-completed": "Registrazione completata",
       "ribbon-saved": "Nastro salvato, nuova versione:",
       "save-changes-first": "Salva le tue modifiche prima.",
-      "username-required": "Nome utente richiesto."
+      "username-required": "Nome utente richiesto.",
+      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -"
     },
     "button": {
       "change": "Modifica",
