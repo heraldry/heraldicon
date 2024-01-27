@@ -2,6 +2,8 @@
 
 TL;DR: https://heraldicon.org
 
+[[https://ko-fi.com/heraldicon][https://ko-fi.com/img/githubbutton_sm.svg]]
+
 ** About
 There are many heraldry resources online, but I didn't find a lot of software to
 create coats of arms. And the software I found felt limited and hard to use.
