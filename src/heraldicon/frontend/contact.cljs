@@ -44,4 +44,8 @@
    [:p "Thanks to everybody helping out with the translations!"]
    [:ul
     [:li "Українська: Dughorm"]
-    [:li "Italiano: ashoppio#2022 (Brando Maria Pernice)"]]])
+    [:li
+     "Italiano: "
+     [:a {:href "https://commons.wikimedia.org/wiki/User:Ashoppio"
+          :target "_blank"}
+      "ashoppio#2022"]]]])
