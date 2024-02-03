@@ -933,6 +933,31 @@
    ::attribution {:license :public-domain
                   :creator-name "anonymous"}})
 
+(def ^:private theme-community-lighthues
+  {;; metals
+   :argent "#ffffff"
+   :or "#ffe572"
+
+   ;; colours
+   :azure "#1359c1"
+   :vert "#218b4d"
+   :gules "#ce0f25"
+   :sable "#000000"
+   :purpure "#7d076e"
+
+   ;; stains
+   :murrey "#610000"
+   :sanguine "#aa0000"
+   :tenne "#966756"
+
+   ;; other
+   :brunatre "#ffe572"
+
+   ::name "LightHues"
+   ::attribution {:license :public-domain
+                  :creator-name "Itsthatmann02"
+                  :creator-link "https://heraldicon.org/users/itsthatmann02"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -976,7 +1001,8 @@
     [:community-ahtinctures theme-community-ahtinctures]
     [:community-mutcd theme-community-mutcd]
     [:community-theme-finnish-midtones theme-community-finnish-midtones]
-    [:community-theme-midtones theme-community-midtones]]])
+    [:community-theme-midtones theme-community-midtones]
+    [:community-theme-lighthues theme-community-lighthues]]])
 
 (def default
   :wappenwiki)
