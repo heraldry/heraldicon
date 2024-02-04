@@ -30,8 +30,6 @@
                      :discord_handler heraldicon.backend.discord/handler
                      :site_handler heraldicon.backend.site/handler
                      :options_handler heraldicon.backend.api.core/options-handler
-                     :migration_handler heraldicon.backend.migration.core/migrate-handler
-                     :rollback_handler heraldicon.backend.migration.core/rollback-handler
                      :collect_statistics_handler heraldicon.backend.monitoring.core/collect-statistics-handler
                      :collect_user_statistics_handler heraldicon.backend.monitoring.core/collect-user-statistics-handler
                      :canary_handler heraldicon.backend.canary/handler}
