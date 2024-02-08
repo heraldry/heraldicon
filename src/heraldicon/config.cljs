@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [get])
   (:require
    [clojure.string :as str]
+   [heraldicon.util.log-appender :as log-appender]
    [taoensso.timbre :as log]))
 
 (defn- js->clj+
@@ -20,7 +21,8 @@
 (goog-define commit "unknown")
 
 (when (not= stage "dev")
-  (log/swap-config! assoc :timestamp-opts {:pattern ""}))
+  (log/swap-config! assoc :timestamp-opts {:pattern ""})
+  (log/swap-config! assoc :appenders {:simple (log-appender/simple-appender {})}))
 
 (def ^:private base-font-dir
   (if (= stage "dev")
