@@ -1,7 +1,8 @@
 (ns heraldicon.config
   (:refer-clojure :exclude [get])
   (:require
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [taoensso.timbre :as log]))
 
 (defn- js->clj+
   "For cases when built-in js->clj doesn't work. Source: https://stackoverflow.com/a/32583549/4839573"
@@ -17,6 +18,9 @@
 
 (goog-define stage "dev")
 (goog-define commit "unknown")
+
+(when (not= stage "dev")
+  (log/swap-config! assoc :timestamp-opts {:pattern ""}))
 
 (def ^:private base-font-dir
   (if (= stage "dev")
