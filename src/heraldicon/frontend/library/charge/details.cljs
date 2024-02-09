@@ -65,7 +65,7 @@
 
 (defn- parse-number-with-unit [s]
   (when s
-    (let [[_ num unit] (re-matches #"(?i)^ *([0-9e.]*) *([a-z]*)$" s)
+    (let [[_ num unit] (re-matches #"(?i)^ *([0-9e.]*) *([a-z%]*)$" s)
           value (if (-> num count (= 0))
                   0
                   (js/parseFloat num))
@@ -76,6 +76,7 @@
                    "mm" 3.7795
                    "pt" 1.3333
                    "pc" 16
+                   "%" 1
                    1)]
       (* value factor))))
 
