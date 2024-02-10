@@ -3,7 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
-   [heraldicon.frontend.repository.api :as api]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.eneity-list :as-alias entity-list]
    [heraldicon.frontend.repository.query :as query]

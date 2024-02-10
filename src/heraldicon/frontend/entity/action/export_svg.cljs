@@ -2,10 +2,10 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.entity.core :as entity]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.user.session :as session]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]
