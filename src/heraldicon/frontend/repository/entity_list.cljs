@@ -2,7 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
-   [heraldicon.frontend.repository.api :as api]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as repository.entity]
    [heraldicon.frontend.repository.query :as query]
