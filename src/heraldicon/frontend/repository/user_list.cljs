@@ -2,9 +2,9 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.query :as query]
-   [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
@@ -34,7 +34,7 @@
       (when-not (query/running? query-id)
         (query/register query-id)
         (try
-          (let [users (:items (<? (request/call :fetch-users-all {} session)))]
+          (let [users (:items (<? (api/call :fetch-users-all {} session)))]
             (rf/dispatch [::store users]))
           (catch :default e
             (log/error e "fetch user list error")
