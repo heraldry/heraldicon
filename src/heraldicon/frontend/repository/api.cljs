@@ -7,7 +7,8 @@
 (defn call [name payload session]
   (go-catch
    (let [response (<? (http/post (config/get :heraldicon-api-endpoint)
-                                 {:headers {"Session-Id" (:session-id session)}
+                                 {:headers (when-let [session-id (:session-id session)]
+                                             {"Session-Id" session-id})
                                   :edn-params {:call name
                                                :data payload}}))
          status (:status response)

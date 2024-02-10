@@ -3,10 +3,10 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
+   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.repository.core :as repository]
-   [heraldicon.frontend.repository.entity-list :as-alias entity-list]
+   [heraldicon.frontend.repository.eneity-list :as-alias entity-list]
    [heraldicon.frontend.repository.query :as query]
-   [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
@@ -88,10 +88,10 @@
       (when-not (query/running? query-id)
         (query/register query-id)
         (try
-          (let [entity (<? (request/call (fetch-entity-api-function (id/type-from-id entity-id))
-                                         {:id entity-id
-                                          :version version}
-                                         session))]
+          (let [entity (<? (api/call (fetch-entity-api-function (id/type-from-id entity-id))
+                                     {:id entity-id
+                                      :version version}
+                                     session))]
             (when-not entity
               (throw (ex-info "Not found" {} :entity-not-found)))
             (rf/dispatch [::store entity])

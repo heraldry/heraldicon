@@ -2,10 +2,10 @@
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.frontend.repository.api :as api]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as repository.entity]
    [heraldicon.frontend.repository.query :as query]
-   [heraldicon.frontend.repository.request :as request]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
@@ -70,9 +70,9 @@
       (when-not (query/running? query-id)
         (query/register query-id)
         (try
-          (let [entities (:items (<? (request/call (fetch-entity-list-api-function entity-type)
-                                                   {}
-                                                   session)))]
+          (let [entities (:items (<? (api/call (fetch-entity-list-api-function entity-type)
+                                               {}
+                                               session)))]
             (rf/dispatch [::store entity-type entities])
             (when on-loaded
               (on-loaded entities)))
