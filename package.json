@@ -1,6 +1,5 @@
 {
-  "name": "heraldry",
-  "version": "0.0.1",
+  "name": "heraldicon",
   "private": true,
   "dependencies": {
     "amazon-cognito-identity-js": "^6.2.0",
