@@ -1,12 +1,13 @@
 (ns heraldicon.frontend.ko-fi
   (:require
+   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.static :as static]))
 
 (defn large-button
   []
   [:a {:href "https://ko-fi.com/heraldicon"
        :target "_blank"
-       :title "Support Heraldicon on Ko-fi"}
+       :title (tr :string.tooltip/support-on-ko-fi)}
    [:div {:style {:background-color "#0c6793"
                   :color "#fff"
                   :margin-left "auto"
@@ -36,7 +37,7 @@
   []
   [:a {:href "https://ko-fi.com/heraldicon"
        :target "_blank"
-       :title "Support Heraldicon on Ko-fi"}
+       :title (tr :string.tooltip/support-on-ko-fi)}
    [:img {:src "https://storage.ko-fi.com/cdn/cup-border.png"
           :alt "Ko-fi tip"
           :style {:margin-right "8px"

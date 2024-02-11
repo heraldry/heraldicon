@@ -677,7 +677,8 @@
     "size-reference": "The value used as a base reference when size options are percentages, e.g. line width",
     "detect-shading": "If you set the 0% reference shading on one colour (preferably Primary), then you can select multiple colours and click this button, the shading levels for those colours is then set based on their brightness.",
     "expand": "expand",
-    "fit-in-window": "fit in window"
+    "fit-in-window": "fit in window",
+    "support-on-ko-fi": "Support Heraldicon on Ko-fi"
   },
   "miscellaneous": {
     "and": "and",
