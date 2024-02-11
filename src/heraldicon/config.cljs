@@ -79,7 +79,7 @@
     :commit commit
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}
-    :maintenance-mode? true
+    :maintenance-mode? false
     :base-font-dir base-font-dir
     :email-address "oliver@heraldicon.org"
     (or (some-> setting
