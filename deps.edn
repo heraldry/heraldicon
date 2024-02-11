@@ -5,7 +5,7 @@
          "locales"
          "blazonry"]
 
- :deps {binaryage/devtools {:mvn/version "1.0.6"}
+ :deps {binaryage/devtools {:mvn/version "1.0.7"}
         borkdude/sci {:mvn/version "0.2.8-SNAPSHOT"}
         cljs-http/cljs-http {:mvn/version "0.1.46"}
         com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}
