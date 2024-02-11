@@ -676,7 +676,8 @@
     "size-reference": "Il valore utilizzato come riferimento di base quando le opzioni di dimensione sono percentuali, ad esempio la larghezza della linea",
     "detect-shading": "Se imposti le referenze di un ombra a 0% su un colore (preferibilmente Primario), dopodiché puoi selezionare più colori e cliccare questo bottone, i livelli di ombreggiatura per questi colori è basata sulla loro luminosità.",
     "expand": "espandi",
-    "fit-in-window": "adatta alla finestra"
+    "fit-in-window": "adatta alla finestra",
+    "support-on-ko-fi": "Supporta Heraldicon su Ko-fi"
   },
   "miscellaneous": {
     "and": "e",
@@ -751,7 +752,7 @@
       "ribbon-saved": "Nastro salvato, nuova versione:",
       "save-changes-first": "Salva le tue modifiche prima.",
       "username-required": "Nome utente richiesto.",
-      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -"
+      "username-contains-invalid-characters": "Il nome utente contiene caratteri non validi. Caratteri autorizzati: a-z, A-Z, 0-9, _, -"
     },
     "button": {
       "change": "Modifica",
@@ -769,7 +770,8 @@
     "password-again": "Password di nuovo",
     "register-confirmation": "Conferma dell'iscrizione",
     "reset-forgotten-password": "Ripristina la password dimenticata",
-    "username": "Nome utente"
+    "username": "Nome utente",
+    "username-help": "Caratteri pubblicamente visibili, ammessi: a-z, A-Z, 0-9, _, -"
   },
   "attribution": {
     "title": "Attribuzione",
