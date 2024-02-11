@@ -13,7 +13,7 @@
                       :http-root "./assets"
                       :http-port 8081
                       :preloads [devtools.preload
-                                 day8.re-frame-10x.preload]}
+                                 day8.re-frame-10x.preload.react-18]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}}
 
