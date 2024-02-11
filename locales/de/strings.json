@@ -676,7 +676,8 @@
     "size-reference": "Der als Basisreferenz verwendete Wert, wenn Größen als Prozente angegeben werden, z. B. Linienbreite",
     "detect-shading": "Wenn du einer Farbe die 0% Reference Schattierung gibst (am besten Primär), dann kannst du mehrere Farben auswählen und diesen Button klicken, die Schattierung wird dann automatisch basierend auf der Helligkeit der Farbe gesetzt.",
     "expand": "vergrößern",
-    "fit-in-window": "dem Fenster anpassen"
+    "fit-in-window": "dem Fenster anpassen",
+    "support-on-ko-fi": "Unterstütze Heraldicon bei Ko-fi"
   },
   "miscellaneous": {
     "and": "und",
