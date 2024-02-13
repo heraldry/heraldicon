@@ -67,7 +67,9 @@
       [menu-item :route.charge/list :string.menu/charge-library]
       [menu-item :route.ribbon/list :string.menu/ribbon-library]
       (when (entity.user/admin? session)
-        [menu-item :route.user/list :string.menu/users])
+        [:<>
+         [menu-item :route.user/list :string.menu/users]
+         [menu-item :route.charge-types/main :string.menu/charge-types]])
       [menu-item :route.contact/main :string.menu/contact]
       [:span {:style {:width "5em"}}]
       [language/selector]
