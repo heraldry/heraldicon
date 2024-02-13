@@ -734,9 +734,35 @@ label div {
 
 .ui-tree .node-name {
   display: inline-block;
+  position: relative;
   white-space: nowrap;
   line-height: 1.5em;
   color: #1b6690;
+}
+
+.node-name .node-drag-handle {
+  display: none;
+  position: absolute;
+  width: 1em;
+  left: -20px;
+  cursor: grab;
+}
+
+.node-name:hover .node-drag-handle {
+  display: inline-block;
+}
+
+.node-dragged-over-above {
+}
+
+.node-dragged-over-inside {
+  background-color: #bdf;
+}
+
+.node-dragged-over-below {
+}
+
+.node-dragged {
 }
 
 .ui-tree .node-name.unselectable {

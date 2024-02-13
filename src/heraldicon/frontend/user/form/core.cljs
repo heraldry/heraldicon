@@ -8,7 +8,7 @@
 (def ^:private db-path-user-forms
   [:ui :user-form :forms])
 
-(defn- form-path [form-id]
+(defn form-path [form-id]
   (conj db-path-user-forms form-id))
 
 (defn- form-field-path [form-id field-id]

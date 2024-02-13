@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as str]
    [heraldicon.frontend.account :as account]
+   [heraldicon.frontend.charge-types :as charge-types]
    [heraldicon.frontend.contact :as contact]
    [heraldicon.frontend.home :as home]
    [heraldicon.frontend.library.arms.details :as library.arms.details]
@@ -128,7 +129,11 @@
 
    ["/account/"
     {:name :route.account/main
-     :view account/view}]])
+     :view account/view}]
+
+   ["/charge-types/"
+    {:name :route.charge-types/main
+     :view charge-types/view}]])
 
 (def ^:private router
   (trailing-slash-router/create routes))

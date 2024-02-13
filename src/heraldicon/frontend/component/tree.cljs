@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.component.tree
   (:require
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as frontend.component]
    [heraldicon.frontend.component.entity.collection.element :as collection.element]
@@ -10,7 +11,29 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.component :as component]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reagent.core :as r]))
+
+(def ^:private active-node-path
+  [:ui :component-tree :selected-node])
+
+(def ^:private highlight-node-path
+  [:ui :component-tree :highlighted-node])
+
+(def ^:private node-selected-default-path
+  [:ui :component-tree :selected-node-default])
+
+(def ^:private node-flag-db-path
+  [:ui :component-tree :nodes])
+
+(def ^:private edit-node-path
+  [:ui :component-tree :edit-node])
+
+(def ^:private dragged-node-path
+  [:ui :component-tree :dragged-node])
+
+(def ^:private dragged-over-node-path
+  [:ui :component-tree :dragged-over-node])
 
 (defn node-data [{:keys [path] :as context}]
   (merge {:open? @(rf/subscribe [::node-open? path])
@@ -18,6 +41,52 @@
           :selected? (= path @(rf/subscribe [::active-node-path]))
           :selectable? true}
          (frontend.component/node context)))
+
+(defn- node-name-input
+  [value-path]
+  (let [ref (atom nil)
+        value (r/atom @(rf/subscribe [:get value-path]))]
+    (r/create-class
+     {:component-did-mount (fn []
+                             (.focus @ref))
+
+      :reagent-render (fn [value-path]
+                        [:input.node-name-input
+                         {:ref #(reset! ref %)
+                          :value @value
+                          :on-click (fn [event]
+                                      (.stopPropagation event))
+                          :on-blur #(rf/dispatch [::complete-editing value-path @value])
+                          :on-change #(reset! value (-> % .-target .-value))
+                          :on-key-down (fn [event]
+                                         (let [code (.-code event)]
+                                           (case code
+                                             "Enter" (rf/dispatch [::complete-editing value-path @value])
+                                             "Escape" (rf/dispatch [::set-edit-node nil])
+                                             nil)))}])})))
+
+(defn- calculate-drop-area
+  [event drop-options]
+  (when (seq drop-options)
+    (let [y (.-clientY event)
+          target (.-target event)
+          rect (.getBoundingClientRect target)
+          ty (.-top rect)
+          th (.-height rect)
+          dy (- y ty)
+          [above-cutoff inside-cutoff] (case drop-options
+                                         #{:above} [1.1 1.1]
+                                         #{:inside} [0 1.1]
+                                         #{:below} [0 0]
+                                         #{:above :below} [0.5 0.5]
+                                         #{:above :inside} [0.25 1.1]
+                                         #{:inside :below} [0 0.75]
+                                         [0.25 0.75])]
+      (when (<= 0 dy th)
+        (cond
+          (< dy (* above-cutoff th)) :above
+          (< dy (* inside-cutoff th)) :inside
+          :else :below)))))
 
 (defn node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
   (let [{node-title :title
@@ -29,10 +98,29 @@
                 buttons
                 annotation
                 validation
-                icon]} (node-data context)
+                icon
+                editable-path
+                draggable?
+                drop-options-fn
+                drop-fn]} (node-data context)
+        edit-node @(rf/subscribe [::edit-node])
         openable? (-> nodes count pos?)
         title (or node-title title)
-        buttons (concat buttons parent-buttons)]
+        buttons (concat buttons parent-buttons)
+        ;; TODO: these two should get the context and return the relevant data only
+        ;; if the context is the dragged/dropped node
+        dragged-node @(rf/subscribe [:get dragged-node-path])
+        {dragged-over-node :context
+         where :where} @(rf/subscribe [:get dragged-over-node-path])
+        dragged? (= path (:path dragged-node))
+        dragged-over? (= path (:path dragged-over-node))
+        dragged-node-data (when (:path dragged-node)
+                            @(rf/subscribe [:get (:path dragged-node)]))
+        drop-node-data @(rf/subscribe [:get path])
+        parent-node-id @(rf/subscribe [:get (-> context
+                                                (c/-- 2)
+                                                (c/++ :id)
+                                                :path)])]
     [:<>
      [:div.node-name.clickable.no-select
       {:class [(when selected?
@@ -40,7 +128,52 @@
                (when-not selectable?
                  "unselectable")
                (when highlighted?
-                 "node-highlighted")]
+                 "node-highlighted")
+               (when dragged-over?
+                 (case where
+                   :above "node-dragged-over-above"
+                   :inside "node-dragged-over-inside"
+                   :below "node-dragged-over-below"))
+               (when dragged?
+                 "node-dragged")]
+       :draggable draggable?
+       :on-drag-over (when-not dragged?
+                       (fn [event]
+                         (let [drop-options (when drop-options-fn
+                                              (drop-options-fn
+                                               (:path dragged-node)
+                                               dragged-node-data
+                                               path
+                                               drop-node-data
+                                               parent-node-id
+                                               (and openable?
+                                                    open?)))
+                               where (calculate-drop-area event drop-options)]
+                           (when where
+                             (.preventDefault event)
+                             (rf/dispatch [:set dragged-over-node-path {:context context
+                                                                        :where where}])))))
+       :on-drag-leave (fn [_event]
+                        (rf/dispatch [:set dragged-over-node-path nil]))
+       :on-drag-start (fn [_event]
+                        (rf/dispatch [:set dragged-node-path context]))
+       :on-drag-end (fn [_event]
+                      (rf/dispatch [:set dragged-node-path nil])
+                      (rf/dispatch [:set dragged-over-node-path nil]))
+       :on-drop (fn [event]
+                  (let [drop-options (when drop-options-fn
+                                       (drop-options-fn
+                                        (:path dragged-node)
+                                        dragged-node-data
+                                        path
+                                        drop-node-data
+                                        parent-node-id
+                                        (and openable?
+                                             open?)))
+                        where (calculate-drop-area event drop-options)]
+                    (when (and where
+                               drop-fn)
+                      (drop-fn dragged-node context where))))
        :on-click #(do
                     (when (or (not open?)
                               (not selectable?)
@@ -49,6 +182,22 @@
                     (when selectable?
                       (rf/dispatch [::select-node path]))
                     (.stopPropagation %))}
+
+      (when (and dragged-over?
+                 (#{:above :below} where))
+        [:div {:style {:height "0px"
+                       :border-top "2px solid #000"
+                       :width "10em"
+                       :position "absolute"
+                       (if (= where :above)
+                         :top
+                         :bottom) -1
+                       :pointer-events "none"}}])
+
+      (when draggable?
+        [:div.node-drag-handle
+         [:i.ui-icon.fas.fa-grip-lines]])
+
       (if openable?
         [:span.node-icon.clickable
          {:on-click (js-event/handled #(rf/dispatch [::toggle-node path]))}
@@ -80,7 +229,9 @@
                             :max-width "100%"
                             :max-height "100%"}}]])))
 
-      [tr title]
+      (if (some-> editable-path (= (:path edit-node)))
+        [node-name-input editable-path]
+        [tr title])
 
       annotation
 
@@ -137,26 +288,18 @@
                            [node (c/<< context :path node-path)])]))
          paths)])
 
-(def ^:private active-node-path
-  [:ui :component-tree :selected-node])
-
-(def ^:private highlight-node-path
-  [:ui :component-tree :highlighted-node])
-
-(def ^:private node-selected-default-path
-  [:ui :component-tree :selected-node-default])
-
-(def ^:private node-flag-db-path
-  [:ui :component-tree :nodes])
-
 (defn- node-open-by-default? [path]
   (or (#{[:coat-of-arms]
          [:helms]
          [:ornaments]
-         [:elements]}
+         [:elements]
+         [:charge-types]}
        (take-last 1 path))
-      (#{[:coat-of-arms :field]}
+      (#{[:coat-of-arms :field]
+         [:forms :heraldicon.frontend.charge-types/path]}
        (take-last 2 path))
+      (#{[:forms :heraldicon.frontend.charge-types/path :groups]}
+       (butlast (take-last 4 path)))
       (#{[:coat-of-arms :field :components]}
        (butlast (take-last 4 path)))
       (#{;; TODO: path shouldn't be hard-coded
@@ -260,6 +403,24 @@
                               (not open?) drop-last)))}
         (= component-type
            :heraldicon.entity.collection/element) (assoc :dispatch [::collection.element/highlight path])))))
+
+(macros/reg-event-db ::set-edit-node
+  (fn [db [_ context]]
+    (assoc-in db edit-node-path context)))
+
+(macros/reg-event-db ::complete-editing
+  (fn [db [_ editable-path value]]
+    (let [real-value (-> value
+                         str/trim
+                         (str/replace #"\s+" " "))]
+      (cond-> (assoc-in db edit-node-path nil)
+        (not (str/blank? real-value)) (assoc-in editable-path real-value)))))
+
+(rf/reg-sub ::edit-node
+  :<- [:get edit-node-path]
+
+  (fn [edit-node _]
+    edit-node))
 
 (macros/reg-event-fx ::highlight-node
   (fn [{:keys [db]} [_ path]]
