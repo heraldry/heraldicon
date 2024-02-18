@@ -18,7 +18,8 @@
           new-element-path (conj types-path (-> elements count dec))]
       {:db (assoc-in db types-path elements)
        :dispatch-n [[::submenu/close-all]
-                    [::tree/select-node new-element-path true]]})))
+                    [::tree/select-node new-element-path true]
+                    [::tree/set-edit-node {:path (conj new-element-path :name)}]]})))
 
 (defn remove-element
   [db path]
@@ -141,11 +142,10 @@
      :editable-path (:path name-context)
      :buttons (cond-> [{:icon "fas fa-plus"
                         :title :string.button/add
-                        :menu [{:title "Charge type"
-                                :handler #(rf/dispatch [::add
-                                                        context
-                                                        {:type :heraldicon/charge-type
-                                                         :name "New type"}])}]}]
+                        :handler #(rf/dispatch [::add
+                                                context
+                                                {:type :heraldicon/charge-type
+                                                 :name "New type"}])}]
                 (not root?) (conj {:icon "far fa-edit"
                                    :title :string.button/edit
                                    :handler #(do
