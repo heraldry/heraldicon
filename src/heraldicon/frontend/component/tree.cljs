@@ -116,11 +116,7 @@
         dragged-over? (= path (:path dragged-over-node))
         dragged-node-data (when (:path dragged-node)
                             @(rf/subscribe [:get (:path dragged-node)]))
-        drop-node-data @(rf/subscribe [:get path])
-        parent-node-id @(rf/subscribe [:get (-> context
-                                                (c/-- 2)
-                                                (c/++ :id)
-                                                :path)])]
+        drop-node-data @(rf/subscribe [:get path])]
     [:<>
      [:div.node-name.clickable.no-select
       {:class [(when selected?
@@ -145,7 +141,6 @@
                                                dragged-node-data
                                                path
                                                drop-node-data
-                                               parent-node-id
                                                (and openable?
                                                     open?)))
                                where (calculate-drop-area event drop-options)]
@@ -167,7 +162,6 @@
                                         dragged-node-data
                                         path
                                         drop-node-data
-                                        parent-node-id
                                         (and openable?
                                              open?)))
                         where (calculate-drop-area event drop-options)]
@@ -296,9 +290,9 @@
          [:charge-types]}
        (take-last 1 path))
       (#{[:coat-of-arms :field]
-         [:forms :heraldicon.frontend.charge-types/path]}
+         [:forms :heraldicon.frontend.charge-types/form]}
        (take-last 2 path))
-      (#{[:forms :heraldicon.frontend.charge-types/path :groups]}
+      (#{[:forms :heraldicon.frontend.charge-types/form :types]}
        (butlast (take-last 4 path)))
       (#{[:coat-of-arms :field :components]}
        (butlast (take-last 4 path)))

@@ -3,7 +3,6 @@
    [heraldicon.frontend.component.charge]
    [heraldicon.frontend.component.charge-group]
    [heraldicon.frontend.component.charge-type]
-   [heraldicon.frontend.component.charge-type-group]
    [heraldicon.frontend.component.coat-of-arms]
    [heraldicon.frontend.component.cottise]
    [heraldicon.frontend.component.entity.arms.data]
