@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.charge-types
   (:require
    [cljs.core.async :refer [go]]
+   [clojure.string :as str]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.context :as c]
    [heraldicon.entity.user :as entity.user]
@@ -20,6 +21,9 @@
 
 (def form-db-path
   (form/form-path ::form))
+
+(def search-db-path
+  (conj form-db-path ::search))
 
 (history/register-undoable-path form-db-path)
 
@@ -43,6 +47,30 @@
 
       {})))
 
+(defn- search-bar
+  []
+  [:div {:style {:margin-bottom "10px"}}
+   [:input {:type "text"
+            :placeholder "Search"
+            :style {:width "20em"}
+            :on-change (fn [event]
+                         (rf/dispatch [:set search-db-path (-> event .-target .-value)]))}]])
+
+(defn- search
+  [title]
+  (let [title (str/lower-case (or title ""))
+        words (str/split (-> @(rf/subscribe [:get search-db-path])
+                             (or "")
+                             str/lower-case)
+                         #" +")]
+    (if (empty? words)
+      true
+      (reduce (fn [_ word]
+                (when (str/includes? title word)
+                  (reduced true)))
+              nil
+              words))))
+
 (defn- charge-type-editor
   []
   (rf/dispatch [::title/set :string.menu/charge-types])
@@ -55,8 +83,9 @@
                     :padding "10px"}}
       [:div {:style {:height "calc(100% - 2.5em)"
                      :overflow "scroll"}}
+       [search-bar]
        [history/buttons form-db-path]
-       [tree/tree [form-db-path] base-context]]
+       [tree/tree [form-db-path] base-context :search-fn search]]
 
       [:button.button.primary {:type "submit"
                                :on-click (fn [event]
