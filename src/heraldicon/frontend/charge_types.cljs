@@ -56,6 +56,12 @@
             :on-change (fn [event]
                          (rf/dispatch [:set search-db-path (-> event .-target .-value)]))}]])
 
+(defn- force-open?
+  []
+  (-> @(rf/subscribe [:get search-db-path])
+      count
+      pos?))
+
 (defn- search
   [title]
   (let [title (str/lower-case (or title ""))
@@ -85,7 +91,9 @@
                      :overflow "scroll"}}
        [search-bar]
        [history/buttons form-db-path]
-       [tree/tree [form-db-path] base-context :search-fn search]]
+       [tree/tree [form-db-path] base-context
+        :search-fn search
+        :force-open? (force-open?)]]
 
       [:button.button.primary {:type "submit"
                                :on-click (fn [event]
