@@ -83,29 +83,39 @@
   (status/default
    (rf/subscribe [::repository.charge-types/data #(rf/dispatch [:set form-db-path %])])
    (fn [_]
-     [:div {:style {:position "relative"
-                    :max-width "40em"
-                    :height "calc(100vh - 4em)"
+     [:div {:style {:display "grid"
+                    :grid-gap "10px"
+                    :grid-template-columns "[start] 40em [first] 40em [end]"
+                    :grid-template-rows "[top] 100% [bottom]"
+                    :grid-template-areas "'left right'"
+                    :height "calc(100% - 20px)"
                     :padding "10px"}}
-      [:div {:style {:height "calc(100% - 2.5em)"
-                     :overflow "scroll"}}
-       [search-bar]
-       [history/buttons form-db-path]
-       [tree/tree [form-db-path] base-context
-        :search-fn search
-        :force-open? (force-open?)]]
+      [:div {:style {:grid-area "left"
+                     :position "relative"}}
+       [:div {:style {:height "calc(100% - 2.5em)"
+                      :overflow "scroll"}}
+        [search-bar]
+        [history/buttons form-db-path]
+        [tree/tree [form-db-path] base-context
+         :search-fn search
+         :force-open? (force-open?)]]
+       [:button.button.primary {:type "submit"
+                                :on-click (fn [event]
+                                            (.preventDefault event)
+                                            (.stopPropagation event)
+                                            (rf/dispatch [::save]))
+                                :style {:float "right"
+                                        :margin-bottom "10px"}}
+        [tr :string.button/save]]
+       [:div {:style {:width "80%"
+                      :float "left"}}
+        [message/display ::id]]]
 
-      [:button.button.primary {:type "submit"
-                               :on-click (fn [event]
-                                           (.preventDefault event)
-                                           (.stopPropagation event)
-                                           (rf/dispatch [::save]))
-                               :style {:float "right"
-                                       :margin-bottom "10px"}}
-       [tr :string.button/save]]
-      [:div {:style {:width "80%"
-                     :float "left"}}
-       [message/display ::id]]])))
+      [:div {:style {:grid-area "right"
+                     :position "relative"}}
+       [:div {:style {:height "calc(100%)"
+                      :overflow "scroll"}}
+        [tree/tree [form-db-path] base-context]]]])))
 
 (defn view []
   (if (entity.user/admin? @(rf/subscribe [::session/data]))
