@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as str]
    [heraldicon.context :as c]
+   [heraldicon.frontend.charge-types :as frontend.charge-types]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.submenu :as submenu]
@@ -81,26 +82,21 @@
        :dispatch-n [[::tree/select-node new-value-path true]]})))
 
 (defn drop-options-fn
-  [dragged-node-path dragged-node drop-node-path drop-node drop-node-open?]
+  [dragged-node-path drop-node-path drop-node-open?]
   (when (not= (take (count dragged-node-path) drop-node-path)
               dragged-node-path)
-    (let [dragged-type (:type dragged-node)
-          {drop-type :type
-           drop-id :id} drop-node
-          root? (= drop-id :root)
+    (let [root? (= drop-node-path frontend.charge-types/form-db-path)
           siblings? (= (drop-last dragged-node-path)
                        (drop-last drop-node-path))
           parent? (= (drop-last 2 dragged-node-path)
                      drop-node-path)]
-      (when (and (= dragged-type :heraldicon/charge-type)
-                 (= drop-type :heraldicon/charge-type))
-        (cond-> (cond
-                  root? (when-not parent?
-                          #{:inside})
-                  parent? #{:above :below}
-                  siblings? #{:inside}
-                  :else #{:above :inside :below})
-          drop-node-open? (disj :below))))))
+      (cond-> (cond
+                root? (when-not parent?
+                        #{:inside})
+                parent? #{:above :below}
+                siblings? #{:inside}
+                :else #{:above :inside :below})
+        drop-node-open? (disj :below)))))
 
 (defn drop-fn
   [dragged-node-context drop-node-context where]

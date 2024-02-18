@@ -18,7 +18,7 @@
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
-(def ^:private form-db-path
+(def form-db-path
   (form/form-path ::form))
 
 (history/register-undoable-path form-db-path)

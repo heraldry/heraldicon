@@ -91,6 +91,25 @@
           (< dy (* inside-cutoff th)) :inside
           :else :below)))))
 
+(rf/reg-sub ::dragged?
+  :<- [:get dragged-node-path]
+
+  (fn [dragged-context [_ {:keys [path]}]]
+    (= path (:path dragged-context))))
+
+(rf/reg-sub ::drop-info
+  :<- [:get dragged-over-node-path]
+
+  (fn [dragged-over-data [_ {:keys [path]}]]
+    (when (= path (:path (:context dragged-over-data)))
+      dragged-over-data)))
+
+(defn- drop-location
+  [event drop-options-fn dragged-node-path dragged-over-node-path open?]
+  (when drop-options-fn
+    (let [drop-options (drop-options-fn dragged-node-path dragged-over-node-path open?)]
+      (calculate-drop-area event drop-options))))
+
 (defn node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
   (let [{node-title :title
          :keys [open?
@@ -106,20 +125,15 @@
                 draggable?
                 drop-options-fn
                 drop-fn]} (node-data context)
-        edit-node @(rf/subscribe [::edit-node])
         openable? (-> nodes count pos?)
+        edit-node @(rf/subscribe [::edit-node])
         title (or node-title title)
         buttons (concat buttons parent-buttons)
-        ;; TODO: these two should get the context and return the relevant data only
-        ;; if the context is the dragged/dropped node
-        dragged-node @(rf/subscribe [:get dragged-node-path])
         {dragged-over-node :context
-         where :where} @(rf/subscribe [:get dragged-over-node-path])
-        dragged? (= path (:path dragged-node))
-        dragged-over? (= path (:path dragged-over-node))
-        dragged-node-data (when (:path dragged-node)
-                            @(rf/subscribe [:get (:path dragged-node)]))
-        drop-node-data @(rf/subscribe [:get path])]
+         where :where} @(rf/subscribe [::drop-info context])
+        dragged-node-context @(rf/subscribe [:get dragged-node-path])
+        dragged? (= path (:path dragged-node-context))
+        dragged-over? dragged-over-node]
     [:<>
      [:div.node-name.clickable.no-select
       {:class [(when selected?
@@ -136,21 +150,15 @@
                (when dragged?
                  "node-dragged")]
        :draggable draggable?
-       :on-drag-over (when-not dragged?
-                       (fn [event]
-                         (let [drop-options (when drop-options-fn
-                                              (drop-options-fn
-                                               (:path dragged-node)
-                                               dragged-node-data
-                                               path
-                                               drop-node-data
-                                               (and openable?
-                                                    open?)))
-                               where (calculate-drop-area event drop-options)]
-                           (when where
-                             (.preventDefault event)
-                             (rf/dispatch [:set dragged-over-node-path {:context context
-                                                                        :where where}])))))
+       :on-drag-over (fn [event]
+                       (when-let [where (drop-location event drop-options-fn
+                                                       (:path dragged-node-context)
+                                                       path
+                                                       (and openable?
+                                                            open?))]
+                         (.preventDefault event)
+                         (rf/dispatch [:set dragged-over-node-path {:context context
+                                                                    :where where}])))
        :on-drag-leave (fn [_event]
                         (rf/dispatch [:set dragged-over-node-path nil]))
        :on-drag-start (fn [_event]
@@ -159,18 +167,15 @@
                       (rf/dispatch [:set dragged-node-path nil])
                       (rf/dispatch [:set dragged-over-node-path nil]))
        :on-drop (fn [event]
-                  (let [drop-options (when drop-options-fn
-                                       (drop-options-fn
-                                        (:path dragged-node)
-                                        dragged-node-data
-                                        path
-                                        drop-node-data
-                                        (and openable?
-                                             open?)))
-                        where (calculate-drop-area event drop-options)]
-                    (when (and where
-                               drop-fn)
-                      (drop-fn dragged-node context where))))
+                  (when-let [where (drop-location event
+                                                  drop-options-fn
+                                                  (:path dragged-node-context)
+                                                  path
+                                                  (and openable?
+                                                       open?))]
+                    (when drop-fn
+                      (drop-fn dragged-node-context context where))))
+
        :on-click #(do
                     (when (or (not open?)
                               (not selectable?)
