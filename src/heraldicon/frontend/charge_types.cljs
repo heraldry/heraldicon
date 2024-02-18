@@ -74,3 +74,22 @@
   (if (entity.user/admin? @(rf/subscribe [::session/data]))
     [charge-type-editor]
     [:div]))
+
+(rf/reg-sub ::name-map
+  :<- [:get form-db-path]
+
+  (fn [data _]
+    (let [types (tree-seq
+                 (fn [[data _path]]
+                   (:type data))
+                 (fn [[data path]]
+                   (map-indexed (fn [index item]
+                                  [item (conj path index)])
+                                (:types data)))
+                 [data form-db-path])
+          name-map (-> (group-by (comp :name first) types)
+                       (update-vals (fn [value]
+                                      (mapv (fn [[_item path]]
+                                              path)
+                                            value))))]
+      name-map)))
