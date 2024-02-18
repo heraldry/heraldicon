@@ -110,7 +110,9 @@
     (let [drop-options (drop-options-fn dragged-node-path dragged-over-node-path open?)]
       (calculate-drop-area event drop-options))))
 
-(defn node [{:keys [path] :as context} & {:keys [title parent-buttons]}]
+(defn node [{:keys [path] :as context} & {:keys [title
+                                                 parent-buttons
+                                                 search-fn]}]
   (let [{node-title :title
          :keys [open?
                 highlighted?
@@ -133,153 +135,159 @@
          where :where} @(rf/subscribe [::drop-info context])
         dragged-node-context @(rf/subscribe [:get dragged-node-path])
         dragged? (= path (:path dragged-node-context))
-        dragged-over? dragged-over-node]
+        dragged-over? dragged-over-node
+        hide? (when search-fn
+                (not (search-fn title)))]
     [:<>
-     [:div.node-name.clickable.no-select
-      {:class [(when selected?
-                 "selected")
-               (when-not selectable?
-                 "unselectable")
-               (when highlighted?
-                 "node-highlighted")
-               (when dragged-over?
-                 (case where
-                   :above "node-dragged-over-above"
-                   :inside "node-dragged-over-inside"
-                   :below "node-dragged-over-below"))
-               (when dragged?
-                 "node-dragged")]
-       :draggable draggable?
-       :on-drag-over (fn [event]
-                       (when-let [where (drop-location event drop-options-fn
-                                                       (:path dragged-node-context)
-                                                       path
-                                                       (and openable?
-                                                            open?))]
-                         (.preventDefault event)
-                         (rf/dispatch [:set dragged-over-node-path {:context context
-                                                                    :where where}])))
-       :on-drag-leave (fn [_event]
+     (when-not hide?
+       [:div.node-name.clickable.no-select
+        {:class [(when selected?
+                   "selected")
+                 (when-not selectable?
+                   "unselectable")
+                 (when highlighted?
+                   "node-highlighted")
+                 (when dragged-over?
+                   (case where
+                     :above "node-dragged-over-above"
+                     :inside "node-dragged-over-inside"
+                     :below "node-dragged-over-below"))
+                 (when dragged?
+                   "node-dragged")]
+         :draggable draggable?
+         :on-drag-over (fn [event]
+                         (when-let [where (drop-location event drop-options-fn
+                                                         (:path dragged-node-context)
+                                                         path
+                                                         (and openable?
+                                                              open?))]
+                           (.preventDefault event)
+                           (rf/dispatch [:set dragged-over-node-path {:context context
+                                                                      :where where}])))
+         :on-drag-leave (fn [_event]
+                          (rf/dispatch [:set dragged-over-node-path nil]))
+         :on-drag-start (fn [_event]
+                          (rf/dispatch [:set dragged-node-path context]))
+         :on-drag-end (fn [_event]
+                        (rf/dispatch [:set dragged-node-path nil])
                         (rf/dispatch [:set dragged-over-node-path nil]))
-       :on-drag-start (fn [_event]
-                        (rf/dispatch [:set dragged-node-path context]))
-       :on-drag-end (fn [_event]
-                      (rf/dispatch [:set dragged-node-path nil])
-                      (rf/dispatch [:set dragged-over-node-path nil]))
-       :on-drop (fn [event]
-                  (when-let [where (drop-location event
-                                                  drop-options-fn
-                                                  (:path dragged-node-context)
-                                                  path
-                                                  (and openable?
-                                                       open?))]
-                    (when drop-fn
-                      (drop-fn dragged-node-context context where))))
+         :on-drop (fn [event]
+                    (when-let [where (drop-location event
+                                                    drop-options-fn
+                                                    (:path dragged-node-context)
+                                                    path
+                                                    (and openable?
+                                                         open?))]
+                      (when drop-fn
+                        (drop-fn dragged-node-context context where))))
 
-       :on-click #(do
-                    (when (or (not open?)
-                              (not selectable?)
-                              selected?)
-                      (rf/dispatch [::toggle-node path]))
-                    (when selectable?
-                      (rf/dispatch [::select-node path]))
-                    (.stopPropagation %))}
+         :on-click #(do
+                      (when (or (not open?)
+                                (not selectable?)
+                                selected?)
+                        (rf/dispatch [::toggle-node path]))
+                      (when selectable?
+                        (rf/dispatch [::select-node path]))
+                      (.stopPropagation %))}
 
-      (when (and dragged-over?
-                 (#{:above :below} where))
-        [:div {:style {:height "0px"
-                       :border-top "2px solid #000"
-                       :width "10em"
-                       :position "absolute"
-                       (if (= where :above)
-                         :top
-                         :bottom) -1
-                       :pointer-events "none"}}])
+        (when (and dragged-over?
+                   (#{:above :below} where))
+          [:div {:style {:height "0px"
+                         :border-top "2px solid #000"
+                         :width "10em"
+                         :position "absolute"
+                         (if (= where :above)
+                           :top
+                           :bottom) -1
+                         :pointer-events "none"}}])
 
-      (when draggable?
-        [:div.node-drag-handle
-         [:i.ui-icon.fas.fa-grip-lines]])
+        (when draggable?
+          [:div.node-drag-handle
+           [:i.ui-icon.fas.fa-grip-lines]])
 
-      (if openable?
-        [:span.node-icon.clickable
-         {:on-click (js-event/handled #(rf/dispatch [::toggle-node path]))}
-         [:i.fa.ui-icon {:class (if open?
-                                  "fa-angle-down"
-                                  "fa-angle-right")}]]
-        [:span.node-icon])
+        (if openable?
+          [:span.node-icon.clickable
+           {:on-click (js-event/handled #(rf/dispatch [::toggle-node path]))}
+           [:i.fa.ui-icon {:class (if open?
+                                    "fa-angle-down"
+                                    "fa-angle-right")}]]
+          [:span.node-icon])
 
-      (when icon
-        (let [effective-icon (if selected?
-                               (:selected icon)
-                               (:default icon))
-              icon-style {:display "inline-block"
-                          :width "14px"
-                          :height "16px"
-                          :margin-right "5px"
-                          :vertical-align "top"
-                          :transform "translate(0,3px)"}]
-          (if (vector? effective-icon)
-            (update-in effective-icon [1 :style] merge icon-style)
-            [:div {:style icon-style}
-             [:img {:src effective-icon
-                    :style {:position "absolute"
-                            :margin "auto"
-                            :top 0
-                            :left 0
-                            :right 0
-                            :bottom 0
-                            :max-width "100%"
-                            :max-height "100%"}}]])))
+        (when icon
+          (let [effective-icon (if selected?
+                                 (:selected icon)
+                                 (:default icon))
+                icon-style {:display "inline-block"
+                            :width "14px"
+                            :height "16px"
+                            :margin-right "5px"
+                            :vertical-align "top"
+                            :transform "translate(0,3px)"}]
+            (if (vector? effective-icon)
+              (update-in effective-icon [1 :style] merge icon-style)
+              [:div {:style icon-style}
+               [:img {:src effective-icon
+                      :style {:position "absolute"
+                              :margin "auto"
+                              :top 0
+                              :left 0
+                              :right 0
+                              :bottom 0
+                              :max-width "100%"
+                              :max-height "100%"}}]])))
 
-      (if (some-> editable-path (= (:path edit-node)))
-        [node-name-input editable-path]
-        [tr title])
+        (if (some-> editable-path (= (:path edit-node)))
+          [node-name-input editable-path]
+          [tr title])
 
-      annotation
+        annotation
 
-      (validation/render validation)
+        (validation/render validation)
 
-      (into [:<>]
-            (comp (filter :menu)
-                  (map-indexed (fn [idx {:keys [icon menu disabled? title]}]
-                                 [hover-menu/hover-menu
-                                  (c/++ context idx)
-                                  title
-                                  menu
-                                  [:i.ui-icon {:class (str icon (when disabled?
-                                                                  " disabled-item"))
-                                               :title (tr title)
-                                               :style {:margin-left "0.5em"
-                                                       :font-size "0.8em"
-                                                       :cursor (when disabled? "not-allowed")}}]
-                                  :disabled? disabled?
-                                  :require-click? true])))
-            buttons)
+        (into [:<>]
+              (comp (filter :menu)
+                    (map-indexed (fn [idx {:keys [icon menu disabled? title]}]
+                                   [hover-menu/hover-menu
+                                    (c/++ context idx)
+                                    title
+                                    menu
+                                    [:i.ui-icon {:class (str icon (when disabled?
+                                                                    " disabled-item"))
+                                                 :title (tr title)
+                                                 :style {:margin-left "0.5em"
+                                                         :font-size "0.8em"
+                                                         :cursor (when disabled? "not-allowed")}}]
+                                    :disabled? disabled?
+                                    :require-click? true])))
+              buttons)
 
-      (into [:span {:style {:margin-left "0.5em"}}]
-            (comp (remove :menu)
-                  (map-indexed (fn [idx {:keys [icon handler disabled? title remove?]}]
-                                 [:span.node-icon
-                                  {:class (when disabled? "disabled")
-                                   :title (tr title)
-                                   :style {:margin-left (when (and (pos? idx)
-                                                                   remove?) "0.5em")
-                                           :cursor (when disabled? "not-allowed")}}
-                                  [:i.ui-icon {:class (str icon (when disabled?
-                                                                  " disabled-item"))
-                                               :on-click (when-not disabled?
-                                                           (js-event/handled handler))
-                                               :style {:font-size "0.8em"}}]])))
-            buttons)]
+        (into [:span {:style {:margin-left "0.5em"}}]
+              (comp (remove :menu)
+                    (map-indexed (fn [idx {:keys [icon handler disabled? title remove?]}]
+                                   [:span.node-icon
+                                    {:class (when disabled? "disabled")
+                                     :title (tr title)
+                                     :style {:margin-left (when (and (pos? idx)
+                                                                     remove?) "0.5em")
+                                             :cursor (when disabled? "not-allowed")}}
+                                    [:i.ui-icon {:class (str icon (when disabled?
+                                                                    " disabled-item"))
+                                                 :on-click (when-not disabled?
+                                                             (js-event/handled handler))
+                                                 :style {:font-size "0.8em"}}]])))
+              buttons)])
 
      (when open?
        (into [:ul]
              (map (fn [{:keys [context title buttons]}]
                     ^{:key context}
-                    [:li [node context :title title :parent-buttons buttons]]))
+                    [:li [node context
+                          :title title
+                          :parent-buttons buttons
+                          :search-fn search-fn]]))
              nodes))]))
 
-(defn tree [paths context]
+(defn tree [paths context & {:keys [search-fn]}]
   [:div.ui-tree
    (into [:ul]
          (map-indexed (fn [idx node-path]
@@ -287,7 +295,8 @@
                         [:li
                          (if (= node-path :spacer)
                            [:div {:style {:height "1em"}}]
-                           [node (c/<< context :path node-path)])]))
+                           [node (c/<< context :path node-path)
+                            :search-fn search-fn])]))
          paths)])
 
 (defn- node-open-by-default? [path]
