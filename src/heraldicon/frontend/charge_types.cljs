@@ -49,9 +49,13 @@
    (fn [_]
      [:div {:style {:position "relative"
                     :max-width "40em"
+                    :height "calc(100vh - 4em)"
                     :padding "10px"}}
-      [history/buttons form-db-path]
-      [tree/tree [form-db-path] base-context]
+      [:div {:style {:height "calc(100% - 2.5em)"
+                     :overflow "scroll"}}
+       [history/buttons form-db-path]
+       [tree/tree [form-db-path] base-context]]
+
       [:button.button.primary {:type "submit"
                                :on-click (fn [event]
                                            (.preventDefault event)
@@ -60,7 +64,8 @@
                                :style {:float "right"
                                        :margin-bottom "10px"}}
        [tr :string.button/save]]
-      [:div {:style {:clear "both"}}
+      [:div {:style {:width "80%"
+                     :float "left"}}
        [message/display ::id]]])))
 
 (defn view []
