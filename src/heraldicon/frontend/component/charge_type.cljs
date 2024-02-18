@@ -121,6 +121,14 @@
                 {:context (c/++ context idx)}))
          (sort-by sort-key))))
 
+(defn- duplicate?
+  [type-name]
+  (let [name-map @(rf/subscribe [::frontend.charge-types/name-map])]
+    (-> name-map
+        (get type-name)
+        count
+        (> 1))))
+
 (defmethod component/node :heraldicon/charge-type [context]
   (let [type-id (interface/get-raw-data (c/++ context :id))
         name-context (c/++ context :name)
@@ -129,9 +137,12 @@
                        count
                        dec)
         types-context (c/++ context :types)
-        root? (= type-id :root)]
-    {:title (cond-> (interface/get-raw-data name-context)
-              (pos? num-types) (str " (" num-types ")"))
+        root? (= type-id :root)
+        type-name (interface/get-raw-data name-context)]
+    {:title (cond-> type-name
+              (pos? num-types) (str " (" num-types ")")
+              (not type-id) (str " *new*")
+              (duplicate? type-name) (str " *duplicate*"))
      :draggable? (not root?)
      :drop-options-fn drop-options-fn
      :drop-fn drop-fn
