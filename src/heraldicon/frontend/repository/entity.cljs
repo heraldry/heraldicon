@@ -5,7 +5,7 @@
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.repository.core :as repository]
-   [heraldicon.frontend.repository.eneity-list :as-alias entity-list]
+   [heraldicon.frontend.repository.entity-list :as-alias entity-list]
    [heraldicon.frontend.repository.query :as query]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
