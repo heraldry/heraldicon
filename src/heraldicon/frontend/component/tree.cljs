@@ -48,7 +48,10 @@
         value (r/atom @(rf/subscribe [:get value-path]))]
     (r/create-class
      {:component-did-mount (fn []
-                             (.focus @ref))
+                             (doto @ref
+                               .focus
+                               .select
+                               .scrollIntoViewIfNeeded))
 
       :reagent-render (fn [value-path]
                         [:input.node-name-input
