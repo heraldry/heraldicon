@@ -12,6 +12,7 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.repository.charge-types :as repository.charge-types]
    [heraldicon.frontend.status :as status]
+   [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.form.core :as form]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
@@ -44,6 +45,7 @@
 
 (defn- charge-type-editor
   []
+  (rf/dispatch [::title/set :string.menu/charge-types])
   (status/default
    (rf/subscribe [::repository.charge-types/data #(rf/dispatch [:set form-db-path %])])
    (fn [_]
