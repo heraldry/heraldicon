@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.component.charge-type
   (:require
+   [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.tree :as tree]
@@ -10,28 +11,14 @@
 
 (macros/reg-event-fx ::add
   (fn [{:keys [db]} [_ {:keys [path]} value]]
-    (let [groups-path (conj path :types)
-          elements (-> (get-in db groups-path)
+    (let [types-path (conj path :types)
+          elements (-> (get-in db types-path)
                        (conj value)
                        vec)
-          new-element-path (conj groups-path (-> elements count dec))]
-      {:db (assoc-in db groups-path elements)
+          new-element-path (conj types-path (-> elements count dec))]
+      {:db (assoc-in db types-path elements)
        :dispatch-n [[::submenu/close-all]
                     [::tree/select-node new-element-path true]]})))
-
-;; TODO: what about charges having that type?
-(macros/reg-event-fx ::remove
-  (fn [{:keys [db]} [_ {:keys [path]
-                        :as context}]]
-    (let [parent-context (c/-- context 2)
-          parent-types-path (:path (c/++ parent-context :types))
-          index (last path)
-          parent-types (get-in db parent-types-path)
-          new-parent-types (vec (concat (subvec parent-types 0 index)
-                                        (subvec parent-types (inc index))))]
-      {:db (assoc-in db parent-types-path new-parent-types)
-       :dispatch-n [[::submenu/close-all]
-                    [::tree/select-node (:path parent-context) true]]})))
 
 (defn remove-element
   [db path]
@@ -43,6 +30,19 @@
                                   (subvec elements (inc index))))]
     [(assoc-in db elements-path new-elements)
      value]))
+
+(macros/reg-event-fx ::remove
+  (fn [{:keys [db]} [_ {:keys [path]
+                        :as context}]]
+    (let [[new-db value] (remove-element db path)
+          children (:types value)
+          parent-context (c/-- context 2)
+          parent-types-path (:path (c/++ parent-context :types))
+          siblings (get-in new-db parent-types-path)
+          new-siblings (vec (concat siblings children))]
+      {:db (assoc-in new-db parent-types-path new-siblings)
+       :dispatch-n [[::submenu/close-all]
+                    [::tree/select-node (:path parent-context) true]]})))
 
 (defn add-element
   [db elements-path value]
@@ -79,56 +79,80 @@
       {:db new-db
        :dispatch-n [[::tree/select-node new-value-path true]]})))
 
-(rf/reg-event-fx ::move-element
-  (fn [{:keys [db]} [_ value-context target-context where]]
-    (let [value-type (get-in db (:path (c/++ value-context :type)))
-          target-context (cond-> target-context
-                           (not= where :inside) (c/-- 2))
-          target-context (if (= value-type :heraldicon/charge-type-group)
-                           (c/++ target-context :groups)
-                           (c/++ target-context :types))]
-      {:dispatch-n [[::move value-context target-context]]})))
-
 (defn drop-options-fn
-  [dragged-node-path dragged-node drop-node-path drop-node drop-node-parent-id drop-node-open?]
-  (when (and (not= (take (count dragged-node-path) drop-node-path)
-                   dragged-node-path)
-             ; TODO: do this check properly, this must not be allowed with above/below types in that group
-             (not (and (= (:type dragged-node) :heraldicon/charge-type-group)
-                       (or (= (:id drop-node) :ungrouped)
-                           (= drop-node-parent-id :ungrouped)))))
+  [dragged-node-path dragged-node drop-node-path drop-node drop-node-open?]
+  (when (not= (take (count dragged-node-path) drop-node-path)
+              dragged-node-path)
     (let [dragged-type (:type dragged-node)
           {drop-type :type
            drop-id :id} drop-node
           root? (= drop-id :root)
-          dropped-group? (= dragged-type :heraldicon/charge-type-group)]
-      (cond-> (cond
-                (= drop-type :heraldicon/charge-type-group) (cond
-                                                              (not root?) #{:above :inside :below}
-                                                              dropped-group? #{:inside}
-                                                              :else nil)
-
-                (= drop-type :heraldicon/charge-type) #{:above :below})
-        drop-node-open? (disj :below)))))
+          siblings? (= (drop-last dragged-node-path)
+                       (drop-last drop-node-path))
+          parent? (= (drop-last 2 dragged-node-path)
+                     drop-node-path)]
+      (when (and (= dragged-type :heraldicon/charge-type)
+                 (= drop-type :heraldicon/charge-type))
+        (cond-> (cond
+                  root? (when-not parent?
+                          #{:inside})
+                  parent? #{:above :below}
+                  siblings? #{:inside}
+                  :else #{:above :inside :below})
+          drop-node-open? (disj :below))))))
 
 (defn drop-fn
   [dragged-node-context drop-node-context where]
-  (rf/dispatch [::move-element dragged-node-context drop-node-context where]))
+  (let [target-context (cond-> drop-node-context
+                         (not= where :inside) (c/-- 2))
+        target-context (c/++ target-context :types)]
+    (rf/dispatch [::move dragged-node-context target-context])))
+
+(defn- sort-key
+  [{:keys [context]}]
+  [(if (pos? (count (interface/get-raw-data (c/++ context :types))))
+     0
+     1)
+   (some-> (interface/get-raw-data (c/++ context :name))
+           str/lower-case)])
+
+(defn- sorted-children
+  [context]
+  (let [num-fields (interface/get-list-size context)]
+    (->> (range num-fields)
+         (map (fn [idx]
+                {:context (c/++ context idx)}))
+         (sort-by sort-key))))
 
 (defmethod component/node :heraldicon/charge-type [context]
-  (let [name-context (c/++ context :name)]
-    {:title (interface/get-raw-data (c/++ context :name))
-     :draggable? true
+  (let [type-id (interface/get-raw-data (c/++ context :id))
+        name-context (c/++ context :name)
+        num-types (->> (interface/get-raw-data context)
+                       (tree-seq map? :types)
+                       count
+                       dec)
+        types-context (c/++ context :types)
+        root? (= type-id :root)]
+    {:title (cond-> (interface/get-raw-data name-context)
+              (pos? num-types) (str " (" num-types ")"))
+     :draggable? (not root?)
      :drop-options-fn drop-options-fn
      :drop-fn drop-fn
      :editable-path (:path name-context)
-     :buttons [{:icon "far fa-edit"
-                :title :string.button/edit
-                :handler #(do
-                            (rf/dispatch [::tree/select-node (:path context)])
-                            (rf/dispatch [::tree/set-edit-node name-context]))}
-               {:icon "far fa-trash-alt"
-                :remove? true
-                :title :string.tooltip/remove
-                :handler #(rf/dispatch [::remove context])}]
-     :nodes []}))
+     :buttons (cond-> [{:icon "fas fa-plus"
+                        :title :string.button/add
+                        :menu [{:title "Charge type"
+                                :handler #(rf/dispatch [::add
+                                                        context
+                                                        {:type :heraldicon/charge-type
+                                                         :name "New type"}])}]}]
+                (not root?) (conj {:icon "far fa-edit"
+                                   :title :string.button/edit
+                                   :handler #(do
+                                               (rf/dispatch [::tree/select-node (:path context)])
+                                               (rf/dispatch [::tree/set-edit-node name-context]))}
+                                  {:icon "far fa-trash-alt"
+                                   :remove? true
+                                   :title :string.tooltip/remove
+                                   :handler #(rf/dispatch [::remove context])}))
+     :nodes (sorted-children types-context)}))
