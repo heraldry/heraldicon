@@ -112,6 +112,7 @@
 
 (defn node [{:keys [path] :as context} & {:keys [title
                                                  parent-buttons
+                                                 force-open?
                                                  search-fn]}]
   (let [{node-title :title
          :keys [open?
@@ -127,6 +128,7 @@
                 draggable?
                 drop-options-fn
                 drop-fn]} (node-data context)
+        open? (or force-open? open?)
         openable? (-> nodes count pos?)
         edit-node @(rf/subscribe [::edit-node])
         title (or node-title title)
@@ -284,10 +286,11 @@
                     [:li [node context
                           :title title
                           :parent-buttons buttons
+                          :force-open? force-open?
                           :search-fn search-fn]]))
              nodes))]))
 
-(defn tree [paths context & {:keys [search-fn]}]
+(defn tree [paths context & {:keys [search-fn force-open?]}]
   [:div.ui-tree
    (into [:ul]
          (map-indexed (fn [idx node-path]
@@ -296,6 +299,7 @@
                          (if (= node-path :spacer)
                            [:div {:style {:height "1em"}}]
                            [node (c/<< context :path node-path)
+                            :force-open? force-open?
                             :search-fn search-fn])]))
          paths)])
 
