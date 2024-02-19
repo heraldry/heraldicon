@@ -115,10 +115,7 @@
                             .stopPropagation)
                           (rf/dispatch [::update
                                         (:path charge-context)
-                                        (merge {:type (->> data
-                                                           :charge-type
-                                                           name
-                                                           (keyword "heraldry.charge.type"))
+                                        (merge {:type :heraldry.charge.type/other
                                                 :variant {:id id
                                                           :version version}
                                                 :attitude nil

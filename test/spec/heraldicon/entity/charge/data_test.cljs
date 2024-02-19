@@ -11,39 +11,36 @@
      :charge-type "foobar"}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar}
+     :charge-type "foobar"}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :heraldry.charge.type/foobar}
-
-    {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :edn-data {:width 100
                 :height 100
                 :data [:g]}}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :landscape? true}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :attitude (tu/example :heraldicon.entity.charge.data/attitude)}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :facing (tu/example :heraldicon.entity.charge.data/facing)}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :fixed-tincture (tu/example :heraldicon.entity.charge.data/fixed-tincture)}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :attributes (tu/example :heraldicon.entity.charge.data/attributes)}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :colours (tu/example :heraldicon.entity.charge.data/colours)}))
 
 (deftest invalid-charge-data
@@ -51,74 +48,74 @@
     {}
 
     {:type :wrong
-     :charge-type :foobar}
+     :charge-type "foobar"}
 
     {:type :heraldicon.entity.charge/data
      :charge-type 10}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :edn-data :wrong}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :edn-data {;; :width missing
                 :height 100
                 :data [:g]}}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :edn-data {:width :wrong
                 :height 100
                 :data [:g]}}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :edn-data {:width 100
                 :height :wrong
                 :data [:g]}}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :edn-data {:width 100
                 ;; :height missing
                 :data [:g]}}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :edn-data {:width 100
                 :height 100
                 :data :wrong}}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :edn-data {:width 100
                 :height 100
                 ;; :data missing
                 }}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :landscape? :wrong}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :attitude :wrong}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :facing :wrong}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :fixed-tincture :wrong}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :attributes :wrong}
 
     {:type :heraldicon.entity.charge/data
-     :charge-type :foobar
+     :charge-type "foobar"
      :colours :wrong}))
 
 (deftest valid-charge-data-attributes
