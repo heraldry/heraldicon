@@ -9,8 +9,7 @@
    [heraldicon.localization.string :as string]))
 
 (defmethod interface/blazon-component :heraldry/charge [{:keys [load-charge-data] :as context}]
-  (let [charge-type (interface/get-raw-data (c/++ context :type))
-        attitude (interface/get-sanitized-data (c/++ context :attitude))
+  (let [attitude (interface/get-sanitized-data (c/++ context :attitude))
         facing (interface/get-sanitized-data (c/++ context :facing))
         variant (interface/get-raw-data (c/++ context :variant))
         tincture (interface/get-raw-data (c/++ context :tincture))
@@ -23,6 +22,10 @@
                     (update :blazonry dissoc :pluralize?))
         charge-data (when variant
                       (:entity (load-charge-data variant)))
+        charge-type (or (-> charge-data
+                            :data
+                            :charge-type)
+                        (interface/get-raw-data (c/++ context :type)))
         fixed-tincture (-> charge-data
                            :fixed-tincture
                            (or :none)

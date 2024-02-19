@@ -77,8 +77,15 @@
              :manual-blazon options/manual-blazon)
       (post-process-options context)))
 
-(defn title [context]
-  (let [charge-type (interface/get-raw-data (c/++ context :type))
+(defn title [{:keys [load-charge-data] :as context}]
+  (let [variant (interface/get-raw-data (c/++ context :variant))
+        entity (when (and variant
+                          load-charge-data)
+                 (:entity (load-charge-data variant)))
+        charge-type (or (-> entity
+                            :data
+                            :charge-type)
+                        (interface/get-raw-data (c/++ context :type)))
         attitude (or (interface/get-raw-data (c/++ context :attitude))
                      :none)
         facing (or (interface/get-raw-data (c/++ context :facing))

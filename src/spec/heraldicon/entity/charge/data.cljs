@@ -16,8 +16,7 @@
                    :heraldicon.entity.charge.data.edn-data/height
                    :heraldicon.entity.charge.data.edn-data/data]))
 
-(s/def :heraldicon.entity.charge.data/charge-type (s/or :keyword keyword?
-                                                        :string su/non-blank-string?))
+(s/def :heraldicon.entity.charge.data/charge-type su/non-blank-string?)
 (s/def :heraldicon.entity.charge.data/landscape? boolean?)
 (s/def :heraldicon.entity.charge.data/attitude (su/key-in? attributes/attitude-map))
 (s/def :heraldicon.entity.charge.data/facing (su/key-in? attributes/facing-map))
