@@ -10,7 +10,7 @@
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.repository.blazonry-parser-data :as blazonry-parser-data]
    [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
@@ -53,7 +53,7 @@
 
 (defn open [context]
   (rf/dispatch-sync [::editor/clear])
-  (rf/dispatch [::entity-list/load-if-absent :heraldicon.entity.type/charge #(rf/dispatch [::parser/update %])])
+  @(rf/subscribe [::blazonry-parser-data/data #(rf/dispatch [::parser/update %])])
   (rf/dispatch-sync [::set-hdn-escutcheon context])
   (modal/create
    [:div
