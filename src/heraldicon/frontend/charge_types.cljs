@@ -115,7 +115,8 @@
                      :position "relative"}}
        [:div {:style {:height "calc(100%)"
                       :overflow "scroll"}}
-        [tree/tree [form-db-path] base-context]]]])))
+        [tree/tree [form-db-path] base-context
+         :extra :second]]]])))
 
 (defn view []
   (if (entity.user/admin? @(rf/subscribe [::session/data]))
