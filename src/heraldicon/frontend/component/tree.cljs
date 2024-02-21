@@ -136,8 +136,6 @@
         buttons (concat buttons parent-buttons)
         {dragged-over-node :context
          where :where} @(rf/subscribe [::drop-info context])
-        dragged-node-context @(rf/subscribe [:get dragged-node-path])
-        dragged? (= path (:path dragged-node-context))
         dragged-over? dragged-over-node
         hide? (when search-fn
                 (not (search-fn title)))]
@@ -154,19 +152,18 @@
                    (case where
                      :above "node-dragged-over-above"
                      :inside "node-dragged-over-inside"
-                     :below "node-dragged-over-below"))
-                 (when dragged?
-                   "node-dragged")]
+                     :below "node-dragged-over-below"))]
          :draggable draggable?
          :on-drag-over (fn [event]
-                         (when-let [where (drop-location event drop-options-fn
-                                                         (:path dragged-node-context)
-                                                         path
-                                                         (and openable?
-                                                              open?))]
-                           (.preventDefault event)
-                           (rf/dispatch [:set dragged-over-node-path {:context context
-                                                                      :where where}])))
+                         (let [dragged-node-context @(rf/subscribe [:get dragged-node-path])]
+                           (when-let [where (drop-location event drop-options-fn
+                                                           (:path dragged-node-context)
+                                                           path
+                                                           (and openable?
+                                                                open?))]
+                             (.preventDefault event)
+                             (rf/dispatch [:set dragged-over-node-path {:context context
+                                                                        :where where}]))))
          :on-drag-leave (fn [_event]
                           (rf/dispatch [:set dragged-over-node-path nil]))
          :on-drag-start (fn [_event]
@@ -175,14 +172,15 @@
                         (rf/dispatch [:set dragged-node-path nil])
                         (rf/dispatch [:set dragged-over-node-path nil]))
          :on-drop (fn [event]
-                    (when-let [where (drop-location event
-                                                    drop-options-fn
-                                                    (:path dragged-node-context)
-                                                    path
-                                                    (and openable?
-                                                         open?))]
-                      (when drop-fn
-                        (drop-fn dragged-node-context context where))))
+                    (let [dragged-node-context @(rf/subscribe [:get dragged-node-path])]
+                      (when-let [where (drop-location event
+                                                      drop-options-fn
+                                                      (:path dragged-node-context)
+                                                      path
+                                                      (and openable?
+                                                           open?))]
+                        (when drop-fn
+                          (drop-fn dragged-node-context context where)))))
 
          :on-click #(do
                       (when (or (not open?)
