@@ -19,9 +19,9 @@
 (defn clear-subscription-cache! []
   (reset! cache {}))
 
-(defn- reaction-or-cache [id
-                          {:keys [cache-subscriptions?]
-                           :as context} f]
+(defn reaction-or-cache [id
+                         {:keys [cache-subscriptions?]
+                          :as context} f]
   (if cache-subscriptions?
     (let [key [id context]
           value (or (get @cache key) (f))]

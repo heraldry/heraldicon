@@ -106,9 +106,20 @@
         target-context (c/++ target-context :types)]
     (rf/dispatch [::move dragged-node-context target-context])))
 
+(rf/reg-sub-raw ::all-subtypes-count
+  (fn [_app-db [_ context]]
+    (interface/reaction-or-cache
+     ::all-subtypes-count
+     context
+     #(let [children-count (interface/get-list-size (c/++ context :types))]
+        (->> (range children-count)
+             (map (fn [idx]
+                    @(rf/subscribe [::all-subtypes-count (c/++ context :types idx)])))
+             (reduce + children-count))))))
+
 (defn- sort-key
   [{:keys [context]}]
-  [(if (pos? (count (interface/get-raw-data (c/++ context :types))))
+  [(if (pos? (interface/get-list-size (c/++ context :types)))
      0
      1)
    (some-> (interface/get-raw-data (c/++ context :name))
@@ -133,10 +144,7 @@
 (defmethod component/node :heraldicon/charge-type [context]
   (let [type-id (interface/get-raw-data (c/++ context :id))
         name-context (c/++ context :name)
-        num-types (->> (interface/get-raw-data context)
-                       (tree-seq map? :types)
-                       count
-                       dec)
+        num-types @(rf/subscribe [::all-subtypes-count context])
         types-context (c/++ context :types)
         root? (= type-id :root)
         type-name (interface/get-raw-data name-context)]
