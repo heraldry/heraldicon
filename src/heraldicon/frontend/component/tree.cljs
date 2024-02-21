@@ -113,7 +113,8 @@
 (defn node [{:keys [path] :as context} & {:keys [title
                                                  parent-buttons
                                                  force-open?
-                                                 search-fn]}]
+                                                 search-fn
+                                                 extra]}]
   (let [{node-title :title
          :keys [open?
                 highlighted?
@@ -238,7 +239,8 @@
                               :max-width "100%"
                               :max-height "100%"}}]])))
 
-        (if (some-> editable-path (= (:path edit-node)))
+        (if (and (= extra :second)
+                 (some-> editable-path (= (:path edit-node))))
           [node-name-input editable-path]
           [tr title])
 
@@ -287,10 +289,11 @@
                           :title title
                           :parent-buttons buttons
                           :force-open? force-open?
-                          :search-fn search-fn]]))
+                          :search-fn search-fn
+                          :extra extra]]))
              nodes))]))
 
-(defn tree [paths context & {:keys [search-fn force-open?]}]
+(defn tree [paths context & {:keys [search-fn force-open? extra]}]
   [:div.ui-tree
    (into [:ul]
          (map-indexed (fn [idx node-path]
@@ -300,7 +303,8 @@
                            [:div {:style {:height "1em"}}]
                            [node (c/<< context :path node-path)
                             :force-open? force-open?
-                            :search-fn search-fn])]))
+                            :search-fn search-fn
+                            :extra extra])]))
          paths)])
 
 (defn- node-open-by-default? [path]
