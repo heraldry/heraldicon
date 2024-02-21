@@ -131,7 +131,7 @@
                 drop-fn]} (node-data context)
         open? (or force-open? open?)
         openable? (-> nodes count pos?)
-        edit-node @(rf/subscribe [::edit-node])
+        editing-node? @(rf/subscribe [::editing-node? editable-path])
         title (or node-title title)
         buttons (concat buttons parent-buttons)
         {dragged-over-node :context
@@ -240,7 +240,7 @@
                               :max-height "100%"}}]])))
 
         (if (and (= extra :second)
-                 (some-> editable-path (= (:path edit-node))))
+                 editing-node?)
           [node-name-input editable-path]
           [tr title])
 
@@ -445,11 +445,11 @@
       (cond-> (assoc-in db edit-node-path nil)
         (not (str/blank? real-value)) (assoc-in editable-path real-value)))))
 
-(rf/reg-sub ::edit-node
+(rf/reg-sub ::editing-node?
   :<- [:get edit-node-path]
 
-  (fn [edit-node _]
-    edit-node))
+  (fn [edit-node [_ path]]
+    (= (:path edit-node) path)))
 
 (macros/reg-event-fx ::highlight-node
   (fn [{:keys [db]} [_ path]]
