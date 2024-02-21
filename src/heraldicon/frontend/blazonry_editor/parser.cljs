@@ -17,12 +17,12 @@
   (conj shared/blazonry-editor-path :status))
 
 (rf/reg-event-db ::update
-  (fn [db [_ charge-type-map]]
+  (fn [db [_ charges]]
     (cond-> db
       (-> db
           (get-in (conj parser-path :charges))
-          (not= charge-type-map)) (assoc-in parser-path {:charges charge-type-map
-                                                         :parser (parser/generate charge-type-map)}))))
+          (not= charges)) (assoc-in parser-path {:charges charges
+                                                 :parser (parser/generate charges)}))))
 
 (defn parse-blazonry [blazon parser]
   (try

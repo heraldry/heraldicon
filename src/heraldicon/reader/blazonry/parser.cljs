@@ -100,29 +100,59 @@
                   (assoc :charge-other-type charge-other-type-rule)
                   (merge charge-type-rule-definitions))))))
 
-(defn generate [charge-type-map]
-  (let [charge-type-id (atom 0)
-        charge-type-id-map (atom {})
+(defn generate [charges]
+  (let [charge-map (into {}
+                         (map (fn [[key value]]
+                                [key (sort-by (fn [charge]
+                                                [(if (-> charge :username (= "heraldicon"))
+                                                   0
+                                                   1)
+                                                 (if (-> charge :access (= :public))
+                                                   0
+                                                   1)
+                                                 (cond
+                                                   (-> charge :name str/lower-case (str/includes? "ww")) 0
+                                                   (-> charge :name str/lower-case (str/includes? "sodacan")) 1
+                                                   :else 2)
+                                                 (case (-> charge :data :attitude)
+                                                   :none [0 :_]
+                                                   :rampant [1 :_]
+                                                   nil [2 :_]
+                                                   [3 (-> charge :data :attitude)])
+                                                 (case (-> charge :data :facing)
+                                                   :none [0 :_]
+                                                   :to-dexter [1 :_]
+                                                   nil [2 :_]
+                                                   [3 (-> charge :data :facing)])
+                                                 (-> charge :data :attributes count)
+                                                 (:id charge)]) value)]))
+                         (group-by #(some-> % :data :charge-type name keyword)
+                                   charges))
         charge-type-rules (into {}
                                 (keep (fn [charge-type]
-                                        (let [kw-name (str "charge-" (swap! charge-type-id inc))
-                                              rule-name (keyword "charge-other-type" kw-name)]
-                                          (swap! charge-type-id-map assoc charge-type (keyword "heraldry.charge.type" kw-name))
-                                          (if (contains? (:bad-charge-types default) charge-type)
-                                            [rule-name (let [clean-name (str "charge " charge-type)]
-                                                         (set [clean-name
-                                                               (pluralize clean-name)]))]
-                                            [rule-name (set [charge-type
-                                                             (pluralize charge-type)])]))))
-                                (keys charge-type-map))
+                                        (let [charge-type-name (name charge-type)
+                                              rule-name (keyword "charge-other-type" charge-type-name)
+                                              clean-name (some-> charge-type-name
+                                                                 str/lower-case
+                                                                 (str/replace #"[^a-z0-9]+" " ")
+                                                                 str/trim)
+                                              valid-charge-type? (re-matches #"^[a-zA-Z0-9-]+$" charge-type-name)]
+                                          (when (and valid-charge-type?
+                                                     (not (str/blank? clean-name)))
+                                            (if (contains? (:bad-charge-types default) clean-name)
+                                              [rule-name (let [clean-name (str "charge " clean-name)]
+                                                           (set [clean-name
+                                                                 (pluralize clean-name)]))]
+                                              [rule-name (set [clean-name
+                                                               (pluralize clean-name)])])))))
+                                (keys charge-map))
         default-parser (:parser default)
         new-parser (inject-charge-type-rules
                     default-parser
                     charge-type-rules)]
     {:parser new-parser
      :suggestion-classifications (suggestion-classifications new-parser)
-     :charge-map (update-keys charge-type-map (fn [k]
-                                                (get @charge-type-id-map k)))}))
+     :charge-map charge-map}))
 
 (def ^:private ast-node-normalization
   {:root-field :field
