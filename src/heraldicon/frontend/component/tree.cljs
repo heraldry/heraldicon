@@ -411,21 +411,31 @@
       {:db db
        :dispatch [::select-node path open?]})))
 
+(defn select-node
+  [db path open?]
+  (-> db
+      (assoc-in active-node-path path)
+      (open-node (cond-> path
+                   (not open?) drop-last))))
+
 (macros/reg-event-fx ::select-node
   (fn [{:keys [db]} [_ path open?]]
     (let [raw-type (get-in db (conj path :type))
           component-type (component/effective-type raw-type)]
       (cond->
-        {:db (-> db
-                 (assoc-in active-node-path path)
-                 (open-node (cond-> path
-                              (not open?) drop-last)))}
+        {:db (select-node db path open?)}
         (= component-type
            :heraldicon.entity.collection/element) (assoc :dispatch [::collection.element/highlight path])))))
 
+(defn set-edit-node
+  [db context]
+  (-> db
+      (assoc-in edit-node-path context)
+      (select-node (drop-last (:path context)) false)))
+
 (macros/reg-event-db ::set-edit-node
   (fn [db [_ context]]
-    (assoc-in db edit-node-path context)))
+    (set-edit-node db context)))
 
 (macros/reg-event-db ::complete-editing
   (fn [db [_ editable-path value]]

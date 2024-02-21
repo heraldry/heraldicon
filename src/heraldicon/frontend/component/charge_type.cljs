@@ -17,10 +17,10 @@
                        (conj value)
                        vec)
           new-element-path (conj types-path (-> elements count dec))]
-      {:db (assoc-in db types-path elements)
-       :dispatch-n [[::submenu/close-all]
-                    [::tree/select-node new-element-path true]
-                    [::tree/set-edit-node {:path (conj new-element-path :name)}]]})))
+      {:db (-> db
+               (assoc-in types-path elements)
+               (tree/set-edit-node {:path (conj new-element-path :name)}))
+       :dispatch-n [[::submenu/close-all]]})))
 
 (defn remove-element
   [db path]
@@ -42,9 +42,10 @@
           parent-types-path (:path (c/++ parent-context :types))
           siblings (get-in new-db parent-types-path)
           new-siblings (vec (concat siblings children))]
-      {:db (assoc-in new-db parent-types-path new-siblings)
-       :dispatch-n [[::submenu/close-all]
-                    [::tree/select-node (:path parent-context) true]]})))
+      {:db (-> new-db
+               (assoc-in parent-types-path new-siblings)
+               (tree/select-node (:path parent-context) true))
+       :dispatch-n [[::submenu/close-all]]})))
 
 (defn add-element
   [db elements-path value]
@@ -155,9 +156,7 @@
                                                  :name "New type"}])}]
                 (not root?) (conj {:icon "far fa-edit"
                                    :title :string.button/edit
-                                   :handler #(do
-                                               (rf/dispatch [::tree/select-node (:path context)])
-                                               (rf/dispatch [::tree/set-edit-node name-context]))}
+                                   :handler #(rf/dispatch [::tree/set-edit-node name-context])}
                                   {:icon "far fa-trash-alt"
                                    :remove? true
                                    :title :string.tooltip/remove
