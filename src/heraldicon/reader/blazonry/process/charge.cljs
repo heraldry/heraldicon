@@ -6,7 +6,8 @@
    [heraldicon.reader.blazonry.result :as result]))
 
 (defn- find-best-variant [{:keys [type attitude facing]} charge-map]
-  (let [candidates (get charge-map type)
+  (let [short-charge-type (-> type name keyword)
+        candidates (get charge-map short-charge-type)
         candidates-with-attitude (cond->> candidates
                                    attitude (filter (fn [charge]
                                                       (-> charge
@@ -14,11 +15,16 @@
                                                           :attitude
                                                           (or :rampant)
                                                           (= attitude)))))
+        charge-name (-> short-charge-type
+                        name
+                        (str/replace "-" " "))
         [attitude-warning
          candidates] (if (and attitude
                               (seq candidates)
                               (empty? candidates-with-attitude))
-                       [(str "No such charge found with attitude '"
+                       [(str "No charge '"
+                             charge-name
+                             "' found with attitude '"
                              (-> attitude
                                  name
                                  (str/replace "-" " "))
@@ -37,7 +43,9 @@
          candidates] (if (and facing
                               (seq candidates)
                               (empty? candidates-with-facing))
-                       [(str "No such charge found facing '"
+                       [(str "No charge '"
+                             charge-name
+                             "' found facing '"
                              (-> facing
                                  name
                                  (str/replace "-" " "))
