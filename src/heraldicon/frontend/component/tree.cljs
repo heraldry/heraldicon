@@ -153,6 +153,8 @@
                      :above "node-dragged-over-above"
                      :inside "node-dragged-over-inside"
                      :below "node-dragged-over-below"))]
+         :style {:cursor (when draggable?
+                           "grab")}
          :draggable draggable?
          :on-drag-over (fn [event]
                          (let [dragged-node-context @(rf/subscribe [:get dragged-node-path])]
@@ -258,7 +260,9 @@
                                                  :title (tr title)
                                                  :style {:margin-left "0.5em"
                                                          :font-size "0.8em"
-                                                         :cursor (when disabled? "not-allowed")}}]
+                                                         :cursor (if disabled?
+                                                                   "not-allowed"
+                                                                   "pointer")}}]
                                     :disabled? disabled?
                                     :require-click? true])))
               buttons)
@@ -271,7 +275,9 @@
                                      :title (tr title)
                                      :style {:margin-left (when (and (pos? idx)
                                                                      remove?) "0.5em")
-                                             :cursor (when disabled? "not-allowed")}}
+                                             :cursor (if disabled?
+                                                       "not-allowed"
+                                                       "pointer")}}
                                     [:i.ui-icon {:class (str icon (when disabled?
                                                                     " disabled-item"))
                                                  :on-click (when-not disabled?
