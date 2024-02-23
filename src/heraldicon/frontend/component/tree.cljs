@@ -318,8 +318,8 @@
       (#{[:coat-of-arms :field :components]}
        (butlast (take-last 4 path)))
       (#{;; TODO: path shouldn't be hard-coded
-         [:heraldicon.entity/collection :data :data]}
-       (take-last 3 path))
+         [:heraldicon.entity.type/collection :data]}
+       (take-last 2 path))
       (#{[:example-coa :coat-of-arms :field :components 0]}
        (take-last 5 path))))
 
