@@ -79,8 +79,7 @@
     (let [[new-db value] (remove-element db value-path)
           adjusted-target-path (adjust-path-after-removal target-path value-path)
           [new-db new-value-path] (add-element new-db adjusted-target-path value)]
-      {:db new-db
-       :dispatch-n [[::tree/select-node new-value-path true]]})))
+      {:db (tree/select-node new-db new-value-path true)})))
 
 (defn drop-options-fn
   [dragged-node-path drop-node-path drop-node-open?]
