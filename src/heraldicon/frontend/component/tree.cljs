@@ -29,11 +29,11 @@
 (def ^:private edit-node-path
   [:ui :component-tree :edit-node])
 
-(def ^:private dragged-node-path
-  [:ui :component-tree :dragged-node])
-
 (def ^:private dragged-over-node-path
   [:ui :component-tree :dragged-over-node])
+
+(def ^:private dragged-node-context
+  (atom nil))
 
 (defn node-data [{:keys [path] :as context}]
   (merge {:open? @(rf/subscribe [::node-open? path])
@@ -90,12 +90,6 @@
           (< dy (* above-cutoff th)) :above
           (< dy (* inside-cutoff th)) :inside
           :else :below)))))
-
-(rf/reg-sub ::dragged?
-  :<- [:get dragged-node-path]
-
-  (fn [dragged-context [_ {:keys [path]}]]
-    (= path (:path dragged-context))))
 
 (rf/reg-sub ::drop-info
   :<- [:get dragged-over-node-path]
@@ -157,32 +151,30 @@
                            "grab")}
          :draggable draggable?
          :on-drag-over (fn [event]
-                         (let [dragged-node-context @(rf/subscribe [:get dragged-node-path])]
-                           (when-let [where (drop-location event drop-options-fn
-                                                           (:path dragged-node-context)
-                                                           path
-                                                           (and openable?
-                                                                open?))]
-                             (.preventDefault event)
-                             (rf/dispatch [:set dragged-over-node-path {:context context
-                                                                        :where where}]))))
+                         (when-let [where (drop-location event drop-options-fn
+                                                         (:path @dragged-node-context)
+                                                         path
+                                                         (and openable?
+                                                              open?))]
+                           (.preventDefault event)
+                           (rf/dispatch [:set dragged-over-node-path {:context context
+                                                                      :where where}])))
          :on-drag-leave (fn [_event]
                           (rf/dispatch [:set dragged-over-node-path nil]))
          :on-drag-start (fn [_event]
-                          (rf/dispatch [:set dragged-node-path context]))
+                          (reset! dragged-node-context context))
          :on-drag-end (fn [_event]
-                        (rf/dispatch [:set dragged-node-path nil])
+                        (reset! dragged-node-context nil)
                         (rf/dispatch [:set dragged-over-node-path nil]))
          :on-drop (fn [event]
-                    (let [dragged-node-context @(rf/subscribe [:get dragged-node-path])]
-                      (when-let [where (drop-location event
-                                                      drop-options-fn
-                                                      (:path dragged-node-context)
-                                                      path
-                                                      (and openable?
-                                                           open?))]
-                        (when drop-fn
-                          (drop-fn dragged-node-context context where)))))
+                    (when-let [where (drop-location event
+                                                    drop-options-fn
+                                                    (:path @dragged-node-context)
+                                                    path
+                                                    (and openable?
+                                                         open?))]
+                      (when drop-fn
+                        (drop-fn @dragged-node-context context where))))
 
          :on-click #(do
                       (when (or (not open?)
