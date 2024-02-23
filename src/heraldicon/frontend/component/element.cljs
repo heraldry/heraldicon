@@ -51,6 +51,7 @@
                                          post-fn post-fn)))
             (tree/element-order-changed elements-path index nil))))))
 
+; TODO: deal with path changes
 (macros/reg-event-db ::move
   (fn [db [_ {:keys [path]} new-index]]
     (let [elements-path (-> path drop-last vec)
@@ -72,3 +73,58 @@
 
   (fn [element-type _context]
     (not (shield-separator/shield-separator? {:type element-type}))))
+
+(defn insert-element
+  [db target-path value]
+  (let [elements-path (vec (drop-last target-path))
+        elements (vec (get-in db elements-path))
+        index (-> (last target-path)
+                  (max 0)
+                  (min (count elements)))
+        new-elements (vec (concat (subvec elements 0 index)
+                                  [value]
+                                  (subvec elements index)))]
+    [(assoc-in db elements-path new-elements)
+     (conj elements-path index)]))
+
+(defn remove-element
+  [db path]
+  (let [elements-path (vec (drop-last path))
+        index (last path)
+        value (get-in db path)
+        elements (vec (get-in db elements-path))
+        new-elements (vec (concat (subvec elements 0 index)
+                                  (subvec elements (inc index))))]
+    [(assoc-in db elements-path new-elements)
+     value]))
+
+(defn adjust-path-after-removal
+  [path removed-path]
+  ; if the removed path is longer, then its removal can't affected the path
+  (if (<= (count removed-path)
+          (count path))
+    (let [index-pos (dec (count removed-path))
+          path-start (take index-pos path)
+          removal-index (last removed-path)
+          path-index (get path index-pos)]
+      (if (and (= path-start (drop-last removed-path))
+               (< removal-index path-index))
+        (vec (concat path-start [(dec path-index)] (drop (inc index-pos) path)))
+
+        path))
+
+    path))
+
+(macros/reg-event-fx ::move-general
+  (fn [{:keys [db]} [_
+                     {value-path :path}
+                     {target-path :path}]]
+    (let [[new-db value] (remove-element db value-path)
+          adjusted-target-path (adjust-path-after-removal target-path value-path)
+          [new-db new-value-path] (insert-element new-db adjusted-target-path value)]
+      {:db (tree/select-node new-db new-value-path true)})))
+
+(macros/reg-event-fx ::remove-general
+  (fn [{:keys [db]} [_ {:keys [path]}]]
+    (let [[new-db _value] (remove-element db path)]
+      {:db new-db})))
