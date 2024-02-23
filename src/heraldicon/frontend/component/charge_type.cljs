@@ -5,7 +5,6 @@
    [heraldicon.frontend.charge-types :as frontend.charge-types]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.tree :as tree]
-   [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
@@ -19,8 +18,7 @@
           new-element-path (conj types-path (-> elements count dec))]
       {:db (-> db
                (assoc-in types-path elements)
-               (tree/set-edit-node {:path (conj new-element-path :name)}))
-       :dispatch-n [[::submenu/close-all]]})))
+               (tree/set-edit-node {:path (conj new-element-path :name)}))})))
 
 (defn remove-element
   [db path]
@@ -44,8 +42,7 @@
           new-siblings (vec (concat siblings children))]
       {:db (-> new-db
                (assoc-in parent-types-path new-siblings)
-               (tree/select-node (:path parent-context) true))
-       :dispatch-n [[::submenu/close-all]]})))
+               (tree/select-node (:path parent-context) true))})))
 
 (defn add-element
   [db elements-path value]
