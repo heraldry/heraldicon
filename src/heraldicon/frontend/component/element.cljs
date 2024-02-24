@@ -120,14 +120,16 @@
 (macros/reg-event-fx ::move-general
   (fn [{:keys [db]} [_
                      {value-path :path}
-                     {target-path :path}]]
+                     {target-path :path}
+                     {:keys [no-select?]}]]
     (let [[new-db value] (remove-element db value-path)
           adjusted-target-path (adjust-path-after-removal target-path value-path)
           [new-db new-value-path] (insert-element new-db adjusted-target-path value)]
       {:db (-> new-db
                (tree/element-removed value-path)
                (tree/element-inserted new-value-path)
-               (tree/select-node new-value-path true))})))
+               (cond->
+                 (not no-select?) (tree/select-node new-value-path true)))})))
 
 (macros/reg-event-fx ::remove-general
   (fn [{:keys [db]} [_ {:keys [path]}]]
