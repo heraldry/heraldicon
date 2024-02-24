@@ -118,9 +118,9 @@
             (-> context :path drop-last last (= :charges)) (c/-- context 4)
             (-> context :path last int?) (c/-- context 2)
             (-> context :path drop-last last (= :cottising)) (parent (c/-- context 2))
-            :else (do
-                    (log/warn :not-implemented "parent" context)
-                    nil))
+            :else nil #_(do
+                          (log/warn :not-implemented "parent" context)
+                          nil))
           c/remove-keys-for-children))
 
 (defn- resolve-context [context]
