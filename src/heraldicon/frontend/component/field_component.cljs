@@ -27,42 +27,50 @@
      (drop-last drop-node-path)))
 
 (defn drop-options-fn
-  [dragged-node-path _dragged-node-type
+  [dragged-node-path dragged-node-type
    drop-node-path drop-node-type
    drop-node-open?]
-  (cond-> (cond
-            (inside-own-subtree?
-             dragged-node-path
-             drop-node-path) nil
+  (let [sibling? (sibling?
+                  dragged-node-path
+                  drop-node-path)]
+    (cond-> (cond
+              (inside-own-subtree?
+               dragged-node-path
+               drop-node-path) nil
 
-            (not (component?
-                  dragged-node-path)) nil
+              (not (component?
+                    dragged-node-path)) nil
 
-            (parent?
-             dragged-node-path
-             drop-node-path) #{:above :below}
+              (and (isa? dragged-node-type
+                         :heraldry/shield-separator)
+                   (not sibling?)) nil
 
-            (sibling?
-             dragged-node-path
-             drop-node-path) (let [current-index (last dragged-node-path)
-                                   new-index (last drop-node-path)]
-                               (cond
-                                 (= new-index
-                                    (dec current-index)) #{:above :inside}
+              (parent?
+               dragged-node-path
+               drop-node-path) #{:above :below}
 
-                                 (= new-index
-                                    (inc current-index)) #{:below :inside}
+              sibling? (let [current-index (last dragged-node-path)
+                             new-index (last drop-node-path)]
+                         (cond
+                           (= new-index
+                              (dec current-index)) #{:above :inside}
 
-                                 :else #{:above :inside :below}))
+                           (= new-index
+                              (inc current-index)) #{:below :inside}
 
-            :else #{:above :inside :below})
-    drop-node-open? (disj :below)
+                           :else #{:above :inside :below}))
 
-    (isa? drop-node-type
-          :heraldry/charge-group) (disj :inside)
+              :else #{:above :inside :below})
+      drop-node-open? (disj :below)
 
-    (isa? drop-node-type
-          :heraldry/semy) (disj :inside)))
+      (isa? drop-node-type
+            :heraldry/charge-group) (disj :inside)
+
+      (isa? drop-node-type
+            :heraldry/semy) (disj :inside)
+
+      (isa? dragged-node-type
+            :heraldry/shield-separator) (disj :inside))))
 
 (defn drop-fn
   [dragged-node-context drop-node-context where]
