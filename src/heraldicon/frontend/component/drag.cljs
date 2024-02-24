@@ -11,6 +11,11 @@
       (isa? type :heraldry/charge-group)
       (isa? type :heraldry/semy)))
 
+(defn parent?
+  [drag-node drop-node]
+  (= (:path (:parent-context drag-node))
+     (:path (:context drop-node))))
+
 (defn- drop-allowed?
   [drag-node drop-node]
   (let [drag-type (:type drag-node)
@@ -23,6 +28,11 @@
 
         (and (isa? drag-type :heraldry/helm)
              (isa? drop-type :heraldry/helms))
+
+        (and (isa? drag-type :heraldry/shield-separator)
+             (parent? drag-node drop-node)
+             (or (isa? drop-type :heraldry/helm)
+                 (isa? drop-type :heraldry/ornaments)))
 
         (and (field-component? drag-type)
              (or (isa? drop-type :heraldry/field)
@@ -66,8 +76,7 @@
   (let [drag-path (:path (:context drag-node))
         drop-path (:path (:context drop-node))]
     (when-not (inside-own-subtree? drag-path drop-path)
-      (let [inside? (and (not= (:path (:parent-context drag-node))
-                               drop-path)
+      (let [inside? (and (not (parent? drag-node drop-node))
                          (drop-allowed? drag-node drop-node))
             allowed-in-parent? (drop-allowed? drag-node (parent-node drop-node))
             in-collection? (int? (last drop-path))
@@ -115,4 +124,6 @@
                          :below (-> drop-node-context c/-- (c/++ (inc new-index))))]
     (when target-context
       (rf/dispatch [::component.element/move-general drag-node-context target-context
-                    {:no-select? (#{:heraldry/helm} (:type drag-node))}]))))
+                    {:no-select? (#{:heraldry/helm
+                                    :heraldry/shield-separator}
+                                  (:type drag-node))}]))))
