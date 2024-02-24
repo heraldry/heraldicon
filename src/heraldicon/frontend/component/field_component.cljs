@@ -27,7 +27,9 @@
      (drop-last drop-node-path)))
 
 (defn drop-options-fn
-  [dragged-node-path drop-node-path drop-node-open?]
+  [dragged-node-path _dragged-node-type
+   drop-node-path drop-node-type
+   drop-node-open?]
   (cond-> (cond
             (inside-own-subtree?
              dragged-node-path
