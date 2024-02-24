@@ -48,16 +48,9 @@
                         (let [ornament-context (c/++ elements-context idx)
                               removable? @(rf/subscribe [::component.element/removable? ornament-context])]
                           {:context ornament-context
-                           :buttons (cond-> [{:icon "fas fa-chevron-up"
-                                              :disabled? (zero? idx)
-                                              :title :string.tooltip/move-down
-                                              :handler #(rf/dispatch [::component.element/move ornament-context (dec idx)])}
-                                             {:icon "fas fa-chevron-down"
-                                              :disabled? (= idx (dec num-elements))
-                                              :title :string.tooltip/move-up
-                                              :handler #(rf/dispatch [::component.element/move ornament-context (inc idx)])}]
-                                      removable? (conj {:icon "far fa-trash-alt"
-                                                        :remove? true
-                                                        :title :string.tooltip/remove
-                                                        :handler #(rf/dispatch [::component.element/remove ornament-context
-                                                                                shield-separator/remove-element-options])}))}))))}))
+                           :buttons (when removable?
+                                      [{:icon "far fa-trash-alt"
+                                        :remove? true
+                                        :title :string.tooltip/remove
+                                        :handler #(rf/dispatch [::component.element/remove-general ornament-context
+                                                                shield-separator/remove-element-options])}])}))))}))
