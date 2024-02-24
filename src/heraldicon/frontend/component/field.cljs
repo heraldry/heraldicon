@@ -92,6 +92,29 @@
      :display-selected-item? false
      :tooltip :string.tooltip/load-field-from-arms]]])
 
+(defn drop-options-fn
+  [dragged-node-path drop-node-path _drop-node-open?]
+  (when (not= (take (count dragged-node-path) drop-node-path)
+              dragged-node-path)
+    (let [component? (= (last (drop-last dragged-node-path))
+                        :components)
+          parent? (= (drop-last 2 dragged-node-path)
+                     drop-node-path)]
+      (when (and component?
+                 (not parent?))
+        #{:inside}))))
+
+(defn drop-fn
+  [dragged-node-context drop-node-context _where]
+  (let [target-context (cond-> drop-node-context
+                         (-> drop-node-context
+                             :path
+                             last
+                             (not= :field)) (c/++ :field))]
+    (rf/dispatch [::component.element/move-general
+                  dragged-node-context
+                  (c/++ target-context :components 100000)])))
+
 (defmethod component/node :heraldry/field [context]
   (let [field-type (interface/get-raw-data (c/++ context :type))
         tincture (interface/get-sanitized-data (c/++ context :tincture))
@@ -118,6 +141,8 @@
               :selected (static/static-url
                          (str "/svg/field-type-" (name field-type) "-selected.svg"))})
      :validation (validation/validate-field context)
+     :drop-options-fn drop-options-fn
+     :drop-fn drop-fn
      :buttons (when-not charge-preview?
                 [{:icon "fas fa-plus"
                   :title :string.button/add
