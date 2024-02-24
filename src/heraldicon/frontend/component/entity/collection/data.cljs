@@ -29,7 +29,7 @@
                            :buttons [{:icon "far fa-trash-alt"
                                       :remove? true
                                       :title :string.tooltip/remove
-                                      :handler #(rf/dispatch [::component.element/remove element-context])}]})))
+                                      :handler #(rf/dispatch [::component.element/remove-general element-context])}]})))
                  vec)}))
 
 (defmethod component/form :heraldicon.entity.collection/data [_context]
