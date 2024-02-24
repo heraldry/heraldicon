@@ -77,6 +77,11 @@
   [_drag-node _drop-node]
   true)
 
+(defmethod drop-allowed? [:heraldry/helm
+                          :heraldry/helms]
+  [_drag-node _drop-node]
+  true)
+
 (defmulti drop-inside-target-context
   (fn [drag-node drop-node]
     [(:type drag-node) (:type drop-node)]))
@@ -91,7 +96,8 @@
                          :above (-> drop-node-context c/-- (c/++ new-index))
                          :inside (drop-inside-target-context drag-node drop-node)
                          :below (-> drop-node-context c/-- (c/++ (inc new-index))))]
-    (rf/dispatch [::component.element/move-general drag-node-context target-context])))
+    (rf/dispatch [::component.element/move-general drag-node-context target-context
+                  {:no-select? (#{:heraldry/helm} (:type drag-node))}])))
 
 (defmethod drop-inside-target-context [:heraldicon/charge-type
                                        :heraldicon/charge-type]
