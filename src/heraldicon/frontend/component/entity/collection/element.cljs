@@ -37,10 +37,10 @@
 (defn drop-fn
   [dragged-node-context drop-node-context where]
   (let [new-index (last (:path drop-node-context))
-        new-index (case where
-                    :above new-index
-                    :below (inc new-index))]
-    (rf/dispatch [::component.element/move dragged-node-context new-index])))
+        target-context (case where
+                         :above (-> drop-node-context c/-- (c/++ new-index))
+                         :below (-> drop-node-context c/-- (c/++ (inc new-index))))]
+    (rf/dispatch [::component.element/move-general dragged-node-context target-context])))
 
 (defmethod component/node :heraldicon.entity.collection/element [{:keys [path] :as context}]
   (let [name (interface/get-raw-data (c/++ context :name))
