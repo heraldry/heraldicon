@@ -46,7 +46,7 @@
            {:default url
             :selected url})
    :validation (validation/validate-charge context)
-   :draggable? true
+   :draggable? (field-component/component? (:path context))
    :drop-options-fn field-component/drop-options-fn
    :drop-fn field-component/drop-fn
    :nodes [{:context (c/++ context :field)}]})
