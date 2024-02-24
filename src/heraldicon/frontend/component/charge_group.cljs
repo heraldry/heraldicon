@@ -309,7 +309,7 @@
                             [:a (if (< num-strips 2)
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::component.element/remove strip-context]))})
+                                              #(rf/dispatch [::component.element/remove-general strip-context]))})
                              [:i.far.fa-trash-alt]]]])))
                  (range num-strips))]]))
 
