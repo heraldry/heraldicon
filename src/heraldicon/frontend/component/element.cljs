@@ -124,9 +124,12 @@
     (let [[new-db value] (remove-element db value-path)
           adjusted-target-path (adjust-path-after-removal target-path value-path)
           [new-db new-value-path] (insert-element new-db adjusted-target-path value)]
-      {:db (tree/select-node new-db new-value-path true)})))
+      {:db (-> new-db
+               (tree/element-removed value-path)
+               (tree/element-inserted new-value-path)
+               (tree/select-node new-value-path true))})))
 
 (macros/reg-event-fx ::remove-general
   (fn [{:keys [db]} [_ {:keys [path]}]]
     (let [[new-db _value] (remove-element db path)]
-      {:db new-db})))
+      {:db (tree/element-removed new-db path)})))

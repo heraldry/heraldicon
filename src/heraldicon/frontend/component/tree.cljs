@@ -527,3 +527,88 @@
                                                      (when new-path
                                                        [new-path flag]))))
                                            flags)))))
+
+(defn- adjust-component-path-after-element-removed [path elements-path index]
+  (let [elements-path-size (count elements-path)
+        path-base (when (-> path count (>= elements-path-size))
+                    (subvec path 0 elements-path-size))
+        path-rest (when (-> path count (>= elements-path-size))
+                    (subvec path (count elements-path)))
+        current-index (first path-rest)
+        path-rest (when (-> path-rest count (> 1))
+                    (subvec path-rest 1))]
+    (if (not= path-base elements-path)
+      path
+      (cond
+        (= current-index index) nil
+        (> current-index index) (vec (concat path-base
+                                             [(dec current-index)]
+                                             path-rest))
+        :else path))))
+
+(defn element-removed [db path]
+  (let [elements-path (vec (drop-last path))
+        index (last path)]
+    (-> db
+        (update-in active-node-path
+                   adjust-component-path-after-element-removed elements-path index)
+        (update-in collection.element/highlighted-element-path
+                   adjust-component-path-after-element-removed elements-path index)
+        (update-in submenu/open?-path
+                   (fn [flags]
+                     (into {}
+                           (comp (filter first)
+                                 (map (fn [[k v]]
+                                        [(adjust-component-path-after-element-removed
+                                          k elements-path index) v])))
+                           flags)))
+        (update-in node-flag-db-path (fn [flags]
+                                       (into {}
+                                             (keep (fn [[path flag]]
+                                                     (let [new-path (adjust-component-path-after-element-removed
+                                                                     path elements-path index)]
+                                                       (when new-path
+                                                         [new-path flag]))))
+                                             flags))))))
+
+(defn- adjust-component-path-after-element-inserted [path elements-path index]
+  (let [elements-path-size (count elements-path)
+        path-base (when (-> path count (>= elements-path-size))
+                    (subvec path 0 elements-path-size))
+        path-rest (when (-> path count (>= elements-path-size))
+                    (subvec path (count elements-path)))
+        current-index (first path-rest)
+        path-rest (when (-> path-rest count (> 1))
+                    (subvec path-rest 1))]
+    (if (not= path-base elements-path)
+      path
+      (cond
+        (<= index current-index index) (vec (concat path-base
+                                                    [(inc current-index)]
+                                                    path-rest))
+        :else path))))
+
+(defn element-inserted [db path]
+  (let [elements-path (vec (drop-last path))
+        index (last path)]
+    (-> db
+        (update-in active-node-path
+                   adjust-component-path-after-element-inserted elements-path index)
+        (update-in collection.element/highlighted-element-path
+                   adjust-component-path-after-element-inserted elements-path index)
+        (update-in submenu/open?-path
+                   (fn [flags]
+                     (into {}
+                           (comp (filter first)
+                                 (map (fn [[k v]]
+                                        [(adjust-component-path-after-element-inserted
+                                          k elements-path index) v])))
+                           flags)))
+        (update-in node-flag-db-path (fn [flags]
+                                       (into {}
+                                             (keep (fn [[path flag]]
+                                                     (let [new-path (adjust-component-path-after-element-inserted
+                                                                     path elements-path index)]
+                                                       (when new-path
+                                                         [new-path flag]))))
+                                             flags))))))
