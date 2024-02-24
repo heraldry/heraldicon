@@ -8,6 +8,8 @@
    [heraldicon.util.vec :as vec]
    [re-frame.core :as rf]))
 
+(def APPEND-INDEX 10000)
+
 (macros/reg-event-fx ::add
   (fn [{:keys [db]} [_ {:keys [path]} value {:keys [post-fn selected-element-path-fn]}]]
     (let [elements (-> (get-in db path)

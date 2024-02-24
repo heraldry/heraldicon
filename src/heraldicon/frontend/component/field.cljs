@@ -4,6 +4,7 @@
    [heraldicon.frontend.blazonry-editor.core :as blazonry-editor]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.element :as component.element]
+   [heraldicon.frontend.component.field-component :as field-component]
    [heraldicon.frontend.element.arms-reference-select :as arms-reference-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.tincture-select :as tincture-select]
@@ -92,17 +93,25 @@
      :display-selected-item? false
      :tooltip :string.tooltip/load-field-from-arms]]])
 
+(defn- parent?
+  [dragged-node-path drop-node-path]
+  (= (drop-last 2 dragged-node-path)
+     drop-node-path))
+
 (defn drop-options-fn
   [dragged-node-path drop-node-path _drop-node-open?]
-  (when (not= (take (count dragged-node-path) drop-node-path)
-              dragged-node-path)
-    (let [component? (= (last (drop-last dragged-node-path))
-                        :components)
-          parent? (= (drop-last 2 dragged-node-path)
-                     drop-node-path)]
-      (when (and component?
-                 (not parent?))
-        #{:inside}))))
+  (cond
+    (field-component/inside-own-subtree?
+     dragged-node-path drop-node-path) nil
+
+    (not (field-component/component?
+          dragged-node-path)) nil
+
+    (parent?
+     dragged-node-path
+     drop-node-path) nil
+
+    :else #{:inside}))
 
 (defn drop-fn
   [dragged-node-context drop-node-context _where]
@@ -113,7 +122,7 @@
                              (not= :field)) (c/++ :field))]
     (rf/dispatch [::component.element/move-general
                   dragged-node-context
-                  (c/++ target-context :components 100000)])))
+                  (c/++ target-context :components component.element/APPEND-INDEX)])))
 
 (defmethod component/node :heraldry/field [context]
   (let [field-type (interface/get-raw-data (c/++ context :type))
