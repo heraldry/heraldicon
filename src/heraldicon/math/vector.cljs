@@ -180,15 +180,24 @@
 (def ^:private path-intersection
   (memoize
    (fn path-intersection [path1 path2]
-     (let [p1 (new Path path1)
-           p2 (new Path path2)]
-       (into []
-             (map (fn [^js/Object location]
-                    (assoc (Vector. (.. location -point -x)
-                                    (.. location -point -y))
-                           :t1 (/ (.. location -offset) (.-length p1))
-                           :t2 (/ (.. location -intersection -offset) (.-length p2)))))
-             (.getIntersections p1 p2))))))
+     (try
+       (let [p1 (new Path path1)
+             p2 (new Path path2)]
+         (into []
+               (map (fn [^js/Object location]
+                      (assoc (Vector. (.. location -point -x)
+                                      (.. location -point -y))
+                             :t1 (/ (.. location -offset) (.-length p1))
+                             :t2 (/ (.. location -intersection -offset) (.-length p2)))))
+               (.getIntersections p1 p2)))
+       (catch :default _
+         ; TODO: This is a hack, sometimes moving ordinaries around will result in
+         ; a temporary situation where the moved ordinary is still rendered in the wrong
+         ; place, with certain properties becoming nil or otherwise unreliable.
+         ; In that case these paths might contain "Infinity", which would crash the program,
+         ; but a frame afterwards everything is updated properly and all is well.
+         ; So for now catch this error and assume there's no intersection.
+         [])))))
 
 (defn angle-to-point ^js/Number [^Vector v1 ^Vector v2]
   (let [d (sub v2 v1)
