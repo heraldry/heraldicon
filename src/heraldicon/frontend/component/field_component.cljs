@@ -38,12 +38,6 @@
             (not (component?
                   dragged-node-path)) nil
 
-            (= drop-node-type
-               :heraldry/semy) nil
-
-            (isa? drop-node-type
-                  :heraldry/charge-group) nil
-
             (parent?
              dragged-node-path
              drop-node-path) #{:above :below}
@@ -62,7 +56,13 @@
                                  :else #{:above :inside :below}))
 
             :else #{:above :inside :below})
-    drop-node-open? (disj :below)))
+    drop-node-open? (disj :below)
+
+    (isa? drop-node-type
+          :heraldry/charge-group) (disj :inside)
+
+    (isa? drop-node-type
+          :heraldry/semy) (disj :inside)))
 
 (defn drop-fn
   [dragged-node-context drop-node-context where]
