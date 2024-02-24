@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.element :as component.element]
+   [heraldicon.frontend.component.field-component :as field-component]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.charge-group-preset-select :as charge-group-preset-select]
    [heraldicon.frontend.element.core :as element]
@@ -324,6 +325,9 @@
                       (str "/svg/charge-group-preset-three.svg"))
             :selected (static/static-url
                        (str "/svg/charge-group-preset-three-selected.svg"))}
+     :draggable? true
+     :drop-options-fn field-component/drop-options-fn
+     :drop-fn field-component/drop-fn
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :menu [{:title :string.entity/charge
