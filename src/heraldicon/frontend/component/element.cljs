@@ -38,21 +38,6 @@
                       (isa? added-type :heraldicon.entity.collection/element) [::submenu/open (conj new-element-path :reference)]
                       :else nil)]})))
 
-(macros/reg-event-db ::remove
-  (fn [db [_ {:keys [path]} {:keys [post-fn]}]]
-    (let [elements-path (-> path drop-last vec)
-          index (last path)
-          elements (vec (get-in db elements-path))
-          num-elements (count elements)]
-      (if (>= index num-elements)
-        db
-        (-> db
-            (update-in elements-path (fn [elements]
-                                       (cond-> (vec (concat (subvec elements 0 index)
-                                                            (subvec elements (inc index))))
-                                         post-fn post-fn)))
-            (tree/element-order-changed elements-path index nil))))))
-
 ; TODO: deal with path changes
 (macros/reg-event-db ::move
   (fn [db [_ {:keys [path]} new-index]]
