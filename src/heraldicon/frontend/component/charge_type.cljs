@@ -36,7 +36,9 @@
                (tree/select-node (:path parent-context) true))})))
 
 (defn drop-options-fn
-  [dragged-node-path drop-node-path drop-node-open?]
+  [dragged-node-path _dragged-node-type
+   drop-node-path _drop-node-type
+   drop-node-open?]
   (when (not= (take (count dragged-node-path) drop-node-path)
               dragged-node-path)
     (let [root? (= drop-node-path frontend.charge-types/form-db-path)

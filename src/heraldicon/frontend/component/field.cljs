@@ -99,7 +99,9 @@
      drop-node-path))
 
 (defn drop-options-fn
-  [dragged-node-path drop-node-path _drop-node-open?]
+  [dragged-node-path _dragged-node-type
+   drop-node-path _drop-node-type
+   _drop-node-open?]
   (cond
     (field-component/inside-own-subtree?
      dragged-node-path drop-node-path) nil

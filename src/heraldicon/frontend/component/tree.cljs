@@ -11,6 +11,7 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.component :as component]
+   [heraldicon.interface :as interface]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
@@ -32,7 +33,7 @@
 (def ^:private dragged-over-node-path
   [:ui :component-tree :dragged-over-node])
 
-(def ^:private dragged-node-context
+(def ^:private dragged-node
   (atom nil))
 
 (defn node-data [{:keys [path] :as context}]
@@ -99,9 +100,14 @@
       dragged-over-data)))
 
 (defn- drop-location
-  [event drop-options-fn dragged-node-path dragged-over-node-path open?]
+  [event drop-options-fn
+   dragged-node-path dragged-node-type
+   dragged-over-node-path dragged-over-node-type
+   open?]
   (when drop-options-fn
-    (let [drop-options (drop-options-fn dragged-node-path dragged-over-node-path open?)]
+    (let [drop-options (drop-options-fn dragged-node-path dragged-node-type
+                                        dragged-over-node-path dragged-over-node-type
+                                        open?)]
       (calculate-drop-area event drop-options))))
 
 (defn node [{:keys [path] :as context} & {:keys [title
@@ -123,6 +129,7 @@
                 draggable?
                 drop-options-fn
                 drop-fn]} (node-data context)
+        node-type (interface/get-raw-data (c/++ context :type))
         open? (or force-open? open?)
         openable? (-> nodes count pos?)
         editing-node? @(rf/subscribe [::editing-node? editable-path])
@@ -152,29 +159,35 @@
          :draggable draggable?
          :on-drag-over (fn [event]
                          (when-let [where (drop-location event drop-options-fn
-                                                         (:path @dragged-node-context)
+                                                         (:path (:context @dragged-node))
+                                                         (:type @dragged-node)
                                                          path
+                                                         node-type
                                                          (and openable?
                                                               open?))]
                            (.preventDefault event)
                            (rf/dispatch [:set dragged-over-node-path {:context context
+                                                                      :type node-type
                                                                       :where where}])))
          :on-drag-leave (fn [_event]
                           (rf/dispatch [:set dragged-over-node-path nil]))
          :on-drag-start (fn [_event]
-                          (reset! dragged-node-context context))
+                          (reset! dragged-node {:context context
+                                                :type node-type}))
          :on-drag-end (fn [_event]
-                        (reset! dragged-node-context nil)
+                        (reset! dragged-node nil)
                         (rf/dispatch [:set dragged-over-node-path nil]))
          :on-drop (fn [event]
                     (when-let [where (drop-location event
                                                     drop-options-fn
-                                                    (:path @dragged-node-context)
+                                                    (:path (:context @dragged-node))
+                                                    (:type @dragged-node)
                                                     path
+                                                    node-type
                                                     (and openable?
                                                          open?))]
                       (when drop-fn
-                        (drop-fn @dragged-node-context context where))))
+                        (drop-fn (:context @dragged-node) context where))))
 
          :on-click #(do
                       (when (or (not open?)
