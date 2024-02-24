@@ -147,18 +147,10 @@
                          (map (fn [idx]
                                 (let [component-context (c/++ components-context idx)]
                                   {:context component-context
-                                   :buttons [{:icon "fas fa-chevron-up"
-                                              :disabled? (zero? idx)
-                                              :title :string.tooltip/move-down
-                                              :handler #(rf/dispatch [::component.element/move component-context (dec idx)])}
-                                             {:icon "fas fa-chevron-down"
-                                              :disabled? (= idx (dec num-components))
-                                              :title :string.tooltip/move-up
-                                              :handler #(rf/dispatch [::component.element/move component-context (inc idx)])}
-                                             {:icon "far fa-trash-alt"
+                                   :buttons [{:icon "far fa-trash-alt"
                                               :remove? true
                                               :title :string.tooltip/remove
-                                              :handler #(rf/dispatch [::component.element/remove component-context])}]})))
+                                              :handler #(rf/dispatch [::component.element/remove-general component-context])}]})))
                          vec))}))
 
 (defmethod component/form :heraldry/field [_context]
