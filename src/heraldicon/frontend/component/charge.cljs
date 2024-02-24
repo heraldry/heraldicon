@@ -38,12 +38,19 @@
      :manual-blazon
      :ignore-layer-separator?])])
 
-(defn component?
-  [dragged-node-path]
-  (-> dragged-node-path
+(defn- component?
+  [drag-path]
+  (-> drag-path
       drop-last
       last
       (= :components)))
+
+(defn- element?
+  [drag-path]
+  (-> drag-path
+      drop-last
+      last
+      (= :elements)))
 
 (defmethod component/node :heraldry/charge [context]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
@@ -53,7 +60,8 @@
            {:default url
             :selected url})
    :validation (validation/validate-charge context)
-   :draggable? (component? (:path context))
+   :draggable? ((some-fn component? element?)
+                (:path context))
    :drop-options-fn drag/drop-options
    :drop-fn drag/drop-fn
    :nodes [{:context (c/++ context :field)}]})

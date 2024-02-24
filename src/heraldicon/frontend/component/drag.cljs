@@ -37,7 +37,12 @@
         (and (field-component? drag-type)
              (or (isa? drop-type :heraldry/field)
                  (isa? drop-type :heraldry/ordinary)
-                 (isa? drop-type :heraldry/charge))))))
+                 (isa? drop-type :heraldry/charge)))
+
+        (and (or (isa? drag-type :heraldry/motto)
+                 (isa? drag-type :heraldry/charge)
+                 (isa? drag-type :heraldry/charge-group))
+             (isa? drop-type :heraldry/ornaments)))))
 
 (defn- parent-node
   [{:keys [parent-context parent-type]

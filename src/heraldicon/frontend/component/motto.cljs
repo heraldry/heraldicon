@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.drag :as drag]
    [heraldicon.frontend.component.ribbon :as ribbon]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
@@ -64,7 +65,10 @@
         [ribbon/segments-form ribbon-context]]))])
 
 (defmethod component/node :heraldry/motto [{:keys [path]}]
-  {:title @(rf/subscribe [::name path])})
+  {:title @(rf/subscribe [::name path])
+   :draggable? true
+   :drop-options-fn drag/drop-options
+   :drop-fn drag/drop-fn})
 
 (defmethod component/form :heraldry/motto [_context]
   form)
