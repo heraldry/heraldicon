@@ -123,6 +123,19 @@
                           nil))
           c/remove-keys-for-children))
 
+(defn parent-node-context [context]
+  (some-> (cond
+            ;; TODO: can all this be done without inspecting the path?
+            (-> context :path last (= :coat-of-arms)) nil
+            (-> context :path last (= :field)) (c/-- context)
+            (-> context :path drop-last last (= :charges)) (c/-- context 2)
+            (-> context :path last int?) (c/-- context 2)
+            (-> context :path drop-last last (= :cottising)) (parent (c/-- context 2))
+            :else nil #_(do
+                          (log/warn :not-implemented "parent" context)
+                          nil))
+          c/remove-keys-for-children))
+
 (defn- resolve-context [context]
   (if-let [path-redirect (c/get-key context :path-redirect)]
     ;; TODO: clean up old path's component data?

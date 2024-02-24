@@ -4,7 +4,6 @@
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.drag :as drag]
    [heraldicon.frontend.component.element :as component.element]
-   [heraldicon.frontend.component.field-component :as field-component]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.interface :as interface]

@@ -136,7 +136,7 @@
         node-type (interface/get-raw-data (c/++ context :type))
         drag-info (when (or draggable?
                             drop-fn)
-                    (let [parent-context (interface/parent context)
+                    (let [parent-context (interface/parent-node-context context)
                           parent-type (interface/get-raw-data (c/++ parent-context :type))]
                       {:context context
                        :type node-type

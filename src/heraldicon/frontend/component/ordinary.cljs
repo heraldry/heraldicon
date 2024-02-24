@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.cottise :as cottise]
-   [heraldicon.frontend.component.field-component :as field-component]
+   [heraldicon.frontend.component.drag :as drag]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.macros :as macros]
@@ -155,8 +155,8 @@
                 :disabled? (empty? menu)
                 :menu menu}]
      :draggable? true
-     :drop-options-fn field-component/drop-options-fn
-     :drop-fn field-component/drop-fn
+     :drop-options-fn drag/drop-options
+     :drop-fn drag/drop-fn
      :nodes (cond-> [{:context (c/++ context :field)}]
               cottise-2? (conj {:context cottise-2-context
                                 :buttons [{:icon "far fa-trash-alt"
