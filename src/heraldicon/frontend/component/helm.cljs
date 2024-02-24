@@ -68,18 +68,10 @@
                         (let [component-context (c/++ components-context idx)
                               removable? @(rf/subscribe [::component.element/removable? component-context])]
                           {:context component-context
-                           :buttons (cond-> [{:icon "fas fa-chevron-up"
-                                              :disabled? (zero? idx)
-                                              :title :string.tooltip/move-down
-                                              :handler #(rf/dispatch [::component.element/move component-context (dec idx)])}
-                                             {:icon "fas fa-chevron-down"
-                                              :disabled? (= idx (dec num-components))
-                                              :title :string.tooltip/move-up
-                                              :handler #(rf/dispatch [::component.element/move component-context (inc idx)])}]
-                                      removable? (conj
-                                                  {:icon "far fa-trash-alt"
-                                                   :remove? true
-                                                   :title :string.tooltip/remove
-                                                   :handler #(rf/dispatch [::component.element/remove component-context
-                                                                           shield-separator/remove-element-options])}))})))
+                           :buttons (when removable?
+                                      [{:icon "far fa-trash-alt"
+                                        :remove? true
+                                        :title :string.tooltip/remove
+                                        :handler #(rf/dispatch [::component.element/remove component-context
+                                                                shield-separator/remove-element-options])}])})))
                  vec)}))
