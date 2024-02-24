@@ -61,7 +61,7 @@
                        :buttons [{:icon "fas fa-sliders-h"
                                   :title :string.user.button/change
                                   :handler #(rf/dispatch [::override-part-reference path])}]})
-                    (cond-> (component/node (c/++ context :field))
+                    (cond-> (assoc (component/node (c/++ context :field)) :draggable? true)
                       (non-mandatory-part-of-parent? context)
                       (update :buttons conj {:icon "fas fa-undo"
                                              :title "Reset"

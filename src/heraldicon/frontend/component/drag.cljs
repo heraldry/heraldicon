@@ -36,8 +36,13 @@
 
         (and (field-component? drag-type)
              (or (isa? drop-type :heraldry/field)
+                 (isa? drop-type :heraldry/subfield)
                  (isa? drop-type :heraldry/ordinary)
                  (isa? drop-type :heraldry/charge)))
+
+        (and (isa? drag-type :heraldry/subfield)
+             (isa? drop-type :heraldry/field)
+             (parent? drag-node drop-node))
 
         (and (or (isa? drag-type :heraldry/motto)
                  (isa? drag-type :heraldry/charge)
@@ -79,11 +84,16 @@
 (defn drop-options
   [drag-node drop-node]
   (let [drag-path (:path (:context drag-node))
-        drop-path (:path (:context drop-node))]
+        drop-path (:path (:context drop-node))
+        drag-type (:type drag-node)
+        drop-type (:type drop-node)]
     (when-not (inside-own-subtree? drag-path drop-path)
       (let [inside? (and (not (parent? drag-node drop-node))
                          (drop-allowed? drag-node drop-node))
-            allowed-in-parent? (drop-allowed? drag-node (parent-node drop-node))
+            allowed-in-parent? (and (drop-allowed? drag-node (parent-node drop-node))
+                                    (or (not (isa? drop-type :heraldry/subfield))
+                                        (and (isa? drag-type :heraldry/subfield)
+                                             (isa? drop-type :heraldry/subfield))))
             in-collection? (int? (last drop-path))
             allowed-edges (allowed-edges drag-path drop-path)
             above? (and allowed-in-parent?
@@ -110,6 +120,10 @@
       (and (field-component? drag-type)
            (isa? drop-type :heraldry/field)) (c/++ (:context drop-node)
                                                    :components component.element/APPEND-INDEX)
+
+      (and (field-component? drag-type)
+           (isa? drop-type :heraldry/subfield)) (c/++ (:context drop-node)
+                                                      :field :components component.element/APPEND-INDEX)
 
       (and (field-component? drag-type)
            (or (isa? drop-type :heraldry/ordinary)
