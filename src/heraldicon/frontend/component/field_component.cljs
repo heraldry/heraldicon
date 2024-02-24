@@ -38,6 +38,9 @@
             (not (component?
                   dragged-node-path)) nil
 
+            (= drop-node-type
+               :heraldry/semy) nil
+
             (parent?
              dragged-node-path
              drop-node-path) #{:above :below}
