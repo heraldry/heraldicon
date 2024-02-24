@@ -4,6 +4,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.charge-types :as frontend.charge-types]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
@@ -20,21 +21,10 @@
                (assoc-in types-path elements)
                (tree/set-edit-node {:path (conj new-element-path :name)}))})))
 
-(defn remove-element
-  [db path]
-  (let [elements-path (vec (drop-last path))
-        index (last path)
-        value (get-in db path)
-        elements (get-in db elements-path)
-        new-elements (vec (concat (subvec elements 0 index)
-                                  (subvec elements (inc index))))]
-    [(assoc-in db elements-path new-elements)
-     value]))
-
 (macros/reg-event-fx ::remove
   (fn [{:keys [db]} [_ {:keys [path]
                         :as context}]]
-    (let [[new-db value] (remove-element db path)
+    (let [[new-db value] (component.element/remove-element db path)
           children (:types value)
           parent-context (c/-- context 2)
           parent-types-path (:path (c/++ parent-context :types))
@@ -42,41 +32,8 @@
           new-siblings (vec (concat siblings children))]
       {:db (-> new-db
                (assoc-in parent-types-path new-siblings)
+               (tree/element-removed path)
                (tree/select-node (:path parent-context) true))})))
-
-(defn add-element
-  [db elements-path value]
-  (let [elements (get-in db elements-path)
-        new-elements (vec (conj elements value))
-        index (dec (count new-elements))]
-    [(assoc-in db elements-path new-elements)
-     (conj elements-path index)]))
-
-(defn adjust-path-after-removal
-  [path removed-path]
-  ; if the removed path is longer, then its removal can't affected the path
-  (if (<= (count removed-path)
-          (count path))
-    (let [index-pos (dec (count removed-path))
-          path-start (take index-pos path)
-          removal-index (last removed-path)
-          path-index (get path index-pos)]
-      (if (and (= path-start (drop-last removed-path))
-               (< removal-index path-index))
-        (vec (concat path-start [(dec path-index)] (drop (inc index-pos) path)))
-
-        path))
-
-    path))
-
-(macros/reg-event-fx ::move
-  (fn [{:keys [db]} [_
-                     {value-path :path}
-                     {target-path :path}]]
-    (let [[new-db value] (remove-element db value-path)
-          adjusted-target-path (adjust-path-after-removal target-path value-path)
-          [new-db new-value-path] (add-element new-db adjusted-target-path value)]
-      {:db (tree/select-node new-db new-value-path true)})))
 
 (defn drop-options-fn
   [dragged-node-path drop-node-path drop-node-open?]
@@ -99,8 +56,8 @@
   [dragged-node-context drop-node-context where]
   (let [target-context (cond-> drop-node-context
                          (not= where :inside) (c/-- 2))
-        target-context (c/++ target-context :types)]
-    (rf/dispatch [::move dragged-node-context target-context])))
+        target-context (c/++ target-context :types component.element/APPEND-INDEX)]
+    (rf/dispatch [::component.element/move-general dragged-node-context target-context])))
 
 (rf/reg-sub-raw ::all-subtypes-count
   (fn [_app-db [_ context]]
