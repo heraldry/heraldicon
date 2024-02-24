@@ -4,6 +4,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.charge-types :as frontend.charge-types]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.drag :as drag]
    [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.macros :as macros]
@@ -34,32 +35,6 @@
                (assoc-in parent-types-path new-siblings)
                (tree/element-removed path)
                (tree/select-node (:path parent-context) true))})))
-
-(defn drop-options-fn
-  [dragged-node-path _dragged-node-type
-   drop-node-path _drop-node-type
-   drop-node-open?]
-  (when (not= (take (count dragged-node-path) drop-node-path)
-              dragged-node-path)
-    (let [root? (= drop-node-path frontend.charge-types/form-db-path)
-          siblings? (= (drop-last dragged-node-path)
-                       (drop-last drop-node-path))
-          parent? (= (drop-last 2 dragged-node-path)
-                     drop-node-path)]
-      (cond-> (cond
-                root? (when-not parent?
-                        #{:inside})
-                parent? #{:above :below}
-                siblings? #{:inside}
-                :else #{:above :inside :below})
-        drop-node-open? (disj :below)))))
-
-(defn drop-fn
-  [dragged-node-context drop-node-context where]
-  (let [target-context (cond-> drop-node-context
-                         (not= where :inside) (c/-- 2))
-        target-context (c/++ target-context :types component.element/APPEND-INDEX)]
-    (rf/dispatch [::component.element/move-general dragged-node-context target-context])))
 
 (rf/reg-sub-raw ::all-subtypes-count
   (fn [_app-db [_ context]]
@@ -108,8 +83,8 @@
               (not type-id) (str " *new*")
               (duplicate? type-name) (str " *duplicate*"))
      :draggable? (not root?)
-     :drop-options-fn drop-options-fn
-     :drop-fn drop-fn
+     :drop-options-fn drag/drop-options
+     :drop-fn drag/drop-fn
      :editable-path (:path name-context)
      :buttons (cond-> [{:icon "fas fa-plus"
                         :title :string.button/add
