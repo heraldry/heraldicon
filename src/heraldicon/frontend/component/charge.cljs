@@ -2,7 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
-   [heraldicon.frontend.component.field-component :as field-component]
+   [heraldicon.frontend.component.drag :as drag]
    [heraldicon.frontend.element.charge-type-select :as charge-type-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.validation :as validation]
@@ -38,6 +38,13 @@
      :manual-blazon
      :ignore-layer-separator?])])
 
+(defn component?
+  [dragged-node-path]
+  (-> dragged-node-path
+      drop-last
+      last
+      (= :components)))
+
 (defmethod component/node :heraldry/charge [context]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
@@ -46,9 +53,9 @@
            {:default url
             :selected url})
    :validation (validation/validate-charge context)
-   :draggable? (field-component/component? (:path context))
-   :drop-options-fn field-component/drop-options-fn
-   :drop-fn field-component/drop-fn
+   :draggable? (component? (:path context))
+   :drop-options-fn drag/drop-options
+   :drop-fn drag/drop-fn
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod component/form :heraldry/charge [_context]

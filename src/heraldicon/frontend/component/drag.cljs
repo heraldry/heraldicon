@@ -4,9 +4,30 @@
    [heraldicon.frontend.component.element :as component.element]
    [re-frame.core :as rf]))
 
-(defmulti drop-allowed?
-  (fn [drag-node drop-node]
-    [(:type drag-node) (:type drop-node)]))
+(defn- field-component?
+  [type]
+  (or (isa? type :heraldry/ordinary)
+      (isa? type :heraldry/charge)
+      (isa? type :heraldry/charge-group)
+      (isa? type :heraldry/semy)))
+
+(defn- drop-allowed?
+  [drag-node drop-node]
+  (let [drag-type (:type drag-node)
+        drop-type (:type drop-node)]
+    (or (and (isa? drag-type :heraldicon.entity.collection/element)
+             (isa? drop-type :heraldicon.entity.collection/data))
+
+        (and (isa? drag-type :heraldicon/charge-type)
+             (isa? drop-type :heraldicon/charge-type))
+
+        (and (isa? drag-type :heraldry/helm)
+             (isa? drop-type :heraldry/helms))
+
+        (and (field-component? drag-type)
+             (or (isa? drop-type :heraldry/field)
+                 (isa? drop-type :heraldry/ordinary)
+                 (isa? drop-type :heraldry/charge))))))
 
 (defn- parent-node
   [{:keys [parent-context parent-type]
@@ -63,28 +84,24 @@
           above? (conj :above)
           below? (conj :below))))))
 
-(defmethod drop-allowed? :default
-  [_drag-node _drop-node]
-  false)
+(defn- drop-inside-target-context
+  [drag-node drop-node]
+  (let [drag-type (:type drag-node)
+        drop-type (:type drop-node)]
+    (cond
+      (and (isa? drag-type :heraldicon/charge-type)
+           (isa? drop-type :heraldicon/charge-type)) (c/++ (:context drop-node)
+                                                           :types component.element/APPEND-INDEX)
 
-(defmethod drop-allowed? [:heraldicon.entity.collection/element
-                          :heraldicon.entity.collection/data]
-  [_drag-node _drop-node]
-  true)
+      (and (field-component? drag-type)
+           (isa? drop-type :heraldry/field)) (c/++ (:context drop-node)
+                                                   :components component.element/APPEND-INDEX)
 
-(defmethod drop-allowed? [:heraldicon/charge-type
-                          :heraldicon/charge-type]
-  [_drag-node _drop-node]
-  true)
-
-(defmethod drop-allowed? [:heraldry/helm
-                          :heraldry/helms]
-  [_drag-node _drop-node]
-  true)
-
-(defmulti drop-inside-target-context
-  (fn [drag-node drop-node]
-    [(:type drag-node) (:type drop-node)]))
+      (and (field-component? drag-type)
+           (or (isa? drop-type :heraldry/ordinary)
+               (isa? drop-type :heraldry/charge))) (c/++ (:context drop-node)
+                                                         :field :components component.element/APPEND-INDEX)
+      :else nil)))
 
 (defn drop-fn
   [drag-node drop-node]
@@ -96,10 +113,6 @@
                          :above (-> drop-node-context c/-- (c/++ new-index))
                          :inside (drop-inside-target-context drag-node drop-node)
                          :below (-> drop-node-context c/-- (c/++ (inc new-index))))]
-    (rf/dispatch [::component.element/move-general drag-node-context target-context
-                  {:no-select? (#{:heraldry/helm} (:type drag-node))}])))
-
-(defmethod drop-inside-target-context [:heraldicon/charge-type
-                                       :heraldicon/charge-type]
-  [_drag-node drop-node]
-  (c/++ (:context drop-node) :types component.element/APPEND-INDEX))
+    (when target-context
+      (rf/dispatch [::component.element/move-general drag-node-context target-context
+                    {:no-select? (#{:heraldry/helm} (:type drag-node))}]))))
