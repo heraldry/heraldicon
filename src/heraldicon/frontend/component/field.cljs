@@ -99,7 +99,7 @@
      drop-node-path))
 
 (defn drop-options-fn
-  [dragged-node-path _dragged-node-type
+  [dragged-node-path dragged-node-type
    drop-node-path _drop-node-type
    _drop-node-open?]
   (cond
@@ -112,6 +112,9 @@
     (parent?
      dragged-node-path
      drop-node-path) nil
+
+    (isa? dragged-node-type
+          :heraldry/shield-separator) nil
 
     :else #{:inside}))
 
