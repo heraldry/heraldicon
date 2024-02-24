@@ -41,6 +41,9 @@
             (= drop-node-type
                :heraldry/semy) nil
 
+            (isa? drop-node-type
+                  :heraldry/charge-group) nil
+
             (parent?
              dragged-node-path
              drop-node-path) #{:above :below}
