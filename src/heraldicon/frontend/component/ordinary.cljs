@@ -3,7 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.cottise :as cottise]
-   [heraldicon.frontend.component.element :as-alias component.element]
+   [heraldicon.frontend.component.field-component :as field-component]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.macros :as macros]
@@ -68,45 +68,6 @@
     :fimbriation
     :outline?
     :manual-blazon]))
-
-(defn drop-options-fn
-  [dragged-node-path drop-node-path drop-node-open?]
-  (when (not= (take (count dragged-node-path) drop-node-path)
-              dragged-node-path)
-    (let [parent? (= (drop-last 3 dragged-node-path)
-                     drop-node-path)
-          siblings? (= (drop-last dragged-node-path)
-                       (drop-last drop-node-path))
-          component? (= (last (drop-last dragged-node-path))
-                        :components)]
-      (when component?
-        (cond-> (cond
-                  parent? #{:above :below}
-
-                  siblings? (let [current-index (last dragged-node-path)
-                                  new-index (last drop-node-path)]
-                              (cond
-                                (= new-index
-                                   (dec current-index)) #{:above :inside}
-
-                                (= new-index
-                                   (inc current-index)) #{:below :inside}
-
-                                :else #{:above :inside :below}))
-
-                  :else #{:above :inside :below})
-          drop-node-open? (disj :below))))))
-
-(defn drop-fn
-  [dragged-node-context drop-node-context where]
-  (let [new-index (last (:path drop-node-context))
-        target-context (case where
-                         :above (-> drop-node-context c/-- (c/++ new-index))
-                         :inside (c/++ drop-node-context :field :components 10000)
-                         :below (-> drop-node-context c/-- (c/++ (inc new-index))))]
-    (rf/dispatch [::component.element/move-general
-                  dragged-node-context
-                  target-context])))
 
 (defmethod component/node :heraldry/ordinary [context]
   (let [ordinary-type (interface/get-raw-data (c/++ context :type))
@@ -194,8 +155,8 @@
                 :disabled? (empty? menu)
                 :menu menu}]
      :draggable? true
-     :drop-options-fn drop-options-fn
-     :drop-fn drop-fn
+     :drop-options-fn field-component/drop-options-fn
+     :drop-fn field-component/drop-fn
      :nodes (cond-> [{:context (c/++ context :field)}]
               cottise-2? (conj {:context cottise-2-context
                                 :buttons [{:icon "far fa-trash-alt"
