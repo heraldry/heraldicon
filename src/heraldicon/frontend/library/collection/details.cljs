@@ -5,7 +5,6 @@
    [heraldicon.font :as font]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.component.element :as component.element]
-   [heraldicon.frontend.component.entity.collection.element :as element]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
@@ -48,18 +47,18 @@
        :style {:fill "#fff"}}]]))
 
 (defn- selected-element-index [form-db-path]
-  (let [selected-node-path @(rf/subscribe [::element/highlighted-element])
+  (let [selected-node-path @(rf/subscribe [::tree/active-node-path])
         index (last selected-node-path)]
     (when (int? index)
       (if (< index @(rf/subscribe [:get-list-size (conj form-db-path :data :elements)]))
         index
         ;; index not valid anymore
         (do
-          (rf/dispatch [::element/highlight nil])
+          (rf/dispatch [::tree/select-node nil])
           nil)))))
 
 (defn- arms-highlight [path x y width height]
-  (if @(rf/subscribe [::element/highlighted? path])
+  (if @(rf/subscribe [::tree/node-active? path])
     [:rect {:x (- x (/ width 2) 7)
             :y (- y (/ height 2) 7)
             :rx 10
