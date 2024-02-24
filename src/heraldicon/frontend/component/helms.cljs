@@ -18,15 +18,7 @@
                  (map (fn [idx]
                         (let [helm-context (c/++ elements-context idx)]
                           {:context helm-context
-                           :buttons [{:icon "fas fa-chevron-up"
-                                      :disabled? (zero? idx)
-                                      :title :string.tooltip/move-down
-                                      :handler #(rf/dispatch [::component.element/move helm-context (dec idx)])}
-                                     {:icon "fas fa-chevron-down"
-                                      :disabled? (= idx (dec num-helms))
-                                      :title :string.tooltip/move-up
-                                      :handler #(rf/dispatch [::component.element/move helm-context (inc idx)])}
-                                     {:icon "far fa-trash-alt"
+                           :buttons [{:icon "far fa-trash-alt"
                                       :remove? true
                                       :title :string.tooltip/remove
-                                      :handler #(rf/dispatch [::component.element/remove helm-context])}]}))))}))
+                                      :handler #(rf/dispatch [::component.element/remove-general helm-context])}]}))))}))
