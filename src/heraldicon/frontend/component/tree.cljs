@@ -3,14 +3,12 @@
    [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as frontend.component]
-   [heraldicon.frontend.component.entity.collection.element :as collection.element]
    [heraldicon.frontend.element.hover-menu :as hover-menu]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.validation :as validation]
-   [heraldicon.heraldry.component :as component]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]
    [reagent.core :as r]))
@@ -36,10 +34,13 @@
 (def ^:private dragged-node
   (atom nil))
 
+(def highlighted-collection-element-path
+  [:ui :collection-library :selected-element])
+
 (defn node-data [{:keys [path] :as context}]
   (merge {:open? @(rf/subscribe [::node-open? path])
           :highlighted? @(rf/subscribe [::node-highlighted? path])
-          :selected? (= path @(rf/subscribe [::active-node-path]))
+          :selected? @(rf/subscribe [::node-active? path])
           :selectable? true}
          (frontend.component/node context)))
 
@@ -375,6 +376,13 @@
       selected-node-path
       default)))
 
+(rf/reg-sub ::node-active?
+  (fn [[_ _path] _]
+    (rf/subscribe [::active-node-path]))
+
+  (fn [active-node-path [_ path]]
+    (= path active-node-path)))
+
 (defn- open-node [db path]
   (let [path (vec path)]
     (update-in db node-flag-db-path
@@ -429,12 +437,7 @@
 
 (macros/reg-event-fx ::select-node
   (fn [{:keys [db]} [_ path open?]]
-    (let [raw-type (get-in db (conj path :type))
-          component-type (component/effective-type raw-type)]
-      (cond->
-        {:db (select-node db path open?)}
-        (= component-type
-           :heraldicon.entity.collection/element) (assoc :dispatch [::collection.element/highlight path])))))
+    {:db (select-node db path open?)}))
 
 (defn set-edit-node
   [db context]
@@ -522,7 +525,7 @@
   (-> db
       (update-in active-node-path
                  adjust-component-path-after-order-change elements-path index new-index)
-      (update-in collection.element/highlighted-element-path
+      (update-in highlighted-collection-element-path
                  adjust-component-path-after-order-change elements-path index new-index)
       (update-in submenu/open?-path
                  (fn [flags]
@@ -565,7 +568,7 @@
     (-> db
         (update-in active-node-path
                    adjust-component-path-after-element-removed elements-path index)
-        (update-in collection.element/highlighted-element-path
+        (update-in highlighted-collection-element-path
                    adjust-component-path-after-element-removed elements-path index)
         (update-in submenu/open?-path
                    (fn [flags]
@@ -607,7 +610,7 @@
     (-> db
         (update-in active-node-path
                    adjust-component-path-after-element-inserted elements-path index)
-        (update-in collection.element/highlighted-element-path
+        (update-in highlighted-collection-element-path
                    adjust-component-path-after-element-inserted elements-path index)
         (update-in submenu/open?-path
                    (fn [flags]

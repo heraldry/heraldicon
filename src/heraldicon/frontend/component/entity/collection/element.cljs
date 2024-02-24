@@ -5,31 +5,9 @@
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.element :as-alias component.element]
    [heraldicon.frontend.element.core :as element]
-   [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
-
-(def highlighted-element-path
-  [:ui :collection-library :selected-element])
-
-(rf/reg-sub ::highlighted-element
-  (fn [_ _]
-    (rf/subscribe [:get highlighted-element-path]))
-
-  (fn [value _]
-    value))
-
-(rf/reg-sub ::highlighted?
-  (fn [_ _]
-    (rf/subscribe [:get highlighted-element-path]))
-
-  (fn [value [_ path]]
-    (= value path)))
-
-(macros/reg-event-db ::highlight
-  (fn [db [_ path]]
-    (assoc-in db highlighted-element-path path)))
 
 (defn- form [context]
   (element/elements
