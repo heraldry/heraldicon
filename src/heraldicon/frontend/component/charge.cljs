@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
+   [heraldicon.frontend.component.field-component :as field-component]
    [heraldicon.frontend.element.charge-type-select :as charge-type-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.validation :as validation]
@@ -45,6 +46,9 @@
            {:default url
             :selected url})
    :validation (validation/validate-charge context)
+   :draggable? true
+   :drop-options-fn field-component/drop-options-fn
+   :drop-fn field-component/drop-fn
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod component/form :heraldry/charge [_context]
