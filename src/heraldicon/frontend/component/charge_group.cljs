@@ -3,8 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.drag :as drag]
-   [heraldicon.frontend.component.element :as component.element]
-   [heraldicon.frontend.component.tree :as tree]
+   [heraldicon.frontend.component.element :as-alias component.element]
    [heraldicon.frontend.element.charge-group-preset-select :as charge-group-preset-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
@@ -35,82 +34,35 @@
                       :else (inc current-value))]
       (assoc-in db slots-path (assoc slots slot-index new-value)))))
 
-(macros/reg-event-db ::remove-charge
-  (fn [db [_ {:keys [path]}]]
-    (let [elements-path (drop-last path)
-          strips-context (-> path
-                             (->> (drop-last 2))
-                             vec
-                             (conj :strips))
-          slots-path (-> path
-                         (->> (drop-last 2))
-                         vec
-                         (conj :slots))
-          index (last path)]
-      (-> db
-          (update-in elements-path (fn [elements]
-                                     (vec (concat (subvec elements 0 index)
-                                                  (subvec elements (inc index))))))
-          (update-in strips-context (fn [strips]
-                                      (mapv (fn [strip]
-                                              (update strip :slots (fn [slots]
-                                                                     (mapv (fn [charge-index]
-                                                                             (cond
-                                                                               (= charge-index index) 0
-                                                                               (> charge-index index) (dec charge-index)
-                                                                               :else charge-index))
-                                                                           slots))))
-                                            strips)))
-          (update-in slots-path (fn [slots]
-                                  (mapv (fn [charge-index]
-                                          (cond
-                                            (= charge-index index) 0
-                                            (> charge-index index) (dec charge-index)
-                                            :else charge-index))
-                                        slots)))
-          (tree/element-order-changed elements-path index nil)))))
-
-(macros/reg-event-db ::move-charge-up
-  (fn [db [_ {:keys [path]}]]
-    (let [elements-path (drop-last path)
-          strips-context (-> path
-                             (->> (drop-last 2))
-                             vec
-                             (conj :strips))
-          slots-path (-> path
-                         (->> (drop-last 2))
-                         vec
-                         (conj :slots))
-          index (last path)]
-      (-> db
-          (update-in elements-path (fn [elements]
-                                     (let [num-elements (count elements)]
-                                       (if (>= index num-elements)
-                                         elements
-                                         (-> elements
-                                             (subvec 0 index)
-                                             (conj (get elements (inc index)))
-                                             (conj (get elements index))
-                                             (concat (subvec elements (+ index 2)))
-                                             vec)))))
-          (update-in strips-context (fn [strips]
-                                      (mapv (fn [strip]
-                                              (update strip :slots (fn [slots]
-                                                                     (mapv (fn [charge-index]
-                                                                             (cond
-                                                                               (= charge-index index) (inc charge-index)
-                                                                               (= charge-index (inc index)) (dec charge-index)
-                                                                               :else charge-index))
-                                                                           slots))))
-                                            strips)))
-          (update-in slots-path (fn [slots]
-                                  (mapv (fn [charge-index]
-                                          (cond
-                                            (= charge-index index) (inc charge-index)
-                                            (= charge-index (inc index)) (dec charge-index)
-                                            :else charge-index))
-                                        slots)))
-          (tree/element-order-changed elements-path index (inc index))))))
+(def ^:private remove-charge-options
+  {:post-fn (fn [db path]
+              (let [strips-context (-> path
+                                       (->> (drop-last 2))
+                                       vec
+                                       (conj :strips))
+                    slots-path (-> path
+                                   (->> (drop-last 2))
+                                   vec
+                                   (conj :slots))
+                    index (last path)]
+                (-> db
+                    (update-in strips-context (fn [strips]
+                                                (mapv (fn [strip]
+                                                        (update strip :slots (fn [slots]
+                                                                               (mapv (fn [charge-index]
+                                                                                       (cond
+                                                                                         (= charge-index index) 0
+                                                                                         (> charge-index index) (dec charge-index)
+                                                                                         :else charge-index))
+                                                                                     slots))))
+                                                      strips)))
+                    (update-in slots-path (fn [slots]
+                                            (mapv (fn [charge-index]
+                                                    (cond
+                                                      (= charge-index index) 0
+                                                      (> charge-index index) (dec charge-index)
+                                                      :else charge-index))
+                                                  slots))))))})
 
 (macros/reg-event-db ::add-strip
   (fn [db [_ {:keys [path]} value]]
@@ -118,47 +70,6 @@
                        (conj value)
                        vec)]
       (assoc-in db path elements))))
-
-(macros/reg-event-db ::move-charge-down
-  (fn [db [_ {:keys [path]}]]
-    (let [elements-path (drop-last path)
-          strips-context (-> path
-                             (->> (drop-last 2))
-                             vec
-                             (conj :strips))
-          slots-path (-> path
-                         (->> (drop-last 2))
-                         vec
-                         (conj :slots))
-          index (last path)]
-      (-> db
-          (update-in elements-path (fn [elements]
-                                     (if (zero? index)
-                                       elements
-                                       (-> elements
-                                           (subvec 0 (dec index))
-                                           (conj (get elements index))
-                                           (conj (get elements (dec index)))
-                                           (concat (subvec elements (inc index)))
-                                           vec))))
-          (update-in strips-context (fn [strips]
-                                      (mapv (fn [strip]
-                                              (update strip :slots (fn [slots]
-                                                                     (mapv (fn [charge-index]
-                                                                             (cond
-                                                                               (= charge-index (dec index)) (inc charge-index)
-                                                                               (= charge-index index) (dec charge-index)
-                                                                               :else charge-index))
-                                                                           slots))))
-                                            strips)))
-          (update-in slots-path (fn [slots]
-                                  (mapv (fn [charge-index]
-                                          (cond
-                                            (= charge-index (dec index)) (inc charge-index)
-                                            (= charge-index index) (dec charge-index)
-                                            :else charge-index))
-                                        slots)))
-          (tree/element-order-changed elements-path index (dec index))))))
 
 (def ^:private preview-tinctures
   [:azure :or :vert :gules :purpure :sable])
@@ -336,18 +247,11 @@
                          (map (fn [idx]
                                 (let [charge-context (c/++ charges-context idx)]
                                   {:context charge-context
-                                   :buttons [{:icon "fas fa-chevron-up"
-                                              :disabled? (zero? idx)
-                                              :title :string.tooltip/move-down
-                                              :handler #(rf/dispatch [::move-charge-down charge-context])}
-                                             {:icon "fas fa-chevron-down"
-                                              :disabled? (= idx (dec num-charges))
-                                              :title :string.tooltip/move-up
-                                              :handler #(rf/dispatch [::move-charge-up charge-context])}
-                                             {:icon "far fa-trash-alt"
-                                              :disabled? (= num-charges 1)
+                                   :buttons [{:icon "far fa-trash-alt"
                                               :title :string.tooltip/remove
-                                              :handler #(rf/dispatch [::remove-charge charge-context])}]})))
+                                              :handler #(rf/dispatch [::component.element/remove-general
+                                                                      charge-context
+                                                                      remove-charge-options])}]})))
                          vec))}))
 
 (defmethod component/form :heraldry/charge-group [_context]

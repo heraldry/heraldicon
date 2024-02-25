@@ -104,7 +104,7 @@
   (fn [{:keys [db]} [_
                      {value-path :path}
                      {target-path :path}
-                     {:keys [no-select?]}]]
+                     {:keys [no-select? post-fn]}]]
     (let [[new-db value] (remove-element db value-path)
           adjusted-target-path (adjust-path-after-removal target-path value-path)
           [new-db new-value-path] (insert-element new-db adjusted-target-path value)]
@@ -112,6 +112,7 @@
                (tree/element-removed value-path)
                (tree/element-inserted new-value-path)
                (cond->
+                 post-fn (post-fn value-path target-path)
                  (not no-select?) (tree/select-node new-value-path true)))})))
 
 (macros/reg-event-fx ::remove-general

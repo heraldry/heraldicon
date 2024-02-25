@@ -8,7 +8,8 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.path :as path]
+   [heraldicon.util.vec :as vec]))
 
 (defn- calculate-strip-slot-positions [context spacing]
   (let [stretch (interface/get-sanitized-data (c/++ context :stretch))
@@ -242,3 +243,27 @@
                          used-charges))
                    (when (= charge-group-type :heraldry.charge-group.type/in-orle)
                      " in orle"))))
+
+(defn update-missing-charge-indices
+  [db path]
+  (let [parent-path (vec (drop-last 2 path))
+        strips-context (conj parent-path :strips)
+        slots-path (conj parent-path :slots)
+        charges (get-in db (conj parent-path :charges))
+        num-charges (count charges)]
+    (-> db
+        (update-in strips-context (fn [strips]
+                                    (mapv (fn [strip]
+                                            (update strip :slots (fn [slots]
+                                                                   (mapv (fn [charge-index]
+                                                                           (if (<= num-charges charge-index)
+                                                                             0
+                                                                             charge-index))
+                                                                         slots))))
+                                          strips)))
+        (update-in slots-path (fn [slots]
+                                (mapv (fn [charge-index]
+                                        (if (<= num-charges charge-index)
+                                          0
+                                          charge-index))
+                                      slots))))))

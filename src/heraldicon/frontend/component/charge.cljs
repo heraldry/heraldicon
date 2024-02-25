@@ -52,6 +52,13 @@
       last
       (= :elements)))
 
+(defn- charge-group?
+  [drag-path]
+  (-> drag-path
+      drop-last
+      last
+      (= :charges)))
+
 (defmethod component/node :heraldry/charge [context]
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
@@ -60,7 +67,7 @@
            {:default url
             :selected url})
    :validation (validation/validate-charge context)
-   :draggable? ((some-fn component? element?)
+   :draggable? ((some-fn component? element? charge-group?)
                 (:path context))
    :drop-options-fn drag/drop-options
    :drop-fn drag/drop-fn
