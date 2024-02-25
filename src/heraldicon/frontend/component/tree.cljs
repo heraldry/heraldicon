@@ -153,11 +153,8 @@
                    "unselectable")
                  (when highlighted?
                    "node-highlighted")
-                 (case dragged-over-location
-                   :above "node-dragged-over-above"
-                   :inside "node-dragged-over-inside"
-                   :below "node-dragged-over-below"
-                   nil)]
+                 (when (= dragged-over-location :inside)
+                   "node-drop-inside")]
          :style {:cursor (when draggable?
                            "grab")}
          :draggable draggable?
@@ -196,14 +193,9 @@
                       (.stopPropagation %))}
 
         (when (#{:above :below} dragged-over-location)
-          [:div {:style {:height "0px"
-                         :border-top "2px solid #000"
-                         :width "10em"
-                         :position "absolute"
-                         (if (= dragged-over-location :above)
-                           :top
-                           :bottom) -1
-                         :pointer-events "none"}}])
+          [:div.node-drop-insert {:style {(if (= dragged-over-location :above)
+                                            :top
+                                            :bottom) -1}}])
 
         (when draggable?
           [:div.node-drag-handle

@@ -176,3 +176,7 @@
 .dark .charge-colours .selected {
   background-color: #444;
 }
+
+.dark .node-drop-insert {
+  border-top: 2px solid #fff;
+}
