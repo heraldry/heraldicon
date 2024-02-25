@@ -10,29 +10,32 @@
       (= :heraldry/shield-separator)))
 
 (def remove-element-options
-  {:post-fn (fn [elements]
-              (if (->> elements
-                       (filter (comp not shield-separator?))
-                       count
-                       zero?)
-                []
-                elements))})
+  {:post-fn (fn [db path]
+              (update-in db (drop-last path) (fn [elements]
+                                               (if (->> elements
+                                                        (filter (comp not shield-separator?))
+                                                        count
+                                                        zero?)
+                                                 []
+                                                 elements))))})
 
 (def add-element-options
-  {:post-fn (fn [elements]
-              (if (-> elements count (= 1))
-                (into [default/shield-separator]
-                      elements)
-                elements))})
+  {:post-fn (fn [db path]
+              (update-in db path (fn [elements]
+                                   (if (-> elements count (= 1))
+                                     (into [default/shield-separator]
+                                           elements)
+                                     elements))))})
 
 (def add-element-insert-at-bottom-options
-  {:post-fn (fn [elements]
-              (let [elements (into [(last elements)]
-                                   (drop-last elements))]
-                (if (-> elements count (= 1))
-                  (into elements
-                        [default/shield-separator])
-                  elements)))
+  {:post-fn (fn [db path]
+              (update-in db path (fn [elements]
+                                   (let [elements (into [(last elements)]
+                                                        (drop-last elements))]
+                                     (if (-> elements count (= 1))
+                                       (into elements
+                                             [default/shield-separator])
+                                       elements)))))
    :selected-element-path-fn (fn [selected-path _element _elements]
                                (-> selected-path
                                    drop-last
