@@ -25,6 +25,13 @@
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
+   [:h3 "2024-02-25 - Drag and drop for components and collection arms"]
+   [:div.release-row
+    [:div.info
+     [:p "This was long overdue, and I never was happy with those little 'up'/'down' arrows to manipulate component order. Now you can drag and drop components and collection arms to reorder them."]
+     [:p "You can now also move components between parts of your achievement, e.g. move a charge from a helm to a field or to ornaments and back."]
+     [:p "Finally, you can drag and drop subfields in a field partition."]]]
+
    [:h3 "2024-01-26 - Vairy/lozengy/potenty/papellony/masony rendering improved"]
    [:div.release-row
     [:div.info
