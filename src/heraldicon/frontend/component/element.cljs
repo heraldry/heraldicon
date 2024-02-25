@@ -5,7 +5,6 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.heraldry.component :as component]
    [heraldicon.heraldry.shield-separator :as shield-separator]
-   [heraldicon.util.vec :as vec]
    [re-frame.core :as rf]))
 
 (def APPEND-INDEX 10000)
@@ -35,22 +34,6 @@
                       (isa? added-type :heraldry/motto) [::submenu/open (conj new-element-path :ribbon-variant)]
                       (isa? added-type :heraldicon.entity.collection/element) [::submenu/open (conj new-element-path :reference)]
                       :else nil)]})))
-
-; TODO: deal with path changes
-(macros/reg-event-db ::move
-  (fn [db [_ {:keys [path]} new-index]]
-    (let [elements-path (-> path drop-last vec)
-          elements (vec (get-in db elements-path))
-          index (last path)
-          new-index (-> new-index
-                        (max 0)
-                        (min (dec (count elements))))]
-      (if (or (= index new-index)
-              (neg? new-index))
-        db
-        (-> db
-            (update-in elements-path vec/move-element index new-index)
-            (tree/element-order-changed elements-path index new-index))))))
 
 (rf/reg-sub ::removable?
   (fn [[_ {:keys [path]}] _]
