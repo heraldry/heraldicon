@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.element :as component.element]
    [heraldicon.heraldry.charge-group.core :as charge-group]
+   [heraldicon.heraldry.shield-separator :as shield-separator]
    [re-frame.core :as rf]))
 
 (defn- field-component?
@@ -34,6 +35,11 @@
              (parent? drag-node drop-node)
              (or (isa? drop-type :heraldry/helm)
                  (isa? drop-type :heraldry/ornaments)))
+
+        (and (or (isa? drag-type :heraldry/motto)
+                 (isa? drag-type :heraldry/charge)
+                 (isa? drag-type :heraldry/charge-group))
+             (isa? drop-type :heraldry/helm))
 
         (and (field-component? drag-type)
              (or (isa? drop-type :heraldry/field)
@@ -138,6 +144,17 @@
            (isa? drop-type :heraldry/charge-group)) (c/++ (:context drop-node)
                                                           :charges component.element/APPEND-INDEX)
 
+      (and (or (isa? drag-type :heraldry/motto)
+               (isa? drag-type :heraldry/charge)
+               (isa? drag-type :heraldry/charge-group))
+           (isa? drop-type :heraldry/ornaments)) (c/++ (:context drop-node)
+                                                       :elements component.element/APPEND-INDEX)
+
+      (and (or (isa? drag-type :heraldry/charge)
+               (isa? drag-type :heraldry/charge-group))
+           (isa? drop-type :heraldry/helm)) (c/++ (:context drop-node)
+                                                  :components component.element/APPEND-INDEX)
+
       :else nil)))
 
 (defn drop-fn
@@ -145,17 +162,42 @@
   (let [new-index (last (:path (:context drop-node)))
         drag-node-context (:context drag-node)
         drag-node-parent-type (:parent-type drag-node)
+        drop-node-type (:type drop-node)
+        drop-node-parent-type (:parent-type drop-node)
         drop-node-context (:context drop-node)
         where (:where drop-node)
         target-context (case where
                          :above (-> drop-node-context c/-- (c/++ new-index))
                          :inside (drop-inside-target-context drag-node drop-node)
-                         :below (-> drop-node-context c/-- (c/++ (inc new-index))))]
+                         :below (-> drop-node-context c/-- (c/++ (inc new-index))))
+        post-fns (cond-> []
+                   (isa? drag-node-parent-type
+                         :heraldry/charge-group) (conj #(charge-group/update-missing-charge-indices %1 %2))
+
+                   (or (isa? drag-node-parent-type
+                             :heraldry/helm)
+                       (isa? drag-node-parent-type
+                             :heraldry/ornaments)) (conj #(shield-separator/add-or-remove-shield-separator %1 %2))
+
+                   (or (isa? drop-node-parent-type
+                             :heraldry/helm)
+                       (isa? drop-node-type
+                             :heraldry/helm)
+                       (isa? drop-node-parent-type
+                             :heraldry/ornaments)
+                       (isa? drop-node-type
+                             :heraldry/ornaments)) (conj #(shield-separator/add-or-remove-shield-separator %1 %3)))]
     (when target-context
       (rf/dispatch [::component.element/move drag-node-context target-context
-                    {:post-fn (when (isa? drag-node-parent-type :heraldry/charge-group)
-                                #(charge-group/update-missing-charge-indices %1 %2))
+                    {:post-fn (when (seq post-fns)
+                                (fn [db value-path target-path]
+                                  (reduce (fn [db f]
+                                            (f db value-path target-path))
+                                          db
+                                          post-fns)))
 
+                     ;; TODO: this will select a shield-separator if a new component has been
+                     ;; added to a helm or ornaments
                      :no-select? (#{:heraldry/helm
                                     :heraldry/shield-separator}
                                   (:type drag-node))}]))))
