@@ -152,7 +152,7 @@
                          :inside (drop-inside-target-context drag-node drop-node)
                          :below (-> drop-node-context c/-- (c/++ (inc new-index))))]
     (when target-context
-      (rf/dispatch [::component.element/move-general drag-node-context target-context
+      (rf/dispatch [::component.element/move drag-node-context target-context
                     {:post-fn (when (isa? drag-node-parent-type :heraldry/charge-group)
                                 #(charge-group/update-missing-charge-indices %1 %2))
 

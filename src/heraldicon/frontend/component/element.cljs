@@ -83,7 +83,7 @@
 
     path))
 
-(macros/reg-event-fx ::move-general
+(macros/reg-event-fx ::move
   (fn [{:keys [db]} [_
                      {value-path :path}
                      {target-path :path}

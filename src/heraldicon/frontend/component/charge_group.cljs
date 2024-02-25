@@ -206,7 +206,7 @@
                             [:a (if (zero? idx)
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::component.element/move-general
+                                              #(rf/dispatch [::component.element/move
                                                              strip-context
                                                              (c/++ strips-context (dec idx))
                                                              {:no-select? true}]))})
@@ -215,7 +215,7 @@
                             [:a (if (= idx (dec num-strips))
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::component.element/move-general
+                                              #(rf/dispatch [::component.element/move
                                                              strip-context
                                                              (c/++ strips-context (+ idx 2))
                                                              {:no-select? true}]))})
