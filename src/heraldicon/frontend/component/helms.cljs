@@ -21,4 +21,4 @@
                            :buttons [{:icon "far fa-trash-alt"
                                       :remove? true
                                       :title :string.tooltip/remove
-                                      :handler #(rf/dispatch [::component.element/remove-general helm-context])}]}))))}))
+                                      :handler #(rf/dispatch [::component.element/remove helm-context])}]}))))}))

@@ -98,7 +98,7 @@
                  post-fn (post-fn value-path target-path)
                  (not no-select?) (tree/select-node new-value-path true)))})))
 
-(macros/reg-event-fx ::remove-general
+(macros/reg-event-fx ::remove
   (fn [{:keys [db]} [_ {:keys [path]} {:keys [post-fn]}]]
     (let [[new-db _value] (remove-element db path)]
       {:db (-> (cond-> new-db

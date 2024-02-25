@@ -72,6 +72,6 @@
                                       [{:icon "far fa-trash-alt"
                                         :remove? true
                                         :title :string.tooltip/remove
-                                        :handler #(rf/dispatch [::component.element/remove-general component-context
+                                        :handler #(rf/dispatch [::component.element/remove component-context
                                                                 shield-separator/remove-element-options])}])})))
                  vec)}))
