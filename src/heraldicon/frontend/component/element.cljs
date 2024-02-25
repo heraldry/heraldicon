@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.component.element
   (:require
+   [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.submenu :as submenu]
    [heraldicon.frontend.macros :as macros]
@@ -10,7 +11,8 @@
 (def APPEND-INDEX 10000)
 
 (macros/reg-event-fx ::add
-  (fn [{:keys [db]} [_ {:keys [path]} value {:keys [post-fn selected-element-path-fn]}]]
+  (fn [{:keys [db]} [_ {:keys [path]
+                        :as context} value {:keys [post-fn selected-element-path-fn]}]]
     (let [new-db (cond-> (update-in db path (fn [elements]
                                               (vec (conj elements value))))
                    post-fn (post-fn path))
@@ -19,8 +21,16 @@
           new-element-path (if selected-element-path-fn
                              (selected-element-path-fn new-element-path (last elements) elements)
                              new-element-path)
-          added-type (component/effective-type (:type value))]
-      {:db new-db
+          added-type (component/effective-type (:type value))
+          parent-type (get-in db (-> context
+                                     c/--
+                                     (c/++ :type)
+                                     :path))]
+      {:db (cond-> new-db
+             (or (isa? parent-type
+                       :heraldry/helm)
+                 (isa? parent-type
+                       :heraldry/ornaments)) (shield-separator/add-or-remove-shield-separator path))
        :dispatch-n [[::submenu/close-all]
                     [::tree/select-node (if (isa? added-type :heraldry/helm)
                                           (conj new-element-path :components 1)
@@ -99,8 +109,17 @@
                  (not no-select?) (tree/select-node new-value-path true)))})))
 
 (macros/reg-event-fx ::remove
-  (fn [{:keys [db]} [_ {:keys [path]} {:keys [post-fn]}]]
-    (let [[new-db _value] (remove-element db path)]
+  (fn [{:keys [db]} [_ {:keys [path]
+                        :as context} {:keys [post-fn]}]]
+    (let [[new-db _value] (remove-element db path)
+          parent-type (get-in new-db (-> context
+                                         (c/-- 2)
+                                         (c/++ :type)
+                                         :path))]
       {:db (-> (cond-> new-db
+                 (or (isa? parent-type
+                           :heraldry/helm)
+                     (isa? parent-type
+                           :heraldry/ornaments)) (shield-separator/add-or-remove-shield-separator path)
                  post-fn (post-fn path))
                (tree/element-removed path))})))

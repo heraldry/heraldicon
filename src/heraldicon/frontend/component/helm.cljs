@@ -41,17 +41,13 @@
         num-components (interface/get-list-size components-context)
         add-menu (cond-> []
                    (not helmet?) (conj {:title :string.entity/helmet
-                                        :handler #(rf/dispatch [::component.element/add components-context default/helmet
-                                                                shield-separator/add-element-options])})
+                                        :handler #(rf/dispatch [::component.element/add components-context default/helmet])})
                    (not torse?) (conj {:title :string.entity/torse
-                                       :handler #(rf/dispatch [::component.element/add components-context default/torse
-                                                               shield-separator/add-element-options])})
+                                       :handler #(rf/dispatch [::component.element/add components-context default/torse])})
                    true (conj {:title :string.entity/crest-charge
-                               :handler #(rf/dispatch [::component.element/add components-context default/crest-charge
-                                                       shield-separator/add-element-options])})
+                               :handler #(rf/dispatch [::component.element/add components-context default/crest-charge])})
                    true (conj {:title :string.entity/crest-charge-group
-                               :handler #(rf/dispatch [::component.element/add components-context default/crest-charge-group
-                                                       shield-separator/add-element-options])}))]
+                               :handler #(rf/dispatch [::component.element/add components-context default/crest-charge-group])}))]
 
     {:title (string/str-tr (when (> num-helms 1)
                              (str (inc (last path)) ". ")) :string.entity/helm)
@@ -72,6 +68,5 @@
                                       [{:icon "far fa-trash-alt"
                                         :remove? true
                                         :title :string.tooltip/remove
-                                        :handler #(rf/dispatch [::component.element/remove component-context
-                                                                shield-separator/remove-element-options])}])})))
+                                        :handler #(rf/dispatch [::component.element/remove component-context])}])})))
                  vec)}))

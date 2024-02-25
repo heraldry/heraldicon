@@ -9,24 +9,6 @@
       :type
       (= :heraldry/shield-separator)))
 
-(def remove-element-options
-  {:post-fn (fn [db path]
-              (update-in db (drop-last path) (fn [elements]
-                                               (if (->> elements
-                                                        (filter (comp not shield-separator?))
-                                                        count
-                                                        zero?)
-                                                 []
-                                                 elements))))})
-
-(def add-element-options
-  {:post-fn (fn [db path]
-              (update-in db path (fn [elements]
-                                   (if (-> elements count (= 1))
-                                     (into [default/shield-separator]
-                                           elements)
-                                     elements))))})
-
 (def add-element-insert-at-bottom-options
   {:post-fn (fn [db path]
               (update-in db path (fn [elements]
@@ -41,6 +23,23 @@
                                    drop-last
                                    vec
                                    (conj 0)))})
+
+(defn add-or-remove-shield-separator
+  [db path]
+  (let [path (if (int? (last path))
+               (drop-last path)
+               path)]
+    (update-in db path (fn [elements]
+                         (let [elements (if (->> elements
+                                                 (filter (comp not shield-separator?))
+                                                 count
+                                                 zero?)
+                                          []
+                                          elements)]
+                           (if (-> elements count (= 1))
+                             (into [default/shield-separator]
+                                   elements)
+                             elements))))))
 
 (defn- shield-separator-exists? [elements]
   (->> elements
