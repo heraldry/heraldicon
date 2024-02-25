@@ -52,5 +52,5 @@
                                       [{:icon "far fa-trash-alt"
                                         :remove? true
                                         :title :string.tooltip/remove
-                                        :handler #(rf/dispatch [::component.element/remove-general ornament-context
+                                        :handler #(rf/dispatch [::component.element/remove ornament-context
                                                                 shield-separator/remove-element-options])}])}))))}))

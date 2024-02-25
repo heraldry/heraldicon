@@ -226,7 +226,7 @@
                             [:a (if (< num-strips 2)
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::component.element/remove-general strip-context]))})
+                                              #(rf/dispatch [::component.element/remove strip-context]))})
                              [:i.far.fa-trash-alt]]]])))
                  (range num-strips))]]))
 
@@ -255,7 +255,7 @@
                                   {:context charge-context
                                    :buttons [{:icon "far fa-trash-alt"
                                               :title :string.tooltip/remove
-                                              :handler #(rf/dispatch [::component.element/remove-general
+                                              :handler #(rf/dispatch [::component.element/remove
                                                                       charge-context
                                                                       remove-charge-options])}]})))
                          vec))}))
