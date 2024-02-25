@@ -12,18 +12,16 @@
 
 (macros/reg-event-fx ::add
   (fn [{:keys [db]} [_ {:keys [path]} value {:keys [post-fn selected-element-path-fn]}]]
-    (let [elements (-> (get-in db path)
-                       (conj value)
-                       vec)
-          elements (if post-fn
-                     (post-fn elements)
-                     elements)
+    (let [new-db (cond-> (update-in db path (fn [elements]
+                                              (vec (conj elements value))))
+                   post-fn (post-fn path))
+          elements (get-in db path)
           new-element-path (conj path (-> elements count dec))
           new-element-path (if selected-element-path-fn
                              (selected-element-path-fn new-element-path (last elements) elements)
                              new-element-path)
           added-type (component/effective-type (:type value))]
-      {:db (assoc-in db path elements)
+      {:db new-db
        :dispatch-n [[::submenu/close-all]
                     [::tree/select-node (if (isa? added-type :heraldry/helm)
                                           (conj new-element-path :components 1)
@@ -119,7 +117,6 @@
 (macros/reg-event-fx ::remove-general
   (fn [{:keys [db]} [_ {:keys [path]} {:keys [post-fn]}]]
     (let [[new-db _value] (remove-element db path)]
-      {:db (-> new-db
-               (cond->
-                 post-fn (update-in (drop-last path) post-fn))
+      {:db (-> (cond-> new-db
+                 post-fn (post-fn path))
                (tree/element-removed path))})))
