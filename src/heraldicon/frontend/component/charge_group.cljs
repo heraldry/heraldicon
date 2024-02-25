@@ -206,13 +206,19 @@
                             [:a (if (zero? idx)
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::component.element/move strip-context (dec idx)]))})
+                                              #(rf/dispatch [::component.element/move-general
+                                                             strip-context
+                                                             (c/++ strips-context (dec idx))
+                                                             {:no-select? true}]))})
                              [:i.fas.fa-chevron-up]]
                             " "
                             [:a (if (= idx (dec num-strips))
                                   {:class "disabled"}
                                   {:on-click (js-event/handled
-                                              #(rf/dispatch [::component.element/move strip-context (inc idx)]))})
+                                              #(rf/dispatch [::component.element/move-general
+                                                             strip-context
+                                                             (c/++ strips-context (+ idx 2))
+                                                             {:no-select? true}]))})
                              [:i.fas.fa-chevron-down]]]
                            [:div
                             [strip-form strip-context type-str]]
