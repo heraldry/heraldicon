@@ -5,7 +5,6 @@
    [heraldicon.frontend.component.drag :as drag]
    [heraldicon.frontend.component.element :as component.element]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.heraldry.shield-separator :as shield-separator]
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
@@ -27,11 +26,6 @@
                                 :function
                                 (= :heraldry.charge.function/torse))))
                   seq)}))
-
-(defn parent?
-  [dragged-node-path drop-node-path]
-  (= (drop-last 2 dragged-node-path)
-     drop-node-path))
 
 (defmethod component/node :heraldry/helm [{:keys [path] :as context}]
   (let [{:keys [helmet?

@@ -8,8 +8,7 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
-   [heraldicon.svg.path :as path]
-   [heraldicon.util.vec :as vec]))
+   [heraldicon.svg.path :as path]))
 
 (defn- calculate-strip-slot-positions [context spacing]
   (let [stretch (interface/get-sanitized-data (c/++ context :stretch))
