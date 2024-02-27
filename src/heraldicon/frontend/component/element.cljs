@@ -123,3 +123,12 @@
                            :heraldry/ornaments)) (shield-separator/add-or-remove-shield-separator path)
                  post-fn (post-fn path))
                (tree/element-removed path))})))
+
+(macros/reg-event-db ::duplicate
+  (fn [db [_ {:keys [path]}]]
+    (let [value (get-in db path)
+          target-path (update path (dec (count path)) inc)
+          [new-db new-value-path] (insert-element db target-path value)]
+      (-> new-db
+          (tree/element-inserted new-value-path)
+          (tree/select-node new-value-path true)))))

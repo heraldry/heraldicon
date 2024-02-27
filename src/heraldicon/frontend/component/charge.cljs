@@ -3,11 +3,13 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.drag :as drag]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.element.charge-type-select :as charge-type-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.charge.options :as charge.options]
-   [heraldicon.interface :as interface]))
+   [heraldicon.interface :as interface]
+   [re-frame.core :as rf]))
 
 (defn- form [context]
   [:<>
@@ -71,6 +73,9 @@
                 (:path context))
    :drop-options-fn drag/drop-options
    :drop-fn drag/drop-fn
+   :buttons [{:icon "far fa-clone"
+              :title :string.button/duplicate
+              :handler #(rf/dispatch [::component.element/duplicate context])}]
    :nodes [{:context (c/++ context :field)}]})
 
 (defmethod component/form :heraldry/charge [_context]
