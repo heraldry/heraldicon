@@ -4,6 +4,7 @@
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.cottise :as cottise]
    [heraldicon.frontend.component.drag :as drag]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.macros :as macros]
@@ -153,7 +154,10 @@
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :disabled? (empty? menu)
-                :menu menu}]
+                :menu menu}
+               {:icon "far fa-clone"
+                :title :string.button/duplicate
+                :handler #(rf/dispatch [::component.element/duplicate context])}]
      :draggable? true
      :drop-options-fn drag/drop-options
      :drop-fn drag/drop-fn

@@ -248,13 +248,17 @@
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add
                 :menu [{:title :string.entity/charge
-                        :handler #(rf/dispatch [::component.element/add charges-context default/charge])}]}]
+                        :handler #(rf/dispatch [::component.element/add charges-context default/charge])}]}
+               {:icon "far fa-clone"
+                :title :string.button/duplicate
+                :handler #(rf/dispatch [::component.element/duplicate context])}]
      :nodes (concat (->> (range num-charges)
                          (map (fn [idx]
                                 (let [charge-context (c/++ charges-context idx)]
                                   {:context charge-context
                                    :buttons [{:icon "far fa-trash-alt"
                                               :title :string.tooltip/remove
+                                              :remove? true
                                               :handler #(rf/dispatch [::component.element/remove
                                                                       charge-context
                                                                       remove-charge-options])}]})))

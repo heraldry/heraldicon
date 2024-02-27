@@ -46,10 +46,13 @@
     {:title (string/str-tr (when (> num-helms 1)
                              (str (inc (last path)) ". ")) :string.entity/helm)
      :selectable? false
-     :buttons (when (seq add-menu)
-                [{:icon "fas fa-plus"
-                  :title :string.button/add
-                  :menu add-menu}])
+     :buttons (cond-> [{:icon "far fa-clone"
+                        :title :string.button/duplicate
+                        :handler #(rf/dispatch [::component.element/duplicate context])}]
+                (seq add-menu)
+                (conj {:icon "fas fa-plus"
+                       :title :string.button/add
+                       :menu add-menu}))
      :draggable? true
      :drop-options-fn drag/drop-options
      :drop-fn drag/drop-fn

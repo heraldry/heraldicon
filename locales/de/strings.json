@@ -726,7 +726,8 @@
     "actions": "Aktionen",
     "export": "Exportieren",
     "share": "Teilen",
-    "detect-shading": "Schattierung erkennen"
+    "detect-shading": "Schattierung erkennen",
+    "duplicate": "Duplizieren"
   },
   "user": {
     "message": {

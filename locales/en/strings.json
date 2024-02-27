@@ -728,7 +728,8 @@
     "actions": "Actions",
     "export": "Export",
     "share": "Share",
-    "detect-shading": "Detect shading"
+    "detect-shading": "Detect shading",
+    "duplicate": "Duplicate"
   },
   "user": {
     "message": {

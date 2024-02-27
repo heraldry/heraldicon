@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.drag :as drag]
+   [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.component.ribbon :as ribbon]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
@@ -64,11 +65,15 @@
         [ribbon/form ribbon-context]
         [ribbon/segments-form ribbon-context]]))])
 
-(defmethod component/node :heraldry/motto [{:keys [path]}]
+(defmethod component/node :heraldry/motto [{:keys [path]
+                                            :as context}]
   {:title @(rf/subscribe [::name path])
    :draggable? true
    :drop-options-fn drag/drop-options
-   :drop-fn drag/drop-fn})
+   :drop-fn drag/drop-fn
+   :buttons [{:icon "far fa-clone"
+              :title :string.button/duplicate
+              :handler #(rf/dispatch [::component.element/duplicate context])}]})
 
 (defmethod component/form :heraldry/motto [_context]
   form)
