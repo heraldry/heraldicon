@@ -16,16 +16,16 @@
     (let [new-db (cond-> (update-in db path (fn [elements]
                                               (vec (conj elements value))))
                    post-fn (post-fn path))
-          elements (get-in db path)
+          elements (get-in new-db path)
           new-element-path (conj path (-> elements count dec))
           new-element-path (if selected-element-path-fn
                              (selected-element-path-fn new-element-path (last elements) elements)
                              new-element-path)
           added-type (component/effective-type (:type value))
-          parent-type (get-in db (-> context
-                                     c/--
-                                     (c/++ :type)
-                                     :path))]
+          parent-type (get-in new-db (-> context
+                                         c/--
+                                         (c/++ :type)
+                                         :path))]
       {:db (cond-> new-db
              (or (isa? parent-type
                        :heraldry/helm)
