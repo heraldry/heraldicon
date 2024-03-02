@@ -499,7 +499,7 @@
                                                             colour ui-show-colours))))
                  landscape? unadjusted-charge
                  highlight-colours? adjusted-charge
-                 :else [:g
+                 :else [:<>
                         (when (= outline-mode :keep)
                           [:g {:mask (str "url(#" mask-base-id ")")}
                            [:rect {:transform reverse-transform
@@ -511,10 +511,14 @@
 
                         (when render-field?
                           [:g {:mask (str "url(#" mask-inverted-id ")")}
-                           [:g {:transform reverse-transform}
-                            [interface/render-component (c/++ context :field)]]])
+                           (let [wrapper (if reverse-transform
+                                           [:g {:transform reverse-transform}]
+                                           [:<>])]
+                             (conj wrapper [interface/render-component (c/++ context :field)]))])
+
                         [:g {:mask (str "url(#" mask-id ")")}
                          (svg/make-unique-ids coloured-charge)]
+
                         (when render-shadow?
                           [:g {:mask (str "url(#" shadow-mask-id ")")}
                            [:rect {:transform reverse-transform

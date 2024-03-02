@@ -73,7 +73,7 @@
                                        "L" [0 (/ part-height 2)]
                                        "z"])
         pattern-id (uid/generate "lozengy")]
-    [:g
+    [:<>
      [:defs
       (when outline?
         [:pattern {:id (str pattern-id "-outline")

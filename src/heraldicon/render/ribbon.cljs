@@ -45,22 +45,22 @@
           text-colour (tincture/pick tincture-text context)
           selected? (and (not svg-export?)
                          @(rf/subscribe [::tree/node-highlighted? (drop-last (:path context))]))]
-      (into [:g (when-not svg-export?
-                  {:on-click (when (and (not svg-export?)
-                                        select-component-fn)
-                               (js-event/handled
-                                #(select-component-fn (c/-- context))))
-                   :on-mouse-enter (when (and (not svg-export?)
-                                              enter-component-fn)
-                                     (js-event/handled
-                                      #(enter-component-fn (c/-- context))))
-                   :on-mouse-leave (when (and (not svg-export?)
-                                              enter-component-fn)
-                                     (js-event/handled
-                                      #(leave-component-fn (c/-- context))))
-                   :style {:cursor "pointer"}})
-             (when selected?
-               [highlight/defs :scale (/ 1 ribbon-scale)])]
+      (into (cond-> (if svg-export?
+                      [:<>]
+                      [:g {:on-click (when (and (not svg-export?)
+                                                select-component-fn)
+                                       (js-event/handled
+                                        #(select-component-fn (c/-- context))))
+                           :on-mouse-enter (when (and (not svg-export?)
+                                                      enter-component-fn)
+                                             (js-event/handled
+                                              #(enter-component-fn (c/-- context))))
+                           :on-mouse-leave (when (and (not svg-export?)
+                                                      enter-component-fn)
+                                             (js-event/handled
+                                              #(leave-component-fn (c/-- context))))
+                           :style {:cursor "pointer"}}])
+              selected? (conj [highlight/defs :scale (/ 1 ribbon-scale)]))
 
             (map (fn [[idx partial-curve]]
                    (let [top-edge (path/curve-to-relative partial-curve)
@@ -122,7 +122,7 @@
                                             count
                                             pos?))]
                      ^{:key idx}
-                     [:g
+                     [:<>
                       [:path {:d full-path
                               :style (merge (when outline?
                                               (outline/style context))

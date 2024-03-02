@@ -30,7 +30,7 @@
   (let [{:keys [num-cottise-parts]
          :or {num-cottise-parts 1}} (interface/get-properties (c/-- context 2))]
     [:<>
-     (into [:g]
+     (into [:<>]
            (keep (fn [part]
                    (let [part-context (set-cottise-part context part)]
                      (when (interface/get-properties part-context)
@@ -49,7 +49,7 @@
         cottise-opposite-2? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-opposite-2)])
         cottise-extra-1? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-extra-1)])
         cottise-extra-2? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-extra-2)])]
-    [:g
+    [:<>
      (when cottise-1?
        [render-cottise (c/++ cottising-context :cottise-1)])
      (when cottise-opposite-1?
@@ -71,7 +71,7 @@
   (let [{:keys [svg-export?]} (c/render-hints context)
         clip-path-id (uid/generate "clip")
         {:keys [transform]} (interface/get-properties context)]
-    [:g
+    [:<>
      [:defs
       [(if svg-export?
          :mask
@@ -81,9 +81,10 @@
      [:g {(if svg-export?
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
-      [:g (when transform
-            {:transform transform})
-       [interface/render-component (c/++ context :field)]]]
+      (let [wrapper (if transform
+                      [:g {:transform transform}]
+                      [:<>])]
+        (conj wrapper [interface/render-component (c/++ context :field)]))]
      [render/ordinary-edges context]
      [cottising context]
      [render/shape-highlight context]]))
