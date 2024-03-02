@@ -76,7 +76,7 @@
         outline? (or (interface/render-option :outline? context)
                      (interface/get-sanitized-data (c/++ context :outline?)))
         pattern-id (uid/generate "chequy")]
-    [:g
+    [:<>
      [:defs
       (when outline?
         [:pattern {:id (str pattern-id "-outline")

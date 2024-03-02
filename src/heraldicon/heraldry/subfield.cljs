@@ -64,7 +64,7 @@
                 svg-export?]} (c/render-hints context)
         clip-path-id (uid/generate "clip")
         field-context (effective-field-context context)]
-    [:g
+    [:<>
      [:defs
       [(if svg-export?
          :mask
@@ -73,9 +73,13 @@
      [:g {(if svg-export?
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
-      [:g {:style (when-not (or svg-export?
-                                charge-preview?)
-                    {:pointer-events "visiblePainted"
-                     :cursor "pointer"})
-           :transform transform}
-       [interface/render-component field-context]]]]))
+      (let [clickable? (not (or svg-export?
+                                charge-preview?))
+            wrapper (if (or clickable?
+                            transform)
+                      [:g {:style (when clickable?
+                                    {:pointer-events "visiblePainted"
+                                     :cursor "pointer"})
+                           :transform transform}]
+                      [:<>])]
+        (conj wrapper [interface/render-component field-context]))]]))

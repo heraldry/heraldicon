@@ -203,12 +203,11 @@
                            :stroke "#000"}
                    :r size}]
          (when (and (= edit-mode :add-or-remove)
-                    deletable?) [:g
-                                 [:rect {:x (/ width -2)
-                                         :y (/ height -2)
-                                         :width width
-                                         :height height
-                                         :style {:fill "#000"}}]])]))))
+                    deletable?) [:rect {:x (/ width -2)
+                                        :y (/ height -2)
+                                        :width width
+                                        :height height
+                                        :style {:fill "#000"}}])]))))
 
 (defn- add-point [path idx {:keys [x y] :as point}]
   (let [size path-point-size
@@ -222,17 +221,16 @@
      [:circle {:style {:fill "#fff"
                        :stroke "#000"}
                :r size}]
-     [:g
-      [:rect {:x (/ width -2)
-              :y (/ height -2)
-              :width width
-              :height height
-              :style {:fill "#000"}}]
-      [:rect {:x (/ height -2)
-              :y (/ width -2)
-              :width height
-              :height width
-              :style {:fill "#000"}}]]]))
+     [:rect {:x (/ width -2)
+             :y (/ height -2)
+             :width width
+             :height height
+             :style {:fill "#000"}}]
+     [:rect {:x (/ height -2)
+             :y (/ width -2)
+             :width height
+             :height width
+             :style {:fill "#000"}}]]))
 
 (defn- render-edit-overlay [path]
   (let [edit-mode @(rf/subscribe [::edit-mode])

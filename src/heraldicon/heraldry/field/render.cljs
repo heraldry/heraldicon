@@ -9,7 +9,7 @@
 (defn- render-subfields [context {:keys [num-subfields transform overlap?-fn]
                                   :or {overlap?-fn even?}}]
   ;; TODO: overlap should move into subfield/render
-  (into [:g]
+  (into [:<>]
         (map (fn [idx]
                ^{:key idx}
                [subfield/render (c/++ context :fields idx) transform (overlap?-fn idx)]))

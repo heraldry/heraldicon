@@ -15,7 +15,7 @@
         {:keys [vertical-mask-shape
                 other?]
          :as properties} (interface/get-properties context)]
-    [:g
+    [:<>
      (when vertical-mask-shape
        [:defs
         [(if svg-export?

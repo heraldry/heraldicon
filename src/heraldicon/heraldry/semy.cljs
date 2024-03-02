@@ -128,7 +128,7 @@
                            (c/++ :charge)
                            (c/<< :size-default 50))]
     ;; TODO: reverse transform inside charge
-    [:g
+    [:<>
      [:defs
       (into [:pattern {:id pattern-id
                        :width part-width

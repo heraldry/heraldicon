@@ -86,7 +86,7 @@
                                       :clip-rule "evenodd"
                                       :fill-rule "evenodd"}])
         outline? (edge-outline? context)]
-    [:g
+    [:<>
      (when (-> fimbriation :mode #{:double})
        (let [thickness (+ (:thickness-1 fimbriation)
                           (:thickness-2 fimbriation))]

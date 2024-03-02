@@ -91,36 +91,35 @@
                     :height "10em"}
             :viewBox "0 0 200 200"
             :preserveAspectRatio "xMidYMin meet"}
-      [:g
-       [:rect {:x 0
-               :y 0
-               :width 200
-               :height 200
-               :style {:stroke "#000"
-                       :fill "none"}}]
-       (into [:g {:transform "translate(100,100)"}]
-             (map-indexed (fn [idx {:keys [point charge-index slot-path]}]
-                            (let [color (if (nil? charge-index)
-                                          "#fff"
-                                          (-> charge-index
-                                              (mod (count preview-tinctures))
-                                              (->> (get preview-tinctures))
-                                              (tincture/pick context)))]
-                              ^{:key idx}
-                              [:g {:transform (str "translate(" (v/->str point) ")")
-                                   :on-click (js-event/handled
-                                              #(rf/dispatch [::cycle-charge-index slot-path num-charges]))
-                                   :style {:cursor "pointer"}}
-                               [:circle {:r dot-size
-                                         :style {:stroke "#000"
-                                                 :stroke-width 0.5
-                                                 :fill color}}]
-                               (when (>= charge-index (count preview-tinctures))
-                                 [:circle {:r (* 2 (quot charge-index (count preview-tinctures)))
-                                           :style {:stroke "#000"
-                                                   :stroke-width 0.5
-                                                   :fill "#fff"}}])])))
-             slot-positions)]]
+      [:rect {:x 0
+              :y 0
+              :width 200
+              :height 200
+              :style {:stroke "#000"
+                      :fill "none"}}]
+      (into [:g {:transform "translate(100,100)"}]
+            (map-indexed (fn [idx {:keys [point charge-index slot-path]}]
+                           (let [color (if (nil? charge-index)
+                                         "#fff"
+                                         (-> charge-index
+                                             (mod (count preview-tinctures))
+                                             (->> (get preview-tinctures))
+                                             (tincture/pick context)))]
+                             ^{:key idx}
+                             [:g {:transform (str "translate(" (v/->str point) ")")
+                                  :on-click (js-event/handled
+                                             #(rf/dispatch [::cycle-charge-index slot-path num-charges]))
+                                  :style {:cursor "pointer"}}
+                              [:circle {:r dot-size
+                                        :style {:stroke "#000"
+                                                :stroke-width 0.5
+                                                :fill color}}]
+                              (when (>= charge-index (count preview-tinctures))
+                                [:circle {:r (* 2 (quot charge-index (count preview-tinctures)))
+                                          :style {:stroke "#000"
+                                                  :stroke-width 0.5
+                                                  :fill "#fff"}}])])))
+            slot-positions)]
      [tooltip/info :string.tooltip/charge-group-preview]]))
 
 (defn- strip-form [context type-str]
