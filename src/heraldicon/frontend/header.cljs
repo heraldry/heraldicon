@@ -46,7 +46,8 @@
     [:div.header {:class (dark-mode/class)}
      [:div {:style {:flex 1.5
                     :line-height "2em"
-                    :padding-left "0.5em"}}
+                    :padding-left "0.5em"
+                    :white-space "nowrap"}}
       [:img {:src (static/static-url "/img/heraldicon-logo.png")
              :style {:height "1.8em"
                      :margin-right "0.6em"
