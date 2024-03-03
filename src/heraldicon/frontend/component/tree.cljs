@@ -419,8 +419,8 @@
   [db path open?]
   (-> db
       (assoc-in active-node-path path)
-      (open-node (cond-> path
-                   (not open?) drop-last))))
+      (open-node (vec (cond-> path
+                        (not open?) drop-last)))))
 
 (macros/reg-event-fx ::select-node
   (fn [{:keys [db]} [_ path open?]]
@@ -430,7 +430,7 @@
   [db context]
   (-> db
       (assoc-in edit-node-path context)
-      (select-node (drop-last (:path context)) false)))
+      (select-node (vec (drop-last (:path context))) false)))
 
 (macros/reg-event-db ::set-edit-node
   (fn [db [_ context]]
