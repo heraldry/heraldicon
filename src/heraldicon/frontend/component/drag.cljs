@@ -36,8 +36,7 @@
              (or (isa? drop-type :heraldry/helm)
                  (isa? drop-type :heraldry/ornaments)))
 
-        (and (or (isa? drag-type :heraldry/motto)
-                 (isa? drag-type :heraldry/charge)
+        (and (or (isa? drag-type :heraldry/charge)
                  (isa? drag-type :heraldry/charge-group))
              (isa? drop-type :heraldry/helm))
 
