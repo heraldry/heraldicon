@@ -10,6 +10,20 @@
 
 (def APPEND-INDEX 10000)
 
+(defn- adjust-new-value-path
+  "Adjust the path if it points to an inserted shield separator."
+  [db path]
+  (let [element (get-in db path)]
+    (if (shield-separator/shield-separator? element)
+      (let [index (last path)
+            parent-path (vec (drop-last path))
+            length (count (get-in db parent-path))
+            new-index (inc index)]
+        (if (< new-index length)
+          (conj parent-path new-index)
+          (conj parent-path (max (dec index) 0))))
+      path)))
+
 (macros/reg-event-fx ::add
   (fn [{:keys [db]} [_ {:keys [path]
                         :as context} value {:keys [post-fn selected-element-path-fn]}]]
@@ -25,16 +39,18 @@
           parent-type (get-in new-db (-> context
                                          c/--
                                          (c/++ :type)
-                                         :path))]
-      {:db (cond-> new-db
-             (or (isa? parent-type
-                       :heraldry/helm)
-                 (isa? parent-type
-                       :heraldry/ornaments)) (shield-separator/add-or-remove-shield-separator path))
+                                         :path))
+          new-db (cond-> new-db
+                   (or (isa? parent-type
+                             :heraldry/helm)
+                       (isa? parent-type
+                             :heraldry/ornaments)) (shield-separator/add-or-remove-shield-separator path))
+          new-element-path (if (isa? added-type :heraldry/helm)
+                             (conj new-element-path :components 1)
+                             (adjust-new-value-path new-db new-element-path))]
+      {:db new-db
        :dispatch-n [[::submenu/close-all]
-                    [::tree/select-node (if (isa? added-type :heraldry/helm)
-                                          (conj new-element-path :components 1)
-                                          new-element-path)
+                    [::tree/select-node new-element-path
                      true]
                     (cond
                       (isa? added-type :heraldry/helm) [::submenu/open (conj new-element-path :components 1 :type)]
@@ -100,13 +116,15 @@
                      {:keys [no-select? post-fn]}]]
     (let [[new-db value] (remove-element db value-path)
           adjusted-target-path (adjust-path-after-removal target-path value-path)
-          [new-db new-value-path] (insert-element new-db adjusted-target-path value)]
-      {:db (-> new-db
-               (tree/element-removed value-path)
-               (tree/element-inserted new-value-path)
-               (cond->
-                 post-fn (post-fn value-path target-path)
-                 (not no-select?) (tree/select-node new-value-path true)))})))
+          [new-db new-value-path] (insert-element new-db adjusted-target-path value)
+          new-db (-> new-db
+                     (tree/element-removed value-path)
+                     (tree/element-inserted new-value-path)
+                     (cond->
+                       post-fn (post-fn value-path target-path)))]
+      {:db (if no-select?
+             new-db
+             (tree/select-node new-db (adjust-new-value-path new-db new-value-path) true))})))
 
 (macros/reg-event-fx ::remove
   (fn [{:keys [db]} [_ {:keys [path]
