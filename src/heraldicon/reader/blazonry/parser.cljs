@@ -77,7 +77,13 @@
                                         (map (fn [word]
                                                {:tag :regexp
                                                 ; TODO: escape word so it can be used in a regexp
-                                                :regexp (re-pattern (str "^\\b" (str/replace word #"'" "'?") "\\b"))}))
+                                                :regexp (re-pattern (str "^\\b"
+                                                                         (-> word
+                                                                             (str/replace #"[+*.?()]" #(str "\\" %))
+                                                                             (str/replace #"\[" "\\[")
+                                                                             (str/replace #"\]" "\\]")
+                                                                             (str/replace #"'" "'?"))
+                                                                         "\\b"))}))
                                         terminal-words)}))))
               terminals)
     :red {:reduction-type :hiccup
