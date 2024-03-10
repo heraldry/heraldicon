@@ -16,12 +16,12 @@
 
     [:button.button.primary {:type "submit"
                              :class (when-not can-save? "disabled")
-                             :title (when-not can-save?
-                                      (case entity-type
-                                        :heraldicon.entity.type/arms :string.user.message/need-to-be-logged-in-and-own-the-arms
-                                        :heraldicon.entity.type/charge :string.user.message/need-to-be-logged-in-and-own-the-charge
-                                        :heraldicon.entity.type/ribbon :string.user.message/need-to-be-logged-in-and-own-the-ribbon
-                                        :heraldicon.entity.type/collection :string.user.message/need-to-be-logged-in-and-own-the-collection))
+                             :title (tr (when-not can-save?
+                                          (case entity-type
+                                            :heraldicon.entity.type/arms :string.user.message/need-to-be-logged-in-and-own-the-arms
+                                            :heraldicon.entity.type/charge :string.user.message/need-to-be-logged-in-and-own-the-charge
+                                            :heraldicon.entity.type/ribbon :string.user.message/need-to-be-logged-in-and-own-the-ribbon
+                                            :heraldicon.entity.type/collection :string.user.message/need-to-be-logged-in-and-own-the-collection)))
                              :on-click (when can-save?
                                          (fn [event]
                                            (.preventDefault event)
