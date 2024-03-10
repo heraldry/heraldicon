@@ -1,4 +1,6 @@
-(ns heraldicon.util.colour)
+(ns heraldicon.util.colour
+  (:require
+   [clojure.string :as str]))
 
 (def ^:private html-names
   {:indianred "#cd5c5c"
@@ -173,10 +175,10 @@
       nil)))
 
 (defn normalize [colour]
-  (or (get html-names (keyword colour))
-      (expand-three-hex colour)
-      (convert-rgb colour)
-      colour))
+  (str/lower-case (or (get html-names (keyword colour))
+                      (expand-three-hex colour)
+                      (convert-rgb colour)
+                      colour)))
 
 (defn- to-rgb [colour]
   (let [[_ r1 r2 g1 g2 b1 b2] (normalize colour)
