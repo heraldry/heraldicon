@@ -25,15 +25,26 @@
 
           :backend
           {:target :node-library
-           :exports {:handler heraldicon.backend.api.core/handler
-                     :discord_handler heraldicon.backend.discord/handler
-                     :site_handler heraldicon.backend.site/handler
-                     :options_handler heraldicon.backend.api.core/options-handler
+           :exports {:discord_handler heraldicon.backend.discord/handler
                      :collect_statistics_handler heraldicon.backend.monitoring.core/collect-statistics-handler
+                     :foo heraldicon.backend.server/start
                      :canary_handler heraldicon.backend.canary/handler}
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}
+                              :infer-externs true
+                              :source-map true
+                              :source-map-detail-level :all}
+
+           :dev {:output-to "./backend/build/dev/backend.js"}}
+
+          :backend-server
+          {:target :node-script
+           :main heraldicon.backend.server/start
+           :js-options {:js-package-dirs ["./backend/node_modules"]}
+           :compiler-options {:output-feature-set :es6
+                              :warnings {:redef false}
+                              :infer-externs true
                               :source-map true
                               :source-map-detail-level :all}
 
