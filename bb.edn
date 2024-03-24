@@ -96,12 +96,12 @@
                        check-debug-print-backend
                        check-json]}
 
-  dev-local (shell "npx shadow-cljs watch frontend backend test manage")
+  dev-local (shell "npx shadow-cljs watch frontend backend-server test manage")
 
   staging-backend-release (do
                             (fs/delete-tree STAGING-BACKEND-DIR)
                             (fs/delete-tree PROD-BACKEND-DIR)
-                            (shell "npx shadow-cljs release backend --config-merge"
+                            (shell "npx shadow-cljs release backend-server --config-merge"
                                    (prn-str (merge STAGING-CONFIG
                                                    {:output-to (str (fs/path STAGING-BACKEND-DIR "backend.js"))}))))
 
@@ -118,7 +118,7 @@
   prod-backend-release (do
                          (fs/delete-tree STAGING-BACKEND-DIR)
                          (fs/delete-tree PROD-BACKEND-DIR)
-                         (shell "npx shadow-cljs release backend --config-merge"
+                         (shell "npx shadow-cljs release backend-server --config-merge"
                                 (prn-str
                                  (merge PROD-CONFIG
                                         {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))}))))

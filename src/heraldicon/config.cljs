@@ -31,9 +31,9 @@
 
 (def ^:private config-data
   (case stage
-    "dev" {:heraldicon-api-endpoint "http://localhost:4000/api"
+    "dev" {:heraldicon-api-endpoint "http://localhost:8180/api"
            :heraldicon-url "http://localhost:8081"
-           :heraldicon-site-url "http://localhost:4000/dev"
+           :heraldicon-site-url "http://localhost:8180"
            :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                  :ClientId "2v90eij0l4aluf2amqumqh9gko"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
@@ -43,7 +43,8 @@
            :helmet-charge-id "charge:hlsnvP"
            :compartment-charge-id "charge:SSLk9y"
            :supporter-charge-id "charge:fxOk19"
-           :mantling-charge-id "charge:gTrIM7"}
+           :mantling-charge-id "charge:gTrIM7"
+           :bucket-data "local-heraldry-data"}
 
     "staging" {:heraldicon-api-endpoint "https://lg0j98nuab.execute-api.eu-central-1.amazonaws.com/api"
                :heraldicon-discord-api-endpoint "https://lg0j98nuab.execute-api.eu-central-1.amazonaws.com/discord"
