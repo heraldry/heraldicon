@@ -32,7 +32,6 @@
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}
-                              :infer-externs true
                               :source-map true
                               :source-map-detail-level :all}
 
@@ -44,7 +43,6 @@
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es6
                               :warnings {:redef false}
-                              :infer-externs true
                               :source-map true
                               :source-map-detail-level :all}
 
