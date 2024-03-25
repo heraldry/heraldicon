@@ -46,7 +46,7 @@
            :mantling-charge-id "charge:gTrIM7"
            :bucket-data "local-heraldry-data"}
 
-    "staging" {:heraldicon-api-endpoint "https://lg0j98nuab.execute-api.eu-central-1.amazonaws.com/api"
+    "staging" {:heraldicon-api-endpoint "/api"
                :heraldicon-discord-api-endpoint "https://lg0j98nuab.execute-api.eu-central-1.amazonaws.com/discord"
                :heraldicon-url "https://staging.heraldicon.org"
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
@@ -60,7 +60,7 @@
                :supporter-charge-id "charge:fxOk19"
                :mantling-charge-id "charge:gTrIM7"}
 
-    "prod" {:heraldicon-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/api"
+    "prod" {:heraldicon-api-endpoint "/api"
             :heraldicon-discord-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/discord"
             :heraldicon-url "https://heraldicon.org"
             :cognito-pool-config {:UserPoolId "eu-central-1_WXqnJUEOT"
