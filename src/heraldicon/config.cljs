@@ -58,7 +58,8 @@
                :helmet-charge-id "charge:hlsnvP"
                :compartment-charge-id "charge:SSLk9y"
                :supporter-charge-id "charge:fxOk19"
-               :mantling-charge-id "charge:gTrIM7"}
+               :mantling-charge-id "charge:gTrIM7"
+               :bucket-data "local-heraldry-data"}
 
     "prod" {:heraldicon-api-endpoint "/api"
             :heraldicon-discord-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/discord"
@@ -72,7 +73,8 @@
             :helmet-charge-id "charge:hlsnvP"
             :compartment-charge-id "charge:SSLk9y"
             :supporter-charge-id "charge:fxOk19"
-            :mantling-charge-id "charge:gTrIM7"}))
+            :mantling-charge-id "charge:gTrIM7"
+            :bucket-data "prod-heraldry-data"}))
 
 (defn get [setting]
   (case setting
