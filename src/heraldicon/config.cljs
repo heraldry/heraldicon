@@ -47,7 +47,6 @@
            :bucket-data "local-heraldry-data"}
 
     "staging" {:heraldicon-api-endpoint "/api"
-               :heraldicon-discord-api-endpoint "https://lg0j98nuab.execute-api.eu-central-1.amazonaws.com/discord"
                :heraldicon-url "https://staging.heraldicon.org"
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                      :ClientId "2v90eij0l4aluf2amqumqh9gko"
