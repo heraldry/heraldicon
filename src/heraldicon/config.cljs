@@ -13,7 +13,7 @@
                [(keyword k) (aget x k)]))
         (js-keys x)))
 
-(def ^:private env
+(def env
   "Returns current env vars as a Clojure map."
   (js->clj+ (.-env js/process)))
 
