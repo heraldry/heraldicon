@@ -22,11 +22,6 @@
 
 (log/swap-config! assoc :appenders {:simple (log-appender/simple-appender {})})
 
-(def ^:private base-font-dir
-  (if (= stage "dev")
-    "/Library/Fonts"
-    "/opt/resvg/fonts"))
-
 (def ^:private config-data
   (case stage
     "dev" {:heraldicon-api-endpoint "http://localhost:8180/api"
@@ -80,7 +75,6 @@
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}
     :maintenance-mode? false
-    :base-font-dir base-font-dir
     :email-address "oliver@heraldicon.org"
     (or (some-> setting
                 name
