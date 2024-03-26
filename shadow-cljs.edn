@@ -24,20 +24,6 @@
                  :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true}}}}
 
           :backend
-          {:target :node-library
-           :exports {:discord_handler heraldicon.backend.discord/handler
-                     :collect_statistics_handler heraldicon.backend.monitoring.core/collect-statistics-handler
-                     :foo heraldicon.backend.server/start
-                     :canary_handler heraldicon.backend.canary/handler}
-           :js-options {:js-package-dirs ["./backend/node_modules"]}
-           :compiler-options {:output-feature-set :es6
-                              :warnings {:redef false}
-                              :source-map true
-                              :source-map-detail-level :all}
-
-           :dev {:output-to "./backend/build/dev/backend.js"}}
-
-          :backend-server
           {:target :node-script
            :main heraldicon.backend.server/start
            :js-options {:js-package-dirs ["./backend/node_modules"]}
