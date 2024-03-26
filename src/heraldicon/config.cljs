@@ -25,7 +25,7 @@
 (def ^:private base-font-dir
   (if (= stage "dev")
     "/Library/Fonts"
-    "/opt/fonts"))
+    "/opt/resvg/fonts"))
 
 (def ^:private config-data
   (case stage
