@@ -74,7 +74,7 @@
     :commit commit
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}
-    :maintenance-mode? false
+    :maintenance-mode? true
     :email-address "oliver@heraldicon.org"
     (or (some-> setting
                 name
