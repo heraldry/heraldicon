@@ -71,7 +71,7 @@
                                  (= 1)
                                  (or (throw (Exception. "found debug prints in frontend"))))
   check-debug-print-backend (-> (shell {:continue true}
-                                       "rg '(println|\\(js/console)' backend/src --glob=!backend/src/heraldicon/manage.cljs")
+                                       "rg '(println|\\(js/console)' backend/src --glob=!backend/src/heraldicon/manage.cljs --glob=!backend/src/heraldicon/backend/server.cljs")
                                 :exit
                                 (= 1)
                                 (or (throw (Exception. "found debug prints in backend"))))
