@@ -74,7 +74,7 @@
                                        "rg '(println|\\(js/console)' backend/src --glob=!backend/src/heraldicon/manage.cljs")
                                 :exit
                                 (= 1)
-                                (or (throw (Exception. "fount debug prints in backend"))))
+                                (or (throw (Exception. "found debug prints in backend"))))
 
   check-json (-> (shell {:out :string} "find locales -iname '*.json'")
                  (shell {:out :string} "xargs jq ."))
