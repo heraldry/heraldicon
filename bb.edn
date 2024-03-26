@@ -107,7 +107,7 @@
 
   staging-backend-deploy (do
                            (run 'staging-backend-release)
-                           (shell {:dir "backend"} "npx sls deploy --stage staging"))
+                           (shell {:dir "backend"} "bb staging-deploy"))
 
   staging-frontend-release (build-frontend-release STAGING-FRONTEND-DIR STAGING-CONFIG)
 
@@ -132,7 +132,7 @@
                                  check-dirty-backend]
                        :task (do
                                (run 'prod-backend-release)
-                               (shell {:dir "backend"} "npx sls deploy --stage prod")
+                               (shell {:dir "backend"} "bb prod-deploy")
                                (tag-backend-deploy))}
 
   prod-frontend-release (build-frontend-release PROD-FRONTEND-DIR PROD-CONFIG)
