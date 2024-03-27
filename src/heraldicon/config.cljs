@@ -57,7 +57,7 @@
             :heraldicon-discord-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/discord"
             :heraldicon-url "https://heraldicon.org"
             :cognito-pool-config {:UserPoolId "eu-central-1_WXqnJUEOT"
-                                  :ClientId "21pvp6cc4l3gptoj4bl3jc9s7r"
+                                  :ClientId "2m6qhen3lsu9dpr7lb26697db8"
                                   :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}
             :static-files-url "https://cdn.heraldicon.org"
             :fleur-de-lis-charge-id "charge:ZfqrIl"
