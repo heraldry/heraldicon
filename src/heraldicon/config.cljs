@@ -28,7 +28,7 @@
            :heraldicon-url "http://localhost:8081"
            :heraldicon-site-url "http://localhost:8180"
            :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
-                                 :ClientId "2v90eij0l4aluf2amqumqh9gko"
+                                 :ClientId "7tcpem5hrjcu097d74h3nv6s92"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
            :static-files-url "http://localhost:8081"
            :fleur-de-lis-charge-id "charge:ZfqrIl"
@@ -42,7 +42,7 @@
     "staging" {:heraldicon-api-endpoint "/api"
                :heraldicon-url "https://staging.heraldicon.org"
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
-                                     :ClientId "2v90eij0l4aluf2amqumqh9gko"
+                                     :ClientId "7tcpem5hrjcu097d74h3nv6s92"
                                      :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
                :static-files-url "https://cdn.staging.heraldicon.org"
                :fleur-de-lis-charge-id "charge:ZfqrIl"
