@@ -17,7 +17,8 @@
    [re-frame.subs :as r-subs]
    [reagent.dom.client :as r]))
 
-(when (not= (config/get :stage) "dev")
+(when (and (not= (config/get :stage) "dev")
+           (not (config/get :backend?)))
   (sentry/init
    (clj->js
     {:dsn "https://0723f8737fa50a0ecbae2ade37e83976@o4506989681049600.ingest.us.sentry.io/4506991066021888"
