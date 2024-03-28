@@ -41,6 +41,19 @@
             (shell "npx shadow-cljs release frontend --config-merge"
                    (prn-str (merge config {:output-dir output-dir}))))
 
+          (defn create-sentry-release-backend
+            [build-dir stage]
+
+            (let [release-name (str COMMIT-HASH "-" stage)]
+              (shell (str "npx @sentry/cli releases --org heraldicon "
+                          "new --project heraldicon-backend "
+                          "--url https://github.com/heraldry/heraldicon/commit/" COMMIT-HASH " "
+                          release-name))
+              (shell (str "npx @sentry/cli releases --org heraldicon "
+                          "files --project heraldicon-backend " release-name " "
+                          "upload-sourcemaps --url-prefix / "
+                          build-dir))))
+
           (defn create-sentry-release-frontend
             [build-dir stage]
 
@@ -125,6 +138,7 @@
 
   staging-backend-deploy (do
                            (run 'staging-backend-release)
+                           (create-sentry-release-backend STAGING-BACKEND-DIR "staging")
                            (shell {:dir "backend"} "bb staging-deploy"))
 
   staging-frontend-release (build-frontend-release STAGING-FRONTEND-DIR STAGING-CONFIG)
@@ -154,6 +168,7 @@
                                  check-dirty-backend]
                        :task (do
                                (run 'prod-backend-release)
+                               (create-sentry-release-backend PROD-BACKEND-DIR "prod")
                                (shell {:dir "backend"} "bb prod-deploy")
                                (tag-backend-deploy))}
 
