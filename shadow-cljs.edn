@@ -15,7 +15,9 @@
                       :preloads [devtools.preload
                                  day8.re-frame-10x.preload.react-18]}
            :compiler-options {:output-feature-set :es6
-                              :warnings {:redef false}}
+                              :warnings {:redef false}
+                              :source-map true
+                              :source-map-detail-level :all}
 
            :modules {:main {:init-fn heraldicon.frontend.main/init
                             :preloads [heraldicon.frontend.preload]}}
