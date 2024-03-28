@@ -19,6 +19,7 @@
 
 (goog-define stage "dev")
 (goog-define commit "unknown")
+(goog-define is_backend false)
 
 (log/swap-config! assoc :appenders {:simple (log-appender/simple-appender {})})
 
@@ -71,6 +72,7 @@
 (defn get [setting]
   (case setting
     :stage stage
+    :backend? is_backend
     :commit commit
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}

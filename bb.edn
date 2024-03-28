@@ -8,6 +8,8 @@
                 :out
                 str/trim))
 
+          (def BACKEND-CONFIG {:clojure-defines {'heraldicon.config/is_backend true}})
+
           (def PROD-FRONTEND-DIR "build/prod")
           (def PROD-BACKEND-DIR "backend/build/prod")
           (def PROD-CONFIG {:closure-defines {'heraldicon.config/stage "prod"
@@ -102,8 +104,11 @@
                             (fs/delete-tree STAGING-BACKEND-DIR)
                             (fs/delete-tree PROD-BACKEND-DIR)
                             (shell "npx shadow-cljs release backend --config-merge"
-                                   (prn-str (merge STAGING-CONFIG
-                                                   {:output-to (str (fs/path STAGING-BACKEND-DIR "backend.js"))}))))
+                                   (prn-str (merge-with
+                                             merge
+                                             STAGING-CONFIG
+                                             BACKEND-CONFIG
+                                             {:output-to (str (fs/path STAGING-BACKEND-DIR "backend.js"))}))))
 
   staging-backend-deploy (do
                            (run 'staging-backend-release)
@@ -120,8 +125,11 @@
                          (fs/delete-tree PROD-BACKEND-DIR)
                          (shell "npx shadow-cljs release backend --config-merge"
                                 (prn-str
-                                 (merge PROD-CONFIG
-                                        {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))}))))
+                                 (merge-with
+                                  merge
+                                  PROD-CONFIG
+                                  BACKEND-CONFIG
+                                  {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))}))))
 
   prod-backend-deploy {:depends [check-clj-kondo
                                  check-cljfmt
