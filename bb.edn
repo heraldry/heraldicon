@@ -41,6 +41,19 @@
             (shell "npx shadow-cljs release frontend --config-merge"
                    (prn-str (merge config {:output-dir output-dir}))))
 
+          (defn create-sentry-release-frontend
+            [build-dir stage]
+
+            (let [release-name (str COMMIT-HASH "-" stage)]
+              (shell (str "npx @sentry/cli releases --org heraldicon "
+                          "new --project heraldicon-frontend "
+                          "--url https://github.com/heraldry/heraldicon/commit/" COMMIT-HASH " "
+                          release-name))
+              (shell (str "npx @sentry/cli releases --org heraldicon "
+                          "files --project heraldicon-frontend " release-name " "
+                          "upload-sourcemaps --url-prefix / "
+                          build-dir))))
+
           (defn deploy-frontend [build-dir target]
             (shell "scripts/sync-with-s3" build-dir target)
             (shell (format "aws --profile heraldry-serverless s3 cp --acl public-read
@@ -118,6 +131,7 @@
 
   staging-frontend-deploy (do
                             (run 'staging-frontend-release)
+                            (create-sentry-release-frontend STAGING-FRONTEND-DIR "staging")
                             (deploy-frontend STAGING-FRONTEND-DIR "cdn.staging.heraldicon.org"))
 
   prod-backend-release (do
