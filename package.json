@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "@sentry/browser": "^7.108.0",
+    "@sentry/integrations": "^7.109.0",
     "amazon-cognito-identity-js": "^6.2.0",
     "copy-to-clipboard": "^3.3.3",
     "crypto-browserify": "^3.12.0",

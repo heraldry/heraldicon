@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.main
   (:require
    ["@sentry/browser" :as sentry]
+   ["@sentry/integrations" :as sentry-integrations]
    [heraldicon.config :as config]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.core]
@@ -17,16 +18,6 @@
    [re-frame.subs :as r-subs]
    [reagent.dom.client :as r]))
 
-(when (and (not= (config/get :stage) "dev")
-           (not (config/get :backend?)))
-  (sentry/init
-   (clj->js
-    {:dsn "https://0723f8737fa50a0ecbae2ade37e83976@o4506989681049600.ingest.us.sentry.io/4506991066021888"
-     :environment (config/get :stage)
-     :release (str (config/get :commit) "-" (config/get :stage))
-     :replaysSessionSampleRate 1.0
-     :replaysOnErrorSampleRate 1.0})))
-
 (defn app []
   [:<>
    [header/view]
@@ -36,6 +27,17 @@
     [auto-complete/render]]])
 
 (defn ^:export init []
+  (when (and (not= (config/get :stage) "dev")
+             (not (config/get :backend?)))
+    (sentry/init
+     (clj->js
+      {:dsn "https://0723f8737fa50a0ecbae2ade37e83976@o4506989681049600.ingest.us.sentry.io/4506991066021888"
+       :environment (config/get :stage)
+       :release (str (config/get :commit) "-" (config/get :stage))
+       :replaysSessionSampleRate 1.0
+       :replaysOnErrorSampleRate 1.0
+       :integrations [(sentry-integrations/captureConsoleIntegration (clj->js {:levels "error"}))]})))
+
   (r-subs/clear-subscription-cache!)
   (rf/dispatch-sync [::state/initialize])
   (rf/dispatch-sync [::language/load-setting])
