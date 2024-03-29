@@ -74,6 +74,7 @@
     :stage stage
     :backend? is_backend
     :commit commit
+    :release (str commit "-" stage)
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}
     :maintenance-mode? false
