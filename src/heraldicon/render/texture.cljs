@@ -46,4 +46,4 @@
 
 (defn full-path [texture]
   (some->> (get relative-paths texture)
-           (str (config/get :heraldicon-url))))
+           (str (config/get :static-files-url))))
