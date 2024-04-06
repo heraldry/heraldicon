@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.entity.details
   (:require
    [cljs.core.async :refer [go]]
+   [clojure.string :as str]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
@@ -129,7 +130,14 @@
                                                             entity-type
                                                             (string/str-tr message " " (:version form-data))])))
                          :on-error (fn [error]
-                                     (rf/dispatch [::message/set-error entity-type (:message (ex-data error))]))}]]]})))
+                                     (let [message (:message (ex-data error))
+                                           message (if (str/blank? message)
+                                                     (.-message error)
+                                                     message)
+                                           message (if (= message "API error: 413")
+                                                     "Too large."
+                                                     message)]
+                                       (rf/dispatch [::message/set-error entity-type message])))}]]]})))
 
 (defn latest-version-banner [entity-id version on-select]
   (when entity-id
