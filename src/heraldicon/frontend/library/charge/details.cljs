@@ -1,8 +1,6 @@
 (ns heraldicon.frontend.library.charge.details
   (:require
-   ["svgo-browser/lib/get-svgo-instance" :as getSvgoInstance]
    [cljs.core.async :refer [go]]
-   [cljs.core.async.interop :refer-macros [<p!]]
    [clojure.set :as set]
    [clojure.string :as str]
    [clojure.walk :as walk]
@@ -25,7 +23,6 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [heraldicon.frontend.svgo-setup]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.session :as session]
    [heraldicon.heraldry.charge.other :as other]
@@ -176,11 +173,15 @@
         (let [parsed-svg-data (-> raw-svg-data
                                   (svg/optimize (fn [data]
                                                   (go-catch
-                                                   (-> (clj->js {:removeUnknownsAndDefaults false
-                                                                 :convertStyleToAttrs false})
-                                                       getSvgoInstance
-                                                       (.optimize data)
-                                                       <p!))))
+                                                   (js/SVGO.optimize
+                                                    data
+                                                    (clj->js
+                                                     {:plugins [{:name "preset-default"
+                                                                 :params {:overrides {:removeUnknownsAndDefaults false
+                                                                                      :convertStyleToAttrs false
+                                                                                      :removeHiddenElems false
+                                                                                      :convertPathData false
+                                                                                      :mergePaths false}}}]})))))
                                   <?
                                   hickory/parse-fragment
                                   first
