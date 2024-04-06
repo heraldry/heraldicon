@@ -182,4 +182,8 @@
                         :task (do
                                 (run 'prod-frontend-release)
                                 (deploy-frontend PROD-FRONTEND-DIR "cdn.heraldicon.org")
-                                (tag-frontend-deploy))}}}
+                                (tag-frontend-deploy))}
+
+  outdated (do
+             (shell "clojure -Sdeps '{:deps {olical/depot {:mvn/version \"2.2.0\"} rewrite-clj/rewrite-clj {:mvn/version \"0.6.1\"}}}' -M -m depot.outdated.main")
+             (shell "npm outdated"))}}
