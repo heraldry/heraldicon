@@ -67,20 +67,24 @@
                                   :ui/label :string.option/orientation}
         current-orientation-point (options/get-value
                                    (interface/get-raw-data (c/++ context :orientation :point))
-                                   orientation-point-option)]
+                                   orientation-point-option)
+        ornament? (some #{:ornaments} (:path context))
+        offset-distance (if ornament?
+                          100
+                          45)]
     {:adapt-to-ordinaries? {:type :option.type/boolean
                             :default true
                             :ui/label :string.option/adapt-to-ordinaries?}
      :anchor {:point anchor-point-option
               :offset-x {:type :option.type/range
-                         :min -45
-                         :max 45
+                         :min (- offset-distance)
+                         :max offset-distance
                          :default 0
                          :ui/label :string.option/offset-x
                          :ui/step 0.1}
               :offset-y {:type :option.type/range
-                         :min -45
-                         :max 45
+                         :min (- offset-distance)
+                         :max offset-distance
                          :default 0
                          :ui/label :string.option/offset-y
                          :ui/step 0.1}
@@ -99,14 +103,14 @@
 
                     (not= current-orientation-point
                           :angle) (assoc :offset-x {:type :option.type/range
-                                                    :min -45
-                                                    :max 45
+                                                    :min (- offset-distance)
+                                                    :max offset-distance
                                                     :default 0
                                                     :ui/label :string.option/offset-x
                                                     :ui/step 0.1}
                                          :offset-y {:type :option.type/range
-                                                    :min -45
-                                                    :max 45
+                                                    :min (- offset-distance)
+                                                    :max offset-distance
                                                     :default 0
                                                     :ui/label :string.option/offset-y
                                                     :ui/step 0.1}))
