@@ -122,7 +122,15 @@
                                     result-width
                                     :max-aspect-ratio 1.5)
         margin 10
-        font-size 20
+        font-scale (cond
+                     (not svg-export?) 1
+
+                     target-height (max (/ 1000 target-height) 1)
+
+                     target-width (max (/ 1000 target-width) 1)
+
+                     :else 1)
+        font-size (* 25 font-scale)
         result-width (cond-> (+ result-width (* 2 margin))
                        (not svg-export?) (+ (* 2 15)))
         result-height (-> (+ result-height (* 2 margin))
