@@ -136,7 +136,7 @@
         result-height (-> (+ result-height (* 2 margin))
                           (cond->
                             (not svg-export?) (+ 20)
-                            short-url (+ font-size margin)))
+                            short-url (+ (* 1.8 font-size) margin)))
         margin-left (cond-> margin
                       (not svg-export?) (+ 5))
         margin-top (cond-> margin
@@ -200,10 +200,7 @@
 
      (when short-url
        [:<>
-        (let [glyph-width-factor 0.575
-              box-width (+ margin
-                           (* (count short-url) (* font-size glyph-width-factor))
-                           margin)
+        (let [box-width (+ result-width (* margin 2))
               box-height (+ margin (* font-size 1.8))]
           [:rect {:x (- margin-left)
                   :y (- result-height box-height)
