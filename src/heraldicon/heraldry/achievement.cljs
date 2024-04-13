@@ -199,10 +199,21 @@
         [interface/render-component (c/set-render-hint ornaments-context :render-pass-below-shield? false)])]
 
      (when short-url
-       [:text {:x 0
-               :y (- result-height margin (/ font-size 2))
-               :text-anchor "start"
-               :fill "#888"
-               :style {:font-family (font/css-string short-url-font)
-                       :font-size font-size}}
-        short-url])]))
+       [:<>
+        (let [glyph-width-factor 0.575
+              box-width (+ margin
+                           (* (count short-url) (* font-size glyph-width-factor))
+                           margin)
+              box-height (+ margin (* font-size 1.8))]
+          [:rect {:x (- margin-left)
+                  :y (- result-height box-height)
+                  :width box-width
+                  :height box-height
+                  :fill "#fff"}])
+        [:text {:x 0
+                :y (- result-height margin (/ font-size 2))
+                :text-anchor "start"
+                :fill "#000"
+                :style {:font-family (font/css-string short-url-font)
+                        :font-size font-size}}
+         short-url]])]))
