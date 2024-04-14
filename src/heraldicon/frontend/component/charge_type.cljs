@@ -25,16 +25,21 @@
 (macros/reg-event-fx ::remove
   (fn [{:keys [db]} [_ {:keys [path]
                         :as context}]]
-    (let [[new-db value] (component.element/remove-element db path)
-          children (:types value)
-          parent-context (c/-- context 2)
-          parent-types-path (:path (c/++ parent-context :types))
-          siblings (get-in new-db parent-types-path)
-          new-siblings (vec (concat siblings children))]
-      {:db (-> new-db
-               (assoc-in parent-types-path new-siblings)
-               (tree/element-removed path)
-               (tree/select-node (:path parent-context) true))})))
+    (if (interface/get-raw-data (c/++ context :id))
+      {:db (update-in db (conj path :metadata) (fn [metadata]
+                                                 (if (:deleted? metadata)
+                                                   (dissoc metadata :deleted?)
+                                                   (assoc metadata :deleted? true))))}
+      (let [[new-db value] (component.element/remove-element db path)
+            children (:types value)
+            parent-context (c/-- context 2)
+            parent-types-path (:path (c/++ parent-context :types))
+            siblings (get-in new-db parent-types-path)
+            new-siblings (vec (concat siblings children))]
+        {:db (-> new-db
+                 (assoc-in parent-types-path new-siblings)
+                 (tree/element-removed path)
+                 (tree/select-node (:path parent-context) true))}))))
 
 (rf/reg-sub-raw ::all-subtypes-count
   (fn [_app-db [_ context]]
@@ -71,6 +76,10 @@
         count
         (> 1))))
 
+(defn- deleted?
+  [context]
+  (interface/get-raw-data (c/++ context :metadata :deleted?)))
+
 (defmethod component/node :heraldicon/charge-type [context]
   (let [type-id (interface/get-raw-data (c/++ context :id))
         name-context (c/++ context :name)
@@ -81,7 +90,8 @@
     {:title (cond-> type-name
               (pos? num-types) (str " (" num-types ")")
               (not type-id) (str " *new*")
-              (duplicate? type-name) (str " *duplicate*"))
+              (duplicate? type-name) (str " *duplicate*")
+              (deleted? context) (str " *deleted*"))
      :draggable? (not root?)
      :drop-options-fn drag/drop-options
      :drop-fn drag/drop-fn
