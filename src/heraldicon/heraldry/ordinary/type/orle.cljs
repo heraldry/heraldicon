@@ -57,7 +57,10 @@
         default-distance (if auto-positioned?
                            default-spacing
                            4)]
-    {:positioning-mode {:type :option.type/choice
+    {:adapt-to-ordinaries? {:type :option.type/boolean
+                            :ui/disabled? false
+                            :ui/label :string.option/adapt-to-ordinaries?}
+     :positioning-mode {:type :option.type/choice
                         :choices positioning-mode-choices
                         :default :auto
                         :ui/label :string.option/positioning-mode
@@ -198,6 +201,12 @@
 (prefer-method interface/parent-field-environment ordinary-type :heraldry/ordinary)
 
 (defmethod interface/parent-field-shape ordinary-type [context]
-  (interface/get-exact-shape (interface/parent context)))
+  (let [parent-context (interface/parent context)
+        context-for-adapt-check (if (isa? (interface/effective-component-type context) :heraldry/subfield)
+                                  parent-context
+                                  context)]
+    (if (interface/get-sanitized-data (c/++ context-for-adapt-check :adapt-to-ordinaries?))
+      (interface/get-exact-impacted-shape parent-context)
+      (interface/get-exact-shape parent-context))))
 
 (prefer-method interface/parent-field-shape ordinary-type :heraldry/ordinary)

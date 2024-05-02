@@ -43,7 +43,10 @@
                       line-type
                       (line/options (c/++ context :line)
                                     :corner-damping? true))]
-    {:thickness {:type :option.type/range
+    {:adapt-to-ordinaries? {:type :option.type/boolean
+                            :default false
+                            :ui/label :string.option/adapt-to-ordinaries?}
+     :thickness {:type :option.type/range
                  :min 0.1
                  :max 35
                  :default 12
@@ -116,6 +119,12 @@
 (prefer-method interface/parent-field-environment ordinary-type :heraldry/ordinary)
 
 (defmethod interface/parent-field-shape ordinary-type [context]
-  (interface/get-exact-shape (interface/parent context)))
+  (let [parent-context (interface/parent context)
+        context-for-adapt-check (if (isa? (interface/effective-component-type context) :heraldry/subfield)
+                                  parent-context
+                                  context)]
+    (if (interface/get-sanitized-data (c/++ context-for-adapt-check :adapt-to-ordinaries?))
+      (interface/get-exact-impacted-shape parent-context)
+      (interface/get-exact-shape parent-context))))
 
 (prefer-method interface/parent-field-shape ordinary-type :heraldry/ordinary)
