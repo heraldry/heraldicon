@@ -1,8 +1,10 @@
 (ns heraldicon.frontend.api
   (:require
    [cljs-http.client :as http]
+   [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.config :as config]
+   [heraldicon.math.vector :as v]
    [heraldicon.util.encoding :as encoding]))
 
 (defn call [name payload session]
@@ -10,6 +12,12 @@
    (let [content-type "application/transit+json"
          accept "application/transit+json"
          {:keys [encode-fn]} (encoding/for-mimetype content-type)
+         payload (walk/postwalk
+                  (fn [v]
+                    (if (instance? v/Vector v)
+                      (into {} v)
+                      v))
+                  payload)
          response (<? (http/post (config/get :heraldicon-api-endpoint)
                                  {:headers {"Session-Id" (:session-id session)
                                             "Content-Type" content-type
