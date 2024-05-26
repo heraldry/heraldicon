@@ -879,6 +879,35 @@
                   :creator-name "Maximilian 'NervousNullPtr' Schleicher"
                   :creator-link "https://github.com/NervousNullPtr"}})
 
+(def ^:private community-manilla
+  {:shape "M 39,0 36.054688,10.578125
+           H 26.921875
+           L 25.966797,3.3671875 8.65625,2.8789062 5.646484,39.802734
+           c 4.800686,1.0601 8.28711,4.250504 8.28711,8.025391 4e-6,4.114318 -4.141473,7.540667 -9.611328,8.263672
+           L 0,109.12305
+           H 0.01172
+           C 0.00136,109.36254 0,109.59893 0,109.83984
+           c 5e-6,15.96972 22.487329,28.93164 50,28.93164 27.512671,0 49.999995,-12.96192 50,-28.93164 0,-0.24091 -0.0014,-0.4773 -0.01172,-0.71679
+           H 100
+           L 95.677734,56.091797
+           c -5.469855,-0.723005 -9.611332,-4.149354 -9.611328,-8.263672 0,-3.774887 3.486424,-6.965291 8.28711,-8.025391
+           L 91.34375,2.8789062 74.033203,3.3671875 73.078125,10.578125
+           H 63.945312
+           L 61,0
+           H 50
+           Z"
+
+   ::name "Manilla"
+   ::attribution {:nature :derivative
+                  :license :public-domain
+                  :creator-name "verden"
+                  :creator-link "https://heraldicon.org/users/verden"
+                  :source-license :public-domain
+                  :source-link "https://commons.wikimedia.org/wiki/File:Ph_seal_ncr_manila.svg"
+                  :source-name "Ph seal ncr manila"
+                  :source-creator-name "chris"
+                  :source-creator-link "https://commons.wikimedia.org/wiki/User:Chrkl"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -942,6 +971,7 @@
     [:community-halfling community-halfling]
     [:community-halfling-pavise community-halfling-pavise]
     [:community-african community-african]
+    [:community-manilla community-manilla]
     [:community-gonfalon community-gonfalon]
     [:community-kalasag community-kalasag]]])
 
