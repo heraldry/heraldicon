@@ -10,7 +10,7 @@
   []
   (let [macro-time-parser (parser
                            (res/slurp-resource &env "grammar.ebnf")
-                           :allow-namespaced-nts? true
+                           :allow-namespaced-nts true
                            :auto-whitespace :standard)
         pre-processed-grammar (:grammar macro-time-parser)
         grammar-producing-code
