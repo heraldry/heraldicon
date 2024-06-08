@@ -429,7 +429,7 @@
     "highlight": "Highlight",
     "humetty": "Humetty / Couped",
     "ignore-layer-separator?": "Ignore layer separator",
-    "inherit-environment?": "Inherit environment (e.g. for dimidiation)",
+    "inherit-environment?": "Inherit environment",
     "is-public": "Опубликовать",
     "landscape?": "Landscape",
     "layer": "Layer",

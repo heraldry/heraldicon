@@ -495,7 +495,7 @@
     "humetty": "Schwebend / Abgeschnitten",
     "ignore-layer-separator?": "Ebenentrenner ignorieren",
     "adapt-to-ordinaries?": "An Schildhaupt und Schildfuß anpassen",
-    "inherit-environment?": "Umgebung erben (e.g. für Halbierung)",
+    "inherit-environment?": "Umgebung erben",
     "is-public": "Öffentlich machen",
     "landscape?": "Landschaft",
     "layer": "Ebene",
@@ -677,7 +677,8 @@
     "detect-shading": "Wenn du einer Farbe die 0% Reference Schattierung gibst (am besten Primär), dann kannst du mehrere Farben auswählen und diesen Button klicken, die Schattierung wird dann automatisch basierend auf der Helligkeit der Farbe gesetzt.",
     "expand": "vergrößern",
     "fit-in-window": "dem Fenster anpassen",
-    "support-on-ko-fi": "Unterstütze Heraldicon bei Ko-fi"
+    "support-on-ko-fi": "Unterstütze Heraldicon bei Ko-fi",
+    "inherit-environment": "Damit kann zum Beispiel eine Halbierung umgesetzt werden."
   },
   "miscellaneous": {
     "and": "und",

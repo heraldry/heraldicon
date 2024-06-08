@@ -406,4 +406,5 @@
                     semy-charge?))) (assoc :inherit-environment?
                                            {:type :option.type/boolean
                                             :default false
-                                            :ui/label :string.option/inherit-environment?}))))
+                                            :ui/label :string.option/inherit-environment?
+                                            :ui/tooltip :string.tooltip/inherit-environment}))))
