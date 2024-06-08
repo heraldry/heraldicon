@@ -496,7 +496,7 @@
     "humetty": "Humetty / Couped",
     "ignore-layer-separator?": "Ignore layer separator",
     "adapt-to-ordinaries?": "Adapt to chief and base ordinaries",
-    "inherit-environment?": "Inherit environment (e.g. for dimidiation)",
+    "inherit-environment?": "Inherit environment",
     "is-public": "Make public",
     "landscape?": "Landscape",
     "layer": "Layer",
@@ -679,7 +679,8 @@
     "detect-shading": "If you set the 0% reference shading on one colour (preferably Primary), then you can select multiple colours and click this button, the shading levels for those colours is then set based on their brightness.",
     "expand": "expand",
     "fit-in-window": "fit in window",
-    "support-on-ko-fi": "Support Heraldicon on Ko-fi"
+    "support-on-ko-fi": "Support Heraldicon on Ko-fi",
+    "inherit-environment": "This is useful to achieve dimidiation, for instance."
   },
   "miscellaneous": {
     "and": "and",

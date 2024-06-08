@@ -495,7 +495,7 @@
     "humetty": "Scorciato",
     "ignore-layer-separator?": "Ignora il separatore del livello",
     "adapt-to-ordinaries?": "Adatta le forme ai capi e alle campagne",
-    "inherit-environment?": "Eredita l'ambiente, (es. per dimidiazione)",
+    "inherit-environment?": "Eredita l'ambiente",
     "is-public": "Rendi pubblico",
     "landscape?": "Panorama",
     "layer": "Livello",

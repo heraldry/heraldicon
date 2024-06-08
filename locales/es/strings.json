@@ -495,7 +495,7 @@
     "humetty": "Recortardo",
     "ignore-layer-separator?": "Ignorar separador de capas",
     "adapt-to-ordinaries?": "Adaptar a coordenadas del jefe y de la base",
-    "inherit-environment?": "Heredar el entorno (e.g. para la acentuación)",
+    "inherit-environment?": "Heredar el entorno",
     "is-public": "Hacer público",
     "landscape?": "Paisaje",
     "layer": "Capa",
