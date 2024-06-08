@@ -204,10 +204,11 @@
                                   :slot-angle (when rotate-charges?
                                                 angle)}))))
 
-(defmethod interface/bounding-box :heraldry/charge-group [context properties]
-  (->> (iterate-charge-contexts context properties)
-       (map interface/get-bounding-box)
-       (reduce bb/combine)))
+(defmethod interface/bounding-box :heraldry/charge-group [context]
+  (let [properties (interface/get-properties context)]
+    (->> (iterate-charge-contexts context properties)
+         (map interface/get-bounding-box)
+         (reduce bb/combine))))
 
 (defmethod interface/render-component :heraldry/charge-group [context]
   (let [properties (interface/get-properties context)]
