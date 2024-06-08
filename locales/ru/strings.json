@@ -73,12 +73,17 @@
       "dancetty": "Зазубренная",
       "dovetailed": "Ласточкин хвост",
       "embattled": "Зубчатая",
+      "embattled-alise": "Embattled alisé",
+      "embattled-fitchy-double": "Embattled fitchy double",
       "embattled-grady": "Embattled grady",
       "embattled-in-crosses": "Embattled in crosses",
       "enarched": "Enarched / Embowed",
       "engrailed": "Engrailed",
+      "erably": "Erably",
       "fir-tree-topped": "Fir-tree topped",
       "fir-twigged": "Fir-twigged",
+      "flory": "Flory",
+      "flory-counter-flory": "Flory counter flory",
       "indented": "Выщербленная",
       "invected": "Чешуевидная",
       "nebuly": "Облаковидная",
@@ -99,16 +104,16 @@
       "colour": "Цвет",
       "fur": "Мех",
       "stain": "Stain",
-      "helmet": "Helmet",
-      "nontraditional": "Nontraditional"
+      "helmet": "Шлем",
+      "nontraditional": "Нетрадиционные"
     },
     "special": {
-      "none": "None (can be changed)",
+      "none": "Нет (можно изменить)",
       "proper": "Proper"
     },
     "argent": "Серебро",
     "azure": "Лазурь",
-    "ermine": "Ermine",
+    "ermine": "Горностаевый мех",
     "ermines": "Ermines",
     "erminois": "Erminois",
     "gules": "Червлень",
@@ -129,21 +134,23 @@
     "buff": "Buff",
     "carnation": "Carnation",
     "cendree": "Cendrée",
-    "copper": "Copper",
-    "orange": "Orange",
-    "rose": "Rose",
-    "white": "White"
+    "copper": "Медь",
+    "orange": "Оранжевый",
+    "rose": "Розовый",
+    "white": "Белый",
+    "amaranth": "Amaranth",
+    "teal": "Teal"
   },
   "theme": {
     "group": {
-      "general": "General",
+      "general": "Общее",
       "community": "От сообщества"
     },
-    "all": "All of them!",
+    "all": "Все!",
     "ral-traffic": "RAL Traffic",
     "wappenwiki": "«Ваппен-Вики» (по умолчанию)",
     "web": "Вэб",
-    "wikipedia-bajuvarian": "Wikipedia Bajuvarian",
+    "wikipedia-bajuvarian": "Википедия — Бавария",
     "wikipedia-brandenburg": "Википедия — Бранденбург",
     "wikipedia-default": "Википедия — стандарт",
     "wikipedia-france": "Википедия — Франция",
@@ -157,7 +164,7 @@
   "charge": {
     "attribute": {
       "group": {
-        "general": "General",
+        "general": "Общее",
         "ornaments": "Ornaments",
         "tail": "хвост"
       },
@@ -174,7 +181,7 @@
       "queue-fourche": "Queue fourché",
       "queue-fourche-saltire": "Queue fourché saltire",
       "queue-fourche-saltire-reverse": "Queue fourché saltire reverse",
-      "supporter": "щитодержатель",
+      "supporter": "Щитодержатель",
       "supporter-left": "Щитодержатель слева",
       "supporter-right": "Щитодержатель справа",
       "tail-nowed": "Tail nowed",
@@ -183,10 +190,10 @@
     "attitude": {
       "group": {
         "beasts": "Звери",
-        "sea-creatures": "морские твари",
-        "serpents": "змеи",
-        "two-beasts": "два зверя",
-        "winged-creatures": "Крылатые твари"
+        "sea-creatures": "Морские твари",
+        "serpents": "Змеи",
+        "two-beasts": "Два зверя",
+        "winged-creatures": "Крылатые существа"
       },
       "addorsed": "противостоящий",
       "cadent": "падающий",
@@ -199,6 +206,7 @@
       "glissant": "Glissant",
       "hauriant": "Hauriant",
       "in-her-piety": "In her piety",
+      "in-his-pride": "In his pride",
       "issuant": "Issuant",
       "naiant": "Naiant",
       "none": "None",
@@ -232,11 +240,13 @@
     },
     "tincture-modifier": {
       "group": {
+        "edifice": "Edifice",
         "fauna": "фауна",
         "flora": "флора",
-        "helmet": "Helmet",
+        "helmet": "Шлем",
         "other": "другое",
-        "technical": "Technical"
+        "technical": "Technical",
+        "person": "Person"
       },
       "special": {
         "highlight": "Highlight (alpha)",
@@ -248,45 +258,95 @@
         "shadow": "Shadow (alpha)",
         "tertiary": "Tertiary"
       },
+      "shading": {
+        "reference": "0% Reference"
+      },
+      "acorned": "Acorned",
       "armed": "вооружённый",
+      "armoured": "Armoured",
       "attired": "Attired",
       "barbed": "Barbed",
       "barred": "Barred",
       "beaked": "Beaked",
+      "bearded": "Bearded",
+      "belted": "Belted",
       "bladed": "Bladed",
+      "bridled": "Bridled",
+      "buckled": "Buckled",
+      "cabled": "Cabled",
       "caparisoned": "Caparisoned",
+      "chained": "Chained",
+      "clasped": "Clasped",
       "collared": "Collared",
       "combed": "Combed",
+      "crowned": "Crowned",
+      "enflamed": "Enflamed",
+      "eradicated": "Eradicated",
       "erased": "Erased",
       "eyed": "Eyed",
       "eyed-peacock": "Eyed (peacock)",
       "feathered": "Feathered",
       "finned": "Finned",
       "flagged": "Flagged",
+      "flowered": "Flowered",
       "fructed": "Fructed",
       "garnished": "Garnished",
+      "gauntleted": "Gauntleted",
+      "gemmed": "Gemmed",
+      "glazed": "Glazed",
+      "gloved": "Gloved",
       "handled": "Handled",
       "hilted": "Hilted",
       "hooded": "Hooded",
+      "horned": "Horned",
       "illuminated": "Illuminated",
+      "imbrued": "Imbrued",
       "incensed": "Incensed",
+      "irradiated": "Irradiated",
+      "jessed": "Jessed",
       "langued": "Langued",
       "leaved": "Leaved",
       "legged": "Legged",
+      "lined": "Lined",
       "maned": "Maned",
+      "marked": "Marked",
       "masoned": "Masoned",
+      "muzzled": "Muzzled",
+      "nimbed": "Nimbed",
       "none": "None",
       "orbed": "Orbed",
+      "pennoned": "Pennoned",
+      "pizzled": "Pizzled",
       "pommeled": "Pommeled",
+      "portcullised": "Portcullised",
+      "ported": "Ported",
+      "rigged": "Rigged",
+      "ringed": "Ringed",
+      "roofed": "Roofed",
+      "saddled": "Saddled",
+      "scaled": "Scaled",
+      "sealed": "Sealed",
       "seeded": "Seeded",
+      "shafted": "Shafted",
       "slipped": "Slipped",
+      "spurred": "Spurred",
       "stringed": "Stringed",
       "tailed": "Tailed",
+      "tasselled": "Tasselled",
+      "tipped": "Tipped",
       "toothed": "Toothed",
+      "towered": "Towered",
       "trimmed": "Trimmed",
+      "tufted": "Tufted",
+      "turned-up": "Turned up",
+      "tusked": "Tusked",
       "unguled": "Unguled",
+      "veined": "Veined",
+      "vested": "Vested",
       "wattled": "Wattled",
-      "winged": "Winged"
+      "windowed": "Windowed",
+      "winged": "Winged",
+      "wreathed": "Wreathed"
     },
     "type": {
       "annulet": "Annulet",
@@ -390,7 +450,9 @@
     "attitude": "Attitude",
     "bar-thickness": "Bar thickness",
     "base-fields": "Base fields",
+    "base-field-shift": "Base field shift",
     "base-line": "Base line",
+    "blazonry-name": "Blazonry name (Engl.)",
     "column": "Column",
     "corner": "Corners",
     "corner-choice": {
@@ -406,6 +468,8 @@
       "square-root-damping": "Square root damping"
     },
     "damping-radius": "Damping radius",
+    "default-size": "Default size",
+    "default-spacing": "Default spacing",
     "distance": "Расстояние",
     "eccentricity": "Eccentricity",
     "edge-angle": "Edge angle",
@@ -423,13 +487,15 @@
     "flipped?": "Flipped",
     "font": "Font",
     "font-scale": "Font scale",
+    "font-title": "Font for title",
     "function": "Function",
     "geometry": "Geometry",
     "height": "Высота",
     "highlight": "Highlight",
     "humetty": "Humetty / Couped",
     "ignore-layer-separator?": "Ignore layer separator",
-    "inherit-environment?": "Inherit environment",
+    "adapt-to-ordinaries?": "Adapt to chief and base ordinaries",
+    "inherit-environment?": "Inherit environment (e.g. for dimidiation)",
     "is-public": "Опубликовать",
     "landscape?": "Landscape",
     "layer": "Layer",
@@ -471,6 +537,7 @@
       "technical": "Technical"
     },
     "point-choice": {
+      "auto": "Auto",
       "base": "Основание",
       "bottom": "Bottom",
       "bottom-left": "Bottom-left",
@@ -490,12 +557,24 @@
       "hoist": "Hoist",
       "fly": "Fly"
     },
+    "positioning-mode": "Positioning",
+    "positioning-mode-choice": {
+      "automatic": "Automatic",
+      "manual": "Manual"
+    },
     "radius": "Радиус",
     "rectangular?": "Rectangular grid",
     "reversed?": "Reversed",
     "rotate-charges?": "Повернуть фигуры",
     "rotation": "Rotation",
     "row": "Row",
+    "section": {
+      "bend-group": "Bend group",
+      "bend-sinister-group": "Bend sinister group",
+      "fess-group": "Fess group",
+      "pale-group": "Pale group",
+      "chevron-group": "Chevron group"
+    },
     "select-arms": "Выбрать герб",
     "select-charge": "Select Charge",
     "select-colour-theme": "Select Colour Theme",
@@ -512,9 +591,17 @@
       "angle": "Angle",
       "thickness": "Thickness"
     },
+    "size-reference": "Size reference",
+    "size-reference-choice": {
+      "line-length": "Line length",
+      "field-width": "Field width",
+      "field-height": "Field height"
+    },
     "shadow": "Shadow",
     "smoothing": "Smoothing",
     "spacing": "Spacing",
+    "spacing-top": "Top spacing",
+    "spacing-left": "Left spacing",
     "start-angle": "Start angle",
     "stretch": "Stretch",
     "stretch-x": "Stretch x",
@@ -552,6 +639,19 @@
       "sinister-base": "Sinister-base",
       "sinister-chief": "Sinister-chief"
     },
+    "variant-potenty-choice": {
+      "default": "Default",
+      "counter": "Counter",
+      "in-pale": "In pale",
+      "en-point": "En point"
+    },
+    "variant-vairy-choice": {
+      "default": "Default",
+      "counter": "Counter",
+      "in-pale": "In pale",
+      "en-point": "En point",
+      "ancien": "Ancien"
+    },
     "vertical-mask": "Vertical mask",
     "width": "Ширина"
   },
@@ -572,7 +672,12 @@
     "landscape?": "Keep the SVG as-is, embedded graphics also are allowed. This is only a good idea if you want to use images as landscape backgrounds.",
     "fixed-tincture": "Gives the charge a fixed tincture, which can't be changed by a field. Such charges are not very flexible, so use them only in exceptional cases.",
     "charge-group-preview": "Click the slots to disable them or cycle through the available charges (added below).",
-    "load-field-from-arms": "Replace the field with existing coat of arms."
+    "load-field-from-arms": "Replace the field with existing coat of arms.",
+    "size-reference": "The value used as a base reference when size options are percentages, e.g. line width",
+    "detect-shading": "If you set the 0% reference shading on one colour (preferably Primary), then you can select multiple colours and click this button, the shading levels for those colours is then set based on their brightness.",
+    "expand": "expand",
+    "fit-in-window": "fit in window",
+    "support-on-ko-fi": "Support Heraldicon on Ko-fi"
   },
   "miscellaneous": {
     "and": "and",
@@ -583,8 +688,10 @@
     "extra": "extra",
     "error": "Error",
     "fields": "fields",
-    "general": "General",
+    "general": "Общее",
     "inherited": "Inherited",
+    "item": "item",
+    "items": "items",
     "left": "Left",
     "loading": "Загрузка...",
     "show-more": "Show more",
@@ -601,7 +708,8 @@
     "top": "top",
     "unnamed": "нет имени",
     "unsaved-data": "несохраненные данные",
-    "field-reference": "like"
+    "field-reference": "like",
+    "not-supported-by-charge": "not supported by charge"
   },
   "button": {
     "add": "Добавить",
@@ -617,7 +725,8 @@
     "colourize": "Colourize",
     "actions": "Actions",
     "export": "Export",
-    "share": "Share"
+    "share": "Share",
+    "detect-shading": "Detect shading"
   },
   "user": {
     "message": {
@@ -642,7 +751,8 @@
       "registration-completed": "Регистрацию завершено",
       "ribbon-saved": "Ribbon saved, new version:",
       "save-changes-first": "Сначала сохраните изменения.",
-      "username-required": "Username required."
+      "username-required": "Username required.",
+      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -"
     },
     "button": {
       "change": "Сменить",
@@ -660,7 +770,8 @@
     "password-again": "Повторите пароль",
     "register-confirmation": "Подтверждение регистрации",
     "reset-forgotten-password": "Скинуть забытый пароль",
-    "username": "Имя пользователя"
+    "username": "Имя пользователя",
+    "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -"
   },
   "attribution": {
     "title": "Ссылка на источник",
@@ -756,7 +867,7 @@
     "cottise": "Cottise",
     "extra-line": "Extra line",
     "helm": "Helm",
-    "helmet": "Helmet",
+    "helmet": "Шлем",
     "helms-and-crests": "Helms and crests",
     "line": "Line",
     "main-line": "Main line",
@@ -765,6 +876,7 @@
     "opposite-line": "Opposite line",
     "ordinary": "Ordinary",
     "ribbon": "Лента",
+    "ribbons": "Ленты",
     "semy": "Semy",
     "slogan": "Слоган",
     "tags": "Tags",
@@ -774,6 +886,7 @@
   },
   "submenu-summary": {
     "adjusted": "adjusted",
+    "aligned": "aligned",
     "base-fields": "base fields",
     "default": "Default",
     "fimbriated": "fimbriated",
@@ -827,7 +940,8 @@
     "topology": "Топология",
     "editor": {
       "shift-info": "Shift - add or remove points"
-    }
+    },
+    "layer": "layer"
   },
   "escutcheon": {
     "group": {
@@ -896,7 +1010,9 @@
       "svg-png-access-info": "Однако все могут просматривать ссылки на файлы форматов SVG и PNG."
     },
     "charge-library": {
-      "create-and-view-charges": "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work."
+      "create-and-view-charges": "Here you can view and create charges to be used in coats of arms. By default your charges are private, so only you can see and use them. If you want to make them public, then you must provide a license and attribution, if it is based on previous work.",
+      "no-colours-selected": "You need to select at least one colour to detect its shading.",
+      "no-shading-reference": "You need to set one colour's shading as the 0% shading reference."
     },
     "collection-library": {
       "create-and-view-collections": "Here you can view and create collections of coats of arms. You explicitly have to save your collection as public and add a license, if you want to share the link and allow others to view it."
@@ -909,5 +1025,12 @@
     "success": "Understood",
     "warning": "Warning",
     "error": "Error"
+  },
+  "banner": {
+    "outdated-version-arms": "This is not the latest version of this coat of arms.",
+    "outdated-version-charge": "This is not the latest version of this charge.",
+    "outdated-version-collection": "This is not the latest version of this collection.",
+    "outdated-version-ribbon": "This is not the latest version of this ribbon.",
+    "open-latest-version": "Open latest version."
   }
 }
