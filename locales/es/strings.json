@@ -5,7 +5,7 @@
     "collection-library": "Colecciones",
     "arms-library": "Blasones",
     "charge-library": "Figuras",
-    "ribbon-library": "Bandas",
+    "ribbon-library": "Listones",
     "users": "Usuarios",
     "contact": "Contacto",
     "account": "Cuenta",
@@ -165,7 +165,7 @@
     "attribute": {
       "group": {
         "general": "General",
-        "ornaments": "Decoraciones",
+        "ornaments": "Ornamentos",
         "tail": "Cola"
       },
       "ui": {
@@ -565,7 +565,7 @@
     "radius": "Radio",
     "rectangular?": "Matriz rectangular",
     "reversed?": "Invertido",
-    "rotate-charges?": "Rotar Cargas",
+    "rotate-charges?": "Rotar figuras",
     "rotation": "Rotación",
     "row": "Fila",
     "section": {
@@ -576,13 +576,13 @@
       "chevron-group": "Grupo de Chevron"
     },
     "select-arms": "Seleccionar armas",
-    "select-charge": "Seleccionar carga",
+    "select-charge": "Seleccionar figura",
     "select-colour-theme": "Seleccionar color del tema",
     "select-line-type": "Seleccione el tipo de línea",
     "select-ordinary": "Seleccione pieza",
     "select-partition": "Seleccione Particiones",
     "select-preset": "Seleccionar Pre-ajuste",
-    "select-ribbon": "Seleccionar cinta",
+    "select-ribbon": "Seleccionar Listón",
     "select-tincture": "Seleccionar Esmalte",
     "shading": "Sombreado",
     "size": "Tamaño",
@@ -661,7 +661,7 @@
     "damping-radius": "Cuán cerca de las esquinas se aplica el modo amortiguador.",
     "edge-angle": "Esto actualmente puede causar errores en algunos ángulos para algunas curvas debido a algunos problemas numéricos, colocarlo cuidadosamente.",
     "humetty-warning": "Esto podría tener algunos resultados extraños para algunos valores, tratar de dar a las líneas un poco de compensación o ajustar los parámetros un poco si esto sucede.",
-    "ignore-layer-separator?": "Si la carga contiene una capa de separación del escudo, entonces esto puede desactivarlo.",
+    "ignore-layer-separator?": "Si la figura contiene una capa de separación del escudo, entonces esto puede desactivarlo.",
     "move-up": "Mover hacia arriba",
     "move-down": "Mover hacia abajo",
     "redo": "rehacer",
@@ -676,7 +676,8 @@
     "size-reference": "El valor utilizado como referencia base cuando las opciones de tamaño son porcentajes, por ejemplo, el ancho de línea",
     "detect-shading": "Si establece el 0% de referencia de sombreado en un color (preferiblemente primario), entonces puedes seleccionar varios colores y hacer clic en este botón, los niveles de sombreado para esos colores se ajustan a partir de su brillo.",
     "expand": "expandir",
-    "fit-in-window": "Ajustar a la ventana"
+    "fit-in-window": "Ajustar a la ventana",
+    "support-on-ko-fi": "Apoya a Heraldicon en Ko-fi"
   },
   "miscellaneous": {
     "and": "y",
@@ -708,7 +709,7 @@
     "unnamed": "sin nombre",
     "unsaved-data": "Datos no guardados",
     "field-reference": "como",
-    "not-supported-by-charge": "no es compatible con la carga"
+    "not-supported-by-charge": "No es compatible con la figura"
   },
   "button": {
     "add": "Añadir",
@@ -748,9 +749,10 @@
       "passwords-do-not-match": "Las contraseñas no coinciden.",
       "password-required": "Contraseña requerida.",
       "registration-completed": "Registro completado",
-      "ribbon-saved": "Cinta guardada, nueva versión:",
+      "ribbon-saved": "Listón guardado, nueva versión:",
       "save-changes-first": "Guarde su figura primero.",
-      "username-required": "Nombre de usuario requerido."
+      "username-required": "Nombre de usuario requerido.",
+      "username-contains-invalid-characters": "Nombre de usuario contiene caracteres inválidos. Permitidos: a-z, A-Z, 0-9, _, -"
     },
     "button": {
       "change": "Cambio",
@@ -768,7 +770,8 @@
     "password-again": "Contraseña otra vez",
     "register-confirmation": "Confirmación de Registro",
     "reset-forgotten-password": "Olvidé la contraseña",
-    "username": "Nombre de usuario"
+    "username": "Nombre de usuario",
+    "username-help": "Visible públicamente, caracteres permitidos: a-z, A-Z, 0-9, _, -"
   },
   "attribution": {
     "title": "Atribución",
@@ -848,7 +851,7 @@
       "three-inverted": "Tres (invertido)"
     },
     "charge-group-of": "Grupo de figuras de",
-    "select-charge-group-preset": "Seleccionar un pre-ajuste de grupo de carga",
+    "select-charge-group-preset": "Seleccionar un pre-ajuste de grupo de figuras",
     "various": "varios"
   },
   "entity": {
@@ -859,7 +862,7 @@
     "charges": "Figuras",
     "charge-group": "Grupo de figuras",
     "crest-charge": "Figura de cimera",
-    "crest-charge-group": "Grupo de cargas de cimera",
+    "crest-charge-group": "Grupo de figuras de cimera",
     "collections": "Colecciones",
     "cottise": "Cotizado",
     "extra-line": "Línea Adicional",
@@ -872,8 +875,8 @@
     "motto": "Lema",
     "opposite-line": "Línea opuesta",
     "ordinary": "Piezas",
-    "ribbon": "Cinta",
-    "ribbons": "Bandas",
+    "ribbon": "Listón",
+    "ribbons": "Listones",
     "semy": "Sembrado",
     "slogan": "Lema",
     "tags": "Etiquetas",
@@ -903,7 +906,7 @@
       "invert": "Invertir"
     },
     "text": {
-      "apply-preset-after-change": "Aplica un pre-ajuste después de editar la curva de cinta y cambia el número de segmentos.",
+      "apply-preset-after-change": "Aplica un pre-ajuste después de editar la curva del listón y cambia el número de segmentos.",
       "segment-explanation": "Los segmentos pueden ser de fondo, primer plano o primer plano con texto y su orden de representación está determinado por el número de capas. Nota: aplicar un ajuste predefinido después de introducir nuevos segmentos o eliminar segmentos en la curva. Esto sobrescribirá los cambios aquí, pero ahora mismo no hay una buena manera de preservar esto.",
       "svg-font-rendering-warning": "La exportación de SVG incorpora las fuentes, pero algunos programas pueden no mostrarlas correctamente. Al menos Chrome debería mostrarlo.",
       "topology-explanation-1": "La curva de la cinta se puede interpretar de muchas formas, dependiendo que sea primer plano/fondo y qué segmentos se superponen.",
@@ -1000,7 +1003,7 @@
       "create-arms": "Crear escudo",
       "create-charge": "Crear Figura",
       "create-collection": "Crear colección",
-      "create-ribbon": "Crear cinta"
+      "create-ribbon": "Crear listón"
     },
     "arms-library": {
       "create-and-view-arms": "Aquí puedes crear y ver escudos de armas. Usted tiene que guardar explícitamente su escudo de armas como público y agregar una licencia, si quiere compartir el enlace y permitir que otros lo vean.",
@@ -1025,9 +1028,9 @@
   },
   "banner": {
     "outdated-version-arms": "Esta no es la última versión de este escudo de armas.",
-    "outdated-version-charge": "Esta no es la última versión de la carga.",
+    "outdated-version-charge": "Esta no es la última versión de la figura.",
     "outdated-version-collection": "Esta no es la última versión de la colección.",
-    "outdated-version-ribbon": "Esta no es la última versión de la cinta.",
+    "outdated-version-ribbon": "Esta no es la última versión del listón.",
     "open-latest-version": "Abrir la última versión."
   }
 }
