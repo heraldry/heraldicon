@@ -5,7 +5,7 @@
     "collection-library": "Collections",
     "arms-library": "Armoiries",
     "charge-library": "Charges",
-    "ribbon-library": "Banderoles",
+    "ribbon-library": "Listels",
     "users": "Utilisateurs",
     "contact": "Contact",
     "account": "Mon Compte",
@@ -73,12 +73,17 @@
       "dancetty": "Denchée",
       "dovetailed": "Mortaisée",
       "embattled": "Crénelée",
+      "embattled-alise": "Embattled alisé",
+      "embattled-fitchy-double": "Embattled fitchy double",
       "embattled-grady": "Pignonnée",
       "embattled-in-crosses": "Croiseté",
       "enarched": "Concave",
       "engrailed": "Engrêlée",
+      "erably": "Erably",
       "fir-tree-topped": "Sapinée",
       "fir-twigged": "Sapinagée",
+      "flory": "Flory",
+      "flory-counter-flory": "Flory counter flory",
       "indented": "Dentelée",
       "invected": "Cannelée",
       "nebuly": "Nébulée",
@@ -133,7 +138,8 @@
     "orange": "Orangé",
     "rose": "Rose",
     "white": "Blanc",
-    "amaranth": "Amarante"
+    "amaranth": "Amarante",
+    "teal": "Teal"
   },
   "theme": {
     "group": {
@@ -200,6 +206,7 @@
       "glissant": "Ondoyant",
       "hauriant": "Hauriant",
       "in-her-piety": "Avec sa piété",
+      "in-his-pride": "In his pride",
       "issuant": "Issant",
       "naiant": "Nageant",
       "none": "Aucune",
@@ -212,12 +219,12 @@
       "respectant": "Respectant",
       "rising": "Essorant",
       "salient": "Saillant",
-      "segreant": "Segreant",
+      "segreant": "Rampant au vol étendu",
       "sejant": "Assis",
       "sejant-erect": "Accroupi",
       "statant": "Arrêté",
       "urinant": "Renversé et nageant en pal",
-      "vigilant": "Vigilant",
+      "vigilant": "Tenant sa vigilance",
       "volant": "Volant",
       "vulning": "Ensanglanté"
     },
@@ -233,11 +240,13 @@
     },
     "tincture-modifier": {
       "group": {
+        "edifice": "Édifice",
         "fauna": "Faune",
         "flora": "Flore",
         "helmet": "Casque",
         "other": "Autre",
-        "technical": "Technique"
+        "technical": "Technique",
+        "person": "Personne"
       },
       "special": {
         "highlight": "Surbrillance (alpha)",
@@ -249,46 +258,95 @@
         "shadow": "Ombre (alpha)",
         "tertiary": "Tertiaire"
       },
+      "shading": {
+        "reference": "0% Reference"
+      },
+      "acorned": "Englanté",
       "armed": "Armé",
+      "armoured": "Armé",
       "attired": "Ramé",
       "barbed": "Pointé",
       "barred": "Grillé",
       "beaked": "Becqué",
+      "bearded": "Barbé",
+      "belted": "Ceint",
       "bladed": "Tigé",
+      "bridled": "Bridé",
+      "buckled": "Bouclé",
+      "cabled": "Avec sa gumène",
       "caparisoned": "Caparaçonné",
+      "chained": "Enchaîné",
+      "clasped": "Au fermoir de",
       "collared": "Colleté",
       "combed": "Crêté",
+      "crowned": "Couronné",
+      "enflamed": "Enflammé",
+      "eradicated": "Arraché",
       "erased": "Arraché",
       "eyed": "Allumé",
       "eyed-peacock": "Miraillé (paon)",
       "feathered": "Empenné",
       "finned": "Lorré",
       "flagged": "Girouetté",
+      "flowered": "Fleuri",
       "fructed": "Fruité",
       "garnished": "Embouté",
+      "gauntleted": "Gantelé",
+      "gemmed": "Chatonné",
+      "glazed": "Glazed",
+      "gloved": "Ganté",
       "handled": "Emmanché",
       "hilted": "Garni",
       "hooded": "Chaperonné",
+      "horned": "Accorné",
       "illuminated": "Illuminé",
+      "imbrued": "Ensanglanté",
       "incensed": "Crachant",
+      "irradiated": "Rayonné",
+      "jessed": "Longé",
       "langued": "Langué",
       "leaved": "Feuillé",
       "legged": "Membré",
+      "lined": "Lined",
       "maned": "Criné",
+      "marked": "Marqué",
       "masoned": "Maçonné",
+      "muzzled": "Emmuselé",
+      "nimbed": "Nimbé",
       "none": "Aucun",
       "orbed": "Allumé",
+      "pennoned": "Pennoned",
       "pizzled": "Vilené",
       "pommeled": "Garni",
+      "portcullised": "Hersé",
+      "ported": "Portillé",
+      "rigged": "Équipé",
+      "ringed": "Bouclé",
+      "roofed": "Essoré",
+      "saddled": "Sellé",
+      "scaled": "Écaillé",
+      "sealed": "Sealed",
       "seeded": "Boutonné",
+      "shafted": "Futé",
       "slipped": "Tigé",
+      "spurred": "Éperonné",
       "stringed": "Attaché",
       "tailed": "Caudé",
+      "tasselled": "Houppé",
+      "tipped": "Tipped",
       "toothed": "Denté",
+      "towered": "Towered",
       "trimmed": "Trimmed",
+      "tufted": "Tufted",
+      "turned-up": "Rebrassé",
+      "tusked": "Défendu",
       "unguled": "Ancorné",
+      "veined": "Veined",
+      "vested": "Vested",
       "wattled": "Barbé",
-      "winged": "Ailé"
+      "windowed": "Windowed",
+      "winged": "Ailé",
+      "wreathed": "Wreathed"
     },
     "type": {
       "annulet": "Annelet",
@@ -392,8 +450,9 @@
     "attitude": "Attitude",
     "bar-thickness": "Épaisseur de la barre",
     "base-fields": "Champs de base",
-    "base-field-shift": "Base field shift",
+    "base-field-shift": "Décalage du champ de base",
     "base-line": "Ligne de base",
+    "blazonry-name": "Nom héraldique (anglais)",
     "column": "Colonne",
     "corner": "Sommets",
     "corner-choice": {
@@ -409,8 +468,8 @@
       "square-root-damping": "Atténuation racine carrée"
     },
     "damping-radius": "Rayon d'atténuation",
-    "default-size": "Default size",
-    "default-spacing": "Default spacing",
+    "default-size": "Taille par défaut",
+    "default-spacing": "Espacement par défaut",
     "distance": "Distance",
     "eccentricity": "Excentricité",
     "edge-angle": "Angle des bords",
@@ -428,12 +487,14 @@
     "flipped?": "Inversé",
     "font": "Police",
     "font-scale": "Taille de la police",
+    "font-title": "Police pour le titre",
     "function": "Fonction",
     "geometry": "Géométrie",
     "height": "Hauteur",
     "highlight": "Surbrillance",
     "humetty": "Alésé",
     "ignore-layer-separator?": "Ignorer le séparateur de calque",
+    "adapt-to-ordinaries?": "Adapter au chef et à la champagne",
     "inherit-environment?": "Hériter l'environnement",
     "is-public": "Rendre public",
     "landscape?": "Paysage",
@@ -496,9 +557,9 @@
       "hoist": "Guindant",
       "fly": "Battant"
     },
-    "positioning-mode": "Positioning",
+    "positioning-mode": "Positionnement",
     "positioning-mode-choice": {
-      "automatic": "Automatic",
+      "automatic": "Automatique",
       "manual": "Manuel"
     },
     "radius": "Rayon",
@@ -508,11 +569,11 @@
     "rotation": "Rotation",
     "row": "Rangée",
     "section": {
-      "bend-group": "Bend group",
-      "bend-sinister-group": "Bend sinister group",
-      "fess-group": "Fess group",
-      "pale-group": "Pale group",
-      "chevron-group": "Chevron group"
+      "bend-group": "Groupe de bandes",
+      "bend-sinister-group": "Groupe de barres",
+      "fess-group": "Groupe de fasces",
+      "pale-group": "Groupe de pals",
+      "chevron-group": "Groupe de chevrons"
     },
     "select-arms": "Sélectionner des armes",
     "select-charge": "Sélectionner une charge",
@@ -530,17 +591,17 @@
       "angle": "Angle",
       "thickness": "Épaisseur"
     },
-    "size-reference": "Size reference",
+    "size-reference": "Taille de référence",
     "size-reference-choice": {
-      "line-length": "Line length",
-      "field-width": "Field width",
-      "field-height": "Field height"
+      "line-length": "Longueur de ligne",
+      "field-width": "Largeur du champ",
+      "field-height": "Hauteur du champ"
     },
     "shadow": "Ombre",
     "smoothing": "Lissage",
     "spacing": "Espacement",
-    "spacing-top": "Top spacing",
-    "spacing-left": "Left spacing",
+    "spacing-top": "Espacement en haut",
+    "spacing-left": "Espacement à gauche",
     "start-angle": "Angle de départ",
     "stretch": "Étirer",
     "stretch-x": "Étirer x",
@@ -580,16 +641,16 @@
     },
     "variant-potenty-choice": {
       "default": "Par défaut",
-      "counter": "Counter",
-      "in-pale": "In pale",
-      "en-point": "En point"
+      "counter": "Contre",
+      "in-pale": "En pal",
+      "en-point": "En pointe"
     },
     "variant-vairy-choice": {
       "default": "Par défaut",
-      "counter": "Counter",
-      "in-pale": "In pale",
-      "en-point": "En point",
-      "ancien": "Ancien"
+      "counter": "Contre",
+      "in-pale": "En pal",
+      "en-point": "En pointe",
+      "ancien": "Antique"
     },
     "vertical-mask": "Masque vertical",
     "width": "Largeur"
@@ -607,12 +668,16 @@
     "remove": "supprimer",
     "smoothing": "Peut lisser certains angles restants, à utiliser en combinaison avec les angles arrondis.",
     "undo": "annuler",
-    "blazonry-name": "Le nom qui serait donné à la charge en héraldique, en anglais, par ex. lion, fleur, bâton",
+    "blazonry-name": "Le nom qui serait donné à la charge en héraldique, en anglais, par ex. lion, rose, staff",
     "landscape?": "Conserver le SVG tel quel, les images incluses sont aussi autorisées. Ce n'est une bonne idée que si vous voulez utiliser des images comme paysages d'arrière-plan.",
     "fixed-tincture": "Donne à la charge une couleur fixe, qui ne peut pas être modifiée par un champ. De telles charges ne sont pas très flexibles, donc ne les utilisez que dans des cas exceptionnels.",
     "charge-group-preview": "Cliquez sur les emplacements pour les désactiver ou parcourir les charges disponibles (ajoutés en dessous).",
     "load-field-from-arms": "Remplacer le champ par des armoiries existantes.",
-    "size-reference": "The value used as a base reference when size options are percentages, e.g. line width"
+    "size-reference": "Cette valeur est utilisée comme référence de base quand les options de taille sont des pourcentages, par ex. la longueur de ligne",
+    "detect-shading": "Si vous définissez l'ombrage de référence de 0% sur une couleur (préférablement primaire), vous pouvez sélectionner plusieurs couleurs et cliquer sur ce bouton, les niveaux d'ombrage de ces couleurs sont alors définis en fonction de leur luminosité.",
+    "expand": "expand",
+    "fit-in-window": "fit in window",
+    "support-on-ko-fi": "Support Heraldicon on Ko-fi"
   },
   "miscellaneous": {
     "and": "et",
@@ -625,8 +690,8 @@
     "fields": "champs",
     "general": "Général",
     "inherited": "Hérité",
-    "item": "item",
-    "items": "items",
+    "item": "élément",
+    "items": "éléments",
     "left": "Gauche",
     "loading": "Chargement...",
     "show-more": "Voir plus",
@@ -643,7 +708,8 @@
     "top": "haut",
     "unnamed": "sans nom",
     "unsaved-data": "données non sauvegardées",
-    "field-reference": "idem"
+    "field-reference": "idem",
+    "not-supported-by-charge": "non compatible avec la charge"
   },
   "button": {
     "add": "Ajouter",
@@ -659,7 +725,8 @@
     "colourize": "Coloriser",
     "actions": "Actions",
     "export": "Exporter",
-    "share": "Partager"
+    "share": "Partager",
+    "detect-shading": "Détecter l'ombrage"
   },
   "user": {
     "message": {
@@ -684,7 +751,8 @@
       "registration-completed": "Inscription terminée",
       "ribbon-saved": "Listel sauvegardé, nouvelle version :",
       "save-changes-first": "Sauvegardez d'abord vos modifications.",
-      "username-required": "Nom d'utilisateur requis."
+      "username-required": "Nom d'utilisateur requis.",
+      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -"
     },
     "button": {
       "change": "Modifier",
@@ -702,7 +770,8 @@
     "password-again": "Confirmation du mot de passe",
     "register-confirmation": "Confirmation d'inscription",
     "reset-forgotten-password": "Réinitialiser le mot de passe oublié",
-    "username": "Nom d'utilisateur"
+    "username": "Nom d'utilisateur",
+    "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -"
   },
   "attribution": {
     "title": "Attribution",
@@ -817,6 +886,7 @@
   },
   "submenu-summary": {
     "adjusted": "ajusté",
+    "aligned": "aligné",
     "base-fields": "champs de base",
     "default": "Par défaut",
     "fimbriated": "avec liseré",
@@ -870,7 +940,8 @@
     "topology": "Topologie",
     "editor": {
       "shift-info": "Shift - ajouter ou supprimer des points"
-    }
+    },
+    "layer": "calque"
   },
   "escutcheon": {
     "group": {
@@ -939,7 +1010,9 @@
       "svg-png-access-info": "Cependant, les liens SVG/PNG peuvent être consultés par tout le monde."
     },
     "charge-library": {
-      "create-and-view-charges": "Ici vous pouvez voir et créer des charges à utiliser dans les armoiries. Par défaut, vos charges sont privées, donc vous seul(e) pouvez les voir et les utiliser. Si vous voulez les rendre publiques, alors vous devez fournir une licence et une attribution, si elles sont basées sur un travail antérieur."
+      "create-and-view-charges": "Ici vous pouvez voir et créer des charges à utiliser dans les armoiries. Par défaut, vos charges sont privées, donc vous seul(e) pouvez les voir et les utiliser. Si vous voulez les rendre publiques, alors vous devez fournir une licence et une attribution, si elles sont basées sur un travail antérieur.",
+      "no-colours-selected": "Vous devez sélectionner au moins une couleur pour détecter son ombre.",
+      "no-shading-reference": "Vous devez définir l'ombrage d'une couleur comme la référence 0% de l'ombrage."
     },
     "collection-library": {
       "create-and-view-collections": "Ici vous pouvez voir et créer des collections de blasons. Vous devez explicitement enregistrer votre collection comme publique et ajouter une licence, si vous voulez partager le lien et permettre à d'autres de la voir."
@@ -952,5 +1025,12 @@
     "success": "Compris",
     "warning": "Attention",
     "error": "Erreur"
+  },
+  "banner": {
+    "outdated-version-arms": "Ceci n'est pas la dernière version de ces armoiries.",
+    "outdated-version-charge": "Ceci n'est pas la dernière version de cette charge.",
+    "outdated-version-collection": "Ceci n'est pas la dernière version de cette collection.",
+    "outdated-version-ribbon": "Ceci n'est pas la dernière version de ce listel.",
+    "open-latest-version": "Ouvrir la dernière version."
   }
 }
