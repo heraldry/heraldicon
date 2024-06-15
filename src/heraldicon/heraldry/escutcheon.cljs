@@ -470,6 +470,23 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-philippino
+  {:shape "M 35,115
+           C 20,115 10,105 10,90
+           V 45
+           C 10,30 0,20 0,20 15,25 25,10 25,10 40,15 50,0 50,0
+           c 0,0 10,15 25,10 0,0 10,15 25,10 0,0 -10,10 -10,25
+           v 45
+           c 0,15 -10,25 -25,25 -10,0 -15,5 -15,5 0,0 -5,-5 -15,-5
+           z"
+   :center-fess? true
+
+   ::name "Philippino"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private community-scutum
   {:shape "M 0,15 v 130 c 0,10 30,15 50,15 20,0 50,-5 50,-15
            V 15 C 100,5 66.749793,0 50,0 30,0 0,5 0,15 z"
@@ -990,6 +1007,7 @@
     [:community-halfling community-halfling]
     [:community-halfling-pavise community-halfling-pavise]
     [:community-african community-african]
+    [:community-philippino community-philippino]
     [:community-persian community-persian]
     [:community-manilla community-manilla]
     [:community-gonfalon community-gonfalon]
