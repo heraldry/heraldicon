@@ -908,6 +908,24 @@
                   :source-creator-name "chris"
                   :source-creator-link "https://commons.wikimedia.org/wiki/User:Chrkl"}})
 
+(def ^:private community-persian
+  {:shape "M 50.010055,0
+           A 50.569202,60 0 0 0 0.00414029,51.219922 7.6646945,9.5015312 0 0 1
+           2.8045472,50.482031 7.6646945,9.5015312 0 0 1 10.469192,59.983594
+           7.6646945,9.5015312 0 0 1 2.8045472,69.485157 7.6646945,9.5015312 0 0
+           1 0,68.744727 50.569202,60 0 0 0 50.010055,120 50.569202,60 0 0 0
+           99.990537,68.942579 7.6646945,9.5015312 0 0 1 97.490004,69.485157
+           7.6646945,9.5015312 0 0 1 89.825359,59.983594 7.6646945,9.5015312 0 0
+           1 97.490004,50.482031 7.6646945,9.5015312 0 0 1 100,51.006055
+           50.569202,60 0 0 0 50.010055,0
+           Z"
+
+   ::name "Persian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "verden"
+                  :creator-link "https://heraldicon.org/users/verden"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -971,6 +989,7 @@
     [:community-halfling community-halfling]
     [:community-halfling-pavise community-halfling-pavise]
     [:community-african community-african]
+    [:community-persian community-persian]
     [:community-manilla community-manilla]
     [:community-gonfalon community-gonfalon]
     [:community-kalasag community-kalasag]]])
