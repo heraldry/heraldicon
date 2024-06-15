@@ -919,6 +919,7 @@
            1 97.490004,50.482031 7.6646945,9.5015312 0 0 1 100,51.006055
            50.569202,60 0 0 0 50.010055,0
            Z"
+   :center-fess? true
 
    ::name "Persian"
    ::attribution {:nature :own-work
