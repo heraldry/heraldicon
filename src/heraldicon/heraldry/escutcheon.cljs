@@ -944,6 +944,18 @@
                   :creator-name "verden"
                   :creator-link "https://heraldicon.org/users/verden"}})
 
+(def ^:private community-ninja
+  {:shape "M 63,133
+           C 63,93 80,70 100,60 95,10 70,5 50,0 30,5 5,10 0,60 20,70 37,93 37,133
+           l 13,7
+           z"
+
+   ::name "Ninja"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "zalension"
+                  :creator-link "https://heraldicon.org/users/zalension"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -995,6 +1007,7 @@
     [:community-queen-consort community-queen-consort]
     [:community-queen-consort-modern community-queen-consort-modern]
     [:community-octolozenge community-octolozenge]
+    [:community-ninja community-ninja]
     [:community-italian community-italian]
     [:community-italian-2 community-italian-2]
     [:community-dragonborn community-dragonborn]
