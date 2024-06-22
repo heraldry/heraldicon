@@ -68,17 +68,20 @@
        [render-cottise (c/++ cottising-context :cottise-extra-2)])]))
 
 (defmethod interface/render-component :heraldry/ordinary [context]
-  (let [{:keys [svg-export?]} (c/render-hints context)
+  (let [{:keys [svg-export?
+                clip?]} (c/render-hints context)
         clip-path-id (uid/generate "clip")
         {:keys [transform]} (interface/get-properties context)]
     [:<>
      [:defs
-      [(if svg-export?
+      [(if (and svg-export?
+                (not clip?))
          :mask
          :clipPath) {:id clip-path-id}
        [render/shape-mask context]]]
      [render/shape-fimbriation context]
-     [:g {(if svg-export?
+     [:g {(if (and svg-export?
+                   (not clip?))
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
       (let [wrapper (if transform

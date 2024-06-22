@@ -4,6 +4,7 @@
    [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
    [heraldicon.frontend.entity.action.export-png :as export-png]
    [heraldicon.frontend.entity.action.export-svg :as export-svg]
+   [heraldicon.frontend.entity.action.export-svg-clips :as export-svg-clips]
    [heraldicon.frontend.entity.action.save :as save]
    [heraldicon.frontend.entity.action.share :as share]))
 
@@ -21,6 +22,7 @@
      :string.button/actions
      (filter identity
              [(export-svg/action entity-type)
+              (export-svg-clips/action entity-type)
               (export-png/action entity-type)
               (share/action entity-type)
               (copy-to-new/action entity-type)])

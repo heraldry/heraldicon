@@ -61,16 +61,19 @@
 
 (defn render [context transform overlap?]
   (let [{:keys [charge-preview?
-                svg-export?]} (c/render-hints context)
+                svg-export?
+                clip?]} (c/render-hints context)
         clip-path-id (uid/generate "clip")
         field-context (effective-field-context context)]
     [:<>
      [:defs
-      [(if svg-export?
+      [(if (and svg-export?
+                (not clip?))
          :mask
          :clipPath) {:id clip-path-id}
        [render/shape-mask context overlap?]]]
-     [:g {(if svg-export?
+     [:g {(if (and svg-export?
+                   (not clip?))
             :mask
             :clip-path) (str "url(#" clip-path-id ")")}
       (let [clickable? (not (or svg-export?

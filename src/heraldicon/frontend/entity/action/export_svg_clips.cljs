@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.entity.action.export-svg
+(ns heraldicon.frontend.entity.action.export-svg-clips
   (:require
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
@@ -28,7 +28,8 @@
                                  (get-in entity-data
                                          (case entity-type
                                            :heraldicon.entity.type/arms [:data :achievement :render-options]
-                                           :heraldicon.entity.type/collection [:data :render-options]))))
+                                           :heraldicon.entity.type/collection [:data :render-options])))
+                          (assoc :clip? true))
               response (<? (api/call (generate-svg-api-function entity-type) payload session))]
           (js/window.open (:svg-url response)))
 
@@ -53,7 +54,7 @@
                            @(rf/subscribe [::entity/saved? form-db-path])
                            (not @(rf/subscribe [::form/unsaved-changes? entity-type])))
           session @(rf/subscribe [::session/data])]
-      {:title (string/str-tr :string.button/export " (SVG, masks)")
+      {:title (string/str-tr :string.button/export " (SVG, clips)")
        :icon "fas fa-file-export"
        :handler (when can-export?
                   #(rf/dispatch [::invoke entity-type session]))
