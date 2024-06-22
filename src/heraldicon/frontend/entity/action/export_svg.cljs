@@ -53,7 +53,7 @@
                            @(rf/subscribe [::entity/saved? form-db-path])
                            (not @(rf/subscribe [::form/unsaved-changes? entity-type])))
           session @(rf/subscribe [::session/data])]
-      {:title (string/str-tr :string.button/export " (SVG)")
+      {:title (string/str-tr :string.button/export " (SVG, masks)")
        :icon "fas fa-file-export"
        :handler (when can-export?
                   #(rf/dispatch [::invoke entity-type session]))

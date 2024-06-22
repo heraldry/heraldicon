@@ -58,6 +58,7 @@
 
 (defmethod interface/render-component :heraldry/coat-of-arms [context]
   (let [{:keys [svg-export?
+                clip?
                 root-path
                 texture-link]} (c/render-hints context)
         {:keys [min-x min-y]
@@ -129,7 +130,8 @@
       (when (= mode :hatching)
         hatching/defs)]
      [:defs
-      [(if svg-export?
+      [(if (and svg-export?
+                (not clip?))
          :mask
          :clipPath)
        {:id mask-id}
@@ -138,7 +140,8 @@
                :fill-rule "evenodd"
                :fill "#fff"
                :stroke "none"}]]]
-     [:g {(if svg-export?
+     [:g {(if (and svg-export?
+                   (not clip?))
             :mask
             :clip-path) (str "url(#" mask-id ")")}
       [:g {:filter (when texture-link (str "url(#" texture-id ")"))}

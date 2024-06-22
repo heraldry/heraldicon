@@ -246,6 +246,7 @@
                 preview-original?
                 charge-preview?
                 svg-export?
+                clip?
                 select-component-fn
                 enter-component-fn
                 leave-component-fn]} (c/render-hints context)
@@ -467,8 +468,9 @@
                                        "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
                                        "rotate(" (- angle) ")"
                                        "translate(" (-> anchor-point (v/mul -1) v/->str) ")")
-                clip? (not (or svg-export?
-                               preview-original?))
+                clip? (or clip?
+                          (not (or svg-export?
+                                   preview-original?)))
                 charge-clip-path-id (when clip?
                                       (uid/generate "shape-clip"))]
             [:<>

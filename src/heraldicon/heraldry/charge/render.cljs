@@ -8,6 +8,7 @@
 
 (defmethod interface/render-component :heraldry/charge [context]
   (let [{:keys [svg-export?
+                clip?
                 self-below-shield?
                 render-pass-below-shield?]} (c/render-hints context)
         shape-clip-path-id (uid/generate "clip")
@@ -18,7 +19,8 @@
     [:<>
      (when vertical-mask-shape
        [:defs
-        [(if svg-export?
+        [(if (and svg-export?
+                  (not clip?))
            :mask
            :clipPath) {:id vertical-mask-clip-path-id}
          [:path {:d vertical-mask-shape
@@ -26,7 +28,8 @@
                  :fill-rule "evenodd"
                  :fill "#fff"}]]])
      [:g (when vertical-mask-shape
-           {(if svg-export?
+           {(if (and svg-export?
+                     (not clip?))
               :mask
               :clip-path) (str "url(#" vertical-mask-clip-path-id ")")})
       (if other?
@@ -35,12 +38,14 @@
                  (boolean render-pass-below-shield?))
           [:<>
            [:defs
-            [(if svg-export?
+            [(if (and svg-export?
+                      (not clip?))
                :mask
                :clipPath) {:id shape-clip-path-id}
              [render/shape-mask context]]]
            [render/shape-fimbriation context]
-           [:g {(if svg-export?
+           [:g {(if (and svg-export?
+                         (not clip?))
                   :mask
                   :clip-path) (str "url(#" shape-clip-path-id ")")}
             [interface/render-component (c/++ context :field)]]
