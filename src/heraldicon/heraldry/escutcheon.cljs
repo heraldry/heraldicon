@@ -351,6 +351,20 @@
                          :source-creator-name "coinageFission#1205"
                          :source-creator-link "https://discord.com/channels/272117928298676225/272117928298676225"})})
 
+(def ^:private community-pointy-iberian-engrailed
+  {:shape "m 0,0
+           v 70
+           c -0.125,20 5,40 30,45 20,5 20,10 20,10 0,0 0,-5 20,-10 25,-5 30,-25 30,-45
+           V 0
+           C 100,0 90,5 75,5 60,5 50,0 50,0 50,0 40,5 25,5 10,5 0,0 0,0
+           Z"
+
+   ::name "Pointy Iberian Engrailed"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private community-kalasag
   {:shape "M 54.303084,263.03992 c 0.481806,0.77857 13.294025,21.48369
            13.294025,21.48369 1.495301,2.41641 21.449132,2.28517
@@ -470,6 +484,34 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-italian-redux
+  {:shape "M 50,0
+           C 35,0 25,10 25,10 15,20 0,20 0,20
+           c 0,55 5,64 10,70 5,6 15,20 15,30 0,30 25,30 25,30 0,0 25,0 25,-30 0,-10 10,-24 15,-30 5,-6 10,-15 10,-70 0,0 -15,0 -25,-10
+           C 75,10 65,0 50,0
+           Z"
+
+   ::name "Italian Redux"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-extravagant
+  {:shape "M 10,85
+           C 10,65 0,50 0,50 0,50 10,35 10,25 10,15 5,5 5,5
+           H 15
+           C 25,5 35,0 40,0 45,0 50,5 50,5 50,5 55,0 60,0 65,0 75,5 85,5
+           h 10
+           c 0,0 -5,10 -5,20 0,10 10,25 10,25 0,0 -10,15 -10,35 0,25 -40,35 -40,35 0,0 -40,-10 -40,-35
+           z"
+
+   ::name "Extravagant"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private community-philippino
   {:shape "M 35,115
            C 20,115 10,105 10,90
@@ -543,6 +585,22 @@
    :center-fess? true
 
    ::name "African"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-simple-kalasag
+  {:shape "m 40,170
+           c -10,0 -25,-2 -25,-2
+           L 0,10
+           C 0,10 10,4 20,3 20,3 20,15 30,25 40,15 40,1 40,1 40,1 45,0 50,0 55,0 60,1 60,1 60,1 60,15 70,25 80,15 80,3 80,3
+           c 10,1 20,7 20,7
+           L 85,168
+           c 0,0 -15,2 -25,2 0,0 0,-10 -10,-20 -10,10 -10,20 -10,20
+           z"
+
+   ::name "Simple Kalasag"
    ::attribution {:nature :own-work
                   :license :public-domain
                   :creator-name "Korfi2Go"
@@ -989,6 +1047,7 @@
    [:string.escutcheon.group/community
     [:community-square-iberian-engrailed community-square-iberian-engrailed]
     [:community-pointy-iberian community-pointy-iberian]
+    [:community-pointy-iberian-engrailed community-pointy-iberian-engrailed]
     [:community-berlin community-berlin]
     [:community-angular community-angular]
     [:community-waisted-french community-waisted-french]
@@ -1009,6 +1068,7 @@
     [:community-octolozenge community-octolozenge]
     [:community-ninja community-ninja]
     [:community-italian community-italian]
+    [:community-italian-redux community-italian-redux]
     [:community-italian-2 community-italian-2]
     [:community-dragonborn community-dragonborn]
     [:community-dwarven community-dwarven]
@@ -1020,10 +1080,12 @@
     [:community-halfling community-halfling]
     [:community-halfling-pavise community-halfling-pavise]
     [:community-african community-african]
+    [:community-extravagant community-extravagant]
     [:community-philippino community-philippino]
     [:community-persian community-persian]
     [:community-manilla community-manilla]
     [:community-gonfalon community-gonfalon]
+    [:community-simple-kalasag community-simple-kalasag]
     [:community-kalasag community-kalasag]]])
 
 (def ^:private kinds-map
