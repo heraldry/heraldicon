@@ -49,6 +49,13 @@
 }
 
 @font-face {
+  font-family: "Magic School Two";
+  font-style: "normal";
+  font-weight: 400;
+  src: url("../font/magic-school/MagicSchoolTwo.ttf") format("truetype");
+}
+
+@font-face {
   font-family: "Prince Valiant";
   font-style: "normal";
   font-weight: 400;
