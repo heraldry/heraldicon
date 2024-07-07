@@ -106,8 +106,11 @@
 (defn- render-collection [form-db-path & {:keys [allow-adding?]}]
   (let [font-title (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font-title)})
                            font/css-string)
+        font-scale-title (interface/get-sanitized-data {:path (conj form-db-path :data :font-scale-title)})
+        font-size-title (* 50 font-scale-title)
         font (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font)})
                      font/css-string)
+        font-scale (interface/get-sanitized-data {:path (conj form-db-path :data :font-scale)})
         num-columns (interface/get-sanitized-data {:path (conj form-db-path :data :num-columns)})
         num-elements (interface/get-list-size {:path (conj form-db-path :data :elements)})
         name @(rf/subscribe [:get (conj form-db-path :name)])
@@ -134,7 +137,7 @@
                                :y 50
                                :text-anchor "middle"
                                :style {:font-family font-title
-                                       :font-size 50}}
+                                       :font-size font-size-title}}
        name]]
      [:g {:transform "translate(0,60)"}
       (into [:<>]
@@ -156,7 +159,8 @@
                                   margin))
                           (+ (/ arms-height 2)))
                        (conj form-db-path :data :elements idx)
-                       :font font]])))
+                       :font font
+                       :font-size (* 12 font-scale)]])))
             (range num-elements))
 
       (when allow-adding?
