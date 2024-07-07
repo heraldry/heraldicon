@@ -489,6 +489,7 @@
     "font": "Font",
     "font-scale": "Font scale",
     "font-title": "Font for title",
+    "font-scale-title": "Font scale for title",
     "function": "Function",
     "geometry": "Geometry",
     "height": "Height",

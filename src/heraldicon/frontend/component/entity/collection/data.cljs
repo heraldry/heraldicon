@@ -13,7 +13,9 @@
    context
    [:num-columns
     :font-title
-    :font]))
+    :font-scale-title
+    :font
+    :font-scale]))
 
 (defmethod component/node :heraldicon.entity.collection/data [context]
   (let [elements-context (c/++ context :elements)

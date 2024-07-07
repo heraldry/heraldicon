@@ -12,4 +12,16 @@
                  :max 15
                  :ui/label :string.option/number-of-columns}
    :font font/default-options
-   :font-title (assoc font/default-options :ui/label :string.option/font-title)})
+   :font-scale {:type :option.type/range
+                :default 1
+                :min 0.01
+                :max 2
+                :ui/label :string.option/font-scale
+                :ui/step 0.01}
+   :font-title (assoc font/default-options :ui/label :string.option/font-title)
+   :font-scale-title {:type :option.type/range
+                      :default 1
+                      :min 0.01
+                      :max 2
+                      :ui/label :string.option/font-scale-title
+                      :ui/step 0.01}})

@@ -488,6 +488,7 @@
     "font": "Schriftart",
     "font-title": "Schriftart für Titel",
     "font-scale": "Schrift-Faktor",
+    "font-scale-title": "Schrift-Faktor für Titel",
     "function": "Funktion",
     "geometry": "Geometrie",
     "height": "Höhe",
