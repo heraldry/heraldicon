@@ -5,6 +5,7 @@
    [heraldicon.frontend.entity.action.export-png :as export-png]
    [heraldicon.frontend.entity.action.export-svg :as export-svg]
    [heraldicon.frontend.entity.action.export-svg-clips :as export-svg-clips]
+   [heraldicon.frontend.entity.action.favorite :as favorite]
    [heraldicon.frontend.entity.action.save :as save]
    [heraldicon.frontend.entity.action.share :as share]))
 
@@ -15,6 +16,7 @@
     additional-buttons
 
     [:div {:style {:flex "auto"}}]
+    [favorite/button entity-type]
     [share/button entity-type]
 
     [hover-menu/hover-menu

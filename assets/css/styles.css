@@ -725,6 +725,18 @@ label div {
   outline: 0;
 }
 
+.button.favorite:hover,
+.button.favorite:focus {
+  background-color: #fff;
+  background-image: none;
+  outline: 0;
+}
+.button.favorite {
+  background-color: #fff;
+  background-image: none;
+  outline: 0;
+}
+
 .button:active {
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.15) inset,

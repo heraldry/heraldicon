@@ -41,7 +41,8 @@
                 disabled?
                 tooltip]} (action entity-type)]
     [:button.button {:style {:flex "initial"
-                             :color "#777"}
+                             :color "#777"
+                             :margin-left "10px"}
                      :class (when disabled? "disabled")
                      :title (tr tooltip)
                      :on-click handler}
