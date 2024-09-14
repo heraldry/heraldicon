@@ -4,6 +4,7 @@
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.entity.id :as id]
    [heraldicon.frontend.api :as api]
+   [heraldicon.frontend.entity.action.favorite :as favorite]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity-list :as-alias entity-list]
    [heraldicon.frontend.repository.query :as query]
@@ -63,11 +64,13 @@
                   % version-map))))
 
 (rf/reg-event-fx ::store
-  (fn [{:keys [db]} [_ {:keys [id version] :as entity}]]
+  (fn [{:keys [db]} [_ {:keys [id version favorite-count is-user-favorite] :as entity}]]
     {:db (-> db
              (assoc-in (entity-path id version) {:status :done
                                                  :entity entity})
-             (update-latest-versions [entity]))
+             (update-latest-versions [entity])
+             (favorite/set-favorite-count id favorite-count)
+             (favorite/set-is-user-favorite id is-user-favorite))
      :fx [[:dispatch [::entity-list/update entity]]]}))
 
 (rf/reg-event-db ::store-error

@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.api :as api]
+   [heraldicon.frontend.entity.action.favorite :as favorite]
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.entity :as repository.entity]
    [heraldicon.frontend.repository.query :as query]
@@ -17,6 +18,15 @@
 (defn- entity-list-path [entity-type]
   (conj db-path-entity-list entity-type))
 
+(defn- add-favorites
+  [db entities]
+  (reduce (fn [db {:keys [id favorite-count is-user-favorite]}]
+            (-> db
+                (favorite/set-favorite-count id favorite-count)
+                (favorite/set-is-user-favorite id is-user-favorite)))
+          db
+          entities))
+
 (rf/reg-event-db ::store
   (fn [db [_ entity-type entities]]
     (let [path (entity-list-path entity-type)]
@@ -24,7 +34,8 @@
           (assoc-in path {:status :done
                           :entities entities
                           :path (conj path :entities)})
-          (repository.entity/update-latest-versions entities)))))
+          (repository.entity/update-latest-versions entities)
+          (add-favorites entities)))))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ entity-type error]]
