@@ -9,7 +9,7 @@
           {:target :browser
            :asset-path "/js/generated"
            :js-options {:js-package-dirs ["./node_modules"]}
-           :devtools {:after-load heraldicon.frontend.main/init
+           :devtools {:after-load heraldicon.frontend.main/reload
                       :http-root "./assets"
                       :http-port 8081
                       :preloads [devtools.preload

@@ -27,7 +27,7 @@
     [modal/render]
     [auto-complete/render]]])
 
-(defn ^:export init []
+(defn ^:export reload []
   (log/info :release (config/get :release))
   (when (and (not= (config/get :stage) "dev")
              (not (config/get :backend?)))
@@ -39,12 +39,14 @@
        :replaysSessionSampleRate 1.0
        :replaysOnErrorSampleRate 1.0
        :integrations [(sentry-integrations/captureConsoleIntegration (clj->js {:levels "error"}))]})))
-
   (r-subs/clear-subscription-cache!)
   (rf/dispatch-sync [::state/initialize])
   (rf/dispatch-sync [::language/load-setting])
   (session/read-from-storage)
-  (router/start)
+  (router/start))
+
+(defn ^:export init []
+  (reload)
   (let [root (r/create-root (.getElementById js/document "app"))]
     (r/render root [app]))
   (let [title-root (r/create-root (first (.getElementsByTagName js/document "title")))]
