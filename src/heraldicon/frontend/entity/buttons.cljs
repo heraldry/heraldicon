@@ -7,7 +7,9 @@
    [heraldicon.frontend.entity.action.export-svg-clips :as export-svg-clips]
    [heraldicon.frontend.entity.action.favorite :as favorite]
    [heraldicon.frontend.entity.action.save :as save]
-   [heraldicon.frontend.entity.action.share :as share]))
+   [heraldicon.frontend.entity.action.share :as share]
+   [heraldicon.frontend.entity.form :as form]
+   [re-frame.core :as rf]))
 
 (defn buttons [entity-type additional-buttons]
   [:<>
@@ -16,7 +18,9 @@
     additional-buttons
 
     [:div {:style {:flex "auto"}}]
-    [favorite/button entity-type]
+    (let [form-db-path (form/data-path entity-type)
+          entity-id @(rf/subscribe [:get (conj form-db-path :id)])]
+      [favorite/button entity-id])
     [share/button entity-type]
 
     [hover-menu/hover-menu

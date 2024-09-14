@@ -10,6 +10,7 @@
    [heraldicon.frontend.element.radio-select :as radio-select]
    [heraldicon.frontend.element.search-field :as search-field]
    [heraldicon.frontend.element.tags :as tags]
+   [heraldicon.frontend.entity.action.favorite :as favorite]
    [heraldicon.frontend.entity.preview :as preview]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
@@ -109,16 +110,6 @@
   (fn [selected-item [_ _path item-id]]
     (= (:id selected-item) item-id)))
 
-(defn- heraldicon-tag []
-  [:span.tag {:style {:background "#3e933f"
-                      :color "#f6f6f6"}}
-   "heraldicon"])
-
-(defn- community-tag []
-  [:span.tag {:style {:background "#bf7433"
-                      :color "#f6f6f6"}}
-   "community"])
-
 (defn- new-badge []
   [:img.new-badge {:src (static/static-url "/img/new-badge.png")}])
 
@@ -186,10 +177,8 @@
         [:div.filter-result-card-tags
          (when item
            [:<>
-            [:div.item-classification {:style {:padding-left "10px"}}
-             (if (= username "heraldicon")
-               [heraldicon-tag]
-               [community-tag])]
+            [:div.favorites {:style {:padding-left "10px"}}
+             [favorite/button item-id :height 18]]
             [tags/tags-view (-> item :tags keys)
              :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
              :selected filter-tags
