@@ -7,8 +7,8 @@
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.core :as entity]
    [heraldicon.entity.user :as entity.user]
-   [heraldicon.frontend.element.radio-select :as radio-select]
    [heraldicon.frontend.element.search-field :as search-field]
+   [heraldicon.frontend.element.select :as select]
    [heraldicon.frontend.element.tags :as tags]
    [heraldicon.frontend.entity.action.favorite :as favorite]
    [heraldicon.frontend.entity.preview :as preview]
@@ -429,37 +429,41 @@
                           (refresh-fn)
                           (.stopPropagation %))} [:i.fas.fa-sync-alt]])
       [list-mode-choice filter-list-mode-path default-list-mode]
-      [results-count id session items-subscription filter-keys options]]
-     [:div.filter-component-filters
+      [results-count id session items-subscription filter-keys options]
       (when (and (not hide-ownership-filter?)
                  logged-in?)
-        [radio-select/radio-select {:path filter-ownership-path}
-         :option {:type :option.type/choice
-                  :default ownership-default
-                  :choices (cond-> [[:string.option.ownership-filter-choice/all :all]
-                                    [:string.option.ownership-filter-choice/mine :mine]
-                                    [:string.option.ownership-filter-choice/favorites :favorites]]
-                             (#{:charge :ribbon} kind) (concat [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
-                                                                [:string.option.ownership-filter-choice/community :community]]))}])
+        [select/raw-select-inline
+         {:path filter-ownership-path}
+         @(rf/subscribe [:get {:path filter-ownership-path}])
+         (cond-> [[:string.option.ownership-filter-choice/all :all]
+                  [:string.option.ownership-filter-choice/mine :mine]
+                  [:string.option.ownership-filter-choice/favorites :favorites]]
+           (#{:charge :ribbon} kind) (concat [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
+                                              [:string.option.ownership-filter-choice/community :community]]))
+         :value-prefix :string.option/show
+         :style {:margin-left "10px"
+                 :margin-bottom "5px"}])
 
       (when consider-filter-access?
-        [radio-select/radio-select {:path filter-access-path}
-         :option {:type :option.type/choice
-                  :default access-default
-                  :choices [[:string.option.access-filter-choice/all :all]
-                            [:string.option.access-filter-choice/public :public]
-                            [:string.option.access-filter-choice/private :private]]}])
+        [select/raw-select-inline
+         {:path filter-access-path}
+         @(rf/subscribe [:get {:path filter-access-path}])
+         [[:string.option.access-filter-choice/all :all]
+          [:string.option.access-filter-choice/public :public]
+          [:string.option.access-filter-choice/private :private]]
+         :value-prefix :string.option/access
+         :style {:margin-left "10px"
+                 :margin-bottom "5px"}])
 
-      [:div
-       [tr :string.option/sort-by] ":" [radio-select/radio-select {:path filter-sorting-path}
-                                        :option {:type :option.type/choice
-                                                 :default (or initial-sorting-mode
-                                                              sorting-default)
-                                                 :choices [[:string.option.sorting-filter-choice/name :name]
-                                                           [:string.option.sorting-filter-choice/favorites :favorites]
-                                                           [:string.option.sorting-filter-choice/creation :creation]
-                                                           [:string.option.sorting-filter-choice/update :update]]}
-                                        :style {:display "inline-block"
-                                                :margin-left "0.5em"}]]]
+      [select/raw-select-inline {:path filter-sorting-path}
+       (or initial-sorting-mode
+           @(rf/subscribe [:get {:path filter-sorting-path}]))
+       [[:string.option.sorting-filter-choice/name :name]
+        [:string.option.sorting-filter-choice/favorites :favorites]
+        [:string.option.sorting-filter-choice/creation :creation]
+        [:string.option.sorting-filter-choice/update :update]]
+       :value-prefix :string.option/sort-by
+       :style {:margin-left "10px"
+               :margin-bottom "5px"}]]
 
      [results id session items-subscription filter-keys kind on-select options]]))
