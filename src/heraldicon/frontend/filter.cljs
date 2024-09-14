@@ -201,9 +201,8 @@
 
 (defn- entity-sort-key-fn [sorting {:keys [name first-version-created-at created-at
                                            type id version]}]
-  ;; put heraldicon items in front
   [(case sorting
-     :favorites (- @(rf/subscribe [::favorite/is-user-favorite? id]))
+     :favorites (- @(rf/subscribe [::favorite/favorite-count id]))
      :creation (- (js/Date.)
                   (js/Date. first-version-created-at))
      :update (- (js/Date.)
