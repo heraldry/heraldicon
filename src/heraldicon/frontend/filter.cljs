@@ -58,7 +58,7 @@
                                  v)
                             (matches-word v word))) data)))
 
-(defn- filter-items [session item-list filter-keys filter-string filter-tags filter-access filter-ownership]
+(defn- filter-items [session item-list filter-keys filter-string filter-tags filter-access filter-ownership filter-favorites]
   (let [words (-> filter-string
                   normalize-string-for-match
                   (str/split #" +"))
@@ -66,8 +66,8 @@
                             keys
                             set)]
     (filterv (fn [item]
-               (and (case filter-ownership
-                      :favorites @(rf/subscribe [::favorite/is-user-favorite? (:id item)])
+               (and (or (not filter-favorites) @(rf/subscribe [::favorite/is-user-favorite? (:id item)]))
+                    (case filter-ownership
                       :mine (= (:username item)
                                (:username session))
                       :heraldicon (= (:username item) "heraldicon")
@@ -229,6 +229,8 @@
            filter-string @(rf/subscribe [:get filter-string-path])
            filter-ownership-path (conj filter-path :filter-ownership)
            filter-tags @(rf/subscribe [:get filter-tags-path])
+           filter-favorites-path (conj filter-path :filter-favorites)
+           filter-favorites @(rf/subscribe [:get filter-favorites-path])
            filter-ownership (if-not hide-ownership-filter?
                               @(rf/subscribe [:get filter-ownership-path])
                               ownership-default)
@@ -246,11 +248,12 @@
                                         filter-string
                                         filter-tags
                                         filter-access
-                                        filter-ownership)
+                                        filter-ownership
+                                        filter-favorites)
            total-count (count all-items)
            filtered-count (count filtered-items)]
        [:div {:style {:display "inline"
-                      :margin-left "1em"}}
+                      :margin-left "10px"}}
         (if (= filtered-count total-count)
           (str total-count)
           (str filtered-count "/" total-count))
@@ -284,6 +287,8 @@
            filter-sorting-path (conj filter-path :filter-sorting)
            filter-string @(rf/subscribe [:get filter-string-path])
            filter-ownership-path (conj filter-path :filter-ownership)
+           filter-favorites-path (conj filter-path :filter-favorites)
+           filter-favorites @(rf/subscribe [:get filter-favorites-path])
            filter-tags @(rf/subscribe [:get filter-tags-path])
            filter-ownership (if-not hide-ownership-filter?
                               @(rf/subscribe [:get filter-ownership-path])
@@ -305,7 +310,8 @@
                                         filter-string
                                         filter-tags
                                         filter-access
-                                        filter-ownership)
+                                        filter-ownership
+                                        filter-favorites)
            tags-to-display (frequencies (mapcat (comp keys :tags) filtered-items))
            sorted-items (sort-by (partial entity-sort-key-fn sorting) filtered-items)
            sorted-items (cond->> sorted-items
@@ -377,10 +383,10 @@
 (defn- list-mode-choice [filter-list-mode-path default-list-mode]
   (let [current-list-mode (list-mode filter-list-mode-path default-list-mode)]
     (into [:div {:style {:display "inline-block"
-                         :margin-left "0.5em"}}]
+                         :margin-left "10px"}}]
           (map (fn [[list-mode class]]
                  ^{:key list-mode}
-                 [:a {:style {:margin-left "0.5em"}
+                 [:a {:style {:margin-left "10px"}
                       :href "#"
                       :on-click (js-event/handled #(rf/dispatch [:set filter-list-mode-path list-mode]))}
                   [:i {:class class
@@ -404,6 +410,7 @@
         filter-access-path (conj filter-path :filter-access)
         filter-sorting-path (conj filter-path :filter-sorting)
         filter-ownership-path (conj filter-path :filter-ownership)
+        filter-favorites-path (conj filter-path :filter-favorites)
         filter-ownership (if-not hide-ownership-filter?
                            @(rf/subscribe [:get filter-ownership-path])
                            ownership-default)
@@ -424,20 +431,28 @@
                     (when on-filter-string-change
                       (on-filter-string-change)))]
       (when refresh-fn
-        [:a {:style {:margin-left "0.5em"}
+        [:a {:style {:margin-left "10px"}
              :on-click #(do
                           (refresh-fn)
                           (.stopPropagation %))} [:i.fas.fa-sync-alt]])
       [list-mode-choice filter-list-mode-path default-list-mode]
-      [results-count id session items-subscription filter-keys options]
+
+      (when logged-in?
+        (let [on? @(rf/subscribe [:get filter-favorites-path])]
+          [:div {:on-click #(rf/dispatch [:set filter-favorites-path (not on?)])
+                 :title (tr :string.option/favorites-filter)
+                 :style {:display "inline-block"
+                         :margin-left "10px"
+                         :cursor "pointer"}}
+           [favorite/icon 20 on?]]))
+
       (when (and (not hide-ownership-filter?)
                  logged-in?)
         [select/raw-select-inline
          {:path filter-ownership-path}
          @(rf/subscribe [:get {:path filter-ownership-path}])
          (cond-> [[:string.option.ownership-filter-choice/all :all]
-                  [:string.option.ownership-filter-choice/mine :mine]
-                  [:string.option.ownership-filter-choice/favorites :favorites]]
+                  [:string.option.ownership-filter-choice/mine :mine]]
            (#{:charge :ribbon} kind) (concat [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
                                               [:string.option.ownership-filter-choice/community :community]]))
          :value-prefix :string.option/show
@@ -464,6 +479,8 @@
         [:string.option.sorting-filter-choice/update :update]]
        :value-prefix :string.option/sort-by
        :style {:margin-left "10px"
-               :margin-bottom "5px"}]]
+               :margin-bottom "5px"}]
+
+      [results-count id session items-subscription filter-keys options]]
 
      [results id session items-subscription filter-keys kind on-select options]]))

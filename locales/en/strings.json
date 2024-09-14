@@ -527,10 +527,10 @@
     "ownership-filter-choice": {
       "all": "All",
       "mine": "Mine",
-      "favorites": "Favorites",
       "heraldicon": "Heraldicon",
       "community": "Community"
     },
+    "favorites-filter": "Favorites",
     "partition": "Partition",
     "pattern-scaling": "Pattern scaling",
     "pattern-rotation": "Pattern rotation",
