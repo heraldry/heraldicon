@@ -27,7 +27,25 @@
     [modal/render]
     [auto-complete/render]]])
 
-(defn ^:export reload []
+(defonce ^:dynamic *app-root*
+  nil)
+
+(defonce ^:dynamic *title-root*
+  nil)
+
+(defn app-root []
+  (or *app-root*
+      (do
+        (set! *app-root* (r/create-root (.getElementById js/document "app")))
+        *app-root*)))
+
+(defn title-root []
+  (or *title-root*
+      (do
+        (set! *title-root* (r/create-root (first (.getElementsByTagName js/document "title"))))
+        *title-root*)))
+
+(defn ^:export init []
   (log/info :release (config/get :release))
   (when (and (not= (config/get :stage) "dev")
              (not (config/get :backend?)))
@@ -43,11 +61,6 @@
   (rf/dispatch-sync [::state/initialize])
   (rf/dispatch-sync [::language/load-setting])
   (session/read-from-storage)
-  (router/start))
-
-(defn ^:export init []
-  (reload)
-  (let [root (r/create-root (.getElementById js/document "app"))]
-    (r/render root [app]))
-  (let [title-root (r/create-root (first (.getElementsByTagName js/document "title")))]
-    (r/render title-root [title/title])))
+  (router/start)
+  (r/render (app-root) [app])
+  (r/render (title-root) [title/title]))
