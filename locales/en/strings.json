@@ -423,6 +423,8 @@
       "creation": "Recent additions",
       "update": "Recent updates"
     },
+    "show": "Show",
+    "access": "Access",
     "sort-by": "Sort by",
     "alignment": "Alignment",
     "alignment-choice": {

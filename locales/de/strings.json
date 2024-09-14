@@ -422,6 +422,8 @@
       "creation": "Frisch angelegt",
       "update": "Frisch aktualisiert"
     },
+    "show": "Zeige",
+    "access": "Zugriff",
     "sort-by": "Sortierung",
     "alignment": "Ausrichtung",
     "alignment-choice": {

@@ -5,11 +5,13 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.interface :as interface]
+   [heraldicon.localization.string :as string]
    [heraldicon.util.core :as util]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
-(defn raw-select-inline [context value choices & {:keys [on-change component-id keywordize?]
+(defn raw-select-inline [context value choices & {:keys [on-change component-id keywordize?
+                                                         value-prefix style]
                                                   :or {keywordize? true}}]
   (into [:select {:id component-id
                   :value (if keywordize?
@@ -19,7 +21,8 @@
                                                keywordize? keyword)]
                                 (if on-change
                                   (on-change selected)
-                                  (rf/dispatch [:set context selected])))}]
+                                  (rf/dispatch [:set context selected])))
+                  :style style}]
         (map (fn [[group-name & group-choices]]
                (if (and (-> group-choices count (= 1))
                         (-> group-choices first vector? not))
@@ -28,7 +31,9 @@
                    [:option {:value (if keywordize?
                                       (util/keyword->str key)
                                       key)}
-                    (tr group-name)])
+                    (tr (if value-prefix
+                          (string/str-tr value-prefix " " group-name)
+                          group-name))])
                  (into
                   ^{:key group-name}
                   [:optgroup {:label (tr group-name)}]
@@ -37,7 +42,9 @@
                          [:option {:value (if keywordize?
                                             (util/keyword->str key)
                                             key)}
-                          (tr display-name)]))
+                          (tr (if value-prefix
+                                (string/str-tr value-prefix " " display-name)
+                                display-name))]))
                   group-choices))))
         choices))
 
