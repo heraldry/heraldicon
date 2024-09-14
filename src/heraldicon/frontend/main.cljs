@@ -34,16 +34,16 @@
   nil)
 
 (defn app-root []
-  (or *app-root*
-      (do
-        (set! *app-root* (r/create-root (.getElementById js/document "app")))
-        *app-root*)))
+  (when *app-root*
+    (r/unmount *app-root*))
+  (set! *app-root* (r/create-root (.getElementById js/document "app")))
+  *app-root*)
 
 (defn title-root []
-  (or *title-root*
-      (do
-        (set! *title-root* (r/create-root (first (.getElementsByTagName js/document "title"))))
-        *title-root*)))
+  (when *title-root*
+    (r/unmount *title-root*))
+  (set! *title-root* (r/create-root (first (.getElementsByTagName js/document "title"))))
+  *title-root*)
 
 (defn ^:export init []
   (log/info :release (config/get :release))
