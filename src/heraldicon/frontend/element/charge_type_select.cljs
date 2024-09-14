@@ -123,7 +123,7 @@
                                                (select-keys data [:attitude :facing]))]))})
            :selected-item variant
            :favour-heraldicon? true
-           :initial-sorting-mode :name
+           :initial-sorting-mode :favorites
            :display-selected-item? true
            :default-list-mode :small
            :list-id :charge-type-select]]]]])))

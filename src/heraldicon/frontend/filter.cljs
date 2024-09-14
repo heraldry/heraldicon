@@ -197,7 +197,7 @@
   :all)
 
 (def ^:private sorting-default
-  :creation)
+  :favorites)
 
 (defn- entity-sort-key-fn [sorting {:keys [name first-version-created-at created-at
                                            type id version]}]
@@ -209,6 +209,7 @@
                 (js/Date. created-at))
      (normalize-string-for-sort name))
    type
+   (normalize-string-for-sort name)
    id
    version])
 
@@ -470,8 +471,9 @@
                  :margin-bottom "5px"}])
 
       [select/raw-select-inline {:path filter-sorting-path}
-       (or initial-sorting-mode
-           @(rf/subscribe [:get {:path filter-sorting-path}]))
+       (or @(rf/subscribe [:get {:path filter-sorting-path}])
+           initial-sorting-mode
+           sorting-default)
        [[:string.option.sorting-filter-choice/name :name]
         [:string.option.sorting-filter-choice/favorites :favorites]
         [:string.option.sorting-filter-choice/creation :creation]
