@@ -22,7 +22,9 @@
                                 (if on-change
                                   (on-change selected)
                                   (rf/dispatch [:set context selected])))
-                  :style style}]
+                  :style (merge {:border-radius "999px"
+                                 :padding "3px 6px"}
+                                style)}]
         (map (fn [[group-name & group-choices]]
                (if (and (-> group-choices count (= 1))
                         (-> group-choices first vector? not))
