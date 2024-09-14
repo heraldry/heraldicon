@@ -419,6 +419,7 @@
     },
     "sorting-filter-choice": {
       "name": "Name",
+      "favorites": "Favorites",
       "creation": "Recent additions",
       "update": "Recent updates"
     },
@@ -524,6 +525,7 @@
     "ownership-filter-choice": {
       "all": "All",
       "mine": "Mine",
+      "favorites": "Favorites",
       "heraldicon": "Heraldicon",
       "community": "Community"
     },

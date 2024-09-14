@@ -27,7 +27,7 @@
     (rf/subscribe [:get (conj favorite-count-path entity-id)]))
 
   (fn [favorite-count _]
-    favorite-count))
+    (or favorite-count 0)))
 
 (rf/reg-sub ::is-user-favorite?
   (fn [[_ entity-id]]
