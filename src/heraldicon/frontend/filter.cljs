@@ -67,6 +67,7 @@
                             set)]
     (filterv (fn [item]
                (and (case filter-ownership
+                      :favorites @(rf/subscribe [::favorite/is-user-favorite? (:id item)])
                       :mine (= (:username item)
                                (:username session))
                       :heraldicon (= (:username item) "heraldicon")
@@ -202,6 +203,7 @@
                                            type id version]}]
   ;; put heraldicon items in front
   [(case sorting
+     :favorites (- @(rf/subscribe [::favorite/is-user-favorite? id]))
      :creation (- (js/Date.)
                   (js/Date. first-version-created-at))
      :update (- (js/Date.)
@@ -435,7 +437,8 @@
          :option {:type :option.type/choice
                   :default ownership-default
                   :choices (cond-> [[:string.option.ownership-filter-choice/all :all]
-                                    [:string.option.ownership-filter-choice/mine :mine]]
+                                    [:string.option.ownership-filter-choice/mine :mine]
+                                    [:string.option.ownership-filter-choice/favorites :favorites]]
                              (#{:charge :ribbon} kind) (concat [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
                                                                 [:string.option.ownership-filter-choice/community :community]]))}])
 
@@ -453,6 +456,7 @@
                                                  :default (or initial-sorting-mode
                                                               sorting-default)
                                                  :choices [[:string.option.sorting-filter-choice/name :name]
+                                                           [:string.option.sorting-filter-choice/favorites :favorites]
                                                            [:string.option.sorting-filter-choice/creation :creation]
                                                            [:string.option.sorting-filter-choice/update :update]]}
                                         :style {:display "inline-block"
