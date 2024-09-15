@@ -418,13 +418,13 @@
     },
     "sorting-filter-choice": {
       "name": "Name",
-      "favorites": "Favoriten",
+      "favorites": "Popularität",
       "creation": "Frisch angelegt",
       "update": "Frisch aktualisiert"
     },
     "show": "Zeige",
     "access": "Zugriff",
-    "sort-by": "Sortierung",
+    "sort-by": "Sortiert nach",
     "alignment": "Ausrichtung",
     "alignment-choice": {
       "left": "Links",

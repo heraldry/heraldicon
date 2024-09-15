@@ -419,7 +419,7 @@
     },
     "sorting-filter-choice": {
       "name": "Name",
-      "favorites": "Favorites",
+      "favorites": "Popularity",
       "creation": "Recent additions",
       "update": "Recent updates"
     },
