@@ -7,6 +7,7 @@
     "charge-library": "Фігури",
     "ribbon-library": "Стрічки",
     "users": "Користувачі",
+    "charge-types": "Типи фігур",
     "contact": "Контакти",
     "account": "Профіль",
     "login": "Увійти",
@@ -412,15 +413,18 @@
   },
   "option": {
     "access-filter-choice": {
-      "all": "Усі",
-      "private": "Приватні",
-      "public": "Публічні"
+      "all": "усі",
+      "private": "приватні",
+      "public": "публічні"
     },
     "sorting-filter-choice": {
-      "name": "За назвою",
-      "creation": "Останні додані",
-      "update": "Останні оновлені"
+      "name": "за назвою",
+      "favorites": "за популярністю",
+      "creation": "останні додані",
+      "update": "останні оновлення"
     },
+    "show": "Показати:",
+    "access": "Доступ:",
     "sort-by": "Сортування",
     "alignment": "Розміщення",
     "alignment-choice": {
@@ -488,6 +492,7 @@
     "font": "Шрифт",
     "font-scale": "Масштаб шрифту",
     "font-title": "Шрифт заголовка",
+    "font-scale-title": "Розмір шрифту заголовка",
     "function": "Функція",
     "geometry": "Геометрія",
     "height": "Висота",
@@ -495,7 +500,7 @@
     "humetty": "Укорочена",
     "ignore-layer-separator?": "Ігнорувати розділення шарів",
     "adapt-to-ordinaries?": "Пристосувати до поля з главою чи основою",
-    "inherit-environment?": "Перейняти розташування фігур у щиті",
+    "inherit-environment?": "Успадкувати середовище",
     "is-public": "Зробити публічним",
     "landscape?": "Ландшафт",
     "layer": "Шар",
@@ -520,11 +525,12 @@
       "remove": "Вилучити"
     },
     "ownership-filter-choice": {
-      "all": "Усі",
-      "mine": "Мої",
-      "heraldicon": "Від Heraldicon",
-      "community": "Від спільноти"
+      "all": "усі",
+      "mine": "мої",
+      "heraldicon": "від Heraldicon",
+      "community": "від спільноти"
     },
+    "favorites-filter": "Улюблене",
     "partition": "Поділ поля",
     "pattern-scaling": "Масштаб візерунка",
     "pattern-rotation": "Обертання візерунка",
@@ -677,7 +683,8 @@
     "detect-shading": "Після вибору одного кольору (бажано основного кольору фігури) орієнтиром 0% затінення можна обрати кілька кольорів та натиснути тут, щоб встановити рівень тіні для цих кольорів згідно з їхньою яскравістю.",
     "expand": "розгорнути",
     "fit-in-window": "за розміром вікна",
-    "support-on-ko-fi": "Підтримати Heraldicon на Ko-fi"
+    "support-on-ko-fi": "Підтримати Heraldicon на Ko-fi",
+    "inherit-environment": "Ця функція корисна, наприклад, для поділу поля разом із зображеними на ньому фігурами."
   },
   "miscellaneous": {
     "and": "і",
@@ -726,7 +733,8 @@
     "actions": "Дії",
     "export": "Експорт",
     "share": "Поділитися",
-    "detect-shading": "Виявити тіні"
+    "detect-shading": "Виявити тіні",
+    "duplicate": "Дублювати"
   },
   "user": {
     "message": {
