@@ -11,7 +11,7 @@
 (s/def :heraldicon.entity.collection.data/font (su/key-in? font/font-map))
 (s/def :heraldicon.entity.collection.data/font-scale number?)
 (s/def :heraldicon.entity.collection.data/font-title (su/key-in? font/font-map))
-(s/def :heraldicon.entity.collection.data/font-title-scale number?)
+(s/def :heraldicon.entity.collection.data/font-scale-title number?)
 (s/def :heraldicon.entity.collection.data/elements (s/coll-of :heraldicon.entity.collection/element :into []))
 
 (s/def :heraldicon.entity.collection/data (s/keys :req-un [:heraldicon.entity.collection.data/type]
