@@ -86,12 +86,16 @@
         num-types @(rf/subscribe [::all-subtypes-count context])
         types-context (c/++ context :types)
         root? (= type-id :root)
-        type-name (interface/get-raw-data name-context)]
+        type-name (interface/get-raw-data name-context)
+        deleted?' (deleted? context)
+        deleted-with-undeleted-child? (and deleted?'
+                                           @(rf/subscribe [::frontend.charge-types/undeleted-child? context]))]
     {:title (cond-> type-name
               (pos? num-types) (str " (" num-types ")")
               (not type-id) (str " *new*")
               (duplicate? type-name) (str " *duplicate*")
-              (deleted? context) (str " *deleted*"))
+              deleted?' (str " *deleted*")
+              deleted-with-undeleted-child? (str " *PROBLEM*"))
      :draggable? (not root?)
      :drop-options-fn drag/drop-options
      :drop-fn drag/drop-fn
