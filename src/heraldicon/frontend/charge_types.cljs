@@ -141,3 +141,11 @@
                                               path)
                                             value))))]
       name-map)))
+
+(rf/reg-sub ::undeleted-child?
+  (fn [[_ {:keys [path]}]]
+    (rf/subscribe [:get path]))
+
+  (fn [data _]
+    (some (comp not :deleted? :metadata)
+          (tree-seq (every-pred map? :type) :types data))))
