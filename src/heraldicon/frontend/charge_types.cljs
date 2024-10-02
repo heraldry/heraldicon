@@ -25,6 +25,9 @@
 (def search-db-path
   (conj form-db-path ::search))
 
+(def show-deleted-and-empty-db-path
+  (conj form-db-path ::show-deleted-and-empty))
+
 (history/register-undoable-path form-db-path)
 
 (def base-context
@@ -54,7 +57,15 @@
             :placeholder "Search"
             :style {:width "20em"}
             :on-change (fn [event]
-                         (rf/dispatch [:set search-db-path (-> event .-target .-value)]))}]])
+                         (rf/dispatch [:set search-db-path (-> event .-target .-value)]))}]
+   [:div {:style {:display "inline-block"
+                  :margin-left "10px"}}
+    [:input {:type "checkbox"
+             :id "show-checkbox"
+             :checked (or @(rf/subscribe [:get show-deleted-and-empty-db-path]) false)
+             :on-change #(let [new-checked? (-> % .-target .-checked)]
+                           (rf/dispatch [:set show-deleted-and-empty-db-path new-checked?]))}]
+    [:label.for-checkbox {:for "show-checkbox"} "Show deleted and empty"]]])
 
 (defn- force-open?
   []
@@ -77,6 +88,20 @@
               nil
               words))))
 
+(rf/reg-sub ::filter-by-deleted-and-empty
+  (fn [[_ path]]
+    [(rf/subscribe [:get show-deleted-and-empty-db-path])
+     (rf/subscribe [:get path])])
+
+  (fn [[show-deleted-and-empty-flag {:keys [metadata charge_count]}] _]
+    (or show-deleted-and-empty-flag
+        (not (and (:deleted? metadata)
+                  (zero? charge_count))))))
+
+(defn- filter-by-deleted-and-empty
+  [path]
+  @(rf/subscribe [::filter-by-deleted-and-empty path]))
+
 (defn- charge-type-editor
   []
   (rf/dispatch [::title/set :string.menu/charge-types])
@@ -98,6 +123,7 @@
         [history/buttons form-db-path]
         [tree/tree [form-db-path] base-context
          :search-fn search
+         :filter-fn filter-by-deleted-and-empty
          :force-open? (force-open?)]]
        [:button.button.primary {:type "submit"
                                 :on-click (fn [event]
@@ -116,6 +142,7 @@
        [:div {:style {:height "calc(100%)"
                       :overflow "scroll"}}
         [tree/tree [form-db-path] base-context
+         :filter-fn filter-by-deleted-and-empty
          :extra :second]]]])))
 
 (defn view []
