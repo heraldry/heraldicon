@@ -73,20 +73,26 @@
       count
       pos?))
 
+(rf/reg-sub ::search-title
+  :<- [:get search-db-path]
+
+  (fn [search-string [_ title]]
+    (let [title (str/lower-case (or title ""))
+          words (str/split (-> search-string
+                               (or "")
+                               str/lower-case)
+                           #" +")]
+      (if (empty? words)
+        true
+        (reduce (fn [_ word]
+                  (when (str/includes? title word)
+                    (reduced true)))
+                nil
+                words)))))
+
 (defn- search
   [title]
-  (let [title (str/lower-case (or title ""))
-        words (str/split (-> @(rf/subscribe [:get search-db-path])
-                             (or "")
-                             str/lower-case)
-                         #" +")]
-    (if (empty? words)
-      true
-      (reduce (fn [_ word]
-                (when (str/includes? title word)
-                  (reduced true)))
-              nil
-              words))))
+  @(rf/subscribe [::search-title title]))
 
 (rf/reg-sub ::filter-by-deleted-and-empty
   (fn [[_ path]]
