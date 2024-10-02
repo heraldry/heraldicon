@@ -110,6 +110,7 @@
                                                  parent-buttons
                                                  force-open?
                                                  search-fn
+                                                 filter-fn
                                                  extra]}]
   (let [{node-title :title
          :keys [open?
@@ -131,8 +132,10 @@
         title (or node-title title)
         buttons (concat buttons parent-buttons)
         dragged-over-location @(rf/subscribe [::dragged-over-location path])
-        hide? (when search-fn
-                (not (search-fn title)))
+        hide? (not (and (or (not search-fn)
+                            (search-fn title))
+                        (or (not filter-fn)
+                            (filter-fn path))))
         node-type (interface/get-raw-data (c/++ context :type))
         drag-info (when (or draggable?
                             drop-fn)
@@ -287,10 +290,11 @@
                           :parent-buttons buttons
                           :force-open? force-open?
                           :search-fn search-fn
+                          :filter-fn filter-fn
                           :extra extra]]))
              nodes))]))
 
-(defn tree [paths context & {:keys [search-fn force-open? extra]}]
+(defn tree [paths context & {:keys [search-fn filter-fn force-open? extra]}]
   [:div.ui-tree
    (into [:ul]
          (map-indexed (fn [idx node-path]
@@ -301,6 +305,7 @@
                            [node (c/<< context :path node-path)
                             :force-open? force-open?
                             :search-fn search-fn
+                            :filter-fn filter-fn
                             :extra extra])]))
          paths)])
 
