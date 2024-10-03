@@ -1,13 +1,13 @@
 (ns heraldicon.frontend.charge-types
   (:require
    [cljs.core.async :refer [go]]
-   [clojure.string :as str]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.context :as c]
    [heraldicon.entity.user :as entity.user]
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
+   [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
@@ -77,15 +77,12 @@
   :<- [:get search-db-path]
 
   (fn [search-string [_ title]]
-    (let [title (str/lower-case (or title ""))
-          words (str/split (-> search-string
-                               (or "")
-                               str/lower-case)
-                           #" +")]
+    (let [title (filter/normalize-string-for-match (or title ""))
+          words (filter/split-search-string (or search-string ""))]
       (if (empty? words)
         true
         (reduce (fn [_ word]
-                  (when (str/includes? title word)
+                  (when (filter/matches-word title word)
                     (reduced true)))
                 nil
                 words)))))

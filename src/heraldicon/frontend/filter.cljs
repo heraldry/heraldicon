@@ -32,22 +32,39 @@
   (some-> s
           (.normalize "NFD")))
 
-(defn- normalize-string-for-sort [s]
+(defn normalize-string-for-sort [s]
   (some-> s
           normalize-string
           str/lower-case))
 
-(defn- normalize-string-for-match [s]
+(defn normalize-string-for-match [s]
   (some-> s
           normalize-string
           (str/replace #"[\u0300-\u036f]" "")
           str/lower-case))
 
-(defn- matches-word [data word]
+(defn escape-regex [s]
+  (let [special-chars (set "\\^$.|?*+()[]{}")]
+    (->> s
+         (map #(if (special-chars %)
+                 (str "\\" %)
+                 %))
+         (apply str))))
+
+(defn- string-matches?
+  [s word]
+  (if (and (= (first word) "\"")
+           (= (last word) "\""))
+    (let [bounded-regex (re-pattern (str "\\b" (escape-regex (subs word 1 (dec (count word)))) "\\b"))]
+      (re-find bounded-regex s))
+    (str/includes? s (str/replace word "\"" ""))))
+
+(defn matches-word [data word]
   (cond
     (keyword? data) (-> data name (matches-word word))
-    (string? data) (-> data normalize-string-for-match
-                       (str/includes? word))
+    (string? data) (-> data
+                       normalize-string-for-match
+                       (string-matches? word))
     (vector? data) (some (fn [e]
                            (matches-word e word)) data)
     (map? data) (some (fn [[k v]]
@@ -58,10 +75,12 @@
                                  v)
                             (matches-word v word))) data)))
 
+(defn split-search-string
+  [s]
+  (re-seq #"\"[^\"]+\"|\S+" (normalize-string-for-match s)))
+
 (defn- filter-items [session item-list filter-keys filter-string filter-tags filter-access filter-ownership filter-favorites]
-  (let [words (-> filter-string
-                  normalize-string-for-match
-                  (str/split #" +"))
+  (let [words (split-search-string (or filter-string ""))
         filter-tags-set (-> filter-tags
                             keys
                             set)]
