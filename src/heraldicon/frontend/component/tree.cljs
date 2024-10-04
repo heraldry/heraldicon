@@ -132,10 +132,10 @@
         title (or node-title title)
         buttons (concat buttons parent-buttons)
         dragged-over-location @(rf/subscribe [::dragged-over-location path])
-        hide? (not (and (or (not search-fn)
-                            (search-fn title))
-                        (or (not filter-fn)
-                            (filter-fn path))))
+        hide? (or (and filter-fn
+                       (not (filter-fn path)))
+                  (and search-fn
+                       (not (search-fn title))))
         node-type (interface/get-raw-data (c/++ context :type))
         drag-info (when (or draggable?
                             drop-fn)
