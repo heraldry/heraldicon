@@ -25,7 +25,7 @@
 (macros/reg-event-db ::remove
   (fn [db [_ {:keys [path]
               :as context}]]
-    (if (interface/get-raw-data (c/++ context :id))
+    (if (get-in db (:path (c/++ context :id)))
       (update-in db (conj path :metadata) (fn [metadata]
                                             (if (:deleted? metadata)
                                               (dissoc metadata :deleted?)
