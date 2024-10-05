@@ -8,7 +8,7 @@
     [:div.search-field
      [:i.fas.fa-search]
      [:input {:name "search"
-              :type "text"
+              :type "search"
               :value current-value
               :autoComplete "off"
               :on-change #(let [value (-> % .-target .-value)]
