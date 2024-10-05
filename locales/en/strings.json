@@ -735,7 +735,8 @@
     "export": "Export",
     "share": "Share",
     "detect-shading": "Detect shading",
-    "duplicate": "Duplicate"
+    "duplicate": "Duplicate",
+    "unknown": "Unknown"
   },
   "user": {
     "message": {
