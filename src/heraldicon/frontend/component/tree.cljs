@@ -265,12 +265,14 @@
 
         (into [:span {:style {:margin-left "0.5em"}}]
               (comp (remove :menu)
-                    (map-indexed (fn [idx {:keys [icon handler disabled? title remove?]}]
+                    (map-indexed (fn [idx {:keys [icon handler disabled? title remove? margin]}]
                                    [:span.node-icon
                                     {:class (when disabled? "disabled")
                                      :title (tr title)
-                                     :style {:margin-left (when (and (pos? idx)
-                                                                     remove?) "0.5em")
+                                     :style {:margin-left (if (and (pos? idx)
+                                                                   remove?)
+                                                            "0.5em"
+                                                            margin)
                                              :cursor (if disabled?
                                                        "not-allowed"
                                                        "pointer")}}

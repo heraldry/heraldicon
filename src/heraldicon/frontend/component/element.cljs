@@ -109,17 +109,23 @@
 
     path))
 
+(defn move
+  [db value-path target-path]
+  (let [[new-db value] (remove-element db value-path)
+        adjusted-target-path (adjust-path-after-removal target-path value-path)
+        [new-db new-value-path] (insert-element new-db adjusted-target-path value)]
+    [(-> new-db
+         (tree/element-removed value-path)
+         (tree/element-inserted new-value-path))
+     new-value-path]))
+
 (macros/reg-event-db ::move
   (fn [db [_
            {value-path :path}
            {target-path :path}
            {:keys [no-select? post-fn]}]]
-    (let [[new-db value] (remove-element db value-path)
-          adjusted-target-path (adjust-path-after-removal target-path value-path)
-          [new-db new-value-path] (insert-element new-db adjusted-target-path value)
+    (let [[new-db new-value-path] (move db value-path target-path)
           new-db (-> new-db
-                     (tree/element-removed value-path)
-                     (tree/element-inserted new-value-path)
                      (cond->
                        post-fn (post-fn value-path target-path)))]
       (if no-select?

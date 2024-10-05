@@ -22,24 +22,72 @@
           (assoc-in types-path elements)
           (tree/set-edit-node {:path (conj new-element-path :name)})))))
 
+(defn- remove-charge-type
+  [db
+   {:keys [path]
+    :as context}
+   & {:keys [force-deleted?]}]
+  (if (get-in db (:path (c/++ context :id)))
+    [(update-in db (conj path :metadata) (fn [metadata]
+                                           (if (and (not force-deleted?)
+                                                    (:deleted? metadata))
+                                             (dissoc metadata :deleted?)
+                                             (assoc metadata :deleted? true))))
+     false
+     nil]
+    (let [[new-db value] (component.element/remove-element db path)
+          children (:types value)
+          parent-context (c/-- context 2)
+          parent-types-path (:path (c/++ parent-context :types))
+          siblings (get-in new-db parent-types-path)
+          new-siblings (vec (concat siblings children))]
+      [(-> new-db
+           (assoc-in parent-types-path new-siblings)
+           (tree/element-removed path))
+       true
+       parent-context])))
+
 (macros/reg-event-db ::remove
+  (fn [db [_ context]]
+    (let [[new-db _
+           deleted?
+           parent-context] (remove-charge-type db context)]
+      (cond-> new-db
+        deleted? (tree/select-node (:path parent-context) true)))))
+
+(defn- find-root-path
+  [db path]
+  (let [charge-type-id (get-in db (conj path :id))]
+    (if (= charge-type-id :root)
+      path
+      (when (<= 3 (count path))
+        (recur db (subvec path 0 (- (count path) 2)))))))
+
+(defn- find-unknown-charge-type-path
+  [db path]
+  (let [root-path (find-root-path db path)
+        root-types (get-in db (conj root-path :types))
+        index (first (filter (fn [idx]
+                               (let [name (get-in db (conj root-path :types idx :name))]
+                                 (= name "unknown")))
+                             (range (count root-types))))]
+    (when index
+      (conj root-path :types index))))
+
+(macros/reg-event-db ::mark-unknown
   (fn [db [_ {:keys [path]
               :as context}]]
-    (if (get-in db (:path (c/++ context :id)))
-      (update-in db (conj path :metadata) (fn [metadata]
-                                            (if (:deleted? metadata)
-                                              (dissoc metadata :deleted?)
-                                              (assoc metadata :deleted? true))))
-      (let [[new-db value] (component.element/remove-element db path)
-            children (:types value)
-            parent-context (c/-- context 2)
-            parent-types-path (:path (c/++ parent-context :types))
-            siblings (get-in new-db parent-types-path)
-            new-siblings (vec (concat siblings children))]
-        (-> new-db
-            (assoc-in parent-types-path new-siblings)
-            (tree/element-removed path)
-            (tree/select-node (:path parent-context) true))))))
+    (let [[new-db _
+           deleted?] (remove-charge-type db context :force-deleted? true)]
+      (if deleted?
+        new-db
+        (let [target-path (find-unknown-charge-type-path new-db path)
+              [new-db _new-value-path] (if target-path
+                                         (component.element/move new-db path
+                                                                 (conj target-path
+                                                                       :types component.element/APPEND-INDEX))
+                                         [new-db nil])]
+          new-db)))))
 
 (rf/reg-sub-raw ::all-subtypes-count
   (fn [_app-db [_ context]]
@@ -85,6 +133,9 @@
         name-context (c/++ context :name)
         num-types @(rf/subscribe [::all-subtypes-count context])
         types-context (c/++ context :types)
+        parent-context (c/-- context 2)
+        parent-is-unknown? (= (interface/get-raw-data (c/++ parent-context :name))
+                              "unknown")
         root? (= type-id :root)
         type-name (interface/get-raw-data name-context)
         deleted?' (deleted? context)
@@ -106,10 +157,20 @@
                                                 context
                                                 {:type :heraldicon/charge-type
                                                  :name "New type"}])}]
+
                 (not root?) (conj {:icon "far fa-edit"
                                    :title :string.button/edit
-                                   :handler #(rf/dispatch [::tree/set-edit-node name-context])}
-                                  {:icon "far fa-trash-alt"
+                                   :margin "2px"
+                                   :handler #(rf/dispatch [::tree/set-edit-node name-context])})
+
+                (and (not root?)
+                     (not parent-is-unknown?)
+                     (not= type-name "unknown")) (conj {:icon "fas fa-question-circle"
+                                                        :title :string.button/unknown
+                                                        :margin "4px"
+                                                        :handler #(rf/dispatch [::mark-unknown context])})
+
+                (not root?) (conj {:icon "far fa-trash-alt"
                                    :remove? true
                                    :title :string.tooltip/remove
                                    :handler #(rf/dispatch [::remove context])}))
