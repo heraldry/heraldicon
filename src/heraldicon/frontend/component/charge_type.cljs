@@ -11,35 +11,35 @@
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]))
 
-(macros/reg-event-fx ::add
-  (fn [{:keys [db]} [_ {:keys [path]} value]]
+(macros/reg-event-db ::add
+  (fn [db [_ {:keys [path]} value]]
     (let [types-path (conj path :types)
           elements (-> (get-in db types-path)
                        (conj value)
                        vec)
           new-element-path (conj types-path (-> elements count dec))]
-      {:db (-> db
-               (assoc-in types-path elements)
-               (tree/set-edit-node {:path (conj new-element-path :name)}))})))
+      (-> db
+          (assoc-in types-path elements)
+          (tree/set-edit-node {:path (conj new-element-path :name)})))))
 
-(macros/reg-event-fx ::remove
-  (fn [{:keys [db]} [_ {:keys [path]
-                        :as context}]]
+(macros/reg-event-db ::remove
+  (fn [db [_ {:keys [path]
+              :as context}]]
     (if (interface/get-raw-data (c/++ context :id))
-      {:db (update-in db (conj path :metadata) (fn [metadata]
-                                                 (if (:deleted? metadata)
-                                                   (dissoc metadata :deleted?)
-                                                   (assoc metadata :deleted? true))))}
+      (update-in db (conj path :metadata) (fn [metadata]
+                                            (if (:deleted? metadata)
+                                              (dissoc metadata :deleted?)
+                                              (assoc metadata :deleted? true))))
       (let [[new-db value] (component.element/remove-element db path)
             children (:types value)
             parent-context (c/-- context 2)
             parent-types-path (:path (c/++ parent-context :types))
             siblings (get-in new-db parent-types-path)
             new-siblings (vec (concat siblings children))]
-        {:db (-> new-db
-                 (assoc-in parent-types-path new-siblings)
-                 (tree/element-removed path)
-                 (tree/select-node (:path parent-context) true))}))))
+        (-> new-db
+            (assoc-in parent-types-path new-siblings)
+            (tree/element-removed path)
+            (tree/select-node (:path parent-context) true))))))
 
 (rf/reg-sub-raw ::all-subtypes-count
   (fn [_app-db [_ context]]

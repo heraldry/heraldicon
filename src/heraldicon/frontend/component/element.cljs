@@ -109,11 +109,11 @@
 
     path))
 
-(macros/reg-event-fx ::move
-  (fn [{:keys [db]} [_
-                     {value-path :path}
-                     {target-path :path}
-                     {:keys [no-select? post-fn]}]]
+(macros/reg-event-db ::move
+  (fn [db [_
+           {value-path :path}
+           {target-path :path}
+           {:keys [no-select? post-fn]}]]
     (let [[new-db value] (remove-element db value-path)
           adjusted-target-path (adjust-path-after-removal target-path value-path)
           [new-db new-value-path] (insert-element new-db adjusted-target-path value)
@@ -122,25 +122,25 @@
                      (tree/element-inserted new-value-path)
                      (cond->
                        post-fn (post-fn value-path target-path)))]
-      {:db (if no-select?
-             new-db
-             (tree/select-node new-db (adjust-new-value-path new-db new-value-path) true))})))
+      (if no-select?
+        new-db
+        (tree/select-node new-db (adjust-new-value-path new-db new-value-path) true)))))
 
-(macros/reg-event-fx ::remove
-  (fn [{:keys [db]} [_ {:keys [path]
-                        :as context} {:keys [post-fn]}]]
+(macros/reg-event-db ::remove
+  (fn [db [_ {:keys [path]
+              :as context} {:keys [post-fn]}]]
     (let [[new-db _value] (remove-element db path)
           parent-type (get-in new-db (-> context
                                          (c/-- 2)
                                          (c/++ :type)
                                          :path))]
-      {:db (-> (cond-> new-db
-                 (or (isa? parent-type
-                           :heraldry/helm)
-                     (isa? parent-type
-                           :heraldry/ornaments)) (shield-separator/add-or-remove-shield-separator path)
-                 post-fn (post-fn path))
-               (tree/element-removed path))})))
+      (-> (cond-> new-db
+            (or (isa? parent-type
+                      :heraldry/helm)
+                (isa? parent-type
+                      :heraldry/ornaments)) (shield-separator/add-or-remove-shield-separator path)
+            post-fn (post-fn path))
+          (tree/element-removed path)))))
 
 (macros/reg-event-db ::duplicate
   (fn [db [_ {:keys [path]}]]
