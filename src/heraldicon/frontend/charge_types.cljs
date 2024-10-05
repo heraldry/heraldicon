@@ -53,7 +53,7 @@
 (defn- search-bar
   []
   [:div {:style {:margin-bottom "10px"}}
-   [:input {:type "text"
+   [:input {:type "search"
             :placeholder "Search"
             :style {:width "20em"}
             :on-change (fn [event]
