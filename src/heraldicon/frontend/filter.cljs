@@ -453,7 +453,7 @@
      [:div.filter-component-search
       [search-field/search-field {:path filter-string-path}
        :on-change (fn [value]
-                    (rf/dispatch-sync [:set filter-string-path value])
+                    (rf/dispatch [:set filter-string-path value])
                     (when on-filter-string-change
                       (on-filter-string-change)))]
       (when refresh-fn
