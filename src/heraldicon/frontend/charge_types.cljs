@@ -7,6 +7,7 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
+   [heraldicon.frontend.debounce :as debounce]
    [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
@@ -17,6 +18,7 @@
    [heraldicon.frontend.user.form.core :as form]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
+   [reagent.core :as r]
    [taoensso.timbre :as log]))
 
 (def form-db-path
@@ -50,14 +52,26 @@
 
       {})))
 
+(rf/reg-event-fx ::update-search-field
+  (fn [_ [_ value]]
+    {::debounce/dispatch [::debounce-update-search-field [:set search-db-path value] 250]}))
+
+(defn- search-field
+  []
+  (let [tmp-value (r/atom @(rf/subscribe [:get search-db-path]))]
+    (fn []
+      [:input {:type "search"
+               :placeholder "Search"
+               :value @tmp-value
+               :style {:width "20em"}
+               :on-change #(do
+                             (reset! tmp-value (-> % .-target .-value))
+                             (rf/dispatch [::update-search-field @tmp-value]))}])))
+
 (defn- search-bar
   []
   [:div {:style {:margin-bottom "10px"}}
-   [:input {:type "search"
-            :placeholder "Search"
-            :style {:width "20em"}
-            :on-change (fn [event]
-                         (rf/dispatch [:set search-db-path (-> event .-target .-value)]))}]
+   [search-field]
    [:div {:style {:display "inline-block"
                   :margin-left "10px"}}
     [:input {:type "checkbox"
