@@ -53,11 +53,18 @@
 
 (defn- string-matches?
   [s word]
-  (if (and (= (first word) "\"")
-           (= (last word) "\""))
-    (let [bounded-regex (re-pattern (str "\\b" (escape-regex (subs word 1 (dec (count word)))) "\\b"))]
-      (re-find bounded-regex s))
-    (str/includes? s (str/replace word "\"" ""))))
+  (cond
+    (and (= (first word) "/")
+         (= (last word) "/")) (try
+                                (re-find (re-pattern (subs word 1 (dec (count word)))) s)
+                                (catch :default _
+                                  nil))
+
+    (and (= (first word) "\"")
+         (= (last word) "\"")) (let [bounded-regex (re-pattern (str "\\b" (escape-regex (subs word 1 (dec (count word)))) "\\b"))]
+                                 (re-find bounded-regex s))
+
+    :else (str/includes? s (str/replace word "\"" ""))))
 
 (defn matches-word [data word]
   (cond
@@ -77,7 +84,7 @@
 
 (defn split-search-string
   [s]
-  (re-seq #"\"[^\"]+\"|\S+" (normalize-string-for-match s)))
+  (re-seq #"/[^/]*/|\"[^\"]+\"|\S+" (normalize-string-for-match s)))
 
 (defn- filter-items [session item-list filter-keys filter-string filter-tags filter-access filter-ownership filter-favorites]
   (let [words (split-search-string (or filter-string ""))
