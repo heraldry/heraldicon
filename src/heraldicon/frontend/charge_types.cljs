@@ -30,6 +30,9 @@
 (def show-deleted-and-empty-db-path
   (conj form-db-path ::show-deleted-and-empty))
 
+(def save-button-clicked-db-path
+  (conj form-db-path ::save-button-clicked))
+
 (history/register-undoable-path form-db-path)
 
 (def base-context
@@ -48,7 +51,9 @@
 
           (catch :default error
             (rf/dispatch [::message/set-error ::id (:message (ex-data error))])
-            (log/error error "save charge-types error"))))
+            (log/error error "save charge-types error")))
+
+        (rf/dispatch [:set save-button-clicked-db-path false]))
 
       {})))
 
@@ -119,6 +124,22 @@
   [path]
   @(rf/subscribe [::filter-by-deleted-and-empty path]))
 
+(defn- save-button
+  []
+  (let [disabled? @(rf/subscribe [:get save-button-clicked-db-path])]
+    [:button.button.primary {:type "submit"
+                             :on-click (fn [event]
+                                         (.preventDefault event)
+                                         (.stopPropagation event)
+                                         (rf/dispatch-sync [:set save-button-clicked-db-path true])
+                                         (rf/dispatch [::save]))
+                             :disabled disabled?
+                             :class (when disabled?
+                                      "disabled")
+                             :style {:float "right"
+                                     :margin-bottom "10px"}}
+     [tr :string.button/save]]))
+
 (defn- charge-type-editor
   []
   (rf/dispatch [::title/set :string.menu/charge-types])
@@ -142,14 +163,7 @@
          :search-fn search
          :filter-fn filter-by-deleted-and-empty
          :force-open? (force-open?)]]
-       [:button.button.primary {:type "submit"
-                                :on-click (fn [event]
-                                            (.preventDefault event)
-                                            (.stopPropagation event)
-                                            (rf/dispatch [::save]))
-                                :style {:float "right"
-                                        :margin-bottom "10px"}}
-        [tr :string.button/save]]
+       [save-button]
        [:div {:style {:width "80%"
                       :float "left"}}
         [message/display ::id]]]
