@@ -550,11 +550,11 @@
 
      [results id session items-subscription filter-keys kind on-select options]]))
 
-(defonce timer
-  (js/setInterval (fn []
-                    (log/info :normalize-string-for-sort-cache (count @(:map normalize-string-for-sort-cache))
-                              :normalize-string-for-match-cache (count @(:map normalize-string-for-match-cache))
-                              :string-matches?-cache (count @(:map string-matches?-cache))
-                              :matches-word-cache (count @(:map matches-word-cache))
-                              :split-search-string-cache (count @(:map split-search-string-cache))))
-                  60000))
+#_(defonce timer
+    (js/setInterval (fn []
+                      (log/info :normalize-string-for-sort-cache (count @(:map normalize-string-for-sort-cache))
+                                :normalize-string-for-match-cache (count @(:map normalize-string-for-match-cache))
+                                :string-matches?-cache (count @(:map string-matches?-cache))
+                                :matches-word-cache (count @(:map matches-word-cache))
+                                :split-search-string-cache (count @(:map split-search-string-cache))))
+                    60000))
