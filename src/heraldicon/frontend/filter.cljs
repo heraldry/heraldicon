@@ -94,25 +94,25 @@
 (defonce matches-word-cache
   (cache/lru-cache 100000))
 
-(defn matches-word [data word]
+(defn matches-word? [data word]
   (let [key [data word]
         value (cache/get matches-word-cache key)]
     (if (some? value)
       value
       (let [value (cond
-                    (keyword? data) (-> data name (matches-word word))
+                    (keyword? data) (-> data name (matches-word? word))
                     (string? data) (-> data
                                        normalize-string-for-match
                                        (string-matches? word))
                     (vector? data) (some (fn [e]
-                                           (matches-word e word)) data)
+                                           (matches-word? e word)) data)
                     (map? data) (some (fn [[k v]]
                                         (or (and (keyword? k)
-                                                 (matches-word k word)
+                                                 (matches-word? k word)
                                                   ;; this would be an attribute entry, the value
                                                   ;; must be truthy as well
                                                  v)
-                                            (matches-word v word))) data))]
+                                            (matches-word? v word))) data))]
         (cache/put matches-word-cache key (boolean value))
         value))))
 
@@ -149,7 +149,7 @@
                               (some (fn [attribute]
                                       (-> item
                                           (get-in attribute)
-                                          (matches-word word)))
+                                          (matches-word? word)))
                                     filter-keys))
                             words)
                     (every? #(get tags %) filter-tags-set)))
