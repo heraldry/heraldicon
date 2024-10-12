@@ -18,6 +18,7 @@
    [heraldicon.frontend.user.session :as session]
    [heraldicon.localization.string :as string]
    [heraldicon.static :as static]
+   [heraldicon.util.cache :as cache]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::filter-toggle-tag
@@ -65,21 +66,30 @@
 
     :else (str/includes? s (str/replace word "\"" ""))))
 
+(defonce matches-word-cache
+  (cache/lru-cache 100000))
+
 (defn matches-word [data word]
-  (cond
-    (keyword? data) (-> data name (matches-word word))
-    (string? data) (-> data
-                       normalize-string-for-match
-                       (string-matches? word))
-    (vector? data) (some (fn [e]
-                           (matches-word e word)) data)
-    (map? data) (some (fn [[k v]]
-                        (or (and (keyword? k)
-                                 (matches-word k word)
-                                 ;; this would be an attribute entry, the value
-                                 ;; must be truthy as well
-                                 v)
-                            (matches-word v word))) data)))
+  (let [key [data word]
+        value (cache/get matches-word-cache key)]
+    (if (some? value)
+      value
+      (let [value (cond
+                    (keyword? data) (-> data name (matches-word word))
+                    (string? data) (-> data
+                                       normalize-string-for-match
+                                       (string-matches? word))
+                    (vector? data) (some (fn [e]
+                                           (matches-word e word)) data)
+                    (map? data) (some (fn [[k v]]
+                                        (or (and (keyword? k)
+                                                 (matches-word k word)
+                                                  ;; this would be an attribute entry, the value
+                                                  ;; must be truthy as well
+                                                 v)
+                                            (matches-word v word))) data))]
+        (cache/put matches-word-cache key (boolean value))
+        value))))
 
 (defn split-search-string
   [s]
