@@ -101,7 +101,7 @@
       (if (empty? words)
         true
         (reduce (fn [_ word]
-                  (when (filter/matches-word title word)
+                  (when (filter/matches-word? title word)
                     (reduced true)))
                 nil
                 words)))))
