@@ -19,7 +19,8 @@
    [heraldicon.localization.string :as string]
    [heraldicon.static :as static]
    [heraldicon.util.cache :as cache]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [taoensso.timbre :as log]))
 
 (macros/reg-event-db ::filter-toggle-tag
   (fn [db [_ db-path tag]]
@@ -548,3 +549,12 @@
       [results-count id session items-subscription filter-keys options]]
 
      [results id session items-subscription filter-keys kind on-select options]]))
+
+(defonce timer
+  (js/setInterval (fn []
+                    (log/info :normalize-string-for-sort-cache (count @(:map normalize-string-for-sort-cache))
+                              :normalize-string-for-match-cache (count @(:map normalize-string-for-match-cache))
+                              :string-matches?-cache (count @(:map string-matches?-cache))
+                              :matches-word-cache (count @(:map matches-word-cache))
+                              :split-search-string-cache (count @(:map split-search-string-cache))))
+                  60000))
