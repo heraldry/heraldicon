@@ -1,7 +1,6 @@
 (ns heraldicon.frontend.filter
   (:require
    ["react-infinite-scroll-component" :as InfiniteScroll]
-   [clojure.set :as set]
    [clojure.string :as str]
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.attribution :as attribution]
@@ -88,34 +87,29 @@
 
 (defn- filter-items [session item-list filter-keys filter-string filter-tags filter-access filter-ownership filter-favorites]
   (let [words (split-search-string (or filter-string ""))
-        filter-tags-set (-> filter-tags
-                            keys
-                            set)]
-    (filterv (fn [item]
-               (and (or (not filter-favorites) @(rf/subscribe [::favorite/is-user-favorite? (:id item)]))
+        session-username (:username session)
+        filter-tags-set (keys filter-tags)]
+    (filterv (fn [{:keys [id username access tags]
+                   :as item}]
+               (and (or (not filter-favorites)
+                        @(rf/subscribe [::favorite/is-user-favorite? id]))
                     (case filter-ownership
-                      :mine (= (:username item)
-                               (:username session))
-                      :heraldicon (= (:username item) "heraldicon")
-                      :community (not= (:username item) "heraldicon")
+                      :mine (= username session-username)
+                      :heraldicon (= username "heraldicon")
+                      :community (not= username "heraldicon")
                       true)
-                    (if (#{:public :private} filter-access)
-                      (-> item :access (= filter-access))
+                    (case filter-access
+                      :public (= access :public)
+                      :private (= access :private)
                       true)
                     (every? (fn [word]
                               (some (fn [attribute]
                                       (-> item
-                                          ((if (seqable? attribute)
-                                             get-in
-                                             get) attribute)
+                                          (get-in attribute)
                                           (matches-word word)))
                                     filter-keys))
                             words)
-                    (set/subset? filter-tags-set
-                                 (-> item
-                                     :tags
-                                     keys
-                                     set))))
+                    (every? #(get tags %) filter-tags-set)))
              item-list)))
 
 (macros/reg-event-db ::show-more
