@@ -32,16 +32,32 @@
   (some-> s
           (.normalize "NFD")))
 
+(defonce normalize-string-for-sort-cache
+  (cache/lru-cache 100000))
+
 (defn normalize-string-for-sort [s]
-  (some-> s
-          normalize-string
-          str/lower-case))
+  (let [value (cache/get normalize-string-for-sort-cache s)]
+    (if (some? value)
+      value
+      (let [value (some-> s
+                          normalize-string
+                          str/lower-case)]
+        (cache/put normalize-string-for-sort-cache s value)
+        value))))
+
+(defonce normalize-string-for-match-cache
+  (cache/lru-cache 100000))
 
 (defn normalize-string-for-match [s]
-  (some-> s
-          normalize-string
-          (str/replace #"[\u0300-\u036f]" "")
-          str/lower-case))
+  (let [value (cache/get normalize-string-for-match-cache s)]
+    (if (some? value)
+      value
+      (let [value (some-> s
+                          normalize-string
+                          (str/replace #"[\u0300-\u036f]" "")
+                          str/lower-case)]
+        (cache/put normalize-string-for-match-cache s value)
+        value))))
 
 (defn escape-regex [s]
   (let [special-chars (set "\\^$.|?*+()[]{}")]
@@ -51,20 +67,29 @@
                  %))
          (apply str))))
 
+(defonce string-matches?-cache
+  (cache/lru-cache 100000))
+
 (defn- string-matches?
   [s word]
-  (cond
-    (and (= (first word) "/")
-         (= (last word) "/")) (try
-                                (re-find (re-pattern (subs word 1 (dec (count word)))) s)
-                                (catch :default _
-                                  nil))
+  (let [key [s word]
+        value (cache/get string-matches?-cache key)]
+    (if (some? value)
+      value
+      (let [value (cond
+                    (and (= (first word) "/")
+                         (= (last word) "/")) (try
+                                                (re-find (re-pattern (subs word 1 (dec (count word)))) s)
+                                                (catch :default _
+                                                  nil))
 
-    (and (= (first word) "\"")
-         (= (last word) "\"")) (let [bounded-regex (re-pattern (str "\\b" (escape-regex (subs word 1 (dec (count word)))) "\\b"))]
-                                 (re-find bounded-regex s))
+                    (and (= (first word) "\"")
+                         (= (last word) "\"")) (let [bounded-regex (re-pattern (str "\\b" (escape-regex (subs word 1 (dec (count word)))) "\\b"))]
+                                                 (re-find bounded-regex s))
 
-    :else (str/includes? s (str/replace word "\"" ""))))
+                    :else (str/includes? s (str/replace word "\"" "")))]
+        (cache/put string-matches?-cache key (boolean value))
+        value))))
 
 (defonce matches-word-cache
   (cache/lru-cache 100000))
@@ -91,9 +116,17 @@
         (cache/put matches-word-cache key (boolean value))
         value))))
 
+(defonce split-search-string-cache
+  (cache/lru-cache 100000))
+
 (defn split-search-string
   [s]
-  (re-seq #"/[^/]*/|\"[^\"]+\"|\S+" (normalize-string-for-match s)))
+  (let [value (cache/get split-search-string-cache s)]
+    (if (some? value)
+      value
+      (let [value (re-seq #"/[^/]*/|\"[^\"]+\"|\S+" (normalize-string-for-match s))]
+        (cache/put split-search-string-cache s value)
+        value))))
 
 (defn- filter-items [session item-list filter-keys filter-string filter-tags filter-access filter-ownership filter-favorites]
   (let [words (split-search-string (or filter-string ""))
