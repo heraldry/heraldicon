@@ -12,7 +12,10 @@
    (or list-id :collection-list)
    @(rf/subscribe [::session/data])
    collections-subscription
-   [:name :username :metadata :tags]
+   [[:name]
+    [:username]
+    [:metadata]
+    [:tags]]
    :collection
    on-select
    refresh-fn

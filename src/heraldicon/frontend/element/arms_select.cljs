@@ -12,7 +12,10 @@
    (or list-id :arms-list)
    @(rf/subscribe [::session/data])
    arms-subscription
-   [:name :username :metadata :tags]
+   [[:name]
+    [:username]
+    [:metadata]
+    [:tags]]
    :arms
    on-select
    refresh-fn

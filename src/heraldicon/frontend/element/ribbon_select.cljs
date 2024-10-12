@@ -12,7 +12,10 @@
    (or list-id :ribbon-list)
    @(rf/subscribe [::session/data])
    ribbons-subscription
-   [:name :username :metadata :tags]
+   [[:name]
+    [:username]
+    [:metadata]
+    [:tags]]
    :ribbon
    on-select
    refresh-fn

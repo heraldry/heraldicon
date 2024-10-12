@@ -13,8 +13,15 @@
    (or list-id :charge-list)
    @(rf/subscribe [::session/data])
    charges-subscription
-   [:name :username :metadata :tags
-    [:data :charge-type] [:data :attitude] [:data :facing] [:data :attributes] [:data :colours]]
+   [[:name]
+    [:username]
+    [:metadata]
+    [:tags]
+    [:data :charge-type]
+    [:data :attitude]
+    [:data :facing]
+    [:data :attributes]
+    [:data :colours]]
    :charge
    on-select
    refresh-fn
