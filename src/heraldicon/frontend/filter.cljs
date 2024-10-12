@@ -69,7 +69,7 @@
          (apply str))))
 
 (defonce string-matches?-cache
-  (cache/lru-cache 100000))
+  (cache/lru-cache 1000000))
 
 (defn- string-matches?
   [s word]
@@ -93,7 +93,7 @@
         value))))
 
 (defonce matches-word-cache
-  (cache/lru-cache 100000))
+  (cache/lru-cache 1000000))
 
 (defn matches-word? [data word]
   (let [key [data word]
