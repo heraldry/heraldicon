@@ -1,4 +1,4 @@
-(ns heraldicon.frontend.element.charge-type-select
+(ns heraldicon.frontend.element.charge-variant-select
   (:require
    [heraldicon.context :as c]
    [heraldicon.entity.id :as id]
@@ -74,7 +74,7 @@
                               :max-width "100%"
                               :max-height "100%"}}]]))
 
-(defmethod element/element :ui.element/charge-type-select [context]
+(defmethod element/element :ui.element/charge-variant-select [context]
   (when-let [option (interface/get-options context)]
     (let [charge-context (c/-- context)
           variant-context (c/++ charge-context :variant)
@@ -126,4 +126,4 @@
            :initial-sorting-mode :favorites
            :display-selected-item? true
            :default-list-mode :small
-           :list-id :charge-type-select]]]]])))
+           :list-id :charge-variant-select]]]]])))
