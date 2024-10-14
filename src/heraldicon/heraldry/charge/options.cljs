@@ -43,7 +43,7 @@
   {:type :option.type/choice
    :choices choices
    :ui/label :string.option/type
-   :ui/element :ui.element/charge-type-select})
+   :ui/element :ui.element/charge-variant-select})
 
 ;; TODO: part-of-semy? and part-of-charge-group? got lost somewhere along the way,
 ;; need to be considered again

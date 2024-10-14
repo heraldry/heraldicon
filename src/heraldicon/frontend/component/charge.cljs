@@ -4,7 +4,7 @@
    [heraldicon.frontend.component.core :as component]
    [heraldicon.frontend.component.drag :as drag]
    [heraldicon.frontend.component.element :as component.element]
-   [heraldicon.frontend.element.charge-type-select :as charge-type-select]
+   [heraldicon.frontend.element.charge-variant-select :as charge-variant-select]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.charge.options :as charge.options]
@@ -65,7 +65,7 @@
   ;; TODO: if the charge has a fixed tincture, then this should prevent field config,
   ;; depends on charge data
   {:title (charge.options/title context)
-   :icon (let [url (charge-type-select/choice-preview-url context)]
+   :icon (let [url (charge-variant-select/choice-preview-url context)]
            {:default url
             :selected url})
    :validation (validation/validate-charge context)
