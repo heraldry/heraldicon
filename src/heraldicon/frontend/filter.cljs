@@ -19,8 +19,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.static :as static]
    [heraldicon.util.cache :as cache]
-   [re-frame.core :as rf]
-   [taoensso.timbre :as log]))
+   [re-frame.core :as rf]))
 
 (macros/reg-event-db ::filter-toggle-tag
   (fn [db [_ db-path tag]]
