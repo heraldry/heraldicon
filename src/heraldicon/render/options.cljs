@@ -37,6 +37,10 @@
                        :default :none
                        :ui/label :string.render-options/texture}
 
+             :border? {:type :option.type/boolean
+                       :default true
+                       :ui/label :string.render-options/border?}
+
              :shiny? {:type :option.type/boolean
                       :default false
                       :ui/label :string.render-options/shiny?}
