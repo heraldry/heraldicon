@@ -62,6 +62,7 @@
                 embed-fonts]} (c/render-hints context)
         short-url-font :deja-vu-sans
         scope (interface/render-option :scope context)
+        border? (interface/render-option :border? context)
         coat-of-arms-angle (if (= scope :coat-of-arms)
                              0
                              (interface/render-option :coat-of-arms-angle context))
@@ -121,7 +122,9 @@
                                     achievement-bounding-box
                                     result-width
                                     :max-aspect-ratio 1.5)
-        margin 10
+        margin (if border?
+                 10
+                 0)
         font-scale (cond
                      (not svg-export?) 1
 

@@ -23,6 +23,7 @@
     :escutcheon-outline?
     :outline?
     :squiggly?
+    :border?
     :coat-of-arms-angle]))
 
 (defmethod component/node :heraldry/render-options [_context]
