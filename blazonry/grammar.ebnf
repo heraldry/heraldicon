@@ -1873,12 +1873,12 @@ charge-group
        | tincture-modifier* charge-arrangement? field fimbriation?)
 
 semy
-    = <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation fimbriation? field tincture-modifier*
-    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation field fimbriation? tincture-modifier*
-    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation field tincture-modifier* fimbriation?
-    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation fimbriation? tincture-modifier* field
-    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation tincture-modifier* fimbriation? field
-    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation tincture-modifier* field fimbriation?
+    = <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation fimbriation? root-field tincture-modifier*
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation root-field fimbriation? tincture-modifier*
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation root-field tincture-modifier* fimbriation?
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation fimbriation? tincture-modifier* root-field
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation tincture-modifier* fimbriation? root-field
+    | <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation tincture-modifier* root-field fimbriation?
 
 charge-without-fimbriation
     = charge-standard
