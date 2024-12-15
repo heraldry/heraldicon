@@ -638,6 +638,21 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-sleek-pointy
+  {:shape "m 100,30
+           c 0,0 0,70 -50,120
+           C 0,100 0,30 0,30 35,25 50,0 50,0
+           c 0,0 15,25 50,30
+           z"
+   :bounding-box (bb/BoundingBox. 0 100 30 150)
+   :points {:fess (v/Vector. 50 75)}
+
+   ::name "Sleek Pointy"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private community-rhombus
   {:shape "M 50,0 L 100,50 L 50,100 L 0,50 z"
 
@@ -1051,13 +1066,16 @@
     [:community-berlin community-berlin]
     [:community-angular community-angular]
     [:community-waisted-french community-waisted-french]
-    [:community-heater-bulgy community-heater-bulgy]
     [:community-triangular community-triangular]
-    [:community-playful community-playful]
+    [:community-sleek-pointy community-sleek-pointy]
+    [:community-heater-bulgy community-heater-bulgy]
     [:community-bavarian community-bavarian]
     [:community-french-slim community-french-slim]
     [:community-german community-german]
     [:community-innsbruck community-innsbruck]
+    [:community-italian community-italian]
+    [:community-italian-redux community-italian-redux]
+    [:community-italian-2 community-italian-2]
     [:community-coffin community-coffin]
     [:community-hexagonal community-hexagonal]
     [:community-pavise community-pavise]
@@ -1067,9 +1085,6 @@
     [:community-queen-consort-modern community-queen-consort-modern]
     [:community-octolozenge community-octolozenge]
     [:community-ninja community-ninja]
-    [:community-italian community-italian]
-    [:community-italian-redux community-italian-redux]
-    [:community-italian-2 community-italian-2]
     [:community-dragonborn community-dragonborn]
     [:community-dwarven community-dwarven]
     [:community-elven community-elven]
@@ -1082,6 +1097,7 @@
     [:community-african community-african]
     [:community-extravagant community-extravagant]
     [:community-philippino community-philippino]
+    [:community-playful community-playful]
     [:community-persian community-persian]
     [:community-manilla community-manilla]
     [:community-gonfalon community-gonfalon]
