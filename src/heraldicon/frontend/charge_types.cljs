@@ -12,7 +12,7 @@
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
-   [heraldicon.frontend.repository.charge-types :as repository.charge-types]
+   [heraldicon.frontend.repository.charge-types-for-editing :as repository.charge-types-for-editing]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.form.core :as form]
@@ -36,7 +36,9 @@
 (history/register-undoable-path form-db-path)
 
 (def base-context
-  (c/<< context/default :path form-db-path))
+  (-> context/default
+      (c/<< :path form-db-path)
+      (c/<< :ns ::ns)))
 
 (rf/reg-event-fx ::save
   (fn [{:keys [db]} _]
@@ -144,7 +146,7 @@
   []
   (rf/dispatch [::title/set :string.menu/charge-types])
   (status/default
-   (rf/subscribe [::repository.charge-types/data #(rf/dispatch [:set form-db-path %])])
+   (rf/subscribe [::repository.charge-types-for-editing/data #(rf/dispatch [:set form-db-path %])])
    (fn [_]
      [:div {:style {:display "grid"
                     :grid-gap "10px"

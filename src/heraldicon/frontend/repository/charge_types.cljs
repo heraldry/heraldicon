@@ -10,7 +10,7 @@
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
-(def ^:private db-path-charge-types
+(def db-path-charge-types
   (conj repository/db-path-base :charge-types))
 
 (rf/reg-event-db ::store
@@ -34,7 +34,7 @@
       (when-not (query/running? query-id)
         (query/register query-id)
         (try
-          (let [data (<? (api/call :fetch-charge-type-data {} session))]
+          (let [data (<? (api/call :fetch-relevant-charge-type-data {} session))]
             (when on-fetch
               (on-fetch data))
             (rf/dispatch [::store data]))
