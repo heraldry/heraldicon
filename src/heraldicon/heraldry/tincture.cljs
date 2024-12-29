@@ -6,6 +6,7 @@
    [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.frontend.highlight :as highlight]
    [heraldicon.frontend.js-event :as js-event]
+   [heraldicon.frontend.library.arms.details :as-alias arms.details]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
    [heraldicon.render.hatching :as hatching]
@@ -132,7 +133,9 @@
                              [nil (str "all-theme-transition-" (name effective-tincture))]
                              [(pick tincture context) nil])
         selected? (and (not svg-export?)
-                       @(rf/subscribe [::tree/node-highlighted? (:path context)]))]
+                       @(rf/subscribe [::tree/node-highlighted?
+                                       ::arms.details/identifier
+                                       (:path context)]))]
     (conj (if mask-id
             [:g {:mask (str "url(#" mask-id ")")}]
             [:<>])

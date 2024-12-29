@@ -6,6 +6,7 @@
    [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.frontend.highlight :as highlight]
    [heraldicon.frontend.js-event :as js-event]
+   [heraldicon.frontend.library.ribbon.details :as-alias ribbon.details]
    [heraldicon.heraldry.ribbon :as ribbon]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
@@ -44,7 +45,9 @@
                               (tincture/pick tincture-background context))
           text-colour (tincture/pick tincture-text context)
           selected? (and (not svg-export?)
-                         @(rf/subscribe [::tree/node-highlighted? (drop-last (:path context))]))]
+                         @(rf/subscribe [::tree/node-highlighted?
+                                         ::ribbon.details/identifier
+                                         (drop-last (:path context))]))]
       (into (cond-> (if svg-export?
                       [:<>]
                       [:g {:on-click (when (and (not svg-export?)

@@ -18,8 +18,9 @@
   [identifier]
   [:ui :component-tree identifier :selected-node])
 
-(def ^:private highlight-node-path
-  [:ui :component-tree :highlighted-node])
+(defn- highlight-node-path
+  [identifier]
+  [:ui :component-tree identifier :highlighted-node])
 
 (def ^:private node-selected-default-path
   [:ui :component-tree :selected-node-default])
@@ -43,7 +44,7 @@
                   ::keys [identifier]
                   :as context}]
   (merge {:open? @(rf/subscribe [::node-open? path])
-          :highlighted? @(rf/subscribe [::node-highlighted? path])
+          :highlighted? @(rf/subscribe [::node-highlighted? identifier path])
           :selected? @(rf/subscribe [::node-active? identifier path])
           :selectable? true}
          (frontend.component/node context)))
@@ -357,14 +358,15 @@
     (node-open? flag path)))
 
 (rf/reg-sub ::node-highlighted?
-  (fn [[_ path] _]
-    [(rf/subscribe [:get (conj highlight-node-path path)])
-     (rf/subscribe [:get (conj highlight-node-path (drop-last path))])
-     (rf/subscribe [:get (conj highlight-node-path (conj path :field))])])
+  (fn [[_ identifier path] _]
+    (let [node-path (highlight-node-path identifier)]
+      [(rf/subscribe [:get (conj node-path path)])
+       (rf/subscribe [:get (conj node-path (drop-last path))])
+       (rf/subscribe [:get (conj node-path (conj path :field))])]))
 
   (fn [[highlighted?
         parent-component-highlighted?
-        child-field-highlighted?] [_ path]]
+        child-field-highlighted?] [_ _identifier path]]
     (or highlighted?
         (and (= (last path) :field)
              parent-component-highlighted?)
@@ -470,14 +472,14 @@
     (= (:path edit-node) path)))
 
 (macros/reg-event-fx ::highlight-node
-  (fn [{:keys [db]} [_ path]]
+  (fn [{:keys [db]} [_ identifier path]]
     (let [path (determine-component-path db path)]
-      {:db (assoc-in db (conj highlight-node-path path) true)})))
+      {:db (assoc-in db (conj (highlight-node-path identifier) path) true)})))
 
 (macros/reg-event-fx ::unhighlight-node
-  (fn [{:keys [db]} [_ path]]
+  (fn [{:keys [db]} [_ identifier path]]
     (let [path (determine-component-path db path)]
-      {:db (update-in db highlight-node-path dissoc path)})))
+      {:db (update-in db (highlight-node-path identifier) dissoc path)})))
 
 (macros/reg-event-db ::node-select-default
   (fn [db [_ identifier path valid-prefixes]]
