@@ -14,29 +14,32 @@
    [reagent.core :as r])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
+(def ^:private base-path
+  [:ui :component-tree])
+
 (defn- active-node-path
   [identifier]
-  [:ui :component-tree identifier :selected-node])
+  (conj base-path identifier :active-node))
 
 (defn- highlight-node-path
   [identifier]
-  [:ui :component-tree identifier :highlighted-node])
+  (conj base-path identifier :highlighted-node))
 
 (defn- node-selected-default-path
   [identifier]
-  [:ui :component-tree identifier :selected-node-default])
+  (conj base-path identifier :selected-node-default))
 
 (defn- node-flag-db-path
   [identifier]
-  [:ui :component-tree identifier :nodes])
+  (conj base-path identifier :nodes))
 
 (defn- edit-node-path
   [identifier]
-  [:ui :component-tree identifier :edit-node])
+  (conj base-path identifier :edit-node))
 
 (defn- dragged-over-node-path
   [identifier]
-  [:ui :component-tree identifier :drop-node])
+  (conj base-path identifier :drop-node))
 
 (def ^:private drag-node-ref
   (atom nil))
@@ -502,12 +505,13 @@
           (cond->
             (not valid-path?) (assoc-in (active-node-path identifier) nil))))))
 
-;; TODO: no identifier
 (defn change-selected-component-if-removed [db fallback-path]
-  db
-  #_(if (get-in db (get-in db (active-node-path identifier)))
-      db
-      (assoc-in db (active-node-path identifier) fallback-path)))
+  (reduce (fn [db identifier]
+            (if (get-in db (get-in db (active-node-path identifier)))
+              db
+              (assoc-in db (active-node-path identifier) fallback-path)))
+          db
+          (keys (get-in db base-path))))
 
 (defn- adjust-component-path-after-element-removed [path elements-path index]
   (let [elements-path-size (count elements-path)
