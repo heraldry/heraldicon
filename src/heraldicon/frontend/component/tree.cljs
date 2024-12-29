@@ -30,8 +30,9 @@
   [identifier]
   [:ui :component-tree identifier :nodes])
 
-(def ^:private edit-node-path
-  [:ui :component-tree :edit-node])
+(defn- edit-node-path
+  [identifier]
+  [:ui :component-tree identifier :edit-node])
 
 (def ^:private dragged-over-node-path
   [:ui :component-tree :drop-node])
@@ -68,12 +69,12 @@
                           :value @value
                           :on-click (fn [event]
                                       (.stopPropagation event))
-                          :on-blur #(rf/dispatch [::complete-editing value-path @value])
+                          :on-blur #(rf/dispatch [::complete-editing identifier value-path @value])
                           :on-change #(reset! value (-> % .-target .-value))
                           :on-key-down (fn [event]
                                          (let [code (.-code event)]
                                            (case code
-                                             "Enter" (rf/dispatch [::complete-editing value-path @value])
+                                             "Enter" (rf/dispatch [::complete-editing identifier value-path @value])
                                              "Escape" (rf/dispatch [::set-edit-node identifier nil])
                                              nil)))}])})))
 
@@ -139,7 +140,7 @@
                 select-fn]} (node-data context)
         open? (or force-open? open?)
         openable? (-> nodes count pos?)
-        editing-node? @(rf/subscribe [::editing-node? editable-path])
+        editing-node? @(rf/subscribe [::editing-node? identifier editable-path])
         title (or node-title title)
         buttons (concat buttons parent-buttons)
         dragged-over-location @(rf/subscribe [::dragged-over-location path])
@@ -452,7 +453,7 @@
 (defn set-edit-node
   [db identifier context]
   (-> db
-      (assoc-in edit-node-path context)
+      (assoc-in (edit-node-path identifier) context)
       (select-node identifier (vec (drop-last (:path context))) false)))
 
 (macros/reg-event-db ::set-edit-node
@@ -460,17 +461,18 @@
     (set-edit-node db identifier context)))
 
 (macros/reg-event-db ::complete-editing
-  (fn [db [_ editable-path value]]
+  (fn [db [_ identifier editable-path value]]
     (let [real-value (-> value
                          str/trim
                          (str/replace #"\s+" " "))]
-      (cond-> (assoc-in db edit-node-path nil)
+      (cond-> (assoc-in db (edit-node-path identifier) nil)
         (not (str/blank? real-value)) (assoc-in editable-path real-value)))))
 
 (rf/reg-sub ::editing-node?
-  :<- [:get edit-node-path]
+  (fn [[_ identifier]]
+    (rf/subscribe [:get (edit-node-path identifier)]))
 
-  (fn [edit-node [_ path]]
+  (fn [edit-node [_ _identifier path]]
     (= (:path edit-node) path)))
 
 (macros/reg-event-fx ::highlight-node
