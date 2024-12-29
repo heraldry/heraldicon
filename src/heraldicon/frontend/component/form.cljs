@@ -22,7 +22,8 @@
       (when form
         [form effective-context])]]))
 
-(defn active [context]
-  (let [selected-component-path @(rf/subscribe [::tree/active-node-path])]
+(defn active [{::tree/keys [identifier]
+               :as context}]
+  (let [selected-component-path @(rf/subscribe [::tree/active-node-path identifier])]
     (when selected-component-path
       [form (c/<< context :path selected-component-path)])))

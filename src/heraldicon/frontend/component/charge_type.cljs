@@ -12,7 +12,8 @@
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::add
-  (fn [db [_ {:keys [path]} value]]
+  (fn [db [_ {:keys [path]
+              ::tree/keys [identifier]} value]]
     (let [types-path (conj path :types)
           elements (-> (get-in db types-path)
                        (conj value)
@@ -20,11 +21,12 @@
           new-element-path (conj types-path (-> elements count dec))]
       (-> db
           (assoc-in types-path elements)
-          (tree/set-edit-node {:path (conj new-element-path :name)})))))
+          (tree/set-edit-node identifier {:path (conj new-element-path :name)})))))
 
 (defn- remove-charge-type
   [db
    {:keys [path]
+    ::tree/keys [identifier]
     :as context}
    & {:keys [force-deleted?]}]
   (if (get-in db (:path (c/++ context :id)))
@@ -43,17 +45,18 @@
           new-siblings (vec (concat siblings children))]
       [(-> new-db
            (assoc-in parent-types-path new-siblings)
-           (tree/element-removed path))
+           (tree/element-removed identifier path))
        true
        parent-context])))
 
 (macros/reg-event-db ::remove
-  (fn [db [_ context]]
+  (fn [db [_ {::tree/keys [identifier]
+              :as context}]]
     (let [[new-db _
            deleted?
            parent-context] (remove-charge-type db context)]
       (cond-> new-db
-        deleted? (tree/select-node (:path parent-context) true)))))
+        deleted? (tree/select-node identifier (:path parent-context) true)))))
 
 (defn- find-root-path
   [db path]
@@ -76,6 +79,7 @@
 
 (macros/reg-event-db ::mark-unknown
   (fn [db [_ {:keys [path]
+              ::tree/keys [identifier]
               :as context}]]
     (let [[new-db _
            deleted?] (remove-charge-type db context :force-deleted? true)]
@@ -83,7 +87,9 @@
         new-db
         (let [target-path (find-unknown-charge-type-path new-db path)
               [new-db _new-value-path] (if target-path
-                                         (component.element/move new-db path
+                                         (component.element/move new-db
+                                                                 identifier
+                                                                 path
                                                                  (conj target-path
                                                                        :types component.element/APPEND-INDEX))
                                          [new-db nil])]
@@ -128,7 +134,8 @@
   [context]
   (interface/get-raw-data (c/++ context :metadata :deleted?)))
 
-(defmethod component/node :heraldicon/charge-type [context]
+(defmethod component/node :heraldicon/charge-type [{::tree/keys [identifier]
+                                                    :as context}]
   (let [type-id (interface/get-raw-data (c/++ context :id))
         name-context (c/++ context :name)
         num-types @(rf/subscribe [::all-subtypes-count context])
@@ -161,7 +168,7 @@
                 (not root?) (conj {:icon "far fa-edit"
                                    :title :string.button/edit
                                    :margin "2px"
-                                   :handler #(rf/dispatch [::tree/set-edit-node name-context])})
+                                   :handler #(rf/dispatch [::tree/set-edit-node identifier name-context])})
 
                 (and (not root?)
                      (not parent-is-unknown?)

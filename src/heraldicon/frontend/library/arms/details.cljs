@@ -82,7 +82,9 @@
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-arms])
-  (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path]])
+  (rf/dispatch-sync [::tree/node-select-default
+                     ::identifier
+                     form-db-path [form-db-path]])
   (layout/three-columns
    [:<>
     [:div {:class (when @(rf/subscribe [::session/height-limit-mode?])
@@ -95,21 +97,23 @@
                    :display "inline"}}
      [height-limit-mode/selector]]]
    [:<>
-    [form/active base-context]
+    [form/active (c/<< base-context ::tree/identifier ::identifier)]
     [message/display entity-type]
     [buttons/buttons entity-type]
     [blazonry form-db-path]
     [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
-    [tree/tree [form-db-path
-                (conj form-db-path :data :achievement :render-options)
-                :spacer
-                (conj form-db-path :data :achievement :helms)
-                :spacer
-                (conj form-db-path :data :achievement :coat-of-arms)
-                :spacer
-                (conj form-db-path :data :achievement :ornaments)]
+    [tree/tree
+     ::identifier
+     [form-db-path
+      (conj form-db-path :data :achievement :render-options)
+      :spacer
+      (conj form-db-path :data :achievement :helms)
+      :spacer
+      (conj form-db-path :data :achievement :coat-of-arms)
+      :spacer
+      (conj form-db-path :data :achievement :ornaments)]
      base-context]]
    :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
                  entity-version @(rf/subscribe [:get (conj form-db-path :version)])]

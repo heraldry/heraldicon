@@ -343,14 +343,16 @@
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-ribbon])
-  (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path]])
+  (rf/dispatch-sync [::tree/node-select-default
+                     ::identifier
+                     form-db-path [form-db-path]])
   (layout/two-columns
    [:<>
     [preview form-db-path]
     [edit-controls]]
    [:<>
     [history/buttons form-db-path]
-    [form/active]
+    [form/active {::tree/identifier ::identifier}]
     [message/display entity-type]
     [buttons/buttons entity-type]
     [attribution/attribution {:path form-db-path}]]

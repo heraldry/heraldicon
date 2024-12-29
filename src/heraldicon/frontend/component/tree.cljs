@@ -11,10 +11,12 @@
    [heraldicon.frontend.validation :as validation]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]
-   [reagent.core :as r]))
+   [reagent.core :as r])
+  (:require-macros [reagent.ratom :refer [reaction]]))
 
-(def ^:private active-node-path
-  [:ui :component-tree :selected-node])
+(defn- active-node-path
+  [identifier]
+  [:ui :component-tree identifier :selected-node])
 
 (def ^:private highlight-node-path
   [:ui :component-tree :highlighted-node])
@@ -37,15 +39,17 @@
 (def highlighted-collection-element-path
   [:ui :collection-library :selected-element])
 
-(defn node-data [{:keys [path] :as context}]
+(defn node-data [{:keys [path]
+                  ::keys [identifier]
+                  :as context}]
   (merge {:open? @(rf/subscribe [::node-open? path])
           :highlighted? @(rf/subscribe [::node-highlighted? path])
-          :selected? @(rf/subscribe [::node-active? path])
+          :selected? @(rf/subscribe [::node-active? identifier path])
           :selectable? true}
          (frontend.component/node context)))
 
 (defn- node-name-input
-  [value-path]
+  [_identifier value-path]
   (let [ref (atom nil)
         value (r/atom @(rf/subscribe [:get value-path]))]
     (r/create-class
@@ -55,7 +59,7 @@
                                .select
                                .scrollIntoViewIfNeeded))
 
-      :reagent-render (fn [value-path]
+      :reagent-render (fn [identifier value-path]
                         [:input.node-name-input
                          {:ref #(reset! ref %)
                           :value @value
@@ -67,7 +71,7 @@
                                          (let [code (.-code event)]
                                            (case code
                                              "Enter" (rf/dispatch [::complete-editing value-path @value])
-                                             "Escape" (rf/dispatch [::set-edit-node nil])
+                                             "Escape" (rf/dispatch [::set-edit-node identifier nil])
                                              nil)))}])})))
 
 (defn- calculate-drop-area
@@ -106,12 +110,15 @@
     (let [drop-options (drop-options-fn drag-node drop-node)]
       (calculate-drop-area event drop-options))))
 
-(defn node [{:keys [path] :as context} & {:keys [title
-                                                 parent-buttons
-                                                 force-open?
-                                                 search-fn
-                                                 filter-fn
-                                                 extra]}]
+(defn node [{:keys [path]
+             ::keys [identifier]
+             :as context}
+            & {:keys [title
+                      parent-buttons
+                      force-open?
+                      search-fn
+                      filter-fn
+                      extra]}]
   (let [{node-title :title
          :keys [open?
                 highlighted?
@@ -125,7 +132,8 @@
                 editable-path
                 draggable?
                 drop-options-fn
-                drop-fn]} (node-data context)
+                drop-fn
+                select-fn]} (node-data context)
         open? (or force-open? open?)
         openable? (-> nodes count pos?)
         editing-node? @(rf/subscribe [::editing-node? editable-path])
@@ -186,14 +194,15 @@
                                                       drag-info)]
                         (drop-fn @drag-node-ref (assoc drag-info :where where)))))
 
-         :on-click #(do
-                      (when (or (not open?)
-                                (not selectable?)
-                                selected?)
-                        (rf/dispatch [::toggle-node path]))
-                      (when selectable?
-                        (rf/dispatch [::select-node path]))
-                      (.stopPropagation %))}
+         :on-click (or select-fn
+                       #(do
+                          (when (or (not open?)
+                                    (not selectable?)
+                                    selected?)
+                            (rf/dispatch [::toggle-node path]))
+                          (when selectable?
+                            (rf/dispatch [::select-node identifier path]))
+                          (.stopPropagation %)))}
 
         (when (#{:above :below} dragged-over-location)
           [:div.node-drop-insert {:style {(if (= dragged-over-location :above)
@@ -237,7 +246,7 @@
 
         (if (and (= extra :second)
                  editing-node?)
-          [node-name-input editable-path]
+          [node-name-input identifier editable-path]
           [tr title])
 
         annotation
@@ -287,7 +296,8 @@
        (into [:ul]
              (map (fn [{:keys [context title buttons]}]
                     ^{:key context}
-                    [:li [node context
+                    [:li [node
+                          context
                           :title title
                           :parent-buttons buttons
                           :force-open? force-open?
@@ -296,7 +306,7 @@
                           :extra extra]]))
              nodes))]))
 
-(defn tree [paths context & {:keys [search-fn filter-fn force-open? extra]}]
+(defn tree [identifier paths context & {:keys [search-fn filter-fn force-open? extra]}]
   [:div.ui-tree
    (into [:ul]
          (map-indexed (fn [idx node-path]
@@ -304,7 +314,10 @@
                         [:li
                          (if (= node-path :spacer)
                            [:div {:style {:height "1em"}}]
-                           [node (c/<< context :path node-path)
+                           [node
+                            (-> context
+                                (c/<< :path node-path)
+                                (c/<< ::identifier identifier))
                             :force-open? force-open?
                             :search-fn search-fn
                             :filter-fn filter-fn
@@ -357,24 +370,23 @@
              parent-component-highlighted?)
         child-field-highlighted?)))
 
-(rf/reg-sub ::active-node-path
-  ;; TODO: subscription here is a bug
-  (fn [_ _]
-    [(rf/subscribe [:get active-node-path])
-     (rf/subscribe [:get @(rf/subscribe [:get active-node-path])])
-     (rf/subscribe [:get node-selected-default-path])])
-
-  (fn [[selected-node-path data default] [_ _path]]
-    (if (and selected-node-path
-             data)
-      selected-node-path
-      default)))
+(rf/reg-sub-raw ::active-node-path
+  (fn [_app-db [_ identifier]]
+    (reaction
+     (let [path (active-node-path identifier)
+           selected-node-path @(rf/subscribe [:get path])
+           data @(rf/subscribe [:get @(rf/subscribe [:get path])])
+           default @(rf/subscribe [:get node-selected-default-path])]
+       (if (and selected-node-path
+                data)
+         selected-node-path
+         default)))))
 
 (rf/reg-sub ::node-active?
-  (fn [[_ _path] _]
-    (rf/subscribe [::active-node-path]))
+  (fn [[_ identifier _path]]
+    (rf/subscribe [::active-node-path identifier]))
 
-  (fn [active-node-path [_ path]]
+  (fn [active-node-path [_ _ path]]
     (= path active-node-path)))
 
 (defn- open-node [db path]
@@ -417,31 +429,31 @@
     path))
 
 (macros/reg-event-fx ::select-node-from-preview
-  (fn [{:keys [db]} [_ path open?]]
+  (fn [{:keys [db]} [_ identifier path open?]]
     (let [path (determine-component-path db path)]
       {:db db
-       :dispatch [::select-node path open?]})))
+       :dispatch [::select-node identifier path open?]})))
 
 (defn select-node
-  [db path open?]
+  [db identifier path open?]
   (-> db
-      (assoc-in active-node-path path)
+      (assoc-in (active-node-path identifier) path)
       (open-node (vec (cond-> path
                         (not open?) drop-last)))))
 
 (macros/reg-event-fx ::select-node
-  (fn [{:keys [db]} [_ path open?]]
-    {:db (select-node db path open?)}))
+  (fn [{:keys [db]} [_ identifier path open?]]
+    {:db (select-node db identifier path open?)}))
 
 (defn set-edit-node
-  [db context]
+  [db identifier context]
   (-> db
       (assoc-in edit-node-path context)
-      (select-node (vec (drop-last (:path context))) false)))
+      (select-node identifier (vec (drop-last (:path context))) false)))
 
 (macros/reg-event-db ::set-edit-node
-  (fn [db [_ context]]
-    (set-edit-node db context)))
+  (fn [db [_ identifier context]]
+    (set-edit-node db identifier context)))
 
 (macros/reg-event-db ::complete-editing
   (fn [db [_ editable-path value]]
@@ -468,8 +480,8 @@
       {:db (update-in db highlight-node-path dissoc path)})))
 
 (macros/reg-event-db ::node-select-default
-  (fn [db [_ path valid-prefixes]]
-    (let [current-selected-node (get-in db active-node-path)
+  (fn [db [_ identifier path valid-prefixes]]
+    (let [current-selected-node (get-in db (active-node-path identifier))
           valid-path? (some (fn [path]
                               (= (take (count path) current-selected-node)
                                  path))
@@ -477,66 +489,14 @@
       (-> db
           (assoc-in node-selected-default-path path)
           (cond->
-            (not valid-path?) (assoc-in active-node-path nil))))))
+            (not valid-path?) (assoc-in (active-node-path identifier) nil))))))
 
-(defn- adjust-component-path-after-order-change [path elements-path index new-index]
-  (let [elements-path-size (count elements-path)
-        path-base (when (-> path count (>= elements-path-size))
-                    (subvec path 0 elements-path-size))
-        path-rest (when (-> path count (>= elements-path-size))
-                    (subvec path (count elements-path)))
-        current-index (first path-rest)
-        path-rest (when (-> path-rest count (> 1))
-                    (subvec path-rest 1))]
-    (if (or (not= path-base elements-path)
-            (= index new-index))
-      path
-      (if (nil? new-index)
-        (cond
-          (= current-index index) nil
-          (> current-index index) (vec (concat path-base
-                                               [(dec current-index)]
-                                               path-rest))
-          :else path)
-        (cond
-          (= current-index index) (vec (concat path-base
-                                               [new-index]
-                                               path-rest))
-          (<= index current-index new-index) (vec (concat path-base
-                                                          [(dec current-index)]
-                                                          path-rest))
-          (<= new-index current-index index) (vec (concat path-base
-                                                          [(inc current-index)]
-                                                          path-rest))
-          :else path)))))
-
+;; TODO: no identifier
 (defn change-selected-component-if-removed [db fallback-path]
-  (if (get-in db (get-in db active-node-path))
-    db
-    (assoc-in db active-node-path fallback-path)))
-
-(defn element-order-changed [db elements-path index new-index]
-  (-> db
-      (update-in active-node-path
-                 adjust-component-path-after-order-change elements-path index new-index)
-      (update-in highlighted-collection-element-path
-                 adjust-component-path-after-order-change elements-path index new-index)
-      (update-in submenu/open?-path
-                 (fn [flags]
-                   (into {}
-                         (comp (filter first)
-                               (map (fn [[k v]]
-                                      [(adjust-component-path-after-order-change
-                                        k elements-path index new-index) v])))
-                         flags)))
-      (update-in node-flag-db-path (fn [flags]
-                                     (into {}
-                                           (keep (fn [[path flag]]
-                                                   (let [new-path (adjust-component-path-after-order-change
-                                                                   path elements-path index new-index)]
-                                                     (when new-path
-                                                       [new-path flag]))))
-                                           flags)))))
+  db
+  #_(if (get-in db (get-in db (active-node-path identifier)))
+      db
+      (assoc-in db (active-node-path identifier) fallback-path)))
 
 (defn- adjust-component-path-after-element-removed [path elements-path index]
   (let [elements-path-size (count elements-path)
@@ -556,11 +516,11 @@
                                              path-rest))
         :else path))))
 
-(defn element-removed [db path]
+(defn element-removed [db identifier path]
   (let [elements-path (vec (drop-last path))
         index (last path)]
     (-> db
-        (update-in active-node-path
+        (update-in (active-node-path identifier)
                    adjust-component-path-after-element-removed elements-path index)
         (update-in highlighted-collection-element-path
                    adjust-component-path-after-element-removed elements-path index)
@@ -598,11 +558,11 @@
                                                     path-rest))
         :else path))))
 
-(defn element-inserted [db path]
+(defn element-inserted [db identifier path]
   (let [elements-path (vec (drop-last path))
         index (last path)]
     (-> db
-        (update-in active-node-path
+        (update-in (active-node-path identifier)
                    adjust-component-path-after-element-inserted elements-path index)
         (update-in highlighted-collection-element-path
                    adjust-component-path-after-element-inserted elements-path index)

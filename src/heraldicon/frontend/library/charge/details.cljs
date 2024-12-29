@@ -384,25 +384,29 @@
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-charge])
-  (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path
-                                                              preview-db-path]])
+  (rf/dispatch-sync [::tree/node-select-default
+                     ::identifier
+                     form-db-path [form-db-path
+                                   preview-db-path]])
   (layout/three-columns
    [:<>
     [preview :original? true]
     [edit-controls]]
    [:<>
-    [form/active]
+    [form/active {::tree/identifier ::identifier}]
     [message/display entity-type]
     [buttons/buttons entity-type
      [svg-buttons form-db-path]]
     [attribution/attribution {:path form-db-path}]]
    [:<>
     [history/buttons form-db-path]
-    [tree/tree [form-db-path
-                :spacer
-                (conj preview-db-path :render-options)
-                :spacer
-                (conj preview-db-path :coat-of-arms :field :components 0)]]
+    [tree/tree
+     ::identifier
+     [form-db-path
+      :spacer
+      (conj preview-db-path :render-options)
+      :spacer
+      (conj preview-db-path :coat-of-arms :field :components 0)]]
     [preview]]
    :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
                  entity-version @(rf/subscribe [:get (conj form-db-path :version)])]

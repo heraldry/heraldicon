@@ -70,7 +70,8 @@
     :outline?
     :manual-blazon]))
 
-(defmethod component/node :heraldry/ordinary [context]
+(defmethod component/node :heraldry/ordinary [{::tree/keys [identifier]
+                                               :as context}]
   (let [ordinary-type (interface/get-raw-data (c/++ context :type))
         cottising-options (interface/get-options (c/++ context :cottising))
         cottise-1 (interface/get-raw-data (c/++ context :cottising :cottise-1))
@@ -106,7 +107,7 @@
                (conj {:title (cottise/cottise-name cottise-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-1-context default/cottise])
-                                  (rf/dispatch [::tree/select-node (:path cottise-1-context) true]))})
+                                  (rf/dispatch [::tree/select-node identifier (:path cottise-1-context) true]))})
 
                (and (:cottise-2 cottising-options)
                     cottise-1?
@@ -114,14 +115,14 @@
                (conj {:title (cottise/cottise-name cottise-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-2-context default/cottise])
-                                  (rf/dispatch [::tree/select-node (:path cottise-2-context) true]))})
+                                  (rf/dispatch [::tree/select-node identifier (:path cottise-2-context) true]))})
 
                (and (:cottise-opposite-1 cottising-options)
                     (not cottise-opposite-1?))
                (conj {:title (cottise/cottise-name cottise-opposite-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-opposite-1-context default/cottise])
-                                  (rf/dispatch [::tree/select-node (:path cottise-opposite-1-context) true]))})
+                                  (rf/dispatch [::tree/select-node identifier (:path cottise-opposite-1-context) true]))})
 
                (and (:cottise-opposite-2 cottising-options)
                     cottise-opposite-1?
@@ -129,14 +130,14 @@
                (conj {:title (cottise/cottise-name cottise-opposite-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-opposite-2-context default/cottise])
-                                  (rf/dispatch [::tree/select-node (:path cottise-opposite-2-context) true]))})
+                                  (rf/dispatch [::tree/select-node identifier (:path cottise-opposite-2-context) true]))})
 
                (and (:cottise-extra-1 cottising-options)
                     (not cottise-extra-1?))
                (conj {:title (cottise/cottise-name cottise-extra-1-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-extra-1-context default/cottise])
-                                  (rf/dispatch [::tree/select-node (:path cottise-extra-1-context) true]))})
+                                  (rf/dispatch [::tree/select-node identifier (:path cottise-extra-1-context) true]))})
 
                (and (:cottise-extra-2 cottising-options)
                     cottise-extra-1?
@@ -144,7 +145,7 @@
                (conj {:title (cottise/cottise-name cottise-extra-2-context)
                       :handler #(do
                                   (rf/dispatch-sync [:set cottise-extra-2-context default/cottise])
-                                  (rf/dispatch [::tree/select-node (:path cottise-extra-2-context) true]))}))]
+                                  (rf/dispatch [::tree/select-node identifier (:path cottise-extra-2-context) true]))}))]
     {:title (ordinary/title context)
      :icon {:default (static/static-url
                       (str "/svg/ordinary-type-" (name ordinary-type) "-unselected.svg"))

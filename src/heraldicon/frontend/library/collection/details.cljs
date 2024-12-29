@@ -47,18 +47,18 @@
        :style {:fill "#fff"}}]]))
 
 (defn- selected-element-index [form-db-path]
-  (let [selected-node-path @(rf/subscribe [::tree/active-node-path])
+  (let [selected-node-path @(rf/subscribe [::tree/active-node-path ::identifier])
         index (last selected-node-path)]
     (when (int? index)
       (if (< index @(rf/subscribe [:get-list-size (conj form-db-path :data :elements)]))
         index
         ;; index not valid anymore
         (do
-          (rf/dispatch [::tree/select-node nil])
+          (rf/dispatch [::tree/select-node ::identifier nil])
           nil)))))
 
 (defn- arms-highlight [path x y width height]
-  (if @(rf/subscribe [::tree/node-active? path])
+  (if @(rf/subscribe [::tree/node-active? ::identifier path])
     [:rect {:x (- x (/ width 2) 7)
             :y (- y (/ height 2) 7)
             :rx 10
@@ -146,7 +146,7 @@
                          y (quot idx num-columns)]
                      ^{:key idx}
                      [:g {:on-click (js-event/handled
-                                     #(rf/dispatch [::tree/select-node (conj form-db-path :data :elements idx)]))
+                                     #(rf/dispatch [::tree/select-node ::identifier (conj form-db-path :data :elements idx)]))
                           :style {:cursor "pointer"}}
                       [render-arms
                        form-db-path
@@ -206,20 +206,24 @@
   (rf/dispatch [::title/set-from-path-or-default
                 (conj form-db-path :name)
                 :string.text.title/create-collection])
-  (rf/dispatch-sync [::tree/node-select-default form-db-path [form-db-path]])
+  (rf/dispatch-sync [::tree/node-select-default
+                     ::identifier
+                     form-db-path [form-db-path]])
   (layout/three-columns
    [render-collection form-db-path :allow-adding? true]
    [:<>
-    [form/active]
+    [form/active {::tree/identifier ::identifier}]
     [message/display entity-type]
     [buttons/buttons entity-type]
     [render-arms-preview form-db-path]
     [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
-    [tree/tree [form-db-path
-                (conj form-db-path :data :render-options)
-                (conj form-db-path :data)]]]
+    [tree/tree
+     ::identifier
+     [form-db-path
+      (conj form-db-path :data :render-options)
+      (conj form-db-path :data)]]]
    :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
                  entity-version @(rf/subscribe [:get (conj form-db-path :version)])]
              [details/latest-version-banner

@@ -26,6 +26,7 @@
 
 (macros/reg-event-fx ::add
   (fn [{:keys [db]} [_ {:keys [path]
+                        ::tree/keys [identifier]
                         :as context} value {:keys [post-fn selected-element-path-fn]}]]
     (let [new-db (cond-> (update-in db path (fn [elements]
                                               (vec (conj elements value))))
@@ -50,8 +51,7 @@
                              (adjust-new-value-path new-db new-element-path))]
       {:db new-db
        :dispatch-n [[::submenu/close-all]
-                    [::tree/select-node new-element-path
-                     true]
+                    [::tree/select-node identifier new-element-path true]
                     (cond
                       (isa? added-type :heraldry/helm) [::submenu/open (conj new-element-path :components 1 :type)]
                       (isa? added-type :heraldry/ordinary) [::submenu/open (conj new-element-path :type)]
@@ -110,30 +110,34 @@
     path))
 
 (defn move
-  [db value-path target-path]
+  [db identifier value-path target-path]
   (let [[new-db value] (remove-element db value-path)
         adjusted-target-path (adjust-path-after-removal target-path value-path)
         [new-db new-value-path] (insert-element new-db adjusted-target-path value)]
     [(-> new-db
-         (tree/element-removed value-path)
-         (tree/element-inserted new-value-path))
+         (tree/element-removed identifier value-path)
+         (tree/element-inserted identifier new-value-path))
      new-value-path]))
 
 (macros/reg-event-db ::move
   (fn [db [_
-           {value-path :path}
+           {value-path :path
+            ::tree/keys [identifier]}
            {target-path :path}
            {:keys [no-select? post-fn]}]]
-    (let [[new-db new-value-path] (move db value-path target-path)
+    (let [[new-db new-value-path] (move db identifier value-path target-path)
           new-db (-> new-db
                      (cond->
                        post-fn (post-fn value-path target-path)))]
       (if no-select?
         new-db
-        (tree/select-node new-db (adjust-new-value-path new-db new-value-path) true)))))
+        (tree/select-node new-db
+                          identifier
+                          (adjust-new-value-path new-db new-value-path) true)))))
 
 (macros/reg-event-db ::remove
   (fn [db [_ {:keys [path]
+              ::tree/keys [identifier]
               :as context} {:keys [post-fn]}]]
     (let [[new-db _value] (remove-element db path)
           parent-type (get-in new-db (-> context
@@ -146,13 +150,14 @@
                 (isa? parent-type
                       :heraldry/ornaments)) (shield-separator/add-or-remove-shield-separator path)
             post-fn (post-fn path))
-          (tree/element-removed path)))))
+          (tree/element-removed identifier path)))))
 
 (macros/reg-event-db ::duplicate
-  (fn [db [_ {:keys [path]}]]
+  (fn [db [_ {:keys [path]
+              ::tree/keys [identifier]}]]
     (let [value (get-in db path)
           target-path (update path (dec (count path)) inc)
           [new-db new-value-path] (insert-element db target-path value)]
       (-> new-db
-          (tree/element-inserted new-value-path)
-          (tree/select-node new-value-path true)))))
+          (tree/element-inserted identifier new-value-path)
+          (tree/select-node identifier new-value-path true)))))
