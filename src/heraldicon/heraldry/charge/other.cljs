@@ -5,6 +5,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.frontend.js-event :as js-event]
+   [heraldicon.frontend.library.arms.details :as-alias arms.details]
    [heraldicon.heraldry.charge.interface :as charge.interface]
    [heraldicon.heraldry.charge.shared :as charge.shared]
    [heraldicon.heraldry.option.attributes :as attributes]
@@ -542,7 +543,9 @@
                                    :style {:opacity (:highlight tincture)}}]])])]]])]
 
          (when (and (not svg-export?)
-                    @(rf/subscribe [::tree/node-highlighted? (conj (:path context) :field)]))
+                    @(rf/subscribe [::tree/node-highlighted?
+                                    ::arms.details/identifier
+                                    (conj (:path context) :field)]))
            (let [transform (str "translate(" (v/->str anchor-point) ")"
                                 "rotate(" angle ")"
                                 "scale(" scale-x "," scale-y ")"

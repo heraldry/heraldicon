@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
+   [heraldicon.frontend.library.arms.details :as-alias arms.details]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.tincture :as tincture]
@@ -133,8 +134,12 @@
 
 (defn shape-highlight [context]
   (when (and (not (:svg-export? (c/render-hints context)))
-             (or @(rf/subscribe [::tree/node-highlighted? (conj (:path context) :field)])
-                 @(rf/subscribe [::tree/node-highlighted? (:path context)])))
+             (or @(rf/subscribe [::tree/node-highlighted?
+                                 ::arms.details/identifier
+                                 (conj (:path context) :field)])
+                 @(rf/subscribe [::tree/node-highlighted?
+                                 ::arms.details/identifier
+                                 (:path context)])))
     [:path.node-highlighted {:d (str/join " " (:shape (interface/get-render-shape context)))
                              :style {:stroke-width 1
                                      :stroke-linecap "round"
