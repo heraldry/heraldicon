@@ -22,8 +22,9 @@
   [identifier]
   [:ui :component-tree identifier :highlighted-node])
 
-(def ^:private node-selected-default-path
-  [:ui :component-tree :selected-node-default])
+(defn- node-selected-default-path
+  [identifier]
+  [:ui :component-tree identifier :selected-node-default])
 
 (def ^:private node-flag-db-path
   [:ui :component-tree :nodes])
@@ -378,7 +379,7 @@
      (let [path (active-node-path identifier)
            selected-node-path @(rf/subscribe [:get path])
            data @(rf/subscribe [:get @(rf/subscribe [:get path])])
-           default @(rf/subscribe [:get node-selected-default-path])]
+           default @(rf/subscribe [:get (node-selected-default-path identifier)])]
        (if (and selected-node-path
                 data)
          selected-node-path
@@ -489,7 +490,7 @@
                                  path))
                             valid-prefixes)]
       (-> db
-          (assoc-in node-selected-default-path path)
+          (assoc-in (node-selected-default-path identifier) path)
           (cond->
             (not valid-path?) (assoc-in (active-node-path identifier) nil))))))
 
