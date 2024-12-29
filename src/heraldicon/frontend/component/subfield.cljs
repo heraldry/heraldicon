@@ -12,14 +12,14 @@
    [re-frame.core :as rf]))
 
 (macros/reg-event-fx ::override-part-reference
-  (fn [{:keys [db]} [_ path]]
+  (fn [{:keys [db]} [_ identifier path]]
     (let [{:keys [index]} (get-in db path)
           referenced-part (get-in db (-> path
                                          drop-last
                                          vec
                                          (conj index)))]
       {:db (assoc-in db path referenced-part)
-       :dispatch [::tree/select-node path true]})))
+       :dispatch [::tree/select-node identifier path true]})))
 
 (macros/reg-event-db ::reset-part-reference
   (fn [db [_ {:keys [path] :as context}]]
@@ -48,7 +48,9 @@
     (let [parent-type (interface/get-raw-data (c/++ parent-context :type))]
       (string/upper-case-first (field/part-name parent-type (last path))))))
 
-(defmethod component/node :heraldry/subfield [{:keys [path] :as context}]
+(defmethod component/node :heraldry/subfield [{:keys [path]
+                                               ::tree/keys [identifier]
+                                               :as context}]
   (let [subfield-type (interface/get-raw-data (c/++ context :type))
         node-data (if (= subfield-type :heraldry.subfield.type/reference)
                     (let [reference-index (interface/get-raw-data (c/++ context :index))]
@@ -60,7 +62,7 @@
                               :selected [:span {:style {:display "inline-block"}}]}
                        :buttons [{:icon "fas fa-sliders-h"
                                   :title :string.user.button/change
-                                  :handler #(rf/dispatch [::override-part-reference path])}]})
+                                  :handler #(rf/dispatch [::override-part-reference identifier path])}]})
                     (cond-> (assoc (component/node (c/++ context :field)) :draggable? true)
                       (non-mandatory-part-of-parent? context)
                       (update :buttons conj {:icon "fas fa-undo"

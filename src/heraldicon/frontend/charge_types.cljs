@@ -159,7 +159,9 @@
                       :overflow "scroll"}}
         [search-bar]
         [history/buttons form-db-path]
-        [tree/tree [form-db-path] base-context
+        [tree/tree
+         ::identifier
+         [form-db-path] base-context
          :search-fn search
          :filter-fn filter-by-deleted-and-empty
          :force-open? (force-open?)]]
@@ -172,7 +174,9 @@
                      :position "relative"}}
        [:div {:style {:height "calc(100%)"
                       :overflow "scroll"}}
-        [tree/tree [form-db-path] base-context
+        [tree/tree
+         ::identifier
+         [form-db-path] base-context
          :filter-fn filter-by-deleted-and-empty
          :extra :second]]]])))
 
