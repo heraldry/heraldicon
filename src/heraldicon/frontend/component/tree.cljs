@@ -26,8 +26,9 @@
   [identifier]
   [:ui :component-tree identifier :selected-node-default])
 
-(def ^:private node-flag-db-path
-  [:ui :component-tree :nodes])
+(defn- node-flag-db-path
+  [identifier]
+  [:ui :component-tree identifier :nodes])
 
 (def ^:private edit-node-path
   [:ui :component-tree :edit-node])
@@ -44,7 +45,7 @@
 (defn node-data [{:keys [path]
                   ::keys [identifier]
                   :as context}]
-  (merge {:open? @(rf/subscribe [::node-open? path])
+  (merge {:open? @(rf/subscribe [::node-open? identifier path])
           :highlighted? @(rf/subscribe [::node-highlighted? identifier path])
           :selected? @(rf/subscribe [::node-active? identifier path])
           :selectable? true}
@@ -201,7 +202,7 @@
                           (when (or (not open?)
                                     (not selectable?)
                                     selected?)
-                            (rf/dispatch [::toggle-node path]))
+                            (rf/dispatch [::toggle-node identifier path]))
                           (when selectable?
                             (rf/dispatch [::select-node identifier path]))
                           (.stopPropagation %)))}
@@ -217,7 +218,7 @@
 
         (if openable?
           [:span.node-icon.clickable
-           {:on-click (js-event/handled #(rf/dispatch [::toggle-node path]))}
+           {:on-click (js-event/handled #(rf/dispatch [::toggle-node identifier path]))}
            [:i.fa.ui-icon {:class (if open?
                                     "fa-angle-down"
                                     "fa-angle-right")}]]
@@ -352,10 +353,10 @@
     flag))
 
 (rf/reg-sub ::node-open?
-  (fn [[_ path] _]
-    (rf/subscribe [:get (conj node-flag-db-path path)]))
+  (fn [[_ identifier path] _]
+    (rf/subscribe [:get (conj (node-flag-db-path identifier) path)]))
 
-  (fn [flag [_ path]]
+  (fn [flag [_ _identifier path]]
     (node-open? flag path)))
 
 (rf/reg-sub ::node-highlighted?
@@ -392,17 +393,17 @@
   (fn [active-node-path [_ _ path]]
     (= path active-node-path)))
 
-(defn- open-node [db path]
+(defn- open-node [db identifier path]
   (let [path (vec path)]
-    (update-in db node-flag-db-path
+    (update-in db (node-flag-db-path identifier)
                merge (into {}
                            (map (fn [idx]
                                   [(subvec path 0 (inc idx)) true]))
                            (range (count path))))))
 
-(defn- close-node [db path]
+(defn- close-node [db identifier path]
   (update-in
-   db node-flag-db-path
+   db (node-flag-db-path identifier)
    (fn [flags]
      (into {}
            (map (fn [[other-path v]]
@@ -413,12 +414,12 @@
            (assoc flags path false)))))
 
 (macros/reg-event-db ::toggle-node
-  (fn [db [_ path]]
+  (fn [db [_ identifier path]]
     (if (node-open?
-         (get-in db (conj node-flag-db-path path))
+         (get-in db (conj (node-flag-db-path identifier) path))
          path)
-      (close-node db path)
-      (open-node db path))))
+      (close-node db identifier path)
+      (open-node db identifier path))))
 
 (defn- determine-component-path [db path]
   (let [path (if (get-in db (conj path :field))
@@ -441,8 +442,8 @@
   [db identifier path open?]
   (-> db
       (assoc-in (active-node-path identifier) path)
-      (open-node (vec (cond-> path
-                        (not open?) drop-last)))))
+      (open-node identifier (vec (cond-> path
+                                   (not open?) drop-last)))))
 
 (macros/reg-event-fx ::select-node
   (fn [{:keys [db]} [_ identifier path open?]]
@@ -535,14 +536,15 @@
                                         [(adjust-component-path-after-element-removed
                                           k elements-path index) v])))
                            flags)))
-        (update-in node-flag-db-path (fn [flags]
-                                       (into {}
-                                             (keep (fn [[path flag]]
-                                                     (let [new-path (adjust-component-path-after-element-removed
-                                                                     path elements-path index)]
-                                                       (when new-path
-                                                         [new-path flag]))))
-                                             flags))))))
+        (update-in (node-flag-db-path identifier)
+                   (fn [flags]
+                     (into {}
+                           (keep (fn [[path flag]]
+                                   (let [new-path (adjust-component-path-after-element-removed
+                                                   path elements-path index)]
+                                     (when new-path
+                                       [new-path flag]))))
+                           flags))))))
 
 (defn- adjust-component-path-after-element-inserted [path elements-path index]
   (let [elements-path-size (count elements-path)
@@ -577,11 +579,12 @@
                                         [(adjust-component-path-after-element-inserted
                                           k elements-path index) v])))
                            flags)))
-        (update-in node-flag-db-path (fn [flags]
-                                       (into {}
-                                             (keep (fn [[path flag]]
-                                                     (let [new-path (adjust-component-path-after-element-inserted
-                                                                     path elements-path index)]
-                                                       (when new-path
-                                                         [new-path flag]))))
-                                             flags))))))
+        (update-in (node-flag-db-path identifier)
+                   (fn [flags]
+                     (into {}
+                           (keep (fn [[path flag]]
+                                   (let [new-path (adjust-component-path-after-element-inserted
+                                                   path elements-path index)]
+                                     (when new-path
+                                       [new-path flag]))))
+                           flags))))))
