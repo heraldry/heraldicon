@@ -137,48 +137,58 @@
 (defmethod component/node :heraldicon/charge-type [{::tree/keys [identifier]
                                                     :as context}]
   (let [type-id (interface/get-raw-data (c/++ context :id))
+        editing? (= (:ns context) :heraldicon.frontend.charge-types/ns)
         name-context (c/++ context :name)
-        num-types @(rf/subscribe [::all-subtypes-count context])
         types-context (c/++ context :types)
         parent-context (c/-- context 2)
         parent-is-unknown? (= (interface/get-raw-data (c/++ parent-context :name))
                               "unknown")
         root? (= type-id :root)
-        type-name (interface/get-raw-data name-context)
-        deleted?' (deleted? context)
-        deleted-with-undeleted-child? (and deleted?'
-                                           @(rf/subscribe [::frontend.charge-types/undeleted-child? context]))]
-    {:title (cond-> type-name
-              (pos? num-types) (str " (" num-types ")")
-              (not type-id) (str " *new*")
-              (duplicate? type-name) (str " *duplicate*")
-              deleted?' (str " *deleted*")
-              deleted-with-undeleted-child? (str " *PROBLEM*"))
-     :draggable? (not root?)
-     :drop-options-fn drag/drop-options
-     :drop-fn drag/drop-fn
-     :editable-path (:path name-context)
-     :buttons (cond-> [{:icon "fas fa-plus"
-                        :title :string.button/add
-                        :handler #(rf/dispatch [::add
-                                                context
-                                                {:type :heraldicon/charge-type
-                                                 :name "New type"}])}]
+        type-name (interface/get-raw-data name-context)]
+    {:title (if editing?
+              (let [num-types @(rf/subscribe [::all-subtypes-count context])
+                    deleted?' (deleted? context)
+                    deleted-with-undeleted-child? (and deleted?'
+                                                       @(rf/subscribe [::frontend.charge-types/undeleted-child? context]))]
+                (cond-> type-name
+                  (pos? num-types) (str " (" num-types ")")
+                  (not type-id) (str " *new*")
+                  (duplicate? type-name) (str " *duplicate*")
+                  deleted?' (str " *deleted*")
+                  deleted-with-undeleted-child? (str " *PROBLEM*")))
+              (let [charge-count (interface/get-raw-data (c/++ context :charge_count))]
+                (cond-> type-name
+                  (pos? charge-count) (str " (" charge-count ")"))))
+     :draggable? (when editing?
+                   (not root?))
+     :drop-options-fn (when editing?
+                        drag/drop-options)
+     :drop-fn (when editing?
+                drag/drop-fn)
+     :editable-path (when editing?
+                      (:path name-context))
+     :buttons (when editing?
+                (cond-> [{:icon "fas fa-plus"
+                          :title :string.button/add
+                          :handler #(rf/dispatch [::add
+                                                  context
+                                                  {:type :heraldicon/charge-type
+                                                   :name "New type"}])}]
 
-                (not root?) (conj {:icon "far fa-edit"
-                                   :title :string.button/edit
-                                   :margin "2px"
-                                   :handler #(rf/dispatch [::tree/set-edit-node identifier name-context])})
+                  (not root?) (conj {:icon "far fa-edit"
+                                     :title :string.button/edit
+                                     :margin "2px"
+                                     :handler #(rf/dispatch [::tree/set-edit-node identifier name-context])})
 
-                (and (not root?)
-                     (not parent-is-unknown?)
-                     (not= type-name "unknown")) (conj {:icon "fas fa-question-circle"
-                                                        :title :string.button/unknown
-                                                        :margin "4px"
-                                                        :handler #(rf/dispatch [::mark-unknown context])})
+                  (and (not root?)
+                       (not parent-is-unknown?)
+                       (not= type-name "unknown")) (conj {:icon "fas fa-question-circle"
+                                                          :title :string.button/unknown
+                                                          :margin "4px"
+                                                          :handler #(rf/dispatch [::mark-unknown context])})
 
-                (not root?) (conj {:icon "far fa-trash-alt"
-                                   :remove? true
-                                   :title :string.tooltip/remove
-                                   :handler #(rf/dispatch [::remove context])}))
+                  (not root?) (conj {:icon "far fa-trash-alt"
+                                     :remove? true
+                                     :title :string.tooltip/remove
+                                     :handler #(rf/dispatch [::remove context])})))
      :nodes (sorted-children types-context)}))

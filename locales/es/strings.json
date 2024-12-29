@@ -452,7 +452,6 @@
     "base-fields": "Campo base",
     "base-field-shift": "Cambio del campo base",
     "base-line": "Línea base",
-    "blazonry-name": "Nombre de blasón (Inglés)",
     "column": "Columna",
     "corner": "Esquinas",
     "corner-choice": {
@@ -668,7 +667,6 @@
     "remove": "remover",
     "smoothing": "Esto podría suavizar el resto de las esquinas, mejor utilizar junto con el radio de la esquina.",
     "undo": "deshacer",
-    "blazonry-name": "El nombre en inglés de la figura en blasonería, por ejemplo: lion, rose, staff",
     "landscape?": "Mantenga el SVG como es, también se permiten gráficos embebidos. Esta es solamente una buena idea si desea usar imágenes como fondo de paisaje.",
     "fixed-tincture": "Da a la figura un esmalte fijo, que no puede ser cambiada por un campo. Tales figuras no son muy flexibles, así que úsalas solamente en casos excepcionales.",
     "charge-group-preview": "Haga clic en las ranuras para desactivarlas o realizar un ciclo a través de las figuras disponibles (añadidas a continuación).",

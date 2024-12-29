@@ -28,6 +28,7 @@
    [heraldicon.frontend.element.charge-group-preset-select]
    [heraldicon.frontend.element.charge-group-slot-number]
    [heraldicon.frontend.element.charge-group-type-select]
+   [heraldicon.frontend.element.charge-type-select]
    [heraldicon.frontend.element.charge-variant-select]
    [heraldicon.frontend.element.checkbox]
    [heraldicon.frontend.element.colours]

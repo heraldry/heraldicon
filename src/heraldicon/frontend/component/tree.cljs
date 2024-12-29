@@ -122,6 +122,7 @@
             & {:keys [title
                       parent-buttons
                       force-open?
+                      select-fn
                       search-fn
                       filter-fn
                       extra]}]
@@ -138,8 +139,7 @@
                 editable-path
                 draggable?
                 drop-options-fn
-                drop-fn
-                select-fn]} (node-data context)
+                drop-fn]} (node-data context)
         open? (or force-open? open?)
         openable? (-> nodes count pos?)
         editing-node? @(rf/subscribe [::editing-node? identifier editable-path])
@@ -200,15 +200,16 @@
                                                       drag-info)]
                         (drop-fn @drag-node-ref (assoc drag-info :where where)))))
 
-         :on-click (or select-fn
-                       #(do
-                          (when (or (not open?)
-                                    (not selectable?)
-                                    selected?)
-                            (rf/dispatch [::toggle-node identifier path]))
-                          (when selectable?
-                            (rf/dispatch [::select-node identifier path]))
-                          (.stopPropagation %)))}
+         :on-click #(do
+                      (when (or (not open?)
+                                (not selectable?)
+                                selected?)
+                        (rf/dispatch [::toggle-node identifier path]))
+                      (when selectable?
+                        (rf/dispatch [::select-node identifier path]))
+                      (when select-fn
+                        (select-fn path))
+                      (.stopPropagation %))}
 
         (when (#{:above :below} dragged-over-location)
           [:div.node-drop-insert {:style {(if (= dragged-over-location :above)
@@ -307,12 +308,13 @@
                           :title title
                           :parent-buttons buttons
                           :force-open? force-open?
+                          :select-fn select-fn
                           :search-fn search-fn
                           :filter-fn filter-fn
                           :extra extra]]))
              nodes))]))
 
-(defn tree [identifier paths context & {:keys [search-fn filter-fn force-open? extra]}]
+(defn tree [identifier paths context & {:keys [search-fn select-fn filter-fn force-open? extra]}]
   [:div.ui-tree
    (into [:ul]
          (map-indexed (fn [idx node-path]
@@ -325,6 +327,7 @@
                                 (c/<< :path node-path)
                                 (c/<< ::identifier identifier))
                             :force-open? force-open?
+                            :select-fn select-fn
                             :search-fn search-fn
                             :filter-fn filter-fn
                             :extra extra])]))
