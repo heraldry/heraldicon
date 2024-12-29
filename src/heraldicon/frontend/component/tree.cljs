@@ -34,8 +34,9 @@
   [identifier]
   [:ui :component-tree identifier :edit-node])
 
-(def ^:private dragged-over-node-path
-  [:ui :component-tree :drop-node])
+(defn- dragged-over-node-path
+  [identifier]
+  [:ui :component-tree identifier :drop-node])
 
 (def ^:private drag-node-ref
   (atom nil))
@@ -102,9 +103,10 @@
           :else :below)))))
 
 (rf/reg-sub ::dragged-over-location
-  :<- [:get dragged-over-node-path]
+  (fn [[_ identifier _path]]
+    (rf/subscribe [:get (dragged-over-node-path identifier)]))
 
-  (fn [dragged-over-node [_ path]]
+  (fn [dragged-over-node [_ _identifier path]]
     (when (= path (:path (:context dragged-over-node)))
       (:where dragged-over-node))))
 
@@ -143,7 +145,7 @@
         editing-node? @(rf/subscribe [::editing-node? identifier editable-path])
         title (or node-title title)
         buttons (concat buttons parent-buttons)
-        dragged-over-location @(rf/subscribe [::dragged-over-location path])
+        dragged-over-location @(rf/subscribe [::dragged-over-location identifier path])
         hide? (or (and filter-fn
                        (not (filter-fn path)))
                   (and search-fn
@@ -179,17 +181,17 @@
                                                            @drag-node-ref
                                                            drag-info)]
                              (.preventDefault event)
-                             (rf/dispatch [:set dragged-over-node-path (assoc drag-info :where where)]))))
+                             (rf/dispatch [:set (dragged-over-node-path identifier) (assoc drag-info :where where)]))))
          :on-drag-leave (when drop-fn
                           (fn [_event]
-                            (rf/dispatch [:set dragged-over-node-path nil])))
+                            (rf/dispatch [:set (dragged-over-node-path identifier) nil])))
          :on-drag-start (when draggable?
                           (fn [_event]
                             (reset! drag-node-ref drag-info)))
          :on-drag-end (when draggable?
                         (fn [_event]
                           (reset! drag-node-ref nil)
-                          (rf/dispatch [:set dragged-over-node-path nil])))
+                          (rf/dispatch [:set (dragged-over-node-path identifier) nil])))
          :on-drop (when drop-fn
                     (fn [event]
                       (when-let [where (drop-location event
