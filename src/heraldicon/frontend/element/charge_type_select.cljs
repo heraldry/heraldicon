@@ -66,7 +66,12 @@
 (defn- search-bar
   []
   [:div {:style {:margin-bottom "10px"}}
-   [search-field]])
+   [search-field]
+   [:a {:style {:margin-left "10px"}
+        :on-click #(do
+                     (rf/dispatch [::repository.charge-types/clear])
+                     (.stopPropagation %))}
+    [:i.fas.fa-sync-alt]]])
 
 (rf/reg-event-db ::set-charge-type
   (fn [db [_ context path]]
