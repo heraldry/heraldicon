@@ -13,6 +13,10 @@
 (def db-path-charge-types
   (conj repository/db-path-base :charge-types))
 
+(defn clear
+  [db]
+  (assoc-in db db-path-charge-types nil))
+
 (rf/reg-event-db ::store
   (fn [db [_ data]]
     (assoc-in db db-path-charge-types {:status :done
@@ -26,7 +30,7 @@
 
 (rf/reg-event-db ::clear
   (fn [db [_]]
-    (assoc-in db db-path-charge-types nil)))
+    (clear db)))
 
 (defn- fetch [session on-fetch]
   (go

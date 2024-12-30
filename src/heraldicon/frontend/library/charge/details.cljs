@@ -11,6 +11,7 @@
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
+   [heraldicon.frontend.element.charge-type-select :as-alias charge-type-select]
    [heraldicon.frontend.entity.buttons :as buttons]
    [heraldicon.frontend.entity.core :as entity]
    [heraldicon.frontend.entity.details :as details]
@@ -23,6 +24,7 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
+   [heraldicon.frontend.repository.charge-types :as repository.charge-types]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.session :as session]
    [heraldicon.heraldry.charge.other :as other]
@@ -418,5 +420,21 @@
 (defn create-view []
   [details/create-view entity-type charge-form #(go default/charge-entity)])
 
+(def ^:private entity-id-cache-path
+  [:ui :charge-edit :entity-id])
+
+(rf/reg-event-db
+  ::clear-charge-type-data
+  (fn [db [_ id version]]
+    (-> db
+        (assoc-in entity-id-cache-path [id version])
+        (repository.charge-types/clear)
+        (tree/clear ::charge-type-select/identifier))))
+
 (defn details-view [{{{:keys [id version]} :path} :parameters}]
+  ;; this makes sure to clear the charge-type select field's state and the charge-types data in
+  ;; the repository, because the loaded charge might have a new charge-type that doesn't exist in
+  ;; the cached data; it's not an ideal mechanism
+  (when (not= [id version] @(rf/subscribe [:get entity-id-cache-path]))
+    (rf/dispatch-sync [::clear-charge-type-data id version]))
   [details/by-id-view (str "charge:" id) version charge-form])
