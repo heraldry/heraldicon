@@ -47,6 +47,10 @@
 (def highlighted-collection-element-path
   [:ui :collection-library :selected-element])
 
+(defn clear
+  [db identifier]
+  (assoc-in db (conj base-path identifier) nil))
+
 (defn node-data [{:keys [path]
                   ::keys [identifier]
                   :as context}]
