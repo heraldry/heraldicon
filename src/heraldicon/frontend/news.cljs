@@ -25,6 +25,45 @@
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
+   [:h3 "2025-01-01 - Charge type ontology and better search"]
+   [:div.release-row
+    [:div.info
+     [:h3 "Charge type ontology"]
+     [:p "The charge type attribute (previously also called 'blazonry name') is no longer a free text field, but a dynamic select field of charge types in a hierarchy."]
+     [:p "The hierarchy is based on the one " [:a {:href "https://dev.finto.fi/hero/en/page/p6"} "HERO - Ontology of Heraldry"] ", but there are others that were already added by users or that I found on other sites while curating the existing set, most notably "
+      [:a {:href "https://mistholme.com"} "Mistholme"] "."]
+     [:p "Many types provided by users didn't quite fit into this ontology, for instance because they included attitudes, tinctures, etc., but also because the concepts were not yet part of the ontology. "
+      "I have added a lot of them, renamed many, but also grouped many into more general concepts or simply moved them to 'unknown'. "
+      [:span {:style {:color "darkred"}} [:b "If this happened to your charge, then please have a look whether you find a more fitting charge type in the tree now."]]]
+     [:p "Since these charge types are also used for the blazonry parser and generator, I realize that they won't include the full description of the charge itself. I hope to address this at some point, in the meantime you can use the 'manual blazon' feature on every element."]
+     [:p "I also plan to add a way to search via a tree in the charge select component, but you can already do a text search for charge types."]]
+
+    [:div
+     (release-image "/img/2025-01-01-release-update.png")]]
+   [:div.release-row
+    [:div.info
+     [:h3 "Improved search"]
+     [:p "The search now allows you to use quotes to include spaces and match full words, as well as regular expressions for power users. Examples:"]
+     [:ul
+      [:li [:code "\"arm\""] " - will only match the word 'arm', but not 'arms' or other words containing 'arm'"]
+      [:li [:code "\"coat of arms\""] " - will only match that complete string, not entities that just happen to match all those words in any order or position"]
+      [:li [:code "/^[unicorl]+$/"] " - will match any string containing only those letters, for instance the charges 'lion' and 'unicorn'"]
+      [:li [:code "/(saint|soldier)/"] " - will match any entity containing 'saint' or 'soldier' (or both)"]]
+     [:p "Note: all searches are case insensitive."]]
+    [:div
+     (release-image "/img/2025-01-01-release-update-2.png")]]
+
+   [:h3 "2025-01-01 - Happy new year!"]
+   [:div.release-row
+    [:div.info
+     [:p "I hope all of you had a great 2024, and I wish you an even better 2025!"]
+     [:p "Just two days ago Heraldicon reached a milestone of 4,000 registered users. Amazing! And for comparison with the last new year post, there now are:"]
+     [:ul
+      [:li "50,000+ arms, over 5,000 of them public"]
+      [:li "10,000+ charges, over 4,000 of them public"]
+      [:li "1,200+ collections, over 170 of them public"]]
+     [:p "So again thanks to everybody who helped with feedback, feature requests, charge creations, especially public ones, community themes, community escutcheons, and all the other ways many of you contributed!"]]]
+
    [:h3 "2024-02-25 - Drag and drop for components and collection arms"]
    [:div.release-row
     [:div.info
@@ -46,7 +85,6 @@
      [:p "I wish you all health and a splendid upcoming year."]
      [:p "There weren't as many visible changes this year, but there were several improvements in the backend and a lot of new arms and charges created by many of you:"]
      [:ul
-      [:li "2,400+ users"]
       [:li "30,000+ arms, over 3,000 of them public"]
       [:li "7,000+ charges, over 3,000 of them public"]
       [:li "600+ collections, over 100 of them public"]]
