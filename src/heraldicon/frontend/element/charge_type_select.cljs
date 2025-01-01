@@ -24,11 +24,19 @@
 (def search-db-path
   [::search])
 
-(rf/reg-sub ::search-title
+(defn- remove-charge-count
+  "Remove the last word of ' (<number>)' from the title if there is any."
+  [title]
+  (let [title (str/trim title)
+        [title _count] (str/split title #" \(\d+\)$" 2)]
+    title))
+
+(rf/reg-sub ::search-title-matching-any
   :<- [:get search-db-path]
 
   (fn [search-string [_ title]]
     (let [title (filter/normalize-string-for-match (or title ""))
+          title (remove-charge-count title)
           words (filter/split-search-string (or search-string ""))]
       (if (empty? words)
         true
@@ -37,9 +45,11 @@
                     (reduced true)))
                 nil
                 words)))))
-(defn- search
+
+;; TODO: it's not efficient to do a subscription for every node here
+(defn- search-matching-any
   [title]
-  @(rf/subscribe [::search-title title]))
+  @(rf/subscribe [::search-title-matching-any title]))
 
 (defn- force-open?
   []
@@ -128,7 +138,7 @@
         @(rf/subscribe [::top-level-charge-type-paths])
         base-context
         :select-fn #(rf/dispatch [::set-charge-type context %])
-        :search-fn search
+        :search-fn search-matching-any
         :force-open? (force-open?)]])))
 
 (defmethod element/element :ui.element/charge-type-select [context]
