@@ -141,7 +141,8 @@
 (rf/reg-event-db ::set-active-node
   (fn [db [_ charge-types context]]
     (let [charge-type (get-in db (:path context))]
-      (tree/select-node db ::identifier (get-charge-type-path charge-types charge-type) true))))
+      (cond-> db
+        charge-type (tree/select-node ::identifier (get-charge-type-path charge-types charge-type) true)))))
 
 (defn- charge-type-select
   [context]
