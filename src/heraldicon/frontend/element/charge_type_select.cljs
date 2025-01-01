@@ -51,6 +51,24 @@
   [title]
   @(rf/subscribe [::search-title-matching-any title]))
 
+(rf/reg-sub ::search-title-matching-all
+  :<- [:get search-db-path]
+
+  (fn [search-string [_ title]]
+    (let [title (filter/normalize-string-for-match (or title ""))
+          title (remove-charge-count title)
+          words (filter/split-search-string (or search-string ""))]
+      (if (empty? words)
+        true
+        (every? (fn [word]
+                  (filter/matches-word? title word))
+                words)))))
+
+;; TODO: it's not efficient to do a subscription for every node here
+(defn- search-matching-all
+  [title]
+  @(rf/subscribe [::search-title-matching-all title]))
+
 (defn- force-open?
   []
   (-> @(rf/subscribe [:get search-db-path])
@@ -127,7 +145,8 @@
 
 (defn- charge-type-select
   [context]
-  (let [{:keys [status error]} @(rf/subscribe [::repository.charge-types/data #(rf/dispatch [::set-active-node % context])])]
+  (let [{:keys [status error]} @(rf/subscribe [::repository.charge-types/data #(rf/dispatch [::set-active-node % context])])
+        editing? (= (:ns context) :heraldicon.frontend.charge-types/ns)]
     (case status
       :loading [status/loading]
       :error [status/error-display error]
@@ -138,7 +157,9 @@
         @(rf/subscribe [::top-level-charge-type-paths])
         base-context
         :select-fn #(rf/dispatch [::set-charge-type context %])
-        :search-fn search-matching-any
+        :search-fn (if editing?
+                     search-matching-any
+                     search-matching-all)
         :force-open? (force-open?)]])))
 
 (defmethod element/element :ui.element/charge-type-select [context]
