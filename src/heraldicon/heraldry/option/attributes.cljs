@@ -62,9 +62,13 @@
 
 (def attribute-choices
   [[:string.charge.attribute.group/general
+    [:string.charge.attribute/alerion :alerion]
     [:string.charge.attribute/erased :erased]
+    [:string.charge.attribute/flammant :flammant]
     [:string.charge.attribute/pierced :pierced]
-    [:string.charge.attribute/voided :voided]]
+    [:string.charge.attribute/voided :voided]
+    [:string.charge.attribute/vorant :vorant]
+    [:string.charge.attribute/vulned :vulned]]
    [:string.charge.attribute.group/ornaments
     [:string.charge.attribute/mantling :mantling]
     [:string.charge.attribute/compartment :compartment]
@@ -88,9 +92,12 @@
     [:string.charge.tincture-modifier/beaked :beaked]
     [:string.charge.tincture-modifier/bridled :bridled]
     [:string.charge.tincture-modifier/combed :combed]
+    [:string.charge.tincture-modifier/crined :crined]
+    [:string.charge.tincture-modifier/disarmed :disarmed]
     [:string.charge.tincture-modifier/eyed :eyed]
     [:string.charge.tincture-modifier/eyed-peacock :eyed-peacock]
     [:string.charge.tincture-modifier/finned :finned]
+    [:string.charge.tincture-modifier/habited :habited]
     [:string.charge.tincture-modifier/hooded :hooded]
     [:string.charge.tincture-modifier/horned :horned]
     [:string.charge.tincture-modifier/incensed :incensed]
