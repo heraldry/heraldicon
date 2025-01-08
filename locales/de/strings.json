@@ -171,11 +171,13 @@
       "ui": {
         "add": "Attribut hinzufügen"
       },
+      "alerion": "Alérion",
       "compartment": "Postament",
       "coward": "Mit untergeschlagenem Schwanz",
       "defamed": "Ohne Schwanz",
       "double-queued": "Doppelschwänzig",
       "erased": "Abgerissen",
+      "flammant": "Feuer speiend",
       "mantling": "Helmdecke",
       "pierced": "Durchbohrt",
       "queue-fourche": "Gespaltener Schwanz",
@@ -185,7 +187,9 @@
       "supporter-left": "Schildhalter (links)",
       "supporter-right": "Schildhalter (rechts)",
       "tail-nowed": "Verknoteter Schwanz",
-      "voided": "Durchbrochen"
+      "voided": "Durchbrochen",
+      "vorant": "Verschlingend",
+      "vulned": "Verwundet"
     },
     "attitude": {
       "group": {
@@ -279,7 +283,9 @@
       "clasped": "Mit Schließe",
       "collared": "Behalsbandet",
       "combed": "Bekammt",
+      "crined": "Behaart",
       "crowned": "Gekrönt",
+      "disarmed": "Gestümmelt",
       "enflamed": "Brennend",
       "eradicated": "Bewurzelt",
       "erased": "Abgerissen",
@@ -296,6 +302,7 @@
       "glazed": "Glasiert",
       "gloved": "Mit Handschuh",
       "handled": "Gestielt (Werkzeug)",
+      "habited": "Bekleidet",
       "hilted": "Gegrifft",
       "hooded": "Mit Haube",
       "horned": "Gehörnt",

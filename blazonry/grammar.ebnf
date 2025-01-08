@@ -1096,6 +1096,9 @@ tincture-modifier/SLIPPED
     | #"\bstalked\b"
     | #"\btig[ée](?=([ ,&]|$))"
 tincture-modifier/BARRED = #"\bbarred\b"
+tincture-modifier/CRINED = #"\bcrined\b"
+tincture-modifier/DISARMED = #"\bdisarmed\b"
+tincture-modifier/HABITED = #"\bhabited\b"
 tincture-modifier/TRIMMED = #"\btrimmed\b"
 tincture-modifier/CAPARISONED
     = #"\bcaparisoned\b"
@@ -1244,6 +1247,9 @@ tincture-modifier/WINDOWED
     | #"\blighted\b"
     | #"\blitten\b"
     | #"\bajour[ée](?=([ ,&]|$))"
+tincture-modifier/ALERION = #"\bal[ée]rion\b"
+tincture-modifier/VORANT = #"\bvorant\b"
+tincture-modifier/VULNED = #"\bvulned\b"
 
 MIRRORED = #"\bmirrored\b"
 ERASED
@@ -2021,6 +2027,9 @@ tincture-modifier-type
     | tincture-modifier/SEEDED
     | tincture-modifier/SLIPPED
     | tincture-modifier/BARRED
+    | tincture-modifier/CRINED
+    | tincture-modifier/DISARMED
+    | tincture-modifier/HABITED
     | tincture-modifier/TRIMMED
     | tincture-modifier/CAPARISONED
     | tincture-modifier/COLLARED
@@ -2076,6 +2085,9 @@ tincture-modifier-type
     | tincture-modifier/SCALED
     | tincture-modifier/VEINED
     | tincture-modifier/WINDOWED
+    | tincture-modifier/ALERION
+    | tincture-modifier/VORANT
+    | tincture-modifier/VULNED
 
 tincture-modifier
     = (AND* tincture-modifier-type)+ tincture

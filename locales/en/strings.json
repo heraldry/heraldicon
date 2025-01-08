@@ -172,11 +172,13 @@
       "ui": {
         "add": "Add attribute"
       },
+      "alerion": "Alerion",
       "compartment": "Compartment",
       "coward": "Coward",
       "defamed": "Defamed",
       "double-queued": "Double queued",
       "erased": "Erased",
+      "flammant": "Flammant",
       "mantling": "Mantling",
       "pierced": "Pierced",
       "queue-fourche": "Queue fourché",
@@ -186,7 +188,9 @@
       "supporter-left": "Supporter-left",
       "supporter-right": "Supporter-right",
       "tail-nowed": "Tail nowed",
-      "voided": "Voided"
+      "voided": "Voided",
+      "vorant": "Vorant",
+      "vulned": "Vulned"
     },
     "attitude": {
       "group": {
@@ -280,6 +284,8 @@
       "clasped": "Clasped",
       "collared": "Collared",
       "combed": "Combed",
+      "crined": "Crined",
+      "disarmed": "Disarmed",
       "crowned": "Crowned",
       "enflamed": "Enflamed",
       "eradicated": "Eradicated",
@@ -297,6 +303,7 @@
       "glazed": "Glazed",
       "gloved": "Gloved",
       "handled": "Handled",
+      "habited": "Habited",
       "hilted": "Hilted",
       "hooded": "Hooded",
       "horned": "Horned",
