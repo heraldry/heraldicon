@@ -12,7 +12,8 @@
    [heraldicon.interface :as interface]
    [heraldicon.util.colour :as colour]
    [heraldicon.util.core :as util]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reagent.core :as r]))
 
 (defn- choice-keywords [choices]
   (->> choices
@@ -144,6 +145,27 @@
                                  db)
         :else (detect-shading db context reference-colour selected-colours)))))
 
+(macros/reg-event-db ::select-or-deselect-all
+  (fn [db [_ context checked?]]
+    (let [colours (keys (get-in db (:path context)))]
+      (reduce (fn [db colour]
+                (assoc-in db
+                          (conj charge.details/show-colours-path colour)
+                          checked?))
+              db
+              colours))))
+
+(defn- select-or-deselect-all
+  [_context]
+  (let [state (r/atom false)]
+    (fn [context]
+      [checkbox/checkbox nil
+       :on-change (fn [checked?]
+                    (reset! state checked?)
+                    (rf/dispatch [::select-or-deselect-all context checked?]))
+       :option {:type :option.type/boolean
+                :override @state}])))
+
 (defmethod element/element :ui.element/colours [{:keys [path] :as context}]
   (let [colours (interface/get-raw-data context)
         sort-column (or (interface/get-raw-data (c/<< context :path [:ui :colours :sort path]))
@@ -193,7 +215,9 @@
          [:table.charge-colours {:cell-spacing 0}
           [:thead
            [:tr
-            [:td {:style header-td-style}]
+            [:td {:style header-td-style}
+             [select-or-deselect-all context]]
+
             [:td {:style header-td-style}
              [:a {:href "#"
                   :on-click (js-event/handled #(rf/dispatch [:set [:ui :colours :sort path] :colour]))} "#"
