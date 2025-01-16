@@ -8,6 +8,7 @@
    [heraldicon.heraldry.field.type.chequy :as chequy]
    [heraldicon.heraldry.field.type.chevronny :as chevronny]
    [heraldicon.heraldry.field.type.counterchanged :as counterchanged]
+   [heraldicon.heraldry.field.type.endente :as endente]
    [heraldicon.heraldry.field.type.fretty :as fretty]
    [heraldicon.heraldry.field.type.gyronny :as gyronny]
    [heraldicon.heraldry.field.type.gyronny-n :as gyronny-n]
@@ -59,6 +60,7 @@
    chevronny/field-type
    chequy/field-type
    lozengy/field-type
+   endente/field-type
    vairy/field-type
    potenty/field-type
    papellony/field-type
