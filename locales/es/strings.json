@@ -7,6 +7,7 @@
     "charge-library": "Figuras",
     "ribbon-library": "Listones",
     "users": "Usuarios",
+    "charge-types": "Tipos de Figuras",
     "contact": "Contacto",
     "account": "Cuenta",
     "login": "Iniciar sesión",
@@ -42,6 +43,7 @@
       "chequy": "Jaquelado",
       "chevronny": "Chevronado",
       "counterchanged": "Contracambiado",
+      "endente": "Endenté",
       "fretty": "Fretado",
       "gyronny": "Gironado",
       "gyronny-n": "Jironado",
@@ -171,11 +173,13 @@
       "ui": {
         "add": "Añadir atributo"
       },
+      "alerion": "Alerión",
       "compartment": "Pedestal",
       "coward": "Cobarde",
       "defamed": "Difamado",
       "double-queued": "Cola bifurcada",
       "erased": "Borrado",
+      "flammant": "Flammant",
       "mantling": "Manto",
       "pierced": "Perforado",
       "queue-fourche": "Cola horquillada",
@@ -185,7 +189,9 @@
       "supporter-left": "Soporte siniestro",
       "supporter-right": "Soporte diestro",
       "tail-nowed": "Cola anudada",
-      "voided": "Vacío"
+      "voided": "Vacío",
+      "vorant": "Devorando",
+      "vulned": "Ensangrentado"
     },
     "attitude": {
       "group": {
@@ -279,6 +285,8 @@
       "clasped": "Abrochado",
       "collared": "Acollarado",
       "combed": "Crestado",
+      "crined": "Cabellado",
+      "disarmed": "Mornado",
       "crowned": "Coronado",
       "enflamed": "Ardiente",
       "eradicated": "Arrancado",
@@ -296,6 +304,7 @@
       "glazed": "Vidriado",
       "gloved": "Enguantado",
       "handled": "Enmangado",
+      "habited": "Vestido",
       "hilted": "Guarnecido",
       "hooded": "Chaperonado",
       "horned": "Astado",
@@ -364,6 +373,7 @@
     }
   },
   "render-options": {
+    "border?": "Borde",
     "coat-of-arms-angle": "Ángulo del escudo",
     "coat-of-arms-angle-presets": {
       "two-thirds": "2/3",
@@ -418,9 +428,12 @@
     },
     "sorting-filter-choice": {
       "name": "Nombre",
+      "favorites": "Popularidad",
       "creation": "Adiciones recientes",
       "update": "Actualizaciones recientes"
     },
+    "show": "Mostrar",
+    "access": "Acceso",
     "sort-by": "Ordenar por",
     "alignment": "Alineación",
     "alignment-choice": {
@@ -452,6 +465,7 @@
     "base-fields": "Campo base",
     "base-field-shift": "Cambio del campo base",
     "base-line": "Línea base",
+    "charge-type": "Tipo de figura",
     "column": "Columna",
     "corner": "Esquinas",
     "corner-choice": {
@@ -487,6 +501,7 @@
     "font": "Tipo de fuente",
     "font-scale": "Tamaño del texto",
     "font-title": "Fuente del título",
+    "font-scale-title": "Escala de fuente para el título",
     "function": "Función",
     "geometry": "Geometría",
     "height": "Altura",
@@ -524,6 +539,7 @@
       "heraldicon": "Heraldicon",
       "community": "Comunidad"
     },
+    "favorites-filter": "Favoritos",
     "partition": "Partición",
     "pattern-scaling": "Escala del patrón",
     "pattern-rotation": "Rotación del patrón",
@@ -576,6 +592,7 @@
     },
     "select-arms": "Seleccionar armas",
     "select-charge": "Seleccionar figura",
+    "select-charge-type": "Seleccionar tipo de figura",
     "select-colour-theme": "Seleccionar color del tema",
     "select-line-type": "Seleccione el tipo de línea",
     "select-ordinary": "Seleccione pieza",
@@ -667,6 +684,7 @@
     "remove": "remover",
     "smoothing": "Esto podría suavizar el resto de las esquinas, mejor utilizar junto con el radio de la esquina.",
     "undo": "deshacer",
+    "charge-type": "El nombre de la figura, que también se utiliza para el blasonado, ej. León, rosa, vara",
     "landscape?": "Mantenga el SVG como es, también se permiten gráficos embebidos. Esta es solamente una buena idea si desea usar imágenes como fondo de paisaje.",
     "fixed-tincture": "Da a la figura un esmalte fijo, que no puede ser cambiada por un campo. Tales figuras no son muy flexibles, así que úsalas solamente en casos excepcionales.",
     "charge-group-preview": "Haga clic en las ranuras para desactivarlas o realizar un ciclo a través de las figuras disponibles (añadidas a continuación).",
@@ -675,7 +693,8 @@
     "detect-shading": "Si establece el 0% de referencia de sombreado en un color (preferiblemente primario), entonces puedes seleccionar varios colores y hacer clic en este botón, los niveles de sombreado para esos colores se ajustan a partir de su brillo.",
     "expand": "expandir",
     "fit-in-window": "Ajustar a la ventana",
-    "support-on-ko-fi": "Apoya a Heraldicon en Ko-fi"
+    "support-on-ko-fi": "Apoya a Heraldicon en Ko-fi",
+    "inherit-environment": "Esto es útil para lograr la Dimidiación, por ejemplo."
   },
   "miscellaneous": {
     "and": "y",
@@ -724,7 +743,9 @@
     "actions": "Acciones",
     "export": "Exportar",
     "share": "Compartir",
-    "detect-shading": "Detectar sombreado"
+    "detect-shading": "Detectar sombreado",
+    "duplicate": "Duplicar",
+    "unknown": "Desconocido"
   },
   "user": {
     "message": {
