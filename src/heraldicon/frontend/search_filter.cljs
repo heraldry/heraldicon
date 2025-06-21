@@ -1,0 +1,463 @@
+(ns heraldicon.frontend.search-filter
+  (:require
+   ["react-infinite-scroll-component" :as InfiniteScroll]
+   [clojure.string :as str]
+   [heraldicon.avatar :as avatar]
+   [heraldicon.entity.attribution :as attribution]
+   [heraldicon.entity.core :as entity]
+   [heraldicon.frontend.element.search-field :as search-field]
+   [heraldicon.frontend.element.select :as select]
+   [heraldicon.frontend.element.tags :as tags]
+   [heraldicon.frontend.entity.action.favorite :as favorite]
+   [heraldicon.frontend.entity.preview :as preview]
+   [heraldicon.frontend.js-event :as js-event]
+   [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.repository.entity-search :as entity-search]
+   [heraldicon.frontend.status :as status]
+   [heraldicon.frontend.user.session :as session]
+   [heraldicon.localization.string :as string]
+   [heraldicon.static :as static]
+   [heraldicon.util.cache :as cache]
+   [re-frame.core :as rf]))
+
+(def ^:private default-ownership
+  :all)
+
+(def ^:private default-access
+  :all)
+
+(def ^:private default-sorting
+  :favorites)
+
+(def ^:privarte default-list-mode
+  :normal)
+
+(def ^:privarte default-favorites?
+  false)
+
+(defn- filter-search-string-path [id]
+  [:ui :filter id :filter-search-string])
+
+(defn- filter-list-mode-path [id]
+  [:ui :filter id :filter-list-mode])
+
+(defn- filter-favorites?-path [id]
+  [:ui :filter id :filter-favorites?])
+
+(defn- filter-ownership-path [id]
+  [:ui :filter id :filter-ownership])
+
+(defn- filter-access-path [id]
+  [:ui :filter id :filter-access])
+
+(defn- filter-sorting-path [id]
+  [:ui :filter id :filter-sorting])
+
+(macros/reg-event-db ::filter-toggle-tag
+  (fn [db [_ db-path tag]]
+    (update-in db db-path (fn [current-tags]
+                            (if (get current-tags tag)
+                              (dissoc current-tags tag)
+                              (assoc current-tags tag true))))))
+
+(defn- normalize-string [s]
+  (some-> s
+          (.normalize "NFD")))
+
+(defonce normalize-string-for-sort-cache
+  (cache/lru-cache 100000))
+
+(defn normalize-string-for-sort [s]
+  (let [value (cache/get normalize-string-for-sort-cache s)]
+    (if (some? value)
+      value
+      (let [value (some-> s
+                          normalize-string
+                          str/lower-case)]
+        (cache/put normalize-string-for-sort-cache s value)
+        value))))
+
+(defonce normalize-string-for-match-cache
+  (cache/lru-cache 100000))
+
+(defn normalize-string-for-match [s]
+  (let [value (cache/get normalize-string-for-match-cache s)]
+    (if (some? value)
+      value
+      (let [value (some-> s
+                          normalize-string
+                          (str/replace #"[\u0300-\u036f]" "")
+                          str/lower-case)]
+        (cache/put normalize-string-for-match-cache s value)
+        value))))
+
+(defn escape-regex [s]
+  (let [special-chars (set "\\^$.|?*+()[]{}")]
+    (->> s
+         (map #(if (special-chars %)
+                 (str "\\" %)
+                 %))
+         (apply str))))
+
+(defonce string-matches?-cache
+  (cache/lru-cache 1000000))
+
+(defn- string-matches?
+  [s word]
+  (let [key [s word]
+        value (cache/get string-matches?-cache key)]
+    (if (some? value)
+      value
+      (let [value (cond
+                    (and (= (first word) "/")
+                         (= (last word) "/")) (try
+                                                (re-find (re-pattern (subs word 1 (dec (count word)))) s)
+                                                (catch :default _
+                                                  nil))
+
+                    (and (= (first word) "\"")
+                         (= (last word) "\"")) (let [bounded-regex (re-pattern (str "\\b" (escape-regex (subs word 1 (dec (count word)))) "\\b"))]
+                                                 (re-find bounded-regex s))
+
+                    :else (str/includes? s (str/replace word "\"" "")))]
+        (cache/put string-matches?-cache key (boolean value))
+        value))))
+
+(defonce matches-word-cache
+  (cache/lru-cache 1000000))
+
+(defn matches-word? [data word]
+  (let [key [data word]
+        value (cache/get matches-word-cache key)]
+    (if (some? value)
+      value
+      (let [value (cond
+                    (keyword? data) (-> data name (matches-word? word))
+                    (string? data) (-> data
+                                       normalize-string-for-match
+                                       (string-matches? word))
+                    (vector? data) (some (fn [e]
+                                           (matches-word? e word)) data)
+                    (map? data) (some (fn [[k v]]
+                                        (or (and (keyword? k)
+                                                 (matches-word? k word)
+                                                  ;; this would be an attribute entry, the value
+                                                  ;; must be truthy as well
+                                                 v)
+                                            (matches-word? v word))) data))]
+        (cache/put matches-word-cache key (boolean value))
+        value))))
+
+(defonce split-search-string-cache
+  (cache/lru-cache 100000))
+
+(defn split-search-string
+  [s]
+  (let [value (cache/get split-search-string-cache s)]
+    (if (some? value)
+      value
+      (let [value (re-seq #"/[^/]*/|\"[^\"]+\"|\S+" (normalize-string-for-match s))]
+        (cache/put split-search-string-cache s value)
+        value))))
+
+(macros/reg-event-db ::show-more
+  (fn [db [_ db-path page-size]]
+    (update-in db db-path (fn [value]
+                            (+ (or value page-size) page-size)))))
+
+(rf/reg-sub ::search-result-item
+  (fn [[_ id entity-type _item-id] _]
+    (rf/subscribe [::entity-search/data-raw id entity-type]))
+
+  (fn [items [_ _id _entity-type item-id]]
+    (first (filter #(= (:id %) item-id) items))))
+
+(defn- new-badge []
+  [:img.new-badge {:src (static/static-url "/img/new-badge.png")}])
+
+(defn- updated-badge []
+  [:img.updated-badge {:src (static/static-url "/img/updated-badge.png")}])
+
+(defn- get-list-mode [id & options]
+  (let [list-mode-path (or (:filter-list-mode-path options)
+                           (filter-list-mode-path id))]
+    (or @(rf/subscribe [:get list-mode-path])
+        (:default-list-mode options)
+        default-list-mode)))
+
+(defn- get-access [id]
+  (or @(rf/subscribe [:get {:path (filter-access-path id)}])
+      default-access))
+
+(defn- get-ownership [id & {:keys [hide-ownership-filter?]}]
+  (if-not hide-ownership-filter?
+    @(rf/subscribe [:get (filter-ownership-path id)])
+    default-ownership))
+
+(defn- get-sorting [id & {:keys [initial-sorting-mode]}]
+  (or @(rf/subscribe [:get {:path (filter-sorting-path id)}])
+      initial-sorting-mode
+      default-sorting))
+
+(defn- get-favorites? [id]
+  (or @(rf/subscribe [:get (filter-favorites?-path id)])
+      default-favorites?))
+
+(defn- get-search-string [id]
+  (or @(rf/subscribe [:get (filter-search-string-path id)])
+      ""))
+
+(defn- result-card [id item-id kind on-select & {:keys [selection-placeholder?
+                                                        filter-tags-path
+                                                        filter-tags
+                                                        title-fn]
+                                                 :as options}]
+  (let [{:keys [username]
+         :as item} @(rf/subscribe [::search-result-item id kind item-id])
+        selected? false
+        own-username (:username @(rf/subscribe [::session/data]))
+        small? (= (get-list-mode id options) :small)
+        title-fn (or title-fn :name)
+        title (title-fn item)]
+    [:li.filter-result-card-wrapper
+     [:div.filter-result-card {:class (when (and item selected?) "selected")
+                               :style (when selection-placeholder?
+                                        {:border "1px solid #888"
+                                         :border-radius 0})}
+      (when-not small?
+        [:div.filter-result-card-header
+         [:div.filter-result-card-owner
+          (when item
+            [:a {:href (attribution/full-url-for-username username)
+                 :target "_blank"
+                 :title username}
+             [:img {:src (avatar/url username)
+                    :style {:border-radius "50%"}}]])]
+         [:div.filter-result-card-title
+          {:title title}
+          title]
+         (when item
+           [:div.filter-result-card-access
+            (when (= own-username username)
+              (if (-> item :access (= :public))
+                [:div.tag.public {:style {:width "0.9em"}} [:i.fas.fa-lock-open]]
+                [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))])])
+      [(if item
+         :a.filter-result-card-preview
+         :div.filter-result-card-preview) (merge {:title (tr (string/str-tr
+                                                              title " " :string.miscellaneous/by " " username))}
+                                                 (when on-select
+                                                   (on-select item)))
+       (if item
+         [preview/image kind item]
+         [:div.filter-no-item-selected
+          [tr :string.miscellaneous/no-item-selected]])
+       (when-not small?
+         (cond
+           (entity/recently-created? item) [new-badge]
+           (entity/recently-updated? item) [updated-badge]
+           :else nil))]
+
+      (when-not small?
+        [:div.filter-result-card-tags
+         (when item
+           [:<>
+            [:div.favorites {:style {:padding-left "10px"}}
+             [favorite/button item-id :height 18]]
+            [tags/tags-view (-> item :tags keys)
+             :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
+             :selected filter-tags
+             :style {:display "flex"
+                     :flex-flow "row"
+                     :flex-wrap "wrap"
+                     :width "auto"
+                     :overflow "hidden"
+                     :height "25px"}]])])]]))
+
+(defn- prepare-query [id & options]
+  {:phrases (split-search-string (get-search-string id))
+   :access (get-access id)
+   :username (when (= (get-ownership id) :mine)
+               (:username @(rf/subscribe [::session/data])))
+   :tags []
+   :favorites? (get-favorites? id)
+   :page-size (or (get options :page-size)
+                  25)})
+
+(defn- get-items-subscription [id kind options]
+  (rf/subscribe [::entity-search/data id kind (prepare-query id options)]))
+
+(defn- results-count [id kind & options]
+  (let [items-subscription (get-items-subscription id kind options)]
+    (status/default
+     items-subscription
+     (fn [{:keys [total]}]
+       [:div {:style {:display "inline"
+                      :margin-left "10px"}}
+        total
+        " "
+        [tr (if (= total 1)
+              :string.miscellaneous/item
+              :string.miscellaneous/items)]])
+     :on-error (fn [_])
+     :on-default (fn [_]))))
+
+(defn- results [id kind on-select & {:keys [page-size]
+                                     :as options}]
+  (let [items-subscription (get-items-subscription id kind options)]
+    (status/default
+     items-subscription
+     (fn [{items :entities}]
+       (let [filter-path [:ui :filter id]
+             filter-tags-path (conj filter-path :filter-tags)
+             filter-tags @(rf/subscribe [:get filter-tags-path])
+             filtered-items items
+             sorted-items items
+             tags-to-display (frequencies (mapcat (comp keys :tags) filtered-items))
+             small? (= (get-list-mode id options) :small)
+             page-size (cond-> (or page-size 20)
+                         small? (* 5))
+             display-items sorted-items
+             results-id (str "filter-results-" id)]
+         [:<>
+          [:div.filter-component-tags
+           [tags/tags-view tags-to-display
+            :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
+            :selected filter-tags
+            :style {:display "flex"
+                    :flex-flow "row"
+                    :flex-wrap "wrap"
+                    :width "auto"
+                    :overflow "hidden"
+                    :height "25px"}]]
+
+          [:div.filter-component-results {:id results-id}
+           (if (empty? display-items)
+             [:div [tr :string.miscellaneous/none]]
+             [:> InfiniteScroll
+              {:dataLength (count display-items)
+               :hasMore (not= (count filtered-items)
+                              (count display-items))
+               :next #(rf/dispatch [::show-more page-size])
+               :scrollableTarget results-id
+               :style {:overflow "visible"}}
+              [:ul.filter-results {:class (when small? "small")}
+               #_(when display-selected-item?
+                   [result-card (:id selected-item) kind nil
+                    :filter-tags-path filter-tags-path
+                    :filter-tags filter-tags
+                    :selection-placeholder? true
+                    :filter-list-mode-path filter-list-mode-path
+                    :default-list-mode default-list-mode
+                    :title-fn title-fn])
+               (into [:<>]
+                     (map (fn [item]
+                            ^{:key (:id item)}
+                            [result-card id (:id item) kind on-select options]))
+                     display-items)
+               (when-not (= (count filtered-items)
+                            (count display-items))
+                 [:li.filter-result-card-wrapper.filter-component-show-more
+                  [:button.button {:on-click #(rf/dispatch [::show-more page-size])}
+                   [tr :string.miscellaneous/show-more]]])]])]])))))
+
+(defn- list-mode [id & options]
+  (let [current-list-mode (get-list-mode id options)]
+    (into [:div {:style {:display "inline-block"
+                         :margin-left "10px"}}]
+          (map (fn [[list-mode class]]
+                 ^{:key list-mode}
+                 [:a {:style {:margin-left "10px"}
+                      :href "#"
+                      :on-click (js-event/handled #(rf/dispatch [:set (filter-list-mode-path id) list-mode]))}
+                  [:i {:class class
+                       :style {:color (when (not= current-list-mode list-mode)
+                                        "#ccc")}}]]))
+          [[:normal "fas fa-th-large"]
+           [:small "fas fa-th"]])))
+
+(defn- search-input [id & {:keys [on-filter-search-string-change]}]
+  [search-field/search-field {:path (filter-search-string-path id)}
+   :on-change (fn [value]
+                (rf/dispatch [:set filter-search-string-path value])
+                (when on-filter-search-string-change
+                  (on-filter-search-string-change)))])
+
+(defn- favorites? [id & {:keys []}]
+  (when @(rf/subscribe [::session/logged-in?])
+    (let [on? (get-favorites? id)]
+      [:div {:on-click #(rf/dispatch [:set (filter-favorites?-path id) (not on?)])
+             :title (tr :string.option/favorites-filter)
+             :style {:display "inline-block"
+                     :margin-left "10px"
+                     :cursor "pointer"}}
+       [favorite/icon 20 on?]])))
+
+(defn- ownership [id kind & {:keys [hide-ownership-filter?]
+                             :as options}]
+  (when (and (not hide-ownership-filter?)
+             @(rf/subscribe [::session/logged-in?]))
+    [select/raw-select-inline
+     {:path (filter-ownership-path id)}
+     (get-ownership id options)
+     (cond-> [[:string.option.ownership-filter-choice/all :all]
+              [:string.option.ownership-filter-choice/mine :mine]]
+       (#{:charge :ribbon} kind) (concat [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
+                                          [:string.option.ownership-filter-choice/community :community]]))
+     :value-prefix :string.option/show
+     :style {:margin-left "10px"
+             :margin-bottom "5px"}]))
+
+(defn- access [id & {:keys [hide-access-filter?]
+                     :as options}]
+  (let [consider-filter-access? (and (not hide-access-filter?)
+                                     @(rf/subscribe [::session/logged-in?])
+                                     (or (= (get-ownership id options) :mine)
+                                         @(rf/subscribe [::session/admin?])))]
+    (when consider-filter-access?
+      [select/raw-select-inline
+       {:path (filter-access-path id)}
+       (get-access id)
+       [[:string.option.access-filter-choice/all :all]
+        [:string.option.access-filter-choice/public :public]
+        [:string.option.access-filter-choice/private :private]]
+       :value-prefix :string.option/access
+       :style {:margin-left "10px"
+               :margin-bottom "5px"}])))
+
+(defn- sorting [id & options]
+  [select/raw-select-inline {:path (filter-sorting-path id)}
+   (get-sorting id options)
+   [[:string.option.sorting-filter-choice/name :name]
+    [:string.option.sorting-filter-choice/favorites :favorites]
+    [:string.option.sorting-filter-choice/creation :creation]
+    [:string.option.sorting-filter-choice/update :update]]
+   :value-prefix :string.option/sort-by
+   :style {:margin-left "10px"
+           :margin-bottom "5px"}])
+
+(defn component [id kind on-select & {:keys [component-styles]
+                                      :as options}]
+  [:div.filter-component {:style component-styles}
+   [:div.filter-component-search
+    [search-input id options]
+
+    [:button.button.primary
+     {:on-click #(js/console.log :hi)
+      :style {:margin-left "10px"}}
+     "search"]
+
+    [list-mode id options]
+
+    [favorites? id options]
+
+    [ownership id kind options]
+
+    [access id options]
+
+    [sorting id options]
+
+    [results-count id kind]]
+
+   [results id kind on-select options]])
