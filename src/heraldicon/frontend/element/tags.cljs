@@ -77,13 +77,17 @@
                                  [(get selected tag)
                                   (get tags tag)])
                                #(compare %2 %1)
-                               (keys tags)))]
+                               (set (concat (keys tags)
+                                            (keep (fn [[k v]]
+                                                    (when v
+                                                      k))
+                                                  selected)))))]
     (into [:div.tags {:style style}]
           (map (fn [tag]
                  ^{:key tag}
                  [tag-view (if (seq? tags)
                              tag
-                             (str (name tag) ": " (get tags tag)))
+                             (str (name tag) ": " (or (get tags tag) 0)))
                   :on-delete (when on-delete
                                #(on-delete tag))
                   :on-click (when on-click
