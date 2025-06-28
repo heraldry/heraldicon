@@ -2,9 +2,9 @@
   (:require
    [heraldicon.frontend.search-filter :as search-filter]))
 
-(defn component [on-select & {:keys [display-selected-item?
-                                     list-id]
-                              :as options}]
+(defn component [on-select {:keys [display-selected-item?
+                                   list-id]
+                            :as options}]
   [search-filter/component
    (or list-id :collection-list)
    :collection
@@ -18,5 +18,5 @@
                       ;; TODO: include the arms count, once the list entity has that information
                       (:name entity)))])
 
-(defn list-collections [on-select & {:as options}]
+(defn list-collections [on-select options]
   [component on-select options])

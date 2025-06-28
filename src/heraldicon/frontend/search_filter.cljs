@@ -180,9 +180,8 @@
 (defn- updated-badge []
   [:img.updated-badge {:src (static/static-url "/img/updated-badge.png")}])
 
-(defn- get-list-mode [id & options]
-  (let [list-mode-path (or (:filter-list-mode-path options)
-                           (filter-list-mode-path id))]
+(defn- get-list-mode [id options]
+  (let [list-mode-path (filter-list-mode-path id)]
     (or @(rf/subscribe [:get list-mode-path])
         (:default-list-mode options)
         default-list-mode)))
@@ -191,12 +190,12 @@
   (or @(rf/subscribe [:get {:path (filter-access-path id)}])
       default-access))
 
-(defn- get-ownership [id & {:keys [hide-ownership-filter?]}]
+(defn- get-ownership [id {:keys [hide-ownership-filter?]}]
   (if-not hide-ownership-filter?
     @(rf/subscribe [:get (filter-ownership-path id)])
     default-ownership))
 
-(defn- get-sorting [id & {:keys [initial-sorting-mode]}]
+(defn- get-sorting [id {:keys [initial-sorting-mode]}]
   (or @(rf/subscribe [:get {:path (filter-sorting-path id)}])
       initial-sorting-mode
       default-sorting))
@@ -217,11 +216,11 @@
              key)))
         @(rf/subscribe [:get (filter-tags-path id)])))
 
-(defn- result-card [id item-id kind on-select & {:keys [selection-placeholder?
-                                                        selected-item
-                                                        filter-tags
-                                                        title-fn]
-                                                 :as options}]
+(defn- result-card [id item-id kind on-select {:keys [selection-placeholder?
+                                                      selected-item
+                                                      filter-tags
+                                                      title-fn]
+                                               :as options}]
   (let [{:keys [username]
          :as item} (if (= (:id selected-item) item-id)
                      selected-item
@@ -286,10 +285,10 @@
                      :overflow "hidden"
                      :height "25px"}]])])]]))
 
-(defn- prepare-query [id & options]
+(defn- prepare-query [id options]
   {:phrases (split-search-string (get-search-string id))
    :access (get-access id)
-   :username (when (= (get-ownership id) :mine)
+   :username (when (= (get-ownership id options) :mine)
                (:username @(rf/subscribe [::session/data])))
    :tags (get-tags id)
    :favorites? (get-favorites? id)
@@ -305,7 +304,7 @@
     (let [search-value (get-in db (filter-temporary-search-string-path id))]
       (assoc-in db (filter-search-string-path id) search-value))))
 
-(defn- results-count [id kind & options]
+(defn- results-count [id kind options]
   (let [items-subscription (get-items-subscription id kind options)]
     (status/default
      items-subscription
@@ -321,10 +320,10 @@
      :on-error (fn [_])
      :on-default (fn [_]))))
 
-(defn- results [id kind on-select & {:keys [page-size
-                                            display-selected-item?
-                                            selected-item]
-                                     :as options}]
+(defn- results [id kind on-select {:keys [page-size
+                                          display-selected-item?
+                                          selected-item]
+                                   :as options}]
   (let [items-subscription (get-items-subscription id kind options)]
     (status/default
      items-subscription
@@ -370,7 +369,7 @@
                   [:button.button {:on-click #(rf/dispatch [::entity-search/load-more id kind page-size])}
                    [tr :string.miscellaneous/show-more]]])]])]])))))
 
-(defn- list-mode [id & options]
+(defn- list-mode [id options]
   (let [current-list-mode (get-list-mode id options)]
     (into [:div {:style {:display "inline-block"
                          :margin-left "10px"}}]
@@ -385,11 +384,11 @@
           [[:normal "fas fa-th-large"]
            [:small "fas fa-th"]])))
 
-(defn- search-input [id & _options]
+(defn- search-input [id _options]
   (let [path (filter-temporary-search-string-path id)
         value @(rf/subscribe [:get path])
         tmp-value (r/atom value)]
-    (fn [id & _options]
+    (fn [id _options]
       [:div.search-field
        [:i.fas.fa-search]
        [:input {:name "search"
@@ -409,7 +408,7 @@
                         :margin-left "0.5em"
                         :width "calc(100% - 12px - 1.5em)"}}]])))
 
-(defn- favorites? [id & {:keys []}]
+(defn- favorites? [id _options]
   (when @(rf/subscribe [::session/logged-in?])
     (let [on? (get-favorites? id)]
       [:div {:on-click #(rf/dispatch [:set (filter-favorites?-path id) (not on?)])
@@ -419,8 +418,8 @@
                      :cursor "pointer"}}
        [favorite/icon 20 on?]])))
 
-(defn- ownership [id & {:keys [hide-ownership-filter?]
-                        :as options}]
+(defn- ownership [id {:keys [hide-ownership-filter?]
+                      :as options}]
   (when (and (not hide-ownership-filter?)
              @(rf/subscribe [::session/logged-in?]))
     [select/raw-select-inline
@@ -432,8 +431,8 @@
      :style {:margin-left "10px"
              :margin-bottom "5px"}]))
 
-(defn- access [id & {:keys [hide-access-filter?]
-                     :as options}]
+(defn- access [id {:keys [hide-access-filter?]
+                   :as options}]
   (let [consider-filter-access? (and (not hide-access-filter?)
                                      @(rf/subscribe [::session/logged-in?])
                                      (or (= (get-ownership id options) :mine)
@@ -449,7 +448,7 @@
        :style {:margin-left "10px"
                :margin-bottom "5px"}])))
 
-(defn- sorting [id & options]
+(defn- sorting [id options]
   [select/raw-select-inline {:path (filter-sorting-path id)}
    (get-sorting id options)
    [[:string.option.sorting-filter-choice/favorites :favorites]
@@ -459,8 +458,8 @@
    :style {:margin-left "10px"
            :margin-bottom "5px"}])
 
-(defn component [id kind on-select & {:keys [component-styles]
-                                      :as options}]
+(defn component [id kind on-select {:keys [component-styles]
+                                    :as options}]
   [:div.filter-component {:style component-styles}
    [:div.filter-component-search
     [search-input id options]
@@ -480,6 +479,6 @@
 
     [sorting id options]
 
-    [results-count id kind]]
+    [results-count id kind options]]
 
    [results id kind on-select options]])

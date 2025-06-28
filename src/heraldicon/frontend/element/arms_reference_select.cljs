@@ -45,9 +45,9 @@
                                                                            :version 0})
                                                (rf/dispatch [:set context {:id id
                                                                            :version 0}])))})
-        :selected-item entity
-        :display-selected-item? display-selected-item?
-        :list-id :arms-reference-select]]]
+        {:selected-item entity
+         :display-selected-item? display-selected-item?
+         :list-id :arms-reference-select}]]]
      [tooltip/info tooltip]]))
 
 (defmethod element/element :ui.element/arms-reference-select [context]
