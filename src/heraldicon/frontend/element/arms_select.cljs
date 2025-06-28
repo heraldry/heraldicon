@@ -2,9 +2,9 @@
   (:require
    [heraldicon.frontend.search-filter :as search-filter]))
 
-(defn component [on-select & {:keys [display-selected-item?
-                                     list-id]
-                              :as options}]
+(defn component [on-select {:keys [display-selected-item?
+                                   list-id]
+                            :as options}]
   [search-filter/component
    (or list-id :arms-list)
    :arms
@@ -15,5 +15,5 @@
                               {:height "80vh"}
                               {:height "90vh"}))])
 
-(defn list-arms [on-select & {:as options}]
+(defn list-arms [on-select options]
   [component on-select options])

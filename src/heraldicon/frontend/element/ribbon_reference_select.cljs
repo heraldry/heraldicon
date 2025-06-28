@@ -88,8 +88,8 @@
                            .preventDefault
                            .stopPropagation)
                          (rf/dispatch [::set-reference (:path context) ribbon]))})
-          :selected-item entity
-          :favour-heraldicon? true
-          :initial-sorting-mode :favorites
-          :display-selected-item? true
-          :list-id :ribbons-reference-select]]]])))
+          {:selected-item entity
+           :favour-heraldicon? true
+           :initial-sorting-mode :favorites
+           :display-selected-item? true
+           :list-id :ribbons-reference-select}]]]])))
