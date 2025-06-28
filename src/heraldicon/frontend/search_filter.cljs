@@ -419,17 +419,15 @@
                      :cursor "pointer"}}
        [favorite/icon 20 on?]])))
 
-(defn- ownership [id kind & {:keys [hide-ownership-filter?]
-                             :as options}]
+(defn- ownership [id & {:keys [hide-ownership-filter?]
+                        :as options}]
   (when (and (not hide-ownership-filter?)
              @(rf/subscribe [::session/logged-in?]))
     [select/raw-select-inline
      {:path (filter-ownership-path id)}
      (get-ownership id options)
-     (cond-> [[:string.option.ownership-filter-choice/all :all]
-              [:string.option.ownership-filter-choice/mine :mine]]
-       (#{:charge :ribbon} kind) (concat [[:string.option.ownership-filter-choice/heraldicon :heraldicon]
-                                          [:string.option.ownership-filter-choice/community :community]]))
+     [[:string.option.ownership-filter-choice/all :all]
+      [:string.option.ownership-filter-choice/mine :mine]]
      :value-prefix :string.option/show
      :style {:margin-left "10px"
              :margin-bottom "5px"}]))
@@ -476,7 +474,7 @@
 
     [favorites? id options]
 
-    [ownership id kind options]
+    [ownership id options]
 
     [access id options]
 
