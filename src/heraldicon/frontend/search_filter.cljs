@@ -218,11 +218,14 @@
         @(rf/subscribe [:get (filter-tags-path id)])))
 
 (defn- result-card [id item-id kind on-select & {:keys [selection-placeholder?
+                                                        selected-item
                                                         filter-tags
                                                         title-fn]
                                                  :as options}]
   (let [{:keys [username]
-         :as item} @(rf/subscribe [::search-result-item id kind item-id])
+         :as item} (if (= (:id selected-item) item-id)
+                     selected-item
+                     @(rf/subscribe [::search-result-item id kind item-id]))
         selected? false
         own-username (:username @(rf/subscribe [::session/data]))
         small? (= (get-list-mode id options) :small)
@@ -318,7 +321,9 @@
      :on-error (fn [_])
      :on-default (fn [_]))))
 
-(defn- results [id kind on-select & {:keys [page-size]
+(defn- results [id kind on-select & {:keys [page-size
+                                            display-selected-item?
+                                            selected-item]
                                      :as options}]
   (let [items-subscription (get-items-subscription id kind options)]
     (status/default
@@ -351,14 +356,10 @@
                :scrollableTarget results-id
                :style {:overflow "visible"}}
               [:ul.filter-results {:class (when small? "small")}
-               #_(when display-selected-item?
-                   [result-card (:id selected-item) kind nil
-                    :filter-tags-path filter-tags-path
-                    :filter-tags filter-tags
-                    :selection-placeholder? true
-                    :filter-list-mode-path filter-list-mode-path
-                    :default-list-mode default-list-mode
-                    :title-fn title-fn])
+               (when display-selected-item?
+                 [result-card id (:id selected-item) kind nil
+                  (assoc options
+                         :selection-placeholder? true)])
                (into [:<>]
                      (map (fn [item]
                             ^{:key (:id item)}
