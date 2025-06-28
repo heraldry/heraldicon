@@ -9,7 +9,6 @@
    [heraldicon.frontend.library.arms.list :as library.arms.list]
    [heraldicon.frontend.library.charge.list :as library.charge.list]
    [heraldicon.frontend.library.collection.list :as library.collection.list]
-   [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.repository.user :as repository.user]
    [heraldicon.frontend.repository.user-list :as repository.user-list]
    [heraldicon.frontend.status :as status]
@@ -18,40 +17,29 @@
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
-(defn- owned-by-user? [username entity]
-  (-> entity :username (= username)))
-
 (defn- view-charges-for-user [username]
   [charge-select/component
-   (rf/subscribe [::entity-list/data :heraldicon.entity.type/charge])
    library.charge.list/on-select
-   #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/charge])
-   :predicate-fn (partial owned-by-user? username)
-   :remove-empty-groups? true
-   :hide-ownership-filter? true
-   :default-list-mode :small
-   :list-id [:charges-for-user-list username]])
+   {:filter-username username
+    :hide-ownership-filter? true
+    :default-list-mode :small
+    :list-id [:charges-for-user-list username]}])
 
 (defn- view-arms-for-user [username]
   [arms-select/component
-   (rf/subscribe [::entity-list/data :heraldicon.entity.type/arms])
    library.arms.list/on-select
-   #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/arms])
-   :predicate-fn (partial owned-by-user? username)
-   :hide-ownership-filter? true
-   :default-list-mode :small
-   :list-id [:arms-for-user-list username]])
+   {:filter-username username
+    :hide-ownership-filter? true
+    :default-list-mode :small
+    :list-id [:arms-for-user-list username]}])
 
 (defn- view-collections-for-user [username]
   [collection-select/component
-   (rf/subscribe [::entity-list/data :heraldicon.entity.type/collection])
    library.collection.list/on-select
-   #(rf/dispatch [::entity-list/clear :heraldicon.entity.type/collection])
-   :predicate-fn (partial owned-by-user? username)
-   :remove-empty-groups? true
-   :hide-ownership-filter? true
-   :default-list-mode :small
-   :list-id [:collections-for-user-list username]])
+   {:filter-username username
+    :hide-ownership-filter? true
+    :default-list-mode :small
+    :list-id [:collections-for-user-list username]}])
 
 (defn- user-display [username]
   (status/default
