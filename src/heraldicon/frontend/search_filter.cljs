@@ -5,7 +5,6 @@
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.core :as entity]
-   [heraldicon.frontend.element.search-field :as search-field]
    [heraldicon.frontend.element.select :as select]
    [heraldicon.frontend.element.tags :as tags]
    [heraldicon.frontend.entity.action.favorite :as favorite]
@@ -19,7 +18,8 @@
    [heraldicon.localization.string :as string]
    [heraldicon.static :as static]
    [heraldicon.util.cache :as cache]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reagent.core :as r]))
 
 (def ^:private default-ownership
   :all)
@@ -35,6 +35,9 @@
 
 (def ^:privarte default-favorites?
   false)
+
+(defn- filter-temporary-search-string-path [id]
+  [:ui :filter id :filter-temporary-search-string])
 
 (defn- filter-search-string-path [id]
   [:ui :filter id :filter-search-string])
@@ -54,12 +57,15 @@
 (defn- filter-sorting-path [id]
   [:ui :filter id :filter-sorting])
 
+(defn- filter-tags-path [id]
+  [:ui :filter id :filter-tags])
+
 (macros/reg-event-db ::filter-toggle-tag
-  (fn [db [_ db-path tag]]
-    (update-in db db-path (fn [current-tags]
-                            (if (get current-tags tag)
-                              (dissoc current-tags tag)
-                              (assoc current-tags tag true))))))
+  (fn [db [_ id tag]]
+    (update-in db (filter-tags-path id) (fn [current-tags]
+                                          (if (get current-tags tag)
+                                            (dissoc current-tags tag)
+                                            (assoc current-tags tag true))))))
 
 (defn- normalize-string [s]
   (some-> s
@@ -161,11 +167,6 @@
         (cache/put split-search-string-cache s value)
         value))))
 
-(macros/reg-event-db ::show-more
-  (fn [db [_ db-path page-size]]
-    (update-in db db-path (fn [value]
-                            (+ (or value page-size) page-size)))))
-
 (rf/reg-sub ::search-result-item
   (fn [[_ id entity-type _item-id] _]
     (rf/subscribe [::entity-search/data-raw id entity-type]))
@@ -208,8 +209,15 @@
   (or @(rf/subscribe [:get (filter-search-string-path id)])
       ""))
 
+(defn- get-tags [id]
+  (into []
+        (keep
+         (fn [[key value]]
+           (when value
+             key)))
+        @(rf/subscribe [:get (filter-tags-path id)])))
+
 (defn- result-card [id item-id kind on-select & {:keys [selection-placeholder?
-                                                        filter-tags-path
                                                         filter-tags
                                                         title-fn]
                                                  :as options}]
@@ -266,7 +274,7 @@
             [:div.favorites {:style {:padding-left "10px"}}
              [favorite/button item-id :height 18]]
             [tags/tags-view (-> item :tags keys)
-             :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
+             :on-click #(rf/dispatch [::filter-toggle-tag id %])
              :selected filter-tags
              :style {:display "flex"
                      :flex-flow "row"
@@ -280,21 +288,28 @@
    :access (get-access id)
    :username (when (= (get-ownership id) :mine)
                (:username @(rf/subscribe [::session/data])))
-   :tags []
+   :tags (get-tags id)
    :favorites? (get-favorites? id)
+   :sort (get-sorting id options)
    :page-size (or (get options :page-size)
                   25)})
 
 (defn- get-items-subscription [id kind options]
   (rf/subscribe [::entity-search/data id kind (prepare-query id options)]))
 
+(macros/reg-event-db ::copy-search-string-to-query
+  (fn [db [_ id]]
+    (let [search-value (get-in db (filter-temporary-search-string-path id))]
+      (assoc-in db (filter-search-string-path id) search-value))))
+
 (defn- results-count [id kind & options]
   (let [items-subscription (get-items-subscription id kind options)]
     (status/default
      items-subscription
-     (fn [{:keys [total]}]
+     (fn [{:keys [total entities]}]
        [:div {:style {:display "inline"
                       :margin-left "10px"}}
+        (count entities) " / "
         total
         " "
         [tr (if (= total 1)
@@ -308,22 +323,16 @@
   (let [items-subscription (get-items-subscription id kind options)]
     (status/default
      items-subscription
-     (fn [{items :entities}]
-       (let [filter-path [:ui :filter id]
-             filter-tags-path (conj filter-path :filter-tags)
-             filter-tags @(rf/subscribe [:get filter-tags-path])
-             filtered-items items
-             sorted-items items
-             tags-to-display (frequencies (mapcat (comp keys :tags) filtered-items))
+     (fn [{:keys [entities total tags]}]
+       (let [filter-tags @(rf/subscribe [:get (filter-tags-path id)])
              small? (= (get-list-mode id options) :small)
              page-size (cond-> (or page-size 20)
                          small? (* 5))
-             display-items sorted-items
              results-id (str "filter-results-" id)]
          [:<>
           [:div.filter-component-tags
-           [tags/tags-view tags-to-display
-            :on-click #(rf/dispatch [::filter-toggle-tag filter-tags-path %])
+           [tags/tags-view tags
+            :on-click #(rf/dispatch [::filter-toggle-tag id %])
             :selected filter-tags
             :style {:display "flex"
                     :flex-flow "row"
@@ -333,13 +342,12 @@
                     :height "25px"}]]
 
           [:div.filter-component-results {:id results-id}
-           (if (empty? display-items)
+           (if (empty? entities)
              [:div [tr :string.miscellaneous/none]]
              [:> InfiniteScroll
-              {:dataLength (count display-items)
-               :hasMore (not= (count filtered-items)
-                              (count display-items))
-               :next #(rf/dispatch [::show-more page-size])
+              {:dataLength (count entities)
+               :hasMore (not= (count entities) total)
+               :next #(rf/dispatch [::entity-search/load-more id kind page-size])
                :scrollableTarget results-id
                :style {:overflow "visible"}}
               [:ul.filter-results {:class (when small? "small")}
@@ -355,11 +363,10 @@
                      (map (fn [item]
                             ^{:key (:id item)}
                             [result-card id (:id item) kind on-select options]))
-                     display-items)
-               (when-not (= (count filtered-items)
-                            (count display-items))
+                     entities)
+               (when-not (= (count entities) total)
                  [:li.filter-result-card-wrapper.filter-component-show-more
-                  [:button.button {:on-click #(rf/dispatch [::show-more page-size])}
+                  [:button.button {:on-click #(rf/dispatch [::entity-search/load-more id kind page-size])}
                    [tr :string.miscellaneous/show-more]]])]])]])))))
 
 (defn- list-mode [id & options]
@@ -377,12 +384,29 @@
           [[:normal "fas fa-th-large"]
            [:small "fas fa-th"]])))
 
-(defn- search-input [id & {:keys [on-filter-search-string-change]}]
-  [search-field/search-field {:path (filter-search-string-path id)}
-   :on-change (fn [value]
-                (rf/dispatch [:set filter-search-string-path value])
-                (when on-filter-search-string-change
-                  (on-filter-search-string-change)))])
+(defn- search-input [id & _options]
+  (let [path (filter-temporary-search-string-path id)
+        value @(rf/subscribe [:get path])
+        tmp-value (r/atom value)]
+    (fn [id & _options]
+      [:div.search-field
+       [:i.fas.fa-search]
+       [:input {:name "search"
+                :type "search"
+                :value @tmp-value
+                :autoComplete "off"
+                :on-blur (fn [_event]
+                           (rf/dispatch-sync [::copy-search-string-to-query id]))
+                :on-key-press (fn [event]
+                                (when (-> event .-code (= "Enter"))
+                                  (rf/dispatch-sync [::copy-search-string-to-query id])))
+                :on-change #(let [value (-> % .-target .-value)]
+                              (reset! tmp-value value)
+                              (rf/dispatch-sync [:set path @tmp-value]))
+                :style {:outline "none"
+                        :border "0"
+                        :margin-left "0.5em"
+                        :width "calc(100% - 12px - 1.5em)"}}]])))
 
 (defn- favorites? [id & {:keys []}]
   (when @(rf/subscribe [::session/logged-in?])
@@ -429,8 +453,7 @@
 (defn- sorting [id & options]
   [select/raw-select-inline {:path (filter-sorting-path id)}
    (get-sorting id options)
-   [[:string.option.sorting-filter-choice/name :name]
-    [:string.option.sorting-filter-choice/favorites :favorites]
+   [[:string.option.sorting-filter-choice/favorites :favorites]
     [:string.option.sorting-filter-choice/creation :creation]
     [:string.option.sorting-filter-choice/update :update]]
    :value-prefix :string.option/sort-by
@@ -444,7 +467,7 @@
     [search-input id options]
 
     [:button.button.primary
-     {:on-click #(js/console.log :hi)
+     {:on-click #(rf/dispatch [::copy-search-string-to-query id])
       :style {:margin-left "10px"}}
      "search"]
 

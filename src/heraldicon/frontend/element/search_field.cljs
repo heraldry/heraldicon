@@ -17,7 +17,7 @@
   (fn [_ [_ context value on-change]]
     {::debounce/dispatch [::debounce-update-search-field [::on-change context value on-change] 250]}))
 
-(defn search-field [context & _]
+(defn search-field [context & {:keys [on-enter-key]}]
   (let [current-value (interface/get-raw-data context)
         tmp-value (r/atom current-value)]
     (fn [context & {:keys [on-change]}]
@@ -27,9 +27,13 @@
                 :type "search"
                 :value @tmp-value
                 :autoComplete "off"
+                :on-key-press (when on-enter-key
+                                (fn [event]
+                                  (when (-> event .-code (= "Enter"))
+                                    (on-enter-key event))))
                 :on-change #(let [value (-> % .-target .-value)]
                               (reset! tmp-value value)
-                              (rf/dispatch [::update-search-field context @tmp-value on-change]))
+                              (rf/dispatch-sync [::update-search-field context @tmp-value on-change]))
                 :style {:outline "none"
                         :border "0"
                         :margin-left "0.5em"
