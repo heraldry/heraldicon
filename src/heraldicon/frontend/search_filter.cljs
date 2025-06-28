@@ -452,8 +452,8 @@
   [select/raw-select-inline {:path (filter-sorting-path id)}
    (get-sorting id options)
    [[:string.option.sorting-filter-choice/favorites :favorites]
-    [:string.option.sorting-filter-choice/creation :creation]
-    [:string.option.sorting-filter-choice/update :update]]
+    [:string.option.sorting-filter-choice/creation :created_at]
+    [:string.option.sorting-filter-choice/update :modified_at]]
    :value-prefix :string.option/sort-by
    :style {:margin-left "10px"
            :margin-bottom "5px"}])
