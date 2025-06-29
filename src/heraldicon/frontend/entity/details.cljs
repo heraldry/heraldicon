@@ -62,7 +62,7 @@
         form-db-path (form/data-path entity-type)]
     (prepare-for-editing entity-id version)
     (clear-history-on-new-identifier form-db-path entity-id)
-    (status/default
+    [status/default
      (rf/subscribe [::entity-for-editing/data entity-id version])
      (fn [_]
        (if version
@@ -71,7 +71,7 @@
      :on-error (fn [error]
                  (if (-> error ex-cause (= :entity-not-found))
                    [status/not-found]
-                   [status/error-display])))))
+                   [status/error-display]))]))
 
 (defn- load-new-entity-data [entity-type generate-data-fn target-path]
   (if @(rf/subscribe [::copy-to-new/copy-data entity-type])
