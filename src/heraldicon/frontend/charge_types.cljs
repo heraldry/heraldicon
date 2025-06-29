@@ -8,11 +8,11 @@
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.debounce :as debounce]
-   [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.repository.charge-types-for-editing :as repository.charge-types-for-editing]
+   [heraldicon.frontend.search-string :as search-string]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.form.core :as form]
@@ -98,12 +98,12 @@
   :<- [:get search-db-path]
 
   (fn [search-string [_ title]]
-    (let [title (filter/normalize-string-for-match (or title ""))
-          words (filter/split-search-string (or search-string ""))]
+    (let [title (search-string/normalize-string-for-match (or title ""))
+          words (search-string/split (or search-string ""))]
       (if (empty? words)
         true
         (reduce (fn [_ word]
-                  (when (filter/matches-word? title word)
+                  (when (search-string/matches-word? title word)
                     (reduced true)))
                 nil
                 words)))))
