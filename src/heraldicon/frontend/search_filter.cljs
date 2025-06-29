@@ -184,11 +184,13 @@
                      :overflow "hidden"
                      :height "25px"}]])])]]))
 
-(defn- prepare-query [id options]
+(defn- prepare-query [id {:keys [filter-username]
+                          :as options}]
   {:phrases (search-string/split (get-search-string id))
    :access (get-access id)
-   :username (when (= (get-ownership id options) :mine)
-               (:username @(rf/subscribe [::session/data])))
+   :username (or (when (= (get-ownership id options) :mine)
+                   (:username @(rf/subscribe [::session/data])))
+                 filter-username)
    :tags (get-tags id)
    :favorites? (get-favorites? id)
    :sort (get-sorting id options)
