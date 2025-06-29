@@ -42,7 +42,7 @@
     :list-id [:collections-for-user-list username]}])
 
 (defn- user-display [username]
-  (status/default
+  [status/default
    (rf/subscribe [::repository.user/data username])
    (fn [{user-info-data :user}]
      (let [username (:username user-info-data)]
@@ -77,7 +77,7 @@
         [:div.no-scrollbar {:style {:grid-area "charges"
                                     :overflow-y "scroll"}}
          [:h4 [tr :string.entity/charges]]
-         [view-charges-for-user username]]]))))
+         [view-charges-for-user username]]]))])
 
 (defn details-view [{{{:keys [username]} :path} :parameters}]
   [user-display username])
@@ -90,10 +90,10 @@
   (rf/dispatch [::title/set :string.menu/users])
   [:div {:style {:padding "15px"}}
    (when (entity.user/admin? @(rf/subscribe [::session/data]))
-     (status/default
+     [status/default
       (rf/subscribe [::repository.user-list/data])
       (fn [{:keys [users]}]
         (into [:ul]
               (map (fn [user]
                      [:li (link-to-user user)]))
-              (sort-by :username users)))))])
+              (sort-by :username users)))])])

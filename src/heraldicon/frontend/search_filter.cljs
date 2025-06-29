@@ -205,7 +205,7 @@
 
 (defn- results-count [id kind options]
   (let [items-subscription (get-items-subscription id kind options)]
-    (status/default
+    [status/default
      items-subscription
      (fn [{:keys [total entities]}]
        [:div {:style {:display "inline"
@@ -217,14 +217,14 @@
               :string.miscellaneous/item
               :string.miscellaneous/items)]])
      :on-error (fn [_])
-     :on-default (fn [_]))))
+     :on-default (fn [_])]))
 
 (defn- results [id kind on-select {:keys [page-size
                                           display-selected-item?
                                           selected-item]
                                    :as options}]
   (let [items-subscription (get-items-subscription id kind options)]
-    (status/default
+    [status/default
      items-subscription
      (fn [{:keys [entities total tags]}]
        (let [filter-tags @(rf/subscribe [:get (filter-tags-path id)])
@@ -266,7 +266,7 @@
                (when-not (= (count entities) total)
                  [:li.filter-result-card-wrapper.filter-component-show-more
                   [:button.button {:on-click #(rf/dispatch [::entity-search/load-more id kind page-size])}
-                   [tr :string.miscellaneous/show-more]]])]])]])))))
+                   [tr :string.miscellaneous/show-more]]])]])]]))]))
 
 (defn- list-mode [id options]
   (let [current-list-mode (get-list-mode id options)]

@@ -145,7 +145,7 @@
 (defn- charge-type-editor
   []
   (rf/dispatch [::title/set :string.menu/charge-types])
-  (status/default
+  [status/default
    (rf/subscribe [::repository.charge-types-for-editing/data #(rf/dispatch [:set form-db-path %])])
    (fn [_]
      [:div {:style {:display "grid"
@@ -180,7 +180,7 @@
          ::identifier
          [form-db-path] base-context
          :filter-fn filter-by-deleted-and-empty
-         :extra :second]]]])))
+         :extra :second]]]])])
 
 (defn view []
   (if (entity.user/admin? @(rf/subscribe [::session/data]))
