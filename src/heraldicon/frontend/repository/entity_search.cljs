@@ -42,8 +42,7 @@
   (fn [db [_ id entity-type total entities]]
     (let [path (entity-search-path id entity-type)
           original-entities (get-in db (conj path :entities))
-          merged-entities (->> original-entities
-                               (concat entities)
+          merged-entities (->> (concat original-entities entities)
                                distinct
                                (into []))]
       (-> db
