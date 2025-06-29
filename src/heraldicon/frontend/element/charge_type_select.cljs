@@ -7,9 +7,9 @@
    [heraldicon.frontend.debounce :as debounce]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.filter :as filter]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.repository.charge-types :as repository.charge-types]
+   [heraldicon.frontend.search-string :as search-string]
    [heraldicon.frontend.status :as status]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]
@@ -35,13 +35,13 @@
   :<- [:get search-db-path]
 
   (fn [search-string [_ title]]
-    (let [title (filter/normalize-string-for-match (or title ""))
+    (let [title (search-string/normalize-string-for-match (or title ""))
           title (remove-charge-count title)
-          words (filter/split-search-string (or search-string ""))]
+          words (search-string/split (or search-string ""))]
       (if (empty? words)
         true
         (reduce (fn [_ word]
-                  (when (filter/matches-word? title word)
+                  (when (search-string/matches-word? title word)
                     (reduced true)))
                 nil
                 words)))))
@@ -55,13 +55,13 @@
   :<- [:get search-db-path]
 
   (fn [search-string [_ title]]
-    (let [title (filter/normalize-string-for-match (or title ""))
+    (let [title (search-string/normalize-string-for-match (or title ""))
           title (remove-charge-count title)
-          words (filter/split-search-string (or search-string ""))]
+          words (search-string/split (or search-string ""))]
       (if (empty? words)
         true
         (every? (fn [word]
-                  (filter/matches-word? title word))
+                  (search-string/matches-word? title word))
                 words)))))
 
 ;; TODO: it's not efficient to do a subscription for every node here
