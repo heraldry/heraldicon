@@ -378,6 +378,8 @@
         subfield? (->> path (drop-last 2) last (= :fields))
         semy-charge? (->> path (take-last 2) (= [:charge :field]))
         field-type (interface/get-raw-data (c/++ context :type))
+        helm-charge? (and (->> path (drop-last 2) last (= :components))
+                          (->> path (drop-last 4) (take-last 2) (= [:helms :elements])))
         ornament? (->> path (drop-last 2) (take-last 2) (= [:ornaments :elements]))
         plain? (= field-type :heraldry.field.type/plain)
         counterchanged? (= field-type :heraldry.field.type/counterchanged)
@@ -399,6 +401,7 @@
                                                       :default true
                                                       :ui/label :string.option/adapt-to-ordinaries?})
       (or subfield?
+          helm-charge?
           ornament?
           root-field?
           semy-charge?) (update-in [:type :choices] #(->> %
