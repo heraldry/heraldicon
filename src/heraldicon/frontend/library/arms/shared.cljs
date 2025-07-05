@@ -19,5 +19,6 @@
         (c/<< :path form-db-path)
         (c/<< :render-options-path (conj form-db-path :data :achievement :render-options))
         (c/set-render-hint :select-component-fn #(rf/dispatch [::tree/select-node-from-preview ::arms.details/identifier (:path %)])
+                           :select-field-fn #(rf/dispatch [::tree/select-field-node-from-preview ::arms.details/identifier (:path %)])
                            :enter-component-fn #(rf/dispatch [::tree/highlight-node ::arms.details/identifier (:path %)])
                            :leave-component-fn #(rf/dispatch [::tree/unhighlight-node ::arms.details/identifier (:path %)])))))
