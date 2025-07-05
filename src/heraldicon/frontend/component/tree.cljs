@@ -437,13 +437,16 @@
 (defn- determine-component-path [db path]
   (let [path (if (get-in db (conj path :field))
                (conj path :field)
-               path)
-        ;; if this is the field of a subfield, then use the path of the subfield,
-        ;; because that's the node displayed in the tree
-        path (if (= (first (take-last 3 path)) :fields)
-               (vec (drop-last path))
                path)]
-    path))
+    (cond
+      ;; if this is the field of a subfield, then use the path of the subfield,
+      ;; because that's the node displayed in the tree
+      (= (first (take-last 3 path))
+         :fields) (vec (drop-last path))
+
+      (number? (last (drop-last path))) (vec (drop-last path))
+
+      :else path)))
 
 (macros/reg-event-fx ::select-node-from-preview
   (fn [{:keys [db]} [_ identifier path open?]]
