@@ -112,6 +112,7 @@
   (let [{:keys [charge-preview?
                 svg-export?
                 select-component-fn
+                select-field-fn
                 enter-component-fn
                 leave-component-fn]} (c/render-hints context)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
@@ -166,6 +167,10 @@
                                        select-component-fn)
                               (js-event/handled
                                #(select-component-fn context)))
+                  :on-double-click (when (and (not svg-export?)
+                                              select-field-fn)
+                                     (js-event/handled
+                                      #(select-field-fn context)))
                   :on-mouse-enter (when (and (not svg-export?)
                                              enter-component-fn)
                                     (js-event/handled

@@ -249,6 +249,7 @@
                 svg-export?
                 clip?
                 select-component-fn
+                select-field-fn
                 enter-component-fn
                 leave-component-fn]} (c/render-hints context)
         charge-data (-> charge-entity :data :edn-data)
@@ -374,6 +375,10 @@
                {:on-click (when select-component-fn
                             (js-event/handled
                              #(select-component-fn context)))
+                :on-double-click (when (and (not svg-export?)
+                                            select-field-fn)
+                                   (js-event/handled
+                                    #(select-field-fn context)))
                 :on-mouse-enter (when enter-component-fn
                                   (js-event/handled
                                    #(enter-component-fn context)))
