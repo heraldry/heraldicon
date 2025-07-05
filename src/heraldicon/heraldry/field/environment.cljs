@@ -112,7 +112,7 @@
 
 (defn shrink-shape [shape distance join]
   (when (shape? shape)
-    (let [max-step 5
+    (let [max-step 1
           join (case join
                  :round "round"
                  :bevel "bevel"
