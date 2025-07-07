@@ -70,3 +70,6 @@
 
 (defmethod component/form :heraldry/helm [_context]
   nil)
+
+(defmethod interface/render-shape :heraldry/helm [_context]
+  nil)
