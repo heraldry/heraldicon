@@ -29,10 +29,10 @@
 (def ^:private default-sorting
   :favorites)
 
-(def ^:privarte default-list-mode
+(def ^:private default-list-mode
   :normal)
 
-(def ^:privarte default-favorites?
+(def ^:private default-favorites?
   false)
 
 (defn- filter-temporary-search-string-path [id]
