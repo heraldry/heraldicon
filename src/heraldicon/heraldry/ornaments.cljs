@@ -31,3 +31,6 @@
                       (c/set-key :auto-resize? false)
                       (c/set-render-hint :self-below-shield? self-below-shield?))]))
           (shield-separator/get-element-indices elements-context))))
+
+(defmethod interface/render-shape :heraldry/ornaments [_context]
+  nil)
