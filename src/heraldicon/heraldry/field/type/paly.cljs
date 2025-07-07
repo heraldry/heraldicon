@@ -23,7 +23,6 @@
                              :min 1
                              :max 20
                              :default 6
-                             :integer? true
                              :ui/label :string.option/subfields-x
                              :ui/element :ui.element/field-layout-num-fields-x}
               :num-base-fields {:type :option.type/range
