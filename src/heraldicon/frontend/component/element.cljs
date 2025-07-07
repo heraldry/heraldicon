@@ -87,8 +87,11 @@
         index (last path)
         value (get-in db path)
         elements (vec (get-in db elements-path))
-        new-elements (vec (concat (subvec elements 0 index)
-                                  (subvec elements (inc index))))]
+        new-elements (if (and (<= 0 index)
+                              (< index (count elements)))
+                       (vec (concat (subvec elements 0 index)
+                                    (subvec elements (inc index))))
+                       elements)]
     [(assoc-in db elements-path new-elements)
      value]))
 
