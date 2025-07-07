@@ -86,3 +86,6 @@
                            :transform transform}]
                       [:<>])]
         (conj wrapper [interface/render-component field-context]))]]))
+
+(defmethod interface/render-component :heraldry/subfield [_context]
+  nil)
