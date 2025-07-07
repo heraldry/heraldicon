@@ -35,6 +35,9 @@
 (def ^:private default-favorites?
   false)
 
+(def ^:private default-page-size
+  20)
+
 (defn- filter-temporary-search-string-path [id]
   [:ui :filter id :filter-temporary-search-string])
 
@@ -195,7 +198,7 @@
    :favorites? (get-favorites? id)
    :sort (get-sorting id options)
    :page-size (or (get options :page-size)
-                  25)})
+                  default-page-size)})
 
 (defn- get-items-subscription [id kind options]
   (rf/subscribe [::entity-search/data id kind (prepare-query id options)]))
@@ -231,7 +234,7 @@
      (fn [{:keys [entities total tags]}]
        (let [filter-tags @(rf/subscribe [:get (filter-tags-path id)])
              small? (= (get-list-mode id options) :small)
-             page-size (cond-> (or page-size 20)
+             page-size (cond-> (or page-size default-page-size)
                          small? (* 5))
              results-id (str "filter-results-" id)]
          [:<>

@@ -10,7 +10,6 @@
    :charge
    on-select
    (assoc options
-          :page-size 20
           :component-styles (if display-selected-item?
                               {:height "75vh"}
                               {:height "90vh"}))])

@@ -10,7 +10,6 @@
    :ribbon
    on-select
    (assoc options
-          :page-size 20
           :component-styles (if display-selected-item?
                               {:height "80vh"}
                               {:height "90vh"}))])
