@@ -263,7 +263,9 @@
                                               final-index)
                             new-path-points (-> new-path-points
                                                 (cond->
-                                                  (< start-index end-index) (concat (subvec path-points last-index start-index)))
+                                                  (and (<= 0 start-index)
+                                                       (< start-index end-index)
+                                                       (< end-index (count path-points))) (concat (subvec path-points last-index start-index)))
                                                 (concat rounded-corner-points)
                                                 vec)]
                         (recur rest new-path-points new-last-index new-final-index))
