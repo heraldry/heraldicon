@@ -165,7 +165,14 @@
                                            {:point (-> shape-path
                                                        (.getPointAt slot-t)
                                                        (as-> p
-                                                             (v/Vector. (.-x p) (.-y p))))
+                                                             ;; recover if p is nil for whatever reason;
+                                                             ;; there's not much to do, but using (0, 0)
+                                                             ;; at least prevents a full crash
+                                                             (if p
+                                                               (v/Vector. (.-x p) (.-y p))
+                                                               (do
+                                                                 (js/console.error "calculate-points issue" parent-shape context)
+                                                                 (v/Vector. 0 0)))))
                                             :slot-path (-> context :path (conj :slots slot-index))
                                             :charge-index (if (and (int? charge-index)
                                                                    (< -1 charge-index num-charges))
