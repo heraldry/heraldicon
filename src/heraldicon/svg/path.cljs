@@ -76,12 +76,16 @@
                 Math/floor
                 inc)
             n)]
-    (mapv (fn [i]
-            (let [x (if start-offset
-                      (-> length (* i) (/ (dec n)) (+ start-offset) (mod length))
-                      (-> length (* i) (/ (dec n)) (min length)))
-                  p (.getPointAt path x)]
-              (v/Vector. (.-x p) (.-y p)))) (range n))))
+    (vec (keep (fn [i]
+                 (let [x (if start-offset
+                           (-> length (* i) (/ (dec n)) (+ start-offset) (mod length))
+                           (-> length (* i) (/ (dec n)) (min length)))
+                       p (.getPointAt path x)]
+                   (if p
+                     (v/Vector. (.-x p) (.-y p))
+                     (do
+                       (js/console.error "path.points issue" path start-offset)
+                       nil)))) (range n)))))
 
 (defn length [path]
   (.-length path))
