@@ -120,7 +120,7 @@
           shrink-step-fn (fn [shape step join]
                            (try
                              (shrink-step shape step join)
-                             (catch js/RangeError _
+                             (catch :default _
                                (log/error nil "Endless loop while using paperjs-offset"))))]
       (loop [shape shape
              distance distance]
