@@ -70,7 +70,8 @@
     (apply str-tr (interleave-all chunks args))))
 
 (defn- upper-case-first-str [s]
-  (str (str/upper-case (or (first s) "")) (subs s 1)))
+  (let [s (or s "")]
+    (str (str/upper-case (subs s 0 1)) (subs s 1))))
 
 (defn upper-case-first [s]
   (if (map? s)
