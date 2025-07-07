@@ -16,7 +16,7 @@
       (when-let [option (interface/get-options context)]
         (let [component-id (uid/generate "range")
               current-value (interface/get-raw-data context)
-              {:keys [inherited default min max]
+              {:keys [inherited default min max integer?]
                :ui/keys [label tooltip step]} option
               step (or step 1)
               value (or value
@@ -38,6 +38,10 @@
                      :on-change #(let [value (-> % .-target .-value js/parseFloat)
                                        value (if (js/isNaN value)
                                                nil
+                                               value)
+                                       value (if (and value
+                                                      integer?)
+                                               (Math/round value)
                                                value)]
                                    (if on-change
                                      (on-change value)
@@ -54,9 +58,13 @@
                                   #(swap! tmp-value (fn [_] (-> % .-target .-value))))
                      :on-blur #(let [parsed-value (js/parseFloat @tmp-value)]
                                  (when-not (js/isNaN parsed-value)
-                                   (if on-change
-                                     (on-change parsed-value)
-                                     (rf/dispatch-sync [:set context parsed-value])))
+                                   (let [value (if (and parsed-value
+                                                        integer?)
+                                                 (Math/round parsed-value)
+                                                 parsed-value)]
+                                     (if on-change
+                                       (on-change value)
+                                       (rf/dispatch-sync [:set context value]))))
                                  (swap! focused? (fn [_] false)))
                      :style {:display "inline-block"
                              :width "2em"

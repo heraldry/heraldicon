@@ -17,13 +17,11 @@
                                :min 1
                                :max 20
                                :default 6
-                               :integer? true
                                :ui/label :string.option/number-of-columns}
                 :num-fields-y {:type :option.type/range
                                :min 1
                                :max 20
                                :default 6
-                               :integer? true
                                :ui/label :string.option/number-of-rows}
                 :offset-x {:type :option.type/range
                            :min -1
