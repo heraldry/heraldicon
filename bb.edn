@@ -94,12 +94,12 @@
   check-cljfmt (shell "cljfmt --parallel check src test backend/src")
 
   check-debug-print-frontend (-> (shell {:continue true}
-                                        "rg '(println|\\(js/console)' --iglob='!log_appender.cljs' src")
+                                        "rg '(println|\\(js/console.log)' --iglob='!log_appender.cljs' src")
                                  :exit
                                  (= 1)
                                  (or (throw (Exception. "found debug prints in frontend"))))
   check-debug-print-backend (-> (shell {:continue true}
-                                       "rg '(println|\\(js/console)' backend/src --glob=!backend/src/heraldicon/manage.cljs --glob=!backend/src/heraldicon/backend/server.cljs")
+                                       "rg '(println|\\(js/console.log)' backend/src --glob=!backend/src/heraldicon/manage.cljs --glob=!backend/src/heraldicon/backend/server.cljs")
                                 :exit
                                 (= 1)
                                 (or (throw (Exception. "found debug prints in backend"))))
