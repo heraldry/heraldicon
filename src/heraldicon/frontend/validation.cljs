@@ -215,14 +215,17 @@
         num-fields-y (interface/get-sanitized-data (c/++ context :layout :num-fields-y))]
     (cond-> []
       (and (= field-type :paly)
-           (odd? num-fields-x)) (conj {:level :warning
-                                       :message :string.validation.partition/paly-should-have-even-number-of-fields})
+           (or (not (integer? num-fields-x))
+               (odd? num-fields-x))) (conj {:level :warning
+                                            :message :string.validation.partition/paly-should-have-even-number-of-fields})
       (and (= field-type :barry)
-           (odd? num-fields-y)) (conj {:level :warning
-                                       :message :string.validation.partition/barry-should-have-even-number-of-fields})
+           (or (not (integer? num-fields-y))
+               (odd? num-fields-y))) (conj {:level :warning
+                                            :message :string.validation.partition/barry-should-have-even-number-of-fields})
       (and (#{:bendy :bendy-sinister} field-type)
-           (odd? num-fields-y)) (conj {:level :warning
-                                       :message :string.validation.partition/bendy-should-have-even-number-of-fields}))))
+           (or (not (integer? num-fields-y))
+               (odd? num-fields-y))) (conj {:level :warning
+                                            :message :string.validation.partition/bendy-should-have-even-number-of-fields}))))
 
 (defn- validate-attribution [context public?]
   (let [nature (interface/get-sanitized-data (c/++ context :nature))
