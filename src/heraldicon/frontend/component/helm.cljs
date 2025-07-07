@@ -67,3 +67,6 @@
                                         :title :string.tooltip/remove
                                         :handler #(rf/dispatch [::component.element/remove component-context])}])})))
                  vec)}))
+
+(defmethod component/form :heraldry/helm [_context]
+  nil)
