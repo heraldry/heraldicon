@@ -111,7 +111,15 @@
                                              :second-dir (v/Vector. 0 1)}
                                :sinister-base {:corner-point bottom-right
                                                :first-dir (v/Vector. 0 1)
-                                               :second-dir (v/Vector. 1 0)})
+                                               :second-dir (v/Vector. 1 0)}
+                               ;; for anything else assume dexter-chief;
+                               ;; there have been some errors in sentries
+                               ;; where this was ":full"; it's unclear why,
+                               ;; but it could be a race condition of sorts
+                               ;; if a label is changed to a quarter
+                               {:corner-point top-left
+                                :first-dir (v/Vector. 0 -1)
+                                :second-dir (v/Vector. -1 0)})
         anchor-point (-> anchor-point
                          (v/sub corner-point)
                          (v/mul (/ size 100))
