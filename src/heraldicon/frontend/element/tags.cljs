@@ -71,8 +71,7 @@
                                 on-click
                                 selected
                                 style]}]
-  (let [sorted-tags (if (seq? tags)
-                      (sort tags)
+  (let [sorted-tags (if (map? tags)
                       (sort-by (fn [tag]
                                  [(get selected tag)
                                   (get tags tag)])
@@ -81,13 +80,14 @@
                                             (keep (fn [[k v]]
                                                     (when v
                                                       k))
-                                                  selected)))))]
+                                                  selected))))
+                      (sort tags))]
     (into [:div.tags {:style style}]
           (map (fn [tag]
                  ^{:key tag}
-                 [tag-view (if (seq? tags)
-                             tag
-                             (str (name tag) ": " (or (get tags tag) 0)))
+                 [tag-view (if (map? tags)
+                             (str (name tag) ": " (or (get tags tag) 0))
+                             tag)
                   :on-delete (when on-delete
                                #(on-delete tag))
                   :on-click (when on-click
