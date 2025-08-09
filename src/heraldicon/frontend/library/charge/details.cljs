@@ -182,7 +182,8 @@
                                                                  :params {:overrides {:removeUnknownsAndDefaults false
                                                                                       :removeHiddenElems false
                                                                                       :convertPathData false
-                                                                                      :mergePaths false}}}]})))))
+                                                                                      :mergePaths false}}}
+                                                                "removeScripts"]})))))
                                   <?
                                   hickory/parse-fragment
                                   first
