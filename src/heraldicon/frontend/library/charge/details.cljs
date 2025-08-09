@@ -180,7 +180,6 @@
                                                     (clj->js
                                                      {:plugins [{:name "preset-default"
                                                                  :params {:overrides {:removeUnknownsAndDefaults false
-                                                                                      :convertStyleToAttrs false
                                                                                       :removeHiddenElems false
                                                                                       :convertPathData false
                                                                                       :mergePaths false}}}]})))))
