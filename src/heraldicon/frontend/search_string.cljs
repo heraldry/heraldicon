@@ -10,6 +10,15 @@
 (defonce normalize-string-for-match-cache
   (cache/lru-cache 100000))
 
+(defn strip-surrounding-quotes [s]
+  (if (and (string? s)
+           (>= (count s) 2)
+           (let [first-char (first s)
+                 last-char (last s)]
+             (and (= first-char \") (= last-char \"))))
+    (subs s 1 (dec (count s)))
+    s))
+
 (defn normalize-string-for-match [s]
   (let [value (cache/get normalize-string-for-match-cache s)]
     (if (some? value)
@@ -86,6 +95,10 @@
   (let [value (cache/get split-search-string-cache s)]
     (if (some? value)
       value
-      (let [value (re-seq #"/[^/]*/|\"[^\"]+\"|\S+" (normalize-string-for-match s))]
+      (let [matches (re-seq #"/[^/]*/|\"[^\"]+\"|\S+" (normalize-string-for-match s))
+            value (->> matches
+                       (map strip-surrounding-quotes)
+                       (filterv (fn [s]
+                                  (pos? (count s)))))]
         (cache/put split-search-string-cache s value)
         value))))
