@@ -268,7 +268,7 @@
                             ^{:key (:id item)}
                             [result-card id (:id item) kind on-select options]))
                      entities)
-               (when-not (= (count entities) total)
+               (when (< (count entities) total)
                  [:li.filter-result-card-wrapper.filter-component-show-more
                   [:button.button {:on-click #(rf/dispatch [::entity-search/load-more id kind page-size])}
                    [tr :string.miscellaneous/show-more]]])]])]]))]))
