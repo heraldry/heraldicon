@@ -8,7 +8,11 @@
  :builds {:frontend
           {:target :browser
            :asset-path "/js/generated"
-           :js-options {:js-package-dirs ["./node_modules"]}
+           :js-options {:js-package-dirs ["./node_modules"]
+                        :resolve {"source-map-resolve" false
+                                  "path" false
+                                  "url" false
+                                  "fs" false}}
            :devtools {:after-load heraldicon.frontend.main/init
                       :http-root "./assets"
                       :http-port 8081
