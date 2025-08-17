@@ -7,7 +7,7 @@
 
  :deps {binaryage/devtools {:mvn/version "1.0.7"}
         borkdude/sci {:mvn/version "0.2.8-SNAPSHOT"}
-        cljs-http/cljs-http {:mvn/version "0.1.48"}
+        cljs-http/cljs-http {:mvn/version "0.1.49"}
         com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}
         com.cognitect/transit-cljs {:mvn/version "0.8.280"}
         com.github.seancorfield/honeysql {:mvn/version "2.5.1103"}
