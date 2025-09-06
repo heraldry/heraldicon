@@ -2006,6 +2006,7 @@ tincture-modifier-type
     | tincture-modifier/ATTIRED
     | tincture-modifier/BEAKED
     | tincture-modifier/COMBED
+    | tincture-modifier/CROWNED
     | tincture-modifier/EYED
     | tincture-modifier/EYED-PEACOCK
     | tincture-modifier/FINNED
