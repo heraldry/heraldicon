@@ -185,7 +185,7 @@
    :argent "#ffffff"
    :or "#f5d306"
    ;; colours
-   :azure "#0296C6"
+   :azure "#0296c6"
    :vert "#0ca644"
    :gules "#e64625"
    :sable "#000000"
@@ -864,10 +864,10 @@
    :brunatre "#745a49"
    :buff "#ebb24c"
    :carnation "#fab587"
-   :copper "#AB6334"
-   :orange "#E48634"
-   :rose "#D99392"
-   :white "#FFFFFF"
+   :copper "#ab6334"
+   :orange "#e48634"
+   :rose "#d99392"
+   :white "#ffffff"
    :cendree "#f0f1ea"
    :bleu-celeste "#9bd2fe"
 
