@@ -1029,6 +1029,18 @@
                   :creator-name "zalension"
                   :creator-link "https://heraldicon.org/users/zalension"}})
 
+(def ^:private community-hawk-of-quraish
+  {:shape "m 75.254067,0 23.44225,30.910845
+           C 104.72775,69.977184 90.056365,108.46125 49.978884,133.94699 12.500222,110.11387 -5.1538202,73.040112 1.3096828,30.910845
+           L 24.703699,0
+           Z"
+
+   ::name "Hawk of Quraish"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "natee"
+                  :creator-link "https://heraldicon.org/users/natee"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1095,6 +1107,7 @@
     [:community-halfling community-halfling]
     [:community-halfling-pavise community-halfling-pavise]
     [:community-african community-african]
+    [:community-hawk-of-quraisch community-hawk-of-quraish]
     [:community-extravagant community-extravagant]
     [:community-philippino community-philippino]
     [:community-playful community-playful]
