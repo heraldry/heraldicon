@@ -45,8 +45,10 @@
 (defn- update-url! [m]
   (let [query (map->query-string m)
         new-url (str js/window.location.pathname
-                     (when (seq query) (str "?" query)))]
-    (.replaceState js/window.history #js {} "" new-url)))
+                     (when (seq query) (str "?" query)))
+        current (str js/window.location.pathname js/window.location.search)]
+    (when (not= new-url current)
+      (.pushState js/window.history #js {} "" new-url))))
 
 (rf/reg-fx ::set-url-parameters
   (fn [data]

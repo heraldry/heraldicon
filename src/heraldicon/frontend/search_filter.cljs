@@ -312,8 +312,12 @@
 
 (defn- search-input [id _options]
   (let [path (filter-temporary-search-string-path id)
-        value @(rf/subscribe [:get path])
-        tmp-value (r/atom value)]
+        value-sub (rf/subscribe [:get path])
+        tmp-value (r/atom @value-sub)]
+    ;; keep tmp-value in sync with subscription
+    (add-watch value-sub ::sync
+               (fn [_ _ _ new-val]
+                 (reset! tmp-value new-val)))
     (fn [id _options]
       [:div.search-field
        [:i.fas.fa-search]
@@ -321,10 +325,9 @@
                 :type "search"
                 :value @tmp-value
                 :autoComplete "off"
-                :on-blur (fn [_event]
-                           (rf/dispatch-sync [::copy-search-string-to-query id]))
+                :on-blur #(rf/dispatch-sync [::copy-search-string-to-query id])
                 :on-key-press (fn [event]
-                                (when (-> event .-code (= "Enter"))
+                                (when (= "Enter" (.-code event))
                                   (rf/dispatch-sync [::copy-search-string-to-query id])))
                 :on-change #(let [value (-> % .-target .-value)]
                               (reset! tmp-value value)
@@ -426,5 +429,5 @@
                          (assoc-in (filter-temporary-search-string-path id) v)
                          (assoc-in (filter-search-string-path id) v))
                   db))
-              db
+              (update-in db [:ui :filter] dissoc id)
               data))))

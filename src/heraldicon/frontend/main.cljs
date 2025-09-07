@@ -57,6 +57,13 @@
       "/ribbons/" :ribbon-list
       nil)))
 
+(defn- restore-search-list-from-url-parameters []
+  (when-let [list-id (get-list-id)]
+    (rf/dispatch-sync [::search-filter/restore-from-url-parameters list-id])))
+
+(defonce hook-browser-navigation
+  (.addEventListener js/window "popstate" restore-search-list-from-url-parameters))
+
 (defn ^:export init []
   (log/info :release (config/get :release))
   (when (and (not= (config/get :stage) "dev")
@@ -72,8 +79,7 @@
   (r-subs/clear-subscription-cache!)
   (rf/dispatch-sync [::state/initialize])
   (rf/dispatch-sync [::language/load-setting])
-  (when-let [list-id (get-list-id)]
-    (rf/dispatch-sync [::search-filter/restore-from-url-parameters list-id]))
+  (restore-search-list-from-url-parameters)
   (session/read-from-storage)
   (router/start)
   (r/render (app-root) [app])
