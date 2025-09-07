@@ -11,6 +11,7 @@
    [heraldicon.frontend.language :as language]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
+   [heraldicon.frontend.search-filter :as search-filter]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
    [heraldicon.frontend.user.session :as session]
@@ -45,6 +46,17 @@
   (set! *title-root* (r/create-root (first (.getElementsByTagName js/document "title"))))
   *title-root*)
 
+(defn- get-list-id []
+  (let [path js/window.location.pathname]
+    ;; this hard-coded matching is not ideal, but we need to know this before the router starts its work;
+    ;; maybe someday I'll find a better way, but for now this is good enough
+    (case path
+      "/arms/" :arms-list
+      "/charges/" :charge-list
+      "/collections/" :collection-list
+      "/ribbons/" :ribbon-list
+      nil)))
+
 (defn ^:export init []
   (log/info :release (config/get :release))
   (when (and (not= (config/get :stage) "dev")
@@ -60,6 +72,8 @@
   (r-subs/clear-subscription-cache!)
   (rf/dispatch-sync [::state/initialize])
   (rf/dispatch-sync [::language/load-setting])
+  (when-let [list-id (get-list-id)]
+    (rf/dispatch-sync [::search-filter/restore-from-url-parameters list-id]))
   (session/read-from-storage)
   (router/start)
   (r/render (app-root) [app])
