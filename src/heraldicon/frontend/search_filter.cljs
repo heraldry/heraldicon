@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.search-filter
   (:require
    ["react-infinite-scroll-component" :as InfiniteScroll]
+   [clojure.string :as str]
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.core :as entity]
@@ -11,6 +12,7 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
+   [heraldicon.frontend.parameters :as parameters]
    [heraldicon.frontend.repository.entity-search :as entity-search]
    [heraldicon.frontend.search-string :as search-string]
    [heraldicon.frontend.status :as status]
@@ -187,6 +189,25 @@
                      :overflow "hidden"
                      :height "25px"}]])])]]))
 
+(defn- update-params [id options]
+  (let [query (get-search-string id)
+        ownership (get-ownership id options)
+        access (get-access id)
+        tags (get-tags id)
+        favorites? (get-favorites? id)
+        sort (get-sorting id options)
+        list-mode (get-list-mode id options)]
+    (rf/dispatch [::parameters/set
+                  (cond-> {}
+                    (not (str/blank? query)) (assoc :q query)
+                    (and ownership
+                         (not= ownership default-ownership)) (assoc :ownership ownership)
+                    (not= access default-access) (assoc :access access)
+                    (not= list-mode default-list-mode) (assoc :mode list-mode)
+                    (seq tags) (assoc :tags tags)
+                    favorites? (assoc :favorites true)
+                    (not= sort default-sorting) (assoc :sort sort))])))
+
 (defn- prepare-query [id {:keys [filter-username]
                           :as options}]
   {:phrases (search-string/split (get-search-string id))
@@ -229,6 +250,7 @@
                                           selected-item]
                                    :as options}]
   (let [items-subscription (get-items-subscription id kind options)]
+    (update-params id options)
     [status/default
      items-subscription
      (fn [{:keys [entities total tags]}]
@@ -387,3 +409,22 @@
     [results-count id kind options]]
 
    [results id kind on-select options]])
+
+(rf/reg-event-db ::restore-from-url-parameters
+  (fn [db [_ id]]
+    (let [qs (subs (.-search js/window.location) 1)
+          data (parameters/query-string->map qs)]
+      (reduce (fn [db [k v]]
+                (case k
+                  :access (assoc-in db (filter-access-path id) v)
+                  :favorites (assoc-in db (filter-favorites?-path id) v)
+                  :mode (assoc-in db (filter-list-mode-path id) v)
+                  :ownership (assoc-in db (filter-ownership-path id) v)
+                  :sort (assoc-in db (filter-sorting-path id) v)
+                  :tags (assoc-in db (filter-tags-path id) v)
+                  :q (-> db
+                         (assoc-in (filter-temporary-search-string-path id) v)
+                         (assoc-in (filter-search-string-path id) v))
+                  db))
+              db
+              data))))
