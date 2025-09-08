@@ -157,7 +157,14 @@
                                   merge
                                   PROD-CONFIG
                                   BACKEND-CONFIG
-                                  {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))}))))
+                                  {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))})))
+                         (shell "npx shadow-cljs release stats --config-merge"
+                                (prn-str
+                                 (merge-with
+                                  merge
+                                  PROD-CONFIG
+                                  BACKEND-CONFIG
+                                  {:output-to (str (fs/path PROD-BACKEND-DIR "stats.js"))}))))
 
   prod-backend-deploy {:depends [check-clj-kondo
                                  check-cljfmt
