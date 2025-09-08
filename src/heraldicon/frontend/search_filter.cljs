@@ -252,7 +252,11 @@
   (let [items-subscription (get-items-subscription id kind options)
         crawler? @(rf/subscribe [:get [:ui :crawler?]])
         crawler-next-list-page @(rf/subscribe [:get [:ui :crawler-next-list-page]])]
-    (update-params id options)
+    (when ({:arms-list
+            :charges-list
+            :ribbon-list
+            :collection-list} id)
+      (update-params id options))
     [status/default
      items-subscription
      (fn [{:keys [entities total tags]}]
