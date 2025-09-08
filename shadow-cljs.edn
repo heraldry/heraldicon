@@ -40,6 +40,17 @@
 
            :dev {:output-to "./backend/build/dev/backend.js"}}
 
+          :stats
+          {:target :node-script
+           :main heraldicon.backend.stats/start
+           :js-options {:js-package-dirs ["./backend/node_modules"]}
+           :compiler-options {:output-feature-set :es6
+                              :warnings {:redef false}
+                              :source-map true
+                              :source-map-detail-level :all}
+
+           :dev {:output-to "./backend/build/dev/stats.js"}}
+
           :manage
           {:target :node-script
            :main heraldicon.manage/main
