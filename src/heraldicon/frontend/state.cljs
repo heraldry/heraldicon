@@ -57,5 +57,8 @@
                                                                                 :highlight 1.0})}]}}}}})
 
 (macros/reg-event-db ::initialize
-  (fn [db [_ crawler?]]
-    (merge-with merge (assoc-in db-defaults [:ui :crawler?] crawler?) db)))
+  (fn [db [_ crawler? crawler-next-list-page]]
+    (->> db
+         (merge-with merge (-> db-defaults
+                               (assoc-in [:ui :crawler?] crawler?)
+                               (assoc-in [:ui :crawler-next-list-page] crawler-next-list-page))))))

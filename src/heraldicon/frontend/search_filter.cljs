@@ -37,7 +37,7 @@
 (def ^:private default-favorites?
   false)
 
-(def ^:private default-page-size
+(def default-page-size
   20)
 
 (defn- filter-temporary-search-string-path [id]
@@ -249,7 +249,9 @@
                                           display-selected-item?
                                           selected-item]
                                    :as options}]
-  (let [items-subscription (get-items-subscription id kind options)]
+  (let [items-subscription (get-items-subscription id kind options)
+        crawler? @(rf/subscribe [:get [:ui :crawler?]])
+        crawler-next-list-page @(rf/subscribe [:get [:ui :crawler-next-list-page]])]
     (update-params id options)
     [status/default
      items-subscription
@@ -274,26 +276,30 @@
           [:div.filter-component-results {:id results-id}
            (if (empty? entities)
              [:div [tr :string.miscellaneous/none]]
-             [:> InfiniteScroll
-              {:dataLength (count entities)
-               :hasMore (not= (count entities) total)
-               :next #(rf/dispatch [::entity-search/load-more id kind page-size])
-               :scrollableTarget results-id
-               :style {:overflow "visible"}}
-              [:ul.filter-results {:class (when small? "small")}
-               (when display-selected-item?
-                 [result-card id (:id selected-item) kind nil
-                  (assoc options
-                         :selection-placeholder? true)])
-               (into [:<>]
-                     (map (fn [item]
-                            ^{:key (:id item)}
-                            [result-card id (:id item) kind on-select options]))
-                     entities)
-               (when (< (count entities) total)
-                 [:li.filter-result-card-wrapper.filter-component-show-more
-                  [:button.button {:on-click #(rf/dispatch [::entity-search/load-more id kind page-size])}
-                   [tr :string.miscellaneous/show-more]]])]])]]))]))
+             [:<>
+              [:> InfiniteScroll
+               {:dataLength (count entities)
+                :hasMore (not= (count entities) total)
+                :next #(rf/dispatch [::entity-search/load-more id kind page-size])
+                :scrollableTarget results-id
+                :style {:overflow "visible"}}
+               [:ul.filter-results {:class (when small? "small")}
+                (when display-selected-item?
+                  [result-card id (:id selected-item) kind nil
+                   (assoc options
+                          :selection-placeholder? true)])
+                (into [:<>]
+                      (map (fn [item]
+                             ^{:key (:id item)}
+                             [result-card id (:id item) kind on-select options]))
+                      entities)
+                (when (< (count entities) total)
+                  [:li.filter-result-card-wrapper.filter-component-show-more
+                   [:button.button {:on-click #(rf/dispatch [::entity-search/load-more id kind page-size])}
+                    [tr :string.miscellaneous/show-more]]])]]
+              (when (and crawler?
+                         crawler-next-list-page)
+                [:a {:href crawler-next-list-page} "Next page"])])]]))]))
 
 (defn- list-mode [id options]
   (let [current-list-mode (get-list-mode id options)]
