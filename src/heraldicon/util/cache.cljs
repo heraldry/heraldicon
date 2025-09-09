@@ -1,5 +1,27 @@
 (ns heraldicon.util.cache
-  (:refer-clojure :exclude [get]))
+  (:refer-clojure :exclude [get memoize]))
+
+(def ^:private store
+  (atom {}))
+
+(def ^:private lookup-sentinel (js-obj))
+
+(defn memoize
+  "Returns a memoized version of a referentially transparent function. The
+  memoized version of the function keeps a cache of the mapping from arguments
+  to results and, when calls with the same arguments are repeated often, has
+  higher performance at the expense of higher memory use."
+  [id f]
+  (fn [& args]
+    (let [v (get-in @store [id args] lookup-sentinel)]
+      (if (identical? v lookup-sentinel)
+        (let [ret (apply f args)]
+          (swap! store assoc-in [id args] ret)
+          ret)
+        v))))
+
+(defn reset-memoize! []
+  (reset! store {}))
 
 (defrecord Node [key value prev next])
 

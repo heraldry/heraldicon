@@ -5,6 +5,7 @@
    [clojure.string :as str]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
+   [heraldicon.util.cache :as cache]
    [taoensso.timbre :as log]))
 
 (defn create
@@ -93,7 +94,8 @@
         (new Path (str longest "z"))))))
 
 (def ^:private shrink-step
-  (memoize
+  (cache/memoize
+   ::shrink-step
    (fn shrink-step [shape distance join]
      (when (shape? shape)
        (let [original-path (new Path shape)

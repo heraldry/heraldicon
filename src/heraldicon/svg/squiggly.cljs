@@ -3,6 +3,7 @@
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]
+   [heraldicon.util.cache :as cache]
    [heraldicon.util.random :as random]))
 
 (defn- jiggle [[previous current _]]
@@ -17,7 +18,8 @@
     (v/add current (v/Vector. dx dy))))
 
 (def squiggly-path
-  (memoize
+  (cache/memoize
+   ::squiggly-path
    (fn squiggly-path [path & {:keys [seed]}]
      (random/seed (if seed
                     [seed path]
