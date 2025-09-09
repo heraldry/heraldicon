@@ -2,9 +2,10 @@
   (:require
    [heraldicon.frontend.macros :as macros]
    [heraldicon.heraldry.default :as default]
-   [heraldicon.heraldry.option.attributes :as attributes]))
+   [heraldicon.heraldry.option.attributes :as attributes]
+   [re-frame.core :as rf]))
 
-(macros/reg-event-db ::clear-db
+(rf/reg-event-db ::clear-db
   (fn [_ _]
     {}))
 
