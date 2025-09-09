@@ -4,7 +4,8 @@
    ["paper" :refer [Path Point]]
    [clojure.string :as str]
    [heraldicon.math.curve.catmullrom :as catmullrom]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.math.vector :as v]
+   [heraldicon.util.cache :as cache]))
 
 (defn stitch [path]
   ;; TODO: this can be improved, it already broke some things and caused unexpected behaviour,
@@ -91,7 +92,8 @@
   (.-length path))
 
 (def sample-path
-  (memoize
+  (cache/memoize
+   ::sample-path
    (fn sample-path [path & {:keys [start-offset
                                    precision
                                    num-points]}]
@@ -104,7 +106,8 @@
        (points parsed-path n :start-offset start-offset)))))
 
 (def ^:private simplify-path
-  (memoize
+  (cache/memoize
+   ::simplify-path
    (fn simplify-path [path smoothing]
      (-> path
          (sample-path :precision smoothing)

@@ -17,6 +17,7 @@
    [heraldicon.svg.core :as svg]
    [heraldicon.svg.metadata :as svg.metadata]
    [heraldicon.svg.path :as path]
+   [heraldicon.util.cache :as cache]
    [heraldicon.util.colour :as colour]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
@@ -58,7 +59,8 @@
   (attributes/tincture-modifier-qualifier (get placeholder-colours colour)))
 
 (def ^:private remove-outlines
-  (memoize
+  (cache/memoize
+   ::remove-outlines
    (fn remove-outlines [data placeholder-colours]
      (walk/postwalk #(if (and (vector? %)
                               (->> % first (get #{:stroke :fill :stop-color}))
@@ -69,7 +71,8 @@
                     data))))
 
 (def remove-shading
-  (memoize
+  (cache/memoize
+   ::remove-shading
    (fn remove-shading [data placeholder-colours]
      (walk/postwalk #(if (and (vector? %)
                               (->> % first (get #{:stroke :fill :stop-color}))
@@ -80,7 +83,8 @@
                     data))))
 
 (def remove-layer-separator
-  (memoize
+  (cache/memoize
+   ::remove-layer-separator
    (fn remove-layer-separator [data placeholder-colours]
      (walk/postwalk #(cond
                        (and (vector? %)
@@ -111,7 +115,8 @@
     (colour/desaturate colour)))
 
 (def ^:private set-layer-separator-opacity
-  (memoize
+  (cache/memoize
+   ::set-layer-separator-opacity
    (fn set-layer-separator-opacity [data layer-separator-colours opacity]
      (if (seq layer-separator-colours)
        (let [layer-separator-colours (set layer-separator-colours)]
@@ -142,7 +147,8 @@
       replacement)))
 
 (def ^:private make-mask
-  (memoize
+  (cache/memoize
+   ::make-mask
    (fn make-mask [data placeholder-colours provided-placeholder-colours
                   outline-mode hide-lower-layer?]
      (let [mask (replace-colours

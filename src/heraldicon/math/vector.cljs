@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [abs])
   (:require
    ["paper" :refer [Path]]
-   [heraldicon.math.angle :as angle]))
+   [heraldicon.math.angle :as angle]
+   [heraldicon.util.cache :as cache]))
 
 (defrecord ^:export Vector [^js/Number x ^js/Number y])
 
@@ -178,7 +179,8 @@
   (str x "," y))
 
 (def ^:private path-intersection
-  (memoize
+  (cache/memoize
+   ::path-intersection
    (fn path-intersection [path1 path2]
      (try
        (let [p1 (new Path path1)

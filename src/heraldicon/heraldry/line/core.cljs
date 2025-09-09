@@ -40,6 +40,7 @@
    [heraldicon.render.outline :as outline]
    [heraldicon.svg.path :as path]
    [heraldicon.svg.squiggly :as squiggly]
+   [heraldicon.util.cache :as cache]
    [heraldicon.util.core :as util]
    [heraldicon.util.uid :as uid]))
 
@@ -741,7 +742,8 @@
         [:path {:d line-path}]])]))
 
 (def ^:private add-normals
-  (memoize
+  (cache/memoize
+   ::add-normals
    (fn add-normals [points]
      (->> (concat [(last points)]
                   points
@@ -803,7 +805,8 @@
         y))))
 
 (def modify-path
-  (memoize
+  (cache/memoize
+   ::modify-path
    (fn modify-path [path {:keys [type
                                  width
                                  spacing
