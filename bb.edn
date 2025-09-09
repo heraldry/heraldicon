@@ -157,14 +157,7 @@
                                   merge
                                   PROD-CONFIG
                                   BACKEND-CONFIG
-                                  {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))})))
-                         (shell "npx shadow-cljs release stats --config-merge"
-                                (prn-str
-                                 (merge-with
-                                  merge
-                                  PROD-CONFIG
-                                  BACKEND-CONFIG
-                                  {:output-to (str (fs/path PROD-BACKEND-DIR "stats.js"))}))))
+                                  {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))}))))
 
   prod-backend-deploy {:depends [check-clj-kondo
                                  check-cljfmt
@@ -178,6 +171,29 @@
                                (create-sentry-release-backend PROD-BACKEND-DIR "prod")
                                (shell {:dir "backend"} "bb prod-deploy")
                                (tag-backend-deploy))}
+
+  stats-release (do
+                  (fs/delete-tree STAGING-BACKEND-DIR)
+                  (fs/delete-tree PROD-BACKEND-DIR)
+                  (shell "npx shadow-cljs release stats --config-merge"
+                         (prn-str
+                          (merge-with
+                           merge
+                           PROD-CONFIG
+                           BACKEND-CONFIG
+                           {:output-to (str (fs/path PROD-BACKEND-DIR "stats.js"))}))))
+
+  stats-deploy {:depends [check-clj-kondo
+                          check-cljfmt
+                          check-debug-print-frontend
+                          check-debug-print-backend
+                          check-json
+                          check-dirty-frontend
+                          check-dirty-backend]
+                :task (do
+                        (run 'stats-release)
+                        (create-sentry-release-backend PROD-BACKEND-DIR "prod")
+                        (shell {:dir "backend"} "bb stats-deploy"))}
 
   prod-frontend-release (build-frontend-release PROD-FRONTEND-DIR PROD-CONFIG)
 
