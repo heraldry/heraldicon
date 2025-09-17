@@ -29,4 +29,4 @@
    [heraldicon.heraldry.tincture]
    [heraldicon.render.shared]))
 
-(.setup paper (new paper/Size 500 500))
+(.setup paper (paper/Size. 500 500))

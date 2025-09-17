@@ -183,8 +183,8 @@
    ::path-intersection
    (fn path-intersection [path1 path2]
      (try
-       (let [p1 (new paper/Path path1)
-             p2 (new paper/Path path2)]
+       (let [p1 (paper/Path. path1)
+             p2 (paper/Path. path2)]
          (into []
                (map (fn [^js/Object location]
                       (assoc (Vector. (.. location -point -x)

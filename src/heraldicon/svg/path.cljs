@@ -22,7 +22,7 @@
     :else (str v)))
 
 (defn parse-path [path]
-  (new paper/Path path))
+  (paper/Path. path))
 
 (defn translate
   ([path {:keys [x y]}]
@@ -33,12 +33,12 @@
 (defn scale [path sx sy & {:keys [center]
                            :or {center v/zero}}]
   (.scale path sx sy (when center
-                       (new paper/Point (:x center) (:y center)))))
+                       (paper/Point. (:x center) (:y center)))))
 
 (defn rotate [path angle & {:keys [center]
                             :or {center v/zero}}]
   (.rotate path angle (when center
-                        (new paper/Point (:x center) (:y center)))))
+                        (paper/Point. (:x center) (:y center)))))
 
 (defn reverse [path]
   (doto path .reverse))
