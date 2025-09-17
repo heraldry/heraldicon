@@ -1,7 +1,7 @@
 (ns heraldicon.svg.path
   (:refer-clojure :exclude [reverse])
   (:require
-   ["paper" :refer [Path Point]]
+   ["paper" :as paper]
    [clojure.string :as str]
    [heraldicon.math.curve.catmullrom :as catmullrom]
    [heraldicon.math.vector :as v]
@@ -22,7 +22,7 @@
     :else (str v)))
 
 (defn parse-path [path]
-  (new Path path))
+  (new paper/Path path))
 
 (defn translate
   ([path {:keys [x y]}]
@@ -33,12 +33,12 @@
 (defn scale [path sx sy & {:keys [center]
                            :or {center v/zero}}]
   (.scale path sx sy (when center
-                       (new Point (:x center) (:y center)))))
+                       (new paper/Point (:x center) (:y center)))))
 
 (defn rotate [path angle & {:keys [center]
                             :or {center v/zero}}]
   (.rotate path angle (when center
-                        (new Point (:x center) (:y center)))))
+                        (new paper/Point (:x center) (:y center)))))
 
 (defn reverse [path]
   (doto path .reverse))

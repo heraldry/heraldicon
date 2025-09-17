@@ -1,6 +1,6 @@
 (ns heraldicon.shared
   (:require
-   ["paper" :refer [paper Size]]
+   ["paper" :as paper]
    [heraldicon.entity.charge.data]
    [heraldicon.entity.collection.data]
    [heraldicon.entity.collection.element]
@@ -29,4 +29,4 @@
    [heraldicon.heraldry.tincture]
    [heraldicon.render.shared]))
 
-(.setup paper (new Size 500 500))
+(.setup paper (new paper/Size 500 500))

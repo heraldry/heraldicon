@@ -1,6 +1,6 @@
 (ns heraldicon.heraldry.field.environment
   (:require
-   ["paper" :refer [Path]]
+   ["paper" :as paper]
    ["paperjs-offset" :refer [PaperOffset]]
    [clojure.string :as str]
    [heraldicon.math.bounding-box :as bb]
@@ -73,7 +73,7 @@
 
 (defn- apply-offset [shape distance join]
   (when (shape? shape)
-    (let [original-path (new Path shape)
+    (let [original-path (new paper/Path shape)
           path (some-> (.offset PaperOffset
                                 original-path
                                 distance
@@ -86,19 +86,19 @@
                             (str/split #"[zZ]"))
           longest (some->> sub-paths
                            (sort-by (fn [path]
-                                      (-> (new Path (str path "z"))
+                                      (-> (new paper/Path (str path "z"))
                                           .-area
                                           Math/abs)) >)
                            first)]
       (when longest
-        (new Path (str longest "z"))))))
+        (new paper/Path (str longest "z"))))))
 
 (def ^:private shrink-step
   (cache/memoize
    ::shrink-step
    (fn shrink-step [shape distance join]
      (when (shape? shape)
-       (let [original-path (new Path shape)
+       (let [original-path (new paper/Path shape)
              outline-left (apply-offset shape (- distance) join)]
         ;; The path might be clockwise, then (- distance) is the
         ;; correct offset for the inner path; we expect that path
@@ -136,14 +136,14 @@
 
 (defn intersect-shapes [shape1 shape2]
   (when (and (shape? shape1) (shape? shape1))
-    (-> (new Path shape1)
-        (.intersect (new Path shape2))
+    (-> (new paper/Path shape1)
+        (.intersect (new paper/Path shape2))
         .-pathData)))
 
 (defn subtract-shape [shape1 shape2]
   (if (shape? shape2)
     (when (shape? shape1)
-      (-> (new Path shape1)
-          (.subtract (new Path shape2))
+      (-> (new paper/Path shape1)
+          (.subtract (new paper/Path shape2))
           .-pathData))
     shape1))
