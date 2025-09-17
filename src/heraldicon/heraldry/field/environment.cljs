@@ -73,7 +73,7 @@
 
 (defn- apply-offset [shape distance join]
   (when (shape? shape)
-    (let [original-path (new paper/Path shape)
+    (let [original-path (paper/Path. shape)
           path (some-> (.offset PaperOffset
                                 original-path
                                 distance
@@ -86,19 +86,19 @@
                             (str/split #"[zZ]"))
           longest (some->> sub-paths
                            (sort-by (fn [path]
-                                      (-> (new paper/Path (str path "z"))
+                                      (-> (paper/Path. (str path "z"))
                                           .-area
                                           Math/abs)) >)
                            first)]
       (when longest
-        (new paper/Path (str longest "z"))))))
+        (paper/Path. (str longest "z"))))))
 
 (def ^:private shrink-step
   (cache/memoize
    ::shrink-step
    (fn shrink-step [shape distance join]
      (when (shape? shape)
-       (let [original-path (new paper/Path shape)
+       (let [original-path (paper/Path. shape)
              outline-left (apply-offset shape (- distance) join)]
         ;; The path might be clockwise, then (- distance) is the
         ;; correct offset for the inner path; we expect that path
@@ -136,14 +136,14 @@
 
 (defn intersect-shapes [shape1 shape2]
   (when (and (shape? shape1) (shape? shape1))
-    (-> (new paper/Path shape1)
-        (.intersect (new paper/Path shape2))
+    (-> (paper/Path. shape1)
+        (.intersect (paper/Path. shape2))
         .-pathData)))
 
 (defn subtract-shape [shape1 shape2]
   (if (shape? shape2)
     (when (shape? shape1)
-      (-> (new paper/Path shape1)
-          (.subtract (new paper/Path shape2))
+      (-> (paper/Path. shape1)
+          (.subtract (paper/Path. shape2))
           .-pathData))
     shape1))

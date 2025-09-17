@@ -5,14 +5,14 @@
    [heraldicon.config :as config]))
 
 (def ^:private user-pool
-  (new CognitoUserPool (clj->js (select-keys (config/get :cognito-pool-config)
-                                             [:UserPoolId :ClientId]))))
+  (CognitoUserPool. (clj->js (select-keys (config/get :cognito-pool-config)
+                                          [:UserPoolId :ClientId]))))
 
 (defn login [username password & {:keys [on-success on-failure on-new-password-required on-confirmation-needed]}]
-  (let [user (new CognitoUser (clj->js {:Username username
-                                        :Pool user-pool}))
-        auth-details (new AuthenticationDetails (clj->js {:Username username
-                                                          :Password password}))]
+  (let [user (CognitoUser. (clj->js {:Username username
+                                     :Pool user-pool}))
+        auth-details (AuthenticationDetails. (clj->js {:Username username
+                                                       :Password password}))]
     (.authenticateUser
      user
      auth-details
@@ -81,8 +81,8 @@
                           (on-failure (js->clj error :keywordize-keys true)))})))
 
 (defn forgot-password [username & {:keys [on-success on-failure]}]
-  (let [user (new CognitoUser (clj->js {:Username username
-                                        :Pool user-pool}))]
+  (let [user (CognitoUser. (clj->js {:Username username
+                                     :Pool user-pool}))]
     (.forgotPassword
      user
      (clj->js {:onSuccess (fn [_data]

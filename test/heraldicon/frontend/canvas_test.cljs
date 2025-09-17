@@ -248,7 +248,7 @@
          {:x 22 :y 7 :dir :left}]]}))
 
 (deftest edges-to-path
-  (.setup paper (new paper/Size 500 500))
+  (.setup paper (paper/Size. 500 500))
 
   (are [edges path] (= (#'canvas/edges-to-path edges) path)
 
