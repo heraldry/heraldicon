@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.canvas-test
   (:require
-   ["paper" :refer [paper Size]]
+   ["paper" :as paper]
    [cljs.test :refer-macros [are deftest]]
    [heraldicon.frontend.canvas :as canvas]))
 
@@ -248,7 +248,7 @@
          {:x 22 :y 7 :dir :left}]]}))
 
 (deftest edges-to-path
-  (.setup paper (new Size 500 500))
+  (.setup paper (new paper/Size 500 500))
 
   (are [edges path] (= (#'canvas/edges-to-path edges) path)
 

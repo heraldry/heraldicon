@@ -1,7 +1,7 @@
 (ns heraldicon.math.vector
   (:refer-clojure :exclude [abs])
   (:require
-   ["paper" :refer [Path]]
+   ["paper" :as paper]
    [heraldicon.math.angle :as angle]
    [heraldicon.util.cache :as cache]))
 
@@ -183,8 +183,8 @@
    ::path-intersection
    (fn path-intersection [path1 path2]
      (try
-       (let [p1 (new Path path1)
-             p2 (new Path path2)]
+       (let [p1 (new paper/Path path1)
+             p2 (new paper/Path path2)]
          (into []
                (map (fn [^js/Object location]
                       (assoc (Vector. (.. location -point -x)
