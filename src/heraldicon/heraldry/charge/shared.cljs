@@ -70,7 +70,7 @@
                                    orientation-point-option)
         ornament? (some #{:ornaments} (:path context))
         offset-distance (if ornament?
-                          100
+                          200
                           45)]
     {:adapt-to-ordinaries? {:type :option.type/boolean
                             :default true
