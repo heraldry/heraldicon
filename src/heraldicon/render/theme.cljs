@@ -958,6 +958,40 @@
                   :creator-name "Itsthatmann02"
                   :creator-link "https://heraldicon.org/users/itsthatmann02"}})
 
+(def ^:private theme-community-xiyav-basic
+  {;; metals
+   :argent "#eeeeee"
+   :or "#f4cb08"
+
+   ;; colours
+   :azure "#060fbe"
+   :vert "#0bbc13"
+   :gules "#b71d1b"
+   :sable "#131313"
+   :purpure "#6607bd"
+
+   ;; stains
+   :murrey "#66023c"
+   :sanguine "#661202"
+   :tenne "#4a412a"
+
+   ;; other
+   :amaranth "#6f1045"
+   :brunatre "#492004"
+   :buff "#e0ab76"
+   :carnation "#f7dcc7"
+   :copper "#b87333"
+   :orange "#db7c07"
+   :rose "#db07a8"
+   :white "#dddddd"
+   :cendree "#737273"
+   :bleu-celeste "#069bbf"
+
+   ::name "Xiyav Basic"
+   ::attribution {:license :public-domain
+                  :creator-name "Ziyavrañ Xeyodramzañdexal"
+                  :creator-link "https://ziyav.carrd.co/"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -1002,7 +1036,8 @@
     [:community-mutcd theme-community-mutcd]
     [:community-theme-finnish-midtones theme-community-finnish-midtones]
     [:community-theme-midtones theme-community-midtones]
-    [:community-theme-lighthues theme-community-lighthues]]])
+    [:community-theme-lighthues theme-community-lighthues]
+    [:community-theme-xiyav-basic theme-community-xiyav-basic]]])
 
 (def default
   :wappenwiki)
