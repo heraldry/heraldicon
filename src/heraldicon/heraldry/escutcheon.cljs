@@ -1041,6 +1041,21 @@
                   :creator-name "natee"
                   :creator-link "https://heraldicon.org/users/natee"}})
 
+(def ^:private community-hungarian
+  {:shape "m 8.828125,0
+           c 0.04144,6.0448587 -0.01953,9.8928076 -0.537109,13.744141 -0.517713,3.851333 -1.025031,6.293676 -2.734375,13.34375 3.165277,1.717042 5.466631,6.085633 5.417968,11.591797
+           C 10.913509,45.59702 7.558678,53.92296 0,57.978516 5.286316,75.544164 5.859924,84.918113 12.060547,91.279297 20.793049,100.23792 42.841313,98.89524 50,110 57.158687,98.89524
+             79.206498,100.23792 87.939,91.279297 94.139623,84.918113 94.713684,75.544164 100,57.978516 92.441322,53.92296 89.0861,45.59702 89.025,38.679688 88.976337,33.173524
+             91.277723,28.804933 94.443,27.087891 92.733656,20.037817 92.226713,17.595474 91.709,13.744141 91.191425,9.8928076 91.13056,6.0448587 91.172,0 78.421319,2.1113109
+             63.824165,3.9296875 50,3.9296875 36.175835,3.9296875 21.578806,2.1113109 8.828125,0
+           Z"
+
+   ::name "Hungarian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "okkolol"
+                  :creator-link "https://heraldicon.org/users/okkolol"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1110,6 +1125,7 @@
     [:community-hawk-of-quraisch community-hawk-of-quraish]
     [:community-extravagant community-extravagant]
     [:community-philippino community-philippino]
+    [:community-hungarian community-hungarian]
     [:community-playful community-playful]
     [:community-persian community-persian]
     [:community-manilla community-manilla]
