@@ -45,26 +45,24 @@
             [build-dir stage]
 
             (let [release-name (str COMMIT-HASH "-" stage)]
-              (shell (str "npx @sentry/cli releases --org heraldicon "
+              (shell (str "npx @sentry/cli@3.1.0 releases --org heraldicon "
                           "new --project heraldicon-backend "
                           "--url https://github.com/heraldry/heraldicon/commit/" COMMIT-HASH " "
                           release-name))
-              (shell (str "npx @sentry/cli releases --org heraldicon "
-                          "files --project heraldicon-backend " release-name " "
-                          "upload-sourcemaps --url-prefix / "
+              (shell (str "npx @sentry/cli@3.1.0 sourcemaps --org heraldicon "
+                          "--project heraldicon-backend upload --release=" release-name " "
                           build-dir))))
 
           (defn create-sentry-release-frontend
             [build-dir stage]
 
             (let [release-name (str COMMIT-HASH "-" stage)]
-              (shell (str "npx @sentry/cli releases --org heraldicon "
+              (shell (str "npx @sentry/cli@3.1.0 releases --org heraldicon "
                           "new --project heraldicon-frontend "
                           "--url https://github.com/heraldry/heraldicon/commit/" COMMIT-HASH " "
                           release-name))
-              (shell (str "npx @sentry/cli releases --org heraldicon "
-                          "files --project heraldicon-frontend " release-name " "
-                          "upload-sourcemaps --url-prefix / "
+              (shell (str "npx @sentry/cli@3.1.0 sourcemaps --org heraldicon "
+                          "--project heraldicon-frontend upload --release=" release-name " "
                           build-dir))))
 
           (defn deploy-frontend [build-dir target]
