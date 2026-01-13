@@ -1056,6 +1056,19 @@
                   :creator-name "okkolol"
                   :creator-link "https://heraldicon.org/users/okkolol"}})
 
+(def ^:private community-arabic
+  {:shape "M 50,0
+           C 43.625195,7.9023724 15.810991,14.122919 4.3535496,14.122919
+           c -1.441231,0 -2.8095569,-0.135512 -4.25079809,-0.409076 0,0 -4.72441591,58.410374 49.89724849,98.286157
+           C 104.62167,72.124217 99.897248,13.713843 99.897248,13.713843 98.456006,13.987407 97.087681,14.122919 95.64645,14.122919 84.189009,14.122919 56.374804,7.9023724 50,0
+           Z"
+
+   ::name "Arabic"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "natee"
+                  :creator-link "https://heraldicon.org/users/natee"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1127,6 +1140,7 @@
     [:community-philippino community-philippino]
     [:community-hungarian community-hungarian]
     [:community-playful community-playful]
+    [:community-arabic community-arabic]
     [:community-persian community-persian]
     [:community-manilla community-manilla]
     [:community-gonfalon community-gonfalon]
