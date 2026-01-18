@@ -24,7 +24,7 @@
         org.slf4j/slf4j-nop {:mvn/version "2.1.0-alpha1"}
         re-frame/re-frame {:git/url "https://github.com/or/re-frame"
                            :sha "b028b8b2de3e6e4e627ffca13de0241aee972aaa"}
-        thheller/shadow-cljs {:mvn/version "3.2.0"}}
+        thheller/shadow-cljs {:mvn/version "3.3.5"}}
 
  :aliases
  {:outdated {:deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}}

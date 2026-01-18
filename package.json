@@ -20,6 +20,6 @@
   },
   "devDependencies": {
     "highlight.js": "11.5.1",
-    "shadow-cljs": "^3.2.0"
+    "shadow-cljs": "^3.3.5"
   }
 }
