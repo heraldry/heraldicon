@@ -6,7 +6,7 @@
     "@sentry/integrations": "^7.120.4",
     "amazon-cognito-identity-js": "^6.3.16",
     "copy-to-clipboard": "^3.3.3",
-    "crypto-browserify": "^3.12.0",
+    "crypto-browserify": "^3.12.1",
     "css": "^3.0.0",
     "draft-js": "^0.11.7",
     "genex": "^1.1.0",
