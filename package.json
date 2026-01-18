@@ -4,7 +4,7 @@
   "dependencies": {
     "@sentry/browser": "^10.34.0",
     "@sentry/integrations": "^7.120.4",
-    "amazon-cognito-identity-js": "^6.3.12",
+    "amazon-cognito-identity-js": "^6.3.16",
     "copy-to-clipboard": "^3.3.3",
     "crypto-browserify": "^3.12.0",
     "css": "^3.0.0",
