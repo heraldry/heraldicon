@@ -25,6 +25,18 @@
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
+   [:h3 "2026-01-01 - Happy new year!"]
+   [:div.release-row
+    [:div.info
+     [:p "I wish all of you a happy and healthy 2026!"]
+     [:p "Thank you for all your continued work on the site. Heraldicon has grown significantly again:"]
+     [:ul
+      [:li "over 7,300 users"]
+      [:li "almost 100,000 coats of arms created, over 8,000 of them public"]
+      [:li "over 15,000 charges, over 5,500 of them public"]]
+     [:p "The vast majority of content remains private. " [:b "If you've created something you're proud of, please consider making it public"] " - it allows other users to enjoy or even use your work!"]
+     [:p "As always, thanks to everyone who contributed with feedback, feature requests, public charges and arms, community themes, escutcheons, and all the other ways you support this project."]]]
+
    [:h3 "2025-01-01 - Charge type ontology and better search"]
    [:div.release-row
     [:div.info
