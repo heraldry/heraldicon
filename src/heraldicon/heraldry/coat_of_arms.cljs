@@ -75,55 +75,64 @@
         texture (interface/render-option :texture context)
         texture-displacement? (interface/render-option :texture-displacement? context)
         mask-id (uid/generate "mask")
-        texture-id (uid/generate "texture")
-        shiny-id (uid/generate "shiny")
+        effect-id (uid/generate "effect")
         texture-link (or texture-link
-                         (texture/full-path texture))]
+                         (texture/full-path texture))
+        has-effect? (or shiny? texture-link)]
     [:g {:filter (when escutcheon-shadow?
                    "url(#shadow)")}
      (when root-path
        [svg.metadata/attribution (c/<< context :path root-path)])
      [:defs
-      (when shiny?
-        [:filter {:id shiny-id}
-         [:feDiffuseLighting {:in "SourceGraphic"
-                              :result "light"
-                              :lighting-color "white"}
-          [:fePointLight {:x 75
-                          :y 20
-                          :z 20}]]
-         [:feComposite {:in "SourceGraphic"
-                        :in2 "light"
-                        :operator "arithmetic"
-                        :k1 1
-                        :k2 0
-                        :k3 0
-                        :k4 0}]])
-      (when texture-link
-        [:filter {:id texture-id}
-         [:feImage {:href texture-link
-                    :x min-x
-                    :y min-y
-                    :width (max width height)
-                    :height (max width height)
-                    :preserveAspectRatio "none"
-                    :result "image"}]
-         (when texture-displacement?
-           [:feDisplacementMap {:in "SourceGraphic"
-                                :in2 "image"
-                                :scale (texture/displacement texture)
-                                :xChannelSelector "R"
-                                :yChannelSelector "R"
-                                :result "displaced"}])
-         [:feComposite {:in (if texture-displacement?
-                              "displaced"
-                              "SourceGraphic")
-                        :in2 "image"
-                        :operator "arithmetic"
-                        :k1 1
-                        :k2 0
-                        :k3 0
-                        :k4 0}]])
+      (when has-effect?
+        [:filter {:id effect-id
+                  :filter-units "userSpaceOnUse"
+                  :x min-x
+                  :y min-y
+                  :width (max width height)
+                  :height (max width height)}
+         (when shiny?
+           [:<>
+            [:feDiffuseLighting {:in "SourceGraphic"
+                                 :result "light"
+                                 :lighting-color "white"}
+             [:fePointLight {:x 75
+                             :y 20
+                             :z 20}]]
+            [:feComposite {:in "SourceGraphic"
+                           :in2 "light"
+                           :operator "arithmetic"
+                           :k1 1
+                           :k2 0
+                           :k3 0
+                           :k4 0
+                           :result "shiny"}]])
+         (when texture-link
+           [:<>
+            [:feImage {:href texture-link
+                       :x min-x
+                       :y min-y
+                       :width (max width height)
+                       :height (max width height)
+                       :preserveAspectRatio "none"
+                       :result "image"}]
+            (when texture-displacement?
+              [:feDisplacementMap {:in (if shiny? "shiny" "SourceGraphic")
+                                   :in2 "image"
+                                   :scale (texture/displacement texture)
+                                   :xChannelSelector "R"
+                                   :yChannelSelector "R"
+                                   :result "displaced"}])
+            [:feComposite {:in (cond
+                                 texture-displacement? "displaced"
+                                 shiny? "shiny"
+                                 :else "SourceGraphic")
+                           :in2 "image"
+                           :operator "arithmetic"
+                           :k1 1
+                           :k2 0
+                           :k3 0
+                           :k4 0}]])])
       (when-not svg-export?
         filter/shadow)
       [pattern/defs theme]
@@ -144,13 +153,11 @@
                    (not clip?))
             :mask
             :clip-path) (str "url(#" mask-id ")")}
-      [:g {:filter (when texture-link (str "url(#" texture-id ")"))}
-       [:g {:filter (when shiny?
-                      (str "url(#" shiny-id ")"))}
-        [:path {:d (str/join "" shape-paths)
-                :fill-rule "evenodd"
-                :fill "#f0f0f0"}]
-        [interface/render-component (c/++ context :field)]]]]
+      [:g {:filter (when has-effect? (str "url(#" effect-id ")"))}
+       [:path {:d (str/join "" shape-paths)
+               :fill-rule "evenodd"
+               :fill "#f0f0f0"}]
+       [interface/render-component (c/++ context :field)]]]
      (when (or escutcheon-outline?
                outline?)
        [:g (outline/style context)
