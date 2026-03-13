@@ -137,8 +137,9 @@
                                                                    (- idx)
                                                                    Math/abs)
                                             effective-flow-idx (cond-> effective-type-idx
-                                                                 (#{:stacked
-                                                                    :waves} flow-mode :stacked) (->> (- even-max-num-curves)))]
+                                                                 (get #{:stacked
+                                                                        :waves}
+                                                                      flow-mode :stacked) (->> (- even-max-num-curves)))]
                                         {:type (type-fn start-mode effective-type-idx
                                                         (/ (curve/length curve)
                                                            total-length))
