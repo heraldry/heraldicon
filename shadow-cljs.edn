@@ -18,7 +18,7 @@
                       :http-port 8081
                       :preloads [devtools.preload
                                  day8.re-frame-10x.preload.react-18]}
-           :compiler-options {:output-feature-set :es6
+           :compiler-options {:output-feature-set :es2020
                               :warnings {:redef false}
                               :source-map true
                               :source-map-detail-level :all}
@@ -33,7 +33,7 @@
           {:target :node-script
            :main heraldicon.backend.server/start
            :js-options {:js-package-dirs ["./backend/node_modules"]}
-           :compiler-options {:output-feature-set :es6
+           :compiler-options {:output-feature-set :es2020
                               :warnings {:redef false}
                               :source-map true
                               :source-map-detail-level :all}
@@ -44,7 +44,7 @@
           {:target :node-script
            :main heraldicon.backend.stats/start
            :js-options {:js-package-dirs ["./backend/node_modules"]}
-           :compiler-options {:output-feature-set :es6
+           :compiler-options {:output-feature-set :es2020
                               :warnings {:redef false}
                               :source-map true
                               :source-map-detail-level :all}
@@ -55,7 +55,7 @@
           {:target :node-script
            :main heraldicon.manage/main
            :output-to "./backend/build/manage/manage.js"
-           :compiler-options {:output-feature-set :es6
+           :compiler-options {:output-feature-set :es2020
                               :warnings {:redef false}}}
 
           :test
