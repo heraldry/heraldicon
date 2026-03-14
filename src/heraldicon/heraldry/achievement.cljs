@@ -157,7 +157,7 @@
                       scale-width
                       scale-height))
                 1)
-        [document-width document-height] [(* result-width scale) (* result-height scale)]]
+        [document-width document-height] [(Math/round (* result-width scale)) (Math/round (* result-height scale))]]
 
     [:svg (merge
            {:viewBox (str/join " " (map str [(- margin-left) (- margin-top)
