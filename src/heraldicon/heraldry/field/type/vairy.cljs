@@ -271,9 +271,9 @@
      :height height
      :pattern [:<>
                                ;; (1, 1) extra to prevent anti-aliasing
-               [:path {:d (str "M -1," (str (inc height))
+               [:path {:d (str "M -1," (inc height)
                                ;; (1, 1) extra to prevent anti-aliasing
-                               "L" (inc width) "," (str (inc height))
+                               "L" (inc width) "," (inc height)
                                ;; (1, 0) extra to prevent anti-aliasing
                                "L" (inc width) "," (- height (* dy h))
                                "L" width "," (- height (* dy h))

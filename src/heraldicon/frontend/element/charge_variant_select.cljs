@@ -35,8 +35,7 @@
 
 (defn choice-preview-url [context]
   (if (interface/get-raw-data (c/++ context :preview?))
-    (static/static-url
-     (str "/svg/charge-type-roundel-unselected.svg"))
+    (static/static-url "/svg/charge-type-roundel-unselected.svg")
     (let [charge-type-context (c/++ context :type)
           variant-context (c/++ context :variant)
           {:keys [inherited default]} (interface/get-options charge-type-context)

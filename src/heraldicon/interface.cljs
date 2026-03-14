@@ -13,7 +13,7 @@
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
-(def ^:private cache
+(def ^:dynamic cache
   (atom {}))
 
 (defn clear-subscription-cache! []

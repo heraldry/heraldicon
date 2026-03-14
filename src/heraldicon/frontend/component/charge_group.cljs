@@ -237,10 +237,8 @@
     {:title (string/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)
                                                                       (charge.options/title (c/++ context :charges 0))
                                                                       :string.charge-group/various))
-     :icon {:default (static/static-url
-                      (str "/svg/charge-group-preset-three.svg"))
-            :selected (static/static-url
-                       (str "/svg/charge-group-preset-three-selected.svg"))}
+     :icon {:default (static/static-url "/svg/charge-group-preset-three.svg")
+            :selected (static/static-url "/svg/charge-group-preset-three-selected.svg")}
      :draggable? true
      :drop-options-fn drag/drop-options
      :drop-fn drag/drop-fn

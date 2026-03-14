@@ -7,7 +7,7 @@
 
 (defmethod node nil [context]
   (log/warn :not-implemented "node" context)
-  {:title (str "unknown")})
+  {:title "unknown"})
 
 (defmulti form interface/effective-component-type)
 

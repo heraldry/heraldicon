@@ -1,6 +1,6 @@
 (ns heraldicon.util.uid)
 
-(def ^:private current-id
+(def ^:dynamic current-id
   (atom 0))
 
 (defn reset []

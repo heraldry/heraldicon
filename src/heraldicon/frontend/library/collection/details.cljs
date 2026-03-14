@@ -153,11 +153,11 @@
                        (+ margin
                           (* x (+ arms-width
                                   margin))
-                          (+ (/ arms-width 2)))
+                          (/ arms-width 2))
                        (+ margin
                           (* y (+ arms-height
                                   margin))
-                          (+ (/ arms-height 2)))
+                          (/ arms-height 2))
                        (conj form-db-path :data :elements idx)
                        :font font
                        :font-size (* 12 font-scale)]])))
@@ -175,11 +175,11 @@
             (+ margin
                (* x (+ arms-width
                        margin))
-               (+ (/ arms-width 2)))
+               (/ arms-width 2))
             (+ margin
                (* y (+ arms-height
                        margin))
-               (+ (/ arms-height 2)))
+               (/ arms-height 2))
             arms-width]]))]]))
 
 (defn- render-arms-preview [form-db-path]
