@@ -8,11 +8,11 @@
                   _line-options]
                (let [quarter-width (/ width 4)
                      pointy-height (* quarter-width
-                                      (* 2)
-                                      (* (-> eccentricity
-                                             (* 0.6)
-                                             (+ 0.2)))
-                                      (* height))
+                                      2
+                                      (-> eccentricity
+                                          (* 0.6)
+                                          (+ 0.2))
+                                      height)
                      middle-height (* quarter-width height)
                      half-height (/ middle-height 2)]
                  {:pattern ["l"
