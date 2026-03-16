@@ -66,27 +66,97 @@
   (str "c" (v/->str (v/sub cp1 p1)) "," (v/->str (v/sub cp2 p1)) "," (v/->str (v/sub p2 p1))))
 
 (defn curve-to-relative [curve]
-  (let [start (ffirst curve)]
-    (str/join "" (concat [(move-to start)]
-                         (map bezier-to-relative curve)))))
+  (let [start (ffirst curve)
+        parts (js/Array. (move-to start))]
+    (doseq [[{x1 :x y1 :y} cp1 cp2 p2] curve]
+      (.push parts (str "c"
+                        (- (:x cp1) x1) "," (- (:y cp1) y1) ","
+                        (- (:x cp2) x1) "," (- (:y cp2) y1) ","
+                        (- (:x p2) x1) "," (- (:y p2) y1))))
+    (.join parts "")))
+
+(defn- points-with-offset [^js/Object path n start-offset]
+  ;; Slow path: wrapping arc-length offset, used by round-corners/clockwise?.
+  ;; Keeps the original getPointAt approach since it's not the squiggle hot path.
+  (let [total-length (.-length path)
+        n-dec (dec n)]
+    (loop [i 0
+           acc (transient [])]
+      (if (< i n)
+        (let [x (-> total-length (* i) (/ n-dec) (+ start-offset) (mod total-length))
+              p (.getPointAt path x)]
+          (recur (inc i)
+                 (if p
+                   (conj! acc (v/Vector. (.-x p) (.-y p)))
+                   acc)))
+        (persistent! acc)))))
+
+(defn- points-uniform [^js/Object path n]
+  ;; Fast path: no offset, uniform arc-length sampling.
+  ;; Walks the curves array once with a single forward pointer to find which
+  ;; curve each sample falls on, then calls curve.getTimeAt(within-curve-offset)
+  ;; for the arc-length → t conversion on that curve alone. This avoids the
+  ;; full-path linear scan that path.getPointAt does on every call (O(curves)
+  ;; per sample), while producing bit-identical sample positions.
+  (let [curves (.getCurves path)
+        num-curves (.-length curves)
+        ;; Collect per-curve lengths (Paper.js caches _length after first call).
+        curve-lengths (js/Array. num-curves)
+        total-length (loop [ci 0
+                            total 0.0]
+                       (if (< ci num-curves)
+                         (let [cl ^js (.getLength (aget curves ci))]
+                           (aset curve-lengths ci cl)
+                           (recur (inc ci) (+ total cl)))
+                         total))
+        step (/ total-length (dec n))]
+    ;; Single forward pass: advance ci (curve index) and si (sample index)
+    ;; together. curve-end tracks the arc-length at the end of the current curve.
+    (loop [ci 0
+           curve-end (aget curve-lengths 0)
+           si 0
+           acc (transient [])]
+      (cond
+        (= si n)
+        (persistent! acc)
+
+        ;; Advance to the next curve when the current sample arc-offset has
+        ;; passed the end of this curve (and it's not the last sample).
+        (and (< ci (dec num-curves))
+             (> (* si step) curve-end))
+        (let [next-ci (inc ci)]
+          (recur next-ci
+                 (+ curve-end (aget curve-lengths next-ci))
+                 si
+                 acc))
+
+        :else
+        (let [curve (aget curves ci)
+              cl (aget curve-lengths ci)
+              curve-start (- curve-end cl)
+              arc-offset (* si step)
+              within-curve (- arc-offset curve-start)
+              ;; getTimeAt converts arc-length offset within this curve to the
+              ;; bezier t parameter using Newton's method — same as getPointAt
+              ;; does internally, but scoped to just this curve, not the whole path.
+              t (if (< cl 1e-10)
+                  0.0
+                  (min 1.0 (max 0.0 ^js (.getTimeAt curve within-curve))))
+              p ^js (.getPointAtTime curve t)]
+          (recur ci curve-end (inc si) (conj! acc (v/Vector. (.-x p) (.-y p)))))))))
 
 (defn points [^js/Object path n & {:keys [start-offset]}]
-  (let [length (.-length path)
+  (let [total-length (.-length path)
         n (if (= n :length)
-            (-> length
+            (-> total-length
                 Math/floor
                 inc)
             n)]
-    (vec (keep (fn [i]
-                 (let [x (if start-offset
-                           (-> length (* i) (/ (dec n)) (+ start-offset) (mod length))
-                           (-> length (* i) (/ (dec n)) (min length)))
-                       p (.getPointAt path x)]
-                   (if p
-                     (v/Vector. (.-x p) (.-y p))
-                     (do
-                       (js/console.error "path.points issue" path start-offset)
-                       nil)))) (range n)))))
+    (cond
+      start-offset (points-with-offset path n start-offset)
+      (> n 1) (points-uniform path n)
+      :else (let [p (.getPointAt path 0)]
+              (if p [(v/Vector. (.-x p) (.-y p))] [])))))
 
 (defn length [path]
   (.-length path))
