@@ -1,7 +1,7 @@
 (ns heraldicon.util.cache
   (:refer-clojure :exclude [get memoize]))
 
-(def ^:private store
+(def ^:dynamic store
   (atom {}))
 
 (def ^:private lookup-sentinel (js-obj))
@@ -19,9 +19,6 @@
           (swap! store assoc-in [id args] ret)
           ret)
         v))))
-
-(defn reset-memoize! []
-  (reset! store {}))
 
 (defrecord Node [key value prev next])
 
