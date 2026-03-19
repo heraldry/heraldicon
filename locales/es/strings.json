@@ -726,7 +726,8 @@
     "unnamed": "sin nombre",
     "unsaved-data": "Datos no guardados",
     "field-reference": "como",
-    "not-supported-by-charge": "No es compatible con la figura"
+    "not-supported-by-charge": "No es compatible con la figura",
+    "search": "Buscar..."
   },
   "button": {
     "add": "Añadir",
