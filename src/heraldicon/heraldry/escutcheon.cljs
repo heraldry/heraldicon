@@ -1086,6 +1086,19 @@
                   :creator-name "serindo"
                   :creator-link "https://heraldicon.org/users/serindo"}})
 
+(def ^:private community-danish
+  {:shape "M 100,0 99.067923,66.08895
+           v 0.06349
+           C 99.051995,78.652713 94.251107,91.14832 84.694288,100.67583 75.113583,110.22201 62.558196,114.99906 50.005151,115 37.450702,115.00053 24.896254,110.22527 15.323042,100.67583 5.7493614,91.132913 0.94846774,78.620037 0.94846774,66.104354
+           L 0,0
+           Z"
+
+   ::name "Danish"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "thatoneherald"
+                  :creator-link "https://heraldicon.org/users/thatoneherald"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1159,6 +1172,7 @@
     [:community-hungarian community-hungarian]
     [:community-playful community-playful]
     [:community-arabic community-arabic]
+    [:community-danish community-danish]
     [:community-persian community-persian]
     [:community-manilla community-manilla]
     [:community-gonfalon community-gonfalon]
