@@ -707,7 +707,8 @@
     "unnamed": "нет имени",
     "unsaved-data": "несохраненные данные",
     "field-reference": "like",
-    "not-supported-by-charge": "not supported by charge"
+    "not-supported-by-charge": "not supported by charge",
+    "search": "Поиск..."
   },
   "button": {
     "add": "Добавить",

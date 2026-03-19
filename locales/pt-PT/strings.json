@@ -3,7 +3,9 @@
     "type" : { }
   },
   "menu" : { },
-  "miscellaneous" : { },
+  "miscellaneous" : {
+    "search" : "Procurar..."
+  },
   "tooltip" : {
     "ignore-layer-separator?" : "Se a peça contém um separador de camada para o escudo, então isto pode desativá-la. "
   },

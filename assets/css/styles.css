@@ -999,6 +999,56 @@ label div {
   margin: 0;
 }
 
+.ui-submenu .content {
+  max-height: 20em;
+  overflow-y: auto;
+}
+
+.ui-submenu.image-select .content {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.ui-submenu.image-select .content::-webkit-scrollbar {
+  width: 6px;
+  display: block;
+}
+
+.ui-submenu.image-select .content::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.ui-submenu.image-select .content::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 3px;
+}
+
+.ui-submenu.image-select .content::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+.ui-submenu-search {
+  width: 75%;
+  box-sizing: border-box;
+  margin-bottom: 0.4em;
+  padding: 3px 6px;
+  font-size: 0.9em;
+  border-radius: 999px;
+  border: 1px solid #aaa;
+  outline: none;
+}
+
+.choice-label {
+  font-size: 0.6em;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  margin-top: 0.2em;
+}
+
 .ui-setting input[type="checkbox"],
 .ui-setting input[type="radio"] {
   margin-left: 0px;

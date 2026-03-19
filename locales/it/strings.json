@@ -708,7 +708,8 @@
     "unnamed": "senza nome",
     "unsaved-data": "dati non salvati",
     "field-reference": "idem",
-    "not-supported-by-charge": "non supportato da figura"
+    "not-supported-by-charge": "non supportato da figura",
+    "search": "Cerca..."
   },
   "button": {
     "add": "Aggiungi",

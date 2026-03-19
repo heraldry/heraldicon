@@ -708,7 +708,8 @@
     "unnamed": "sans nom",
     "unsaved-data": "données non sauvegardées",
     "field-reference": "idem",
-    "not-supported-by-charge": "non compatible avec la charge"
+    "not-supported-by-charge": "non compatible avec la charge",
+    "search": "Rechercher..."
   },
   "button": {
     "add": "Ajouter",

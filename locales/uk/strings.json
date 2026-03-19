@@ -714,7 +714,8 @@
     "unnamed": "без назви",
     "unsaved-data": "незбережені дані",
     "field-reference": "як у",
-    "not-supported-by-charge": "не підтримується для фігури"
+    "not-supported-by-charge": "не підтримується для фігури",
+    "search": "Пошук..."
   },
   "button": {
     "add": "Додати",
