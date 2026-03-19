@@ -992,6 +992,38 @@
                   :creator-name "Ziyavrañ Xeyodramzañdexal"
                   :creator-link "https://ziyav.carrd.co/"}})
 
+(def ^:private theme-community-true-sodacan
+  {;; metals
+   :argent "#ececec"
+   :or "#fee46e"
+
+   ;; colours
+   :azure "#1668e2"
+   :vert "#21ad5e"
+   :gules "#e94545"
+   :sable "#2d2d2d"
+   :purpure "#a44476"
+
+   ;; stains
+   :murrey "#a52969"
+   :sanguine "#791717"
+   :tenne "#c15f1d"
+
+   ;; other
+   :eisenfarbe "#999999"
+   :brunatre "#693310"
+   :buff "#dfad42"
+   :carnation "#fcbf8c"
+   :orange "#e35d03"
+   :rose "#df2ddf"
+   :white "#dddddd"
+   :bleu-celeste "#66c8e1"
+
+   ::name "True Sodacan"
+   ::attribution {:license :public-domain
+                  :creator-name "thatoneherald"
+                  :creator-link "https://heraldicon.org/users/thatoneherald"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -1026,6 +1058,7 @@
     [:community-van-goes-vroem theme-community-van-goes-vroem]
     [:community-content-cranium theme-community-content-cranium]
     [:community-sodacan theme-community-sodacan]
+    [:community-theme-true-sodacan theme-community-true-sodacan]
     [:community-custom-philippine theme-community-custom-philippine]
     [:community-soft-rage theme-community-soft-rage]
     [:community-the-violet-herald-palette theme-community-the-violet-herald-palette]
