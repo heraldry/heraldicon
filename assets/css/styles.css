@@ -999,12 +999,8 @@ label div {
   margin: 0;
 }
 
-.ui-submenu .content {
-  max-height: 20em;
-  overflow-y: auto;
-}
-
 .ui-submenu.image-select .content {
+  max-height: 20em;
   overflow-x: hidden;
   overflow-y: scroll;
 }
