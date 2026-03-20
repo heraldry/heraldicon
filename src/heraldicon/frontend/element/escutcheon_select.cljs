@@ -21,9 +21,10 @@
 (defn- escutcheon-choice [context key display-name & {:keys [selected?
                                                              clickable?]
                                                       :or {clickable? true}}]
-  (let [choice [:div {:style {:display "flex"
+  (let [choice [:div {:style {:display "inline-flex"
                               :flex-direction "column"
                               :align-items "center"
+                              :vertical-align "top"
                               :width "4em"}}
                 [:img.clickable {:style {:width "4em"
                                          :vertical-align "top"}
