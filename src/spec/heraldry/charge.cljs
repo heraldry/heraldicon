@@ -27,6 +27,7 @@
 (s/def :heraldry.charge/fimbriation :heraldry/fimbriation)
 (s/def :heraldry.charge/outline-mode (su/key-in? charge.shared/outline-mode-map))
 (s/def :heraldry.charge/vertical-mask number?)
+(s/def :heraldry.charge/horizontal-mask number?)
 
 (s/def :heraldry.charge/escutcheon (s/or :none #{:none}
                                          :escutcheon (su/key-in? escutcheon/escutcheon-map)))
@@ -48,6 +49,7 @@
                                          :heraldry.charge/geometry
                                          :heraldry.charge/fimbriation
                                          :heraldry.charge/outline-mode
+                                         :heraldry.charge/horizontal-mask
                                          :heraldry.charge/vertical-mask
                                          :heraldry.charge/escutcheon
                                          :heraldry.charge/num-points

@@ -145,12 +145,60 @@
                     :choices outline-mode-choices
                     :default :keep
                     :ui/label :string.option/outline-mode}
+     :horizontal-mask {:type :option.type/range
+                       :default 0
+                       :min -100
+                       :max 100
+                       :ui/label :string.option/horizontal-mask
+                       :ui/step 1}
      :vertical-mask {:type :option.type/range
                      :default 0
                      :min -100
                      :max 100
                      :ui/label :string.option/vertical-mask
                      :ui/step 1}}))
+
+(defn apply-horizontal-mask [context {:keys [bounding-box width height]
+                                      :as properties}]
+  (let [horizontal-mask (interface/get-sanitized-data (c/++ context :horizontal-mask))
+        {:keys [min-x max-x
+                min-y max-y]} bounding-box
+        unmasked-width (- max-x min-x)
+        mask-width (math/percent-of unmasked-width (Math/abs horizontal-mask))
+        [min-x max-x] (if (pos? horizontal-mask)
+                        [min-x (max min-x (- max-x mask-width))]
+                        [(min max-x (+ min-x mask-width)) max-x])
+        bounding-box (assoc bounding-box
+                            :min-x min-x
+                            :max-x max-x)
+        [real-width real-height] (bb/size bounding-box)
+        horizontal-mask-shape (when-not (zero? horizontal-mask)
+                                (let [fimbriation-percentage-base (min width height)
+                                      {:keys [mode
+                                              thickness-1
+                                              thickness-2]} (some-> (interface/get-sanitized-data (c/++ context :fimbriation))
+                                                                    (update :thickness-1 (partial math/percent-of fimbriation-percentage-base))
+                                                                    (update :thickness-2 (partial math/percent-of fimbriation-percentage-base)))
+                                      margin (+ 3
+                                                (case mode
+                                                  :double (+ thickness-1 thickness-2)
+                                                  :single thickness-1
+                                                  0))
+                                      [mask-min-y mask-max-y] [(- min-y margin) (+ max-y margin)]
+                                      [mask-min-x mask-max-x] (if (pos? horizontal-mask)
+                                                                [(- min-x margin) max-x]
+                                                                [min-x (+ max-x margin)])]
+                                  (path/make-path
+                                   ["M" mask-min-x mask-min-y
+                                    "H" mask-max-x
+                                    "V" mask-max-y
+                                    "H" mask-min-x
+                                    "z"])))]
+    (assoc properties
+           :bounding-box bounding-box
+           :width real-width
+           :height real-height
+           :horizontal-mask-shape horizontal-mask-shape)))
 
 (defn apply-vertical-mask [context {:keys [bounding-box width height]
                                     :as properties}]
@@ -279,19 +327,19 @@
                 min-y max-y]
          :as bounding-box} (bb/from-paths charge-shape)]
 
-    (apply-vertical-mask
-     context
-     (merge base-properties
-            {:type (interface/get-raw-data (c/++ context :type))
-             :bounding-box bounding-box
-             :width (- max-x min-x)
-             :height (- max-y min-y)
-             :shape charge-shape
-             :anchor-point anchor-point
-             :scale-x scale-x
-             :scale-y scale-y
-             :angle angle
-             :top-left base-top-left}))))
+    (->> (merge base-properties
+                {:type (interface/get-raw-data (c/++ context :type))
+                 :bounding-box bounding-box
+                 :width (- max-x min-x)
+                 :height (- max-y min-y)
+                 :shape charge-shape
+                 :anchor-point anchor-point
+                 :scale-x scale-x
+                 :scale-y scale-y
+                 :angle angle
+                 :top-left base-top-left})
+         (apply-horizontal-mask context)
+         (apply-vertical-mask context))))
 
 (defmethod interface/environment :heraldry/charge [context]
   (let [{:keys [bounding-box anchor-point]} (interface/get-properties context)]

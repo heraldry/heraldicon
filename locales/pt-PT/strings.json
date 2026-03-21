@@ -34,6 +34,7 @@
     "tincture-background-choice" : { },
     "tincture-background-group" : { },
     "number" : "Número",
+    "horizontal-mask" : "Máscara horizontal",
     "vertical-mask" : "Máscara vertical",
     "access-filter-choice" : { },
     "outline-mode-choice" : {

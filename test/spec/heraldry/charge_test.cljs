@@ -46,6 +46,15 @@
 
     {:type :heraldry.charge.type/lion
      :field example-field
+     :horizontal-mask 0.6}
+
+    {:type :heraldry.charge.type/lion
+     :field example-field
+     :vertical-mask 0.6
+     :horizontal-mask 0.6}
+
+    {:type :heraldry.charge.type/lion
+     :field example-field
      :escutcheon :heater}
 
     {:type :heraldry.charge.type/lion
@@ -106,6 +115,10 @@
     {:type :heraldry.charge.type/lion
      :field example-field
      :vertical-mask :wrong}
+
+    {:type :heraldry.charge.type/lion
+     :field example-field
+     :horizontal-mask :wrong}
 
     {:type :heraldry.charge.type/lion
      :field example-field
