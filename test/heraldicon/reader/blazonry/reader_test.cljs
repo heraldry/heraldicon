@@ -274,6 +274,89 @@
                    :field {:type :heraldry.field.type/plain
                            :tincture :sable}}]}
 
+    "or a fess wavy of 5 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :wavy
+                          :width 20}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a fess wavy with 5 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :wavy
+                          :width 20}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a fess wavy 5 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :wavy
+                          :width 20}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a fess wavy of 4 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :wavy
+                          :width 25}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a fess wavy of 1 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :wavy
+                          :width 100}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a fess wavy of 25 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :wavy
+                          :width 4}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a fess wavy of 26 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :wavy
+                          :width 4}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a fess wavy of 2.5 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/fess
+                   :line {:type :wavy
+                          :width 40}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or a bend wavy of 5 and indented of 10 gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.ordinary.type/bend
+                   :line {:type :wavy
+                          :width 20}
+                   :opposite-line {:type :indented
+                                   :width 10}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
     "or a fess or, a pale sable, a chief vert"
     {:type :heraldry.field.type/plain
      :tincture :or

@@ -68,6 +68,7 @@ COTTISED
     | #"\bcotised\b"
 
 number/NUMBER = #"[1-9][0-9]*"
+number/FLOAT = #"[1-9][0-9]*(\.[0-9]+)?|0\.[0-9]+"
 number/DIGIT-WORD
     = #"\bone\b"
     | #"\btwo\b"
@@ -1803,8 +1804,11 @@ ordinary
       (cottising (AND? cottising (AND? cottising)?)?)?
 
 line
-    = line-type fimbriation?
+    = line-type line-style-repetitions? fimbriation?
     | fimbriation
+
+line-style-repetitions
+    = <of-or-with>? number/FLOAT
 
 line-type
     = line/STRAIGHT
