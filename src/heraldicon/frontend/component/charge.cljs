@@ -37,6 +37,7 @@
      :tincture
      :outline-mode
      :vertical-mask
+     :horizontal-mask
      :manual-blazon
      :ignore-layer-separator?])])
 
