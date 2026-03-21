@@ -13,11 +13,18 @@
     (get {:rayonny :rayonny-flaming}
          raw-type raw-type)))
 
+(defmethod ast->hdn :line-style-repetitions [[_ node]]
+  (let [n (js/parseFloat (second node))
+        clamped (max 1 (min 25 n))]
+    (/ 100 clamped)))
+
 (defmethod ast->hdn :line [[_ & nodes]]
-  (let [line-type (transform-first #{:line-type} nodes)]
+  (let [line-type (transform-first #{:line-type} nodes)
+        line-width (transform-first #{:line-style-repetitions} nodes)]
     (-> nil
         (cond->
-          line-type (assoc :type line-type))
+          line-type (assoc :type line-type)
+          line-width (assoc :width line-width))
         (add-fimbriation nodes))))
 
 (defn add-lines [hdn nodes]
