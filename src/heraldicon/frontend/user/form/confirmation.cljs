@@ -1,5 +1,8 @@
 (ns heraldicon.frontend.user.form.confirmation
   (:require
+   [cljs.core.async :refer [go]]
+   [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.aws.cognito :as cognito]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
@@ -43,8 +46,11 @@
   (fn [{:keys [db]} _]
     (let [{:keys [code]} (form/data-from-db db ::id)
           user (get-in db db-path-user)]
-      {:dispatch [::message/clear ::id]
-       ::confirm [user code]})))
+      (if (string? user)
+        {:dispatch [::message/clear ::id]
+         ::confirm-v2 [user code]}
+        {:dispatch [::message/clear ::id]
+         ::confirm [user code]}))))
 
 (rf/reg-fx ::confirm
   (fn [[user code]]
@@ -60,6 +66,20 @@
                    (log/error "confirmation error:" error)
                    (rf/dispatch [::message/set-error ::id (.-message error)])
                    (modal/stop-loading)))))
+
+(rf/reg-fx ::confirm-v2
+  (fn [[username code]]
+    (modal/start-loading)
+    (go
+      (try
+        (<? (api/call :confirm-account {:username username :code code} nil))
+        (rf/dispatch [::form/clear-and-close ::id])
+        (rf/dispatch [::login/show :string.user.message/registration-completed])
+        (catch :default e
+          (log/error e "confirm-v2 error")
+          (rf/dispatch [::message/set-error ::id (:message (ex-data e))]))
+        (finally
+          (modal/stop-loading))))))
 
 (rf/reg-event-fx ::request-resend-code
   (fn [{:keys [db]} _]
