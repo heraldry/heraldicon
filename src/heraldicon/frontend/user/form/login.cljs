@@ -58,7 +58,7 @@
                                 [::message/set-error (form/message-id ::id :password)
                                  :string.user.message/password-required])
         (and username?
-             password?) (assoc ::login [username password])))))
+             password?) (assoc ::login-v2 [username password])))))
 
 (defn login-with-token [jwt-token & {:keys [form-id]
                                      :or {form-id ::id}}]
@@ -93,6 +93,28 @@
                                  (rf/dispatch [::form/clear-and-close ::id])
                                  (rf/dispatch [::change-temporary-password/show user user-attributes])
                                  (modal/stop-loading)))))
+
+(rf/reg-fx ::login-v2
+  (fn [[username-or-email password]]
+    (modal/start-loading)
+    (go
+      (try
+        (let [session-data (<? (api/call :login-v2 {:username-or-email username-or-email
+                                                    :password password} nil))]
+          (rf/dispatch [::session/store session-data])
+          (rf/dispatch [::repository/session-change])
+          (rf/dispatch [::form/clear-and-close ::id]))
+        (catch :default e
+          (let [data (ex-data e)]
+            (if (= (:type data) :client-user-not-confirmed)
+              (do
+                (rf/dispatch [::form/clear-and-close ::id])
+                (rf/dispatch [::confirmation/show (-> data :data :username)]))
+              (do
+                (log/error e "login-v2 error")
+                (rf/dispatch [::message/set-error ::id (:message data)])))))
+        (finally
+          (modal/stop-loading))))))
 
 (rf/reg-fx ::start-password-reset
   (fn [[username]]
