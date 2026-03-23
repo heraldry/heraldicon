@@ -1,7 +1,9 @@
 (ns heraldicon.frontend.user.session
   (:require
    [clojure.string :as str]
+   [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.entity.user :as user]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.repository.core :as repository]
    [hodgepodge.core :as hp]
    [re-frame.core :as rf]))
@@ -32,17 +34,29 @@
 (defn- get-storage-item [key]
   (hp/get-item hp/local-storage key))
 
+(defn- validate-session [session-data]
+  (go-catch
+   (try
+     (let [result (<? (api/call :validate-session nil session-data))]
+       (when-not result
+         (rf/dispatch [::logout])))
+     (catch :default _
+       (rf/dispatch [::logout])))))
+
 (defn read-from-storage []
   (let [session-id (get-storage-item local-storage-session-id-name)
         user-id (get-storage-item local-storage-user-id-name)
         username (get-storage-item local-storage-username-name)
         dark-mode? (= (get-storage-item local-storage-dark-mode-name) "true")
-        height-limit-mode? (= (get-storage-item local-storage-height-limit-mode-name) "true")]
-    (rf/dispatch-sync [::store {:username username
-                                :session-id session-id
-                                :user-id user-id
-                                :dark-mode? dark-mode?
-                                :height-limit-mode? height-limit-mode?}])))
+        height-limit-mode? (= (get-storage-item local-storage-height-limit-mode-name) "true")
+        session-data {:username username
+                      :session-id session-id
+                      :user-id user-id
+                      :dark-mode? dark-mode?
+                      :height-limit-mode? height-limit-mode?}]
+    (rf/dispatch-sync [::store session-data])
+    (when session-id
+      (validate-session session-data))))
 
 (rf/reg-fx ::set-cookie
   (fn [[session-id]]
