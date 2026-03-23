@@ -39,6 +39,10 @@
                                                  [k v])))
                                        messages)))))
 
+(macros/reg-event-db ::clear-all
+  (fn [db _]
+    (assoc-in db db-path-base nil)))
+
 (defn display [message-id]
   (let [{:keys [type message]} @(rf/subscribe [::message message-id])]
     [:<>
