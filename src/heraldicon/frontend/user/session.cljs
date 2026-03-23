@@ -4,6 +4,7 @@
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.entity.user :as user]
    [heraldicon.frontend.api :as api]
+   [heraldicon.frontend.message :as-alias message]
    [heraldicon.frontend.repository.core :as repository]
    [hodgepodge.core :as hp]
    [re-frame.core :as rf]))
@@ -39,9 +40,9 @@
    (try
      (let [result (<? (api/call :validate-session nil session-data))]
        (when-not result
-         (rf/dispatch [::logout])))
+         (rf/dispatch [::session-expired])))
      (catch :default _
-       (rf/dispatch [::logout])))))
+       (rf/dispatch [::session-expired])))))
 
 (defn read-from-storage []
   (let [session-id (get-storage-item local-storage-session-id-name)
@@ -80,6 +81,7 @@
 (rf/reg-event-fx ::store
   (fn [{:keys [db]} [_ session-data]]
     {:db (assoc-in db db-path session-data)
+     :dispatch [::message/clear-all]
      ::set-cookie [(:session-id session-data)]
      ::write-to-local-storage [session-data]}))
 
@@ -135,6 +137,10 @@
                   [::repository/session-change]]
      ::set-cookie [nil]
      ::write-to-local-storage [nil]}))
+
+(rf/reg-event-fx ::session-expired
+  (fn [_ _]
+    {:dispatch [::clear]}))
 
 (rf/reg-event-fx ::toggle-dark-mode
   (fn [{:keys [db]} _]

@@ -4,8 +4,10 @@
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
    [heraldicon.config :as config]
+   [heraldicon.frontend.user.session :as-alias session]
    [heraldicon.math.vector :as v]
-   [heraldicon.util.encoding :as encoding]))
+   [heraldicon.util.encoding :as encoding]
+   [re-frame.core :as rf]))
 
 (defn call [name payload session]
   (go-catch
@@ -28,6 +30,9 @@
          body (:body response)]
      (if (= status 200)
        (:success body)
-       (if-let [error (:error body)]
-         (throw (ex-info "API error" error :api-error))
-         (throw (ex-info (str "API error: " status) {:message body} :api-error)))))))
+       (let [error (:error body)]
+         (when (= (:type error) :client-not-logged-in)
+           (rf/dispatch [::session/session-expired]))
+         (if error
+           (throw (ex-info "API error" error :api-error))
+           (throw (ex-info (str "API error: " status) {:message body} :api-error))))))))
