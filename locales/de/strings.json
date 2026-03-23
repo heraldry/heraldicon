@@ -1046,6 +1046,7 @@
     "error": "Fehler"
   },
   "banner": {
+    "not-logged-in": "Du bist nicht eingeloggt.",
     "outdated-version-arms": "Das ist nicht die neueste Version dieses Wappens.",
     "outdated-version-charge": "Das ist nicht die neueste Version dieser Wappenfigur.",
     "outdated-version-collection": "Das ist nicht die neueste version dieser Sammlung.",

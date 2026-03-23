@@ -1048,6 +1048,7 @@
     "error": "Error"
   },
   "banner": {
+    "not-logged-in": "No has iniciado sesión.",
     "outdated-version-arms": "Esta no es la última versión de este escudo de armas.",
     "outdated-version-charge": "Esta no es la última versión de la figura.",
     "outdated-version-collection": "Esta no es la última versión de la colección.",

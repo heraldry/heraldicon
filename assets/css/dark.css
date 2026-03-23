@@ -3,6 +3,12 @@
   background-color: #222;
 }
 
+.dark .banner.info {
+  border-color: #554d00;
+  background-color: #3a3000;
+  color: #d4a017;
+}
+
 .dark.header {
   border-bottom: 1px solid #555;
 }

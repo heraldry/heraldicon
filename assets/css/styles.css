@@ -1433,6 +1433,16 @@ ul.parser-warnings li {
   padding: 6px 10px;
 }
 
+.banner.info {
+  border: 1px solid #e0d5a8;
+  background-color: #fff3cd;
+  color: #664d03;
+}
+
+.banner.info i {
+  color: #e89020;
+}
+
 .banner.warning {
   border: 1px solid #ecc;
   background-color: #fdd;

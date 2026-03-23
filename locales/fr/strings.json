@@ -1028,6 +1028,7 @@
     "error": "Erreur"
   },
   "banner": {
+    "not-logged-in": "Vous n'êtes pas connecté.",
     "outdated-version-arms": "Ceci n'est pas la dernière version de ces armoiries.",
     "outdated-version-charge": "Ceci n'est pas la dernière version de cette charge.",
     "outdated-version-collection": "Ceci n'est pas la dernière version de cette collection.",

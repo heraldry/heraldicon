@@ -2,13 +2,14 @@
   (:require
    ["@sentry/browser" :as sentry]
    ["@sentry/integrations" :as sentry-integrations]
+   [clojure.string :as str]
    [heraldicon.config :as config]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.core]
    [heraldicon.frontend.dark-mode :as dark-mode]
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys]
-   [heraldicon.frontend.language :as language]
+   [heraldicon.frontend.language :as language :refer [tr]]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.search-filter :as search-filter]
@@ -20,10 +21,24 @@
    [reagent.dom.client :as r]
    [taoensso.timbre :as log]))
 
+(def ^:private login-banner-sections
+  #{"arms" "charge" "collection" "ribbon"})
+
+(defn- login-banner []
+  (let [logged-in? @(rf/subscribe [::session/logged-in?])
+        section (some-> (router/current-route) namespace (str/split #"[.]") second)]
+    (when (and (not logged-in?)
+               (login-banner-sections section))
+      [:div.banner.info
+       [:i.fas.fa-exclamation-circle]
+       " "
+       [tr :string.banner/not-logged-in]])))
+
 (defn app []
   [:<>
    [header/view]
    [:div.main-content.no-scrollbar {:class (dark-mode/class)}
+    [login-banner]
     [router/view]
     [modal/render]
     [auto-complete/render]]])

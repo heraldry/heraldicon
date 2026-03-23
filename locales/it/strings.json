@@ -1028,6 +1028,7 @@
     "error": "Errore"
   },
   "banner": {
+    "not-logged-in": "Non hai effettuato l'accesso.",
     "outdated-version-arms": "Questa non è la versione più recente dello stemma.",
     "outdated-version-charge": "Questa non è la versione più recente della figura.",
     "outdated-version-collection": "Questa non è la versione più recente della collezione.",
