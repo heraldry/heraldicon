@@ -1035,6 +1035,7 @@
     "error": "Помилка"
   },
   "banner": {
+    "not-logged-in": "Ви не увійшли в систему.",
     "outdated-version-arms": "Це не поточна версія цього герба.",
     "outdated-version-charge": "Це не поточна версія цієї фігури.",
     "outdated-version-collection": "Це не поточна версія цієї колекції.",

@@ -1027,6 +1027,7 @@
     "error": "Error"
   },
   "banner": {
+    "not-logged-in": "Вы не вошли в систему.",
     "outdated-version-arms": "This is not the latest version of this coat of arms.",
     "outdated-version-charge": "This is not the latest version of this charge.",
     "outdated-version-collection": "This is not the latest version of this collection.",

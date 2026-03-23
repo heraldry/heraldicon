@@ -1053,6 +1053,7 @@
     "outdated-version-charge": "This is not the latest version of this charge.",
     "outdated-version-collection": "This is not the latest version of this collection.",
     "outdated-version-ribbon": "This is not the latest version of this ribbon.",
-    "open-latest-version": "Open latest version."
+    "open-latest-version": "Open latest version.",
+    "not-logged-in": "You are not logged in."
   }
 }

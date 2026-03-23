@@ -1,4 +1,7 @@
 {
+  "banner" : {
+    "not-logged-in" : "Não tem sessão iniciada."
+  },
   "ordinary" : {
     "type" : { }
   },
