@@ -71,7 +71,7 @@
                                       [::message/set-error (form/message-id ::id :password-again)
                                        :string.user.message/passwords-do-not-match])
         (and username?
-             (not valid-username?)
+             valid-username?
              email?
              password?
              (= password
