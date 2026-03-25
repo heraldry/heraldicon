@@ -20,7 +20,7 @@
 (defn- form []
   [:form.modal-form {:on-submit (form/on-submit-fn [::submit])}
    [message/display ::id]
-   [form/text-field ::id :username :string.user/username]
+   [form/text-field ::id :username :string.user/username-or-email]
    [form/password-field ::id :password :string.user/password]
    [:a {:style {:margin-right "5px"}
         :href "#"

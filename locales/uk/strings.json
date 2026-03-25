@@ -779,7 +779,8 @@
     "register-confirmation": "Підтвердити реєстрацію",
     "reset-forgotten-password": "Скинути забутий пароль",
     "username": "Ім'я користувача",
-    "username-help": "Видиме для всіх. Дозволені символи: a-z, A-Z, 0-9, _, -"
+    "username-help": "Видиме для всіх. Дозволені символи: a-z, A-Z, 0-9, _, -",
+    "username-or-email": "Ім'я користувача або email"
   },
   "attribution": {
     "title": "Автори",

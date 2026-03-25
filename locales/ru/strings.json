@@ -771,7 +771,8 @@
     "register-confirmation": "Подтверждение регистрации",
     "reset-forgotten-password": "Скинуть забытый пароль",
     "username": "Имя пользователя",
-    "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -"
+    "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -",
+    "username-or-email": "Имя пользователя или email"
   },
   "attribution": {
     "title": "Ссылка на источник",
