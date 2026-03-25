@@ -1099,6 +1099,37 @@
                   :creator-name "thatoneherald"
                   :creator-link "https://heraldicon.org/users/thatoneherald"}})
 
+(def ^:private community-herzeg-croatian
+  {:shape "M 96.036226,20.636344
+           C 86.218526,32.095792 90.834195,42.34861 94.106824,47.25979 110.46953,72.634244 89.270541,87.649628 72.90774,87.649628
+           L 56.545033,88.46818
+           c -3.272472,0 -5.726913,2.455574 -6.545023,4.911149
+           C 49.181743,90.923754 46.727365,88.46818 43.454909,88.46818
+           L 27.092186,87.649628
+           C 10.7294,87.649628 -10.469511,72.634244 5.8931797,47.25979 9.1657307,42.34861 13.781463,32.095792 3.9638727,20.636344 8.8726597,15.725211 14.552455,9.8223927 18.643116,0 26.406548,2.0439683 38.200956,3.2727083 50.00001,3.2750863 61.826261,3.2766611 73.575661,2.0487872 81.35692,0
+           c 4.090661,9.8223927 9.77044,15.725211 14.679306,20.636344
+           z"
+
+   ::name "Herzeg Croatian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "okkolol"
+                  :creator-link "https://heraldicon.org/users/okkolol"}})
+
+(def ^:private community-croatian
+  {:shape "m 112.2024,388.04533
+           v 58.50666
+           c 0,7.34286 -1.59693,26.29263 12.37818,34.10922 9.00092,4.9742 26.43383,3.78867 37.56656,10.6578 11.13273,-6.86913 28.56564,-5.6836 37.56657,-10.6578 13.97511,-7.81659 12.37817,-26.76636 12.37817,-34.10922
+           v -58.50666
+           h -42.81842 -11.86712
+           z"
+
+   ::name "Croatian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "okkolol"
+                  :creator-link "https://heraldicon.org/users/okkolol"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1173,6 +1204,8 @@
     [:community-playful community-playful]
     [:community-arabic community-arabic]
     [:community-danish community-danish]
+    [:community-croatian community-croatian]
+    [:community-herzeg-croatian community-herzeg-croatian]
     [:community-persian community-persian]
     [:community-manilla community-manilla]
     [:community-gonfalon community-gonfalon]
