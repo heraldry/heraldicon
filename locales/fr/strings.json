@@ -772,7 +772,8 @@
     "register-confirmation": "Confirmation d'inscription",
     "reset-forgotten-password": "Réinitialiser le mot de passe oublié",
     "username": "Nom d'utilisateur",
-    "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -"
+    "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -",
+    "username-or-email": "Nom d'utilisateur ou e-mail"
   },
   "attribution": {
     "title": "Attribution",

@@ -14,7 +14,8 @@
   },
   "user" : {
     "message" : { },
-    "button" : { }
+    "button" : { },
+    "username-or-email": "Nome de utilizador ou email"
   },
   "validation" : {
     "attribution" : { },
