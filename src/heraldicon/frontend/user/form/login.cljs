@@ -56,9 +56,9 @@
                                 [::message/set-error (form/message-id ::id :password)
                                  :string.user.message/password-required])
         (and username?
-             password?) (assoc ::login-v2 [username password])))))
+             password?) (assoc ::login [username password])))))
 
-(rf/reg-fx ::login-v2
+(rf/reg-fx ::login
   (fn [[username-or-email password]]
     (modal/start-loading)
     (go
@@ -75,7 +75,7 @@
                 (rf/dispatch [::form/clear-and-close ::id])
                 (rf/dispatch [::confirmation/show (-> data :data :username)]))
               (do
-                (log/error e "login-v2 error")
+                (log/error e "login error")
                 (rf/dispatch [::message/set-error ::id (:message data)])))))
         (finally
           (modal/stop-loading))))))
