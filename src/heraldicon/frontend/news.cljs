@@ -25,6 +25,12 @@
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
+   [:h3 "2026-03-26 - User database migration"]
+   [:div.release-row
+    [:div.info
+     [:p "You can now log in with your " [:b "username"] " or " [:b "email address"] ". For this to work I've migrated the system to a different one. This shouldn't be noticeable to you, but if you notice any issues with registrations, password resets, or confirmation emails, then please reach out to me, so I can have a look."]
+     [:p "Note: in the past it was possible to register multiple users with the same email address, this is no longer supported. The old accounts remain, but in those cases you need to log in with the username."]]]
+
    [:h3 "2026-01-01 - Happy new year!"]
    [:div.release-row
     [:div.info
