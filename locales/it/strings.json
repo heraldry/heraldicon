@@ -753,6 +753,7 @@
       "ribbon-saved": "Nastro salvato, nuova versione:",
       "save-changes-first": "Salva le tue modifiche prima.",
       "username-required": "Nome utente richiesto.",
+      "username-or-email-required": "Nome utente o indirizzo e-mail richiesto.",
       "username-contains-invalid-characters": "Il nome utente contiene caratteri non validi. Caratteri autorizzati: a-z, A-Z, 0-9, _, -"
     },
     "button": {
