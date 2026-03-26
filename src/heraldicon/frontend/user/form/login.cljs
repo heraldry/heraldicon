@@ -4,7 +4,6 @@
    [clojure.string :as str]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.api :as api]
-   [heraldicon.frontend.aws.cognito :as cognito]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
@@ -58,36 +57,6 @@
                                  :string.user.message/password-required])
         (and username?
              password?) (assoc ::login-v2 [username password])))))
-
-(defn login-with-token [jwt-token & {:keys [form-id]
-                                     :or {form-id ::id}}]
-  (go
-    (try
-      (let [session-data (<? (api/call :login {:jwt-token jwt-token} nil))]
-        (rf/dispatch [::session/store session-data])
-        (rf/dispatch [::repository/session-change])
-        (rf/dispatch [::form/clear-and-close form-id]))
-      (catch :default e
-        (log/error e "login with token error")
-        (rf/dispatch [::message/set-error form-id (:message e)]))
-      (finally
-        (modal/stop-loading)))))
-
-(rf/reg-fx ::login
-  (fn [[username password]]
-    (modal/start-loading)
-    (cognito/login
-     username password
-     :on-success (fn [^js/Object user]
-                   (login-with-token (-> user .getAccessToken .getJwtToken)))
-     :on-confirmation-needed (fn [user]
-                               (rf/dispatch [::form/clear-and-close ::id])
-                               (rf/dispatch [::confirmation/show user])
-                               (modal/stop-loading))
-     :on-failure (fn [error]
-                   (log/error "login error:" error)
-                   (rf/dispatch [::message/set-error ::id (.-message error)])
-                   (modal/stop-loading)))))
 
 (rf/reg-fx ::login-v2
   (fn [[username-or-email password]]
