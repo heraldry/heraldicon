@@ -3,7 +3,6 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.api :as api]
-   [heraldicon.frontend.aws.cognito :as cognito]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
@@ -35,8 +34,8 @@
      [tr :string.user.button/confirm]]]])
 
 (rf/reg-event-fx ::show
-  (fn [_ [_ user]]
-    {:dispatch-n [[:set db-path-user user]
+  (fn [_ [_ username-or-email]]
+    {:dispatch-n [[:set db-path-user username-or-email]
                   [::modal/create
                    :string.user/register-confirmation
                    [form]
@@ -45,57 +44,40 @@
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
     (let [{:keys [code]} (form/data-from-db db ::id)
-          user (get-in db db-path-user)]
-      (if (string? user)
-        {:dispatch [::message/clear ::id]
-         ::confirm-v2 [user code]}
-        {:dispatch [::message/clear ::id]
-         ::confirm [user code]}))))
+          username-or-email (get-in db db-path-user)]
+      {:dispatch [::message/clear ::id]
+       ::confirm [username-or-email code]})))
 
 (rf/reg-fx ::confirm
-  (fn [[user code]]
-    (modal/start-loading)
-    (cognito/confirm
-     user code
-     :on-success (fn [_user]
-                   (rf/dispatch [::form/clear-and-close ::id])
-                   (rf/dispatch [::login/show
-                                 :string.user.message/registration-completed])
-                   (modal/stop-loading))
-     :on-failure (fn [error]
-                   (log/error "confirmation error:" error)
-                   (rf/dispatch [::message/set-error ::id (.-message error)])
-                   (modal/stop-loading)))))
-
-(rf/reg-fx ::confirm-v2
-  (fn [[username code]]
+  (fn [[username-or-email code]]
     (modal/start-loading)
     (go
       (try
-        (<? (api/call :confirm-account {:username username :code code} nil))
+        (<? (api/call :confirm-account {:username-or-email username-or-email
+                                        :code code} nil))
         (rf/dispatch [::form/clear-and-close ::id])
         (rf/dispatch [::login/show :string.user.message/registration-completed])
         (catch :default e
-          (log/error e "confirm-v2 error")
+          (log/error e "confirmation error")
           (rf/dispatch [::message/set-error ::id (:message (ex-data e))]))
         (finally
           (modal/stop-loading))))))
 
 (rf/reg-event-fx ::request-resend-code
   (fn [{:keys [db]} _]
-    (let [user (get-in db db-path-user)]
+    (let [username-or-email (get-in db db-path-user)]
       {:dispatch [::message/clear ::id]
-       ::resend-code [user]})))
+       ::resend-code [username-or-email]})))
 
 (rf/reg-fx ::resend-code
-  (fn [[user]]
+  (fn [[username-or-email]]
     (modal/start-loading)
-    (cognito/resend-code
-     user
-     :on-success (fn [_user]
-                   (rf/dispatch [::message/set-success ::id :string.user.message/new-confirmation-code-sent])
-                   (modal/stop-loading))
-     :on-failure (fn [error]
-                   (log/error "resend code error:" error)
-                   (rf/dispatch [::message/set-error ::id (.-message error)])
-                   (modal/stop-loading)))))
+    (go
+      (try
+        (<? (api/call :resend-confirmation-code {:username-or-email username-or-email} nil))
+        (rf/dispatch [::message/set-success ::id :string.user.message/new-confirmation-code-sent])
+        (catch :default e
+          (log/error e "resend code error")
+          (rf/dispatch [::message/set-error ::id (:message (ex-data e))]))
+        (finally
+          (modal/stop-loading))))))
