@@ -38,6 +38,9 @@
 (defn iso-now []
   (format/unparse (:date-time format/formatters) (time/time-now)))
 
+(defn iso-from-now-minutes [minutes]
+  (format/unparse (:date-time format/formatters) (time/plus (time/time-now) (time/minutes minutes))))
+
 (defn interpolate [key-values value]
   (loop [[[[key1 v1] [key2 v2]] & rest] (partition 2 1 [nil] key-values)]
     (cond

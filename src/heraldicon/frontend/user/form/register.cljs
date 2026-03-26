@@ -1,13 +1,14 @@
 (ns heraldicon.frontend.user.form.register
   (:require
+   [cljs.core.async :refer [go]]
    [clojure.string :as str]
-   [heraldicon.frontend.aws.cognito :as cognito]
+   [com.wsscode.async.async-cljs :refer [<?]]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.user.form.confirmation :as confirmation]
    [heraldicon.frontend.user.form.core :as form]
-   [heraldicon.frontend.user.form.login :as-alias login]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -80,18 +81,15 @@
 (rf/reg-fx ::register
   (fn [[username email password]]
     (modal/start-loading)
-    (cognito/sign-up
-     username password email
-     :on-success (fn [_user]
-                   (rf/dispatch [::form/clear-and-close ::id])
-                   (rf/dispatch [::login/show
-                                 :string.user.message/registration-completed])
-                   (modal/stop-loading))
-     :on-confirmation-needed (fn [user]
-                               (rf/dispatch [::form/clear-and-close ::id])
-                               (rf/dispatch [::confirmation/show user])
-                               (modal/stop-loading))
-     :on-failure (fn [error]
-                   (log/error "sign-up error" error)
-                   (rf/dispatch [::message/set-error ::id (.-message error)])
-                   (modal/stop-loading)))))
+    (go
+      (try
+        (<? (api/call :register {:username username
+                                 :email email
+                                 :password password} nil))
+        (rf/dispatch [::form/clear-and-close ::id])
+        (rf/dispatch [::confirmation/show username])
+        (catch :default e
+          (log/error e "registration error")
+          (rf/dispatch [::message/set-error ::id (:message (ex-data e))]))
+        (finally
+          (modal/stop-loading))))))
