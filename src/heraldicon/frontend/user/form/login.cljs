@@ -121,24 +121,13 @@
     (modal/start-loading)
     (go
       (try
-        (let [username (if (str/includes? username-or-email "@")
-                         (:username (<? (api/call :resolve-username
-                                                  {:username-or-email username-or-email}
-                                                  nil)))
-                         username-or-email)]
-          (cognito/forgot-password
-           username
-           :on-success (fn [user]
-                         (rf/dispatch [::form/clear-and-close ::id])
-                         (rf/dispatch [::password-reset-confirmation/show user])
-                         (modal/stop-loading))
-           :on-failure (fn [error]
-                         (log/error "password reset initiation error:" error)
-                         (rf/dispatch [::message/set-error ::id (.-message error)])
-                         (modal/stop-loading))))
+        (<? (api/call :start-password-reset {:username-or-email username-or-email} nil))
+        (rf/dispatch [::form/clear-and-close ::id])
+        (rf/dispatch [::password-reset-confirmation/show username-or-email])
         (catch :default e
-          (log/error e "password reset resolve error")
-          (rf/dispatch [::message/set-error ::id (:message (ex-data e))])
+          (log/error e "password reset error")
+          (rf/dispatch [::message/set-error ::id (:message (ex-data e))]))
+        (finally
           (modal/stop-loading))))))
 
 (rf/reg-event-fx ::forgot-password-clicked
