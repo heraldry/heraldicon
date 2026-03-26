@@ -753,6 +753,7 @@
       "ribbon-saved": "Listel sauvegardé, nouvelle version :",
       "save-changes-first": "Sauvegardez d'abord vos modifications.",
       "username-required": "Nom d'utilisateur requis.",
+      "username-or-email-required": "Nom d'utilisateur ou adresse e-mail requis.",
       "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -"
     },
     "button": {

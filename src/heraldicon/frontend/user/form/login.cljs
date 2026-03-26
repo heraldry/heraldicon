@@ -53,7 +53,7 @@
 
         (not username?) (update :dispatch-n conj
                                 [::message/set-error (form/message-id ::id :username)
-                                 :string.user.message/username-required])
+                                 :string.user.message/username-or-email-required])
         (not password?) (update :dispatch-n conj
                                 [::message/set-error (form/message-id ::id :password)
                                  :string.user.message/password-required])
@@ -138,6 +138,6 @@
 
         (not username?) (update :dispatch-n conj
                                 [::message/set-error (form/message-id ::id :username)
-                                 :string.user.message/username-required])
+                                 :string.user.message/username-or-email-required])
 
         username? (assoc ::start-password-reset [username])))))

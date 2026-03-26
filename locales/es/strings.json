@@ -773,6 +773,7 @@
       "ribbon-saved": "Listón guardado, nueva versión:",
       "save-changes-first": "Guarde su figura primero.",
       "username-required": "Nombre de usuario requerido.",
+      "username-or-email-required": "Nombre de usuario o correo electrónico requerido.",
       "username-contains-invalid-characters": "Nombre de usuario contiene caracteres inválidos. Permitidos: a-z, A-Z, 0-9, _, -"
     },
     "button": {
