@@ -9,7 +9,6 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.core :as repository]
-   [heraldicon.frontend.user.form.change-temporary-password :as-alias change-temporary-password]
    [heraldicon.frontend.user.form.confirmation :as-alias confirmation]
    [heraldicon.frontend.user.form.core :as form]
    [heraldicon.frontend.user.form.password-reset-confirmation :as-alias password-reset-confirmation]
@@ -88,11 +87,7 @@
      :on-failure (fn [error]
                    (log/error "login error:" error)
                    (rf/dispatch [::message/set-error ::id (.-message error)])
-                   (modal/stop-loading))
-     :on-new-password-required (fn [user user-attributes]
-                                 (rf/dispatch [::form/clear-and-close ::id])
-                                 (rf/dispatch [::change-temporary-password/show user user-attributes])
-                                 (modal/stop-loading)))))
+                   (modal/stop-loading)))))
 
 (rf/reg-fx ::login-v2
   (fn [[username-or-email password]]
