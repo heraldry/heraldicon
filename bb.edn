@@ -47,14 +47,21 @@
           (defn create-sentry-release-backend
             [build-dir stage]
 
-            (let [release-name (str COMMIT-HASH "-" stage)]
+            (let [release-name (str COMMIT-HASH "-" stage)
+                  sources-dir (str (fs/path build-dir "sentry-sources"))]
+              (fs/delete-tree sources-dir)
+              (doseq [f (fs/glob build-dir "*.map")]
+                (shell "node scripts/extract-sourcemap-sources.mjs" (str f) sources-dir))
               (shell (str "npx @sentry/cli@3.1.0 releases --org heraldicon "
                           "new --project heraldicon-backend "
                           "--url https://github.com/heraldry/heraldicon/commit/" COMMIT-HASH " "
                           release-name))
               (shell (str "npx @sentry/cli@3.1.0 sourcemaps --org heraldicon "
-                          "--project heraldicon-backend upload --release=" release-name " "
-                          build-dir))))
+                          "--project heraldicon-backend upload --release=" release-name
+                          " --url-prefix app:/// "
+                          "--ext=cljs "
+                          sources-dir))
+              (fs/delete-tree sources-dir)))
 
           (defn create-sentry-release-frontend
             [build-dir stage]
@@ -135,7 +142,9 @@
                                              merge
                                              STAGING-CONFIG
                                              BACKEND-CONFIG
-                                             {:output-to (str (fs/path STAGING-BACKEND-DIR "backend.js"))}))))
+                                             {:output-to (str (fs/path STAGING-BACKEND-DIR "backend.js"))})))
+                            (doseq [f (fs/glob STAGING-BACKEND-DIR "*.map")]
+                              (shell "node scripts/flatten-source-map.mjs" (str f))))
 
   staging-backend-deploy (do
                            (run 'staging-backend-release)
@@ -158,7 +167,9 @@
                                   merge
                                   PROD-CONFIG
                                   BACKEND-CONFIG
-                                  {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))}))))
+                                  {:output-to (str (fs/path PROD-BACKEND-DIR "backend.js"))})))
+                         (doseq [f (fs/glob PROD-BACKEND-DIR "*.map")]
+                           (shell "node scripts/flatten-source-map.mjs" (str f))))
 
   prod-backend-deploy {:depends [check-clj-kondo
                                  check-cljfmt
