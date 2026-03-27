@@ -39,7 +39,10 @@
                               (str/replace content (re-pattern "__GIT-COMMIT-HASH__") COMMIT-HASH)))
 
             (shell "npx shadow-cljs release frontend --config-merge"
-                   (prn-str (merge config {:output-dir output-dir}))))
+                   (prn-str (merge config {:output-dir output-dir})))
+
+            (doseq [f (fs/glob output-dir "*.map")]
+              (shell "node scripts/flatten-source-map.mjs" (str f))))
 
           (defn create-sentry-release-backend
             [build-dir stage]
