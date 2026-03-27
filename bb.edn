@@ -205,6 +205,7 @@
                                   check-dirty-frontend]
                         :task (do
                                 (run 'prod-frontend-release)
+                                (create-sentry-release-frontend PROD-FRONTEND-DIR "prod")
                                 (deploy-frontend PROD-FRONTEND-DIR "cdn.heraldicon.org")
                                 (tag-frontend-deploy))}
 
