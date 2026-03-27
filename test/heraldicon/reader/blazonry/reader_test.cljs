@@ -1037,5 +1037,165 @@
                   {:type :heraldry.charge.type/roundel
                    :field {:type :heraldry.field.type/plain
                            :tincture :sable}}]}
+    "or a bezant"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :or}}]}
+
+    "or three bezants"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:charges [{:type :heraldry.charge.type/roundel
+                              :field {:type :heraldry.field.type/plain
+                                      :tincture :or}}]
+                   :type :heraldry.charge-group.type/rows
+                   :spacing (/ 95 3)
+                   :strips [{:type :heraldry.charge-group.element.type/strip
+                             :slots [0 0 0]}]}]}
+
+    "azure a plate"
+    {:type :heraldry.field.type/plain
+     :tincture :azure
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :argent}}]}
+
+    "or a torteau"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}}]}
+
+    "or three torteaux"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:charges [{:type :heraldry.charge.type/roundel
+                              :field {:type :heraldry.field.type/plain
+                                      :tincture :gules}}]
+                   :type :heraldry.charge-group.type/rows
+                   :spacing (/ 95 3)
+                   :strips [{:type :heraldry.charge-group.element.type/strip
+                             :slots [0 0 0]}]}]}
+
+    "or three torteaus"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:charges [{:type :heraldry.charge.type/roundel
+                              :field {:type :heraldry.field.type/plain
+                                      :tincture :gules}}]
+                   :type :heraldry.charge-group.type/rows
+                   :spacing (/ 95 3)
+                   :strips [{:type :heraldry.charge-group.element.type/strip
+                             :slots [0 0 0]}]}]}
+
+    "or a hurt"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :azure}}]}
+
+    "or a pellet"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}]}
+
+    "or an ogress"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}]}
+
+    "or a gunstone"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}}]}
+
+    "or a pomme"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :vert}}]}
+
+    "or a golpe"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :purpure}}]}
+
+    "or an orange"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :tenne}}]}
+
+    "or a guze"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sanguine}}]}
+
+    "or a fountain"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/roundel
+                   :field {:type :heraldry.field.type/barry
+                           :line {:type :wavy
+                                  :width 40
+                                  :eccentricity 0}
+                           :fields [{:type :heraldry.subfield.type/field
+                                     :field {:type :heraldry.field.type/plain
+                                             :tincture :argent}}
+                                    {:type :heraldry.subfield.type/field
+                                     :field {:type :heraldry.field.type/plain
+                                             :tincture :azure}}
+                                    {:type :heraldry.subfield.type/reference
+                                     :index 0}
+                                    {:type :heraldry.subfield.type/reference
+                                     :index 1}
+                                    {:type :heraldry.subfield.type/reference
+                                     :index 0}
+                                    {:type :heraldry.subfield.type/reference
+                                     :index 1}]}}]}
+
+    "azure three fountains palewise"
+    {:type :heraldry.field.type/plain
+     :tincture :azure
+     :components [{:charges [{:type :heraldry.charge.type/roundel
+                              :field {:type :heraldry.field.type/barry
+                                      :line {:type :wavy
+                                             :width 40
+                                             :eccentricity 0}
+                                      :fields [{:type :heraldry.subfield.type/field
+                                                :field {:type :heraldry.field.type/plain
+                                                        :tincture :argent}}
+                                               {:type :heraldry.subfield.type/field
+                                                :field {:type :heraldry.field.type/plain
+                                                        :tincture :azure}}
+                                               {:type :heraldry.subfield.type/reference
+                                                :index 0}
+                                               {:type :heraldry.subfield.type/reference
+                                                :index 1}
+                                               {:type :heraldry.subfield.type/reference
+                                                :index 0}
+                                               {:type :heraldry.subfield.type/reference
+                                                :index 1}]}}]
+                   :type :heraldry.charge-group.type/columns
+                   :anchor {:point :center}
+                   :spacing (/ 95 3)
+                   :strips [{:type :heraldry.charge-group.element.type/strip
+                             :slots [0 0 0]}]}]}
 ;;
     ))
