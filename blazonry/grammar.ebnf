@@ -1290,6 +1290,21 @@ charge/CRESCENT
     = #"\bcrescents?\b"
     | #"\bcroissants?\b"
     | #"\bmoons?\b"
+roundel-special/BEZANT = #"\bbezants?\b"
+roundel-special/PLATE = #"\bplates?\b"
+roundel-special/TORTEAU
+    = #"\btorteaux?\b"
+    | #"\btorteaus?\b"
+roundel-special/HURT = #"\bhurts?\b"
+roundel-special/PELLET
+    = #"\bpellets?\b"
+    | #"\bogress(?:es)?\b"
+    | #"\bgunstones?\b"
+roundel-special/POMME = #"\bpommes?\b"
+roundel-special/GOLPE = #"\bgolpes?\b"
+roundel-special/ORANGE-ROUNDEL = #"\boranges?\b"
+roundel-special/GUZE = #"\bguzes?\b"
+roundel-special/FOUNTAIN = #"\bfountains?\b"
 arrangement/PALEWISE
     = #"\bpale[ -]?wise\b"
     | #"\bpaleways\b"
@@ -1881,6 +1896,7 @@ charge-group
        | tincture-modifier* fimbriation? charge-arrangement? field
        | tincture-modifier* charge-arrangement? fimbriation? field
        | tincture-modifier* charge-arrangement? field fimbriation?)
+    | charge-location? amount? roundel-special charge-arrangement?
 
 semy
     = <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation fimbriation? root-field tincture-modifier*
@@ -1949,6 +1965,18 @@ charge-standard
       (star-points? REVERSED?
        | REVERSED? star-points?)
     | charge/CRESCENT REVERSED?
+
+roundel-special
+    = roundel-special/BEZANT
+    | roundel-special/PLATE
+    | roundel-special/TORTEAU
+    | roundel-special/HURT
+    | roundel-special/PELLET
+    | roundel-special/POMME
+    | roundel-special/GOLPE
+    | roundel-special/ORANGE-ROUNDEL
+    | roundel-special/GUZE
+    | roundel-special/FOUNTAIN
 
 (* need one of them to have a valid charge-other-type rule,
    it will be overwritten when charges have been loaded, if

@@ -4,6 +4,51 @@
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first get-child filter-nodes]]
    [heraldicon.reader.blazonry.transform.tincture-modifier :refer [add-tincture-modifiers]]))
 
+(def ^:private roundel-special-field-map
+  {:roundel-special/BEZANT {:type :heraldry.field.type/plain
+                            :tincture :or}
+   :roundel-special/PLATE {:type :heraldry.field.type/plain
+                           :tincture :argent}
+   :roundel-special/TORTEAU {:type :heraldry.field.type/plain
+                             :tincture :gules}
+   :roundel-special/HURT {:type :heraldry.field.type/plain
+                          :tincture :azure}
+   :roundel-special/PELLET {:type :heraldry.field.type/plain
+                            :tincture :sable}
+   :roundel-special/POMME {:type :heraldry.field.type/plain
+                           :tincture :vert}
+   :roundel-special/GOLPE {:type :heraldry.field.type/plain
+                           :tincture :purpure}
+   :roundel-special/ORANGE-ROUNDEL {:type :heraldry.field.type/plain
+                                    :tincture :tenne}
+   :roundel-special/GUZE {:type :heraldry.field.type/plain
+                          :tincture :sanguine}
+   :roundel-special/FOUNTAIN {:type :heraldry.field.type/barry
+                              :line {:type :wavy
+                                     :width 40
+                                     :eccentricity 0}
+                              :fields [{:type :heraldry.subfield.type/field
+                                        :field {:type :heraldry.field.type/plain
+                                                :tincture :argent}}
+                                       {:type :heraldry.subfield.type/field
+                                        :field {:type :heraldry.field.type/plain
+                                                :tincture :azure}}
+                                       {:type :heraldry.subfield.type/reference
+                                        :index 0}
+                                       {:type :heraldry.subfield.type/reference
+                                        :index 1}
+                                       {:type :heraldry.subfield.type/reference
+                                        :index 0}
+                                       {:type :heraldry.subfield.type/reference
+                                        :index 1}]}})
+
+(defmethod ast->hdn :roundel-special [[_ & nodes]]
+  (let [kind (some->> nodes
+                      (get-child roundel-special-field-map)
+                      first)]
+    {:type :heraldry.charge.type/roundel
+     :field (get roundel-special-field-map kind)}))
+
 (def ^:private max-charge-group-columns 20)
 
 (def ^:private max-charge-group-rows 20)
@@ -117,11 +162,14 @@
                    (max 1)
                    (min max-charge-group-amount))
         anchor-point (transform-first #{:charge-location} nodes)
-        field (transform-first #{:field} nodes)
-        charge (-> (transform-first #{:charge-without-fimbriation} nodes)
-                   (assoc :field field)
-                   (add-tincture-modifiers nodes)
-                   (add-fimbriation nodes))]
+        roundel-special (transform-first #{:roundel-special} nodes)
+        charge (if roundel-special
+                 (add-fimbriation roundel-special nodes)
+                 (let [field (transform-first #{:field} nodes)]
+                   (-> (transform-first #{:charge-without-fimbriation} nodes)
+                       (assoc :field field)
+                       (add-tincture-modifiers nodes)
+                       (add-fimbriation nodes))))]
     [(cond-> (if (= amount 1)
                charge
                (charge-group charge amount nodes))
