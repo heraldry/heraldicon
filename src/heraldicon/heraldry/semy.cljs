@@ -22,6 +22,7 @@
                                :min 1
                                :max 20
                                :default 6
+                               :default-display-value "auto"
                                :ui/label :string.option/number-of-rows}
                 :offset-x {:type :option.type/range
                            :min -1

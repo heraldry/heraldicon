@@ -41,6 +41,7 @@
                            :min 1
                            :max 20
                            :default 6
+                           :default-display-value "auto"
                            :ui/label :string.option/subfields-y
                            :ui/element :ui.element/field-layout-num-fields-y}
             :offset-x {:type :option.type/range
