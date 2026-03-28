@@ -137,17 +137,19 @@
                                         charges))
         charge-type-id (atom 0)
         charge-type-id-map (atom {})
+        mount-special-types #{"mount" "trimount"}
         charge-type-rules (into {}
                                 (keep (fn [charge-type]
-                                        (let [kw-name (str "charge-" (swap! charge-type-id inc))
-                                              rule-name (keyword "charge-other-type" kw-name)]
-                                          (swap! charge-type-id-map assoc charge-type (keyword "heraldry.charge.type" kw-name))
-                                          (if (contains? (:bad-charge-types default) charge-type)
-                                            [rule-name (let [clean-name (str "charge " charge-type)]
-                                                         (set [clean-name
-                                                               (pluralize clean-name)]))]
-                                            [rule-name (set [charge-type
-                                                             (pluralize charge-type)])]))))
+                                        (when-not (contains? mount-special-types charge-type)
+                                          (let [kw-name (str "charge-" (swap! charge-type-id inc))
+                                                rule-name (keyword "charge-other-type" kw-name)]
+                                            (swap! charge-type-id-map assoc charge-type (keyword "heraldry.charge.type" kw-name))
+                                            (if (contains? (:bad-charge-types default) charge-type)
+                                              [rule-name (let [clean-name (str "charge " charge-type)]
+                                                           (set [clean-name
+                                                                 (pluralize clean-name)]))]
+                                              [rule-name (set [charge-type
+                                                               (pluralize charge-type)])])))))
                                 (keys charge-type-map))
         default-parser (:parser default)
         new-parser (inject-charge-type-rules
@@ -163,7 +165,8 @@
    :root-variation :variation
    :root-plain :plain
    :partition-field-plain :partition-field
-   :ordinal-including-dot :ordinal})
+   :ordinal-including-dot :ordinal
+   :mount-special/TRIPLE-MOUNT :mount-special/TRIMOUNT})
 
 (defn- rename-root-node [ast]
   (if (keyword? ast)
