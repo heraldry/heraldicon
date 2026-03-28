@@ -23,6 +23,13 @@
       (str/replace #"--*$" "")
       keyword))
 
+(defn normalize-charge-type-name [s]
+  (-> (or s "")
+      str/trim
+      (str/replace #"[^a-zA-Z0-9.\-' ]" "")
+      (str/replace #"\s+" " ")
+      str/trim))
+
 (defn remove-nil-values-and-empty-maps [m]
   (walk/postwalk #(if (map? %)
                     (into {}
