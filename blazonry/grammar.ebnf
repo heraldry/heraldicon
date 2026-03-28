@@ -1305,6 +1305,8 @@ roundel-special/GOLPE = #"\bgolpes?\b"
 roundel-special/ORANGE-ROUNDEL = #"\boranges?\b"
 roundel-special/GUZE = #"\bguzes?\b"
 roundel-special/FOUNTAIN = #"\bfountains?\b"
+mount-special/MOUNT = #"\bmounts?\b"
+mount-special/TRIMOUNT = #"\btrimounts?\b"
 arrangement/PALEWISE
     = #"\bpale[ -]?wise\b"
     | #"\bpaleways\b"
@@ -1871,7 +1873,11 @@ charge-location
     = (IN | AT) charge-location-point POINT?
 
 charge-group
-    = charge-location? amount? charge-without-fimbriation
+    = charge-location? amount? roundel-special charge-arrangement?
+    | charge-location? amount? mount-special charge-arrangement?
+    | charge-location? amount? mount-special fimbriation? field charge-arrangement?
+    | charge-location? amount? mount-special field fimbriation? charge-arrangement?
+    | charge-location? amount? charge-without-fimbriation
       (charge-arrangement? fimbriation? field tincture-modifier*
        | charge-arrangement? field fimbriation? tincture-modifier*
        | charge-arrangement? field tincture-modifier* fimbriation?
@@ -1896,7 +1902,6 @@ charge-group
        | tincture-modifier* fimbriation? charge-arrangement? field
        | tincture-modifier* charge-arrangement? fimbriation? field
        | tincture-modifier* charge-arrangement? field fimbriation?)
-    | charge-location? amount? roundel-special charge-arrangement?
 
 semy
     = <A>? <SEMY> <of-or-with>? layout? charge-without-fimbriation fimbriation? root-field tincture-modifier*
@@ -1977,6 +1982,10 @@ roundel-special
     | roundel-special/ORANGE-ROUNDEL
     | roundel-special/GUZE
     | roundel-special/FOUNTAIN
+
+mount-special
+    = mount-special/MOUNT
+    | mount-special/TRIMOUNT
 
 (* need one of them to have a valid charge-other-type rule,
    it will be overwritten when charges have been loaded, if

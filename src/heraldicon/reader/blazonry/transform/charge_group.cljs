@@ -1,5 +1,7 @@
 (ns heraldicon.reader.blazonry.transform.charge-group
   (:require
+   [heraldicon.config :as config]
+   [heraldicon.reader.blazonry.process.charge :as process.charge]
    [heraldicon.reader.blazonry.transform.fimbriation :refer [add-fimbriation]]
    [heraldicon.reader.blazonry.transform.shared :refer [ast->hdn transform-first get-child filter-nodes]]
    [heraldicon.reader.blazonry.transform.tincture-modifier :refer [add-tincture-modifiers]]))
@@ -48,6 +50,24 @@
                       first)]
     {:type :heraldry.charge.type/roundel
      :field (get roundel-special-field-map kind)}))
+
+(def ^:private mount-special-charge-map
+  {:mount-special/MOUNT {:type :heraldry.charge.type/other
+                         :variant {:id (config/get :mount-charge-id)
+                                   :version nil}}
+   :mount-special/TRIMOUNT {:type :heraldry.charge.type/other
+                            :variant {:id (config/get :trimount-charge-id)
+                                      :version nil}}})
+
+(defmethod ast->hdn :mount-special [[_ & nodes]]
+  (let [kind (some->> nodes
+                      (get-child mount-special-charge-map)
+                      first)]
+    (-> (get mount-special-charge-map kind)
+        (assoc :field {:type :heraldry.field.type/plain
+                       :tincture :vert}
+               :geometry {:size 105}
+               ::process.charge/fixed-variant true))))
 
 (def ^:private max-charge-group-columns 20)
 
@@ -163,14 +183,22 @@
                    (min max-charge-group-amount))
         anchor-point (transform-first #{:charge-location} nodes)
         roundel-special (transform-first #{:roundel-special} nodes)
-        charge (if roundel-special
-                 (add-fimbriation roundel-special nodes)
-                 (let [field (transform-first #{:field} nodes)]
-                   (-> (transform-first #{:charge-without-fimbriation} nodes)
-                       (assoc :field field)
-                       (add-tincture-modifiers nodes)
-                       (add-fimbriation nodes))))]
+        mount-special (transform-first #{:mount-special} nodes)
+        charge (cond
+                 roundel-special (add-fimbriation roundel-special nodes)
+                 mount-special (let [field (transform-first #{:field} nodes)]
+                                 (-> mount-special
+                                     (cond-> field (assoc :field field))
+                                     (add-fimbriation nodes)))
+                 :else (let [field (transform-first #{:field} nodes)]
+                         (-> (transform-first #{:charge-without-fimbriation} nodes)
+                             (assoc :field field)
+                             (add-tincture-modifiers nodes)
+                             (add-fimbriation nodes))))
+        anchor-point (or anchor-point
+                         (when mount-special :base))]
     [(cond-> (if (= amount 1)
                charge
                (charge-group charge amount nodes))
-       anchor-point (assoc-in [:anchor :point] anchor-point))]))
+       anchor-point (assoc-in [:anchor :point] anchor-point)
+       mount-special (assoc-in [:anchor :offset-y] -5))]))

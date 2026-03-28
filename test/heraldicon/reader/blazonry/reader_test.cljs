@@ -1,6 +1,7 @@
 (ns heraldicon.reader.blazonry.reader-test
   (:require
    [cljs.test :refer-macros [are deftest]]
+   [heraldicon.config :as config]
    [heraldicon.reader.blazonry.parser :as parser]
    [heraldicon.reader.blazonry.reader :as reader]
    [heraldicon.reader.blazonry.result :as result]))
@@ -1197,5 +1198,54 @@
                    :spacing (/ 95 3)
                    :strips [{:type :heraldry.charge-group.element.type/strip
                              :slots [0 0 0]}]}]}
+    "or a mount"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/other
+                   :variant {:id (config/get :mount-charge-id)
+                             :version nil}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :vert}
+                   :geometry {:size 105}
+                   :anchor {:point :base
+                            :offset-y -5}}]}
+
+    "or a trimount"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/other
+                   :variant {:id (config/get :trimount-charge-id)
+                             :version nil}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :vert}
+                   :geometry {:size 105}
+                   :anchor {:point :base
+                            :offset-y -5}}]}
+
+    "or a mount gules"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/other
+                   :variant {:id (config/get :mount-charge-id)
+                             :version nil}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :gules}
+                   :geometry {:size 105}
+                   :anchor {:point :base
+                            :offset-y -5}}]}
+
+    "or a trimount sable fimbriated argent"
+    {:type :heraldry.field.type/plain
+     :tincture :or
+     :components [{:type :heraldry.charge.type/other
+                   :variant {:id (config/get :trimount-charge-id)
+                             :version nil}
+                   :field {:type :heraldry.field.type/plain
+                           :tincture :sable}
+                   :fimbriation {:mode :single
+                                 :tincture-1 :argent}
+                   :geometry {:size 105}
+                   :anchor {:point :base
+                            :offset-y -5}}]}
 ;;
     ))

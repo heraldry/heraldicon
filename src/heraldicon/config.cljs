@@ -38,6 +38,8 @@
            :compartment-charge-id "charge:SSLk9y"
            :supporter-charge-id "charge:fxOk19"
            :mantling-charge-id "charge:gTrIM7"
+           :mount-charge-id "charge:79T4sf"
+           :trimount-charge-id "charge:Ly4j6h"
            :bucket-data "local-heraldry-data"}
 
     "staging" {:heraldicon-api-endpoint "/api"
@@ -52,6 +54,8 @@
                :compartment-charge-id "charge:SSLk9y"
                :supporter-charge-id "charge:fxOk19"
                :mantling-charge-id "charge:gTrIM7"
+               :mount-charge-id "charge:5ZMGQg"
+               :trimount-charge-id "charge:pnmGx4"
                :bucket-data "local-heraldry-data"}
 
     "prod" {:heraldicon-api-endpoint "/api"
@@ -67,6 +71,8 @@
             :compartment-charge-id "charge:SSLk9y"
             :supporter-charge-id "charge:fxOk19"
             :mantling-charge-id "charge:gTrIM7"
+            :mount-charge-id "charge:DWWM7I"
+            :trimount-charge-id "charge:ibnQAo"
             :bucket-data "prod-heraldry-data"}))
 
 (defn get [setting]
