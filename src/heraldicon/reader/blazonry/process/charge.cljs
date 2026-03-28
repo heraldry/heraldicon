@@ -64,11 +64,12 @@
   (if (map? hdn)
     (let [charge-type (:type hdn)]
       (if (and (is-charge-type? charge-type)
+               (not (::fixed-variant hdn))
                (not (get charge.options/charge-map charge-type)))
         (let [variant (find-best-variant hdn charge-map)]
           (cond-> hdn
             variant (assoc :variant variant)))
-        hdn))
+        (dissoc hdn ::fixed-variant)))
     hdn))
 
 (defn process [hdn parser]
