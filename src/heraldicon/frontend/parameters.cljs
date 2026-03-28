@@ -68,6 +68,8 @@
                     value (js/decodeURIComponent (or v ""))
                     value (cond
                             (= key :q) (str/replace value "+" " ")
+                            (= key :charge-type) (when-not (str/blank? value)
+                                                   (str/replace value "+" " "))
                             (= key :tags) (->> (str/split value ",")
                                                (keep (fn [t]
                                                        (when-not (str/blank? v)
