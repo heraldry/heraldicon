@@ -5,6 +5,7 @@
    [heraldicon.avatar :as avatar]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.entity.core :as entity]
+   [heraldicon.frontend.element.charge-type-select :as charge-type-select]
    [heraldicon.frontend.element.select :as select]
    [heraldicon.frontend.element.tags :as tags]
    [heraldicon.frontend.entity.action.favorite :as favorite]
@@ -64,6 +65,12 @@
 (defn- filter-tags-path [id]
   [:ui :filter id :filter-tags])
 
+(defn- filter-charge-type-path [id]
+  [:ui :filter id :filter-charge-type])
+
+(defn- filter-charge-type-open?-path [id]
+  [:ui :filter id :filter-charge-type-open?])
+
 (macros/reg-event-db ::filter-toggle-tag
   (fn [db [_ id tag]]
     (update-in db (filter-tags-path id) (fn [current-tags]
@@ -119,6 +126,9 @@
            (when value
              key)))
         @(rf/subscribe [:get (filter-tags-path id)])))
+
+(defn- get-charge-type [id]
+  @(rf/subscribe [:get (filter-charge-type-path id)]))
 
 (defn- result-card [id item-id kind on-select {:keys [selection-placeholder?
                                                       selected-item
@@ -210,16 +220,18 @@
 
 (defn- prepare-query [id {:keys [filter-username]
                           :as options}]
-  {:phrases (search-string/split (get-search-string id))
-   :access (get-access id)
-   :username (or (when (= (get-ownership id options) :mine)
-                   (:username @(rf/subscribe [::session/data])))
-                 filter-username)
-   :tags (get-tags id)
-   :favorites? (get-favorites? id)
-   :sort (get-sorting id options)
-   :page-size (or (get options :page-size)
-                  default-page-size)})
+  (let [charge-type (get-charge-type id)]
+    (cond-> {:phrases (search-string/split (get-search-string id))
+             :access (get-access id)
+             :username (or (when (= (get-ownership id options) :mine)
+                             (:username @(rf/subscribe [::session/data])))
+                           filter-username)
+             :tags (get-tags id)
+             :favorites? (get-favorites? id)
+             :sort (get-sorting id options)
+             :page-size (or (get options :page-size)
+                            default-page-size)}
+      (seq charge-type) (assoc :charge-type charge-type))))
 
 (defn- get-items-subscription [id kind options]
   (rf/subscribe [::entity-search/data id kind (prepare-query id options)]))
@@ -398,11 +410,56 @@
    :style {:margin-left "10px"
            :margin-bottom "5px"}])
 
+(defn- charge-type-filter [id]
+  (let [charge-type (get-charge-type id)
+        open? @(rf/subscribe [:get (filter-charge-type-open?-path id)])]
+    [:div {:style {:display "inline-block"
+                   :margin-left "10px"
+                   :position "relative"}}
+     [:div {:style {:cursor "pointer"
+                    :display "inline-flex"
+                    :align-items "center"
+                    :gap "4px"}
+            :title (tr :string.option/charge-type)
+            :on-click (js-event/handled
+                       #(rf/dispatch [:set (filter-charge-type-open?-path id) (not open?)]))}
+      [:i.fas.fa-filter {:style {:color (if charge-type
+                                          nil
+                                          "#ccc")}}]
+      (when charge-type
+        [:<>
+         [:span charge-type]
+         [:span {:on-click (js-event/handled
+                            #(rf/dispatch [:set (filter-charge-type-path id) nil]))}
+          [:i.fas.fa-times {:style {:font-size "0.8em"}}]]])]
+     (when open?
+       [:div {:style {:position "absolute"
+                      :top "100%"
+                      :left 0
+                      :z-index 100
+                      :background "white"
+                      :border "1px solid #ddd"
+                      :border-radius "5px"
+                      :padding "10px"
+                      :margin-top "5px"
+                      :width "25em"
+                      :max-height "25em"
+                      :overflow-y "auto"
+                      :box-shadow "2px 2px 10px rgba(0,0,0,0.15)"}
+              :on-click #(.stopPropagation %)}
+        [charge-type-select/charge-type-filter-tree
+         (fn [name]
+           (rf/dispatch [:set (filter-charge-type-path id) name])
+           (rf/dispatch [:set (filter-charge-type-open?-path id) false]))]])]))
+
 (defn component [id kind on-select {:keys [component-styles]
                                     :as options}]
   [:div.filter-component {:style component-styles}
    [:div.filter-component-search
     [search-input id options]
+
+    (when (= kind :charge)
+      [charge-type-filter id])
 
     [:button.button.primary
      {:on-click #(rf/dispatch [::copy-search-string-to-query id])
