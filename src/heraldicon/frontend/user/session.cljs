@@ -44,6 +44,9 @@
      (catch :default _
        (rf/dispatch [::session-expired])))))
 
+(defonce ^:private initial-load?
+  (atom true))
+
 (defn read-from-storage []
   (let [session-id (get-storage-item local-storage-session-id-name)
         user-id (get-storage-item local-storage-user-id-name)
@@ -54,9 +57,11 @@
                       :session-id session-id
                       :user-id user-id
                       :dark-mode? dark-mode?
-                      :height-limit-mode? height-limit-mode?}]
+                      :height-limit-mode? height-limit-mode?}
+        validate? @initial-load?]
+    (reset! initial-load? false)
     (rf/dispatch-sync [::store session-data])
-    (when session-id
+    (when (and session-id validate?)
       (validate-session session-data))))
 
 (rf/reg-fx ::set-cookie
