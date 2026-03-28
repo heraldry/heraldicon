@@ -1336,9 +1336,9 @@ li.ui-menu-header {
   border-radius: 999px;
   border: 1px solid #ccc;
   padding: 3px 6px;
-  min-width: 10em;
-  max-width: 20em;
-  width: 50%;
+  min-width: 6em;
+  max-width: 12em;
+  width: 25%;
   margin-bottom: 0.5em;
 }
 

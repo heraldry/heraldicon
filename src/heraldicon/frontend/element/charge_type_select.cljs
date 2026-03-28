@@ -273,7 +273,7 @@
         @(rf/subscribe [::top-level-charge-type-paths])
         base-context
         :select-fn (fn [path]
-                     (let [{:keys [name]} @(rf/subscribe [:get path])]
-                       (on-select name)))
+                     (let [{:keys [name types]} @(rf/subscribe [:get path])]
+                       (on-select name (empty? types))))
         :search-fn search-matching-all
         :force-open? (force-open?)]])))
