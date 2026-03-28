@@ -27,6 +27,7 @@
    [heraldicon.heraldry.field.type.potenty :as potenty]
    [heraldicon.heraldry.field.type.quartered :as quartered]
    [heraldicon.heraldry.field.type.quarterly :as quarterly]
+   [heraldicon.heraldry.field.type.scaly :as scaly]
    [heraldicon.heraldry.field.type.tierced-per-fess :as tierced-per-fess]
    [heraldicon.heraldry.field.type.tierced-per-pale :as tierced-per-pale]
    [heraldicon.heraldry.field.type.tierced-per-pall :as tierced-per-pall]
@@ -64,6 +65,7 @@
    vairy/field-type
    potenty/field-type
    papellony/field-type
+   scaly/field-type
    masony/field-type
    fretty/field-type
    counterchanged/field-type])
