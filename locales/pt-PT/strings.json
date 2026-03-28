@@ -135,6 +135,9 @@
     "type" : { }
   },
   "escutcheon" : {
+    "group" : {
+      "flags" : "Bandeiras"
+    },
     "type" : {
       "square-czech" : "Quadrado Checo ",
       "french-modern" : "Francês Moderno",
