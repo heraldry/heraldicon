@@ -128,7 +128,9 @@
 
 (rf/reg-event-db ::select-charge-type-by-name
   (fn [db [_ name context]]
-    (assoc-in db (:path context) name)))
+    (-> db
+        (assoc-in (:path context) name)
+        (assoc-in (conj submenu/open?-path (:path context)) false))))
 
 (rf/reg-event-db ::set-add-error
   (fn [db [_ error]]
@@ -151,8 +153,10 @@
 (rf/reg-event-db ::set-charge-type
   (fn [db [_ context path]]
     (let [attribute-path (:path context)
-          {:keys [name]} (get-in db path)]
-      (assoc-in db attribute-path name))))
+          {:keys [name types]} (get-in db path)
+          leaf? (empty? types)]
+      (cond-> (assoc-in db attribute-path name)
+        leaf? (assoc-in (conj submenu/open?-path attribute-path) false)))))
 
 (rf/reg-sub ::top-level-charge-type-paths
   :<- [:get (conj charge-types-path :types)]
