@@ -206,7 +206,8 @@
         tags (get-tags id)
         favorites? (get-favorites? id)
         sort (get-sorting id options)
-        list-mode (get-list-mode id options)]
+        list-mode (get-list-mode id options)
+        charge-type (get-charge-type id)]
     (rf/dispatch [::parameters/set
                   (cond-> {}
                     (not (str/blank? query)) (assoc :q query)
@@ -216,7 +217,8 @@
                     (not= list-mode default-list-mode) (assoc :mode list-mode)
                     (seq tags) (assoc :tags tags)
                     favorites? (assoc :favorites true)
-                    (not= sort default-sorting) (assoc :sort sort))])))
+                    (not= sort default-sorting) (assoc :sort sort)
+                    (seq charge-type) (assoc :charge-type charge-type))])))
 
 (defn- prepare-query [id {:keys [filter-username]
                           :as options}]
@@ -265,7 +267,7 @@
         crawler? @(rf/subscribe [:get [:ui :crawler?]])
         crawler-next-list-page @(rf/subscribe [:get [:ui :crawler-next-list-page]])]
     (when (#{:arms-list
-             :charges-list
+             :charge-list
              :ribbon-list
              :collection-list} id)
       (update-params id options))
@@ -524,6 +526,7 @@
                   :ownership (assoc-in db (filter-ownership-path id) v)
                   :sort (assoc-in db (filter-sorting-path id) v)
                   :tags (assoc-in db (filter-tags-path id) v)
+                  :charge-type (assoc-in db (filter-charge-type-path id) v)
                   :q (-> db
                          (assoc-in (filter-temporary-search-string-path id) v)
                          (assoc-in (filter-search-string-path id) v))
