@@ -1198,6 +1198,118 @@
                   :creator-name "pseudomonas"
                   :creator-link "https://heraldicon.org/users/pseudomonas"}})
 
+(def ^:private community-pennant
+  {:shape "M 0,0
+           V 50
+           C 0,50 100,25 100,25
+           Z"
+
+   ::name "Pennant"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-demipennant
+  {:shape "M 0,0
+           V 50
+           H 35
+           L 100,25 35,0
+           Z"
+
+   ::name "Demipennant"
+   ::attribDemiption {:nature :own-work
+                      :license :public-domain
+                      :creator-name "Korfi2Go"
+                      :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-rounded-pennant
+  {:shape "M 0,0
+           V 50
+           C 0,50 85,40 100,25 85,10 0,0 0,0
+           Z"
+
+   ::name "Rounded Pennant"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-dovetailed-standard
+  {:shape "m 0,0
+           v 30
+           h 90
+           c 0,0 10,-1 10,-5 0,-3 -3,-4 -5,-5 2,-1 5,-2 5,-5 0,-4 -10,-5 -10,-5
+           z"
+
+   ::name "Dovetailed Standard"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-chevron-gonfalon
+  {:shape "M 0,0
+           H 100
+           V 130
+           L 50,180 0,130
+           Z"
+
+   ::name "Chevron Gonfalon"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-dovetailed-gonfalon
+  {:shape "M 0,0
+           H 100
+           V 180
+           L 50,130 0,180
+           Z"
+
+   ::name "Dovetailed Gonfalon"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-oval-gonfalon
+  {:shape "m 0,0
+           h 100
+           v 100
+           c 0,25 -25,65 -50,80
+           C 25,165 0,125 0,100
+           Z"
+
+   ::name "Oval Gonfalon"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+#_(def ^:private community-rounded-gonfalon
+    {:shape ""
+
+     ::name "Rounded Gonfalon"
+     ::attribution {:nature :own-work
+                    :license :public-domain
+                    :creator-name "Korfi2Go"
+                    :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-draped-pointy-banner
+  {:shape "M 0,0
+           H 300
+           V 284
+           L 263,341 226,284 150,390 74,284 37,341 0,284
+           Z"
+
+   ::name "Draped Pointy Banner"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "verden"
+                  :creator-link "https://heraldicon.org/users/verden"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1212,13 +1324,20 @@
     [:norman-rounded norman-rounded]
     [:norman norman]]
    [:string.escutcheon.group/shapes
-    [:flag flag]
-    [:community-flag-standard community-flag-standard]
     [:rectangle rectangle]
     [:lozenge lozenge]
     [:community-rhombus community-rhombus]
     [:roundel roundel]
-    [:oval oval]]
+    [:oval oval]
+    [:community-superellipse-e community-superellipse-e]
+    [:community-superellipse-4 community-superellipse-4]]
+   [:string.escutcheon.group/flags
+    [:flag flag]
+    [:community-flag-standard community-flag-standard]
+    [:community-dovetailed-standard community-dovetailed-standard]
+    [:community-pennant community-pennant]
+    [:community-demipennant community-demipennant]
+    [:community-rounded-pennant community-rounded-pennant]]
    [:string.escutcheon.group/decorative
     [:wedge wedge]
     [:swiss swiss]
@@ -1274,12 +1393,15 @@
     [:community-danish community-danish]
     [:community-croatian community-croatian]
     [:community-herzeg-croatian community-herzeg-croatian]
-    [:community-superellipse-e community-superellipse-e]
-    [:community-superellipse-4 community-superellipse-4]
     [:community-persian community-persian]
     [:community-manilla community-manilla]
-    [:community-gonfalon community-gonfalon]
     [:community-simple-kalasag community-simple-kalasag]
+    [:community-draped-pointy-banner community-draped-pointy-banner]
+    [:community-oval-gonfalon community-oval-gonfalon]
+    [:community-chevron-gonfalon community-chevron-gonfalon]
+    [:community-dovetailed-gonfalon community-dovetailed-gonfalon]
+    #_[:community-rounded-gonfalon community-rounded-gonfalon]
+    [:community-gonfalon community-gonfalon]
     [:community-kalasag community-kalasag]]])
 
 (def ^:private kinds-map
