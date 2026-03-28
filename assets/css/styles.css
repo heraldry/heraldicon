@@ -630,7 +630,7 @@ label div {
 }
 
 .nav-menu-item a:hover {
-  background-color: #eee;
+  background-color: #dde4ee;
 }
 
 .nav-menu-has-children > .nav-menu-link:after {
@@ -652,7 +652,7 @@ label div {
 }
 
 .nav-menu-item.selected {
-  background-color: #f0f0f0;
+  background-color: #dde4ee;
 }
 
 .release-row {
