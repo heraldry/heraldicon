@@ -1307,6 +1307,8 @@ roundel-special/GUZE = #"\bguzes?\b"
 roundel-special/FOUNTAIN = #"\bfountains?\b"
 mount-special/MOUNT = #"\bmounts?\b"
 mount-special/TRIMOUNT = #"\btrimounts?\b"
+mount-special/TRIPLE-MOUNT
+    = #"\btriple[- ]?mounts?\b"
 arrangement/PALEWISE
     = #"\bpale[ -]?wise\b"
     | #"\bpaleways\b"
@@ -1986,6 +1988,7 @@ roundel-special
 mount-special
     = mount-special/MOUNT
     | mount-special/TRIMOUNT
+    | mount-special/TRIPLE-MOUNT
 
 (* need one of them to have a valid charge-other-type rule,
    it will be overwritten when charges have been loaded, if
