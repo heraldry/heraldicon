@@ -16,7 +16,7 @@
       (when-let [option (interface/get-options context)]
         (let [component-id (uid/generate "range")
               current-value (interface/get-raw-data context)
-              {:keys [inherited default min max integer?]
+              {:keys [inherited default min max integer? default-display-value]
                :ui/keys [label tooltip step]} option
               step (or step 1)
               value (or value
@@ -50,7 +50,10 @@
             [:input {:type "text"
                      :value (if @focused?
                               @tmp-value
-                              value)
+                              (if (and (nil? current-value)
+                                       default-display-value)
+                                default-display-value
+                                value))
                      :on-focus #(do
                                   (swap! tmp-value (fn [_] (str value)))
                                   (swap! focused? (fn [_] true)))
