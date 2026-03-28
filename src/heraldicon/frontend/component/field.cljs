@@ -27,6 +27,7 @@
         :masony
         :papellony
         :scaly
+        :plumetty
         :fretty}))
 
 (macros/reg-event-db ::load-arms

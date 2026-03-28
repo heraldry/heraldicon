@@ -24,6 +24,7 @@
    [heraldicon.heraldry.field.type.per-pile :as per-pile]
    [heraldicon.heraldry.field.type.per-saltire :as per-saltire]
    [heraldicon.heraldry.field.type.plain :as plain]
+   [heraldicon.heraldry.field.type.plumetty :as plumetty]
    [heraldicon.heraldry.field.type.potenty :as potenty]
    [heraldicon.heraldry.field.type.quartered :as quartered]
    [heraldicon.heraldry.field.type.quarterly :as quarterly]
@@ -66,6 +67,7 @@
    potenty/field-type
    papellony/field-type
    scaly/field-type
+   plumetty/field-type
    masony/field-type
    fretty/field-type
    counterchanged/field-type])
