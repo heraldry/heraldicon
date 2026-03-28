@@ -111,6 +111,7 @@
       (#{:vairy
          :potenty
          :papellony
+         :scaly
          :masony} type) [(make-subfield (assoc default/field :tincture :argent))
                          (make-subfield (assoc default/field :tincture :azure))]
       (#{:tierced-per-pale
