@@ -122,6 +122,7 @@
    :masony {}
    :paly {}
    :papellony {}
+   :plumetty {}
    :per-bend {:chief 0
               :base 1}
    :per-bend-sinister {:chief 0
@@ -142,6 +143,7 @@
                  :sinister 2
                  :base 3}
    :potenty {}
+   :scaly {}
    :quartered {:chief-dexter 0
                :chief-sinister 1
                :base-dexter 2

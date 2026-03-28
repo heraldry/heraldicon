@@ -552,6 +552,11 @@ partition/PAPELLONY
     = #"\bpapellony\b"
     | #"\bpappellony\b"
     | #"\bpapelonny\b"
+partition/PLUMETTY
+    = #"\bplumetty\b"
+    | #"\bplumet[ée](?=([ ,&]|$))"
+    | #"\bplumet[ée]e\b"
+    | #"\bplumetée\b"
 
 partition/PER-BEND
     = #"\bper +bend\b"
@@ -582,6 +587,11 @@ partition/QUARTERED
     | #"\bquarterly\b"
     | #"\bparty[ -]+per[ -]+cross\b"
     | #"\bper[ -]+cross\b"
+partition/SCALY
+    = #"\bscaly\b"
+    | #"\bscaled\b"
+    | #"\b[ée]caill[ée](?=([ ,&]|$))"
+    | #"\b[ée]caill[ée]e\b"
 partition/TIERCED-PER-FESS = #"\btierced +per +fess\b"
 partition/TIERCED-PER-PALE = #"\btierced +per +pale\b"
 partition/TIERCED-PER-PALL = #"\btierced +per +pall\b"
@@ -1422,6 +1432,7 @@ partition-type
     | partition/MASONY
     | partition/PALY
     | partition/PAPELLONY
+    | partition/PLUMETTY
     | partition/PER-BEND
     | partition/PER-BEND-SINISTER
     | partition/PER-CHEVRON
@@ -1431,6 +1442,7 @@ partition-type
     | partition/PER-SALTIRE
     | partition/POTENTY
     | partition/QUARTERED
+    | partition/SCALY
     | partition/TIERCED-PER-FESS
     | partition/TIERCED-PER-PALE
     | partition/TIERCED-PER-PALL
@@ -1569,6 +1581,8 @@ partition
        | partition/VAIRY
        | partition/POTENTY
        | partition/PAPELLONY
+       | partition/PLUMETTY
+       | partition/SCALY
        | partition/MASONY
        | partition/FRETTY)
       pattern-option?
@@ -1589,6 +1603,8 @@ partition
 
     | partition-field-plain
       (partition/PAPELLONY
+       | partition/PLUMETTY
+       | partition/SCALY
        | partition/MASONY
        | partition/FRETTY)
       OF? layout?
