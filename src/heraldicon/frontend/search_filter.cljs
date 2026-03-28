@@ -410,8 +410,15 @@
    :style {:margin-left "10px"
            :margin-bottom "5px"}])
 
+(defn- close-charge-type-filter! [id pending]
+  (when-let [p @pending]
+    (rf/dispatch [:set (filter-charge-type-path id) p]))
+  (reset! pending nil)
+  (rf/dispatch [:set (filter-charge-type-open?-path id) false]))
+
 (defn- charge-type-filter [_id]
-  (let [last-select (r/atom nil)]
+  (let [last-select (r/atom nil)
+        pending (r/atom nil)]
     (fn [id]
       (let [charge-type (get-charge-type id)
             open? @(rf/subscribe [:get (filter-charge-type-open?-path id)])]
@@ -424,7 +431,9 @@
                         :gap "4px"}
                 :title (tr :string.option/charge-type)
                 :on-click (js-event/handled
-                           #(rf/dispatch [:set (filter-charge-type-open?-path id) (not open?)]))}
+                           #(do
+                              (reset! pending nil)
+                              (rf/dispatch [:set (filter-charge-type-open?-path id) (not open?)])))}
           [:i.fas.fa-sitemap {:style {:color (if charge-type
                                                nil
                                                "#999")}}]
@@ -435,33 +444,45 @@
                                 #(rf/dispatch [:set (filter-charge-type-path id) nil]))}
               [:i.fas.fa-times {:style {:font-size "0.8em"}}]]])]
          (when open?
-           [:div {:style {:position "absolute"
-                          :top "100%"
-                          :left 0
-                          :z-index 100
-                          :background "white"
-                          :border "1px solid #ddd"
-                          :border-radius "5px"
-                          :padding "10px"
-                          :margin-top "5px"
-                          :width "25em"
-                          :max-height "25em"
-                          :overflow-y "auto"
-                          :box-shadow "2px 2px 10px rgba(0,0,0,0.15)"}
-                  :on-click #(.stopPropagation %)}
-            [charge-type-select/charge-type-filter-tree
-             (fn [name leaf?]
-               (rf/dispatch [:set (filter-charge-type-path id) name])
-               (if leaf?
-                 (rf/dispatch [:set (filter-charge-type-open?-path id) false])
-                 (let [[prev-name prev-time] @last-select
-                       now (.now js/Date)]
-                   (if (and (= prev-name name)
-                            (< (- now prev-time) 500))
-                     (do
-                       (reset! last-select nil)
-                       (rf/dispatch [:set (filter-charge-type-open?-path id) false]))
-                     (reset! last-select [name now])))))]])]))))
+           [:<>
+            [:div {:style {:position "fixed"
+                           :top 0
+                           :left 0
+                           :right 0
+                           :bottom 0
+                           :z-index 99}
+                   :on-click #(close-charge-type-filter! id pending)}]
+            [:div {:style {:position "absolute"
+                           :top "100%"
+                           :left 0
+                           :z-index 100
+                           :background "white"
+                           :border "1px solid #ddd"
+                           :border-radius "5px"
+                           :padding "10px"
+                           :margin-top "5px"
+                           :width "25em"
+                           :max-height "25em"
+                           :overflow-y "auto"
+                           :box-shadow "2px 2px 10px rgba(0,0,0,0.15)"}
+                   :on-click #(.stopPropagation %)}
+             [charge-type-select/charge-type-filter-tree
+              (fn [name leaf?]
+                (if leaf?
+                  (do
+                    (reset! pending nil)
+                    (rf/dispatch [:set (filter-charge-type-path id) name])
+                    (rf/dispatch [:set (filter-charge-type-open?-path id) false]))
+                  (let [[prev-name prev-time] @last-select
+                        now (.now js/Date)]
+                    (reset! pending name)
+                    (if (and (= prev-name name)
+                             (< (- now prev-time) 500))
+                      (do
+                        (reset! last-select nil)
+                        (rf/dispatch [:set (filter-charge-type-path id) name])
+                        (rf/dispatch [:set (filter-charge-type-open?-path id) false]))
+                      (reset! last-select [name now])))))]]])]))))
 
 (defn component [id kind on-select {:keys [component-styles]
                                     :as options}]
