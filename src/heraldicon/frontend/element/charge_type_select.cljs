@@ -1,7 +1,10 @@
 (ns heraldicon.frontend.element.charge-type-select
   (:require
+   [cljs.core.async]
    [clojure.string :as str]
+   [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.context :as c]
+   [heraldicon.frontend.api :as api]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
    [heraldicon.frontend.debounce :as debounce]
@@ -11,9 +14,12 @@
    [heraldicon.frontend.repository.charge-types :as repository.charge-types]
    [heraldicon.frontend.search-string :as search-string]
    [heraldicon.frontend.status :as status]
+   [heraldicon.frontend.user.session :as session]
    [heraldicon.interface :as interface]
+   [heraldicon.util.sanitize :as sanitize]
    [re-frame.core :as rf]
-   [reagent.core :as r]))
+   [reagent.core :as r]
+   [taoensso.timbre :as log]))
 
 (def charge-types-path
   (conj repository.charge-types/db-path-charge-types :data))
@@ -91,6 +97,32 @@
                              (reset! tmp-value (-> % .-target .-value))
                              (rf/dispatch [::update-search-field @tmp-value]))}])))
 
+(defn- any-node-matches?
+  [node search-fn]
+  (or (search-fn (:name node))
+      (some #(any-node-matches? % search-fn) (:types node))))
+
+(rf/reg-sub ::any-search-match?
+  :<- [:get charge-types-path]
+
+  (fn [charge-types _]
+    (fn [search-fn]
+      (some #(any-node-matches? % search-fn) (:types charge-types)))))
+
+(rf/reg-event-fx ::add-charge-type
+  (fn [{:keys [db]} [_ name]]
+    (let [session (session/data-from-db db)]
+      {::add-charge-type-api [name session]})))
+
+(rf/reg-fx ::add-charge-type-api
+  (fn [[name session]]
+    (cljs.core.async/go
+      (try
+        (<? (api/call :add-charge-type {:name name} session))
+        (rf/dispatch [::repository.charge-types/clear])
+        (catch :default e
+          (log/error e "add charge type error"))))))
+
 (defn- search-bar
   []
   [:div {:style {:margin-bottom "10px"}}
@@ -151,17 +183,37 @@
     (case status
       :loading [status/loading]
       :error [status/error-display error]
-      [:div
-       [search-bar]
-       [tree/tree
-        ::identifier
-        @(rf/subscribe [::top-level-charge-type-paths])
-        base-context
-        :select-fn #(rf/dispatch [::set-charge-type context %])
-        :search-fn (if editing?
-                     search-matching-any
-                     search-matching-all)
-        :force-open? (force-open?)]])))
+      (let [search-fn (if editing?
+                        search-matching-any
+                        search-matching-all)
+            any-match-fn @(rf/subscribe [::any-search-match?])
+            search-string @(rf/subscribe [:get search-db-path])
+            has-search? (seq search-string)
+            no-results? (and has-search?
+                             (not (any-match-fn search-fn)))
+            logged-in? (some? (:session-id @(rf/subscribe [::session/data])))]
+        [:div
+         [search-bar]
+         [tree/tree
+          ::identifier
+          @(rf/subscribe [::top-level-charge-type-paths])
+          base-context
+          :select-fn #(rf/dispatch [::set-charge-type context %])
+          :search-fn search-fn
+          :force-open? (force-open?)]
+         (let [normalized (when has-search?
+                            (sanitize/normalize-charge-type-name search-string))]
+           (when (and no-results? logged-in? (seq normalized))
+             [:div {:style {:margin-top "10px"
+                            :display "flex"
+                            :align-items "center"
+                            :gap "5px"}}
+              [:a {:style {:cursor "pointer"}
+                   :on-click #(do
+                                (rf/dispatch [::add-charge-type normalized])
+                                (.stopPropagation %))}
+               [:i.fas.fa-plus]
+               (str " " (tr :string.button/add) " \"" normalized "\"")]]))]))))
 
 (defmethod element/element :ui.element/charge-type-select [context]
   (when-let [option (interface/get-options context)]
