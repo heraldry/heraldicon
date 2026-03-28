@@ -1158,6 +1158,8 @@
            291.51,101.35 293.50,110.18 295.22,119.50 296.68,129.38 297.87,139.91
            298.80,151.27 299.47,163.79 299.87,178.23 300.00,200.00 Z"
 
+   :center-fess? true
+
    ::name "Superellipse (3x4, curvature e)"
    ::attribution {:nature :own-work
                   :license :public-domain
@@ -1191,6 +1193,8 @@
            288.92,56.60 290.87,62.68 292.62,69.22 294.18,76.28 295.55,83.92
            296.73,92.24 297.74,101.41 298.55,111.66 299.19,123.39 299.64,137.38
            299.91,155.70 300.00,200.00 Z"
+
+   :center-fess? true
 
    ::name "Superellipse (3x4, curvature 4)"
    ::attribution {:nature :own-work
@@ -1303,6 +1307,8 @@
            V 284
            L 263,341 226,284 150,390 74,284 37,341 0,284
            Z"
+
+   :bounding-box (bb/BoundingBox. 0 300 0 284)
 
    ::name "Draped Pointy Banner"
    ::attribution {:nature :own-work
