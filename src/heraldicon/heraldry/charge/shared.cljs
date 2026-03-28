@@ -118,6 +118,7 @@
                        :min 5
                        :max 250
                        :default 50
+                       :default-display-value "auto"
                        :ui/label :string.option/size
                        :ui/step 0.1}
                 :stretch {:type :option.type/range
