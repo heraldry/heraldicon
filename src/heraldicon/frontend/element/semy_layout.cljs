@@ -8,14 +8,19 @@
    [heraldicon.options :as options]))
 
 ;; TODO: probably can be improved with better subscriptions
-(defn- submenu-link-name [options layout]
-  (let [main-name (when (or (:num-fields-x options)
-                            (:num-fields-y options))
+(defn- submenu-link-name [options layout raw-layout]
+  (let [x-option (:num-fields-x options)
+        y-option (:num-fields-y options)
+        x-auto? (and (nil? (get raw-layout :num-fields-x))
+                     (:default-display-value x-option))
+        y-auto? (and (nil? (get raw-layout :num-fields-y))
+                     (:default-display-value y-option))
+        main-name (when (or x-option y-option)
                     (string/str-tr (string/combine "x"
-                                                   [(:num-fields-x layout)
-                                                    (:num-fields-y layout)])
+                                                   [(if x-auto? "[auto]" (:num-fields-x layout))
+                                                    (if y-auto? "[auto]" (:num-fields-y layout))])
                                    " "
-                                   :string.miscellaneous/fields))
+                                   :string.miscellaneous/charges))
         changes (filter identity
                         [main-name
                          (when (options/changed? :num-base-fields layout options)
@@ -36,7 +41,9 @@
 (defmethod element/element :ui.element/semy-layout [context]
   (when-let [options (interface/get-options context)]
     (let [{:ui/keys [label]} options
-          link-name (submenu-link-name options (interface/get-sanitized-data context))]
+          link-name (submenu-link-name options
+                                       (interface/get-sanitized-data context)
+                                       (interface/get-raw-data context))]
       [:div.ui-setting
        (when label
          [:label [tr label]])
