@@ -92,7 +92,7 @@
 
 (defn- scaly-default [part-width part-height thickness]
   (let [width part-width
-        height (* 1.6666 part-height)
+        height (* 2 part-height)
         middle-x (/ width 2)
         middle-y (/ height 2)
         ;; quadratic bezier visual reach = control-point / 2.
