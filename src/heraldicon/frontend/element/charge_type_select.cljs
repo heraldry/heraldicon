@@ -259,3 +259,21 @@
                         :height "25em"
                         :overflow-y "auto"}}
           [charge-type-select context]]]]])))
+
+(defn charge-type-filter-tree
+  [on-select]
+  (let [{:keys [status error]} @(rf/subscribe [::repository.charge-types/data nil])]
+    (case status
+      :loading [status/loading]
+      :error [status/error-display error]
+      [:div
+       [search-bar]
+       [tree/tree
+        ::filter-identifier
+        @(rf/subscribe [::top-level-charge-type-paths])
+        base-context
+        :select-fn (fn [path]
+                     (let [{:keys [name]} @(rf/subscribe [:get path])]
+                       (on-select name)))
+        :search-fn search-matching-all
+        :force-open? (force-open?)]])))
