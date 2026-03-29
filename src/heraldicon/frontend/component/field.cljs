@@ -22,6 +22,7 @@
   (-> field-type name keyword
       #{:chequy
         :lozengy
+        :endente
         :vairy
         :potenty
         :masony
