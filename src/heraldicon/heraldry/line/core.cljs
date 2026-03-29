@@ -1,9 +1,12 @@
 (ns heraldicon.heraldry.line.core
   (:require
+   #_[heraldicon.heraldry.line.type.epine :as epine]
+   #_[heraldicon.heraldry.line.type.trefly-counter-trefly :as trefly-counter-trefly]
    [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
    [heraldicon.heraldry.line.type.angled :as angled]
+   [heraldicon.heraldry.line.type.bastionne :as bastionne]
    [heraldicon.heraldry.line.type.bevilled :as bevilled]
    [heraldicon.heraldry.line.type.dancetty :as dancetty]
    [heraldicon.heraldry.line.type.dovetailed :as dovetailed]
@@ -20,12 +23,16 @@
    [heraldicon.heraldry.line.type.flory :as flory]
    [heraldicon.heraldry.line.type.flory-counter-flory :as flory-counter-flory]
    [heraldicon.heraldry.line.type.indented :as indented]
+   [heraldicon.heraldry.line.type.indented-pometty :as indented-pometty]
    [heraldicon.heraldry.line.type.invected :as invected]
+   [heraldicon.heraldry.line.type.lilyous :as lilyous]
    [heraldicon.heraldry.line.type.nebuly :as nebuly]
+   [heraldicon.heraldry.line.type.palissado :as palissado]
    [heraldicon.heraldry.line.type.potenty :as potenty]
    [heraldicon.heraldry.line.type.raguly :as raguly]
    [heraldicon.heraldry.line.type.rayonny-flaming :as rayonny-flaming]
    [heraldicon.heraldry.line.type.rayonny-spiked :as rayonny-spiked]
+   [heraldicon.heraldry.line.type.spaded :as spaded]
    [heraldicon.heraldry.line.type.straight :as straight]
    [heraldicon.heraldry.line.type.thorny :as thorny]
    [heraldicon.heraldry.line.type.urdy :as urdy]
@@ -134,21 +141,28 @@
    #'embattled-fitchy-double/pattern
    #'potenty/pattern
    #'indented/pattern
+   #'indented-pometty/pattern
    #'dancetty/pattern
    #'wavy/pattern
    #'nebuly/pattern
-   #'dovetailed/pattern
-   #'raguly/pattern
-   #'thorny/pattern
-   #'urdy/pattern
-   #'fir-tree-topped/pattern
-   #'fir-twigged/pattern
-   #'erably/pattern
-   #'wolf-toothed/pattern
    #'rayonny-flaming/pattern
    #'rayonny-spiked/pattern
    #'flory/pattern
    #'flory-counter-flory/pattern
+   #'lilyous/pattern
+   #'spaded/pattern
+   #'raguly/pattern
+   #'thorny/pattern
+   #'dovetailed/pattern
+   #'wolf-toothed/pattern
+   #'urdy/pattern
+   #'fir-tree-topped/pattern
+   #'fir-twigged/pattern
+   #'erably/pattern
+   #'bastionne/pattern
+   #'palissado/pattern
+   #_#'epine/pattern
+   #_#'trefly-counter-trefly/pattern
    #'angled/pattern
    #'bevilled/pattern
    #'enarched/pattern])
@@ -485,6 +499,33 @@
                                      [:height :min] 0
                                      [:height :max] 1
                                      [:height :default] 0.5})
+            :lilyous (options/pick default-options
+                                   [[:height]
+                                    [:size-reference]
+                                    [:width]
+                                    [:offset]
+                                    [:mirrored?]
+                                    [:flipped?]
+                                    [:base-line]])
+            :bastionne (options/pick default-options
+                                     [[:height]
+                                      [:size-reference]
+                                      [:width]
+                                      [:offset]
+                                      [:mirrored?]
+                                      [:flipped?]
+                                      [:base-line]])
+            (:epine
+             :indented-pometty
+             :palissado
+             :spaded
+             :trefly-counter-trefly) (options/pick default-options
+                                                   [[:height]
+                                                    [:size-reference]
+                                                    [:width]
+                                                    [:offset]
+                                                    [:flipped?]
+                                                    [:base-line]])
             (options/pick default-options
                           [[:eccentricity]
                            [:height]
