@@ -50,11 +50,16 @@
                          (assoc-in [:layout :num-base-fields] num-base-fields)
                          (assoc-in [:layout :base-field-shift] base-field-shift)
                          (assoc :fields (->> (map vector merged previous-default default)
-                                             (map (fn [[cur old-def def]]
+                                             (map (fn [[cur old-def new-def]]
                                                     (if (and (= (:type cur) :heraldry.subfield.type/field)
                                                              (not= cur old-def))
-                                                      cur
-                                                      def)))
+                                                      (if (and (= (get-in new-def [:field :type]) :heraldry.field.type/plain)
+                                                               (not= (get-in cur [:field :type]) :heraldry.field.type/plain))
+                                                        (assoc-in new-def [:field :tincture]
+                                                                  (or (get-in cur [:field :tincture])
+                                                                      (get-in new-def [:field :tincture])))
+                                                        cur)
+                                                      new-def)))
                                              vec)))))))))
 
 (macros/reg-event-db ::set
