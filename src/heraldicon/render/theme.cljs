@@ -1024,6 +1024,74 @@
                   :creator-name "thatoneherald"
                   :creator-link "https://heraldicon.org/users/thatoneherald"}})
 
+(def ^:private theme-community-loodmuds-classic
+  {;; metals
+   :argent "#F4F4F1"
+   :or "#D4AF37"
+
+   ;; colours
+   :azure "#1F4E8C"
+   :vert "#2F6B3B"
+   :gules "#B22222"
+   :sable "#1C1C1C"
+   :purpure "#6A3D91"
+
+   ;; stains
+   :murrey "#7A263A"
+   :sanguine "#8A1C1C"
+   :tenne "#B5672A"
+
+   ;; other
+   :amaranth "#A63A5A"
+   :brunatre "#5A3A29"
+   :buff "#C8A96B"
+   :carnation "#D9A07B"
+   :copper "#B46A55"
+   :orange "#D97A1D"
+   :rose "#D98CA3"
+   :white "#FFFFFF"
+   :cendree "#8A8F98"
+   :bleu-celeste "#6FAED9"
+
+   ::name "Loodmud's Classic"
+   ::attribution {:license :public-domain
+                  :creator-name "okkolol"
+                  :creator-link "https://heraldicon.org/users/okkolol"}})
+
+(def ^:private theme-community-loodmud-maxium
+  {;; metals
+   :argent "#E6FFFA"
+   :or "#FFD700"
+
+   ;; colours
+   :azure "#00BFFF"
+   :vert "#39FF14"
+   :gules "#FF003C"
+   :sable "#0A0A0A"
+   :purpure "#9D00FF"
+
+   ;; stains
+   :murrey "#5E0035"
+   :sanguine "#FF1A1A"
+   :tenne "#FF7A00"
+
+   ;; other
+   :amaranth "#FF2E63"
+   :brunatre "#3B1F0B"
+   :buff "#F5C16C"
+   :carnation "#FFB3A7"
+   :copper "#FF6F3C"
+   :orange "#FF8C00"
+   :rose "#FF66CC"
+   :white "#FFFFFF"
+   :cendree "#6E6E6E"
+   :bleu-celeste "#66E0FF"
+
+   ::name "Loodmud Maxium"
+   ::attribution {:license :public-domain
+                  :creator-name "okkolol"
+                  :creator-link "https://heraldicon.org/users/okkolol"}})
+
 (def ^:private themes
   [[:string.theme.group/general
     [:wappenwiki theme-wappenwiki]
@@ -1070,7 +1138,9 @@
     [:community-theme-finnish-midtones theme-community-finnish-midtones]
     [:community-theme-midtones theme-community-midtones]
     [:community-theme-lighthues theme-community-lighthues]
-    [:community-theme-xiyav-basic theme-community-xiyav-basic]]])
+    [:community-theme-xiyav-basic theme-community-xiyav-basic]
+    [:community-theme-community-loodmud-maxium theme-community-loodmud-maxium]
+    [:community-theme-community-loodmuds-classic theme-community-loodmuds-classic]]])
 
 (def default
   :wappenwiki)
