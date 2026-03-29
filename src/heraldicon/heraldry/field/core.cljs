@@ -58,7 +58,8 @@
                    (assoc default/field :tincture :sanguine)
                    (assoc default/field :tincture :rose)
                    (assoc default/field :tincture :murrey)
-                   (assoc default/field :tincture :bleu-celeste)])]
+                   (assoc default/field :tincture :bleu-celeste)])
+        pattern-defaults (assoc defaults 0 (make-subfield (assoc default/field :tincture :argent)))]
     (cond
       (#{:plain :counterchanged} type) []
       (#{:per-saltire
@@ -107,14 +108,16 @@
                                                {:type :heraldry.subfield.type/reference
                                                 :index (mod i num-base-fields)})))
                                       (range num-fields-y))
-      (= :chequy type) (subvec defaults 0 num-base-fields)
-      (#{:vairy
+      (#{:chequy
+         :vairy
          :potenty
          :papellony
          :scaly
          :plumetty
-         :masony} type) [(make-subfield (assoc default/field :tincture :argent))
-                         (make-subfield (assoc default/field :tincture :azure))]
+         :masony
+         :lozengy
+         :endente
+         :fretty} type) (subvec pattern-defaults 0 2)
       (#{:tierced-per-pale
          :tierced-per-fess
          :tierced-per-pall
