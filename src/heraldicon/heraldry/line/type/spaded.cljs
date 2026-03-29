@@ -1,6 +1,7 @@
 (ns heraldicon.heraldry.line.type.spaded
   (:require
-   [heraldicon.math.vector :as v]))
+   [heraldicon.math.vector :as v]
+   [heraldicon.util.core :as util]))
 
 (defn- mirror-reverse-seg [[cp1x cp1y cp2x cp2y endx endy]]
   [(- endx cp2x) (- cp2y endy)
@@ -39,26 +40,38 @@
         s5 (flip-mirror-seg (nth base-segments 0))]
     (vec (concat base-segments [s4 s5]))))
 
-(def ^:private s3-halves
-  (split-bezier (nth base-segments 2)))
+(def ^:private descending-segments
+  (mapv mirror-reverse-seg (rseq ascending-segments)))
 
-(def ^:private s3-first (first s3-halves))
-
-(def ^:private s3-second (second s3-halves))
+(def ^:private fwd-split-halves
+  (split-bezier (nth ascending-segments 2)))
 
 ;; Start at the vertical midpoint (t=0.5 of s3), so the pattern is
-;; centered at y=0. The flip-mirror symmetry ensures opposite line alignment.
+;; centered at y=0.
 (def ^:private ordered-segments
   (vec (concat
-        ;; ascending: from midpoint to tip
-        [s3-second]
-        [(flip-mirror-seg (nth base-segments 1))
-         (flip-mirror-seg (nth base-segments 0))]
-        ;; descending: full mirror of ascending
-        (mapv mirror-reverse-seg (rseq ascending-segments))
-        ;; ascending: from valley to midpoint
+        [(second fwd-split-halves)]
+        (subvec ascending-segments 3)
+        descending-segments
         (subvec ascending-segments 0 2)
-        [s3-first])))
+        [(first fwd-split-halves)])))
+
+;; Mirror pattern: split the corresponding descending segment at (1-t)
+;; so that after automatic reverse+mirror, features align with forward
+(def ^:private mirror-desc-index
+  (- 4 2))
+
+(def ^:private mirror-split-halves
+  (split-bezier (nth descending-segments mirror-desc-index)))
+
+(def ^:private mirrored-ordered-segments
+  (let [didx mirror-desc-index]
+    (vec (concat
+          [(second mirror-split-halves)]
+          (subvec descending-segments (inc didx))
+          ascending-segments
+          (subvec descending-segments 0 didx)
+          [(first mirror-split-halves)]))))
 
 (def ^:private period-width
   (* 2 (reduce + (map #(nth % 4) ascending-segments))))
@@ -77,12 +90,18 @@
 
 (def pattern
   {:display-name :string.line.type/spaded
-   :function (fn [{:keys [height width]}
-                  _line-options]
-               (let [sx (/ width period-width)
+   :function (fn [{line-mirrored? :mirrored?
+                   :keys [height width]}
+                  {:keys [reversed? mirrored?]}]
+               (let [effective-mirrored? (-> (boolean line-mirrored?)
+                                             (util/xor (boolean mirrored?))
+                                             (util/xor (boolean reversed?)))
+                     sx (/ width period-width)
                      sy (* sx height)
-                     scaled (mapcat (partial scale-seg sx sy)
-                                    ordered-segments)]
+                     segs (if effective-mirrored?
+                            mirrored-ordered-segments
+                            ordered-segments)
+                     scaled (mapcat (partial scale-seg sx sy) segs)]
                  {:pattern (vec scaled)
                   :min (* tip-y sy)
                   :max (* valley-y sy)}))})

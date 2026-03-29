@@ -1,6 +1,7 @@
 (ns heraldicon.heraldry.line.type.lilyous
   (:require
-   [heraldicon.math.vector :as v]))
+   [heraldicon.math.vector :as v]
+   [heraldicon.util.core :as util]))
 
 (defn- mirror-reverse-seg [[cp1x cp1y cp2x cp2y endx endy]]
   [(- endx cp2x) (- cp2y endy)
@@ -60,13 +61,12 @@
    [12.9093 -0.0776693 15.4151 11.6376 20.9401 10.4108]
    [-16.6915 -32.4043 -14.1044 -60.2799 10.7201 -83.5495]])
 
-;; Find the split point where cumulative y = ascending_total/2
-;; so the pattern is vertically centered at y=0
+(def ^:private descending-segments
+  (mapv mirror-reverse-seg (rseq ascending-segments)))
+
 (def ^:private ascending-total-y
   (reduce + (map #(nth % 5) ascending-segments)))
 
-;; Midpoint between the visual bulb center and the computed vertical
-;; center, placing the start at approximately height 0
 (def ^:private target-y (* ascending-total-y 0.468))
 
 (def ^:private split-info
@@ -81,21 +81,36 @@
           {:index i :t t})
         (recur (inc i) next-cum)))))
 
-(def ^:private split-seg-halves
+;; Forward pattern: split ascending at the computed point
+(def ^:private fwd-split-halves
   (split-bezier (nth ascending-segments (:index split-info)) (:t split-info)))
-
-(def ^:private seg-first (first split-seg-halves))
-
-(def ^:private seg-second (second split-seg-halves))
 
 (def ^:private ordered-segments
   (let [idx (:index split-info)]
     (vec (concat
-          [seg-second]
+          [(second fwd-split-halves)]
           (subvec ascending-segments (inc idx))
-          (mapv mirror-reverse-seg (rseq ascending-segments))
+          descending-segments
           (subvec ascending-segments 0 idx)
-          [seg-first]))))
+          [(first fwd-split-halves)]))))
+
+;; Mirror pattern: split the corresponding descending segment at (1-t)
+;; so that after automatic reverse+mirror, features align with forward
+(def ^:private mirror-desc-index
+  (- 9 (:index split-info)))
+
+(def ^:private mirror-split-halves
+  (split-bezier (nth descending-segments mirror-desc-index)
+                (- 1 (:t split-info))))
+
+(def ^:private mirrored-ordered-segments
+  (let [didx mirror-desc-index]
+    (vec (concat
+          [(second mirror-split-halves)]
+          (subvec descending-segments (inc didx))
+          ascending-segments
+          (subvec descending-segments 0 didx)
+          [(first mirror-split-halves)]))))
 
 (def ^:private period-width
   (* 2 (reduce + (map #(nth % 4) ascending-segments))))
@@ -109,12 +124,18 @@
 
 (def pattern
   {:display-name :string.line.type/lilyous
-   :function (fn [{:keys [height width]}
-                  _line-options]
-               (let [sx (/ width period-width)
+   :function (fn [{line-mirrored? :mirrored?
+                   :keys [height width]}
+                  {:keys [reversed? mirrored?]}]
+               (let [effective-mirrored? (-> (boolean line-mirrored?)
+                                             (util/xor (boolean mirrored?))
+                                             (util/xor (boolean reversed?)))
+                     sx (/ width period-width)
                      sy (* sx height)
-                     scaled (mapcat (partial scale-seg sx sy)
-                                    ordered-segments)]
+                     segs (if effective-mirrored?
+                            mirrored-ordered-segments
+                            ordered-segments)
+                     scaled (mapcat (partial scale-seg sx sy) segs)]
                  {:pattern (vec scaled)
                   :min (* tip-y sy)
                   :max (* valley-y sy)}))})
