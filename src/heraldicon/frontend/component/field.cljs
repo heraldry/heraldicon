@@ -13,23 +13,11 @@
    [heraldicon.frontend.validation :as validation]
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.field.core :as field]
+   [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
-
-(defn- show-tinctures-only? [field-type]
-  (-> field-type name keyword
-      #{:chequy
-        :lozengy
-        :endente
-        :vairy
-        :potenty
-        :masony
-        :papellony
-        :scaly
-        :plumetty
-        :fretty}))
 
 (macros/reg-event-db ::load-arms
   (fn [db [_ path arms field-fn]]
@@ -74,7 +62,7 @@
      :outline?
      :manual-blazon])
 
-   (when (show-tinctures-only? (interface/get-raw-data (c/++ context :type)))
+   (when (field.interface/tinctures-only? (interface/get-raw-data (c/++ context :type)))
      (into [:<>
             [:div {:style {:margin-bottom "1em"}}]]
            (map (fn [idx]
@@ -138,7 +126,7 @@
                  {:icon "fas fa-pen-nib"
                   :title :string.button/from-blazon
                   :handler #(blazonry-editor/open context)}])
-     :nodes (concat (when (and (not (show-tinctures-only? field-type))
+     :nodes (concat (when (and (not (field.interface/tinctures-only? field-type))
                                (-> field-type name keyword (not= :plain)))
                       (let [fields-context (c/++ context :fields)
                             num-fields (interface/get-list-size fields-context)]

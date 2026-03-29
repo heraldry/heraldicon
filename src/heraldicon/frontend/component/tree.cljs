@@ -9,6 +9,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.validation :as validation]
+   [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.interface :as interface]
    [re-frame.core :as rf]
    [reagent.core :as r])
@@ -434,6 +435,28 @@
       (close-node db identifier path)
       (open-node db identifier path))))
 
+(defn- resolve-pattern-parent
+  "If the subfield path points into a tinctures-only pattern field (scaly,
+  papellony, etc.), select the parent field instead of the individual subfield.
+  The returned path is the tree node path, which for a subfield's field is the
+  subfield itself (without the trailing :field)."
+  [db subfield-path]
+  (let [tail (take-last 2 subfield-path)
+        parent-field-path (vec (drop-last 2 subfield-path))]
+    (if (and (= (first tail) :fields)
+             (number? (second tail))
+             (field.interface/tinctures-only?
+              (get-in db (conj parent-field-path :type))))
+      ;; parent-field-path is the pattern field; if it's inside a subfield
+      ;; (path ends with [:fields N :field]), the tree node is the subfield
+      (let [pf-tail (take-last 3 parent-field-path)]
+        (if (and (= (first pf-tail) :fields)
+                 (number? (second pf-tail))
+                 (= (last pf-tail) :field))
+          (vec (drop-last parent-field-path))
+          parent-field-path))
+      subfield-path)))
+
 (defn- determine-field-path [db path]
   (let [path (if (get-in db (conj path :field))
                (conj path :field)
@@ -442,7 +465,7 @@
       ;; if this is the field of a subfield, then use the path of the subfield,
       ;; because that's the node displayed in the tree
       (= (first (take-last 3 path))
-         :fields) (vec (drop-last path))
+         :fields) (resolve-pattern-parent db (vec (drop-last path)))
 
       :else path)))
 
@@ -454,7 +477,7 @@
       ;; if this is the field of a subfield, then use the path of the subfield,
       ;; because that's the node displayed in the tree
       (= (first (take-last 3 path))
-         :fields) (vec (drop-last path))
+         :fields) (resolve-pattern-parent db (vec (drop-last path)))
 
       (number? (last (drop-last path))) (vec (drop-last path))
 

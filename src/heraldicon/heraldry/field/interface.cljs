@@ -4,6 +4,21 @@
    [heraldicon.interface :as interface]
    [taoensso.timbre :as log]))
 
+(def ^:private tinctures-only-field-types
+  #{:chequy
+    :endente
+    :fretty
+    :lozengy
+    :masony
+    :papellony
+    :plumetty
+    :potenty
+    :scaly
+    :vairy})
+
+(defn tinctures-only? [field-type]
+  (-> field-type name keyword tinctures-only-field-types))
+
 (defmulti display-name identity)
 
 (defmulti part-names identity)
