@@ -108,8 +108,8 @@
                                                {:type :heraldry.subfield.type/reference
                                                 :index (mod i num-base-fields)})))
                                       (range num-fields-y))
-      (#{:chequy
-         :vairy
+      (= :chequy type) (subvec pattern-defaults 0 num-base-fields)
+      (#{:vairy
          :potenty
          :papellony
          :scaly
