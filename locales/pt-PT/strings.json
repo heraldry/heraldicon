@@ -132,7 +132,15 @@
     "segment-type-choice" : { }
   },
   "line" : {
-    "type" : { }
+    "type" : {
+      "bastionne": "Bastionné",
+      "epine": "Épiné",
+      "indented-pometty": "Indented pometty",
+      "lilyous": "Lilyous",
+      "palissado": "Palissado",
+      "spaded": "Spaded",
+      "trefly-counter-trefly": "Trefly counter trefly"
+    }
   },
   "escutcheon" : {
     "group" : {
