@@ -1001,6 +1001,7 @@ label div {
 }
 
 .ui-submenu.image-select .content {
+  min-height: 20em;
   max-height: 20em;
   overflow-x: hidden;
   overflow-y: scroll;
