@@ -1222,10 +1222,10 @@
            Z"
 
    ::name "Demipennant"
-   ::attribDemiption {:nature :own-work
-                      :license :public-domain
-                      :creator-name "Korfi2Go"
-                      :creator-link "https://heraldicon.org/users/korfi2go"}})
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-rounded-pennant
   {:shape "M 0,0
