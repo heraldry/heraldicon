@@ -1292,14 +1292,19 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
-#_(def ^:private community-rounded-gonfalon
-    {:shape ""
+(def ^:private community-rounded-gonfalon
+  {:shape "m 0,0
+           h 100
+           v 140
+           c 0,5 -5,10 -15,10 -10,0 -15,-5 -15,-5 0,5 -5,15 -20,15 -15,0 -20,-10 -20,-15 0,0 -5,5 -15,5
+           C 5,150 0,145 0,140
+           Z"
 
-     ::name "Rounded Gonfalon"
-     ::attribution {:nature :own-work
-                    :license :public-domain
-                    :creator-name "Korfi2Go"
-                    :creator-link "https://heraldicon.org/users/korfi2go"}})
+   ::name "Rounded Gonfalon"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
 
 (def ^:private community-draped-pointy-banner
   {:shape "M 0,0
@@ -1406,7 +1411,7 @@
     [:community-oval-gonfalon community-oval-gonfalon]
     [:community-chevron-gonfalon community-chevron-gonfalon]
     [:community-dovetailed-gonfalon community-dovetailed-gonfalon]
-    #_[:community-rounded-gonfalon community-rounded-gonfalon]
+    [:community-rounded-gonfalon community-rounded-gonfalon]
     [:community-gonfalon community-gonfalon]
     [:community-kalasag community-kalasag]]])
 
