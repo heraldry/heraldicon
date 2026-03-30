@@ -624,7 +624,7 @@
     [:div.release-row
      [:div.info
       [:h2 "News"
-       [:a {:href "/feed.xml"
+       [:a {:href "/atom.xml"
             :target "_blank"
             :style {:margin-left "0.5em"
                     :position "relative"
