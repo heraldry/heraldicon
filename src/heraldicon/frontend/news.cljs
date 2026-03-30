@@ -4,11 +4,11 @@
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
-(defn- release-image [img-src]
+(defn- release-image [img-src & {:keys [width]}]
   (let [src (static/static-url img-src)]
     [:a {:href src
          :target "_blank"}
-     [:img {:style {:width "100%"}
+     [:img {:style {:width (or width "100%")}
             :src src
             :alt "release update overview"}]]))
 
@@ -24,6 +24,41 @@
     [:div.info
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
+
+   [:h3 "2026-03-30 - Charge type filter, new line styles, new partitions, mounts"]
+   [:div.release-row
+    [:div.info
+     [:h3 "Charge type filter"]
+     [:p "The charge list now has a " [:b "charge type filter"] " that lets you browse charges by their type in the ontology hierarchy. This makes it much easier to find the right charge when you know what category you're looking for, e.g. narrowing down to just birds or mammals."]]
+    [:div
+     (release-image "/img/2026-03-30-release-update-charge-type-filter.png")]]
+
+   [:div.release-row
+    [:div.info
+     [:h3 "Mount and trimount charges"]
+     [:p "There are now dedicated " [:b "mount"] " and " [:b "trimount"] " charges. These are properly recognized by the blazon parser, so blazons like " [:em "Azure, a trimount Or"] " will place the charge correctly at the base of the shield."]]
+    [:div
+     (release-image "/img/2026-03-30-release-update-mount.png")]]
+
+   [:div.release-row
+    [:div.info
+     [:h3 "New line styles"]
+     [:p "Five new line styles have been added:"]
+     [:ul
+      [:li "indented pometty"]
+      [:li "lilyous"]
+      [:li "spaded"]
+      [:li "bastionné"]
+      [:li "palissado"]]]
+    [:div
+     (release-image "/img/2026-03-30-release-update-line-styles.png" :width "500px")]]
+
+   [:div.release-row
+    [:div.info
+     [:h3 "New partition patterns"]
+     [:p "Two new partition patterns are now available: " [:b "scaly"] " and " [:b "plumetty"] "."]]
+    [:div
+     (release-image "/img/2026-03-30-release-update-partitions.png" :width "200px")]]
 
    [:h3 "2026-03-26 - User database migration"]
    [:div.release-row
