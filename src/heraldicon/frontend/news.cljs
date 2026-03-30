@@ -35,6 +35,11 @@
    (post-heading "2026-03-30" "2026-03-30 - Charge type filter, new line styles, new partitions, mounts")
    [:div.release-row
     [:div.info
+     [:p "The community has contributed more themes and escutcheons, which now have a label and can be filtered by name. There also have been various bugfixes and minor improvements."]
+     [:p "Four of the biggest features are the following:"]]]
+
+   [:div.release-row
+    [:div.info
      [:h3 "Charge type filter"]
      [:p "The charge list now has a " [:b "charge type filter"] " that lets you browse charges by their type in the ontology hierarchy. This makes it much easier to find the right charge when you know what category you're looking for, e.g. narrowing down to just birds or mammals."]]
     [:div
