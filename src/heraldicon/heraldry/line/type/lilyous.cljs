@@ -1,7 +1,6 @@
 (ns heraldicon.heraldry.line.type.lilyous
   (:require
-   [heraldicon.math.vector :as v]
-   [heraldicon.util.core :as util]))
+   [heraldicon.math.vector :as v]))
 
 (defn- mirror-reverse-seg [[cp1x cp1y cp2x cp2y endx endy]]
   [(- endx cp2x) (- cp2y endy)
@@ -124,15 +123,11 @@
 
 (def pattern
   {:display-name :string.line.type/lilyous
-   :function (fn [{line-mirrored? :mirrored?
-                   :keys [height width]}
-                  {:keys [reversed? mirrored?]}]
-               (let [effective-mirrored? (-> (boolean line-mirrored?)
-                                             (util/xor (boolean mirrored?))
-                                             (util/xor (boolean reversed?)))
-                     sx (/ width period-width)
+   :function (fn [{:keys [height width]}
+                  {:keys [reversed?]}]
+               (let [sx (/ width period-width)
                      sy (* sx height)
-                     segs (if effective-mirrored?
+                     segs (if reversed?
                             mirrored-ordered-segments
                             ordered-segments)
                      scaled (mapcat (partial scale-seg sx sy) segs)]

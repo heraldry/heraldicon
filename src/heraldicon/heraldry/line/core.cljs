@@ -513,7 +513,6 @@
                                     [:width]
                                     [:additional-offset]
                                     [:offset]
-                                    [:mirrored?]
                                     [:flipped?]
                                     [:base-line]]
                                    {[:additional-offset :default] 0.13})
