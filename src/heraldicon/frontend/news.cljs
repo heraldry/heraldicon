@@ -629,8 +629,7 @@
             :style {:margin-left "0.5em"
                     :position "relative"
                     :top "1px"}}
-        [:i.fas.fa-rss-square {:style {:color "#f90"
-                                       :font-size "0.6em"}}]]]
+        [:i.fas.fa-rss-square]]]
       [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]]
    (mapcat (fn [{:keys [id title content] :as post}]
              (into [(post-heading id (str (post-date post) " - " title))]
