@@ -749,6 +749,7 @@
       "copied-url-for-sharing": "URL de partage copiée.",
       "copy-to-clipboard-failed": "Échec de la copie de l'URL.",
       "created-unsaved-copy": "Une copie non sauvegardée a été créée.",
+      "email-invalid": "Veuillez entrer une adresse e-mail valide.",
       "email-required": "E-mail requis.",
       "need-to-be-logged-in": "Vous devez être connecté(e).",
       "need-to-be-logged-in-and-own-the-arms": "Vous devez être connecté(e) et posséder les armes.",
