@@ -4,6 +4,13 @@
    [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
+(defn- post-heading [id title]
+  [:h3 {:id id}
+   [:a {:href (str "#" id)
+        :style {:color "inherit"
+                :text-decoration "none"}}
+    title]])
+
 (defn- release-image [img-src & {:keys [width]}]
   (let [src (static/static-url img-src)]
     [:a {:href src
@@ -25,7 +32,7 @@
      [:h2 "News"]
      [:p "In many cases new features are rolled out incrementally, without big release. But now and then I'll group some features and new development and post an update here, so it is easy to stay informed."]]]
 
-   [:h3 "2026-03-30 - Charge type filter, new line styles, new partitions, mounts"]
+   (post-heading "2026-03-30" "2026-03-30 - Charge type filter, new line styles, new partitions, mounts")
    [:div.release-row
     [:div.info
      [:h3 "Charge type filter"]
@@ -60,13 +67,13 @@
     [:div
      (release-image "/img/2026-03-30-release-update-partitions.png" :width "200px")]]
 
-   [:h3 "2026-03-26 - User database migration"]
+   (post-heading "2026-03-26" "2026-03-26 - User database migration")
    [:div.release-row
     [:div.info
      [:p "You can now log in with your " [:b "username"] " or " [:b "email address"] ". For this to work I've migrated the system to a different one. This shouldn't be noticeable to you, but if you notice any issues with registrations, password resets, or confirmation emails, then please reach out to me, so I can have a look."]
      [:p "Note: in the past it was possible to register multiple users with the same email address, this is no longer supported. The old accounts remain, but in those cases you need to log in with the username."]]]
 
-   [:h3 "2026-01-01 - Happy new year!"]
+   (post-heading "2026-01-01" "2026-01-01 - Happy new year!")
    [:div.release-row
     [:div.info
      [:p "I wish all of you a happy and healthy 2026!"]
@@ -78,7 +85,7 @@
      [:p "The vast majority of content remains private. " [:b "If you've created something you're proud of, please consider making it public"] " - it allows other users to enjoy or even use your work!"]
      [:p "As always, thanks to everyone who contributed with feedback, feature requests, public charges and arms, community themes, escutcheons, and all the other ways you support this project."]]]
 
-   [:h3 "2025-01-01 - Charge type ontology and better search"]
+   (post-heading "2025-01-01-ontology" "2025-01-01 - Charge type ontology and better search")
    [:div.release-row
     [:div.info
      [:h3 "Charge type ontology"]
@@ -106,7 +113,7 @@
     [:div
      (release-image "/img/2025-01-01-release-update-2.png")]]
 
-   [:h3 "2025-01-01 - Happy new year!"]
+   (post-heading "2025-01-01" "2025-01-01 - Happy new year!")
    [:div.release-row
     [:div.info
      [:p "I hope all of you had a great 2024, and I wish you an even better 2025!"]
@@ -117,14 +124,14 @@
       [:li "1,200+ collections, over 170 of them public"]]
      [:p "So again thanks to everybody who helped with feedback, feature requests, charge creations, especially public ones, community themes, community escutcheons, and all the other ways many of you contributed!"]]]
 
-   [:h3 "2024-02-25 - Drag and drop for components and collection arms"]
+   (post-heading "2024-02-25" "2024-02-25 - Drag and drop for components and collection arms")
    [:div.release-row
     [:div.info
      [:p "This was long overdue, and I never was happy with those little 'up'/'down' arrows to manipulate component order. Now you can drag and drop components and collection arms to reorder them."]
      [:p "You can now also move components between parts of your achievement, e.g. move a charge from a helm to a field or to ornaments and back."]
      [:p "Finally, you can drag and drop subfields in a field partition."]]]
 
-   [:h3 "2024-01-26 - Vairy/lozengy/potenty/papellony/masony rendering improved"]
+   (post-heading "2024-01-26" "2024-01-26 - Vairy/lozengy/potenty/papellony/masony rendering improved")
    [:div.release-row
     [:div.info
      [:p "A user informed me that vairy in particular wasn't rendered correctly. The tinctures, as given in the blazon, were swapped. This affected all variants of the field type."]
@@ -132,7 +139,7 @@
      [:p [:span {:style {:color "darkred"}} [:b "Some of your coats of arms may look different now if they use these field types"]]]
      [:p "Please have a look and adjust your arms if necessary, I apologize for the inconvenience."]]]
 
-   [:h3 "2024-01-12 - Happy new year!"]
+   (post-heading "2024-01-12" "2024-01-12 - Happy new year!")
    [:div.release-row
     [:div.info
      [:p "I wish you all health and a splendid upcoming year."]
@@ -143,7 +150,7 @@
       [:li "600+ collections, over 100 of them public"]]
      [:p "Just as last year: thanks to everybody who helped with feedback, feature requests, charge creations, especially public ones, community themes, community escutcheons, and all the other ways many of you contributed!"]]]
 
-   [:h3 "2023-03-19 - Bordure/orle line style adjustments and flory line styles"]
+   (post-heading "2023-03-19" "2023-03-19 - Bordure/orle line style adjustments and flory line styles")
    [:div.release-row
     [:div.info
      [:p "Flory and flory-counter-flory are now available line styles."]
@@ -152,7 +159,7 @@
       [:span {:style {:color "darkred"}} [:b "Some of your coats of arms may look different now if they use orles or bordures with line styles."]] "."]
      [:p "Please have a look and maybe adjust ordinaries or charges if necessary, unfortunately this was another case that was difficult to migrate without breaking some existing arms."]]]
 
-   [:h3 "2023-01-12 - Escutcheon adjustments"]
+   (post-heading "2023-01-12" "2023-01-12 - Escutcheon adjustments")
    [:div.release-row
     [:div.info
      [:p "I just went over all the existing escutcheons and improved their shapes and how they define the field and where the fess point is."]
@@ -160,7 +167,7 @@
       [:span {:style {:color "darkred"}} [:b "some of your coats of arms may look different now if they use these escutcheons"]] "."]
      [:p "Please have a look and maybe adjust ordinaries or charges if necessary, I apologize for the inconvenience. This kind of change should be a very rare event."]]]
 
-   [:h3 "2023-01-05 - Happy new year!"]
+   (post-heading "2023-01-05" "2023-01-05 - Happy new year!")
    [:div.release-row
     [:div.info
      [:p "I hope everybody had a good start into the year."]
@@ -172,7 +179,7 @@
       [:li "over 50 public collections, over 280 private collections"]]
      [:p "Thanks to everybody who helped with feedback, feature requests, charge creations, especially public ones, community themes, community escutcheons, and all the other ways many of you contributed!"]]]
 
-   [:h3 "2022-09-01 - New rendering engine and various improvements"]
+   (post-heading "2022-09-01" "2022-09-01 - New rendering engine and various improvements")
    [:div.release-row
     [:div.info
      [:p "There have been various new small features over the past few months and a large rewrite of the rendering system, which improves some existing conditions and will allow many planned features that weren't possible in the previous version."]
@@ -206,7 +213,7 @@
       [:li "some modals for login/logout/confirmation were buggy, that has been fixed"]
       [:li "various bugfixes"]]]]
 
-   [:h3 "2022-04-14 - Change of 'origin'/'anchor' naming"]
+   (post-heading "2022-04-14" "2022-04-14 - Change of 'origin'/'anchor' naming")
    [:div.release-row
     [:div.info
      [:p "The names for the two points used to position and orient partitions, ordinaries, and charges, have been renamed."]
@@ -215,7 +222,7 @@
       [:li [:strong "orientation"] " (previously " [:em "anchor"] "): is the point an element orients itself towards, but it can also be a fixed angle."]]
      [:p "This might be confusing for a while for anyone already used to the old names, but I think it more accurately describes these concepts and simplifies using them. I hope it won't cause too much trouble."]]]
 
-   [:h3 "2022-04-07 - Blazonry reader, translations, bordures with line styles, metadata"]
+   (post-heading "2022-04-07" "2022-04-07 - Blazonry reader, translations, bordures with line styles, metadata")
    [:div.release-row
     [:div.info
      [:p "The main new feature is a blazonry reader, you can click on the pen nib next to any field to invoke it or click the dedicated button to create new arms from a blazon. Features include:"]
@@ -252,7 +259,7 @@
     [:div
      (release-image "/img/2022-04-07-release-update.png")]]
 
-   [:h3 "2022-01-09 - Happy new year!"]
+   (post-heading "2022-01-09" "2022-01-09 - Happy new year!")
    [:div.release-row
     [:div.info
      [:p "The site has a new name: " [:b "Heraldicon"]]
@@ -261,7 +268,7 @@
      [:p "I hope the new name identifies the project more directly and is easier to find if anyone wants to refer to the website."]
      [:p "Note: all export links remain unchanged and all links to the old website should redirect to the new website. Let me know if you see any problems after the move. :)"]]]
 
-   [:h3 "2021-11-25 - Bordure/orle, in orle charge groups, chevronny"]
+   (post-heading "2021-11-25" "2021-11-25 - Bordure/orle, in orle charge groups, chevronny")
    [:div.release-row
     [:div.info
      [:p "Changes and new features:"]
@@ -304,7 +311,7 @@
     [:div
      (release-image "/img/2021-11-25-release-update.png")]]
 
-   [:h3 "2021-10-25 - Supporters, compartments, mantling, charge library improvements"]
+   (post-heading "2021-10-25" "2021-10-25 - Supporters, compartments, mantling, charge library improvements")
    [:div.release-row
     [:div.info
      [:p "Changes and new features:"]
@@ -331,7 +338,7 @@
     [:div
      (release-image "/img/2021-10-25-release-update.png")]]
 
-   [:h3 "2021-09-26 - German translation, undo/redo, quarter/canton/point ordinaries, fretty"]
+   (post-heading "2021-09-26" "2021-09-26 - German translation, undo/redo, quarter/canton/point ordinaries, fretty")
    [:div.release-row
     [:div.info
      [:p "Changes and new features:"]
@@ -352,7 +359,7 @@
         [:li "the environments for many ordinaries and subfields were broken (they still need some work, but now most of them should be reasonable)"]
         [:li "a bunch of minor things in the UI and rendering"]]]]]]
 
-   [:h3 "2021-08-20 - helms/crests, mottos/slogans, ribbon editor + library"]
+   (post-heading "2021-08-20" "2021-08-20 - helms/crests, mottos/slogans, ribbon editor + library")
    [:div.release-row
     [:div.info
      [:p "Changes and new features:"]
@@ -385,7 +392,7 @@
     [:div
      (release-image "/img/2021-08-20-release-update.png")]]
 
-   [:h3 "2021-07-30 - UI rewrite, validation system, social media sharing"]
+   (post-heading "2021-07-30" "2021-07-30 - UI rewrite, validation system, social media sharing")
    [:div.release-row
     [:div.info
      [:p "Changes and new features:"]
@@ -407,7 +414,7 @@
     [:div
      (release-image "/img/2021-07-30-release-update.png")]]
 
-   [:h3 "2021-06-12 - Charge groups, public arms, collections, users"]
+   (post-heading "2021-06-12" "2021-06-12 - Charge groups, public arms, collections, users")
    [:div.release-row
     [:div.info
      [:p "New features:"]
@@ -425,7 +432,7 @@
     [:div
      (release-image "/img/2021-06-12-release-update.png")]]
 
-   [:h3 "2021-06-06 - Collections, tags, filter"]
+   (post-heading "2021-06-06" "2021-06-06 - Collections, tags, filter")
    [:div.release-row
     [:div.info
      [:p "New features:"]
@@ -440,7 +447,7 @@
     [:div
      (release-image "/img/2021-06-06-release-update.png")]]
 
-   [:h3 "2021-05-09 - Cottising, labels, semy"]
+   (post-heading "2021-05-09" "2021-05-09 - Cottising, labels, semy")
    [:div.release-row
     [:div.info
      [:p "New features:"]
@@ -454,7 +461,7 @@
     [:div
      (release-image "/img/2021-05-09-release-update.png")]]
 
-   [:h3 "2021-03-31 - Embowed/enarched, nonrepeating line styles"]
+   (post-heading "2021-03-31" "2021-03-31 - Embowed/enarched, nonrepeating line styles")
    [:div.release-row
     [:div.info
      [:p "A big refactoring line styles, allowing line styles that are not pattern-based but extend across the full length of the line."]
@@ -466,7 +473,7 @@
     [:div
      (release-image "/img/2021-03-31-release-update.png")]]
 
-   [:h3 "2021-03-16 - Chevron and pile"]
+   (post-heading "2021-03-16" "2021-03-16 - Chevron and pile")
    [:div.release-row
     [:div.info
      [:p "A total refactoring of angular alignment necessary for chevron and pile variants."]
@@ -484,7 +491,7 @@
     [:div
      (release-image "/img/2021-03-16-release-update.png")]]
 
-   [:h3 "2021-03-07 - Paly and fimbriation"]
+   (post-heading "2021-03-07" "2021-03-07 - Paly and fimbriation")
    [:div.release-row
     [:div.info
      [:p "The main new features are:"]
@@ -503,7 +510,7 @@
     [:div
      (release-image "/img/2021-03-07-release-update.png")]]
 
-   [:h3 "2021-02-08 - First release"]
+   (post-heading "2021-02-08" "2021-02-08 - First release")
    [:div.release-row
     [:div.info
      [:p "Following a browser-only prototype, this site now has a backend, where users can build a public "
