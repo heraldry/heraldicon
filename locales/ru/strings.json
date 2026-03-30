@@ -748,6 +748,7 @@
       "copied-url-for-sharing": "Ссылку скопировано. Теперь можно делиться.",
       "copy-to-clipboard-failed": "Copying the URL failed.",
       "created-unsaved-copy": "Created an unsaved copy.",
+      "email-invalid": "Пожалуйста, введите действительный адрес электронной почты.",
       "email-required": "Email required.",
       "need-to-be-logged-in": "Вы должны ввойти.",
       "need-to-be-logged-in-and-own-the-arms": "Вы должны ввойти и быть владельцем герба.",

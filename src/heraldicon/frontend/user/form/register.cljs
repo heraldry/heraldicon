@@ -9,6 +9,7 @@
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.user.form.confirmation :as confirmation]
    [heraldicon.frontend.user.form.core :as form]
+   [heraldicon.util.email :as util.email]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -48,9 +49,11 @@
 
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
-    (let [{:keys [username email password password-again]} (form/data-from-db db ::id)
+    (let [{:keys [username password password-again email]} (form/data-from-db db ::id)
+          email (str/trim (or email ""))
           username? (not (str/blank? username))
           email? (not (str/blank? email))
+          valid-email? (util.email/valid-email? email)
           password? (not (str/blank? password))
           valid-username? (valid-username? username)]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
@@ -64,6 +67,10 @@
         (not email?) (update :dispatch-n conj
                              [::message/set-error (form/message-id ::id :email)
                               :string.user.message/email-required])
+        (and email?
+             (not valid-email?)) (update :dispatch-n conj
+                                         [::message/set-error (form/message-id ::id :email)
+                                          :string.user.message/email-invalid])
         (not password?) (update :dispatch-n conj
                                 [::message/set-error (form/message-id ::id :password)
                                  :string.user.message/password-required])
@@ -73,7 +80,7 @@
                                        :string.user.message/passwords-do-not-match])
         (and username?
              valid-username?
-             email?
+             valid-email?
              password?
              (= password
                 password-again)) (assoc ::register [username email password])))))

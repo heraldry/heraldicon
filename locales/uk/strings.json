@@ -756,6 +756,7 @@
       "copied-url-for-sharing": "Скопійовано посилання для поширення.",
       "copy-to-clipboard-failed": "Не вдалося скопіювати посилання.",
       "created-unsaved-copy": "Створено незбережену копію.",
+      "email-invalid": "Будь ласка, введіть дійсну адресу електронної пошти.",
       "email-required": "Необхідна адреса електронної пошти.",
       "need-to-be-logged-in": "Потрібно ввійти.",
       "need-to-be-logged-in-and-own-the-arms": "Потрібно ввійти та бути власником герба.",

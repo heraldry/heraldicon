@@ -769,6 +769,7 @@
       "copied-url-for-sharing": "URL copiada para compartir.",
       "copy-to-clipboard-failed": "Error al copiar la URL.",
       "created-unsaved-copy": "Se ha creado una copia sin guardar.",
+      "email-invalid": "Por favor, introduce una dirección de correo electrónico válida.",
       "email-required": "Se requiere Email.",
       "need-to-be-logged-in": "Es necesario haber iniciado una sesión.",
       "need-to-be-logged-in-and-own-the-arms": "Necesitas estar con la sesión iniciada y poseer los escudos.",
