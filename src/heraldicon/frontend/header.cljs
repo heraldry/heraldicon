@@ -61,6 +61,12 @@
      [:ul.nav-menu {:style {:flex 1}}
       [:li {:style {:margin "auto"}}
        [ko-fi/small-button]]
+      [:li.nav-menu-item
+       [:a {:href "/feed.xml"
+            :target "_blank"
+            :title "RSS Feed"
+            :style {:padding "0 0.2em"}}
+        [:i.fas.fa-rss-square {:style {:color "#f90"}}]]]
       [menu-item :route.home/main :string.menu/about]
       [menu-item :route.news/main :string.menu/news]
       [menu-item :route.collection/list :string.menu/collection-library]
