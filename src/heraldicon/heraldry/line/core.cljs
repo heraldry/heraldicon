@@ -68,12 +68,12 @@
                                   line-offset :offset
                                   line-mirrored? :mirrored?
                                   spacing :spacing
-                                  additional-offset :additional-offset
                                   :as line}
                                  length line-function {:keys [reversed? mirrored?
                                                               num-repetitions] :as line-options}]
   (let [{:keys [remaining-spacing]
          line-pattern :pattern
+         additional-offset :additional-offset
          :as pattern-data} (line-function line line-options)
         effective-mirrored? (-> line-mirrored?
                                 (util/xor mirrored?)
@@ -241,12 +241,6 @@
            :default 10
            :ui/label :string.option/width
            :ui/step 0.01}
-   :additional-offset {:type :option.type/range
-                       :min -1
-                       :max 3
-                       :default 0
-                       :ui/label :string.option/offset
-                       :ui/step 0.01}
    :offset {:type :option.type/range
             :min -1
             :max 3
@@ -511,20 +505,16 @@
                                    [[:height]
                                     [:size-reference]
                                     [:width]
-                                    [:additional-offset]
                                     [:offset]
                                     [:flipped?]
-                                    [:base-line]]
-                                   {[:additional-offset :default] 0.13})
+                                    [:base-line]])
             :spaded (options/pick default-options
                                   [[:height]
                                    [:size-reference]
                                    [:width]
-                                   [:additional-offset]
                                    [:offset]
                                    [:flipped?]
-                                   [:base-line]]
-                                  {[:additional-offset :default] 0.25})
+                                   [:base-line]])
             :bastionne (options/pick default-options
                                      [[:height]
                                       [:size-reference]
