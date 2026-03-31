@@ -104,4 +104,5 @@
                      scaled (mapcat (partial scale-seg sx sy) segs)]
                  {:pattern (vec scaled)
                   :min (* tip-y sy)
-                  :max (* valley-y sy)}))})
+                  :max (* valley-y sy)
+                  :additional-offset 0.25}))})
