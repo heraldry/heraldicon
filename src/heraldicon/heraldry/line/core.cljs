@@ -1,6 +1,5 @@
 (ns heraldicon.heraldry.line.core
   (:require
-   #_[heraldicon.heraldry.line.type.epine :as epine]
    #_[heraldicon.heraldry.line.type.trefly-counter-trefly :as trefly-counter-trefly]
    [clojure.string :as str]
    [heraldicon.context :as c]
@@ -17,6 +16,7 @@
    [heraldicon.heraldry.line.type.embattled-in-crosses :as embattled-in-crosses]
    [heraldicon.heraldry.line.type.enarched :as enarched]
    [heraldicon.heraldry.line.type.engrailed :as engrailed]
+   [heraldicon.heraldry.line.type.epine :as epine]
    [heraldicon.heraldry.line.type.erably :as erably]
    [heraldicon.heraldry.line.type.fir-tree-topped :as fir-tree-topped]
    [heraldicon.heraldry.line.type.fir-twigged :as fir-twigged]
@@ -156,14 +156,14 @@
    #'raguly/pattern
    #'thorny/pattern
    #'dovetailed/pattern
-   #'wolf-toothed/pattern
+   #'epine/pattern
    #'urdy/pattern
    #'fir-tree-topped/pattern
    #'fir-twigged/pattern
    #'erably/pattern
    #'bastionne/pattern
    #'palissado/pattern
-   #_#'epine/pattern
+   #'wolf-toothed/pattern
    #_#'trefly-counter-trefly/pattern
    #'angled/pattern
    #'bevilled/pattern
@@ -523,8 +523,15 @@
                                       [:mirrored?]
                                       [:flipped?]
                                       [:base-line]])
-            (:epine
-             :indented-pometty
+            :epine (options/pick default-options
+                                 [[:eccentricity]
+                                  [:height]
+                                  [:size-reference]
+                                  [:width]
+                                  [:offset]
+                                  [:flipped?]
+                                  [:base-line]])
+            (:indented-pometty
              :palissado
              :trefly-counter-trefly) (options/pick default-options
                                                    [[:height]
