@@ -133,12 +133,12 @@
   },
   "line" : {
     "type" : {
-      "bastionne": "Bastionné",
-      "epine": "Épiné",
-      "indented-pometty": "Indented pometty",
-      "lilyous": "Lilyous",
-      "palissado": "Palissado",
-      "spaded": "Spaded",
+      "bastionne": "Abaluartada",
+      "epine": "Espinhada",
+      "indented-pometty": "Dentada pometada",
+      "lilyous": "Lisiada",
+      "palissado": "Paliçada",
+      "spaded": "Espadada",
       "trefly": "Treflado",
       "trefly-counter-trefly": "Trefly counter trefly"
     }
