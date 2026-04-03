@@ -16,7 +16,21 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-03-30"
+  [{:id "2026-04-03"
+    :title "New line styles: epine, trefly, trefly counter trefly"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "This update adds three new line styles:"]
+         [:ul
+          [:li "trefly"]
+          [:li "trefly counter trefly"]
+          [:li "epine"]]]
+        [:div
+         (release-image "/img/2026-03-30-release-update.png" :width "500px")]]])}
+
+   {:id "2026-03-30"
     :title "Charge type filter, new line styles, new partitions, mounts"
     :content
     (fn []
