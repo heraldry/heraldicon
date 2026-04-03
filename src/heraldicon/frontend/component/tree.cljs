@@ -15,6 +15,15 @@
    [reagent.core :as r])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
+(defn path->tour-id
+  "Deterministic string ID for a db path, used as a data-tour-path attribute
+   on tree nodes so the tutorial system can target specific nodes."
+  [path]
+  (str/join "." (map #(cond
+                        (keyword? %) (subs (str %) 1)
+                        :else (str %))
+                     path)))
+
 (def ^:private base-path
   [:ui :component-tree])
 
@@ -172,7 +181,8 @@
     [:<>
      (when-not hide?
        [:div.node-name.clickable.no-select
-        {:class [(when selected?
+        {:data-tour-path (path->tour-id path)
+         :class [(when selected?
                    "selected")
                  (when-not selectable?
                    "unselectable")

@@ -15,6 +15,7 @@
    [heraldicon.frontend.search-filter :as search-filter]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
+   [heraldicon.frontend.tutorial :as tutorial]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [re-frame.subs :as r-subs]
@@ -41,7 +42,8 @@
     [login-banner]
     [router/view]
     [modal/render]
-    [auto-complete/render]]])
+    [auto-complete/render]]
+   [tutorial/view]])
 
 (defonce ^:dynamic *app-root*
   nil)

@@ -603,6 +603,123 @@ label div {
   padding-right: 2px;
 }
 
+/* Tutorial popover and highlight */
+
+.tutorial-highlight {
+  outline: 3px solid rgba(27, 102, 144, 0.7) !important;
+  outline-offset: 2px;
+  border-radius: 4px;
+  animation: tutorial-pulse 1.5s ease-in-out infinite;
+}
+
+span.tutorial-highlight {
+  display: inline-block;
+}
+
+@keyframes tutorial-pulse {
+  0%, 100% {
+    outline-color: rgba(27, 102, 144, 0.7);
+  }
+  50% {
+    outline-color: rgba(27, 102, 144, 0.35);
+  }
+}
+
+.tutorial-popover {
+  --tutorial-popover-bg: #fef4de;
+  --tutorial-popover-border: #e8c96e;
+  z-index: 100000;
+  width: 340px;
+  box-sizing: border-box;
+  background: var(--tutorial-popover-bg);
+  border: 1px solid var(--tutorial-popover-border);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  padding: 14px 16px;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.tutorial-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.tutorial-popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tutorial-progress {
+  font-size: 0.8em;
+  color: #888;
+}
+
+.tutorial-close {
+  background: none;
+  border: none;
+  font-size: 1.3em;
+  color: #999;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.tutorial-close:hover {
+  color: #333;
+}
+
+.tutorial-popover-title {
+  font-weight: 600;
+  font-size: 1.05em;
+  margin-bottom: 6px;
+  color: #1b6690;
+}
+
+.tutorial-popover-description {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.tutorial-popover-hint {
+  font-size: 0.85em;
+  color: #1b6690;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.tutorial-popover-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.tutorial-btn {
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 5px 14px;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.tutorial-btn:hover {
+  background: #ddd;
+}
+
+.tutorial-btn-primary {
+  background: #1b6690;
+  color: #fff;
+  border-color: #1b6690;
+}
+
+.tutorial-btn-primary:hover {
+  background: #15567a;
+}
+
 .header ul {
   list-style: none;
   margin: 0;

@@ -77,7 +77,7 @@
                                 :src (static/static-url
                                       (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]]
     (if clickable?
-      [tooltip/choice display-name choice]
+      [tooltip/choice display-name choice :data-tour-field-type (name key)]
       choice)))
 
 (defmethod element/element :ui.element/field-type-select [{:keys [path] :as context}]
@@ -90,7 +90,7 @@
                     default)
           choice-map (options/choices->map choices)
           choice-name (get choice-map value)]
-      [:div.ui-setting
+      [:div.ui-setting {:data-tour "field-type-select"}
        (when label
          [:label [tr label]])
        [:div.option

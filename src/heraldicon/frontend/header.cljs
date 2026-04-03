@@ -6,6 +6,8 @@
    [heraldicon.frontend.ko-fi :as ko-fi]
    [heraldicon.frontend.language :as language :refer [tr]]
    [heraldicon.frontend.router :as router]
+   [heraldicon.frontend.tutorial.arms :as tutorial.arms]
+   [heraldicon.frontend.tutorial.overview :as tutorial.overview]
    [heraldicon.frontend.user.form.login :as form.login]
    [heraldicon.frontend.user.form.register :as form.register]
    [heraldicon.frontend.user.session :as session]
@@ -15,6 +17,9 @@
 
 (def ^:private user-menu-open?-path
   [:ui :menu :user-menu :open?])
+
+(def ^:private tutorial-menu-open?-path
+  [:ui :menu :tutorial-menu :open?])
 
 (rf/reg-sub ::menu-open?
   (fn [[_ path] _]
@@ -58,33 +63,80 @@
        [:a {:href (reife/href :route.home/main nil nil)
             :style {:padding-right "5px"}} "Heraldicon"]]
       [:sup {:style {:color "#d82"}} "beta"]]
-     [:ul.nav-menu {:style {:flex 1}}
-      [:li {:style {:margin "auto"}}
+     [:ul.nav-menu {:data-tour "nav-menu"
+                    :style {:flex 1}}
+      [:li {:data-tour "ko-fi"
+            :style {:margin "auto"}}
        [ko-fi/small-button]]
-      [:li {:style {:margin "auto"}}
+      [:li {:data-tour "atom-feed"
+            :style {:margin "auto"}}
        [:a {:href "/atom.xml"
             :target "_blank"
             :title "Atom Feed"
             :style {:padding-right "0.5em"}}
         [:i.fas.fa-rss-square]]]
       [menu-item :route.home/main :string.menu/about]
-      [menu-item :route.news/main :string.menu/news]
-      [menu-item :route.collection/list :string.menu/collection-library]
-      [menu-item :route.arms/list :string.menu/arms-library]
-      [menu-item :route.charge/list :string.menu/charge-library]
-      [menu-item :route.ribbon/list :string.menu/ribbon-library]
+      [:li.nav-menu-item {:data-tour "news"
+                          :class (when (router/active-section? :route.news/main)
+                                   "selected")}
+       [:a {:href (reife/href :route.news/main nil nil)}
+        [tr :string.menu/news]]]
+      [:li.nav-menu-item {:data-tour "collection-library"
+                          :class (when (router/active-section? :route.collection/list)
+                                   "selected")}
+       [:a {:href (reife/href :route.collection/list nil nil)}
+        [tr :string.menu/collection-library]]]
+      [:li.nav-menu-item {:data-tour "arms-library"
+                          :class (when (router/active-section? :route.arms/list)
+                                   "selected")}
+       [:a {:href (reife/href :route.arms/list nil nil)}
+        [tr :string.menu/arms-library]]]
+      [:li.nav-menu-item {:data-tour "charge-library"
+                          :class (when (router/active-section? :route.charge/list)
+                                   "selected")}
+       [:a {:href (reife/href :route.charge/list nil nil)}
+        [tr :string.menu/charge-library]]]
+      [:li.nav-menu-item {:data-tour "ribbon-library"
+                          :class (when (router/active-section? :route.ribbon/list)
+                                   "selected")}
+       [:a {:href (reife/href :route.ribbon/list nil nil)}
+        [tr :string.menu/ribbon-library]]]
       (when (entity.user/admin? session)
         [:<>
          [menu-item :route.user/list :string.menu/users]
          [menu-item :route.charge-types/main :string.menu/charge-types]])
       [menu-item :route.contact/main :string.menu/contact]
+      [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
+       {:on-mouse-leave #(rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])}
+       [:<>
+        [:a.nav-menu-link {:href "#"
+                           :on-click (js-event/handled #(rf/dispatch [::toggle-menu-open? tutorial-menu-open?-path]))}
+         [:i.fas.fa-question-circle] " Tutorial"]
+        [:ul.nav-menu.nav-menu-children
+         {:style {:display (if @(rf/subscribe [::menu-open?
+                                               tutorial-menu-open?-path])
+                             "block"
+                             "none")}}
+         [:li.nav-menu-item
+          [:a.nav-menu-link {:href "#"
+                             :on-click (js-event/handled
+                                        #(do (rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])
+                                             (rf/dispatch [::tutorial.overview/start])))}
+           "Overview"]]
+         [:li.nav-menu-item
+          [:a.nav-menu-link {:href "#"
+                             :on-click (js-event/handled
+                                        #(do (rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])
+                                             (rf/dispatch [::tutorial.arms/start])))}
+           "Coat of Arms Editor"]]]]]
       [:span {:style {:width "5em"}}]
       [language/selector]
       [:span {:style {:width "1em"}}]
       [dark-mode/selector]
       (if logged-in?
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
-         {:on-mouse-leave #(rf/dispatch [::clear-menu-open? user-menu-open?-path])}
+         {:data-tour "user-menu"
+          :on-mouse-leave #(rf/dispatch [::clear-menu-open? user-menu-open?-path])}
          [:<>
           [:a.nav-menu-link {:style {:min-width "6em"}
                              :href "#"
@@ -105,7 +157,7 @@
                                                (rf/dispatch [::session/logout])))}
              [tr :string.menu/logout]]]]]]
         [:<>
-         [:li.nav-menu-item
+         [:li.nav-menu-item {:data-tour "login-register"}
           [:a.nav-menu-link {:href "#"
                              :on-click (js-event/handled #(rf/dispatch [::form.login/show]))}
            [tr :string.menu/login]]]
