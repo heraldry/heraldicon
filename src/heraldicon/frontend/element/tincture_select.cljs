@@ -67,7 +67,7 @@
                                                         :translate-x -25
                                                         :translate-y 0})]]]
     (if clickable?
-      [tooltip/choice display-name choice]
+      [tooltip/choice display-name choice :data-tour-tincture (name key)]
       choice)))
 
 (defn tincture-select [context & {:keys [default-option]}]
@@ -80,7 +80,7 @@
           choice-map (options/choices->map choices)
           choice-name (get choice-map value)
           label (or label :string.option/tincture)]
-      [:div.ui-setting
+      [:div.ui-setting {:data-tour "tincture-select"}
        (when label
          [:label [tr label]])
        [:div.option

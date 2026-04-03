@@ -4,17 +4,20 @@
 
 (defn- tooltip [message & {:keys [element width class center? style]
                            :or {element [:i.ui-icon.fas.fa-question-circle]
-                                class "info"}}]
+                                class "info"}
+                           :as options}]
   (when message
-    [:div.tooltip {:class class
-                   :style style}
-     element
-     [:div.bottom {:style {:width width}}
-      [:i]
-      (cond
-        (vector? message) message
-        center? [:h3 {:style {:text-align "center"}} [tr message]]
-        :else [:p [tr message]])]]))
+    (let [extra-attrs (dissoc options :element :width :class :center? :style)]
+      [:div.tooltip (merge {:class class
+                            :style style}
+                           extra-attrs)
+       element
+       [:div.bottom {:style {:width width}}
+        [:i]
+        (cond
+          (vector? message) message
+          center? [:h3 {:style {:text-align "center"}} [tr message]]
+          :else [:p [tr message]])]])))
 
 (defn info [message & {:as options}]
   [tooltip message (assoc options

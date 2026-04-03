@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.element.hover-menu
   (:require
+   [clojure.string :as str]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [re-frame.core :as rf]))
@@ -23,6 +24,10 @@
         menu-disabled? disabled?]
     [:span.node-icon.ui-hover-menu
      {:style style
+      :data-tour-path (str/join "." (map #(cond
+                                            (keyword? %) (subs (str %) 1)
+                                            :else (str %))
+                                         path))
       :class (when disabled? "disabled")
       (if require-click?
         :on-click
@@ -56,7 +61,8 @@
                                     "disabled-item")]
                      ^{:key title}
                      [:li.ui-menu-item
-                      {:class disabled
+                      {:data-tour-menu-item (when (keyword? title) (name title))
+                       :class disabled
                        :on-click (when-not (or menu-disabled? disabled?) handler)
                        :title (tr tooltip)
                        :style {:cursor (when disabled? "not-allowed")}}

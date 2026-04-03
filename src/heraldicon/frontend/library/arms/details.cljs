@@ -87,7 +87,8 @@
                      form-db-path [form-db-path]])
   (layout/three-columns
    [:<>
-    [:div {:class (when @(rf/subscribe [::session/height-limit-mode?])
+    [:div {:data-tour "arms-preview"
+           :class (when @(rf/subscribe [::session/height-limit-mode?])
                     "height-limited")}
      [interface/render-component (c/++ base-context :data :achievement)]]
     [:div {:style {:position "absolute"
@@ -97,24 +98,26 @@
                    :display "inline"}}
      [height-limit-mode/selector]]]
    [:<>
-    [form/active (c/<< base-context ::tree/identifier ::identifier)]
+    [:div {:data-tour "arms-form"}
+     [form/active (c/<< base-context ::tree/identifier ::identifier)]]
     [message/display entity-type]
     [buttons/buttons entity-type]
     [blazonry form-db-path]
     [attribution form-db-path]]
    [:<>
     [history/buttons form-db-path]
-    [tree/tree
-     ::identifier
-     [form-db-path
-      (conj form-db-path :data :achievement :render-options)
-      :spacer
-      (conj form-db-path :data :achievement :helms)
-      :spacer
-      (conj form-db-path :data :achievement :coat-of-arms)
-      :spacer
-      (conj form-db-path :data :achievement :ornaments)]
-     base-context]]
+    [:div {:data-tour "arms-tree"}
+     [tree/tree
+      ::identifier
+      [form-db-path
+       (conj form-db-path :data :achievement :render-options)
+       :spacer
+       (conj form-db-path :data :achievement :helms)
+       :spacer
+       (conj form-db-path :data :achievement :coat-of-arms)
+       :spacer
+       (conj form-db-path :data :achievement :ornaments)]
+      base-context]]]
    :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
                  entity-version @(rf/subscribe [:get (conj form-db-path :version)])]
              [details/latest-version-banner

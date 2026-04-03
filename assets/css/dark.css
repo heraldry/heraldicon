@@ -186,3 +186,41 @@
 .dark .node-drop-insert {
   border-top: 2px solid #fff;
 }
+
+.dark .tutorial-popover {
+  --tutorial-popover-bg: #333;
+  --tutorial-popover-border: #555;
+  background: #333;
+  border-color: var(--tutorial-popover-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.dark .tutorial-popover-title {
+  color: #6ab4d8;
+}
+
+.dark .tutorial-popover-description {
+  color: #ccc;
+}
+
+.dark .tutorial-popover-hint {
+  color: #6ab4d8;
+}
+
+.dark .tutorial-btn {
+  background: #444;
+  border-color: #555;
+  color: #ccc;
+}
+
+.dark .tutorial-btn:hover {
+  background: #555;
+}
+
+.dark .tutorial-close {
+  color: #777;
+}
+
+.dark .tutorial-close:hover {
+  color: #ccc;
+}
