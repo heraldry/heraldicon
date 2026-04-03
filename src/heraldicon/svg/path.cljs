@@ -352,3 +352,12 @@
                   catmullrom/catmullrom
                   curve-to-relative)))
     (pos? smoothing) (simplify-path smoothing)))
+
+(defn arc [point-1 anchor-out anchor-in point-2 & {:keys [mirror-at]}]
+  (let [[point-1 anchor-out anchor-in point-2] (cond->> [point-1 anchor-out anchor-in point-2]
+                                                 mirror-at (map (fn [{:keys [x y]}]
+                                                                  (v/Vector. (- (* 2 (:x mirror-at)) x) y))))]
+    ["c"
+     (v/sub anchor-out point-1)
+     (v/sub anchor-in point-1)
+     (v/sub point-2 point-1)]))

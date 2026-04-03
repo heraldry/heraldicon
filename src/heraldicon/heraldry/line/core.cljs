@@ -35,6 +35,7 @@
    [heraldicon.heraldry.line.type.spaded :as spaded]
    [heraldicon.heraldry.line.type.straight :as straight]
    [heraldicon.heraldry.line.type.thorny :as thorny]
+   [heraldicon.heraldry.line.type.trefly :as trefly]
    [heraldicon.heraldry.line.type.urdy :as urdy]
    [heraldicon.heraldry.line.type.wavy :as wavy]
    [heraldicon.heraldry.line.type.wolf-toothed :as wolf-toothed]
@@ -151,6 +152,7 @@
    #'rayonny-spiked/pattern
    #'flory/pattern
    #'flory-counter-flory/pattern
+   #'trefly/pattern
    #'lilyous/pattern
    #'spaded/pattern
    #'raguly/pattern
@@ -402,6 +404,15 @@
                                                 [:offset]
                                                 [:flipped?]
                                                 [:base-line]])
+            :trefly (options/pick default-options
+                                  [[:eccentricity]
+                                   [:height]
+                                   [:size-reference]
+                                   [:width]
+                                   [:spacing]
+                                   [:offset]
+                                   [:flipped?]
+                                   [:base-line]])
             :raguly (options/pick default-options
                                   [[:eccentricity]
                                    [:height]
