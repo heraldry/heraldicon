@@ -780,6 +780,48 @@ line/ENARCHED
     | #"\bcourb[ée]e\b"
     | #"\bvoût[ée](?=([ ,&]|$))"
     | #"\bvoût[ée]e\b"
+line/EMBATTLED-ALISE
+    = #"\b([ei]m)?battl(ed|y) alis[ée](?=([ ,&]|$))"
+    | #"\b([ei]m)?battl(ed|y)-+alis[ée](?=([ ,&]|$))"
+    | #"\b([ei]m)?battl(ed|y)\b" #"\balis[ée](?=([ ,&]|$))"
+    | #"\b([ei]m)?battl(ed|y) alis[ée]e\b"
+    | #"\b([ei]m)?battl(ed|y)-+alis[ée]e\b"
+    | #"\b([ei]m)?battl(ed|y)\b" #"\balis[ée]e\b"
+line/EMBATTLED-FITCHY-DOUBLE
+    = #"\b([ei]m)?battl(ed|y) fitchy double\b"
+    | #"\b([ei]m)?battl(ed|y)-+fitchy-+double\b"
+    | #"\b([ei]m)?battl(ed|y)\b" #"\bfitchy double\b"
+line/INDENTED-POMETTY
+    = #"\bindented pometty\b"
+    | #"\bindented-+pometty\b"
+    | #"\bindented\b" #"\bpometty\b"
+    | #"\bdentel[ée]e? pommet[ée]e?\b"
+line/BASTIONNE
+    = #"\bbastionn[ée](?=([ ,&]|$))"
+    | #"\bbastionn[ée]e\b"
+line/PALISSADO
+    = #"\bpalissado\b"
+    | #"\bpalissad[ée]e?\b"
+    | #"\bpali[çc]ada\b"
+line/LILYOUS
+    = #"\blilyous\b"
+    | #"\blili[ée]e?\b"
+line/SPADED
+    = #"\bspaded\b"
+    | #"\bspad[ée]e?\b"
+line/EPINE
+    = #"\b[ée]pin[ée](?=([ ,&]|$))"
+    | #"\b[ée]pin[ée]e\b"
+    | #"\bepine\b"
+line/TREFLY
+    = #"\btrefly\b"
+    | #"\btrefl[ée]e?\b"
+line/TREFLY-COUNTER-TREFLY
+    = #"\btrefly[ -]+counter[ -]+trefly\b"
+    | #"\btrefl[ée]e? +counter[ -]+trefl[ée]e?\b"
+line/RAYONNY-SPIKED
+    = #"\brayonny[ -]+spiked\b"
+    | #"\brayonn[ée]e?[ -]+spiked\b"
 
 HUMETTY
     = #"\bhumetty\b"
@@ -1849,13 +1891,16 @@ line-type
     = line/STRAIGHT
     | line/INVECTED
     | line/ENGRAILED
-    | line/EMBATTLED
     | line/EMBATTLED-GRADY
     | line/EMBATTLED-IN-CROSSES
+    | line/EMBATTLED-ALISE
+    | line/EMBATTLED-FITCHY-DOUBLE
+    | line/EMBATTLED
     | line/POTENTY
     | line/ERABLY
-    | line/FLORY
     | line/FLORY-COUNTER-FLORY
+    | line/FLORY
+    | line/INDENTED-POMETTY
     | line/INDENTED
     | line/DANCETTY
     | line/WAVY
@@ -1867,10 +1912,18 @@ line-type
     | line/FIR-TREE-TOPPED
     | line/FIR-TWIGGED
     | line/WOLF-TOOTHED
+    | line/RAYONNY-SPIKED
     | line/RAYONNY
     | line/ANGLED
     | line/BEVILLED
     | line/ENARCHED
+    | line/BASTIONNE
+    | line/PALISSADO
+    | line/LILYOUS
+    | line/SPADED
+    | line/EPINE
+    | line/TREFLY-COUNTER-TREFLY
+    | line/TREFLY
 
 fimbriation
     = FIMBRIATED of-or-with? tincture
