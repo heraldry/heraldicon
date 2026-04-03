@@ -1,6 +1,5 @@
 (ns heraldicon.heraldry.line.core
   (:require
-   #_[heraldicon.heraldry.line.type.trefly-counter-trefly :as trefly-counter-trefly]
    [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
@@ -36,6 +35,7 @@
    [heraldicon.heraldry.line.type.straight :as straight]
    [heraldicon.heraldry.line.type.thorny :as thorny]
    [heraldicon.heraldry.line.type.trefly :as trefly]
+   [heraldicon.heraldry.line.type.trefly-counter-trefly :as trefly-counter-trefly]
    [heraldicon.heraldry.line.type.urdy :as urdy]
    [heraldicon.heraldry.line.type.wavy :as wavy]
    [heraldicon.heraldry.line.type.wolf-toothed :as wolf-toothed]
@@ -153,6 +153,7 @@
    #'flory/pattern
    #'flory-counter-flory/pattern
    #'trefly/pattern
+   #'trefly-counter-trefly/pattern
    #'lilyous/pattern
    #'spaded/pattern
    #'raguly/pattern
@@ -166,7 +167,6 @@
    #'bastionne/pattern
    #'palissado/pattern
    #'wolf-toothed/pattern
-   #_#'trefly-counter-trefly/pattern
    #'angled/pattern
    #'bevilled/pattern
    #'enarched/pattern])
@@ -413,6 +413,15 @@
                                    [:offset]
                                    [:flipped?]
                                    [:base-line]])
+            :trefly-counter-trefly (options/pick default-options
+                                                 [[:eccentricity]
+                                                  [:height]
+                                                  [:size-reference]
+                                                  [:width]
+                                                  [:spacing]
+                                                  [:offset]
+                                                  [:flipped?]
+                                                  [:base-line]])
             :raguly (options/pick default-options
                                   [[:eccentricity]
                                    [:height]
@@ -543,14 +552,13 @@
                                   [:flipped?]
                                   [:base-line]])
             (:indented-pometty
-             :palissado
-             :trefly-counter-trefly) (options/pick default-options
-                                                   [[:height]
-                                                    [:size-reference]
-                                                    [:width]
-                                                    [:offset]
-                                                    [:flipped?]
-                                                    [:base-line]])
+             :palissado) (options/pick default-options
+                                       [[:height]
+                                        [:size-reference]
+                                        [:width]
+                                        [:offset]
+                                        [:flipped?]
+                                        [:base-line]])
             (options/pick default-options
                           [[:eccentricity]
                            [:height]
