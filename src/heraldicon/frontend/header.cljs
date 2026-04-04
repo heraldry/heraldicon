@@ -111,7 +111,7 @@
        [:<>
         [:a.nav-menu-link {:href "#"
                            :on-click (js-event/handled #(rf/dispatch [::toggle-menu-open? tutorial-menu-open?-path]))}
-         [:i.fas.fa-question-circle] " Tutorial"]
+         [:i.far.fa-question-circle] " " [tr :string.tutorial/menu] " "]
         [:ul.nav-menu.nav-menu-children
          {:style {:display (if @(rf/subscribe [::menu-open?
                                                tutorial-menu-open?-path])
@@ -122,13 +122,13 @@
                              :on-click (js-event/handled
                                         #(do (rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])
                                              (rf/dispatch [::tutorial.overview/start])))}
-           "Overview"]]
+           [tr :string.tutorial/menu-overview]]]
          [:li.nav-menu-item
           [:a.nav-menu-link {:href "#"
                              :on-click (js-event/handled
                                         #(do (rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])
                                              (rf/dispatch [::tutorial.arms/start])))}
-           "Coat of Arms Editor"]]]]]
+           [tr :string.tutorial/menu-arms-editor]]]]]]
       [:span {:style {:width "5em"}}]
       [language/selector]
       [:span {:style {:width "1em"}}]

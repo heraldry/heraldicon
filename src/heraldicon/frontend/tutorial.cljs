@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.tutorial
   (:require
+   [heraldicon.frontend.language :refer [tr]]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
@@ -332,21 +333,21 @@
        {:on-click #(rf/dispatch [::stop])}
        "\u00d7"]]
      (when title
-       [:div.tutorial-popover-title title])
+       [:div.tutorial-popover-title [tr title]])
      (when description
-       [:div.tutorial-popover-description description])
+       [:div.tutorial-popover-description [tr description]])
      (when (and complete-when (not complete?))
        [:div.tutorial-popover-hint
-        "\u2191 Go ahead, try it!"])
+        [tr :string.tutorial/hint]])
      [:div.tutorial-popover-footer
       (when (pos? goal-idx)
         [:button.tutorial-btn
          {:on-click #(rf/dispatch [::previous-goal])}
-         "\u2190 Back"])
+         [tr :string.tutorial/back]])
       (when (or (not complete-when) complete?)
         [:button.tutorial-btn.tutorial-btn-primary
          {:on-click #(rf/dispatch [::next-goal])}
-         (if last-goal? "Done" "Next \u2192")])]]))
+         [tr (if last-goal? :string.tutorial/done :string.tutorial/next)]])]]))
 
 (defn- apply-highlight! []
   (let [hint @(rf/subscribe [::active-hint])
