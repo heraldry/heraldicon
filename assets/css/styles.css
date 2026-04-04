@@ -763,6 +763,7 @@ span.tutorial-highlight {
 }
 
 .nav-menu-has-children > .nav-menu-link:after {
+  padding-left: 6px;
   content: "\25BE";
 }
 

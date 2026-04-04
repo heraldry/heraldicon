@@ -125,7 +125,7 @@
           [:a.nav-menu-link {:style {:min-width "6em"}
                              :href "#"
                              :on-click (js-event/handled #(rf/dispatch [::toggle-menu-open? user-menu-open?-path]))}
-           (str "@" (:username session) " ")]
+           (str "@" (:username session))]
           [:ul.nav-menu.nav-menu-children
            {:style {:display (if @(rf/subscribe [::menu-open?
                                                  user-menu-open?-path])

@@ -82,8 +82,7 @@
                        :on-click (js-event/handled
                                   #(rf/dispatch [::header/toggle-menu-open?
                                                  language-menu-open?-path]))}
-     [selected-language-option]
-     " "]
+     [selected-language-option]]
     (into [:ul.nav-menu.nav-menu-children
            {:style {:display (if @(rf/subscribe [::header/menu-open?
                                                  language-menu-open?-path])
