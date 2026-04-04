@@ -1,6 +1,9 @@
 (ns heraldicon.frontend.tutorial
   (:require
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
+   [heraldicon.frontend.tutorial.arms :as arms]
+   [heraldicon.frontend.tutorial.overview :as overview]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
@@ -10,19 +13,15 @@
 (defn- goal-index-path [] (conj db-path :goal-index))
 (defn- tour-id-path [] (conj db-path :tour-id))
 
-;; ---------------------------------------------------------------------------
-;; Tour registry
-;; ---------------------------------------------------------------------------
+(def ^:private tours
+  {:overview {:goals overview/goals}
+   :arms {:goals arms/goals}})
 
-(defonce ^:private tours
-  (atom {}))
-
-(defn register-tour! [id tour-def]
-  (swap! tours assoc id tour-def))
-
-;; ---------------------------------------------------------------------------
-;; Subscriptions
-;; ---------------------------------------------------------------------------
+(def ^:private menu-entries
+  [{:label :string.tutorial/menu-overview
+    :event [::overview/start]}
+   {:label :string.tutorial/menu-arms-editor
+    :event [::arms/start]}])
 
 (rf/reg-sub ::active-tour
   (fn [db _]
@@ -37,7 +36,7 @@
     (rf/subscribe [::active-tour]))
   (fn [tour-id _]
     (when tour-id
-      (:goals (get @tours tour-id)))))
+      (:goals (get tours tour-id)))))
 
 (rf/reg-sub ::active-goal
   (fn [_ _]
@@ -53,13 +52,6 @@
   (fn [goals _]
     (count goals)))
 
-;; ---------------------------------------------------------------------------
-;; Active hint resolution
-;; ---------------------------------------------------------------------------
-;; Each goal has a vector of hints. Each hint may have a :reached condition.
-;; We show the *last* hint whose :reached condition is satisfied — as the user
-;; progresses through sub-actions, the highlight advances through the chain.
-
 (defn- condition-met? [db {:keys [path pred value]}]
   (let [current (get-in db path)]
     (cond
@@ -71,7 +63,7 @@
   (fn [db _]
     (let [tour-id (get-in db (tour-id-path))
           goal-idx (get-in db (goal-index-path))
-          goals (:goals (get @tours tour-id))
+          goals (:goals (get tours tour-id))
           goal (when (and goals goal-idx (< goal-idx (count goals)))
                  (get goals goal-idx))
           hints (:hints goal)]
@@ -85,24 +77,16 @@
        nil
        hints))))
 
-;; ---------------------------------------------------------------------------
-;; Goal completion check
-;; ---------------------------------------------------------------------------
-
 (rf/reg-sub ::goal-complete?
   (fn [db _]
     (let [tour-id (get-in db (tour-id-path))
           goal-idx (get-in db (goal-index-path))
-          goals (:goals (get @tours tour-id))
+          goals (:goals (get tours tour-id))
           goal (when (and goals goal-idx (< goal-idx (count goals)))
                  (get goals goal-idx))
           complete-when (:complete-when goal)]
       (when complete-when
         (condition-met? db complete-when)))))
-
-;; ---------------------------------------------------------------------------
-;; Highlight management
-;; ---------------------------------------------------------------------------
 
 (defonce ^:private highlighted-element
   (atom nil))
@@ -117,10 +101,6 @@
   (when el
     (.add (.-classList el) "tutorial-highlight")
     (reset! highlighted-element el)))
-
-;; ---------------------------------------------------------------------------
-;; Events
-;; ---------------------------------------------------------------------------
 
 (rf/reg-event-db ::start
   (fn [db [_ tour-id]]
@@ -137,7 +117,7 @@
   (fn [db _]
     (clear-highlight!)
     (let [idx (get-in db (goal-index-path))
-          goals (:goals (get @tours (get-in db (tour-id-path))))]
+          goals (:goals (get tours (get-in db (tour-id-path))))]
       (if (< (inc idx) (count goals))
         (assoc-in db (goal-index-path) (inc idx))
         (assoc-in db db-path nil)))))
@@ -148,10 +128,6 @@
     (let [idx (get-in db (goal-index-path))]
       (when (pos? idx)
         (assoc-in db (goal-index-path) (dec idx))))))
-
-;; ---------------------------------------------------------------------------
-;; Popover positioning
-;; ---------------------------------------------------------------------------
 
 (def ^:private popover-gap 12)
 (def ^:private arrow-size 8)
@@ -262,10 +238,6 @@
              :border-bottom (str arrow-size "px solid transparent")}]
     [nil nil]))
 
-;; ---------------------------------------------------------------------------
-;; Completion watcher
-;; ---------------------------------------------------------------------------
-
 (defn- completion-watcher []
   (let [last-advanced (atom nil)
         prev-idx (atom nil)]
@@ -285,10 +257,6 @@
                            (rf/dispatch [::next-goal]))
                          400)))
       nil)))
-
-;; ---------------------------------------------------------------------------
-;; Popover component
-;; ---------------------------------------------------------------------------
 
 (defn- resolve-elements [{:keys [element popover-element]}]
   (let [highlight-el (when element (js/document.querySelector element))
@@ -374,3 +342,39 @@
       [:<>
        [completion-watcher]
        [popover-content]])))
+
+(def ^:private menu-open?-path
+  [:ui :menu :tutorial-menu :open?])
+
+(rf/reg-sub ::menu-open?
+  (fn [db _]
+    (get-in db menu-open?-path)))
+
+(rf/reg-event-db ::toggle-menu
+  (fn [db _]
+    (update-in db menu-open?-path not)))
+
+(rf/reg-event-db ::close-menu
+  (fn [db _]
+    (assoc-in db menu-open?-path nil)))
+
+(defn selector []
+  [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
+   {:on-mouse-leave #(rf/dispatch [::close-menu])}
+   [:<>
+    [:a.nav-menu-link {:href "#"
+                       :on-click (js-event/handled #(rf/dispatch [::toggle-menu]))}
+     [:i.far.fa-question-circle] " " [tr :string.tutorial/menu] " "]
+    [:ul.nav-menu.nav-menu-children
+     {:style {:display (if @(rf/subscribe [::menu-open?])
+                         "block"
+                         "none")}}
+     (doall
+      (for [{:keys [label event]} menu-entries]
+        ^{:key label}
+        [:li.nav-menu-item
+         [:a.nav-menu-link {:href "#"
+                            :on-click (js-event/handled
+                                       #(do (rf/dispatch [::close-menu])
+                                            (rf/dispatch event)))}
+          [tr label]]]))]]])

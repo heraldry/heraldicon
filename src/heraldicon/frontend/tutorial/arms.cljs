@@ -3,7 +3,7 @@
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.element.hover-menu :as hover-menu]
    [heraldicon.frontend.element.submenu :as submenu]
-   [heraldicon.frontend.tutorial :as tutorial]
+   [heraldicon.frontend.tutorial :as-alias tutorial]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
@@ -130,8 +130,6 @@
 
    {:title :string.tutorial.arms/finish-title
     :description :string.tutorial.arms/finish-description}])
-
-(tutorial/register-tour! :arms {:goals goals})
 
 (def ^:private entity-type :heraldicon.entity.type/arms)
 (def ^:private tree-identifier :heraldicon.frontend.library.arms.details/identifier)

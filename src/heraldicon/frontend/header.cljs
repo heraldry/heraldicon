@@ -6,8 +6,7 @@
    [heraldicon.frontend.ko-fi :as ko-fi]
    [heraldicon.frontend.language :as language :refer [tr]]
    [heraldicon.frontend.router :as router]
-   [heraldicon.frontend.tutorial.arms :as tutorial.arms]
-   [heraldicon.frontend.tutorial.overview :as tutorial.overview]
+   [heraldicon.frontend.tutorial :as tutorial]
    [heraldicon.frontend.user.form.login :as form.login]
    [heraldicon.frontend.user.form.register :as form.register]
    [heraldicon.frontend.user.session :as session]
@@ -17,9 +16,6 @@
 
 (def ^:private user-menu-open?-path
   [:ui :menu :user-menu :open?])
-
-(def ^:private tutorial-menu-open?-path
-  [:ui :menu :tutorial-menu :open?])
 
 (rf/reg-sub ::menu-open?
   (fn [[_ path] _]
@@ -99,29 +95,7 @@
       [menu-item :route.contact/main :string.menu/contact]]
      [:div {:style {:flex "1 1 1em"}}]
      [:ul.nav-menu.nav-menu-right
-      [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
-       {:on-mouse-leave #(rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])}
-       [:<>
-        [:a.nav-menu-link {:href "#"
-                           :on-click (js-event/handled #(rf/dispatch [::toggle-menu-open? tutorial-menu-open?-path]))}
-         [:i.far.fa-question-circle] " " [tr :string.tutorial/menu] " "]
-        [:ul.nav-menu.nav-menu-children
-         {:style {:display (if @(rf/subscribe [::menu-open?
-                                               tutorial-menu-open?-path])
-                             "block"
-                             "none")}}
-         [:li.nav-menu-item
-          [:a.nav-menu-link {:href "#"
-                             :on-click (js-event/handled
-                                        #(do (rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])
-                                             (rf/dispatch [::tutorial.overview/start])))}
-           [tr :string.tutorial/menu-overview]]]
-         [:li.nav-menu-item
-          [:a.nav-menu-link {:href "#"
-                             :on-click (js-event/handled
-                                        #(do (rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])
-                                             (rf/dispatch [::tutorial.arms/start])))}
-           [tr :string.tutorial/menu-arms-editor]]]]]]]
+      [tutorial/selector]]
      [:ul.nav-menu.nav-menu-right
       [:li.nav-menu-item
        [language/selector]]]
