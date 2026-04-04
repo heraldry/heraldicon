@@ -1054,6 +1054,7 @@
     "menu": "Tutorial",
     "menu-overview": "Panoramica",
     "menu-arms-editor": "Editor di stemmi",
+    "menu-charge-editor": "Editor di figure",
     "hint": "\u2191 Provaci!",
     "back": "\u2190 Indietro",
     "next": "Avanti \u2192",
@@ -1101,6 +1102,24 @@
       "ornaments-description": "La sezione Ornamenti è per elementi fuori dallo scudo \u2014 mantello, supporti, basamento, motti e altro. Clicca \"+\" accanto a Ornamenti, poi scegli \"Mantello\".",
       "finish-title": "Queste sono le basi!",
       "finish-description": "Hai diviso un campo, impostato una tintura, aggiunto una figura e piazzato un mantello. C'è molto altro da esplorare \u2014 diverse partizioni, linee, ordinari, la biblioteca delle figure, elmi e l'editor di blasonatura. Buon divertimento!"
+    },
+    "charge": {
+      "welcome-title": "Benvenuto nell'Editor di figure",
+      "welcome-description": "Una figura di esempio è stata caricata per questa demo. L'Editor di figure è dove prepari i file SVG per usarli come figure negli stemmi.",
+      "original-preview-title": "SVG originale",
+      "original-preview-description": "Questo pannello a sinistra mostra il file SVG caricato così come è stato importato.",
+      "upload-title": "Importa SVG",
+      "upload-description": "Qui è dove importeresti il tuo file SVG. Non farlo adesso \u2014 stiamo solo dando un'occhiata \u2014 ma quando creerai la tua figura, è qui che inizierai.",
+      "charge-preview-title": "Anteprima della figura",
+      "charge-preview-description": "Questa anteprima a destra mostra come apparirà la figura quando usata in uno stemma, con le mappature dei colori configurate.",
+      "charge-type-title": "Tipo di figura",
+      "charge-type-description": "Qui puoi impostare il tipo di figura \u2014 per esempio \"lion\", \"eagle\" o \"cross\". Questo aiuta gli altri a trovare la tua figura durante la navigazione o la ricerca.",
+      "colours-title": "Funzioni dei colori",
+      "colours-description": "Qui assegni una funzione a ogni colore nel SVG originale. Per esempio, \"Primario\" per il colore principale del campo, \"Contorno\" per i contorni, \"Secondario\" per un secondo colore, e così via. Questo controlla come la figura si adatta a diverse tinture. Puoi selezionare i colori cliccandoli nell'anteprima a sinistra o usando le caselle nella tabella \u2014 i colori selezionati vengono mostrati in verde per trovarli facilmente. Provaci!",
+      "save-title": "Salva",
+      "save-description": "Quando creerai la tua figura, non dimenticare di salvarla con il pulsante Salva.",
+      "finish-title": "Questo è l'Editor di figure!",
+      "finish-description": "Ci sono molte altre opzioni da esplorare \u2014 attitudine, orientamento, colore fisso, ombra e altro ancora. Buon divertimento!"
     }
   }
 }

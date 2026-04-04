@@ -1054,6 +1054,7 @@
     "menu": "Tutoriel",
     "menu-overview": "Aperçu",
     "menu-arms-editor": "Éditeur d'armoiries",
+    "menu-charge-editor": "Éditeur de charges",
     "hint": "\u2191 Essayez !",
     "back": "\u2190 Retour",
     "next": "Suivant \u2192",
@@ -1101,6 +1102,24 @@
       "ornaments-description": "La section Ornements est pour les éléments extérieurs à l'écu \u2014 lambrequins, supports, terrasse, devises et plus. Cliquez sur \"+\" à côté d'Ornements, puis choisissez \"Lambrequins\".",
       "finish-title": "Voilà les bases !",
       "finish-description": "Vous avez divisé un champ, choisi une teinture, ajouté une charge et placé des lambrequins. Il y a encore beaucoup à explorer \u2014 différentes partitions, traits, pièces, la bibliothèque de charges, heaumes et l'éditeur de blasonnement. Amusez-vous !"
+    },
+    "charge": {
+      "welcome-title": "Bienvenue dans l'Éditeur de charges",
+      "welcome-description": "Une charge d'exemple a été chargée pour cette démo. L'Éditeur de charges est l'endroit où vous préparez des fichiers SVG pour les utiliser comme charges dans des armoiries.",
+      "original-preview-title": "SVG source",
+      "original-preview-description": "Ce panneau à gauche montre le fichier SVG chargé tel qu'il a été importé.",
+      "upload-title": "Importer SVG",
+      "upload-description": "C'est ici que vous importeriez votre propre fichier SVG. Ne le faites pas maintenant \u2014 nous ne faisons que regarder \u2014 mais quand vous créerez votre propre charge, c'est ici que vous commencerez.",
+      "charge-preview-title": "Aperçu de la charge",
+      "charge-preview-description": "Cet aperçu à droite montre à quoi ressemblera la charge lorsqu'elle sera utilisée dans des armoiries, avec les correspondances de couleurs configurées.",
+      "charge-type-title": "Type de charge",
+      "charge-type-description": "Ici vous pouvez définir le type de charge \u2014 par exemple \"lion\", \"eagle\" ou \"cross\". Cela aide les autres à trouver votre charge lors de la navigation ou de la recherche.",
+      "colours-title": "Fonctions de couleur",
+      "colours-description": "C'est ici que vous attribuez une fonction à chaque couleur du SVG source. Par exemple, \"Primaire\" pour la couleur principale du champ, \"Contour\" pour les contours, \"Secondaire\" pour une deuxième couleur, et ainsi de suite. Cela contrôle comment la charge s'adapte aux différents émaux. Vous pouvez sélectionner des couleurs en cliquant dessus dans l'aperçu à gauche ou en utilisant les cases à cocher du tableau \u2014 les couleurs sélectionnées apparaissent en vert pour les repérer facilement. Essayez !",
+      "save-title": "Sauvegarder",
+      "save-description": "Quand vous créerez votre propre charge, n'oubliez pas de la sauvegarder avec le bouton Sauvegarder.",
+      "finish-title": "Voilà l'Éditeur de charges !",
+      "finish-description": "Il y a encore beaucoup d'options à explorer \u2014 attitude, orientation de la face, couleur fixe, ombrage et plus encore. Amusez-vous à expérimenter !"
     }
   }
 }

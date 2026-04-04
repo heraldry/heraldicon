@@ -1074,6 +1074,7 @@
     "menu": "Tutorial",
     "menu-overview": "Descripción general",
     "menu-arms-editor": "Editor de escudos",
+    "menu-charge-editor": "Editor de figuras",
     "hint": "\u2191 ¡Inténtalo!",
     "back": "\u2190 Atrás",
     "next": "Siguiente \u2192",
@@ -1121,6 +1122,24 @@
       "ornaments-description": "La sección de Ornamentos es para elementos fuera del escudo \u2014 manto, tenantes, terraza, lemas y más. Haz clic en \"+\" junto a Ornamentos y elige \"Manto\".",
       "finish-title": "¡Eso es lo básico!",
       "finish-description": "Has dividido un campo, establecido una tintura, añadido una figura y colocado un manto. Hay mucho más por explorar \u2014 diferentes particiones, líneas, piezas, la biblioteca de figuras, yelmos y el editor de blasonamiento. ¡Diviértete!"
+    },
+    "charge": {
+      "welcome-title": "Bienvenido al Editor de figuras",
+      "welcome-description": "Se ha cargado una figura de ejemplo para esta demo. El Editor de figuras es donde preparas archivos SVG para usarlos como figuras en escudos de armas.",
+      "original-preview-title": "SVG original",
+      "original-preview-description": "Este panel a la izquierda muestra el archivo SVG cargado tal como fue subido.",
+      "upload-title": "Subir SVG",
+      "upload-description": "Aquí es donde subirías tu propio archivo SVG. No lo hagas ahora \u2014 solo estamos mirando \u2014 pero cuando crees tu propia figura, aquí es donde empiezas.",
+      "charge-preview-title": "Vista previa de la figura",
+      "charge-preview-description": "Esta vista previa a la derecha muestra cómo se verá la figura cuando se use en un escudo de armas, con las asignaciones de color configuradas.",
+      "charge-type-title": "Tipo de figura",
+      "charge-type-description": "Aquí puedes establecer el tipo de figura \u2014 por ejemplo \"lion\", \"eagle\" o \"cross\". Esto ayuda a otros a encontrar tu figura al explorar o buscar.",
+      "colours-title": "Funciones de color",
+      "colours-description": "Aquí asignas una función a cada color en el SVG original. Por ejemplo, \"Primario\" para el color principal del campo, \"Contorno\" para los contornos, \"Secundario\" para un segundo color, y así sucesivamente. Esto controla cómo la figura se adapta a diferentes esmaltes. Puedes seleccionar colores haciendo clic en la vista previa de la izquierda o usando las casillas de la tabla \u2014 los colores seleccionados se muestran en verde para encontrarlos fácilmente. ¡Pruébalo!",
+      "save-title": "Guardar",
+      "save-description": "Cuando crees tu propia figura, no olvides guardarla con el botón Guardar.",
+      "finish-title": "¡Eso es el Editor de figuras!",
+      "finish-description": "Hay muchas más opciones por explorar \u2014 actitud, dirección de la mirada, esmalte fijo, sombreado y más. ¡Diviértete experimentando!"
     }
   }
 }
