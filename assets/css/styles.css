@@ -730,10 +730,18 @@ span.tutorial-highlight {
   display: flex;
 }
 
+.header > ul.nav-menu-right {
+  flex: none;
+}
+
 .header > ul > li {
   display: inline-block;
   flex: 1;
   vertical-align: middle;
+}
+
+.header > ul.nav-menu-right > li {
+  flex: none;
 }
 
 .header > ul > li a {
