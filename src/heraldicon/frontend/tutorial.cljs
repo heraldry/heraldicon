@@ -364,7 +364,7 @@
    [:<>
     [:a.nav-menu-link {:href "#"
                        :on-click (js-event/handled #(rf/dispatch [::toggle-menu]))}
-     [:i.far.fa-question-circle] " " [tr :string.tutorial/menu] " "]
+     [:i.far.fa-question-circle] " " [tr :string.tutorial/menu]]
     [:ul.nav-menu.nav-menu-children
      {:style {:display (if @(rf/subscribe [::menu-open?])
                          "block"
