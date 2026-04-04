@@ -113,6 +113,11 @@
                     :pred #(not= % :heraldry.charge.type/roundel)}
     :on-complete [[::submenu/close (conj charge-path :type)]]}
 
+   {:title :string.tutorial.arms/charge-options-title
+    :description :string.tutorial.arms/charge-options-description
+    :hints [{:element (tour-node-selector (conj charge-path :field))
+             :side "left"}]}
+
    {:title :string.tutorial.arms/ornaments-title
     :description :string.tutorial.arms/ornaments-description
     :hints [{:element (tour-hover-menu-selector ornaments-path 0)
@@ -127,6 +132,9 @@
                     :pred #(pos? (count %))}
     :on-complete [[::hover-menu/close (conj ornaments-path 0)]
                   [::submenu/close (conj ornaments-elements-path 0 :type)]]}
+
+   {:title :string.tutorial.arms/ornament-options-title
+    :description :string.tutorial.arms/ornament-options-description}
 
    {:title :string.tutorial.arms/finish-title
     :description :string.tutorial.arms/finish-description}])
