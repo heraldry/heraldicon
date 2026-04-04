@@ -66,16 +66,6 @@
      [:div {:style {:flex "0.5 1 0"}}]
      [:ul.nav-menu {:data-tour "nav-menu"
                     :style {:flex 1}}
-      [:li {:data-tour "ko-fi"
-            :style {:margin "auto"}}
-       [ko-fi/small-button]]
-      [:li {:data-tour "atom-feed"
-            :style {:margin "auto"}}
-       [:a {:href "/atom.xml"
-            :target "_blank"
-            :title "Atom Feed"
-            :style {:padding-right "0.5em"}}
-        [:i.fas.fa-rss-square]]]
       [menu-item :route.home/main :string.menu/about]
       [:li.nav-menu-item {:data-tour "news"
                           :class (when (router/active-section? :route.news/main)
@@ -136,19 +126,21 @@
       [:li.nav-menu-item
        [language/selector]]]
      [:div {:style {:flex "0.3 1 0"}}]
-     [:ul.nav-menu.nav-menu-right
-      [:li.nav-menu-no-hover {:style {:display "flex"
+     [:div.nav-menu-no-hover {:style {:display "flex"
                                       :align-items "center"
                                       :gap "0.2em"
+                                      :padding "0 0.3em"
                                       :line-height "2.5em"}}
-       [ko-fi/small-button :extra-attrs {:data-tour "ko-fi" :style {:padding "4px"}}]
-       [:a {:data-tour "atom-feed"
-            :href "/atom.xml"
-            :target "_blank"
-            :title "Atom Feed"
-            :style {:padding "4px"}}
-        [:i.fas.fa-rss-square]]
-       [dark-mode/selector]]]
+      [ko-fi/small-button :extra-attrs {:data-tour "ko-fi" :style {:padding "4px"}}]
+      [:a {:data-tour "atom-feed"
+           :href "/atom.xml"
+           :target "_blank"
+           :title "Atom Feed"
+           :style {:padding "4px"
+                   :display "flex"
+                   :align-items "center"}}
+       [:i.fas.fa-rss-square]]
+      [dark-mode/selector]]
      [:div {:style {:flex "0.3 1 0"}}]
      [:ul.nav-menu.nav-menu-right
       (if logged-in?

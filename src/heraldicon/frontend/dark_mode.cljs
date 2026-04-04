@@ -9,7 +9,7 @@
     "dark"))
 
 (defn selector []
-  [:li
-   [:a.fas.fa-adjust {:href "#"
-                      :on-click (js-event/handled
-                                 #(rf/dispatch [::session/toggle-dark-mode]))}]])
+  [:a.fas.fa-adjust {:href "#"
+                     :on-click (js-event/handled
+                                #(rf/dispatch [::session/toggle-dark-mode]))
+                     :style {:padding "4px"}}])

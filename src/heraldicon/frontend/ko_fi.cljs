@@ -34,14 +34,14 @@
      "Support Heraldicon on Ko-fi"]]])
 
 (defn small-button
-  []
-  [:a {:href "https://ko-fi.com/heraldicon"
-       :target "_blank"
-       :title (tr :string.tooltip/support-on-ko-fi)}
+  [& {:keys [extra-attrs]}]
+  [:a (merge {:href "https://ko-fi.com/heraldicon"
+              :target "_blank"
+              :title (tr :string.tooltip/support-on-ko-fi)}
+             extra-attrs)
    [:img {:src "https://storage.ko-fi.com/cdn/cup-border.png"
           :alt "Ko-fi tip"
-          :style {:margin-right "8px"
-                  :height "15px"
+          :style {:height "15px"
                   :margin-bottom "3px"
                   :vertical-align "middle"}}]])
 
