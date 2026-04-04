@@ -337,7 +337,8 @@
                         (bb/scale 5)
                         (bb/->viewbox :margin 10))
            :preserveAspectRatio "xMidYMid meet"
-           :style {:width "100%"}}
+           :style {:width "100%"}
+           :data-tour "charge-original-preview"}
      [:g {:transform "scale(5,5)"}
       [interface/render-component context]]]))
 
@@ -359,7 +360,8 @@
                              @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])
                              @(rf/subscribe [::session/admin?])))]
     [:<>
-     [:label.button {:for "upload"
+     [:label.button {:data-tour "charge-upload"
+                     :for "upload"
                      :class (when-not can-upload?
                               "disabled")
                      :style {:display "inline-block"
@@ -409,7 +411,8 @@
       (conj preview-db-path :render-options)
       :spacer
       (conj preview-db-path :coat-of-arms :field :components 0)]]
-    [preview]]
+    [:div {:data-tour "charge-preview"}
+     [preview]]]
    :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
                  entity-version @(rf/subscribe [:get (conj form-db-path :version)])]
              [details/latest-version-banner

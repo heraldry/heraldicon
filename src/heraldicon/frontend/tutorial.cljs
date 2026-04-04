@@ -3,6 +3,7 @@
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.tutorial.arms :as arms]
+   [heraldicon.frontend.tutorial.charge :as charge]
    [heraldicon.frontend.tutorial.overview :as overview]
    [re-frame.core :as rf]
    [reagent.core :as r]))
@@ -15,13 +16,16 @@
 
 (def ^:private tours
   {:overview {:goals overview/goals}
-   :arms {:goals arms/goals}})
+   :arms {:goals arms/goals}
+   :charge {:goals charge/goals}})
 
 (def ^:private menu-entries
   [{:label :string.tutorial/menu-overview
     :event [::overview/start]}
    {:label :string.tutorial/menu-arms-editor
-    :event [::arms/start]}])
+    :event [::arms/start]}
+   {:label :string.tutorial/menu-charge-editor
+    :event [::charge/start]}])
 
 (rf/reg-sub ::active-tour
   (fn [db _]

@@ -1075,6 +1075,7 @@
     "menu": "Tutorial",
     "menu-overview": "Overview",
     "menu-arms-editor": "Coat of Arms Editor",
+    "menu-charge-editor": "Charge Editor",
     "hint": "\u2191 Go ahead, try it!",
     "back": "\u2190 Back",
     "next": "Next \u2192",
@@ -1122,6 +1123,24 @@
       "ornaments-description": "The Ornaments section is for elements outside the shield \u2014 mantling, supporters, compartments, mottos, and more. Click the \"+\" next to Ornaments, then choose \"Mantling\".",
       "finish-title": "That's the Basics!",
       "finish-description": "You've divided a field, set a tincture, added a charge, and placed mantling outside the shield. There's much more to explore \u2014 different partitions, line styles, ordinaries, the charge library, helms, and the blazon editor. Have fun!"
+    },
+    "charge": {
+      "welcome-title": "Welcome to the Charge Editor",
+      "welcome-description": "An example charge has been loaded for this demo. The Charge Editor is where you prepare SVG files for use as charges in coats of arms.",
+      "original-preview-title": "Source SVG",
+      "original-preview-description": "This panel on the left shows the loaded SVG file as it was uploaded.",
+      "upload-title": "Upload SVG",
+      "upload-description": "This is where you would upload your own SVG file. Don't do it now \u2014 we're just looking around \u2014 but when you create your own charge, this is where you start.",
+      "charge-preview-title": "Charge Preview",
+      "charge-preview-description": "This preview on the right shows how the charge will look when used in a coat of arms, with the configured colour mappings applied.",
+      "charge-type-title": "Charge Type",
+      "charge-type-description": "Here you can set the charge type \u2014 for example \"lion\", \"eagle\", or \"cross\". This helps others find your charge when browsing or searching.",
+      "colours-title": "Colour Functions",
+      "colours-description": "This is where you assign a function to each colour in the source SVG. For example, \"Primary\" for the main field colour, \"Outline\" for outlines, \"Secondary\" for a second colour, and so on. This controls how the charge adapts to different tinctures. You can select colours by clicking them in the preview on the left, or by using the checkboxes in the table \u2014 selected colours are shown in green so you can easily find them. Feel free to try!",
+      "save-title": "Save",
+      "save-description": "When you create your own charge, don't forget to save it using the Save button.",
+      "finish-title": "That's the Charge Editor!",
+      "finish-description": "There are many more options to explore here \u2014 attitude, facing direction, fixed tinctures, shading, and more. Have fun experimenting!"
     }
   }
 }
