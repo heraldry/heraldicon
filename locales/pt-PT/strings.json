@@ -10,7 +10,8 @@
     "search" : "Procurar..."
   },
   "tooltip" : {
-    "ignore-layer-separator?" : "Se a peça contém um separador de camada para o escudo, então isto pode desativá-la. "
+    "ignore-layer-separator?" : "Se a peça contém um separador de camada para o escudo, então isto pode desativá-la. ",
+    "charge-type": "O nome da figura em inglês, que também é usado para o brasonamento, ex. lion, rose, staff"
   },
   "user" : {
     "message" : { },
@@ -55,7 +56,8 @@
     "flag-height" : "Altura da bandeira",
     "variant-label-choice" : { },
     "size-mode-choice" : { },
-    "type-fimbriation-choice" : { }
+    "type-fimbriation-choice" : { },
+    "charge-type": "Tipo de figura"
   },
   "charge" : {
     "attribute" : {
