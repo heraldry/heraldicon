@@ -192,6 +192,7 @@
     "menu": "Tutorial",
     "menu-overview": "Visão geral",
     "menu-arms-editor": "Editor de brasões",
+    "menu-charge-editor": "Editor de figuras",
     "hint": "\u2191 Experimente!",
     "back": "\u2190 Voltar",
     "next": "Seguinte \u2192",
@@ -239,6 +240,24 @@
       "ornaments-description": "A secção Ornamentos é para elementos fora do escudo \u2014 paquifes, suportes, terraço, divisas e mais. Clique em \"+\" junto a Ornamentos e escolha \"Paquife\".",
       "finish-title": "Estes são os básicos!",
       "finish-description": "Dividiu um campo, definiu uma tintura, adicionou uma figura e colocou paquifes. Há muito mais para explorar \u2014 diferentes partições, linhas, peças, a biblioteca de figuras, elmos e o editor de brasonamento. Divirta-se!"
+    },
+    "charge": {
+      "welcome-title": "Bem-vindo ao Editor de figuras",
+      "welcome-description": "Uma figura de exemplo foi carregada para esta demo. O Editor de figuras é onde prepara ficheiros SVG para utilizar como figuras em brasões.",
+      "original-preview-title": "SVG original",
+      "original-preview-description": "Este painel à esquerda mostra o ficheiro SVG carregado tal como foi enviado.",
+      "upload-title": "Carregar SVG",
+      "upload-description": "Aqui é onde carregaria o seu próprio ficheiro SVG. Não o faça agora \u2014 estamos apenas a explorar \u2014 mas quando criar a sua própria figura, é aqui que começa.",
+      "charge-preview-title": "Pré-visualização da figura",
+      "charge-preview-description": "Esta pré-visualização à direita mostra como a figura ficará quando usada num brasão, com os mapeamentos de cor configurados.",
+      "charge-type-title": "Tipo de figura",
+      "charge-type-description": "Aqui pode definir o tipo de figura \u2014 por exemplo \"lion\", \"eagle\" ou \"cross\". Isto ajuda outros a encontrar a sua figura ao explorar ou pesquisar.",
+      "colours-title": "Funções de cor",
+      "colours-description": "Aqui atribui uma função a cada cor no SVG original. Por exemplo, \"Primário\" para a cor principal do campo, \"Contorno\" para contornos, \"Secundário\" para uma segunda cor, e assim por diante. Isto controla como a figura se adapta a diferentes tinturas. Pode selecionar cores clicando nelas na pré-visualização à esquerda ou usando as caixas de verificação na tabela \u2014 as cores selecionadas são mostradas em verde para as encontrar facilmente. Experimente!",
+      "save-title": "Guardar",
+      "save-description": "Quando criar a sua própria figura, não se esqueça de a guardar com o botão Guardar.",
+      "finish-title": "Este é o Editor de figuras!",
+      "finish-description": "Há muitas mais opções para explorar \u2014 atitude, direção do olhar, tintura fixa, sombreado e mais. Divirta-se a experimentar!"
     }
   }
 }

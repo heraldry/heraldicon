@@ -1072,6 +1072,7 @@
     "menu": "Tutorial",
     "menu-overview": "Übersicht",
     "menu-arms-editor": "Wappen-Editor",
+    "menu-charge-editor": "Wappenfiguren-Editor",
     "hint": "\u2191 Probier es aus!",
     "back": "\u2190 Zurück",
     "next": "Weiter \u2192",
@@ -1119,6 +1120,24 @@
       "ornaments-description": "Der Bereich Prachtstücke ist für Elemente außerhalb des Schildes \u2014 Helmdecken, Schildhalter, Postamente, Wahlsprüche und mehr. Klicke auf \"+\" neben Prachtstücke und wähle \"Helmdecke\".",
       "finish-title": "Das sind die Grundlagen!",
       "finish-description": "Du hast ein Feld geteilt, eine Tinktur gesetzt, eine Wappenfigur hinzugefügt und Helmdecken platziert. Es gibt noch viel mehr zu entdecken \u2014 verschiedene Teilungen, Schnittformen, Heroldsbilder, die Wappenfigurenbibliothek, Helme und den Blasonierungs-Editor. Viel Spaß!"
+    },
+    "charge": {
+      "welcome-title": "Willkommen im Wappenfiguren-Editor",
+      "welcome-description": "Eine Beispiel-Wappenfigur wurde für diese Demo geladen. Im Wappenfiguren-Editor bereitest du SVG-Dateien für die Verwendung als Wappenfiguren in Wappen vor.",
+      "original-preview-title": "Quell-SVG",
+      "original-preview-description": "Dieses Feld links zeigt die geladene SVG-Datei, wie sie hochgeladen wurde.",
+      "upload-title": "SVG hochladen",
+      "upload-description": "Hier würdest du deine eigene SVG-Datei hochladen. Mach es jetzt nicht \u2014 wir schauen uns nur um \u2014 aber wenn du deine eigene Wappenfigur erstellst, fängst du hier an.",
+      "charge-preview-title": "Wappenfigur-Vorschau",
+      "charge-preview-description": "Diese Vorschau rechts zeigt, wie die Wappenfigur aussieht, wenn sie in einem Wappen verwendet wird, mit den konfigurierten Farbzuordnungen.",
+      "charge-type-title": "Wappenfigurart",
+      "charge-type-description": "Hier kannst du die Wappenfigurart setzen \u2014 zum Beispiel \"lion\", \"eagle\" oder \"cross\". Das hilft anderen, deine Wappenfigur beim Durchsuchen oder Suchen zu finden.",
+      "colours-title": "Farbfunktionen",
+      "colours-description": "Hier weist du jeder Farbe in der Quell-SVG eine Funktion zu. Zum Beispiel \"Primär\" für die Hauptfeldfarbe, \"Umrandung\" für Umrandungen, \"Sekundär\" für eine zweite Farbe und so weiter. Das bestimmt, wie sich die Wappenfigur an verschiedene Tinkturen anpasst. Du kannst Farben auswählen, indem du sie in der Vorschau links anklickst oder die Kontrollkästchen in der Tabelle benutzt \u2014 ausgewählte Farben werden grün angezeigt, damit du sie leicht findest. Probier es ruhig aus!",
+      "save-title": "Speichern",
+      "save-description": "Wenn du deine eigene Wappenfigur erstellst, vergiss nicht, sie mit dem Speichern-Button zu speichern.",
+      "finish-title": "Das war der Wappenfiguren-Editor!",
+      "finish-description": "Es gibt noch viele weitere Optionen zu entdecken \u2014 Haltung, Blickrichtung, feste Tinktur, Schattierung und mehr. Viel Spaß beim Experimentieren!"
     }
   }
 }
