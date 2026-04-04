@@ -758,6 +758,10 @@ span.tutorial-highlight {
   background-color: #dde4ee;
 }
 
+.nav-menu-no-hover a:hover {
+  background-color: transparent;
+}
+
 .nav-menu-has-children > .nav-menu-link:after {
   content: "\25BE";
 }
