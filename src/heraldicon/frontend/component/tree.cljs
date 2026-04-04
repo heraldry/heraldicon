@@ -278,13 +278,13 @@
                                     [:i.ui-icon {:class (str icon (when disabled?
                                                                     " disabled-item"))
                                                  :title (tr title)
-                                                 :style {:margin-left "0.5em"
-                                                         :font-size "0.8em"
+                                                 :style {:font-size "0.8em"
                                                          :cursor (if disabled?
                                                                    "not-allowed"
                                                                    "pointer")}}]
                                     :disabled? disabled?
-                                    :require-click? true])))
+                                    :require-click? true
+                                    :style {:margin-left "0.5em"}])))
               buttons)
 
         (into [:span {:style {:margin-left "0.5em"}}]

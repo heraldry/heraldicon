@@ -17,11 +17,13 @@
     (update-in db [:ui :hover-menu-open?] dissoc path)))
 
 (defn hover-menu [{:keys [path]} title menu trigger-element & {:keys [disabled?
-                                                                      require-click?]}]
+                                                                      require-click?
+                                                                      style]}]
   (let [menu-open? @(rf/subscribe [::open? path])
         menu-disabled? disabled?]
     [:span.node-icon.ui-hover-menu
-     {:class (when disabled? "disabled")
+     {:style style
+      :class (when disabled? "disabled")
       (if require-click?
         :on-click
         :on-mouse-enter) (when-not disabled?
