@@ -1,6 +1,6 @@
 (ns heraldicon.frontend.tutorial.overview
   (:require
-   [heraldicon.frontend.tutorial :as tutorial]
+   [heraldicon.frontend.tutorial :as-alias tutorial]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
@@ -55,8 +55,6 @@
 
    {:title :string.tutorial.overview/finish-title
     :description :string.tutorial.overview/finish-description}])
-
-(tutorial/register-tour! :overview {:goals goals})
 
 (rf/reg-event-fx ::start
   (fn [_ _]
