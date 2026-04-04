@@ -197,7 +197,8 @@
                          :padding-left "0.5em"}
         selected-colours @(rf/subscribe [::charge.details/selected-colours])]
     [:<>
-     [:div.ui-setting {:style {:margin-top "10px"
+     [:div.ui-setting {:data-tour "charge-colours"
+                       :style {:margin-top "10px"
                                :white-space "nowrap"}}
       [:label [tr :string.render-options.mode-choice/colours]]
       [:div {:style {:display "inlinee-block"

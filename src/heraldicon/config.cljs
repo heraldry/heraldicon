@@ -40,7 +40,8 @@
            :mantling-charge-id "charge:gTrIM7"
            :mount-charge-id "charge:79T4sf"
            :trimount-charge-id "charge:Ly4j6h"
-           :bucket-data "local-heraldry-data"}
+           :bucket-data "local-heraldry-data"
+           :tutorial-charge-editor-example-charge-id "charges:hi58Fx"}
 
     "staging" {:heraldicon-api-endpoint "/api"
                :heraldicon-url "https://staging.heraldicon.org"
@@ -56,7 +57,8 @@
                :mantling-charge-id "charge:gTrIM7"
                :mount-charge-id "charge:5ZMGQg"
                :trimount-charge-id "charge:pnmGx4"
-               :bucket-data "local-heraldry-data"}
+               :bucket-data "local-heraldry-data"
+               :tutorial-charge-editor-example-charge-id "charge:fxOk19"}
 
     "prod" {:heraldicon-api-endpoint "/api"
             :heraldicon-discord-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/discord"
@@ -73,7 +75,8 @@
             :mantling-charge-id "charge:gTrIM7"
             :mount-charge-id "charge:DWWM7I"
             :trimount-charge-id "charge:ibnQAo"
-            :bucket-data "prod-heraldry-data"}))
+            :bucket-data "prod-heraldry-data"
+            :tutorial-charge-editor-example-charge-id "charges:mYN0hd"}))
 
 (defn get [setting]
   (case setting

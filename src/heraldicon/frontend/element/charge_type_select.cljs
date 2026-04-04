@@ -246,7 +246,7 @@
           value (or current-value
                     :string.miscellaneous/none)
           {:ui/keys [label]} option]
-      [:div.ui-setting
+      [:div.ui-setting {:data-tour "charge-type-select"}
        (when label
          [:label [tr label]])
        [:div.option

@@ -14,7 +14,8 @@
                            @(rf/subscribe [::entity/owned-by? form-db-path @(rf/subscribe [::session/data])])
                            @(rf/subscribe [::session/admin?])))]
 
-    [:button.button.primary {:type "submit"
+    [:button.button.primary {:data-tour "save-button"
+                             :type "submit"
                              :class (when-not can-save? "disabled")
                              :title (tr (when-not can-save?
                                           (case entity-type
