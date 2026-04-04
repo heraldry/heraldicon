@@ -49,9 +49,10 @@
   (let [session @(rf/subscribe [::session/data])
         logged-in? @(rf/subscribe [::session/logged-in?])]
     [:div.header {:class (dark-mode/class)}
-     [:div {:style {:flex 1.5
+     [:div {:style {:flex "none"
                     :line-height "2em"
                     :padding-left "0.5em"
+                    :padding-right "0.5em"
                     :white-space "nowrap"}}
       [:img {:src (static/static-url "/img/heraldicon-logo.png")
              :style {:height "1.8em"
@@ -61,8 +62,8 @@
       [:span {:style {:font-family "\"Trajan Pro\", sans-serif"
                       :font-size "1.2em"}}
        [:a {:href (reife/href :route.home/main nil nil)
-            :style {:padding-right "5px"}} "Heraldicon"]]
-      [:sup {:style {:color "#d82"}} "beta"]]
+            :style {:padding-right "5px"}} "Heraldicon"]]]
+     [:div {:style {:flex "0.5 1 0"}}]
      [:ul.nav-menu {:data-tour "nav-menu"
                     :style {:flex 1}}
       [:li {:data-tour "ko-fi"
@@ -105,7 +106,9 @@
         [:<>
          [menu-item :route.user/list :string.menu/users]
          [menu-item :route.charge-types/main :string.menu/charge-types]])
-      [menu-item :route.contact/main :string.menu/contact]
+      [menu-item :route.contact/main :string.menu/contact]]
+     [:div {:style {:flex "1 1 1em"}}]
+     [:ul.nav-menu.nav-menu-right
       [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
        {:on-mouse-leave #(rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])}
        [:<>
@@ -128,11 +131,26 @@
                              :on-click (js-event/handled
                                         #(do (rf/dispatch [::clear-menu-open? tutorial-menu-open?-path])
                                              (rf/dispatch [::tutorial.arms/start])))}
-           [tr :string.tutorial/menu-arms-editor]]]]]]
-      [:span {:style {:width "5em"}}]
-      [language/selector]
-      [:span {:style {:width "1em"}}]
-      [dark-mode/selector]
+           [tr :string.tutorial/menu-arms-editor]]]]]]]
+     [:ul.nav-menu.nav-menu-right
+      [:li.nav-menu-item
+       [language/selector]]]
+     [:div {:style {:flex "0.3 1 0"}}]
+     [:ul.nav-menu.nav-menu-right
+      [:li.nav-menu-no-hover {:style {:display "flex"
+                                      :align-items "center"
+                                      :gap "0.2em"
+                                      :line-height "2.5em"}}
+       [ko-fi/small-button :extra-attrs {:data-tour "ko-fi" :style {:padding "4px"}}]
+       [:a {:data-tour "atom-feed"
+            :href "/atom.xml"
+            :target "_blank"
+            :title "Atom Feed"
+            :style {:padding "4px"}}
+        [:i.fas.fa-rss-square]]
+       [dark-mode/selector]]]
+     [:div {:style {:flex "0.3 1 0"}}]
+     [:ul.nav-menu.nav-menu-right
       (if logged-in?
         [:li.nav-menu-item.nav-menu-has-children.nav-menu-allow-hover
          {:data-tour "user-menu"
