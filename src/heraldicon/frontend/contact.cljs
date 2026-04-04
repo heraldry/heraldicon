@@ -1,6 +1,5 @@
 (ns heraldicon.frontend.contact
   (:require
-   [heraldicon.config :as config]
    [heraldicon.frontend.ko-fi :as ko-fi]
    [heraldicon.frontend.title :as title]
    [re-frame.core :as rf]))
@@ -19,9 +18,7 @@
                   :max-width "28em"}}
     [:h2 "Contact"]
     [:p
-     "Email me for feature requests, bug reports, feedback, or questions: "
-     (let [email-address (config/get :email-address)]
-       [:a {:href (str "mailto:" email-address)} email-address])]
+     "Email me for feature requests, bug reports, feedback, or questions: oliver [at] heraldicon.org"]
 
     [:p {:style {:margin-top "1em"}}
      "The project can be found here: "

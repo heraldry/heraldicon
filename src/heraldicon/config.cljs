@@ -87,7 +87,6 @@
     :region (or (:REGION env) "eu-central-1")
     :admins #{"or"}
     :maintenance-mode? false
-    :email-address "oliver@heraldicon.org"
     (or (some-> setting
                 name
                 str/upper-case
