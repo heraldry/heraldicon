@@ -16,7 +16,18 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-04-03"
+  [{:id "2026-04-08"
+    :title "New line style: stepped"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "This update adds the " [:b "stepped"] " line style (German: " [:em "Stufenschnitt"] "). Unlike other line styles, the stepped line keeps its horizontal segments truly horizontal and its vertical segments truly vertical, regardless of the line's angle."]
+         [:p "This means a horizontal line will appear straight, as there are no steps to show. The steps only become visible when the line is at an angle, such as for a bend, chevron, or saltire. The greater the angle, the more pronounced the staircase effect."]]
+        [:div
+         (release-image "/img/2026-04-08-release-update.png" :width "250px")]]])}
+
+   {:id "2026-04-03"
     :title "New line styles: epine, trefly, trefly counter trefly"
     :content
     (fn []
