@@ -32,6 +32,7 @@
    [heraldicon.heraldry.line.type.rayonny-flaming :as rayonny-flaming]
    [heraldicon.heraldry.line.type.rayonny-spiked :as rayonny-spiked]
    [heraldicon.heraldry.line.type.spaded :as spaded]
+   [heraldicon.heraldry.line.type.stepped :as stepped]
    [heraldicon.heraldry.line.type.straight :as straight]
    [heraldicon.heraldry.line.type.thorny :as thorny]
    [heraldicon.heraldry.line.type.trefly :as trefly]
@@ -169,7 +170,8 @@
    #'wolf-toothed/pattern
    #'angled/pattern
    #'bevilled/pattern
-   #'enarched/pattern])
+   #'enarched/pattern
+   #'stepped/pattern])
 
 (defn- get-line-identifier [pattern]
   (-> pattern meta :ns name (str/split ".") last keyword))
@@ -521,6 +523,12 @@
                                      [:height :min] 0
                                      [:height :max] 1
                                      [:height :default] 0.5})
+            :stepped (options/pick default-options
+                                   [[:size-reference]
+                                    [:width]
+                                    [:offset]
+                                    [:flipped?]
+                                    [:base-line]])
             :lilyous (options/pick default-options
                                    [[:height]
                                     [:size-reference]
