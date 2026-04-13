@@ -26,7 +26,7 @@
         re-frame/re-frame {:git/url "https://github.com/or/re-frame"
                            :comment "based on version 1.4.4"
                            :sha "c5cdfa64cf74925b43314af1233f886435ed08f3"}
-        thheller/shadow-cljs {:mvn/version "3.3.5"}}
+        thheller/shadow-cljs {:mvn/version "3.4.1"}}
 
  :aliases
  {:outdated {:deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}}
