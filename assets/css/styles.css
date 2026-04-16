@@ -1623,3 +1623,7 @@ ul.parser-warnings li {
     transform: rotate(0deg) scale(1);
   }
 }
+
+.charge-type-filter {
+  background-color: #fff;
+}
