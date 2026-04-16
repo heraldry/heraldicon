@@ -1373,6 +1373,20 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-pauldron
+  {:shape "M 0,79.5
+           C 0,-26.5 100,-26.5 100,79.5
+           Z"
+
+   :bounding-box (bb/BoundingBox. 0 100 0 79.5)
+   :points {:fess (v/Vector. 50 39.75)}
+
+   ::name "Pauldron"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "jipowap"
+                  :creator-link "https://heraldicon.org/users/jipowap"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1459,6 +1473,7 @@
     [:community-persian community-persian]
     [:community-embattled-heater community-embattled-heater]
     [:community-embattled-iberian community-embattled-iberian]
+    [:community-pauldron community-pauldron]
     [:community-manilla community-manilla]
     [:community-simple-kalasag community-simple-kalasag]
     [:community-draped-pointy-banner community-draped-pointy-banner]
