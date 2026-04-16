@@ -1321,6 +1321,58 @@
                   :creator-name "verden"
                   :creator-link "https://heraldicon.org/users/verden"}})
 
+(def ^:private community-embattled-heater
+  {:shape "M 50,125
+           C 7,108 5,80 5,80
+           L 0,0
+           h 20
+           l 1,5
+           H 39
+           V 0
+           h 22
+           v 5
+           h 18
+           l 1,-5
+           h 20
+           l -5,80
+           c 0,0 -2,28 -45,45
+           z"
+
+   :bounding-box (bb/BoundingBox. 0 100 5 100)
+   :points {:fess (v/Vector. 50 55)}
+
+   ::name "Embattled Heater"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-embattled-iberian
+  {:shape "M 50,125
+           C 7,125 5,80 5,80
+           L 0,0
+           h 20
+           l 1,5
+           H 39
+           V 0
+           h 22
+           v 5
+           h 18
+           l 1,-5
+           h 20
+           l -5,80
+           c 0,0 -2,45 -45,45
+           z"
+
+   :bounding-box (bb/BoundingBox. 0 100 5 125)
+   :points {:fess (v/Vector. 50 55)}
+
+   ::name "Embattled Iberian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1405,6 +1457,8 @@
     [:community-croatian community-croatian]
     [:community-herzeg-croatian community-herzeg-croatian]
     [:community-persian community-persian]
+    [:community-embattled-heater community-embattled-heater]
+    [:community-embattled-iberian community-embattled-iberian]
     [:community-manilla community-manilla]
     [:community-simple-kalasag community-simple-kalasag]
     [:community-draped-pointy-banner community-draped-pointy-banner]
