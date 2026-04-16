@@ -224,3 +224,7 @@
 .dark .tutorial-close:hover {
   color: #ccc;
 }
+
+.dark .charge-type-filter {
+  background-color: #222;
+}

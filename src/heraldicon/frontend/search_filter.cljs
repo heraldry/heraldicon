@@ -454,20 +454,20 @@
                            :bottom 0
                            :z-index 99}
                    :on-click #(close-charge-type-filter! id pending)}]
-            [:div {:style {:position "absolute"
-                           :top "100%"
-                           :left 0
-                           :z-index 100
-                           :background "white"
-                           :border "1px solid #ddd"
-                           :border-radius "5px"
-                           :padding "10px"
-                           :margin-top "5px"
-                           :width "25em"
-                           :max-height "25em"
-                           :overflow-y "auto"
-                           :box-shadow "2px 2px 10px rgba(0,0,0,0.15)"}
-                   :on-click #(.stopPropagation %)}
+            [:div.charge-type-filter
+             {:style {:position "absolute"
+                      :top "100%"
+                      :left 0
+                      :z-index 100
+                      :border "1px solid #ddd"
+                      :border-radius "5px"
+                      :padding "10px"
+                      :margin-top "5px"
+                      :width "25em"
+                      :max-height "25em"
+                      :overflow-y "auto"
+                      :box-shadow "2px 2px 10px rgba(0,0,0,0.15)"}
+              :on-click #(.stopPropagation %)}
              [charge-type-select/charge-type-filter-tree
               (fn [name leaf?]
                 (if leaf?
