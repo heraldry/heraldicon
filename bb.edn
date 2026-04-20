@@ -75,7 +75,7 @@
                           "--project heraldicon-frontend upload --release=" release-name " "
                           build-dir))))
 
-          (defn deploy-frontend [build-dir target]
+          (defn deploy-frontend [build-dir target distribution-target]
             (shell "scripts/sync-with-s3" build-dir target)
             (shell (format "aws --profile heraldry-serverless s3 cp --acl public-read
                            '%s/index.html' 's3://%s/index.html'
@@ -83,7 +83,7 @@
                            --cache-control max-age=0,no-cache,no-store,must-revalidate
                            --content-type text/html"
                            build-dir target))
-            (shell "scripts/invalidate-distribution" target))
+            (shell "scripts/invalidate-distribution" distribution-target))
 
           (defn timestamp []
             (-> (shell {:out :string} "date" "+%Y-%m-%d_%H-%M-%S")
@@ -156,7 +156,7 @@
   staging-frontend-deploy (do
                             (run 'staging-frontend-release)
                             (create-sentry-release-frontend STAGING-FRONTEND-DIR "staging")
-                            (deploy-frontend STAGING-FRONTEND-DIR "cdn.staging.heraldicon.org"))
+                            (deploy-frontend STAGING-FRONTEND-DIR "cdn.staging.heraldicon.org" "staging.heraldicon.org"))
 
   prod-backend-release (do
                          (fs/delete-tree STAGING-BACKEND-DIR)
@@ -217,7 +217,7 @@
                         :task (do
                                 (run 'prod-frontend-release)
                                 (create-sentry-release-frontend PROD-FRONTEND-DIR "prod")
-                                (deploy-frontend PROD-FRONTEND-DIR "cdn.heraldicon.org")
+                                (deploy-frontend PROD-FRONTEND-DIR "cdn.heraldicon.org" "heraldicon.org")
                                 (tag-frontend-deploy))}
 
   outdated (do

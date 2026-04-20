@@ -1,6 +1,5 @@
 (ns heraldicon.render.texture
   (:require
-   [heraldicon.config :as config]
    [heraldicon.options :as options]))
 
 (def ^:private textures
@@ -45,5 +44,4 @@
   (get displacements texture))
 
 (defn full-path [texture]
-  (some->> (get relative-paths texture)
-           (str (config/get :static-files-url))))
+  (get relative-paths texture))
