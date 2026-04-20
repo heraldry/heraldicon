@@ -66,7 +66,6 @@
             :cognito-pool-config {:UserPoolId "eu-central-1_WXqnJUEOT"
                                   :ClientId "2m6qhen3lsu9dpr7lb26697db8"
                                   :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_WXqnJUEOT/.well-known/jwks.json"}
-            :static-files-url "https://cdn.heraldicon.org"
             :fleur-de-lis-charge-id "charge:ZfqrIl"
             :torse-charge-id "charge:8vwlZ2"
             :helmet-charge-id "charge:hlsnvP"
