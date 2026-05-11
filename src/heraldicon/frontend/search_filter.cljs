@@ -15,6 +15,7 @@
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.parameters :as parameters]
    [heraldicon.frontend.repository.entity-search :as entity-search]
+   [heraldicon.frontend.repository.user :as repository.user]
    [heraldicon.frontend.search-string :as search-string]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.user.session :as session]
@@ -153,11 +154,13 @@
         [:div.filter-result-card-header
          [:div.filter-result-card-owner
           (when item
-            [:a {:href (attribution/full-url-for-username username)
-                 :target "_blank"
-                 :title username}
-             [:img {:src (avatar/url username)
-                    :style {:border-radius "50%"}}]])]
+            (let [{owner-data :user} @(rf/subscribe [::repository.user/data username])]
+              [:a {:href (attribution/full-url-for-username username)
+                   :target "_blank"
+                   :title username}
+               (when (:avatar-url owner-data)
+                 [:img {:src (:avatar-url owner-data)
+                        :style (avatar/shape-style (:uncropped-avatar? owner-data))}])]))]
          [:div.filter-result-card-title
           {:title title}
           title]

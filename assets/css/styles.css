@@ -814,6 +814,11 @@ span.tutorial-highlight {
   color: #fff;
 }
 
+.button.danger {
+  background-color: #c0392b;
+  color: #fff;
+}
+
 .button {
   white-space: nowrap;
   padding: 5px 10px;

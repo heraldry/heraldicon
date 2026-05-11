@@ -41,6 +41,8 @@
            :mount-charge-id "charge:79T4sf"
            :trimount-charge-id "charge:Ly4j6h"
            :bucket-data "local-heraldry-data"
+           :bucket-cdn "cdn.staging.heraldicon.org"
+           :avatar-base-url "https://staging.heraldicon.org"
            :tutorial-charge-editor-example-charge-id "charges:hi58Fx"}
 
     "staging" {:heraldicon-api-endpoint "/api"
@@ -58,6 +60,7 @@
                :mount-charge-id "charge:5ZMGQg"
                :trimount-charge-id "charge:pnmGx4"
                :bucket-data "local-heraldry-data"
+               :bucket-cdn "cdn.staging.heraldicon.org"
                :tutorial-charge-editor-example-charge-id "charge:fxOk19"}
 
     "prod" {:heraldicon-api-endpoint "/api"
@@ -75,6 +78,7 @@
             :mount-charge-id "charge:DWWM7I"
             :trimount-charge-id "charge:ibnQAo"
             :bucket-data "prod-heraldry-data"
+            :bucket-cdn "cdn.heraldicon.org"
             :tutorial-charge-editor-example-charge-id "charges:mYN0hd"}))
 
 (defn get [setting]
