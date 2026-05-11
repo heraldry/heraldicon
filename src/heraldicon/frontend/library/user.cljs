@@ -51,11 +51,10 @@
      [:div {:style {:display "flex"
                     :align-items "flex-start"
                     :gap "15px"}}
-      (when (:avatar-url user-info-data)
-        [:img {:src (:avatar-url user-info-data)
-               :style (merge {:width "80px"
-                              :height "80px"}
-                             (avatar/shape-style (:uncropped-avatar? user-info-data)))}])
+      [:img {:src (avatar/url-from-user user-info-data)
+             :style (merge {:width "80px"
+                            :height "80px"}
+                           (avatar/shape-style (:uncropped-avatar? user-info-data)))}]
       (when editable?
         [:div {:style {:display "flex"
                        :flex-direction "column"

@@ -158,9 +158,8 @@
               [:a {:href (attribution/full-url-for-username username)
                    :target "_blank"
                    :title username}
-               (when (:avatar-url owner-data)
-                 [:img {:src (:avatar-url owner-data)
-                        :style (avatar/shape-style (:uncropped-avatar? owner-data))}])]))]
+               [:img {:src (avatar/url-from-user owner-data)
+                      :style (avatar/shape-style (:uncropped-avatar? owner-data))}]]))]
          [:div.filter-result-card-title
           {:title title}
           title]
