@@ -13,6 +13,7 @@
    [heraldicon.frontend.repository.user-list :as repository.user-list]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.title :as title]
+   [heraldicon.frontend.user.form.avatar :as form.avatar]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
@@ -41,7 +42,37 @@
     :default-list-mode :small
     :list-id [:collections-for-user-list username]}])
 
-(defn- user-display [username]
+(defn- user-info-header [user-info-data {:keys [editable?]}]
+  (let [has-avatar? (some? (:avatar-key user-info-data))]
+    [:div {:style {:grid-area "user-info"
+                   :padding-top "10px"}}
+     [:h2 {:style {:margin "0 0 10px 0"}}
+      (:username user-info-data)]
+     [:div {:style {:display "flex"
+                    :align-items "flex-start"
+                    :gap "15px"}}
+      (when (:avatar-url user-info-data)
+        [:img {:src (:avatar-url user-info-data)
+               :style (merge {:width "80px"
+                              :height "80px"}
+                             (avatar/shape-style (:uncropped-avatar? user-info-data)))}])
+      (when editable?
+        [:div {:style {:display "flex"
+                       :flex-direction "column"
+                       :gap "5px"}}
+         [:button.button {:type "button"
+                          :on-click #(rf/dispatch [::form.avatar/show])
+                          :style {:width "auto"}}
+          [tr (if has-avatar?
+                :string.user.avatar/change
+                :string.user.avatar/upload)]]
+         (when has-avatar?
+           [:button.button.danger {:type "button"
+                                   :on-click #(rf/dispatch [::form.avatar/remove])
+                                   :style {:width "auto"}}
+            [tr :string.user.avatar/remove]])])]]))
+
+(defn- user-display [username & {:keys [editable?]}]
   [status/default
    (rf/subscribe [::repository.user/data username])
    (fn [{user-info-data :user}]
@@ -50,24 +81,13 @@
        [:div {:style {:display "grid"
                       :grid-gap "10px"
                       :grid-template-columns "[start] minmax(10em, 25%) [first] minmax(10em, 50%) [second] minmax(10em, 25%) [end]"
-                      :grid-template-rows "[top] 100px [middle] auto [bottom]"
+                      :grid-template-rows "[top] auto [middle] 1fr [bottom]"
                       :grid-template-areas "'user-info user-info user-info'
                                        'collections arms charges'"
                       :padding-left "20px"
                       :padding-right "10px"
                       :height "100%"}}
-        [:div.no-scrollbar {:style {:grid-area "user-info"
-                                    :overflow-y "scroll"
-                                    :padding-top "10px"}}
-         (when (:avatar-url user-info-data)
-           [:img {:src (:avatar-url user-info-data)
-                  :style (merge {:width "80px"
-                                 :height "80px"}
-                                (avatar/shape-style (:uncropped-avatar? user-info-data)))}])
-         [:h2 {:style {:display "inline-block"
-                       :vertical-align "top"
-                       :margin-left "1em"}}
-          (:username user-info-data)]]
+        [user-info-header user-info-data {:editable? editable?}]
         [:div.no-scrollbar {:style {:grid-area "collections"
                                     :overflow-y "scroll"}}
          [:h4 [tr :string.entity/collections]]
@@ -83,6 +103,9 @@
 
 (defn details-view [{{{:keys [username]} :path} :parameters}]
   [user-display username])
+
+(defn editable-details-view [{{{:keys [username]} :path} :parameters}]
+  [user-display username :editable? true])
 
 (defn- link-to-user [{:keys [username]}]
   [:a {:href (reife/href :route.user/details {:username username})}
