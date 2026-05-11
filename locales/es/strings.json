@@ -817,6 +817,7 @@
       "change": "Cambiar",
       "remove": "Eliminar",
       "choose-file": "Elegir imagen...",
+      "instructions": "Arrastra para posicionar. Usa la rueda o el control deslizante para hacer zoom.",
       "zoom": "Zoom",
       "no-circle-crop": "Sin recorte circular"
     }

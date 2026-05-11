@@ -293,6 +293,9 @@
                  :flex-direction "column"
                  :gap "8px"
                  :width (str crop-size "px")}}
+   [:div {:style {:color "#888"
+                  :font-size "0.85em"}}
+    [tr :string.user.avatar/instructions]]
    [:input {:type "range"
             :aria-label "Zoom"
             :min 1

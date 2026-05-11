@@ -799,6 +799,7 @@
       "change": "Modifica",
       "remove": "Rimuovi",
       "choose-file": "Scegli immagine...",
+      "instructions": "Trascina per posizionare. Usa la rotella o il cursore per ingrandire.",
       "zoom": "Zoom",
       "no-circle-crop": "Nessun ritaglio circolare"
     }
