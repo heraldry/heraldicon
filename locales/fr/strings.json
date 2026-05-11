@@ -769,7 +769,10 @@
       "save-changes-first": "Sauvegardez d'abord vos modifications.",
       "username-required": "Nom d'utilisateur requis.",
       "username-or-email-required": "Nom d'utilisateur ou adresse e-mail requis.",
-      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -"
+      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -",
+      "avatar-required": "Veuillez choisir une image.",
+      "avatar-upload-failed": "Échec du téléversement de l'image de profil.",
+      "avatar-delete-failed": "Échec de la suppression de l'image de profil."
     },
     "button": {
       "change": "Modifier",
@@ -789,7 +792,16 @@
     "reset-forgotten-password": "Réinitialiser le mot de passe oublié",
     "username": "Nom d'utilisateur",
     "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -",
-    "username-or-email": "Nom d'utilisateur ou e-mail"
+    "username-or-email": "Nom d'utilisateur ou e-mail",
+    "avatar": {
+      "title": "Image de profil",
+      "upload": "Téléverser",
+      "change": "Modifier",
+      "remove": "Supprimer",
+      "choose-file": "Choisir une image...",
+      "zoom": "Zoom",
+      "no-circle-crop": "Pas de recadrage circulaire"
+    }
   },
   "attribution": {
     "title": "Attribution",

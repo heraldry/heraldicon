@@ -787,7 +787,10 @@
       "save-changes-first": "Guarde su figura primero.",
       "username-required": "Nombre de usuario requerido.",
       "username-or-email-required": "Nombre de usuario o correo electrónico requerido.",
-      "username-contains-invalid-characters": "Nombre de usuario contiene caracteres inválidos. Permitidos: a-z, A-Z, 0-9, _, -"
+      "username-contains-invalid-characters": "Nombre de usuario contiene caracteres inválidos. Permitidos: a-z, A-Z, 0-9, _, -",
+      "avatar-required": "Por favor, elige una imagen.",
+      "avatar-upload-failed": "Error al subir la imagen de perfil.",
+      "avatar-delete-failed": "Error al eliminar la imagen de perfil."
     },
     "button": {
       "change": "Cambio",
@@ -807,7 +810,16 @@
     "reset-forgotten-password": "Olvidé la contraseña",
     "username": "Nombre de usuario",
     "username-help": "Visible públicamente, caracteres permitidos: a-z, A-Z, 0-9, _, -",
-    "username-or-email": "Usuario o correo electrónico"
+    "username-or-email": "Usuario o correo electrónico",
+    "avatar": {
+      "title": "Imagen de perfil",
+      "upload": "Subir",
+      "change": "Cambiar",
+      "remove": "Eliminar",
+      "choose-file": "Elegir imagen...",
+      "zoom": "Zoom",
+      "no-circle-crop": "Sin recorte circular"
+    }
   },
   "attribution": {
     "title": "Atribución",

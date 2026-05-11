@@ -776,7 +776,10 @@
       "save-changes-first": "Спочатку збережіть зміни.",
       "username-required": "Необхідно вказати ім'я користувача.",
       "username-or-email-required": "Необхідно вказати ім'я користувача або електронну пошту.",
-      "username-contains-invalid-characters": "Ім'я користувача містить недозволені символи. Дозволено: a-z, A-Z, 0-9, _ та -"
+      "username-contains-invalid-characters": "Ім'я користувача містить недозволені символи. Дозволено: a-z, A-Z, 0-9, _ та -",
+      "avatar-required": "Будь ласка, оберіть зображення.",
+      "avatar-upload-failed": "Не вдалося завантажити аватар.",
+      "avatar-delete-failed": "Не вдалося видалити аватар."
     },
     "button": {
       "change": "Змінити",
@@ -796,7 +799,16 @@
     "reset-forgotten-password": "Скинути забутий пароль",
     "username": "Ім'я користувача",
     "username-help": "Видиме для всіх. Дозволені символи: a-z, A-Z, 0-9, _, -",
-    "username-or-email": "Ім'я користувача або email"
+    "username-or-email": "Ім'я користувача або email",
+    "avatar": {
+      "title": "Аватар",
+      "upload": "Завантажити",
+      "change": "Змінити",
+      "remove": "Видалити",
+      "choose-file": "Обрати зображення...",
+      "zoom": "Масштаб",
+      "no-circle-crop": "Без кругового обрізання"
+    }
   },
   "attribution": {
     "title": "Автори",
