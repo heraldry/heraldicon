@@ -76,18 +76,27 @@
   (fn [db _]
     (update-in db (form/form-path form-id) dissoc :drag)))
 
+(defn- zoom-to-center [state new-scale]
+  (let [old-scale (or (:scale state) 1)
+        center (/ crop-size 2)
+        ratio (/ new-scale old-scale)]
+    (assoc state
+           :scale new-scale
+           :tx (+ center (* ratio (- (or (:tx state) 0) center)))
+           :ty (+ center (* ratio (- (or (:ty state) 0) center))))))
+
 (rf/reg-event-db ::set-scale
   (fn [db [_ new-scale]]
     (let [state (get-in db (form/form-path form-id))]
       (assoc-in db (form/form-path form-id)
-                (clamp (assoc state :scale (max 1 (min 5 new-scale))))))))
+                (clamp (zoom-to-center state (max 1 (min 5 new-scale))))))))
 
 (rf/reg-event-db ::adjust-scale
   (fn [db [_ delta]]
     (let [state (get-in db (form/form-path form-id))
           new-scale (max 1 (min 5 (+ (or (:scale state) 1) delta)))]
       (assoc-in db (form/form-path form-id)
-                (clamp (assoc state :scale new-scale))))))
+                (clamp (zoom-to-center state new-scale))))))
 
 (rf/reg-event-db ::set-uncropped
   (fn [db [_ uncropped?]]
