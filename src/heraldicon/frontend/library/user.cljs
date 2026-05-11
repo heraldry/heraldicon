@@ -59,9 +59,11 @@
         [:div.no-scrollbar {:style {:grid-area "user-info"
                                     :overflow-y "scroll"
                                     :padding-top "10px"}}
-         [:img {:src (avatar/url username)
-                :style {:width "80px"
-                        :height "80px"}}]
+         (when (:avatar-url user-info-data)
+           [:img {:src (:avatar-url user-info-data)
+                  :style (merge {:width "80px"
+                                 :height "80px"}
+                                (avatar/shape-style (:uncropped-avatar? user-info-data)))}])
          [:h2 {:style {:display "inline-block"
                        :vertical-align "top"
                        :margin-left "1em"}}
