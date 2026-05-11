@@ -14,9 +14,22 @@
     "charge-type": "O nome da figura em inglês, que também é usado para o brasonamento, ex. lion, rose, staff"
   },
   "user": {
-    "message": {},
+    "message": {
+      "avatar-required": "Por favor, escolha uma imagem.",
+      "avatar-upload-failed": "Falha ao carregar a imagem de perfil.",
+      "avatar-delete-failed": "Falha ao remover a imagem de perfil."
+    },
     "button": {},
-    "username-or-email": "Nome de utilizador ou email"
+    "username-or-email": "Nome de utilizador ou email",
+    "avatar": {
+      "title": "Imagem de perfil",
+      "upload": "Carregar",
+      "change": "Alterar",
+      "remove": "Remover",
+      "choose-file": "Escolher imagem...",
+      "zoom": "Zoom",
+      "no-circle-crop": "Sem recorte circular"
+    }
   },
   "validation": {
     "attribution": {},

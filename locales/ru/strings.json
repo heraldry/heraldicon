@@ -768,7 +768,10 @@
       "save-changes-first": "Сначала сохраните изменения.",
       "username-required": "Username required.",
       "username-or-email-required": "Имя пользователя или адрес электронной почты обязательны.",
-      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -"
+      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -",
+      "avatar-required": "Пожалуйста, выберите изображение.",
+      "avatar-upload-failed": "Не удалось загрузить аватар.",
+      "avatar-delete-failed": "Не удалось удалить аватар."
     },
     "button": {
       "change": "Сменить",
@@ -788,7 +791,16 @@
     "reset-forgotten-password": "Скинуть забытый пароль",
     "username": "Имя пользователя",
     "username-help": "Publicly visible, allowed characters: a-z, A-Z, 0-9, _, -",
-    "username-or-email": "Имя пользователя или email"
+    "username-or-email": "Имя пользователя или email",
+    "avatar": {
+      "title": "Аватар",
+      "upload": "Загрузить",
+      "change": "Сменить",
+      "remove": "Удалить",
+      "choose-file": "Выбрать изображение...",
+      "zoom": "Масштаб",
+      "no-circle-crop": "Без круговой обрезки"
+    }
   },
   "attribution": {
     "title": "Ссылка на источник",

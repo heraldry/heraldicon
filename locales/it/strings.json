@@ -769,7 +769,10 @@
       "save-changes-first": "Salva le tue modifiche prima.",
       "username-required": "Nome utente richiesto.",
       "username-or-email-required": "Nome utente o indirizzo e-mail richiesto.",
-      "username-contains-invalid-characters": "Il nome utente contiene caratteri non validi. Caratteri autorizzati: a-z, A-Z, 0-9, _, -"
+      "username-contains-invalid-characters": "Il nome utente contiene caratteri non validi. Caratteri autorizzati: a-z, A-Z, 0-9, _, -",
+      "avatar-required": "Per favore scegli un'immagine.",
+      "avatar-upload-failed": "Caricamento dell'immagine del profilo non riuscito.",
+      "avatar-delete-failed": "Rimozione dell'immagine del profilo non riuscita."
     },
     "button": {
       "change": "Modifica",
@@ -789,7 +792,16 @@
     "reset-forgotten-password": "Ripristina la password dimenticata",
     "username": "Nome utente",
     "username-help": "Caratteri pubblicamente visibili, ammessi: a-z, A-Z, 0-9, _, -",
-    "username-or-email": "Nome utente o email"
+    "username-or-email": "Nome utente o email",
+    "avatar": {
+      "title": "Immagine del profilo",
+      "upload": "Carica",
+      "change": "Modifica",
+      "remove": "Rimuovi",
+      "choose-file": "Scegli immagine...",
+      "zoom": "Zoom",
+      "no-circle-crop": "Nessun ritaglio circolare"
+    }
   },
   "attribution": {
     "title": "Attribuzione",

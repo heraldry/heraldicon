@@ -786,7 +786,10 @@
       "save-changes-first": "Speichere deine Änderungen erst.",
       "username-required": "Benutzername erforderlich.",
       "username-or-email-required": "Benutzername oder E-Mail erforderlich.",
-      "username-contains-invalid-characters": "Benutzername enthält unerlaubte Zeichen. Erlaubt: a-z, A-Z, 0-9, _, -"
+      "username-contains-invalid-characters": "Benutzername enthält unerlaubte Zeichen. Erlaubt: a-z, A-Z, 0-9, _, -",
+      "avatar-required": "Bitte ein Bild auswählen.",
+      "avatar-upload-failed": "Hochladen des Profilbilds fehlgeschlagen.",
+      "avatar-delete-failed": "Entfernen des Profilbilds fehlgeschlagen."
     },
     "button": {
       "change": "Ändern",
@@ -806,7 +809,16 @@
     "reset-forgotten-password": "Vergessenes Passwort zurücksetzen",
     "username": "Benutzername",
     "username-help": "Öffentlich sichtbar, erlaubte Zeichen: a-z, A-Z, 0-9, _, -",
-    "username-or-email": "Benutzername oder E-Mail"
+    "username-or-email": "Benutzername oder E-Mail",
+    "avatar": {
+      "title": "Profilbild",
+      "upload": "Hochladen",
+      "change": "Ändern",
+      "remove": "Entfernen",
+      "choose-file": "Bild auswählen...",
+      "zoom": "Zoom",
+      "no-circle-crop": "Kein Kreisausschnitt"
+    }
   },
   "attribution": {
     "title": "Attribuierung",
