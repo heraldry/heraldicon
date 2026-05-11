@@ -102,6 +102,8 @@
   (fn [db [_ uncropped?]]
     (assoc-in db (conj (form/form-path form-id) :uncropped?) (boolean uncropped?))))
 
+(declare show-modal)
+
 (defn- read-file [^js file]
   (let [reader (js/FileReader.)]
     (set! (.-onloadend reader)
@@ -114,7 +116,8 @@
                                     {:data-url data-url
                                      :natural-w (.-naturalWidth img)
                                      :natural-h (.-naturalHeight img)
-                                     :mime (.-type file)}])))
+                                     :mime (.-type file)}])
+                      (show-modal)))
               (set! (.-src img) data-url))))
     (.readAsDataURL reader file)))
 
@@ -168,11 +171,8 @@
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
     (let [state (get-in db (form/form-path form-id))]
-      (cond-> {:dispatch-n [[::message/clear form-id]]}
-        (not (:source state)) (update :dispatch-n conj
-                                      [::message/set-error form-id
-                                       :string.user.message/avatar-required])
-        (:source state) (assoc ::upload state)))))
+      {:dispatch-n [[::message/clear form-id]]
+       ::upload state})))
 
 (rf/reg-fx ::upload
   (fn [{:keys [source uncropped?] :as state}]
@@ -215,17 +215,18 @@
   (fn [_ _]
     {::delete nil}))
 
-(defn- file-input []
-  [:div {:style {:margin-bottom "10px"}}
-   [:label.button {:for "avatar-file-upload"
-                   :style {:display "inline-block"
-                           :width "auto"}}
-    [tr :string.user.avatar/choose-file]
-    [:input {:type "file"
-             :id "avatar-file-upload"
-             :accept "image/png,image/jpeg"
-             :on-change on-file-input-change
-             :style {:display "none"}}]]])
+(defn upload-button [{:keys [has-avatar?]}]
+  [:label.button {:for "avatar-file-upload"
+                  :style {:width "auto"
+                          :cursor "pointer"}}
+   [tr (if has-avatar?
+         :string.user.avatar/change
+         :string.user.avatar/upload)]
+   [:input {:type "file"
+            :id "avatar-file-upload"
+            :accept "image/png,image/jpeg"
+            :on-change on-file-input-change
+            :style {:display "none"}}]])
 
 (defn- crop-preview []
   (let [el-ref (atom nil)
@@ -318,24 +319,18 @@
                     :align-items "center"
                     :gap "10px"}}
      [message/display form-id]
-     [file-input]
-     (when (:source state)
-       [:<>
-        [crop-preview state]
-        [controls state]])
+     [crop-preview state]
+     [controls state]
      [:div {:style {:text-align "right"
                     :margin-top "10px"}}
       [:button.button {:style {:margin-right "5px"}
                        :type "reset"
                        :on-click #(rf/dispatch [::form/clear-and-close form-id])}
        [tr :string.button/cancel]]
-      [:button.button.primary {:type "submit"
-                               :disabled (not (:source state))}
+      [:button.button.primary {:type "submit"}
        [tr :string.button/save]]]]))
 
-(rf/reg-event-fx ::show
-  (fn [_ _]
-    {:dispatch [::modal/create
-                :string.user.avatar/title
+(defn- show-modal []
+  (modal/create :string.user.avatar/title
                 [form]
-                #(rf/dispatch [::form/clear form-id])]}))
+                :on-cancel #(rf/dispatch [::form/clear form-id])))
