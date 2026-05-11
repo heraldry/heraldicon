@@ -16,7 +16,18 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-04-08"
+  [{:id "2026-05-11"
+    :title "Profile pictures"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "You can now upload your own " [:b "profile picture"] ". Head to your account page and click the new " [:b "Upload"] " button next to your avatar, pick an image, drag it around and zoom to position it the way you like, and save. The crop is circular by default, but you can opt out of that with a checkbox if you'd rather show the whole image as a square. This is particularly useful if you want to use a coat of arms with transparent background."]
+         [:p "As a consequence, " [:b "Gravatar is no longer supported"] ". Avatars that were previously sourced from Gravatar will fall back to a default placeholder until you upload your own."]]
+        [:div
+         (release-image "/img/2026-05-11-release-update.png" :width "300px")]]])}
+
+   {:id "2026-04-08"
     :title "New line style: stepped"
     :content
     (fn []
