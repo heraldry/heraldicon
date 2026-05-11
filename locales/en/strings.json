@@ -814,7 +814,8 @@
     "username-or-email": "Username or email",
     "avatar": {
       "title": "Profile Picture",
-      "upload": "Upload profile picture",
+      "upload": "Upload",
+      "change": "Change",
       "remove": "Remove",
       "choose-file": "Choose image...",
       "zoom": "Zoom",
