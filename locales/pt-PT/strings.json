@@ -26,7 +26,6 @@
       "upload": "Carregar",
       "change": "Alterar",
       "remove": "Remover",
-      "choose-file": "Escolher imagem...",
       "instructions": "Arraste para posicionar. Use o scroll ou o cursor para fazer zoom.",
       "zoom": "Zoom",
       "no-circle-crop": "Sem recorte circular"

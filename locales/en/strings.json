@@ -817,7 +817,6 @@
       "upload": "Upload",
       "change": "Change",
       "remove": "Remove",
-      "choose-file": "Choose image...",
       "instructions": "Drag to position. Scroll or use the slider to zoom.",
       "zoom": "Zoom",
       "no-circle-crop": "No circle crop"

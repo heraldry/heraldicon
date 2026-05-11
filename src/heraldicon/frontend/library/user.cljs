@@ -60,12 +60,7 @@
         [:div {:style {:display "flex"
                        :flex-direction "column"
                        :gap "5px"}}
-         [:button.button {:type "button"
-                          :on-click #(rf/dispatch [::form.avatar/show])
-                          :style {:width "auto"}}
-          [tr (if has-avatar?
-                :string.user.avatar/change
-                :string.user.avatar/upload)]]
+         [form.avatar/upload-button {:has-avatar? has-avatar?}]
          (when has-avatar?
            [:button.button.danger {:type "button"
                                    :on-click #(rf/dispatch [::form.avatar/remove])
