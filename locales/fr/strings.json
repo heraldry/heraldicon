@@ -799,6 +799,7 @@
       "change": "Modifier",
       "remove": "Supprimer",
       "choose-file": "Choisir une image...",
+      "instructions": "Glissez pour positionner. Molette ou curseur pour zoomer.",
       "zoom": "Zoom",
       "no-circle-crop": "Pas de recadrage circulaire"
     }

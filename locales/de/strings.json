@@ -816,6 +816,7 @@
       "change": "Ändern",
       "remove": "Entfernen",
       "choose-file": "Bild auswählen...",
+      "instructions": "Zum Verschieben ziehen. Mit dem Scrollrad oder dem Schieberegler zoomen.",
       "zoom": "Zoom",
       "no-circle-crop": "Kein Kreisausschnitt"
     }
