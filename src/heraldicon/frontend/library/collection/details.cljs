@@ -13,6 +13,7 @@
    [heraldicon.frontend.entity.details :as details]
    [heraldicon.frontend.history.core :as history]
    [heraldicon.frontend.js-event :as js-event]
+   [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.layout :as layout]
    [heraldicon.frontend.library.collection.list :as library.collection.list]
    [heraldicon.frontend.library.collection.shared :refer [entity-type]]
@@ -89,11 +90,15 @@
 (defn- render-arms [form-db-path x y path & {:keys [font font-size]
                                              :or {font-size 12}}]
   (let [arms-name @(rf/subscribe [:get (conj path :name)])
+        reference-deleted? @(rf/subscribe [:get (conj path :reference-deleted?)])
         {:keys [context]} (arms-context form-db-path path)
         bounding-box (interface/get-bounding-box context)
-        [width height] (bb/size bounding-box)]
+        [width height] (bb/size bounding-box)
+        label (if reference-deleted?
+                (str arms-name " " (tr :string.collection/deleted-arms-suffix))
+                arms-name)]
     [:g
-     [:title arms-name]
+     [:title label]
      [arms-highlight path x y width height]
      [:g {:transform (str "translate(" (- x (/ width 2)) "," (- y (/ height 2)) ")")}
       [interface/render-component context]
@@ -101,8 +106,9 @@
                          :y (+ height 10 font-size)
                          :text-anchor "middle"
                          :style {:font-family font
-                                 :font-size font-size}}
-       arms-name]]]))
+                                 :font-size font-size
+                                 :fill (when reference-deleted? "#c0392b")}}
+       label]]]))
 
 (defn- render-collection [form-db-path & {:keys [allow-adding?]}]
   (let [font-title (some-> (interface/get-sanitized-data {:path (conj form-db-path :data :font-title)})

@@ -1178,5 +1178,8 @@
     "you": "ti",
     "and-in-private-arms": "y en %s blasones privados",
     "and-in-private-collections": "y en %s colecciones privadas"
+  },
+  "collection": {
+    "deleted-arms-suffix": "(eliminado)"
   }
 }

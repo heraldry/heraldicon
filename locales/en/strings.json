@@ -1178,5 +1178,8 @@
     "you": "you",
     "and-in-private-arms": "and in %s private arms",
     "and-in-private-collections": "and in %s private collections"
+  },
+  "collection": {
+    "deleted-arms-suffix": "(deleted)"
   }
 }

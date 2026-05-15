@@ -1160,5 +1160,8 @@
     "you": "vous",
     "and-in-private-arms": "et dans %s armoiries privées",
     "and-in-private-collections": "et dans %s collections privées"
+  },
+  "collection": {
+    "deleted-arms-suffix": "(supprimé)"
   }
 }

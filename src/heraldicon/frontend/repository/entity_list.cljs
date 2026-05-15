@@ -68,6 +68,17 @@
     (let [path (entity-list-path entity-type)]
       (assoc-in db path nil))))
 
+(rf/reg-event-db ::remove
+  (fn [db [_ entity-type entity-id]]
+    ;; Only charges are cached here (blazonry editor preloads them).
+    ;; The other entity types don't populate this cache, so skip the work.
+    (if (= entity-type :heraldicon.entity.type/charge)
+      (let [path (conj (entity-list-path entity-type) :entities)
+            entities (get-in db path)]
+        (cond-> db
+          entities (assoc-in path (filterv #(not= entity-id (:id %)) entities))))
+      db)))
+
 (defn- fetch-entity-list-api-function [enty-type]
   (case enty-type
     :heraldicon.entity.type/arms :fetch-arms-list

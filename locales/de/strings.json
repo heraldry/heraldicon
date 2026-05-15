@@ -1177,5 +1177,8 @@
     "you": "dir",
     "and-in-private-arms": "und in %s privaten Wappen",
     "and-in-private-collections": "und in %s privaten Sammlungen"
+  },
+  "collection": {
+    "deleted-arms-suffix": "(gelöscht)"
   }
 }

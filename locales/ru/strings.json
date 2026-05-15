@@ -1159,5 +1159,8 @@
     "you": "вами",
     "and-in-private-arms": "и в %s приватных гербах",
     "and-in-private-collections": "и в %s приватных коллекциях"
+  },
+  "collection": {
+    "deleted-arms-suffix": "(удалён)"
   }
 }
