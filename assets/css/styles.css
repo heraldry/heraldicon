@@ -1577,6 +1577,12 @@ ul.parser-warnings li {
 
 .banner {
   padding: 6px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.banner > i {
+  margin-right: 0.4em;
 }
 
 .banner.info {
@@ -1593,6 +1599,27 @@ ul.parser-warnings li {
   border: 1px solid #ecc;
   background-color: #fdd;
   color: #b44;
+}
+
+.banner.success {
+  border: 1px solid #4a4;
+  background-color: #efe;
+  color: #4a4;
+}
+
+.banner.success i {
+  color: #4a4;
+}
+
+.banner-close {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  padding: 0 0.25em;
+  display: flex;
+  align-items: center;
 }
 
 .charge-colours .selected {

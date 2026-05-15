@@ -10,6 +10,7 @@
    [heraldicon.frontend.header :as header]
    [heraldicon.frontend.keys]
    [heraldicon.frontend.language :as language :refer [tr]]
+   [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
    [heraldicon.frontend.search-filter :as search-filter]
@@ -35,11 +36,29 @@
        " "
        [tr :string.banner/not-logged-in]])))
 
+(defn- flash-banner []
+  (let [{:keys [type message]} @(rf/subscribe [::message/message :global])]
+    (when message
+      [:div.banner {:class (case type
+                             :success "success"
+                             :error "warning")}
+       [:i.fas {:class (case type
+                         :success "fa-check-circle"
+                         :error "fa-exclamation-circle")}]
+       " "
+       [tr message]
+       [:button.banner-close
+        {:type "button"
+         :title (tr :string.button/close)
+         :on-click #(rf/dispatch [::message/clear :global])}
+        [:i.fas.fa-times]]])))
+
 (defn app []
   [:<>
    [header/view]
    [:div.main-content.no-scrollbar {:class (dark-mode/class)}
     [login-banner]
+    [flash-banner]
     [router/view]
     [modal/render]
     [auto-complete/render]]

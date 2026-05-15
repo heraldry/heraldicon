@@ -19,7 +19,9 @@
 
 (defn- supports-delete? [entity-type]
   (contains? #{:heraldicon.entity.type/collection
-               :heraldicon.entity.type/arms}
+               :heraldicon.entity.type/arms
+               :heraldicon.entity.type/charge
+               :heraldicon.entity.type/ribbon}
              entity-type))
 
 (defn- list-route [entity-type]
@@ -36,18 +38,26 @@
     :heraldicon.entity.type/ribbon :string.text.title/delete-ribbon
     :heraldicon.entity.type/collection :string.text.title/delete-collection))
 
-(defn- description-key [entity-type]
+(defn- description-key [entity-type in-use?]
   (case entity-type
     :heraldicon.entity.type/arms :string.user.message/delete-arms-description
-    :heraldicon.entity.type/charge :string.user.message/delete-charge-description
-    :heraldicon.entity.type/ribbon :string.user.message/delete-ribbon-description
+    :heraldicon.entity.type/charge (if in-use?
+                                     :string.user.message/delete-charge-description-in-use
+                                     :string.user.message/delete-charge-description)
+    :heraldicon.entity.type/ribbon (if in-use?
+                                     :string.user.message/delete-ribbon-description-in-use
+                                     :string.user.message/delete-ribbon-description)
     :heraldicon.entity.type/collection :string.user.message/delete-collection-description))
 
-(defn- success-message-key [entity-type]
+(defn- success-message-key [entity-type transferred?]
   (case entity-type
     :heraldicon.entity.type/arms :string.user.message/arms-deleted
-    :heraldicon.entity.type/charge :string.user.message/charge-deleted
-    :heraldicon.entity.type/ribbon :string.user.message/ribbon-deleted
+    :heraldicon.entity.type/charge (if transferred?
+                                     :string.user.message/charge-detached
+                                     :string.user.message/charge-deleted)
+    :heraldicon.entity.type/ribbon (if transferred?
+                                     :string.user.message/ribbon-detached
+                                     :string.user.message/ribbon-deleted)
     :heraldicon.entity.type/collection :string.user.message/collection-deleted))
 
 (rf/reg-event-fx ::confirm
@@ -57,16 +67,18 @@
       (modal/start-loading)
       (go-catch
        (try
-         (let [{:keys [invalidated-ids]} (<? (api/call :delete-entity
-                                                       {:id entity-id}
-                                                       session))]
+         (let [{:keys [invalidated-ids status]} (<? (api/call :delete-entity
+                                                              {:id entity-id}
+                                                              session))
+               transferred? (= status :transferred)]
            (modal/stop-loading)
            (rf/dispatch-sync [::entity-list/remove entity-type entity-id])
            (rf/dispatch-sync [::entity-search/remove entity-type entity-id])
            (rf/dispatch-sync [::repository.entity/invalidate-entities invalidated-ids])
            (rf/dispatch-sync [::entity-for-rendering/invalidate-entities invalidated-ids])
            (rf/dispatch-sync [::entity-for-editing/invalidate-entities invalidated-ids])
-           (rf/dispatch [::message/set-success entity-type (success-message-key entity-type)])
+           (rf/dispatch [::message/set-success :global
+                         (success-message-key entity-type transferred?)])
            (reife/push-state (list-route entity-type) nil nil))
          (catch :default e
            (modal/stop-loading)
@@ -76,24 +88,26 @@
                          (or (:message (ex-data e)) (.-message e))]))))
       {})))
 
-(defn- confirm-content [entity-type entity-id]
-  [:div
-   [:p [tr (description-key entity-type)]]
-   [:div.buttons {:style {:display "flex"
-                          :margin-top "10px"}}
-    [:div {:style {:flex "auto"}}]
-    [:button.button
-     {:type "button"
-      :style {:flex "initial"
-              :margin-left "10px"}
-      :on-click #(modal/clear)}
-     [tr :string.button/cancel]]
-    [:button.button.danger
-     {:type "button"
-      :style {:flex "initial"
-              :margin-left "10px"}
-      :on-click #(rf/dispatch [::confirm entity-type entity-id])}
-     [tr :string.button/delete]]]])
+(defn- confirm-content [entity-type entity-id form-db-path]
+  (let [{:keys [visible other-private-count]} @(rf/subscribe [:get (conj form-db-path :dependents)])
+        in-use? (boolean (or (seq visible) (pos? (or other-private-count 0))))]
+    [:div
+     [:p [tr (description-key entity-type in-use?)]]
+     [:div.buttons {:style {:display "flex"
+                            :margin-top "10px"}}
+      [:div {:style {:flex "auto"}}]
+      [:button.button
+       {:type "button"
+        :style {:flex "initial"
+                :margin-left "10px"}
+        :on-click #(modal/clear)}
+       [tr :string.button/cancel]]
+      [:button.button.danger
+       {:type "button"
+        :style {:flex "initial"
+                :margin-left "10px"}
+        :on-click #(rf/dispatch [::confirm entity-type entity-id])}
+       [tr :string.button/delete]]]]))
 
 (rf/reg-event-fx ::invoke
   (fn [{:keys [db]} [_ entity-type]]
@@ -101,7 +115,7 @@
           entity-id (get-in db (conj form-db-path :id))]
       (modal/create
        [tr (modal-title-key entity-type)]
-       [confirm-content entity-type entity-id])
+       [confirm-content entity-type entity-id form-db-path])
       {})))
 
 (defn action [entity-type]

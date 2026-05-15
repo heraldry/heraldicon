@@ -742,7 +742,8 @@
     "export": "Esporta",
     "share": "Condividi",
     "detect-shading": "Rileva ombra",
-    "delete": "Elimina"
+    "delete": "Elimina",
+    "close": "Chiudi"
   },
   "user": {
     "message": {
@@ -782,7 +783,11 @@
       "charge-deleted": "Figura eliminata.",
       "ribbon-deleted": "Motto eliminato.",
       "collection-deleted": "Collezione eliminata.",
-      "need-to-be-logged-in-and-own-to-delete": "Devi essere connesso e proprietario per eliminare."
+      "need-to-be-logged-in-and-own-to-delete": "Devi essere connesso e proprietario per eliminare.",
+      "delete-charge-description-in-use": "Questa figura è usata in stemmi. Verrà scollegata dal tuo account e mantenuta in modo anonimo affinché gli stemmi che la usano continuino a funzionare. L'azione non può essere annullata.",
+      "delete-ribbon-description-in-use": "Questo motto è usato in stemmi. Verrà scollegato dal tuo account e mantenuto in modo anonimo affinché gli stemmi che lo usano continuino a funzionare. L'azione non può essere annullata.",
+      "charge-detached": "Figura scollegata dal tuo account. Gli stemmi che la usano continuano a funzionare.",
+      "ribbon-detached": "Motto scollegato dal tuo account. Gli stemmi che lo usano continuano a funzionare."
     },
     "button": {
       "change": "Modifica",

@@ -26,7 +26,11 @@
       "charge-deleted": "Figura eliminada.",
       "ribbon-deleted": "Fita eliminada.",
       "collection-deleted": "Coleção eliminada.",
-      "need-to-be-logged-in-and-own-to-delete": "Tens de estar com sessão iniciada e ser o proprietário para eliminar."
+      "need-to-be-logged-in-and-own-to-delete": "Tens de estar com sessão iniciada e ser o proprietário para eliminar.",
+      "delete-charge-description-in-use": "Esta figura é usada em brasões. Será desvinculada da tua conta e mantida de forma anónima para que os brasões que a usam continuem a funcionar. Esta ação não pode ser desfeita.",
+      "delete-ribbon-description-in-use": "Esta fita é usada em brasões. Será desvinculada da tua conta e mantida de forma anónima para que os brasões que a usam continuem a funcionar. Esta ação não pode ser desfeita.",
+      "charge-detached": "Figura desvinculada da tua conta. Os brasões que a usam continuam a funcionar.",
+      "ribbon-detached": "Fita desvinculada da tua conta. Os brasões que a usam continuam a funcionar."
     },
     "button": {},
     "username-or-email": "Nome de utilizador ou email",
@@ -200,7 +204,8 @@
     }
   },
   "button": {
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "close": "Fechar"
   },
   "attribution": {
     "license-display": {

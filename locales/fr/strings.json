@@ -742,7 +742,8 @@
     "export": "Exporter",
     "share": "Partager",
     "detect-shading": "Détecter l'ombrage",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "close": "Fermer"
   },
   "user": {
     "message": {
@@ -782,7 +783,11 @@
       "charge-deleted": "Charge supprimée.",
       "ribbon-deleted": "Banderole supprimée.",
       "collection-deleted": "Collection supprimée.",
-      "need-to-be-logged-in-and-own-to-delete": "Vous devez être connecté(e) et propriétaire pour supprimer."
+      "need-to-be-logged-in-and-own-to-delete": "Vous devez être connecté(e) et propriétaire pour supprimer.",
+      "delete-charge-description-in-use": "Cette charge est utilisée dans des armoiries. Elle sera détachée de votre compte et conservée de manière anonyme pour que les armoiries qui l'utilisent continuent de fonctionner. Cette action est irréversible.",
+      "delete-ribbon-description-in-use": "Cette banderole est utilisée dans des armoiries. Elle sera détachée de votre compte et conservée de manière anonyme pour que les armoiries qui l'utilisent continuent de fonctionner. Cette action est irréversible.",
+      "charge-detached": "Charge détachée de votre compte. Les armoiries qui l'utilisent continuent de fonctionner.",
+      "ribbon-detached": "Banderole détachée de votre compte. Les armoiries qui l'utilisent continuent de fonctionner."
     },
     "button": {
       "change": "Modifier",

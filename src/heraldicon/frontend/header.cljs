@@ -97,8 +97,7 @@
      [:ul.nav-menu.nav-menu-right
       [tutorial/selector]]
      [:ul.nav-menu.nav-menu-right
-      [:li.nav-menu-item
-       [language/selector]]]
+      [language/selector]]
      [:div {:style {:flex "0.3 1 0"}}]
      [:div.nav-menu-no-hover {:style {:display "flex"
                                       :align-items "center"

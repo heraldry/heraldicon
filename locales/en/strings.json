@@ -760,7 +760,8 @@
     "detect-shading": "Detect shading",
     "duplicate": "Duplicate",
     "unknown": "Unknown",
-    "delete": "Delete"
+    "delete": "Delete",
+    "close": "Close"
   },
   "user": {
     "message": {
@@ -800,7 +801,11 @@
       "charge-deleted": "Charge deleted.",
       "ribbon-deleted": "Ribbon deleted.",
       "collection-deleted": "Collection deleted.",
-      "need-to-be-logged-in-and-own-to-delete": "Need to be logged in and own this to delete it."
+      "need-to-be-logged-in-and-own-to-delete": "Need to be logged in and own this to delete it.",
+      "delete-charge-description-in-use": "This charge is used in arms. It will be detached from your account and kept anonymously so the arms that use it still work. This action cannot be undone.",
+      "delete-ribbon-description-in-use": "This ribbon is used in arms. It will be detached from your account and kept anonymously so the arms that use it still work. This action cannot be undone.",
+      "charge-detached": "Charge detached from your account. The arms using it still work.",
+      "ribbon-detached": "Ribbon detached from your account. The arms using it still work."
     },
     "button": {
       "change": "Change",

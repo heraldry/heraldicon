@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.attribution
   (:require
    [clojure.string :as str]
+   [heraldicon.config :as config]
    [heraldicon.context :as c]
    [heraldicon.entity.attribution :as attribution]
    [heraldicon.frontend.language :refer [tr]]
@@ -9,6 +10,17 @@
    [heraldicon.interface :as interface]
    [heraldicon.render.theme :as theme]
    [re-frame.core :as rf]))
+
+(defn username-link
+  "Render a username as a link to the user profile, except when the username
+   is the configured deleted-assets system user — that one is plain text
+   since the profile is hidden."
+  [username]
+  (if (and username
+           (= username (config/get :deleted-assets-username)))
+    [:span username]
+    [:a {:href (attribution/full-url-for-username username)
+         :target "_blank"} username]))
 
 (defn- credits [{:keys [url title username
                         creator-name
@@ -34,8 +46,7 @@
          " "
          [tr :string.miscellaneous/by]
          " "
-         [:a {:href (attribution/full-url-for-username username)
-              :target "_blank"} username]]
+         [username-link username]]
         (when-not (str/blank? creator-name)
           [:<>
            " "
