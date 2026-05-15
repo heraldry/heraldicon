@@ -575,7 +575,6 @@
       "honour": "Honour",
       "left": "Left",
       "nombril": "Nombril",
-      "right": "Left",
       "right": "Right",
       "sinister": "Sinister",
       "top": "Top",
@@ -1159,5 +1158,11 @@
       "finish-title": "That's the Charge Editor!",
       "finish-description": "There are many more options to explore here \u2014 attitude, facing direction, fixed tinctures, shading, and more. Have fun experimenting!"
     }
+  },
+  "dependents": {
+    "used-in": "Used in",
+    "you": "you",
+    "and-in-private-arms": "and in %s private arms",
+    "and-in-private-collections": "and in %s private collections"
   }
 }

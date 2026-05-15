@@ -2,6 +2,7 @@
   (:require
    [cljs.core.async :refer [go]]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.component.dependents :as dependents]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.entity.buttons :as buttons]
@@ -355,7 +356,8 @@
     [form/active {::tree/identifier ::identifier}]
     [message/display entity-type]
     [buttons/buttons entity-type]
-    [attribution/attribution {:path form-db-path}]]
+    [attribution/attribution {:path form-db-path}]
+    [dependents/used-by form-db-path]]
    :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
                  entity-version @(rf/subscribe [:get (conj form-db-path :version)])]
              [details/latest-version-banner

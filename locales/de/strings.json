@@ -1157,5 +1157,11 @@
       "finish-title": "Das war der Wappenfiguren-Editor!",
       "finish-description": "Es gibt noch viele weitere Optionen zu entdecken \u2014 Haltung, Blickrichtung, feste Tinktur, Schattierung und mehr. Viel Spaß beim Experimentieren!"
     }
+  },
+  "dependents": {
+    "used-in": "Verwendet in",
+    "you": "dir",
+    "and-in-private-arms": "und in %s privaten Wappen",
+    "and-in-private-collections": "und in %s privaten Sammlungen"
   }
 }

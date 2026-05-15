@@ -6,6 +6,7 @@
    [heraldicon.context :as c]
    [heraldicon.entity.arms :as entity.arms]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.component.dependents :as dependents]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
@@ -103,7 +104,8 @@
     [message/display entity-type]
     [buttons/buttons entity-type]
     [blazonry form-db-path]
-    [attribution form-db-path]]
+    [attribution form-db-path]
+    [dependents/used-by form-db-path]]
    [:<>
     [history/buttons form-db-path]
     [:div {:data-tour "arms-tree"}

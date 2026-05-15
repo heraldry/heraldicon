@@ -4,6 +4,7 @@
    [heraldicon.context :as c]
    [heraldicon.font :as font]
    [heraldicon.frontend.attribution :as attribution]
+   [heraldicon.frontend.component.dependents :as dependents]
    [heraldicon.frontend.component.element :as component.element]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
@@ -216,7 +217,8 @@
     [message/display entity-type]
     [buttons/buttons entity-type]
     [render-arms-preview form-db-path]
-    [attribution form-db-path]]
+    [attribution form-db-path]
+    [dependents/used-by form-db-path]]
    [:<>
     [history/buttons form-db-path]
     [tree/tree

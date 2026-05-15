@@ -1140,5 +1140,11 @@
       "finish-title": "Questo è l'Editor di figure!",
       "finish-description": "Ci sono molte altre opzioni da esplorare \u2014 attitudine, orientamento, colore fisso, ombra e altro ancora. Buon divertimento!"
     }
+  },
+  "dependents": {
+    "used-in": "Usato in",
+    "you": "te",
+    "and-in-private-arms": "e in %s stemmi privati",
+    "and-in-private-collections": "e in %s collezioni private"
   }
 }
