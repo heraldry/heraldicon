@@ -2,6 +2,7 @@
   (:require
    [heraldicon.frontend.element.hover-menu :as hover-menu]
    [heraldicon.frontend.entity.action.copy-to-new :as copy-to-new]
+   [heraldicon.frontend.entity.action.delete :as delete]
    [heraldicon.frontend.entity.action.export-png :as export-png]
    [heraldicon.frontend.entity.action.export-svg :as export-svg]
    [heraldicon.frontend.entity.action.export-svg-clips :as export-svg-clips]
@@ -31,7 +32,8 @@
               (export-svg-clips/action entity-type)
               (export-png/action entity-type)
               (share/action entity-type)
-              (copy-to-new/action entity-type)])
+              (copy-to-new/action entity-type)
+              (delete/action entity-type)])
      [:button.button {:style {:flex "initial"
                               :color "#777"
                               :margin-left "10px"}}

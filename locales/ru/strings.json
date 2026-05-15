@@ -740,7 +740,8 @@
     "actions": "Actions",
     "export": "Export",
     "share": "Share",
-    "detect-shading": "Detect shading"
+    "detect-shading": "Detect shading",
+    "delete": "Удалить"
   },
   "user": {
     "message": {
@@ -771,7 +772,16 @@
       "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -",
       "avatar-required": "Пожалуйста, выберите изображение.",
       "avatar-upload-failed": "Не удалось загрузить аватар.",
-      "avatar-delete-failed": "Не удалось удалить аватар."
+      "avatar-delete-failed": "Не удалось удалить аватар.",
+      "delete-arms-description": "Этот герб будет удалён навсегда. Это действие нельзя отменить.",
+      "delete-charge-description": "Эта гербовая фигура будет удалена навсегда. Это действие нельзя отменить.",
+      "delete-ribbon-description": "Эта лента будет удалена навсегда. Это действие нельзя отменить.",
+      "delete-collection-description": "Эта коллекция будет удалена навсегда. Гербы в ней не будут удалены. Это действие нельзя отменить.",
+      "arms-deleted": "Герб удалён.",
+      "charge-deleted": "Гербовая фигура удалена.",
+      "ribbon-deleted": "Лента удалена.",
+      "collection-deleted": "Коллекция удалена.",
+      "need-to-be-logged-in-and-own-to-delete": "Вы должны войти и быть владельцем, чтобы удалить."
     },
     "button": {
       "change": "Сменить",
@@ -1033,7 +1043,11 @@
       "create-arms": "Создать герб",
       "create-charge": "Create Charge",
       "create-collection": "Create Collection",
-      "create-ribbon": "Создать ленту"
+      "create-ribbon": "Создать ленту",
+      "delete-arms": "Удалить герб",
+      "delete-charge": "Удалить гербовую фигуру",
+      "delete-ribbon": "Удалить ленту",
+      "delete-collection": "Удалить коллекцию"
     },
     "arms-library": {
       "create-and-view-arms": "Здесь можно создавать и просматривать гербы. Если Вы хотите поделиться ссылкой для просмотра герба другими людьми, сохраните свой герб и добавьте лицензию.",

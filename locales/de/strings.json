@@ -758,7 +758,8 @@
     "share": "Teilen",
     "detect-shading": "Schattierung erkennen",
     "duplicate": "Duplizieren",
-    "unknown": "Unbekannt"
+    "unknown": "Unbekannt",
+    "delete": "Löschen"
   },
   "user": {
     "message": {
@@ -789,7 +790,16 @@
       "username-contains-invalid-characters": "Benutzername enthält unerlaubte Zeichen. Erlaubt: a-z, A-Z, 0-9, _, -",
       "avatar-required": "Bitte ein Bild auswählen.",
       "avatar-upload-failed": "Hochladen des Profilbilds fehlgeschlagen.",
-      "avatar-delete-failed": "Entfernen des Profilbilds fehlgeschlagen."
+      "avatar-delete-failed": "Entfernen des Profilbilds fehlgeschlagen.",
+      "delete-arms-description": "Dieses Wappen wird endgültig gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "delete-charge-description": "Diese Wappenfigur wird endgültig gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "delete-ribbon-description": "Dieses Band wird endgültig gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "delete-collection-description": "Diese Sammlung wird endgültig gelöscht. Die enthaltenen Wappen bleiben erhalten. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "arms-deleted": "Wappen gelöscht.",
+      "charge-deleted": "Wappenfigur gelöscht.",
+      "ribbon-deleted": "Band gelöscht.",
+      "collection-deleted": "Sammlung gelöscht.",
+      "need-to-be-logged-in-and-own-to-delete": "Du musst eingeloggt und der Besitzer sein, um zu löschen."
     },
     "button": {
       "change": "Ändern",
@@ -1051,7 +1061,11 @@
       "create-arms": "Neues Wappen",
       "create-charge": "Neue Wappenfigur",
       "create-collection": "Neue Sammlung",
-      "create-ribbon": "Neues Band"
+      "create-ribbon": "Neues Band",
+      "delete-arms": "Wappen löschen",
+      "delete-charge": "Wappenfigur löschen",
+      "delete-ribbon": "Band löschen",
+      "delete-collection": "Sammlung löschen"
     },
     "arms-library": {
       "create-and-view-arms": "Hier kannst du Wappen erstellen und ansehen. Du musst deine Wappen explizit als öffentlich markieren und eine Lizenz angeben, wenn du anderen den Zugriff erlauben und den Link teilen möchtest.",

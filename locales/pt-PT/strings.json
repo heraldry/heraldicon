@@ -17,7 +17,16 @@
     "message": {
       "avatar-required": "Por favor, escolha uma imagem.",
       "avatar-upload-failed": "Falha ao carregar a imagem de perfil.",
-      "avatar-delete-failed": "Falha ao remover a imagem de perfil."
+      "avatar-delete-failed": "Falha ao remover a imagem de perfil.",
+      "delete-arms-description": "Isto eliminará este brasão permanentemente. Esta ação não pode ser desfeita.",
+      "delete-charge-description": "Isto eliminará esta figura permanentemente. Esta ação não pode ser desfeita.",
+      "delete-ribbon-description": "Isto eliminará esta fita permanentemente. Esta ação não pode ser desfeita.",
+      "delete-collection-description": "Isto eliminará esta coleção permanentemente. Os brasões que contém não serão eliminados. Esta ação não pode ser desfeita.",
+      "arms-deleted": "Brasão eliminado.",
+      "charge-deleted": "Figura eliminada.",
+      "ribbon-deleted": "Fita eliminada.",
+      "collection-deleted": "Coleção eliminada.",
+      "need-to-be-logged-in-and-own-to-delete": "Tens de estar com sessão iniciada e ser o proprietário para eliminar."
     },
     "button": {},
     "username-or-email": "Nome de utilizador ou email",
@@ -123,7 +132,12 @@
     "type": {}
   },
   "text": {
-    "title": {},
+    "title": {
+      "delete-arms": "Eliminar brasão",
+      "delete-charge": "Eliminar figura",
+      "delete-ribbon": "Eliminar fita",
+      "delete-collection": "Eliminar coleção"
+    },
     "about": {},
     "arms-library": {},
     "charge-library": {},
@@ -185,7 +199,9 @@
       "group": {}
     }
   },
-  "button": {},
+  "button": {
+    "delete": "Eliminar"
+  },
   "attribution": {
     "license-display": {
       "public-domain": "domínio público"

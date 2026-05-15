@@ -199,6 +199,7 @@ p {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 3px 3px 10px 5px #555;
+  max-width: 600px;
 }
 
 .modal > .modal-header {
@@ -1213,6 +1214,11 @@ span.tutorial-highlight {
 
 .ui-menu-item:hover {
   background-color: #eee;
+}
+
+.ui-menu-item.destructive,
+.ui-menu-item.destructive .ui-icon {
+  color: #c0392b;
 }
 
 ul.ui-menu {

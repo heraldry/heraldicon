@@ -50,7 +50,7 @@
                            :min-width "7em"}}
       [:li.ui-menu-header [tr title]]
       (into [:<>]
-            (map (fn [{:keys [icon title handler tooltip disabled?]}]
+            (map (fn [{:keys [icon title handler tooltip disabled? destructive?]}]
                    (let [handler (when handler
                                    #(do
                                       (rf/dispatch [::close path])
@@ -62,7 +62,7 @@
                      ^{:key title}
                      [:li.ui-menu-item
                       {:data-tour-menu-item (when (keyword? title) (name title))
-                       :class disabled
+                       :class (str/join " " (filter identity [disabled (when destructive? "destructive")]))
                        :on-click (when-not (or menu-disabled? disabled?) handler)
                        :title (tr tooltip)
                        :style {:cursor (when disabled? "not-allowed")}}

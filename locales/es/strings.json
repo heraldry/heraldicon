@@ -759,7 +759,8 @@
     "share": "Compartir",
     "detect-shading": "Detectar sombreado",
     "duplicate": "Duplicar",
-    "unknown": "Desconocido"
+    "unknown": "Desconocido",
+    "delete": "Eliminar"
   },
   "user": {
     "message": {
@@ -790,7 +791,16 @@
       "username-contains-invalid-characters": "Nombre de usuario contiene caracteres inválidos. Permitidos: a-z, A-Z, 0-9, _, -",
       "avatar-required": "Por favor, elige una imagen.",
       "avatar-upload-failed": "Error al subir la imagen de perfil.",
-      "avatar-delete-failed": "Error al eliminar la imagen de perfil."
+      "avatar-delete-failed": "Error al eliminar la imagen de perfil.",
+      "delete-arms-description": "Esto eliminará este blasón de forma permanente. Esta acción no se puede deshacer.",
+      "delete-charge-description": "Esto eliminará esta figura de forma permanente. Esta acción no se puede deshacer.",
+      "delete-ribbon-description": "Esto eliminará este listón de forma permanente. Esta acción no se puede deshacer.",
+      "delete-collection-description": "Esto eliminará esta colección de forma permanente. Los blasones que contiene no se eliminarán. Esta acción no se puede deshacer.",
+      "arms-deleted": "Blasón eliminado.",
+      "charge-deleted": "Figura eliminada.",
+      "ribbon-deleted": "Listón eliminado.",
+      "collection-deleted": "Colección eliminada.",
+      "need-to-be-logged-in-and-own-to-delete": "Necesitas estar con la sesión iniciada y ser propietario para eliminar."
     },
     "button": {
       "change": "Cambio",
@@ -1052,7 +1062,11 @@
       "create-arms": "Crear escudo",
       "create-charge": "Crear Figura",
       "create-collection": "Crear colección",
-      "create-ribbon": "Crear listón"
+      "create-ribbon": "Crear listón",
+      "delete-arms": "Eliminar blasón",
+      "delete-charge": "Eliminar figura",
+      "delete-ribbon": "Eliminar listón",
+      "delete-collection": "Eliminar colección"
     },
     "arms-library": {
       "create-and-view-arms": "Aquí puedes crear y ver escudos de armas. Usted tiene que guardar explícitamente su escudo de armas como público y agregar una licencia, si quiere compartir el enlace y permitir que otros lo vean.",
