@@ -1140,5 +1140,11 @@
       "finish-title": "Voilà l'Éditeur de charges !",
       "finish-description": "Il y a encore beaucoup d'options à explorer \u2014 attitude, orientation de la face, couleur fixe, ombrage et plus encore. Amusez-vous à expérimenter !"
     }
+  },
+  "dependents": {
+    "used-in": "Utilisé dans",
+    "you": "vous",
+    "and-in-private-arms": "et dans %s armoiries privées",
+    "and-in-private-collections": "et dans %s collections privées"
   }
 }

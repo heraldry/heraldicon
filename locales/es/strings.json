@@ -1158,5 +1158,11 @@
       "finish-title": "¡Eso es el Editor de figuras!",
       "finish-description": "Hay muchas más opciones por explorar \u2014 actitud, dirección de la mirada, esmalte fijo, sombreado y más. ¡Diviértete experimentando!"
     }
+  },
+  "dependents": {
+    "used-in": "Usado en",
+    "you": "ti",
+    "and-in-private-arms": "y en %s blasones privados",
+    "and-in-private-collections": "y en %s colecciones privadas"
   }
 }

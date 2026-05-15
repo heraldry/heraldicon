@@ -8,6 +8,7 @@
    [heraldicon.context :as c]
    [heraldicon.frontend.attribution :as attribution]
    [heraldicon.frontend.canvas :as canvas]
+   [heraldicon.frontend.component.dependents :as dependents]
    [heraldicon.frontend.component.form :as form]
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.context :as context]
@@ -401,7 +402,8 @@
     [message/display entity-type]
     [buttons/buttons entity-type
      [svg-buttons form-db-path]]
-    [attribution/attribution {:path form-db-path}]]
+    [attribution/attribution {:path form-db-path}]
+    [dependents/used-by form-db-path]]
    [:<>
     [history/buttons form-db-path]
     [tree/tree

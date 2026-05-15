@@ -279,5 +279,11 @@
       "finish-title": "Este é o Editor de figuras!",
       "finish-description": "Há muitas mais opções para explorar \u2014 atitude, direção do olhar, tintura fixa, sombreado e mais. Divirta-se a experimentar!"
     }
+  },
+  "dependents": {
+    "used-in": "Usado em",
+    "you": "ti",
+    "and-in-private-arms": "e em %s brasões privados",
+    "and-in-private-collections": "e em %s coleções privadas"
   }
 }
