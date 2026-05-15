@@ -62,6 +62,32 @@
     (let [path (entity-search-path id entity-type)]
       (assoc-in db path nil))))
 
+(defn- short-entity-type [entity-type]
+  (case entity-type
+    :heraldicon.entity.type/arms :arms
+    :heraldicon.entity.type/charge :charge
+    :heraldicon.entity.type/ribbon :ribbon
+    :heraldicon.entity.type/collection :collection
+    entity-type))
+
+(rf/reg-event-db ::remove
+  (fn [db [_ entity-type entity-id]]
+    (let [kind (short-entity-type entity-type)
+          list-ids (keys (get-in db db-path-entity-search))]
+      (reduce (fn [db list-id]
+                (let [entities-path (conj (entity-search-path list-id kind) :entities)
+                      total-path (conj (entity-search-path list-id kind) :total)
+                      entities (get-in db entities-path)
+                      filtered (when entities
+                                 (filterv #(not= entity-id (:id %)) entities))
+                      removed? (and entities
+                                    (not= (count entities) (count filtered)))]
+                  (cond-> db
+                    entities (assoc-in entities-path filtered)
+                    removed? (update-in total-path (fnil dec 0)))))
+              db
+              list-ids))))
+
 (defn- fetch-entity-search-api-function [enty-type]
   (case enty-type
     :arms :search-arms

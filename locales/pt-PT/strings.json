@@ -301,5 +301,8 @@
     "you": "ti",
     "and-in-private-arms": "e em %s brasões privados",
     "and-in-private-collections": "e em %s coleções privadas"
+  },
+  "collection": {
+    "deleted-arms-suffix": "(eliminado)"
   }
 }

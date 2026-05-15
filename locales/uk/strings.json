@@ -1167,5 +1167,8 @@
     "you": "вами",
     "and-in-private-arms": "і в %s приватних гербах",
     "and-in-private-collections": "і в %s приватних колекціях"
+  },
+  "collection": {
+    "deleted-arms-suffix": "(видалено)"
   }
 }

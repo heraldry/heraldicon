@@ -1160,5 +1160,8 @@
     "you": "te",
     "and-in-private-arms": "e in %s stemmi privati",
     "and-in-private-collections": "e in %s collezioni private"
+  },
+  "collection": {
+    "deleted-arms-suffix": "(eliminato)"
   }
 }

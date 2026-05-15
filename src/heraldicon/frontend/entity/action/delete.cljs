@@ -8,13 +8,16 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.repository.entity-list :as entity-list]
+   [heraldicon.frontend.repository.entity-search :as entity-search]
    [heraldicon.frontend.user.session :as session]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]
    [taoensso.timbre :as log]))
 
 (defn- supports-delete? [entity-type]
-  (= entity-type :heraldicon.entity.type/collection))
+  (contains? #{:heraldicon.entity.type/collection
+               :heraldicon.entity.type/arms}
+             entity-type))
 
 (defn- list-route [entity-type]
   (case entity-type
@@ -53,7 +56,8 @@
        (try
          (<? (api/call :delete-entity {:id entity-id} session))
          (modal/stop-loading)
-         (rf/dispatch [::entity-list/clear entity-type])
+         (rf/dispatch-sync [::entity-list/remove entity-type entity-id])
+         (rf/dispatch-sync [::entity-search/remove entity-type entity-id])
          (rf/dispatch [::message/set-success entity-type (success-message-key entity-type)])
          (reife/push-state (list-route entity-type) nil nil)
          (catch :default e
