@@ -30,6 +30,20 @@
                          :error error
                          :path path}))))
 
+(defn- remove-cached-entity
+  [db entity-id]
+  (update-in db db-path-entity-for-rendering
+             (fn [m]
+               (when (map? m)
+                 (into {}
+                       (remove (fn [[[id _version] _]]
+                                 (= id entity-id)))
+                       m)))))
+
+(rf/reg-event-db ::invalidate-entities
+  (fn [db [_ entity-ids]]
+    (reduce remove-cached-entity db entity-ids)))
+
 (defmulti ^:private load-editing-data :type)
 
 (defmethod load-editing-data :heraldicon.entity.type/charge [entity]

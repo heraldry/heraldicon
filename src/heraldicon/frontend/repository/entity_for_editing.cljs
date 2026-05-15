@@ -30,6 +30,20 @@
     (assoc-in db (entity-for-editing-path entity-id version) {:status :error
                                                               :error error})))
 
+(defn- remove-cached-entity
+  [db entity-id]
+  (update-in db db-path-entity-for-editing
+             (fn [m]
+               (when (map? m)
+                 (into {}
+                       (remove (fn [[[id _version] _]]
+                                 (= id entity-id)))
+                       m)))))
+
+(rf/reg-event-db ::invalidate-entities
+  (fn [db [_ entity-ids]]
+    (reduce remove-cached-entity db entity-ids)))
+
 (defmulti ^:private load-editing-data :type)
 
 (defmethod load-editing-data :heraldicon.entity.type/charge [entity]
