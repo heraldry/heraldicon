@@ -7,6 +7,9 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
+   [heraldicon.frontend.repository.entity :as repository.entity]
+   [heraldicon.frontend.repository.entity-for-editing :as entity-for-editing]
+   [heraldicon.frontend.repository.entity-for-rendering :as entity-for-rendering]
    [heraldicon.frontend.repository.entity-list :as entity-list]
    [heraldicon.frontend.repository.entity-search :as entity-search]
    [heraldicon.frontend.user.session :as session]
@@ -54,12 +57,17 @@
       (modal/start-loading)
       (go-catch
        (try
-         (<? (api/call :delete-entity {:id entity-id} session))
-         (modal/stop-loading)
-         (rf/dispatch-sync [::entity-list/remove entity-type entity-id])
-         (rf/dispatch-sync [::entity-search/remove entity-type entity-id])
-         (rf/dispatch [::message/set-success entity-type (success-message-key entity-type)])
-         (reife/push-state (list-route entity-type) nil nil)
+         (let [{:keys [invalidated-ids]} (<? (api/call :delete-entity
+                                                       {:id entity-id}
+                                                       session))]
+           (modal/stop-loading)
+           (rf/dispatch-sync [::entity-list/remove entity-type entity-id])
+           (rf/dispatch-sync [::entity-search/remove entity-type entity-id])
+           (rf/dispatch-sync [::repository.entity/invalidate-entities invalidated-ids])
+           (rf/dispatch-sync [::entity-for-rendering/invalidate-entities invalidated-ids])
+           (rf/dispatch-sync [::entity-for-editing/invalidate-entities invalidated-ids])
+           (rf/dispatch [::message/set-success entity-type (success-message-key entity-type)])
+           (reife/push-state (list-route entity-type) nil nil))
          (catch :default e
            (modal/stop-loading)
            (log/error e "delete failed")

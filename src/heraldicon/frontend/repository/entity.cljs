@@ -78,6 +78,22 @@
     (assoc-in db (entity-path entity-id version) {:status :error
                                                   :error error})))
 
+(defn- remove-cached-entity
+  [db entity-id]
+  (-> db
+      (update-in db-path-entity
+                 (fn [m]
+                   (when (map? m)
+                     (into {}
+                           (remove (fn [[[id _version] _]]
+                                     (= id entity-id)))
+                           m))))
+      (update-in db-path-latest-versions dissoc entity-id)))
+
+(rf/reg-event-db ::invalidate-entities
+  (fn [db [_ entity-ids]]
+    (reduce remove-cached-entity db entity-ids)))
+
 (defn- fetch-entity-api-function [entity-type]
   (case entity-type
     :heraldicon.entity.type/arms :fetch-arms
@@ -101,7 +117,9 @@
             (when on-loaded
               (on-loaded entity)))
           (catch :default e
-            (log/error e "fetch entity error")
+            (if (-> e ex-cause (= :entity-not-found))
+              (log/info "fetch entity not found:" entity-id "version" version)
+              (log/error e "fetch entity error"))
             (rf/dispatch [::store-error entity-id version e]))
           (finally
             (query/unregister query-id)))))))
