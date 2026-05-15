@@ -16,7 +16,20 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-05-11"
+  [{:id "2026-05-15"
+    :title "Deletion feature"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "You can now " [:b "delete"] " your arms, collections, charges, and ribbons. The action lives in the " [:b "..."] " menu next to the Save button on each entity's page, and asks for confirmation before doing anything."]
+         [:p "Collections and arms are always permanently deleted. If the deleted arms were part of someone's collection, that slot is preserved with a " [:em "(deleted)"] " label so the collection layout stays intact."]
+         [:p "Charges and ribbons are a little different. If no other arms use them, they're permanently deleted. If they " [:em "are"] " used, they're detached from your account and kept anonymously, so the arms that rely on them an still be displayed. Either way, the entity's id can never be reassigned, so old shared links still resolve predictably."]
+         [:p "Each entity's edit page now also shows a " [:b "Used in"] " panel listing the entities that depend on it, with private dependents counted but not named."]]
+        [:div
+         (release-image "/img/2026-05-15-release-update.png" :width "300px")]]])}
+
+   {:id "2026-05-11"
     :title "Profile pictures"
     :content
     (fn []
