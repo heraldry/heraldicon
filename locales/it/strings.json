@@ -741,7 +741,8 @@
     "actions": "Azioni",
     "export": "Esporta",
     "share": "Condividi",
-    "detect-shading": "Rileva ombra"
+    "detect-shading": "Rileva ombra",
+    "delete": "Elimina"
   },
   "user": {
     "message": {
@@ -772,7 +773,16 @@
       "username-contains-invalid-characters": "Il nome utente contiene caratteri non validi. Caratteri autorizzati: a-z, A-Z, 0-9, _, -",
       "avatar-required": "Per favore scegli un'immagine.",
       "avatar-upload-failed": "Caricamento dell'immagine del profilo non riuscito.",
-      "avatar-delete-failed": "Rimozione dell'immagine del profilo non riuscita."
+      "avatar-delete-failed": "Rimozione dell'immagine del profilo non riuscita.",
+      "delete-arms-description": "Questo eliminerà definitivamente questo stemma. L'azione non può essere annullata.",
+      "delete-charge-description": "Questo eliminerà definitivamente questa figura. L'azione non può essere annullata.",
+      "delete-ribbon-description": "Questo eliminerà definitivamente questo motto. L'azione non può essere annullata.",
+      "delete-collection-description": "Questo eliminerà definitivamente questa collezione. Gli stemmi contenuti non saranno eliminati. L'azione non può essere annullata.",
+      "arms-deleted": "Stemma eliminato.",
+      "charge-deleted": "Figura eliminata.",
+      "ribbon-deleted": "Motto eliminato.",
+      "collection-deleted": "Collezione eliminata.",
+      "need-to-be-logged-in-and-own-to-delete": "Devi essere connesso e proprietario per eliminare."
     },
     "button": {
       "change": "Modifica",
@@ -1034,7 +1044,11 @@
       "create-arms": "Crea Stemma",
       "create-charge": "Crea Figura",
       "create-collection": "Crea Collezione",
-      "create-ribbon": "Crea Nastro"
+      "create-ribbon": "Crea Nastro",
+      "delete-arms": "Elimina stemma",
+      "delete-charge": "Elimina figura",
+      "delete-ribbon": "Elimina motto",
+      "delete-collection": "Elimina collezione"
     },
     "arms-library": {
       "create-and-view-arms": "Qui puoi creare e visualizzare stemmi. Devi esplicitamente salvate il tuo stemma come pubblico e aggiungerci una licenza, se vuoi condividere il link e consentire ad esterni di visualizzarlo.",

@@ -748,7 +748,8 @@
     "export": "Експорт",
     "share": "Поділитися",
     "detect-shading": "Виявити тіні",
-    "duplicate": "Дублювати"
+    "duplicate": "Дублювати",
+    "delete": "Видалити"
   },
   "user": {
     "message": {
@@ -779,7 +780,16 @@
       "username-contains-invalid-characters": "Ім'я користувача містить недозволені символи. Дозволено: a-z, A-Z, 0-9, _ та -",
       "avatar-required": "Будь ласка, оберіть зображення.",
       "avatar-upload-failed": "Не вдалося завантажити аватар.",
-      "avatar-delete-failed": "Не вдалося видалити аватар."
+      "avatar-delete-failed": "Не вдалося видалити аватар.",
+      "delete-arms-description": "Цей герб буде видалено назавжди. Цю дію не можна скасувати.",
+      "delete-charge-description": "Цю фігуру буде видалено назавжди. Цю дію не можна скасувати.",
+      "delete-ribbon-description": "Цю стрічку буде видалено назавжди. Цю дію не можна скасувати.",
+      "delete-collection-description": "Цю колекцію буде видалено назавжди. Герби в ній не будуть видалені. Цю дію не можна скасувати.",
+      "arms-deleted": "Герб видалено.",
+      "charge-deleted": "Фігуру видалено.",
+      "ribbon-deleted": "Стрічку видалено.",
+      "collection-deleted": "Колекцію видалено.",
+      "need-to-be-logged-in-and-own-to-delete": "Потрібно ввійти та бути власником, щоб видалити."
     },
     "button": {
       "change": "Змінити",
@@ -1041,7 +1051,11 @@
       "create-arms": "Створити герб",
       "create-charge": "Створити фігуру",
       "create-collection": "Створити колекцію",
-      "create-ribbon": "Створити стрічку"
+      "create-ribbon": "Створити стрічку",
+      "delete-arms": "Видалити герб",
+      "delete-charge": "Видалити фігуру",
+      "delete-ribbon": "Видалити стрічку",
+      "delete-collection": "Видалити колекцію"
     },
     "arms-library": {
       "create-and-view-arms": "Тут можна створювати та переглядати герби. Герб необхідно зберегти та додати інформацію про ліцензію, перш ніж можна буде ділитися посиланням для перегляду з іншими.",

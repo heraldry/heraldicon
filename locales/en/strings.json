@@ -759,7 +759,8 @@
     "share": "Share",
     "detect-shading": "Detect shading",
     "duplicate": "Duplicate",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "delete": "Delete"
   },
   "user": {
     "message": {
@@ -790,7 +791,16 @@
       "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -",
       "avatar-required": "Please choose an image.",
       "avatar-upload-failed": "Avatar upload failed.",
-      "avatar-delete-failed": "Removing the avatar failed."
+      "avatar-delete-failed": "Removing the avatar failed.",
+      "delete-arms-description": "This will permanently delete these arms. This action cannot be undone.",
+      "delete-charge-description": "This will permanently delete this charge. This action cannot be undone.",
+      "delete-ribbon-description": "This will permanently delete this ribbon. This action cannot be undone.",
+      "delete-collection-description": "This will permanently delete this collection. The arms in it will not be deleted. This action cannot be undone.",
+      "arms-deleted": "Arms deleted.",
+      "charge-deleted": "Charge deleted.",
+      "ribbon-deleted": "Ribbon deleted.",
+      "collection-deleted": "Collection deleted.",
+      "need-to-be-logged-in-and-own-to-delete": "Need to be logged in and own this to delete it."
     },
     "button": {
       "change": "Change",
@@ -1052,7 +1062,11 @@
       "create-arms": "Create Arms",
       "create-charge": "Create Charge",
       "create-collection": "Create Collection",
-      "create-ribbon": "Create Ribbon"
+      "create-ribbon": "Create Ribbon",
+      "delete-arms": "Delete Arms",
+      "delete-charge": "Delete Charge",
+      "delete-ribbon": "Delete Ribbon",
+      "delete-collection": "Delete Collection"
     },
     "arms-library": {
       "create-and-view-arms": "Here you can create and view coats of arms. You explicitly have to save your coat of arms as public and add a license, if you want to share the link and allow others to view it.",
