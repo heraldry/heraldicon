@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.component.dependents
   (:require
    [heraldicon.entity.attribution :as attribution]
+   [heraldicon.frontend.attribution :as frontend.attribution]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.localization.string :as string]
    [re-frame.core :as rf]))
@@ -21,8 +22,7 @@
    " "
    (if by-current-user?
      [tr :string.dependents/you]
-     [:a {:href (attribution/full-url-for-username username)}
-      username])])
+     [frontend.attribution/username-link username])])
 
 (defn used-by [form-db-path]
   (let [{:keys [visible other-private-count dependent-type]}

@@ -43,7 +43,9 @@
            :bucket-data "local-heraldry-data"
            :bucket-cdn "cdn.staging.heraldicon.org"
            :avatar-base-url "https://staging.heraldicon.org"
-           :tutorial-charge-editor-example-charge-id "charges:hi58Fx"}
+           :tutorial-charge-editor-example-charge-id "charges:hi58Fx"
+           :deleted-assets-user-id 46
+           :deleted-assets-username "deleted-assets"}
 
     "staging" {:heraldicon-api-endpoint "/api"
                :heraldicon-url "https://staging.heraldicon.org"
@@ -61,7 +63,9 @@
                :trimount-charge-id "charge:pnmGx4"
                :bucket-data "local-heraldry-data"
                :bucket-cdn "cdn.staging.heraldicon.org"
-               :tutorial-charge-editor-example-charge-id "charge:fxOk19"}
+               :tutorial-charge-editor-example-charge-id "charge:fxOk19"
+               :deleted-assets-user-id 24
+               :deleted-assets-username "deleted-assets"}
 
     "prod" {:heraldicon-api-endpoint "/api"
             :heraldicon-discord-api-endpoint "https://2f1yb829vl.execute-api.eu-central-1.amazonaws.com/discord"
@@ -79,7 +83,9 @@
             :trimount-charge-id "charge:ibnQAo"
             :bucket-data "prod-heraldry-data"
             :bucket-cdn "cdn.heraldicon.org"
-            :tutorial-charge-editor-example-charge-id "charges:mYN0hd"}))
+            :tutorial-charge-editor-example-charge-id "charges:mYN0hd"
+            :deleted-assets-user-id 27913
+            :deleted-assets-username "deleted-assets"}))
 
 (defn get [setting]
   (case setting

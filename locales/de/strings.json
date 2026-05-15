@@ -759,7 +759,8 @@
     "detect-shading": "Schattierung erkennen",
     "duplicate": "Duplizieren",
     "unknown": "Unbekannt",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "close": "Schließen"
   },
   "user": {
     "message": {
@@ -799,7 +800,11 @@
       "charge-deleted": "Wappenfigur gelöscht.",
       "ribbon-deleted": "Band gelöscht.",
       "collection-deleted": "Sammlung gelöscht.",
-      "need-to-be-logged-in-and-own-to-delete": "Du musst eingeloggt und der Besitzer sein, um zu löschen."
+      "need-to-be-logged-in-and-own-to-delete": "Du musst eingeloggt und der Besitzer sein, um zu löschen.",
+      "delete-charge-description-in-use": "Diese Wappenfigur wird in Wappen verwendet. Sie wird von deinem Konto getrennt und anonym behalten, damit die Wappen, die sie nutzen, weiter funktionieren. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "delete-ribbon-description-in-use": "Dieses Band wird in Wappen verwendet. Es wird von deinem Konto getrennt und anonym behalten, damit die Wappen, die es nutzen, weiter funktionieren. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "charge-detached": "Wappenfigur von deinem Konto getrennt. Die nutzenden Wappen funktionieren weiterhin.",
+      "ribbon-detached": "Band von deinem Konto getrennt. Die nutzenden Wappen funktionieren weiterhin."
     },
     "button": {
       "change": "Ändern",

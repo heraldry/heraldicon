@@ -760,7 +760,8 @@
     "detect-shading": "Detectar sombreado",
     "duplicate": "Duplicar",
     "unknown": "Desconocido",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "close": "Cerrar"
   },
   "user": {
     "message": {
@@ -800,7 +801,11 @@
       "charge-deleted": "Figura eliminada.",
       "ribbon-deleted": "Listón eliminado.",
       "collection-deleted": "Colección eliminada.",
-      "need-to-be-logged-in-and-own-to-delete": "Necesitas estar con la sesión iniciada y ser propietario para eliminar."
+      "need-to-be-logged-in-and-own-to-delete": "Necesitas estar con la sesión iniciada y ser propietario para eliminar.",
+      "delete-charge-description-in-use": "Esta figura se usa en blasones. Se desvinculará de tu cuenta y se mantendrá de forma anónima para que los blasones que la usan sigan funcionando. Esta acción no se puede deshacer.",
+      "delete-ribbon-description-in-use": "Este listón se usa en blasones. Se desvinculará de tu cuenta y se mantendrá de forma anónima para que los blasones que lo usan sigan funcionando. Esta acción no se puede deshacer.",
+      "charge-detached": "Figura desvinculada de tu cuenta. Los blasones que la usan siguen funcionando.",
+      "ribbon-detached": "Listón desvinculado de tu cuenta. Los blasones que lo usan siguen funcionando."
     },
     "button": {
       "change": "Cambio",
