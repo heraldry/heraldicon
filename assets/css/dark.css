@@ -93,6 +93,11 @@
   color: #555;
 }
 
+.dark .ui-menu-item.destructive.disabled-item,
+.dark .ui-menu-item.destructive.disabled-item .ui-icon {
+  color: #6b4540;
+}
+
 .dark #void > .light {
   fill: #444;
 }
