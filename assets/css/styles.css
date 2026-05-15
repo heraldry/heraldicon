@@ -1221,6 +1221,11 @@ span.tutorial-highlight {
   color: #c0392b;
 }
 
+.ui-menu-item.destructive.disabled-item,
+.ui-menu-item.destructive.disabled-item .ui-icon {
+  color: #d9a8a3;
+}
+
 ul.ui-menu {
   list-style: none;
   padding-left: 1.3em;
