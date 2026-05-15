@@ -7,7 +7,8 @@
    [heraldicon.frontend.message :as-alias message]
    [heraldicon.frontend.repository.core :as repository]
    [hodgepodge.core :as hp]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [taoensso.timbre :as log]))
 
 (def ^:private db-path
   [:session])
@@ -136,9 +137,19 @@
   (fn [data _]
     (user/admin? data)))
 
+(rf/reg-fx ::backend-logout
+  (fn [[session-data]]
+    (when (:session-id session-data)
+      (go-catch
+       (try
+         (<? (api/call :logout nil session-data))
+         (catch :default e
+           (log/warn e "Backend logout failed, local session cleared anyway.")))))))
+
 (rf/reg-event-fx ::logout
-  (fn [_ _]
-    {:dispatch-n [[::clear]
+  (fn [{:keys [db]} _]
+    {::backend-logout [(get-in db db-path)]
+     :dispatch-n [[::clear]
                   [::repository/session-change]]
      ::set-cookie [nil]
      ::write-to-local-storage [nil]}))
