@@ -132,14 +132,11 @@
   @(rf/subscribe [:get (filter-charge-type-path id)]))
 
 (defn- result-card [id item-id kind on-select {:keys [selection-placeholder?
-                                                      selected-item
                                                       filter-tags
                                                       title-fn]
                                                :as options}]
   (let [{:keys [username]
-         :as item} (if (= (:id selected-item) item-id)
-                     selected-item
-                     @(rf/subscribe [::search-result-item id kind item-id]))
+         :as item} @(rf/subscribe [::search-result-item id kind item-id])
         selected? false
         own-username (:username @(rf/subscribe [::session/data]))
         small? (= (get-list-mode id options) :small)
@@ -171,8 +168,9 @@
                 [:div.tag.private {:style {:width "0.9em"}} [:i.fas.fa-lock]]))])])
       [(if item
          :a.filter-result-card-preview
-         :div.filter-result-card-preview) (merge {:title (tr (string/str-tr
-                                                              title " " :string.miscellaneous/by " " username))}
+         :div.filter-result-card-preview) (merge {:title (when item
+                                                           (tr (string/str-tr
+                                                                title " " :string.miscellaneous/by " " username)))}
                                                  (when on-select
                                                    (on-select item)))
        (if item
