@@ -1168,5 +1168,11 @@
   },
   "collection": {
     "deleted-arms-suffix": "(supprimé)"
+  },
+  "structured-search": {
+    "icon-title": "Mots-clés de recherche structurée",
+    "title": "Recherche structurée",
+    "description": "Combinez des jetons key:value avec du texte libre pour filtrer. Tous les jetons doivent correspondre.",
+    "example-label": "Exemple :"
   }
 }

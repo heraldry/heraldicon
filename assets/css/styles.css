@@ -1492,6 +1492,11 @@ li.ui-menu-header {
   margin-bottom: 0.5em;
 }
 
+.filter-component-search .search-field.wide {
+  max-width: 24em;
+  width: 50%;
+}
+
 .auto-complete-box {
   position: fixed;
   border: 1px solid #777;

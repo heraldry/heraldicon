@@ -15,6 +15,7 @@
    [heraldicon.frontend.search-string :as search-string]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.user.session :as session]
+   [heraldicon.heraldry.facets :as facets]
    [heraldicon.interface :as interface]
    [heraldicon.util.sanitize :as sanitize]
    [re-frame.core :as rf]
@@ -195,6 +196,54 @@
       (cond-> db
         charge-type (tree/select-node ::identifier (get-charge-type-path charge-types charge-type) true)))))
 
+(defn- get-charge-type-path-by-slug
+  "Walks the charge-types tree (in app-db) and returns the re-frame path of
+   the node whose slugified name matches `slug`. Returns nil if no match."
+  [charge-types slug]
+  (let [path-nodes (tree-seq
+                    #(contains? (second %) :types)
+                    (fn [[path node]]
+                      (map-indexed
+                       (fn [idx child]
+                         [(conj path :types idx) child])
+                       (:types node)))
+                    [[] charge-types])
+        found-path (->> path-nodes
+                        (filter (fn [[_ node]]
+                                  (and (map? node)
+                                       (some-> node :name facets/slugify-name (= slug)))))
+                        first
+                        first)]
+    (when found-path
+      (into charge-types-path found-path))))
+
+(rf/reg-event-db ::filter-select-by-slug
+  (fn [db [_ slug]]
+    (let [charge-types (get-in db charge-types-path)
+          path (when (seq slug)
+                 (get-charge-type-path-by-slug charge-types slug))]
+      (cond-> db
+        path (tree/select-node ::filter-identifier path true)))))
+
+(defn first-filter-match
+  "DFS through the loaded charge_types tree using the same matcher the tree
+   itself uses, returning the :name of the first node that matches the given
+   search string. Returns nil if no match — used by the arms autocomplete to
+   resolve Tab/Enter when the charge tree is open."
+  [charge-types search-string]
+  (let [words (search-string/split (or search-string ""))]
+    (when (seq words)
+      (letfn [(matches? [node]
+                (let [title (-> node :name (or "") remove-charge-count
+                                search-string/normalize-string-for-match)]
+                  (every? (fn [w] (search-string/matches-word? title w)) words)))
+              (walk [node]
+                (cond
+                  (not (map? node)) nil
+                  (matches? node) (:name node)
+                  :else (some walk (:types node))))]
+        (some walk (:types charge-types))))))
+
 (defn- charge-type-select
   [context]
   (let [{:keys [status error]} @(rf/subscribe [::repository.charge-types/data #(rf/dispatch [::set-active-node % context])])
@@ -261,19 +310,21 @@
           [charge-type-select context]]]]])))
 
 (defn charge-type-filter-tree
-  [on-select]
-  (let [{:keys [status error]} @(rf/subscribe [::repository.charge-types/data nil])]
-    (case status
-      :loading [status/loading]
-      :error [status/error-display error]
-      [:div
-       [search-bar]
-       [tree/tree
-        ::filter-identifier
-        @(rf/subscribe [::top-level-charge-type-paths])
-        base-context
-        :select-fn (fn [path]
-                     (let [{:keys [name types]} @(rf/subscribe [:get path])]
-                       (on-select name (empty? types))))
-        :search-fn search-matching-all
-        :force-open? (force-open?)]])))
+  ([on-select] (charge-type-filter-tree on-select nil))
+  ([on-select {:keys [hide-search-bar?]}]
+   (let [{:keys [status error]} @(rf/subscribe [::repository.charge-types/data nil])]
+     (case status
+       :loading [status/loading]
+       :error [status/error-display error]
+       [:div
+        (when-not hide-search-bar?
+          [search-bar])
+        [tree/tree
+         ::filter-identifier
+         @(rf/subscribe [::top-level-charge-type-paths])
+         base-context
+         :select-fn (fn [path]
+                      (let [{:keys [name types]} @(rf/subscribe [:get path])]
+                        (on-select name (empty? types))))
+         :search-fn search-matching-all
+         :force-open? (force-open?)]]))))

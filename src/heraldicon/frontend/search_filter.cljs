@@ -15,6 +15,7 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.parameters :as parameters]
+   [heraldicon.frontend.repository.charge-types :as repository.charge-types]
    [heraldicon.frontend.repository.entity-search :as entity-search]
    [heraldicon.frontend.repository.user :as repository.user]
    [heraldicon.frontend.search-string :as search-string]
@@ -338,70 +339,246 @@
           [[:normal "fas fa-th-large"]
            [:small "fas fa-th"]])))
 
+(def ^:private dropdown-base-style
+  {:position "absolute"
+   :top "100%"
+   :left 0
+   :z-index 50
+   :background "white"
+   :border "1px solid #ddd"
+   :border-radius "0 0 4px 4px"
+   :box-shadow "2px 4px 10px rgba(0,0,0,0.15)"})
+
 (defn- search-input [id _kind _options]
   (let [path (filter-temporary-search-string-path id)
         value-sub (rf/subscribe [:get path])
         tmp-value (r/atom @value-sub)
-        focused? (r/atom false)]
-    ;; keep tmp-value in sync with subscription
+        open? (r/atom false)
+        cursor (r/atom (count (or @value-sub "")))
+        input-ref (atom nil)
+        last-applied-slug (atom ::unset)
+        last-applied-tree-search (atom ::unset)
+        selected-index (r/atom 0)
+        ;; While we're restoring the cursor after a suggestion apply, focus
+        ;; events fire and would otherwise clobber our cursor atom with the
+        ;; browser's default selectionStart. This flag suppresses that path.
+        applying? (atom false)
+        track-cursor! (fn [e]
+                        (when-not @applying?
+                          (reset! cursor (-> e .-target .-selectionStart))))]
+    ;; keep tmp-value in sync with subscription. Only nudge the cursor on
+    ;; externally-driven changes (URL params, programmatic resets) — on-change
+    ;; already moved it in lockstep with the user's typing, and this watch
+    ;; also re-fires for our own dispatches.
     (add-watch value-sub ::sync
                (fn [_ _ _ new-val]
+                 (when (not= new-val @tmp-value)
+                   (reset! cursor (count (or new-val ""))))
                  (reset! tmp-value new-val)))
     (fn [id kind _options]
-      (let [suggestions (when (and (= kind :arms) @focused?)
-                          (facet-autocomplete/suggestions @tmp-value))
+      (let [tree-key (when (= kind :arms)
+                       (facet-autocomplete/tree-key @tmp-value @cursor))
+            suggestions (when (and (= kind :arms) (not tree-key))
+                          (facet-autocomplete/suggestions @tmp-value @cursor))
+            ;; When the tree picker is showing, keep its active node in sync
+            ;; with the value under the cursor. Plain atom (not r/atom) so
+            ;; this doesn't trigger our own re-render; we only deref it for
+            ;; the cheap equality check. Guard on charge-types being loaded
+            ;; — on the very first open the data is still fetching, so the
+            ;; lookup would silently fail; the deref also re-renders us when
+            ;; the load completes so the dispatch fires then.
+            _ (when (and tree-key @open?)
+                (let [data-status (:status @(rf/subscribe [::repository.charge-types/data nil]))
+                      slug (facet-autocomplete/current-value @tmp-value @cursor)]
+                  (when (and (= :done data-status)
+                             (not= slug @last-applied-slug))
+                    (reset! last-applied-slug slug)
+                    (rf/dispatch [::charge-type-select/filter-select-by-slug slug]))))
+            ;; Mirror the token's value into the tree's built-in search field
+            ;; so the user's typing in the outer input filters the tree.
+            ;; Empty (or no-tree) state clears the filter so it doesn't leak
+            ;; to other lists or persist across reopens.
+            _ (let [desired (if (and tree-key @open?)
+                              (or (facet-autocomplete/current-value @tmp-value @cursor) "")
+                              "")]
+                (when (not= desired @last-applied-tree-search)
+                  (reset! last-applied-tree-search desired)
+                  (rf/dispatch [::charge-type-select/update-search-field desired])))
+            suggestion-count (count suggestions)
+            effective-selected (if (pos? suggestion-count)
+                                 (min (max 0 @selected-index) (dec suggestion-count))
+                                 0)
             apply-suggestion! (fn [s]
-                                (let [new-val (facet-autocomplete/apply-suggestion @tmp-value s)]
+                                (let [[new-val new-cursor]
+                                      (facet-autocomplete/apply-suggestion @tmp-value @cursor s)]
+                                  (reset! applying? true)
                                   (reset! tmp-value new-val)
-                                  (rf/dispatch-sync [:set path new-val])))]
-        [:div.search-field {:style {:position "relative"}}
+                                  (reset! cursor new-cursor)
+                                  (reset! selected-index 0)
+                                  ;; Update the temp search string so re-renders
+                                  ;; see the new value, but DON'T commit it to
+                                  ;; the search-string path — the search only
+                                  ;; fires when the user clicks the search
+                                  ;; button (or hits Enter / blurs).
+                                  (rf/dispatch-sync [:set path new-val])
+                                  ;; A "complete" token (no trailing colon) is
+                                  ;; the natural place to close the dropdown so
+                                  ;; the next Enter fires the search. Suggestions
+                                  ;; ending in ":" mean the user just picked a
+                                  ;; key and now wants to see values — keep open.
+                                  (when-not (str/ends-with? s ":")
+                                    (reset! open? false))
+                                  ;; The reset!s above queue a Reagent render
+                                  ;; and the dispatch-sync queues a re-frame
+                                  ;; render — both update the controlled input.
+                                  ;; r/after-render only fires between them in
+                                  ;; some orderings, so the second commit re-
+                                  ;; shifts our cursor (by the inserted-text
+                                  ;; length, since React's controlled-input
+                                  ;; logic shifts based on length diff). Stack
+                                  ;; a setTimeout inside after-render to land
+                                  ;; the restore strictly after both have
+                                  ;; settled.
+                                  (r/after-render
+                                   (fn []
+                                     (js/setTimeout
+                                      (fn []
+                                        (when-let [node @input-ref]
+                                          (.focus node)
+                                          (.setSelectionRange node new-cursor new-cursor))
+                                        (reset! applying? false))
+                                      0)))))
+            apply-tree-top! (fn []
+                              (let [data (some-> @(rf/subscribe [::repository.charge-types/data nil]) :data)
+                                    slug (facet-autocomplete/current-value @tmp-value @cursor)
+                                    match (charge-type-select/first-filter-match data slug)]
+                                (when match
+                                  (apply-suggestion! (str tree-key ":" (facets/slugify-name match)))
+                                  (reset! open? false)
+                                  true)))]
+        [:div.search-field {:class (when (= kind :arms) "wide")
+                            :style {:position "relative"}}
          [:i.fas.fa-search]
          [:input {:name "search"
                   :type "search"
                   :value @tmp-value
                   :autoComplete "off"
-                  :on-focus #(reset! focused? true)
-                  :on-blur (fn [_]
-                             (reset! focused? false)
-                             (rf/dispatch-sync [::copy-search-string-to-query id]))
-                  :on-key-press (fn [event]
-                                  (when (= "Enter" (.-code event))
-                                    (rf/dispatch-sync [::copy-search-string-to-query id])))
-                  :on-change #(let [value (-> % .-target .-value)]
-                                (reset! tmp-value value)
-                                (rf/dispatch-sync [:set path @tmp-value]))
+                  :ref #(reset! input-ref %)
+                  :on-focus (fn [e]
+                              ;; While we're restoring focus programmatically
+                              ;; after applying a suggestion, don't reopen the
+                              ;; dropdown — the user just made their choice.
+                              (when-not @applying?
+                                (reset! open? true)
+                                (reset! selected-index 0))
+                              (track-cursor! e))
+                  :on-click (fn [e]
+                              (reset! open? true)
+                              (reset! selected-index 0)
+                              (track-cursor! e))
+                  :on-key-up (fn [e]
+                               (track-cursor! e)
+                               ;; Cursor-movement keys reopen the dropdown so
+                               ;; the user can keep navigating with the keyboard.
+                               (when (#{"ArrowLeft" "ArrowRight" "Home" "End"} (.-key e))
+                                 (reset! open? true)))
+                  :on-select track-cursor!
+                  :on-key-down
+                  (fn [e]
+                    (case (.-key e)
+                      "ArrowDown"
+                      (when (pos? suggestion-count)
+                        (.preventDefault e)
+                        (reset! selected-index
+                                (mod (inc effective-selected) suggestion-count)))
+
+                      "ArrowUp"
+                      (when (pos? suggestion-count)
+                        (.preventDefault e)
+                        (reset! selected-index
+                                (mod (dec effective-selected) suggestion-count)))
+
+                      "Tab"
+                      (cond
+                        (pos? suggestion-count)
+                        (do (.preventDefault e)
+                            (apply-suggestion! (nth suggestions effective-selected)))
+
+                        tree-key
+                        (when (apply-tree-top!)
+                          (.preventDefault e)))
+
+                      "Enter"
+                      (cond
+                        (pos? suggestion-count)
+                        (do (.preventDefault e)
+                            (apply-suggestion! (nth suggestions effective-selected)))
+
+                        (and tree-key (apply-tree-top!))
+                        (.preventDefault e)
+
+                        :else
+                        (do (reset! open? false)
+                            (rf/dispatch-sync [::copy-search-string-to-query id])))
+
+                      "Escape"
+                      (reset! open? false)
+
+                      nil))
+                  :on-change (fn [e]
+                               (let [value (-> e .-target .-value)
+                                     pos (-> e .-target .-selectionStart)]
+                                 (reset! tmp-value value)
+                                 (reset! cursor pos)
+                                 (reset! selected-index 0)
+                                 ;; Typing always reopens the dropdown so that
+                                 ;; the close-on-complete behavior from
+                                 ;; apply-suggestion! doesn't strand the user.
+                                 (reset! open? true)
+                                 (rf/dispatch-sync [:set path value])))
                   :style {:outline "none"
                           :border "0"
                           :margin-left "0.5em"
                           :width "calc(100% - 12px - 1.5em)"}}]
-         (when (seq suggestions)
-           [:ul {:style {:position "absolute"
-                         :top "100%"
-                         :left 0
-                         :right 0
-                         :z-index 50
-                         :background "white"
-                         :border "1px solid #ddd"
-                         :border-radius "0 0 4px 4px"
-                         :margin 0
-                         :padding 0
-                         :list-style "none"
-                         :max-height "20em"
-                         :overflow-y "auto"
-                         :box-shadow "2px 4px 10px rgba(0,0,0,0.15)"}}
-            (for [s suggestions]
-              ^{:key s}
-              ;; mousedown + preventDefault keeps the input focused so the
-              ;; dropdown doesn't disappear before the click registers, and
-              ;; the user can keep typing after applying a suggestion.
-              [:li {:style {:padding "0.3em 0.7em"
-                            :cursor "pointer"}
-                    :on-mouse-down (fn [e]
-                                     (.preventDefault e)
-                                     (apply-suggestion! s))
-                    :on-mouse-enter #(set! (-> % .-currentTarget .-style .-background) "#f0f0f0")
-                    :on-mouse-leave #(set! (-> % .-currentTarget .-style .-background) "white")}
-               [:code s]])])]))))
+         (when (and (= kind :arms) @open? (or tree-key (seq suggestions)))
+           [:<>
+            ;; Outside-click catcher closes the dropdown.
+            [:div {:style {:position "fixed"
+                           :top 0 :left 0 :right 0 :bottom 0
+                           :z-index 49}
+                   :on-mouse-down #(reset! open? false)}]
+            (cond
+              tree-key
+              [:div {:style (merge dropdown-base-style
+                                   {:width "25em"
+                                    :max-height "25em"
+                                    :overflow-y "auto"
+                                    :padding "10px"})
+                     :on-mouse-down #(.stopPropagation %)}
+               [charge-type-select/charge-type-filter-tree
+                (fn [name leaf?]
+                  (apply-suggestion! (str tree-key ":" (facets/slugify-name name)))
+                  (when leaf?
+                    (reset! open? false)))
+                {:hide-search-bar? true}]]
+
+              (seq suggestions)
+              [:ul {:style (merge dropdown-base-style
+                                  {:right 0
+                                   :margin 0
+                                   :padding 0
+                                   :list-style "none"
+                                   :max-height "20em"
+                                   :overflow-y "auto"})
+                    :on-mouse-down #(.stopPropagation %)}
+               (for [[index s] (map-indexed vector suggestions)]
+                 ^{:key s}
+                 [:li {:style {:padding "0.3em 0.7em"
+                               :cursor "pointer"
+                               :background (when (= index effective-selected) "#e0e0e0")}
+                       :on-click #(apply-suggestion! s)
+                       :on-mouse-enter #(reset! selected-index index)}
+                  [:code s]])])])]))))
 
 (defn- favorites? [id _options]
   (when @(rf/subscribe [::session/logged-in?])
@@ -535,7 +712,7 @@
                      :margin-left "10px"
                      :position "relative"}}
        [:i.fas.fa-question-circle
-        {:title "Structured search keywords"
+        {:title (tr :string.structured-search/icon-title)
          :style {:cursor "pointer"
                  :color "#888"}
          :on-click (js-event/handled #(swap! open? not))}]
@@ -558,15 +735,16 @@
                          :box-shadow "2px 2px 10px rgba(0,0,0,0.15)"}
                  :on-click #(.stopPropagation %)}
            [:div {:style {:font-weight "bold" :margin-bottom "6px"}}
-            "Structured search"]
+            [tr :string.structured-search/title]]
            [:div {:style {:font-size "0.9em" :margin-bottom "8px"}}
-            "Mix key:value tokens with free text to filter. All tokens must match."]
+            [tr :string.structured-search/description]]
            [:ul {:style {:margin 0 :padding-left "1.2em" :font-size "0.9em"}}
             (for [k facets/facet-keys]
               ^{:key k}
               [:li [:code (str k ":<value>")]])]
            [:div {:style {:font-size "0.85em" :margin-top "8px" :color "#666"}}
-            "Example: " [:code "smith tincture:or charge:lion"]]]])])))
+            [tr :string.structured-search/example-label] " "
+            [:code "smith tincture:or charge:lion"]]]])])))
 
 (defn component [id kind on-select {:keys [component-styles]
                                     :as options}]
