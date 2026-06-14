@@ -228,10 +228,21 @@
 (defn first-filter-match
   "DFS through the loaded charge_types tree using the same matcher the tree
    itself uses, returning the :name of the first node that matches the given
-   search string. Returns nil if no match — used by the arms autocomplete to
-   resolve Tab/Enter when the charge tree is open."
+   search string. Returns nil if no match.
+
+   Sibling order mirrors what the tree component displays:
+   - Top-level types are sorted by lowercased name (see ::top-level-charge-type-paths).
+   - Sub-types are sorted by [has-children?, lowercased name] (see
+     heraldicon.frontend.component.charge-type/sort-key).
+   So the first match returned is the one visually at the top of the filter."
   [charge-types search-string]
-  (let [words (search-string/split (or search-string ""))]
+  (let [words (search-string/split (or search-string ""))
+        sort-top (fn [nodes]
+                   (sort-by #(some-> % :name str/lower-case) nodes))
+        sort-sub (fn [nodes]
+                   (sort-by (juxt #(if (seq (:types %)) 0 1)
+                                  #(some-> % :name str/lower-case))
+                            nodes))]
     (when (seq words)
       (letfn [(matches? [node]
                 (let [title (-> node :name (or "") remove-charge-count
@@ -241,8 +252,8 @@
                 (cond
                   (not (map? node)) nil
                   (matches? node) (:name node)
-                  :else (some walk (:types node))))]
-        (some walk (:types charge-types))))))
+                  :else (some walk (sort-sub (:types node)))))]
+        (some walk (sort-top (:types charge-types)))))))
 
 (defn- charge-type-select
   [context]
