@@ -96,7 +96,17 @@
           (defn tag-backend-deploy []
             (let [tag (str "deploy-backend-" (timestamp))]
               (shell "git" "tag" tag)
-              (shell {:dir "backend"} "git" "tag" tag))))
+              (shell {:dir "backend"} "git" "tag" tag)))
+
+          (defn manage-release [build-dir config]
+            (shell "npx shadow-cljs release manage --config-merge"
+                   (prn-str (merge-with
+                             merge
+                             config
+                             BACKEND-CONFIG
+                             {:output-to (str (fs/path build-dir "manage.js"))})))
+            (doseq [f (fs/glob build-dir "manage*.map")]
+              (shell "node scripts/flatten-source-map.mjs" (str f)))))
 
   check-clj-kondo (shell "clj-kondo --parallel --lint src test backend/src")
   check-cljfmt (shell "cljfmt --parallel check src test backend/src")
@@ -206,6 +216,14 @@
                         (run 'stats-release)
                         (create-sentry-release-backend PROD-BACKEND-DIR "prod")
                         (shell {:dir "backend"} "bb stats-deploy"))}
+
+  staging-manage (do
+                   (manage-release STAGING-BACKEND-DIR STAGING-CONFIG)
+                   (shell {:dir "backend"} "bb staging-manage-deploy"))
+
+  prod-manage (do
+                (manage-release PROD-BACKEND-DIR PROD-CONFIG)
+                (shell {:dir "backend"} "bb prod-manage-deploy"))
 
   prod-frontend-release (build-frontend-release PROD-FRONTEND-DIR PROD-CONFIG)
 
