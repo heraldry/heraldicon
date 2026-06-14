@@ -55,6 +55,7 @@
           {:target :node-script
            :main heraldicon.manage/main
            :output-to "./backend/build/manage/manage.js"
+           :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es2020
                               :warnings {:redef false}}}
 

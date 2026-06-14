@@ -19,6 +19,7 @@
    [heraldicon.frontend.search-string :as search-string]
    [heraldicon.frontend.status :as status]
    [heraldicon.frontend.user.session :as session]
+   [heraldicon.heraldry.facets :as facets]
    [heraldicon.localization.string :as string]
    [heraldicon.static :as static]
    [re-frame.core :as rf]
@@ -222,8 +223,9 @@
 
 (defn- prepare-query [id {:keys [filter-username]
                           :as options}]
-  (let [charge-type (get-charge-type id)]
-    (cond-> {:phrases (search-string/split (get-search-string id))
+  (let [charge-type (get-charge-type id)
+        {:keys [facets phrase-text]} (facets/split-input (get-search-string id))]
+    (cond-> {:phrases (search-string/split phrase-text)
              :access (get-access id)
              :username (or (when (= (get-ownership id options) :mine)
                              (:username @(rf/subscribe [::session/data])))
@@ -233,6 +235,7 @@
              :sort (get-sorting id options)
              :page-size (or (get options :page-size)
                             default-page-size)}
+      (seq facets) (assoc :facets facets)
       (seq charge-type) (assoc :charge-type charge-type))))
 
 (defn- get-items-subscription [id kind options]
@@ -486,6 +489,46 @@
                         (rf/dispatch [:set (filter-charge-type-open?-path id) false]))
                       (reset! last-select [name now])))))]]])]))))
 
+(defn- facet-help-popover []
+  (let [open? (r/atom false)]
+    (fn []
+      [:div {:style {:display "inline-block"
+                     :margin-left "10px"
+                     :position "relative"}}
+       [:i.fas.fa-question-circle
+        {:title "Structured search keywords"
+         :style {:cursor "pointer"
+                 :color "#888"}
+         :on-click (js-event/handled #(swap! open? not))}]
+       (when @open?
+         [:<>
+          [:div {:style {:position "fixed"
+                         :top 0 :left 0 :right 0 :bottom 0
+                         :z-index 99}
+                 :on-click #(reset! open? false)}]
+          [:div {:style {:position "absolute"
+                         :top "100%"
+                         :left 0
+                         :z-index 100
+                         :background "white"
+                         :border "1px solid #ddd"
+                         :border-radius "5px"
+                         :padding "10px"
+                         :margin-top "5px"
+                         :width "26em"
+                         :box-shadow "2px 2px 10px rgba(0,0,0,0.15)"}
+                 :on-click #(.stopPropagation %)}
+           [:div {:style {:font-weight "bold" :margin-bottom "6px"}}
+            "Structured search"]
+           [:div {:style {:font-size "0.9em" :margin-bottom "8px"}}
+            "Mix key:value tokens with free text to filter. All tokens must match."]
+           [:ul {:style {:margin 0 :padding-left "1.2em" :font-size "0.9em"}}
+            (for [k facets/facet-keys]
+              ^{:key k}
+              [:li [:code (str k ":<value>")]])]
+           [:div {:style {:font-size "0.85em" :margin-top "8px" :color "#666"}}
+            "Example: " [:code "smith tincture:or charge:lion"]]]])])))
+
 (defn component [id kind on-select {:keys [component-styles]
                                     :as options}]
   [:div.filter-component {:style component-styles}
@@ -494,6 +537,9 @@
 
     (when (= kind :charge)
       [charge-type-filter id])
+
+    (when (= kind :arms)
+      [facet-help-popover])
 
     [:button.button.primary
      {:on-click #(rf/dispatch [::copy-search-string-to-query id])
