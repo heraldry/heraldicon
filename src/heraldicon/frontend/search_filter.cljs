@@ -500,21 +500,28 @@
 
                       "Tab"
                       (cond
-                        (pos? suggestion-count)
+                        ;; Tab only applies when the dropdown is actually
+                        ;; showing — otherwise it should fall through to the
+                        ;; default focus-next behavior.
+                        (and @open? (pos? suggestion-count))
                         (do (.preventDefault e)
                             (apply-suggestion! (nth suggestions effective-selected)))
 
-                        tree-key
+                        (and @open? tree-key)
                         (when (apply-tree-top!)
                           (.preventDefault e)))
 
                       "Enter"
                       (cond
-                        (pos? suggestion-count)
+                        ;; Enter while the dropdown is up commits the
+                        ;; suggestion; otherwise it fires the search. So
+                        ;; Tab-to-complete-then-Enter searches with the
+                        ;; completed value, just like clicking the button.
+                        (and @open? (pos? suggestion-count))
                         (do (.preventDefault e)
                             (apply-suggestion! (nth suggestions effective-selected)))
 
-                        (and tree-key (apply-tree-top!))
+                        (and @open? tree-key (apply-tree-top!))
                         (.preventDefault e)
 
                         :else
