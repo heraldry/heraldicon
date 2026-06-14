@@ -7,6 +7,7 @@
     "charge-library": "Charges",
     "ribbon-library": "Listels",
     "users": "Utilisateurs",
+    "charge-types": "Types de charge",
     "contact": "Contact",
     "account": "Mon Compte",
     "login": "Connexion",
@@ -100,11 +101,11 @@
       "lilyous": "Liliée",
       "palissado": "Palissadée",
       "spaded": "Spadée",
-      "trefly": "Treflée",
-      "trefly-counter-trefly": "Trefly counter trefly",
       "stepped": "En escalier",
       "straight": "Droite",
       "thorny": "Thorny",
+      "trefly": "Treflée",
+      "trefly-counter-trefly": "Trefly counter trefly",
       "urdy": "Palissée",
       "wavy": "Ondée",
       "wolf-toothed": "En forme de dents de loup"
@@ -183,11 +184,13 @@
       "ui": {
         "add": "Ajouter un attribut"
       },
+      "alerion": "Alerion",
       "compartment": "Base",
       "coward": "Couard",
       "defamed": "Diffamé",
       "double-queued": "Queue double",
       "erased": "Arraché",
+      "flammant": "Flammant",
       "mantling": "Lambrequins",
       "pierced": "Percé",
       "queue-fourche": "Queue fourchée",
@@ -197,7 +200,9 @@
       "supporter-left": "Support gauche",
       "supporter-right": "Support droit",
       "tail-nowed": "Queue nouée",
-      "voided": "Vidé"
+      "voided": "Vidé",
+      "vorant": "Vorant",
+      "vulned": "Vulned"
     },
     "attitude": {
       "group": {
@@ -228,7 +233,7 @@
       "passant": "Passant",
       "rampant": "Rampant",
       "recursant": "Regardant",
-      "respectant": "Respectant",
+      "respectant": "Respectueux",
       "rising": "Essorant",
       "salient": "Saillant",
       "segreant": "Rampant au vol étendu",
@@ -291,6 +296,8 @@
       "clasped": "Au fermoir de",
       "collared": "Colleté",
       "combed": "Crêté",
+      "crined": "Crined",
+      "disarmed": "Disarmed",
       "crowned": "Couronné",
       "enflamed": "Enflammé",
       "eradicated": "Arraché",
@@ -308,6 +315,7 @@
       "glazed": "Glazed",
       "gloved": "Ganté",
       "handled": "Emmanché",
+      "habited": "Habited",
       "hilted": "Garni",
       "hooded": "Chaperonné",
       "horned": "Accorné",
@@ -376,6 +384,7 @@
     }
   },
   "render-options": {
+    "border?": "Bordure",
     "coat-of-arms-angle": "Angle du bouclier",
     "coat-of-arms-angle-presets": {
       "two-thirds": "2/3",
@@ -420,7 +429,7 @@
       "wood": "Bois"
     },
     "theme": "Thème",
-    "title": "Option de rendu"
+    "title": "Options de rendu"
   },
   "option": {
     "access-filter-choice": {
@@ -430,9 +439,12 @@
     },
     "sorting-filter-choice": {
       "name": "Nom",
+      "favorites": "Popularité",
       "creation": "Ajouts récents",
       "update": "Mises à jour récentes"
     },
+    "show": "Afficher",
+    "access": "Access",
     "sort-by": "Trier par",
     "alignment": "Alignement",
     "alignment-choice": {
@@ -499,7 +511,8 @@
     "flipped?": "Inversé",
     "font": "Police",
     "font-scale": "Taille de la police",
-    "font-title": "Police pour le titre",
+    "font-title": "Police du titre",
+    "font-scale-title": "Échelle de la police du titre",
     "function": "Fonction",
     "geometry": "Géométrie",
     "height": "Hauteur",
@@ -537,6 +550,7 @@
       "heraldicon": "Heraldicon",
       "community": "Communauté"
     },
+    "favorites-filter": "Mes favoris",
     "partition": "Partition",
     "pattern-scaling": "Échelle du motif",
     "pattern-rotation": "Rotation du motif",
@@ -589,6 +603,7 @@
     },
     "select-arms": "Sélectionner des armes",
     "select-charge": "Sélectionner une charge",
+    "select-charge-type": "Select Charge Type",
     "select-colour-theme": "Sélectionner un thème de couleur",
     "select-line-type": "Sélectionner un type de ligne",
     "select-ordinary": "Sélectionner une pièce",
@@ -690,7 +705,8 @@
     "detect-shading": "Si vous définissez l'ombrage de référence de 0% sur une couleur (préférablement primaire), vous pouvez sélectionner plusieurs couleurs et cliquer sur ce bouton, les niveaux d'ombrage de ces couleurs sont alors définis en fonction de leur luminosité.",
     "expand": "expand",
     "fit-in-window": "fit in window",
-    "support-on-ko-fi": "Support Heraldicon on Ko-fi"
+    "support-on-ko-fi": "Soutenez Heraldicon sur Ko-fi",
+    "inherit-environment": "This is useful to achieve dimidiation, for instance."
   },
   "miscellaneous": {
     "and": "et",
@@ -699,8 +715,8 @@
     "bottom": "bas",
     "by": "par",
     "extra": "extra",
-    "charges": "meubles",
     "error": "Erreur",
+    "charges": "meubles",
     "fields": "champs",
     "general": "Général",
     "inherited": "Hérité",
@@ -742,8 +758,8 @@
     "export": "Exporter",
     "share": "Partager",
     "detect-shading": "Détecter l'ombrage",
-    "delete": "Supprimer",
-    "close": "Fermer"
+    "duplicate": "Dupliquer",
+    "unknown": "Inconnu"
   },
   "user": {
     "message": {
@@ -1077,21 +1093,21 @@
     "error": "Erreur"
   },
   "banner": {
-    "not-logged-in": "Vous n'êtes pas connecté.",
     "outdated-version-arms": "Ceci n'est pas la dernière version de ces armoiries.",
     "outdated-version-charge": "Ceci n'est pas la dernière version de cette charge.",
     "outdated-version-collection": "Ceci n'est pas la dernière version de cette collection.",
     "outdated-version-ribbon": "Ceci n'est pas la dernière version de ce listel.",
-    "open-latest-version": "Ouvrir la dernière version."
+    "open-latest-version": "Ouvrir la dernière version.",
+    "not-logged-in": "Vous n'êtes pas connecté."
   },
   "tutorial": {
     "menu": "Tutoriel",
     "menu-overview": "Aperçu",
     "menu-arms-editor": "Éditeur d'armoiries",
     "menu-charge-editor": "Éditeur de charges",
-    "hint": "\u2191 Essayez !",
-    "back": "\u2190 Retour",
-    "next": "Suivant \u2192",
+    "hint": "↑ Essayez !",
+    "back": "← Retour",
+    "next": "Suivant →",
     "done": "Terminé",
     "overview": {
       "welcome-title": "Bienvenue sur Heraldicon",
@@ -1101,7 +1117,7 @@
       "arms-library-title": "Bibliothèque d'armoiries",
       "arms-library-description": "La Bibliothèque d'armoiries vous permet de parcourir les armoiries créées par d'autres et de créer les vôtres.",
       "charge-library-title": "Bibliothèque de charges",
-      "charge-library-description": "Les charges sont les figures et symboles utilisés en héraldique \u2014 lions, aigles, croix et bien d'autres. Parcourez-les et téléversez-les ici.",
+      "charge-library-description": "Les charges sont les figures et symboles utilisés en héraldique — lions, aigles, croix et bien d'autres. Parcourez-les et téléversez-les ici.",
       "collection-library-title": "Bibliothèque de collections",
       "collection-library-description": "Les collections permettent de regrouper des armoiries, par exemple pour créer un armorial.",
       "ribbon-library-title": "Bibliothèque de listels",
@@ -1113,33 +1129,33 @@
       "atom-feed-title": "Flux Atom",
       "atom-feed-description": "Abonnez-vous au flux Atom pour être informé des nouveautés dans votre lecteur de flux.",
       "support-title": "Soutenir Heraldicon",
-      "support-description": "Si vous appréciez le site et pouvez vous le permettre, pensez à faire un don sur Ko-fi \u2014 idéalement récurrent. Cela aide à couvrir les coûts d'hébergement et de développement.",
+      "support-description": "Si vous appréciez le site et pouvez vous le permettre, pensez à faire un don sur Ko-fi — idéalement récurrent. Cela aide à couvrir les coûts d'hébergement et de développement.",
       "finish-title": "Voilà l'aperçu !",
       "finish-description": "Pour en savoir plus, ouvrez à nouveau le menu Tutoriel et choisissez un autre tutoriel."
     },
     "arms": {
       "welcome-title": "Bienvenue dans l'Éditeur d'armoiries",
-      "welcome-description": "Créons des armoiries simples. Ce tutoriel vous guidera à travers les bases \u2014 vous cliquez, et les indications vous montrent le chemin.",
+      "welcome-description": "Créons des armoiries simples. Ce tutoriel vous guidera à travers les bases — vous cliquez, et les indications vous montrent le chemin.",
       "select-field-title": "Sélectionnez le champ",
-      "select-field-description": "Le champ est le contenu de l'écu. C'est le champ principal, mais vous trouverez des champs à d'autres endroits aussi \u2014 sous-champs, champs de meubles et plus encore. Cliquez sur le nœud du champ dans l'arbre des composants pour le sélectionner.",
+      "select-field-description": "Le champ est le contenu de l'écu. C'est le champ principal, mais vous trouverez des champs à d'autres endroits aussi — sous-champs, champs de meubles et plus encore. Cliquez sur le nœud du champ dans l'arbre des composants pour le sélectionner.",
       "divide-field-title": "Divisez le champ",
-      "divide-field-description": "Ouvrez le sélecteur de partition et choisissez \"Coupé\" \u2014 cela divise le champ horizontalement en deux moitiés.",
+      "divide-field-description": "Ouvrez le sélecteur de partition et choisissez \"Coupé\" — cela divise le champ horizontalement en deux moitiés.",
       "select-subfield-title": "Sélectionnez le premier sous-champ",
       "select-subfield-description": "Le champ est maintenant divisé en deux moitiés. Cliquez sur le premier sous-champ dans l'arbre des composants pour le sélectionner.",
       "set-tincture-title": "Choisissez l'émail Or",
       "set-tincture-description": "Ouvrez le sélecteur d'émail et choisissez \"Or\". Les émaux héraldiques comprennent les métaux (Or, Argent), les couleurs (Gueules, Azur, Sable, Sinople, Pourpre) et les fourrures.",
       "add-charge-title": "Ajoutez une charge",
-      "add-charge-description": "Plaçons maintenant une charge sur le champ \u2014 ce sont des figures comme les lions, aigles, croix et autres. Cliquez sur \"+\" à côté du nœud du sous-champ, puis choisissez \"Charge\". Vous verrez aussi Pièce, Groupe de charges et Semé \u2014 nous les passerons pour l'instant, vous pourrez les explorer plus tard.",
+      "add-charge-description": "Plaçons maintenant une charge sur le champ — ce sont des figures comme les lions, aigles, croix et autres. Cliquez sur \"+\" à côté du nœud du sous-champ, puis choisissez \"Charge\". Vous verrez aussi Pièce, Groupe de charges et Semé — nous les passerons pour l'instant, vous pourrez les explorer plus tard.",
       "pick-charge-title": "Choisissez une charge",
-      "pick-charge-description": "Un tourteau a été ajouté par défaut. Choisissez la charge de votre choix \u2014 parcourez l'arbre ou recherchez par nom.",
+      "pick-charge-description": "Un tourteau a été ajouté par défaut. Choisissez la charge de votre choix — parcourez l'arbre ou recherchez par nom.",
       "charge-options-title": "Plus d'options pour les charges",
-      "charge-options-description": "Chaque charge a aussi des réglages de position, taille et diverses autres propriétés. Vous pouvez aussi modifier le nœud Champ en surbrillance \u2014 tout comme le champ principal avant ; il détermine l'apparence de la charge. Nous passerons tout cela pour l'instant, mais n'hésitez pas à explorer plus tard.",
+      "charge-options-description": "Chaque charge a aussi des réglages de position, taille et diverses autres propriétés. Vous pouvez aussi modifier le nœud Champ en surbrillance — tout comme le champ principal avant ; il détermine l'apparence de la charge. Nous passerons tout cela pour l'instant, mais n'hésitez pas à explorer plus tard.",
       "ornaments-title": "Ornements",
-      "ornaments-description": "La section Ornements est pour les éléments extérieurs à l'écu \u2014 lambrequins, supports, terrasse, devises et plus. Cliquez sur \"+\" à côté d'Ornements, puis choisissez \"Lambrequins\".",
+      "ornaments-description": "La section Ornements est pour les éléments extérieurs à l'écu — lambrequins, supports, terrasse, devises et plus. Cliquez sur \"+\" à côté d'Ornements, puis choisissez \"Lambrequins\".",
       "ornament-options-title": "Plus d'options pour les ornements",
       "ornament-options-description": "Comme les charges, les ornements ont aussi des réglages de position, taille et autres propriétés. Nous les passerons également pour l'instant.",
       "finish-title": "Voilà les bases !",
-      "finish-description": "Vous avez divisé un champ, choisi une teinture, ajouté une charge et placé des lambrequins. Il y a encore beaucoup à explorer \u2014 différentes partitions, traits, pièces, la bibliothèque de charges, heaumes et l'éditeur de blasonnement. Amusez-vous !"
+      "finish-description": "Vous avez divisé un champ, choisi une teinture, ajouté une charge et placé des lambrequins. Il y a encore beaucoup à explorer — différentes partitions, traits, pièces, la bibliothèque de charges, heaumes et l'éditeur de blasonnement. Amusez-vous !"
     },
     "charge": {
       "welcome-title": "Bienvenue dans l'Éditeur de charges",
@@ -1147,17 +1163,17 @@
       "original-preview-title": "SVG source",
       "original-preview-description": "Ce panneau à gauche montre le fichier SVG chargé tel qu'il a été importé.",
       "upload-title": "Importer SVG",
-      "upload-description": "C'est ici que vous importeriez votre propre fichier SVG. Ne le faites pas maintenant \u2014 nous ne faisons que regarder \u2014 mais quand vous créerez votre propre charge, c'est ici que vous commencerez.",
+      "upload-description": "C'est ici que vous importeriez votre propre fichier SVG. Ne le faites pas maintenant — nous ne faisons que regarder — mais quand vous créerez votre propre charge, c'est ici que vous commencerez.",
       "charge-preview-title": "Aperçu de la charge",
       "charge-preview-description": "Cet aperçu à droite montre à quoi ressemblera la charge lorsqu'elle sera utilisée dans des armoiries, avec les correspondances de couleurs configurées.",
       "charge-type-title": "Type de charge",
-      "charge-type-description": "Ici vous pouvez définir le type de charge \u2014 par exemple \"lion\", \"eagle\" ou \"cross\". Cela aide les autres à trouver votre charge lors de la navigation ou de la recherche.",
+      "charge-type-description": "Ici vous pouvez définir le type de charge — par exemple \"lion\", \"eagle\" ou \"cross\". Cela aide les autres à trouver votre charge lors de la navigation ou de la recherche.",
       "colours-title": "Fonctions de couleur",
-      "colours-description": "C'est ici que vous attribuez une fonction à chaque couleur du SVG source. Par exemple, \"Primaire\" pour la couleur principale du champ, \"Contour\" pour les contours, \"Secondaire\" pour une deuxième couleur, et ainsi de suite. Cela contrôle comment la charge s'adapte aux différents émaux. Vous pouvez sélectionner des couleurs en cliquant dessus dans l'aperçu à gauche ou en utilisant les cases à cocher du tableau \u2014 les couleurs sélectionnées apparaissent en vert pour les repérer facilement. Essayez !",
+      "colours-description": "C'est ici que vous attribuez une fonction à chaque couleur du SVG source. Par exemple, \"Primaire\" pour la couleur principale du champ, \"Contour\" pour les contours, \"Secondaire\" pour une deuxième couleur, et ainsi de suite. Cela contrôle comment la charge s'adapte aux différents émaux. Vous pouvez sélectionner des couleurs en cliquant dessus dans l'aperçu à gauche ou en utilisant les cases à cocher du tableau — les couleurs sélectionnées apparaissent en vert pour les repérer facilement. Essayez !",
       "save-title": "Sauvegarder",
       "save-description": "Quand vous créerez votre propre charge, n'oubliez pas de la sauvegarder avec le bouton Sauvegarder.",
       "finish-title": "Voilà l'Éditeur de charges !",
-      "finish-description": "Il y a encore beaucoup d'options à explorer \u2014 attitude, orientation de la face, couleur fixe, ombrage et plus encore. Amusez-vous à expérimenter !"
+      "finish-description": "Il y a encore beaucoup d'options à explorer — attitude, orientation de la face, couleur fixe, ombrage et plus encore. Amusez-vous à expérimenter !"
     }
   },
   "dependents": {
