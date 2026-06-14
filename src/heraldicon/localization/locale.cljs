@@ -7,7 +7,7 @@
    :es (load-locale "es/strings.json")
    :fr (load-locale "fr/strings.json")
    :it (load-locale "it/strings.json")
-   :pt (load-locale "pt-PT/strings.json")
+   :pt (load-locale "pt/strings.json")
    :ru (load-locale "ru/strings.json")
    :uk (load-locale "uk/strings.json")})
 
