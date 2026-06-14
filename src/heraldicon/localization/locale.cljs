@@ -23,5 +23,7 @@
    :de "Deutsch"
    :es "Español"
    :it "Italiano"
+   ;; not yet enough strings translated, so disabled for now
+   #_#_:pt "Português"
    :ru "Русский"
    :uk "Українська"})
