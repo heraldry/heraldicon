@@ -10,6 +10,7 @@
    [heraldicon.frontend.element.tags :as tags]
    [heraldicon.frontend.entity.action.favorite :as favorite]
    [heraldicon.frontend.entity.preview :as preview]
+   [heraldicon.frontend.facet-autocomplete :as facet-autocomplete]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
@@ -337,32 +338,70 @@
           [[:normal "fas fa-th-large"]
            [:small "fas fa-th"]])))
 
-(defn- search-input [id _options]
+(defn- search-input [id _kind _options]
   (let [path (filter-temporary-search-string-path id)
         value-sub (rf/subscribe [:get path])
-        tmp-value (r/atom @value-sub)]
+        tmp-value (r/atom @value-sub)
+        focused? (r/atom false)]
     ;; keep tmp-value in sync with subscription
     (add-watch value-sub ::sync
                (fn [_ _ _ new-val]
                  (reset! tmp-value new-val)))
-    (fn [id _options]
-      [:div.search-field
-       [:i.fas.fa-search]
-       [:input {:name "search"
-                :type "search"
-                :value @tmp-value
-                :autoComplete "off"
-                :on-blur #(rf/dispatch-sync [::copy-search-string-to-query id])
-                :on-key-press (fn [event]
-                                (when (= "Enter" (.-code event))
-                                  (rf/dispatch-sync [::copy-search-string-to-query id])))
-                :on-change #(let [value (-> % .-target .-value)]
-                              (reset! tmp-value value)
-                              (rf/dispatch-sync [:set path @tmp-value]))
-                :style {:outline "none"
-                        :border "0"
-                        :margin-left "0.5em"
-                        :width "calc(100% - 12px - 1.5em)"}}]])))
+    (fn [id kind _options]
+      (let [suggestions (when (and (= kind :arms) @focused?)
+                          (facet-autocomplete/suggestions @tmp-value))
+            apply-suggestion! (fn [s]
+                                (let [new-val (facet-autocomplete/apply-suggestion @tmp-value s)]
+                                  (reset! tmp-value new-val)
+                                  (rf/dispatch-sync [:set path new-val])))]
+        [:div.search-field {:style {:position "relative"}}
+         [:i.fas.fa-search]
+         [:input {:name "search"
+                  :type "search"
+                  :value @tmp-value
+                  :autoComplete "off"
+                  :on-focus #(reset! focused? true)
+                  :on-blur (fn [_]
+                             (reset! focused? false)
+                             (rf/dispatch-sync [::copy-search-string-to-query id]))
+                  :on-key-press (fn [event]
+                                  (when (= "Enter" (.-code event))
+                                    (rf/dispatch-sync [::copy-search-string-to-query id])))
+                  :on-change #(let [value (-> % .-target .-value)]
+                                (reset! tmp-value value)
+                                (rf/dispatch-sync [:set path @tmp-value]))
+                  :style {:outline "none"
+                          :border "0"
+                          :margin-left "0.5em"
+                          :width "calc(100% - 12px - 1.5em)"}}]
+         (when (seq suggestions)
+           [:ul {:style {:position "absolute"
+                         :top "100%"
+                         :left 0
+                         :right 0
+                         :z-index 50
+                         :background "white"
+                         :border "1px solid #ddd"
+                         :border-radius "0 0 4px 4px"
+                         :margin 0
+                         :padding 0
+                         :list-style "none"
+                         :max-height "20em"
+                         :overflow-y "auto"
+                         :box-shadow "2px 4px 10px rgba(0,0,0,0.15)"}}
+            (for [s suggestions]
+              ^{:key s}
+              ;; mousedown + preventDefault keeps the input focused so the
+              ;; dropdown doesn't disappear before the click registers, and
+              ;; the user can keep typing after applying a suggestion.
+              [:li {:style {:padding "0.3em 0.7em"
+                            :cursor "pointer"}
+                    :on-mouse-down (fn [e]
+                                     (.preventDefault e)
+                                     (apply-suggestion! s))
+                    :on-mouse-enter #(set! (-> % .-currentTarget .-style .-background) "#f0f0f0")
+                    :on-mouse-leave #(set! (-> % .-currentTarget .-style .-background) "white")}
+               [:code s]])])]))))
 
 (defn- favorites? [id _options]
   (when @(rf/subscribe [::session/logged-in?])
@@ -533,7 +572,7 @@
                                     :as options}]
   [:div.filter-component {:style component-styles}
    [:div.filter-component-search
-    [search-input id options]
+    [search-input id kind options]
 
     (when (= kind :charge)
       [charge-type-filter id])
