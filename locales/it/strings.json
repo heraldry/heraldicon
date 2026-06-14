@@ -1168,5 +1168,11 @@
   },
   "collection": {
     "deleted-arms-suffix": "(eliminato)"
+  },
+  "structured-search": {
+    "icon-title": "Parole chiave della ricerca strutturata",
+    "title": "Ricerca strutturata",
+    "description": "Combina token key:value con testo libero per filtrare. Tutti i token devono corrispondere.",
+    "example-label": "Esempio:"
   }
 }

@@ -79,19 +79,30 @@
 (def ^:private facet-keys-set
   (set facets/facet-keys))
 
-(defn- current-token-bounds
-  "Returns [start end] indices of the token between the last whitespace and
-   the end of the string."
-  [s]
-  (let [end (count s)
-        idx (str/last-index-of s " ")
-        start (if idx (inc idx) 0)]
-    [start end]))
+(def ^:private tree-picker-keys
+  "Keys whose values come from the charge_types tree, not a static list."
+  #{"charge" "crest"})
 
-(defn- current-token [s]
-  (when s
-    (let [[start end] (current-token-bounds s)]
-      (subs s start end))))
+(defn- current-token-bounds
+  "Returns [start end] indices of the whitespace-delimited token under the
+   cursor. The cursor defaults to end-of-string when not provided."
+  ([s] (current-token-bounds s (count (or s ""))))
+  ([s cursor]
+   (let [s (or s "")
+         len (count s)
+         cursor (max 0 (min len cursor))
+         left-idx (str/last-index-of (subs s 0 cursor) " ")
+         start (if left-idx (inc left-idx) 0)
+         right-idx (str/index-of (subs s cursor) " ")
+         end (if right-idx (+ cursor right-idx) len)]
+     [start end])))
+
+(defn- current-token
+  ([s] (current-token s (count (or s ""))))
+  ([s cursor]
+   (when s
+     (let [[start end] (current-token-bounds s cursor)]
+       (subs s start end)))))
 
 (defn- parse-token [t]
   (let [lower (str/lower-case t)]
@@ -101,30 +112,54 @@
       {:value lower})))
 
 (defn suggestions
-  "Returns completion strings for the user's current (cursor-at-end) token.
-   Returns nil when there's nothing useful to offer."
-  [input]
-  (when-let [token (current-token input)]
-    (when (seq token)
-      (let [{:keys [key value]} (parse-token token)]
-        (cond
-          ;; Recognized key — offer matching values.
-          (and key (facet-keys-set key))
-          (when-let [vs (values-for-key key)]
-            (->> vs
-                 (filter #(str/starts-with? % (or value "")))
-                 (mapv #(str key ":" %))))
+  "Returns completion strings for the token under the cursor. Returns nil
+   when there's nothing useful to offer."
+  ([input] (suggestions input (count (or input ""))))
+  ([input cursor]
+   (when-let [token (current-token input cursor)]
+     (when (seq token)
+       (let [{:keys [key value]} (parse-token token)]
+         (cond
+           ;; Recognized key — offer matching values.
+           (and key (facet-keys-set key))
+           (when-let [vs (values-for-key key)]
+             (->> vs
+                  (filter #(str/starts-with? % (or value "")))
+                  (mapv #(str key ":" %))))
 
-          ;; No colon yet, or unknown key prefix — offer matching keys.
-          :else
-          (let [prefix (or key value "")]
-            (->> facets/facet-keys
-                 (filter #(str/starts-with? % prefix))
-                 (mapv #(str % ":")))))))))
+           ;; No colon yet, or unknown key prefix — offer matching keys.
+           :else
+           (let [prefix (or key value "")]
+             (->> facets/facet-keys
+                  (filter #(str/starts-with? % prefix))
+                  (mapv #(str % ":"))))))))))
 
 (defn apply-suggestion
-  "Replaces the current token in `input` with `suggestion`. Returns the new
-   input string."
-  [input suggestion]
-  (let [[start _] (current-token-bounds input)]
-    (str (subs input 0 start) suggestion)))
+  "Replaces the token under the cursor in `input` with `suggestion`, leaving
+   any text after the token untouched. Returns [new-input new-cursor], with
+   the cursor parked at the end of the inserted text."
+  ([input suggestion] (apply-suggestion input (count (or input "")) suggestion))
+  ([input cursor suggestion]
+   (let [[start end] (current-token-bounds input cursor)
+         new-input (str (subs input 0 start) suggestion (subs input end))
+         new-cursor (+ start (count suggestion))]
+     [new-input new-cursor])))
+
+(defn tree-key
+  "If the token under the cursor uses a key whose values live in the
+   charge-type tree (charge, crest), returns that key string. Otherwise nil
+   — the caller should fall back to the static suggestion list."
+  ([input] (tree-key input (count (or input ""))))
+  ([input cursor]
+   (when-let [token (current-token input cursor)]
+     (let [{:keys [key]} (parse-token token)]
+       (tree-picker-keys key)))))
+
+(defn current-value
+  "Returns the value portion of the token under the cursor, or nil if the
+   token has no colon yet. Used to drive tree pre-selection for charge: /
+   crest: tokens."
+  ([input] (current-value input (count (or input ""))))
+  ([input cursor]
+   (when-let [token (current-token input cursor)]
+     (:value (parse-token token)))))
