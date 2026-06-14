@@ -63,11 +63,20 @@
    "statant"
    "volant"])
 
+(def ^:private all-field-and-tincture
+  ;; field: and main-field: tokens cover both the field's *type* (per-pale,
+  ;; chequy, plain, …) and its *tincture* (or, azure, …). The extractor
+  ;; emits both, so the suggestion list does too.
+  (->> (concat all-field-types all-tinctures)
+       distinct
+       sort
+       vec))
+
 (def ^:private values-for-key
   {"tincture" all-tinctures
    "partition" all-field-types
-   "field" all-field-types
-   "main-field" all-field-types
+   "field" all-field-and-tincture
+   "main-field" all-field-and-tincture
    "ordinary" all-ordinaries
    "ornament" all-ornaments
    "attitude" all-attitudes
