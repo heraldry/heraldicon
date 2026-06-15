@@ -24,6 +24,9 @@
 (def charge-types-path
   (conj repository.charge-types/db-path-charge-types :data))
 
+(def standard-shapes-path
+  repository.charge-types/db-path-standard-shapes)
+
 (def base-context
   (c/<< context/default :path charge-types-path))
 
@@ -170,6 +173,26 @@
                 (conj charge-types-path :types idx)))
          (into []))))
 
+(rf/reg-sub ::augmented-top-level-charge-type-paths
+  ;; Like ::top-level-charge-type-paths but also includes paths to any
+  ;; standard (inline) shapes that aren't already represented in the DB tree.
+  ;; Used by the arms autocomplete; the charges-list filter sticks with the
+  ;; un-augmented sub so picking a synthetic node there can't end up
+  ;; "filtering" against a charge_type that doesn't exist in the DB.
+  :<- [:get (conj charge-types-path :types)]
+  :<- [:get standard-shapes-path]
+
+  (fn [[charge-types standard-shapes] _]
+    (let [db-entries (map-indexed (fn [idx node]
+                                    [node (conj charge-types-path :types idx)])
+                                  charge-types)
+          std-entries (map-indexed (fn [idx node]
+                                     [node (conj standard-shapes-path idx)])
+                                   standard-shapes)]
+      (->> (concat db-entries std-entries)
+           (sort-by #(some-> % first :name str/lower-case))
+           (mapv second)))))
+
 (defn- get-charge-type-path
   [charge-types charge-type]
   (let [charge-type (str/lower-case charge-type)
@@ -217,11 +240,22 @@
     (when found-path
       (into charge-types-path found-path))))
 
+(defn- standard-shape-path-by-slug
+  "Returns the re-frame path of the synthetic standard-shape node whose
+   slugified name matches `slug`, or nil."
+  [standard-shapes slug]
+  (some (fn [[idx node]]
+          (when (= slug (facets/slugify-name (:name node)))
+            (conj standard-shapes-path idx)))
+        (map-indexed vector standard-shapes)))
+
 (rf/reg-event-db ::filter-select-by-slug
   (fn [db [_ slug]]
     (let [charge-types (get-in db charge-types-path)
+          standard-shapes (get-in db standard-shapes-path)
           path (when (seq slug)
-                 (get-charge-type-path-by-slug charge-types slug))]
+                 (or (get-charge-type-path-by-slug charge-types slug)
+                     (standard-shape-path-by-slug standard-shapes slug)))]
       (cond-> db
         path (tree/select-node ::filter-identifier path true)))))
 
@@ -234,26 +268,33 @@
    - Top-level types are sorted by lowercased name (see ::top-level-charge-type-paths).
    - Sub-types are sorted by [has-children?, lowercased name] (see
      heraldicon.frontend.component.charge-type/sort-key).
-   So the first match returned is the one visually at the top of the filter."
-  [charge-types search-string]
-  (let [words (search-string/split (or search-string ""))
-        sort-top (fn [nodes]
-                   (sort-by #(some-> % :name str/lower-case) nodes))
-        sort-sub (fn [nodes]
-                   (sort-by (juxt #(if (seq (:types %)) 0 1)
-                                  #(some-> % :name str/lower-case))
-                            nodes))]
-    (when (seq words)
-      (letfn [(matches? [node]
-                (let [title (-> node :name (or "") remove-charge-count
-                                search-string/normalize-string-for-match)]
-                  (every? (fn [w] (search-string/matches-word? title w)) words)))
-              (walk [node]
-                (cond
-                  (not (map? node)) nil
-                  (matches? node) (:name node)
-                  :else (some walk (sort-sub (:types node)))))]
-        (some walk (sort-top (:types charge-types)))))))
+   So the first match returned is the one visually at the top of the filter.
+
+   `extra-top-level-nodes` lets the caller include synthetic top-level nodes
+   (the missing standard shapes) so they participate in the alphabetical
+   top-level sort just like DB-loaded ones."
+  ([charge-types search-string]
+   (first-filter-match charge-types nil search-string))
+  ([charge-types extra-top-level-nodes search-string]
+   (let [words (search-string/split (or search-string ""))
+         sort-top (fn [nodes]
+                    (sort-by #(some-> % :name str/lower-case) nodes))
+         sort-sub (fn [nodes]
+                    (sort-by (juxt #(if (seq (:types %)) 0 1)
+                                   #(some-> % :name str/lower-case))
+                             nodes))]
+     (when (seq words)
+       (letfn [(matches? [node]
+                 (let [title (-> node :name (or "") remove-charge-count
+                                 search-string/normalize-string-for-match)]
+                   (every? (fn [w] (search-string/matches-word? title w)) words)))
+               (walk [node]
+                 (cond
+                   (not (map? node)) nil
+                   (matches? node) (:name node)
+                   :else (some walk (sort-sub (:types node)))))]
+         (some walk (sort-top (concat (:types charge-types)
+                                      extra-top-level-nodes))))))))
 
 (defn- charge-type-select
   [context]
@@ -322,8 +363,11 @@
 
 (defn charge-type-filter-tree
   ([on-select] (charge-type-filter-tree on-select nil))
-  ([on-select {:keys [hide-search-bar?]}]
-   (let [{:keys [status error]} @(rf/subscribe [::repository.charge-types/data nil])]
+  ([on-select {:keys [hide-search-bar? with-standard-shapes?]}]
+   (let [{:keys [status error]} @(rf/subscribe [::repository.charge-types/data nil])
+         paths-sub (if with-standard-shapes?
+                     ::augmented-top-level-charge-type-paths
+                     ::top-level-charge-type-paths)]
      (case status
        :loading [status/loading]
        :error [status/error-display error]
@@ -332,7 +376,7 @@
           [search-bar])
         [tree/tree
          ::filter-identifier
-         @(rf/subscribe [::top-level-charge-type-paths])
+         @(rf/subscribe [paths-sub])
          base-context
          :select-fn (fn [path]
                       (let [{:keys [name types]} @(rf/subscribe [:get path])]
