@@ -270,13 +270,18 @@
      heraldicon.frontend.component.charge-type/sort-key).
    So the first match returned is the one visually at the top of the filter.
 
+   When the typed value slugifies to the same string as one of the matching
+   node names, that node is preferred over the visually-first substring
+   match (so `charge:lion` picks `Lion`, not `Lion's head`).
+
    `extra-top-level-nodes` lets the caller include synthetic top-level nodes
    (the missing standard shapes) so they participate in the alphabetical
    top-level sort just like DB-loaded ones."
   ([charge-types search-string]
    (first-filter-match charge-types nil search-string))
   ([charge-types extra-top-level-nodes search-string]
-   (let [words (search-string/split (or search-string ""))
+   (let [target-slug (facets/slugify-name (or search-string ""))
+         words (search-string/split (or search-string ""))
          sort-top (fn [nodes]
                     (sort-by #(some-> % :name str/lower-case) nodes))
          sort-sub (fn [nodes]
@@ -284,17 +289,22 @@
                                    #(some-> % :name str/lower-case))
                              nodes))]
      (when (seq words)
-       (letfn [(matches? [node]
+       (letfn [(substring-match? [node]
                  (let [title (-> node :name (or "") remove-charge-count
                                  search-string/normalize-string-for-match)]
                    (every? (fn [w] (search-string/matches-word? title w)) words)))
-               (walk [node]
+               (exact-match? [node]
+                 (and (seq target-slug)
+                      (= target-slug (some-> node :name facets/slugify-name))))
+               (walk [pred node]
                  (cond
                    (not (map? node)) nil
-                   (matches? node) (:name node)
-                   :else (some walk (sort-sub (:types node)))))]
-         (some walk (sort-top (concat (:types charge-types)
-                                      extra-top-level-nodes))))))))
+                   (pred node) (:name node)
+                   :else (some (partial walk pred) (sort-sub (:types node)))))]
+         (let [top (sort-top (concat (:types charge-types)
+                                     extra-top-level-nodes))]
+           (or (some (partial walk exact-match?) top)
+               (some (partial walk substring-match?) top))))))))
 
 (defn- charge-type-select
   [context]
