@@ -16,7 +16,35 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-05-15"
+  [{:id "2026-06-15"
+    :title "Structured search for arms"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "The arms list now has a " [:b "structured search"] " that lets you filter by specific aspects of the design using " [:code "key:value"] " tokens — mixed freely with regular name search. All tokens have to match for an arms to show up."]
+         [:p "Just type into the search bar. The autocomplete dropdown walks you through the available keywords and their values. For " [:code "charge:"] " and " [:code "crest:"] " it pops up the same charge-type tree you know from the charges list, narrowed live by whatever you type after the colon."]
+         [:p "There's also a help icon next to the search input that summarises the available keywords."]]
+        [:div
+         (release-image "/img/2026-06-15-release-update-1.png" :width "500px")]]
+
+       [:div.release-row
+        [:div.info
+         [:h3 "Available keywords"]
+         [:ul
+          [:li [:code "tincture:"] " — any tincture anywhere in the arms (the field, an ordinary, a charge, a cottise, …). " [:em "Example: "] [:code "tincture:or"] "."]
+          [:li [:code "partition:"] " — a field's division or pattern. " [:em "Example: "] [:code "partition:per-pale"] ", " [:code "partition:chequy"] "."]
+          [:li [:code "field:"] " — any property of any field — its type " [:em "or"] " its tincture. " [:em "Example: "] [:code "field:chequy"] ", " [:code "field:gules"] "."]
+          [:li [:code "main-field:"] " — same as " [:code "field:"] " but only for the top-level main field (including " [:code "main-field:plain"] ")."]
+          [:li [:code "charge:"] " — any charge in the arms. Uses the full charge-type hierarchy, so " [:code "charge:mammal"] " matches all mammals, " [:code "charge:lion"] " just lions, etc."]
+          [:li [:code "crest:"] " — like " [:code "charge:"] " but restricted to charges used as crests on helms."]
+          [:li [:code "ordinary:"] " — any ordinary (e.g. " [:code "ordinary:bend"] ", " [:code "ordinary:fess"] ")."]
+          [:li [:code "ornament:"] " — any ornament: " [:code "ornament:motto"] ", " [:code "ornament:helm"] ", " [:code "ornament:crown"] ", " [:code "ornament:mantling"] ", " [:code "ornament:supporter"] ", etc."]
+          [:li [:code "attitude:"] " — a charge's attitude (e.g. " [:code "attitude:rampant"] ", " [:code "attitude:passant"] ")."]]]
+        [:div
+         (release-image "/img/2026-06-15-release-update-2.png" :width "500px")]]])}
+
+   {:id "2026-05-15"
     :title "Deletion feature"
     :content
     (fn []
