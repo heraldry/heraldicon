@@ -458,7 +458,16 @@
                                   (reset! open? false)
                                   true)))]
         [:div.search-field {:class (when (= kind :arms) "wide")
-                            :style {:position "relative"}}
+                            :style (cond-> {:position "relative"}
+                                     ;; While the dropdown is open, lift the
+                                     ;; search-field above the outside-click
+                                     ;; overlay (z-index 49) so clicks and
+                                     ;; double-clicks inside the input itself
+                                     ;; reach the input — not the overlay,
+                                     ;; which would close the dropdown and
+                                     ;; blur focus.
+                                     (and (= kind :arms) @open?)
+                                     (assoc :z-index 50))}
          [:i.fas.fa-search]
          [:input {:name "search"
                   :type "search"
