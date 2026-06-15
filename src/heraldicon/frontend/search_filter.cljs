@@ -356,6 +356,7 @@
         open? (r/atom false)
         cursor (r/atom (count (or @value-sub "")))
         input-ref (atom nil)
+        container-ref (atom nil)
         last-applied-slug (atom ::unset)
         last-applied-tree-search (atom ::unset)
         selected-index (r/atom 0)
@@ -365,7 +366,22 @@
         applying? (atom false)
         track-cursor! (fn [e]
                         (when-not @applying?
-                          (reset! cursor (-> e .-target .-selectionStart))))]
+                          (reset! cursor (-> e .-target .-selectionStart))))
+        ;; Document-level outside-click detection. Beats a fullscreen overlay
+        ;; because the overlay would either catch clicks inside the input
+        ;; (closing the dropdown and blurring focus) or require z-index
+        ;; gymnastics that don't actually fix the stacking-context issue.
+        handle-outside-click (fn [e]
+                               (let [target (.-target e)
+                                     container @container-ref]
+                                 (when (and container target
+                                            (not (.contains container target)))
+                                   (reset! open? false))))
+        _ (add-watch open? ::outside-click
+                     (fn [_ _ _ new-val]
+                       (if new-val
+                         (.addEventListener js/document "mousedown" handle-outside-click)
+                         (.removeEventListener js/document "mousedown" handle-outside-click))))]
     ;; keep tmp-value in sync with subscription. Only nudge the cursor on
     ;; externally-driven changes (URL params, programmatic resets) — on-change
     ;; already moved it in lockstep with the user's typing, and this watch
@@ -458,16 +474,8 @@
                                   (reset! open? false)
                                   true)))]
         [:div.search-field {:class (when (= kind :arms) "wide")
-                            :style (cond-> {:position "relative"}
-                                     ;; While the dropdown is open, lift the
-                                     ;; search-field above the outside-click
-                                     ;; overlay (z-index 49) so clicks and
-                                     ;; double-clicks inside the input itself
-                                     ;; reach the input — not the overlay,
-                                     ;; which would close the dropdown and
-                                     ;; blur focus.
-                                     (and (= kind :arms) @open?)
-                                     (assoc :z-index 50))}
+                            :ref #(reset! container-ref %)
+                            :style {:position "relative"}}
          [:i.fas.fa-search]
          [:input {:name "search"
                   :type "search"
@@ -559,11 +567,8 @@
                           :width "calc(100% - 12px - 1.5em)"}}]
          (when (and (= kind :arms) @open? (or tree-key (seq suggestions)))
            [:<>
-            ;; Outside-click catcher closes the dropdown.
-            [:div {:style {:position "fixed"
-                           :top 0 :left 0 :right 0 :bottom 0
-                           :z-index 49}
-                   :on-mouse-down #(reset! open? false)}]
+            ;; (Outside-click is handled at the document level — see
+            ;; handle-outside-click above. No overlay div here.)
             (cond
               tree-key
               [:div {:style (merge dropdown-base-style
