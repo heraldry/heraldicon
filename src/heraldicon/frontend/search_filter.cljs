@@ -450,8 +450,9 @@
                                       0)))))
             apply-tree-top! (fn []
                               (let [data (some-> @(rf/subscribe [::repository.charge-types/data nil]) :data)
+                                    standard-shapes @(rf/subscribe [:get charge-type-select/standard-shapes-path])
                                     slug (facet-autocomplete/current-value @tmp-value @cursor)
-                                    match (charge-type-select/first-filter-match data slug)]
+                                    match (charge-type-select/first-filter-match data standard-shapes slug)]
                                 (when match
                                   (apply-suggestion! (str tree-key ":" (facets/slugify-name match)))
                                   (reset! open? false)
@@ -567,7 +568,8 @@
                   (apply-suggestion! (str tree-key ":" (facets/slugify-name name)))
                   (when leaf?
                     (reset! open? false)))
-                {:hide-search-bar? true}]]
+                {:hide-search-bar? true
+                 :with-standard-shapes? true}]]
 
               (seq suggestions)
               [:ul {:style (merge dropdown-base-style

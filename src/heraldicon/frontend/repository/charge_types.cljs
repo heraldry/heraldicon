@@ -6,6 +6,8 @@
    [heraldicon.frontend.repository.core :as repository]
    [heraldicon.frontend.repository.query :as query]
    [heraldicon.frontend.user.session :as session]
+   [heraldicon.heraldry.charge.options :as charge.options]
+   [heraldicon.heraldry.facets :as facets]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
   (:require-macros [reagent.ratom :refer [reaction]]))
@@ -13,15 +15,49 @@
 (def db-path-charge-types
   (conj repository/db-path-base :charge-types))
 
+(def db-path-standard-shapes
+  ;; Synthetic top-level entries used by the arms autocomplete tree to cover
+  ;; the 10 inline geometric charges that don't necessarily have an entry in
+  ;; the DB charge_types tree. Populated by ::store with only the subset of
+  ;; shapes whose slug isn't already covered by the DB tree.
+  (conj repository/db-path-base :charge-types-standard-shapes))
+
+(def ^:private standard-shape-types
+  ;; Derived from charge.options/charges — the actual list of inline charge
+  ;; type keywords (`:heraldry.charge.type/roundel`, …). The :name is the
+  ;; keyword's name suffix, which is exactly the slug the extractor emits
+  ;; (`charge:roundel`) and what arms.facets stores. So picking one from the
+  ;; tree, slugifying its name, and the existing facet:value indexing all
+  ;; agree.
+  (mapv (fn [kw]
+          {:type :heraldicon/charge-type
+           :name (name kw)
+           :types []})
+        charge.options/charges))
+
+(defn- collect-slugs [data]
+  (set (->> (tree-seq #(seq (:types %)) :types data)
+            (keep :name)
+            (map facets/slugify-name))))
+
+(defn- missing-standard-shapes [data]
+  (let [existing (collect-slugs data)]
+    (filterv #(not (existing (facets/slugify-name (:name %))))
+             standard-shape-types)))
+
 (defn clear
   [db]
-  (assoc-in db db-path-charge-types nil))
+  (-> db
+      (assoc-in db-path-charge-types nil)
+      (assoc-in db-path-standard-shapes nil)))
 
 (rf/reg-event-db ::store
   (fn [db [_ data]]
-    (assoc-in db db-path-charge-types {:status :done
-                                       :data data
-                                       :path (conj db-path-charge-types :data)})))
+    (-> db
+        (assoc-in db-path-charge-types {:status :done
+                                        :data data
+                                        :path (conj db-path-charge-types :data)})
+        (assoc-in db-path-standard-shapes (missing-standard-shapes data)))))
 
 (rf/reg-event-db ::store-error
   (fn [db [_ error]]
