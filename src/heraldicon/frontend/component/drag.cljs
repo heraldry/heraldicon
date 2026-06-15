@@ -178,14 +178,16 @@
                        (isa? drag-node-parent-type
                              :heraldry/ornaments)) (conj #(shield-separator/add-or-remove-shield-separator %1 %2))
 
-                   (or (isa? drop-node-parent-type
-                             :heraldry/helm)
-                       (isa? drop-node-type
-                             :heraldry/helm)
-                       (isa? drop-node-parent-type
-                             :heraldry/ornaments)
-                       (isa? drop-node-type
-                             :heraldry/ornaments)) (conj #(shield-separator/add-or-remove-shield-separator %1 %3)))]
+                   (or (and (contains? #{:above :below} where)
+                            (or (isa? drop-node-parent-type
+                                      :heraldry/helm)
+                                (isa? drop-node-parent-type
+                                      :heraldry/ornaments)))
+                       (and (= where :inside)
+                            (or (isa? drop-node-type
+                                      :heraldry/helm)
+                                (isa? drop-node-type
+                                      :heraldry/ornaments)))) (conj #(shield-separator/add-or-remove-shield-separator %1 %3)))]
     (when target-context
       (rf/dispatch [::component.element/move drag-node-context target-context
                     {:post-fn (when (seq post-fns)
