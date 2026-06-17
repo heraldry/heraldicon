@@ -12,7 +12,6 @@
    [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.heraldry.charge.options :as charge.options]
    [heraldicon.interface :as interface]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
@@ -29,13 +28,12 @@
                                                                          :facing nil
                                                                          :data nil
                                                                          :variant nil}]))
-                                :src (static/static-url
-                                      (str "/svg/charge-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]]
+                                :src (str "/svg/charge-type-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]]
     [tooltip/choice display-name choice]))
 
 (defn choice-preview-url [context]
   (if (interface/get-raw-data (c/++ context :preview?))
-    (static/static-url "/svg/charge-type-roundel-unselected.svg")
+    "/svg/charge-type-roundel-unselected.svg"
     (let [charge-type-context (c/++ context :type)
           variant-context (c/++ context :variant)
           {:keys [inherited default]} (interface/get-options charge-type-context)
@@ -49,8 +47,7 @@
          :charge variant
          :width 100
          :height 120)
-        (static/static-url
-         (str "/svg/charge-type-" (name value) "-unselected.svg"))))))
+        (str "/svg/charge-type-" (name value) "-unselected.svg")))))
 
 (defn- choice-preview [context]
   (let [variant-context (c/++ context :variant)

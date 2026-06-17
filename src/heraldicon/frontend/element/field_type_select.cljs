@@ -11,7 +11,6 @@
    [heraldicon.heraldry.field.options :as field.options]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (defn set-field-type [db path new-type num-fields-x num-fields-y num-base-fields base-field-shift]
@@ -74,8 +73,7 @@
                                         :height "4.5em"}
                                 :on-click (when clickable?
                                             (js-event/handled #(rf/dispatch [::set path key])))
-                                :src (static/static-url
-                                      (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]]
+                                :src (str "/svg/field-type-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]]
     (if clickable?
       [tooltip/choice display-name choice :data-tour-field-type (name key)]
       choice)))

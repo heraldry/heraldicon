@@ -1,7 +1,6 @@
 (ns heraldicon.frontend.ko-fi
   (:require
-   [heraldicon.frontend.language :refer [tr]]
-   [heraldicon.static :as static]))
+   [heraldicon.frontend.language :refer [tr]]))
 
 (defn large-button
   []
@@ -47,6 +46,6 @@
 
 (defn qr-code
   []
-  [:img {:src (static/static-url "/img/ko-fi-qrcode.png")
+  [:img {:src "/img/ko-fi-qrcode.png"
          :style {:margin "auto"
                  :display "block"}}])

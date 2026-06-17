@@ -10,7 +10,6 @@
    [heraldicon.frontend.user.form.login :as form.login]
    [heraldicon.frontend.user.form.register :as form.register]
    [heraldicon.frontend.user.session :as session]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as reife]))
 
@@ -50,7 +49,7 @@
                     :padding-left "0.5em"
                     :padding-right "0.5em"
                     :white-space "nowrap"}}
-      [:img {:src (static/static-url "/img/heraldicon-logo.png")
+      [:img {:src "/img/heraldicon-logo.png"
              :style {:height "1.8em"
                      :margin-right "0.6em"
                      :position "relative"

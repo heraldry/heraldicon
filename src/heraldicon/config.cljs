@@ -31,7 +31,6 @@
            :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                  :ClientId "7tcpem5hrjcu097d74h3nv6s92"
                                  :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
-           :static-files-url "http://localhost:8081"
            :fleur-de-lis-charge-id "charge:ZfqrIl"
            :torse-charge-id "charge:8vwlZ2"
            :helmet-charge-id "charge:hlsnvP"
@@ -52,7 +51,6 @@
                :cognito-pool-config {:UserPoolId "eu-central-1_eHwF2byeJ"
                                      :ClientId "7tcpem5hrjcu097d74h3nv6s92"
                                      :jwksUri "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_eHwF2byeJ/.well-known/jwks.json"}
-               :static-files-url "https://cdn.staging.heraldicon.org"
                :fleur-de-lis-charge-id "charge:ZfqrIl"
                :torse-charge-id "charge:8vwlZ2"
                :helmet-charge-id "charge:hlsnvP"

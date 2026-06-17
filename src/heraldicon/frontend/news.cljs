@@ -1,16 +1,14 @@
 (ns heraldicon.frontend.news
   (:require
    [heraldicon.frontend.title :as title]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (defn- release-image [img-src & {:keys [width]}]
-  (let [src (static/static-url img-src)]
-    [:a {:href src
-         :target "_blank"}
-     [:img {:style {:width (or width "100%")}
-            :src src
-            :alt "release update overview"}]]))
+  [:a {:href img-src
+       :target "_blank"}
+   [:img {:style {:width (or width "100%")}
+          :src img-src
+          :alt "release update overview"}]])
 
 (defn post-date [{:keys [id date]}]
   (or date (subs id 0 10)))

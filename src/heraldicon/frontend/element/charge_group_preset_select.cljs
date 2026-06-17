@@ -6,7 +6,6 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.frontend.tooltip :as tooltip]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::select
@@ -33,8 +32,7 @@
    [:img.clickable {:style {:width "4em"
                             :height "4.5em"}
                     :on-click (js-event/handled #(rf/dispatch [::select path group charge-adjustments]))
-                    :src (static/static-url
-                          (str "/svg/charge-group-preset-" (name key) ".svg"))}]])
+                    :src (str "/svg/charge-group-preset-" (name key) ".svg")}]])
 
 (defn charge-group-preset-select [{:keys [path] :as context}]
   [:div.ui-setting

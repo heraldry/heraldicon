@@ -16,7 +16,6 @@
    [heraldicon.heraldry.field.interface :as field.interface]
    [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::load-arms
@@ -105,10 +104,8 @@
                                                        :translate-y -40}))]
                                           {:default icon
                                            :selected icon})
-             {:default (static/static-url
-                        (str "/svg/field-type-" (name field-type) "-unselected.svg"))
-              :selected (static/static-url
-                         (str "/svg/field-type-" (name field-type) "-selected.svg"))})
+             {:default (str "/svg/field-type-" (name field-type) "-unselected.svg")
+              :selected (str "/svg/field-type-" (name field-type) "-selected.svg")})
      :validation (validation/validate-field context)
      :drop-options-fn drag/drop-options
      :drop-fn drag/drop-fn

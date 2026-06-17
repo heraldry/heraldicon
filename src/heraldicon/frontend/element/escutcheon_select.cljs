@@ -9,7 +9,6 @@
    [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
@@ -30,8 +29,7 @@
                                          :vertical-align "top"}
                                  :on-click (when clickable?
                                              (js-event/handled #(rf/dispatch [:set context key])))
-                                 :src (static/static-url
-                                       (str "/svg/escutcheon-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]
+                                 :src (str "/svg/escutcheon-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]
                 (when clickable?
                   [:div.choice-label (tr display-name)])]]
     (if clickable?

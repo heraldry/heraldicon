@@ -9,7 +9,6 @@
    [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
@@ -33,9 +32,9 @@
                                           :height (when-not (= key :all) "4.5em")}
                                   :on-click (when clickable?
                                               (js-event/handled #(rf/dispatch [:set context key])))
-                                  :src (static/static-url (if (= key :all)
-                                                            "/img/psychedelic.png"
-                                                            (str "/svg/theme-" (name key) ".svg")))}]]
+                                  :src (if (= key :all)
+                                         "/img/psychedelic.png"
+                                         (str "/svg/theme-" (name key) ".svg"))}]]
                 (when clickable?
                   [:div.choice-label (tr display-name)])]]
     (if clickable?

@@ -5,7 +5,6 @@
    [heraldicon.frontend.api :as api]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.user.session :as session]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -73,9 +72,9 @@
                 :string.user.message/need-to-be-logged-in)}))
 
 (defn icon [height on?]
-  [:img {:src (static/static-url (if on?
-                                   "/svg/favorite-on.svg"
-                                   "/svg/favorite-off.svg"))
+  [:img {:src (if on?
+                "/svg/favorite-on.svg"
+                "/svg/favorite-off.svg")
          :style {:height (str height "px")
                  :vertical-align "top"}}])
 
