@@ -8,7 +8,6 @@
    [heraldicon.frontend.tooltip :as tooltip]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (defn- line-type-choice [context key display-name & {:keys [selected?
@@ -18,8 +17,7 @@
                                 :on-click (when clickable?
                                             (js-event/handled
                                              #(rf/dispatch [:set context key])))
-                                :src (static/static-url
-                                      (str "/svg/line-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]]
+                                :src (str "/svg/line-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]]
     (if clickable?
       [tooltip/choice display-name choice]
       choice)))

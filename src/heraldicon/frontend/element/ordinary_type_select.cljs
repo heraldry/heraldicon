@@ -10,7 +10,6 @@
    [heraldicon.heraldry.ordinary.options :as ordinary.options]
    [heraldicon.interface :as interface]
    [heraldicon.options :as options]
-   [heraldicon.static :as static]
    [heraldicon.util.core :as util]
    [re-frame.core :as rf]))
 
@@ -50,8 +49,7 @@
                                         :height "5.7em"}
                                 :on-click (when clickable?
                                             (js-event/handled #(rf/dispatch [::set (vec (drop-last path)) key])))
-                                :src (static/static-url
-                                      (str "/svg/ordinary-type-" (name key) "-" (if selected? "selected" "unselected") ".svg"))}]]
+                                :src (str "/svg/ordinary-type-" (name key) "-" (if selected? "selected" "unselected") ".svg")}]]
     (if clickable?
       [tooltip/choice display-name choice]
       choice)))

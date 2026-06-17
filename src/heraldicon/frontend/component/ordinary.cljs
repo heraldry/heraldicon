@@ -12,7 +12,6 @@
    [heraldicon.heraldry.default :as default]
    [heraldicon.heraldry.ordinary.core :as ordinary]
    [heraldicon.interface :as interface]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::remove-cottise
@@ -147,10 +146,8 @@
                                   (rf/dispatch-sync [:set cottise-extra-2-context default/cottise])
                                   (rf/dispatch [::tree/select-node identifier (:path cottise-extra-2-context) true]))}))]
     {:title (ordinary/title context)
-     :icon {:default (static/static-url
-                      (str "/svg/ordinary-type-" (name ordinary-type) "-unselected.svg"))
-            :selected (static/static-url
-                       (str "/svg/ordinary-type-" (name ordinary-type) "-selected.svg"))}
+     :icon {:default (str "/svg/ordinary-type-" (name ordinary-type) "-unselected.svg")
+            :selected (str "/svg/ordinary-type-" (name ordinary-type) "-selected.svg")}
      :validation (validation/validate-ordinary context)
      :buttons [{:icon "fas fa-plus"
                 :title :string.button/add

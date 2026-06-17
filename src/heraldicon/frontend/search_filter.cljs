@@ -23,7 +23,6 @@
    [heraldicon.frontend.user.session :as session]
    [heraldicon.heraldry.facets :as facets]
    [heraldicon.localization.string :as string]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]
    [reagent.core :as r]))
 
@@ -90,10 +89,10 @@
     (first (filter #(= (:id %) item-id) items))))
 
 (defn- new-badge []
-  [:img.new-badge {:src (static/static-url "/img/new-badge.png")}])
+  [:img.new-badge {:src "/img/new-badge.png"}])
 
 (defn- updated-badge []
-  [:img.updated-badge {:src (static/static-url "/img/updated-badge.png")}])
+  [:img.updated-badge {:src "/img/updated-badge.png"}])
 
 (defn- get-list-mode [id options]
   (let [list-mode-path (filter-list-mode-path id)]

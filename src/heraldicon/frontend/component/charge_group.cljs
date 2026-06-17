@@ -18,7 +18,6 @@
    [heraldicon.interface :as interface]
    [heraldicon.localization.string :as string]
    [heraldicon.math.vector :as v]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (macros/reg-event-db ::cycle-charge-index
@@ -237,8 +236,8 @@
     {:title (string/str-tr :string.charge-group/charge-group-of " " (if (= num-charges 1)
                                                                       (charge.options/title (c/++ context :charges 0))
                                                                       :string.charge-group/various))
-     :icon {:default (static/static-url "/svg/charge-group-preset-three.svg")
-            :selected (static/static-url "/svg/charge-group-preset-three-selected.svg")}
+     :icon {:default "/svg/charge-group-preset-three.svg"
+            :selected "/svg/charge-group-preset-three-selected.svg"}
      :draggable? true
      :drop-options-fn drag/drop-options
      :drop-fn drag/drop-fn

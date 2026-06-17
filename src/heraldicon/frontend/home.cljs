@@ -1,7 +1,6 @@
 (ns heraldicon.frontend.home
   (:require
    [heraldicon.frontend.title :as title]
-   [heraldicon.static :as static]
    [re-frame.core :as rf]))
 
 (def ^:private heraldicon
@@ -22,7 +21,7 @@
                   :float "right"
                   :margin-left "20px"
                   :margin-bottom "20px"}
-          :src (static/static-url "/img/heraldicon-logo.png")
+          :src "/img/heraldicon-logo.png"
           :alt "logo"}]
    [:p
     [:a {:href "https://en.wikipedia.org/wiki/Heraldry"
