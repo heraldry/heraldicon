@@ -144,22 +144,6 @@
 
   dev-local (shell "npx shadow-cljs watch frontend backend test manage")
 
-  username-fix-generate
-  {:doc "Generate the username-fix review TSV from an input list (offline, no DB, no email). Args: [in-tsv out-tsv], defaults username-fix-input.tsv -> username-fix.tsv"
-   :task (let [[in out] *command-line-args*]
-           (shell "npx shadow-cljs compile manage")
-           (shell "node" "backend/build/manage/manage.js" "username-fix-generate"
-                  (or in "username-fix-input.tsv")
-                  (or out "username-fix.tsv")))}
-
-  username-fix-render
-  {:doc "Render the username-fix emails for review (offline, no DB, NO sending). Args: [in-tsv out-txt], defaults username-fix.tsv -> username-fix-emails.txt"
-   :task (let [[in out] *command-line-args*]
-           (shell "npx shadow-cljs compile manage")
-           (shell "node" "backend/build/manage/manage.js" "username-fix-render"
-                  (or in "username-fix.tsv")
-                  (or out "username-fix-emails.txt")))}
-
   staging-backend-release (do
                             (fs/delete-tree STAGING-BACKEND-DIR)
                             (fs/delete-tree PROD-BACKEND-DIR)
