@@ -233,13 +233,13 @@
                         (create-sentry-release-backend PROD-BACKEND-DIR "prod")
                         (shell {:dir "backend"} "bb stats-deploy"))}
 
-  staging-manage (do
-                   (manage-release STAGING-BACKEND-DIR STAGING-CONFIG)
-                   (shell {:dir "backend"} "bb staging-manage-deploy"))
+  staging-manage-deploy (do
+                          (manage-release STAGING-BACKEND-DIR STAGING-CONFIG)
+                          (shell {:dir "backend"} "bb staging-manage-deploy"))
 
-  prod-manage (do
-                (manage-release PROD-BACKEND-DIR PROD-CONFIG)
-                (shell {:dir "backend"} "bb prod-manage-deploy"))
+  prod-manage-deploy (do
+                       (manage-release PROD-BACKEND-DIR PROD-CONFIG)
+                       (shell {:dir "backend"} "bb prod-manage-deploy"))
 
   prod-frontend-release (build-frontend-release PROD-FRONTEND-DIR PROD-CONFIG)
 
