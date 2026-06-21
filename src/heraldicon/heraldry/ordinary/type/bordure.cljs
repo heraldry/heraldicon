@@ -10,7 +10,8 @@
    [heraldicon.math.core :as math]
    [heraldicon.options :as options]
    [heraldicon.svg.path :as path]
-   [heraldicon.svg.shape :as shape]))
+   [heraldicon.svg.shape :as shape]
+   [heraldicon.svg.squiggly :as squiggly]))
 
 (def ordinary-type :heraldry.ordinary.type/bordure)
 
@@ -104,11 +105,18 @@
 (defmethod interface/render-shape ordinary-type [context]
   (let [{:keys [edge line]} (interface/get-properties context)
         parent-environment (interface/get-parent-field-environment context)
+        squiggly? (interface/render-option :squiggly? context)
         big-shape (shape/build-shape context :full)
         shape (cond-> edge
-                (not= (:type line) :straight) (line/modify-path line parent-environment))]
-    {:shape [big-shape shape]
-     :edges [{:paths [shape]}]}))
+                (not= (:type line) :straight) (line/modify-path line parent-environment))
+        ;; squiggle only the contour for display; big-shape is the infinity
+        ;; backdrop and must stay clean (squiggling it would resample a huge
+        ;; perimeter for no visible gain). geometry reads :clean-shape.
+        display-shape (cond-> shape
+                        squiggly? squiggly/squiggly-path)]
+    {:shape [big-shape display-shape]
+     :clean-shape [big-shape shape]
+     :edges [{:paths [display-shape]}]}))
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
   nil)

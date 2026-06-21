@@ -11,7 +11,8 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
    [heraldicon.options :as options]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.path :as path]
+   [heraldicon.svg.squiggly :as squiggly]))
 
 (def ordinary-type :heraldry.ordinary.type/orle)
 
@@ -184,13 +185,19 @@
 (defmethod interface/render-shape ordinary-type [context]
   (let [{:keys [outer-edge inner-edge line opposite-line]} (interface/get-properties context)
         parent-environment (interface/get-parent-field-environment context)
+        squiggly? (interface/render-option :squiggly? context)
         outer-shape (cond-> outer-edge
                       (not= (:type opposite-line) :straight) (line/modify-path opposite-line parent-environment
                                                                                :outer-shape? true))
         inner-shape (cond-> inner-edge
-                      (not= (:type line) :straight) (line/modify-path line parent-environment))]
-    {:shape [outer-shape inner-shape]
-     :edges [{:paths [outer-shape inner-shape]}]}))
+                      (not= (:type line) :straight) (line/modify-path line parent-environment))
+        ;; both edges are derived from the (clean) parent shape, so squiggle
+        ;; them for display while geometry keeps the clean :clean-shape.
+        display-outer (cond-> outer-shape squiggly? squiggly/squiggly-path)
+        display-inner (cond-> inner-shape squiggly? squiggly/squiggly-path)]
+    {:shape [display-outer display-inner]
+     :clean-shape [outer-shape inner-shape]
+     :edges [{:paths [display-outer display-inner]}]}))
 
 (defmethod cottising/cottise-properties ordinary-type [_context _properties]
   nil)
