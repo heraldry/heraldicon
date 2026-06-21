@@ -167,11 +167,9 @@
                                     [line-1 line-2 glue]
                                     [line-2 line-1 glue])))))
                        (map-indexed (fn [idx shape-data]
-                                      (apply shape/build-shape
+                                      (apply shape/build-shapes
                                              (c/++ context :fields idx)
-                                             shape-data)))
-                       (map (fn [path]
-                              {:shape [path]})))
+                                             shape-data))))
                       (map vector
                            (partition 2 1 [nil] lines)
                            (cycle [:counter-clockwise :clockwise])))

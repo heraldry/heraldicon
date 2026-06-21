@@ -247,18 +247,18 @@
                                                     edge-start edge-right-end
                                                     bounding-box
                                                     :extend-from? false)]
-    {:subfields [{:shape [(shape/build-shape
-                           (c/++ context :fields 0)
-                           line-edge-right
-                           :counter-clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 1)
-                           line-edge-left
-                           line-edge-right
-                           :clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 2)
-                           line-edge-left
-                           :counter-clockwise)]}]
+    {:subfields [(shape/build-shapes
+                  (c/++ context :fields 0)
+                  line-edge-right
+                  :counter-clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 1)
+                  line-edge-left
+                  line-edge-right
+                  :clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 2)
+                  line-edge-left
+                  :counter-clockwise)]
      :edges [{:lines [line-edge-left]}
              {:lines [line-edge-right]}]}))

@@ -251,14 +251,14 @@
                                                bounding-box
                                                :reversed? true)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-upper
-               :clockwise-shortest
-               line-lower
-               :clockwise-shortest)]
-      :edges [{:lines [line-upper]}
-              {:lines [line-lower]}]}
+     (assoc (shape/build-shapes
+             context
+             line-upper
+             :clockwise-shortest
+             line-lower
+             :clockwise-shortest)
+            :edges [{:lines [line-upper]}
+                    {:lines [line-lower]}])
      context
      properties)))
 

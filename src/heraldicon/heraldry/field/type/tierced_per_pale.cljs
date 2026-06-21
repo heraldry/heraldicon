@@ -116,19 +116,19 @@
                                                 :reversed? true
                                                 :flipped? true
                                                 :mirrored? true)]
-    {:subfields [{:shape [(shape/build-shape
-                           (c/++ context :fields 0)
-                           line-edge-1
-                           :clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 1)
-                           line-edge-1
-                           :counter-clockwise-shortest
-                           line-edge-2
-                           :counter-clockwise-shortest)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 1)
-                           line-edge-2
-                           :clockwise)]}]
+    {:subfields [(shape/build-shapes
+                  (c/++ context :fields 0)
+                  line-edge-1
+                  :clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 1)
+                  line-edge-1
+                  :counter-clockwise-shortest
+                  line-edge-2
+                  :counter-clockwise-shortest)
+                 (shape/build-shapes
+                  (c/++ context :fields 1)
+                  line-edge-2
+                  :clockwise)]
      :edges [{:lines [line-edge-1]}
              {:lines [line-edge-2]}]}))

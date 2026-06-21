@@ -209,28 +209,28 @@
                                                                   bounding-box
                                                                   :extend-from? false)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-edge-top-left-first
-               line-edge-top-left-second
-               :clockwise-shortest
-               line-edge-top-right-first
-               line-edge-top-right-second
-               :clockwise-shortest
-               line-edge-bottom-right-first
-               line-edge-bottom-right-second
-               :clockwise-shortest
-               line-edge-bottom-left-first
-               line-edge-bottom-left-second
-               :clockwise-shortest)]
-      :edges [{:lines [line-edge-top-left-first
-                       line-edge-top-left-second]}
-              {:lines [line-edge-top-right-first
-                       line-edge-top-right-second]}
-              {:lines [line-edge-bottom-left-first
-                       line-edge-bottom-left-second]}
-              {:lines [line-edge-bottom-right-first
-                       line-edge-bottom-right-second]}]}
+     (assoc (shape/build-shapes
+             context
+             line-edge-top-left-first
+             line-edge-top-left-second
+             :clockwise-shortest
+             line-edge-top-right-first
+             line-edge-top-right-second
+             :clockwise-shortest
+             line-edge-bottom-right-first
+             line-edge-bottom-right-second
+             :clockwise-shortest
+             line-edge-bottom-left-first
+             line-edge-bottom-left-second
+             :clockwise-shortest)
+            :edges [{:lines [line-edge-top-left-first
+                             line-edge-top-left-second]}
+                    {:lines [line-edge-top-right-first
+                             line-edge-top-right-second]}
+                    {:lines [line-edge-bottom-left-first
+                             line-edge-bottom-left-second]}
+                    {:lines [line-edge-bottom-right-first
+                             line-edge-bottom-right-second]}])
      context
      properties)))
 

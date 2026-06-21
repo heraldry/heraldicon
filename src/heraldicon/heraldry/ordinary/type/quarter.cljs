@@ -180,12 +180,12 @@
                                              bounding-box
                                              :extend-from? false)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-one
-               line-two
-               :clockwise)]
-      :edges [{:lines [line-one line-two]}]}
+     (assoc (shape/build-shapes
+             context
+             line-one
+             line-two
+             :clockwise)
+            :edges [{:lines [line-one line-two]}])
      context
      properties)))
 

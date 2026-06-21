@@ -262,12 +262,12 @@
                                                bounding-box
                                                :extend-from? false)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-left
-               line-right
-               :clockwise-shortest)]
-      :edges [{:lines [line-left line-right]}]}
+     (assoc (shape/build-shapes
+             context
+             line-left
+             line-right
+             :clockwise-shortest)
+            :edges [{:lines [line-left line-right]}])
      context
      properties)))
 

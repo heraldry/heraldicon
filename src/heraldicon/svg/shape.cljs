@@ -33,13 +33,14 @@
                  {:keys [path current]}
                  {:keys [line reverse? infinity shortest?]}
                  {next-line :line
-                  next-reverse? :reverse?}]
+                  next-reverse? :reverse?}
+                 line-key]
   (cond
     line {:path (conj path
                       (if (empty? path)
                         "M" "L")
                       (line/line-start line :reverse? reverse?)
-                      (path/stitch (cond-> (:line line)
+                      (path/stitch (cond-> (line-key line)
                                      reverse? line/reversed-path)))
           :current (line/line-end line :reverse? reverse?)}
     infinity (let [next-point (line/line-start next-line :reverse? next-reverse?)]
@@ -54,16 +55,32 @@
   (when (subfield-context? context)
     (:transform-fn (interface/get-properties (c/-- context 2)))))
 
-(defn build-shape [context & parts]
+(defn- build-shape* [context line-key parts]
   (let [transform-fn* (or (transform-fn context) identity)
         center (transform-fn* (bb/center (interface/get-bounding-box context)))]
     (->> (partition 2 1 parts parts)
          (reduce (fn [state [part next-part]]
-                   (let [part (inspect-part part)
-                         next-part (inspect-part next-part)]
-                     (add-part center state part next-part)))
+                   (add-part center state (inspect-part part) (inspect-part next-part) line-key))
                  {:path []
                   :current nil})
          :path
          close-path
          path/make-path)))
+
+(defn build-shape
+  "Builds a single svg path string from the given parts, using the squiggly
+  display line. For shapes that also feed geometry, prefer build-shapes."
+  [context & parts]
+  (build-shape* context :display-line parts))
+
+(defn build-shapes
+  "Like build-shape, but returns {:shape [display] :clean-shape [clean]}: the
+  display path is built from the squiggly line, the clean path from the
+  geometric line, so exact-shape (and everything downstream) stays on the clean,
+  non-squiggly contour. When squiggly is off the two lines are identical, so the
+  clean shape is omitted and geometry-shape falls back to the (already clean)
+  :shape — no second build."
+  [context & parts]
+  (cond-> {:shape [(build-shape* context :display-line parts)]}
+    (interface/render-option :squiggly? context)
+    (assoc :clean-shape [(build-shape* context :line parts)])))

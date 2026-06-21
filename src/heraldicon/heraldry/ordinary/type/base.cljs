@@ -75,11 +75,11 @@
                                                upper-left upper-right
                                                bounding-box)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-upper
-               :clockwise)]
-      :edges [{:lines [line-upper]}]}
+     (assoc (shape/build-shapes
+             context
+             line-upper
+             :clockwise)
+            :edges [{:lines [line-upper]}])
      context
      properties)))
 

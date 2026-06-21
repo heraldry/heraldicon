@@ -549,16 +549,16 @@
                                                     bounding-box
                                                     :extend-from? false)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-upper-left
-               line-upper-right
-               :clockwise-shortest
-               line-lower-right
-               line-lower-left
-               :clockwise-shortest)]
-      :edges [{:lines [line-upper-left line-upper-right]}
-              {:lines [line-lower-right line-lower-left]}]}
+     (assoc (shape/build-shapes
+             context
+             line-upper-left
+             line-upper-right
+             :clockwise-shortest
+             line-lower-right
+             line-lower-left
+             :clockwise-shortest)
+            :edges [{:lines [line-upper-left line-upper-right]}
+                    {:lines [line-lower-right line-lower-left]}])
      context
      properties)))
 

@@ -215,11 +215,9 @@
                                              :counter-clockwise]
                                 :else [:full])))
                        (map-indexed (fn [idx shape-data]
-                                      (apply shape/build-shape
+                                      (apply shape/build-shapes
                                              (c/++ context :fields idx)
-                                             shape-data)))
-                       (map (fn [path]
-                              {:shape [path]})))
+                                             shape-data))))
                       (partition 2 1 [[nil nil]] lines))
      :edges (vec (mapcat (fn [[line-left line-right]]
                            [{:lines [line-left]}

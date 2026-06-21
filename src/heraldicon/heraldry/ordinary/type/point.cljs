@@ -119,11 +119,11 @@
                                                bounding-box
                                                :reversed? (not dexter?))]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-lower
-               :clockwise)]
-      :edges [{:lines [line-lower]}]}
+     (assoc (shape/build-shapes
+             context
+             line-lower
+             :clockwise)
+            :edges [{:lines [line-lower]}])
      context
      properties)))
 
