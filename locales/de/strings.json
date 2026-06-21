@@ -788,7 +788,7 @@
       "save-changes-first": "Speichere deine Änderungen erst.",
       "username-required": "Benutzername erforderlich.",
       "username-or-email-required": "Benutzername oder E-Mail erforderlich.",
-      "username-contains-invalid-characters": "Benutzername enthält unerlaubte Zeichen. Erlaubt: a-z, A-Z, 0-9, _, -",
+      "username-contains-invalid-characters": "Der Benutzername muss 3 bis 32 Zeichen lang sein. Verwende Buchstaben und Zahlen, dazwischen sind einzelne . _ oder - erlaubt.",
       "avatar-required": "Bitte ein Bild auswählen.",
       "avatar-upload-failed": "Hochladen des Profilbilds fehlgeschlagen.",
       "avatar-delete-failed": "Entfernen des Profilbilds fehlgeschlagen.",

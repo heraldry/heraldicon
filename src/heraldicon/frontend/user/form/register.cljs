@@ -10,6 +10,7 @@
    [heraldicon.frontend.user.form.confirmation :as confirmation]
    [heraldicon.frontend.user.form.core :as form]
    [heraldicon.util.email :as util.email]
+   [heraldicon.util.username :as util.username]
    [re-frame.core :as rf]
    [taoensso.timbre :as log]))
 
@@ -43,10 +44,6 @@
                 [form]
                 #(rf/dispatch [::form/clear ::id])]}))
 
-(defn- valid-username?
-  [username]
-  (re-matches #"^[a-zA-Z0-9_-]+$" username))
-
 (rf/reg-event-fx ::submit
   (fn [{:keys [db]} _]
     (let [{:keys [username password password-again email]} (form/data-from-db db ::id)
@@ -55,7 +52,7 @@
           email? (not (str/blank? email))
           valid-email? (util.email/valid-email? email)
           password? (not (str/blank? password))
-          valid-username? (valid-username? username)]
+          valid-username? (util.username/valid? username)]
       (cond-> {:dispatch-n [[::message/clear ::id]]}
 
         (not username?) (update :dispatch-n conj

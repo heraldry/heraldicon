@@ -787,7 +787,7 @@
       "save-changes-first": "Guarde su figura primero.",
       "username-required": "Nombre de usuario requerido.",
       "username-or-email-required": "Nombre de usuario o email requerido.",
-      "username-contains-invalid-characters": "Nombre de usuario contiene caracteres inválidos. Permitidos: a-z, A-Z, 0-9, _, -",
+      "username-contains-invalid-characters": "El nombre de usuario debe tener de 3 a 32 caracteres. Usa letras y números, con un solo . _ o - permitido entre ellos.",
       "avatar-required": "Por favor, elige una imagen.",
       "avatar-upload-failed": "Error al subir la imagen de perfil.",
       "avatar-delete-failed": "Error al eliminar la imagen de perfil.",

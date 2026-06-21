@@ -787,7 +787,7 @@
       "save-changes-first": "Sauvegardez d'abord vos modifications.",
       "username-required": "Nom d'utilisateur requis.",
       "username-or-email-required": "Nom d'utilisateur ou adresse e-mail requis.",
-      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -",
+      "username-contains-invalid-characters": "Le nom d'utilisateur doit comporter de 3 à 32 caractères. Utilisez des lettres et des chiffres, avec un seul . _ ou - autorisé entre eux.",
       "avatar-required": "Veuillez choisir une image.",
       "avatar-upload-failed": "Échec du téléversement de l'image de profil.",
       "avatar-delete-failed": "Échec de la suppression de l'image de profil.",
