@@ -6,7 +6,8 @@
    [heraldicon.heraldry.ordinary.humetty :as humetty]
    [heraldicon.heraldry.ordinary.voided :as voided]
    [heraldicon.interface :as interface]
-   [heraldicon.math.core :as math]))
+   [heraldicon.math.core :as math]
+   [heraldicon.svg.squiggly :as squiggly]))
 
 (defn process-humetty-properties [{:keys [line opposite-line extra-line
                                           humetty-percentage-base humetty]
@@ -78,7 +79,31 @@
           (update :edges conj {:paths [(last adjusted-shape)]})))
     shape-data))
 
-(defn shape [shape-data context properties]
-  (-> shape-data
-      (process-shape-humetty context properties)
-      (process-shape-voided context properties)))
+(defn- squiggle-paths [paths]
+  (mapv squiggly/squiggly-path paths))
+
+(defn- squiggle-display-shape
+  "After couped/voided have re-cut the ordinary against the (clean) parent
+  shape, the resulting edges are geometric. Squiggle them for display while
+  keeping the clean version in :clean-shape so exact-shape stays geometric.
+  Guarded by the caller to only run when humetty/voided actually applied, so
+  ordinaries that draw straight from their (already line-squiggled) shape are
+  left untouched."
+  [{:keys [shape edges] :as shape-data} context]
+  (if (interface/render-option :squiggly? context)
+    (assoc shape-data
+           :clean-shape shape
+           :shape (squiggle-paths shape)
+           :edges (mapv (fn [edge]
+                          (cond-> edge
+                            (:paths edge) (update :paths squiggle-paths)))
+                        edges))
+    shape-data))
+
+(defn shape [shape-data context {:keys [humetty voided]
+                                 :as properties}]
+  (cond-> (-> shape-data
+              (process-shape-humetty context properties)
+              (process-shape-voided context properties))
+    (or (:humetty? humetty)
+        (:voided? voided)) (squiggle-display-shape context)))

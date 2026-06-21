@@ -243,6 +243,16 @@
   (or (c/get-key context :parent-shape)
       @(rf/subscribe [::exact-shape (c/scrub-render-hints (parent context))])))
 
+(defn geometry-shape
+  "The path(s) a render-shape exposes for geometric computation. Prefers the
+  clean (non-squigglified) :clean-shape when a producer provides one, so that
+  exact-shape and everything downstream of it (intersections, shrinking,
+  couped/humetty, divisions) never run on the inflated squiggly display path.
+  Falls back to :shape for producers that don't (yet) distinguish the two."
+  [render-shape]
+  (or (:clean-shape render-shape)
+      (:shape render-shape)))
+
 (rf/reg-sub-raw ::exact-impacted-shape
   (fn [_app-db [_ context]]
     (reaction-or-cache
@@ -270,7 +280,7 @@
                                 first)
              chief-shape (some-> chief-context
                                  get-render-shape
-                                 :shape
+                                 geometry-shape
                                  first)
              base-context (->> component-properties
                                (filter (comp #{:heraldry.ordinary.type/base} :type second))
@@ -291,7 +301,7 @@
 (declare get-parent-field-shape)
 
 (defn fallback-exact-shape [context]
-  (let [shape-path (:shape (get-render-shape context))
+  (let [shape-path (geometry-shape (get-render-shape context))
         shape-path (if (vector? shape-path)
                      (first shape-path)
                      shape-path)]
@@ -308,7 +318,7 @@
 (defmethod exact-shape :heraldry/charge [context]
   ;; the charge dictates its own field, the parent field's shape does
   ;; not affect it like it does for ordinaries
-  (-> (get-render-shape context) :shape first))
+  (-> (get-render-shape context) geometry-shape first))
 
 (rf/reg-sub-raw ::exact-shape
   (fn [_app-db [_ context]]

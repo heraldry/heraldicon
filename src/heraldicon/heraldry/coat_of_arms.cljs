@@ -43,18 +43,22 @@
   (-> (interface/get-properties context) :escutcheon-data :environment))
 
 (defmethod interface/render-shape :heraldry/coat-of-arms [context]
-  (let [squiggly? (interface/render-option :squiggly? context)]
-    {:shape [(-> (interface/get-properties context)
-                 :escutcheon-data
-                 :shape
-                 (cond->
-                   squiggly? squiggly/squiggly-path))]}))
+  (let [squiggly? (interface/render-option :squiggly? context)
+        clean-shape (-> (interface/get-properties context)
+                        :escutcheon-data
+                        :shape)]
+    ;; :shape is squigglified for display; :clean-shape stays geometric so that
+    ;; downstream computations (bordures, couped/humetty, fimbriation, divisions,
+    ;; cottises) never operate on the inflated squiggly path. See exact-shape below.
+    {:shape [(cond-> clean-shape
+               squiggly? squiggly/squiggly-path)]
+     :clean-shape [clean-shape]}))
 
 (defmethod interface/bounding-box :heraldry/coat-of-arms [context]
   (-> (interface/get-properties context) :escutcheon-data :shape-bounding-box))
 
 (defmethod interface/exact-shape :heraldry/coat-of-arms [context]
-  (-> (interface/get-render-shape context) :shape first))
+  (-> (interface/get-render-shape context) :clean-shape first))
 
 (defmethod interface/render-component :heraldry/coat-of-arms [context]
   (let [{:keys [svg-export?
