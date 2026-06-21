@@ -770,7 +770,7 @@
       "save-changes-first": "Сначала сохраните изменения.",
       "username-required": "Username required.",
       "username-or-email-required": "Имя пользователя или адрес электронной почты обязательны.",
-      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -",
+      "username-contains-invalid-characters": "Имя пользователя должно содержать от 3 до 32 символов. Используйте буквы и цифры, между ними допускается одиночный . _ или -.",
       "avatar-required": "Пожалуйста, выберите изображение.",
       "avatar-upload-failed": "Не удалось загрузить аватар.",
       "avatar-delete-failed": "Не удалось удалить аватар.",

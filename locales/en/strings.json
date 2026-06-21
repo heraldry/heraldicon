@@ -789,7 +789,7 @@
       "save-changes-first": "Save your changes first.",
       "username-required": "Username required.",
       "username-or-email-required": "Username or email required.",
-      "username-contains-invalid-characters": "Username contains invalid characters. Allowed: a-z, A-Z, 0-9, _, -",
+      "username-contains-invalid-characters": "Username must be 3 to 32 characters. Use letters and numbers, with single . _ or - allowed in between.",
       "avatar-required": "Please choose an image.",
       "avatar-upload-failed": "Avatar upload failed.",
       "avatar-delete-failed": "Removing the avatar failed.",
