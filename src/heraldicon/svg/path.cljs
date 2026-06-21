@@ -24,6 +24,13 @@
 (defn parse-path [path]
   (paper/Path. path))
 
+(defn closed?
+  "True when the path data forms an explicitly closed loop (carries a `z`, which
+  Paper surfaces as `.closed`). Shrink/offset/escutcheon shapes are closed; open
+  line segments are not."
+  [path]
+  (boolean (.-closed ^js/Object (parse-path path))))
+
 (defn translate
   ([path {:keys [x y]}]
    (.translate path x y))
@@ -74,6 +81,22 @@
                         (- (:x cp2) x1) "," (- (:y cp2) y1) ","
                         (- (:x p2) x1) "," (- (:y p2) y1))))
     (.join parts "")))
+
+(defn catmullrom-path
+  "Build an SVG path string through `points` using catmull-rom. When the source
+  contour is a closed loop, drop the trailing point that coincides with the
+  start (the samplers repeat it at offset = length), spline the points as a
+  periodic loop, and append `z`. The explicit close matters for stroked output
+  (e.g. fimbriation), which would otherwise show end-caps at the seam."
+  [points closed-loop?]
+  (let [points (cond-> (vec points)
+                 (and closed-loop?
+                      (> (count points) 1)
+                      (< (v/abs (v/sub (first points) (last points))) 1e-6)) pop)]
+    (cond-> (-> points
+                (catmullrom/catmullrom :closed? closed-loop?)
+                curve-to-relative)
+      closed-loop? (str "z"))))
 
 (defn- points-with-offset [^js/Object path n start-offset]
   ;; Slow path: wrapping arc-length offset, used by round-corners/clockwise?.
@@ -179,10 +202,8 @@
   (cache/memoize
    ::simplify-path
    (fn simplify-path [path smoothing]
-     (-> path
-         (sample-path :precision smoothing)
-         catmullrom/catmullrom
-         curve-to-relative))))
+     (catmullrom-path (sample-path path :precision smoothing)
+                      (closed? path)))))
 
 (defn clockwise? [path]
   (let [points (sample-path path :num-points 20)]
@@ -349,8 +370,7 @@
                       ;; path not being removed
                       (cond-> new-path-points
                         (< last-index final-index) (concat (subvec path-points last-index final-index)))))
-                  catmullrom/catmullrom
-                  curve-to-relative)))
+                  (catmullrom-path (closed? path)))))
     (pos? smoothing) (simplify-path smoothing)))
 
 (defn arc [point-1 anchor-out anchor-in point-2 & {:keys [mirror-at]}]
