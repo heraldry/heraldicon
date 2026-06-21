@@ -260,7 +260,10 @@
                    (conj "z")))]
     (post-process/shape
      {:shape [shape]
-      :edges [{:paths [shape]}]}
+      :edges [{:paths [shape]}]
+      ;; the label is built from straight point segments and has no line-squiggle
+      ;; of its own, so it's always safe to squiggle the whole shape for display
+      :squiggle-display? true}
      context
      properties)))
 

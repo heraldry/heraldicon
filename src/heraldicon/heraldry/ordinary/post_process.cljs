@@ -100,10 +100,17 @@
                         edges))
     shape-data))
 
-(defn shape [shape-data context {:keys [humetty voided]
-                                 :as properties}]
+(defn shape [{:keys [squiggle-display?]
+              :as shape-data} context {:keys [humetty voided]
+                                       :as properties}]
+  ;; squiggle-display? lets a producer whose base shape has no line-squiggle
+  ;; (e.g. the point-based label) always get the display squiggle. Otherwise we
+  ;; only squiggle when couped/voided re-cut the shape against the clean parent,
+  ;; so line-based ordinaries keep their existing per-line squiggle untouched.
   (cond-> (-> shape-data
+              (dissoc :squiggle-display?)
               (process-shape-humetty context properties)
               (process-shape-voided context properties))
-    (or (:humetty? humetty)
+    (or squiggle-display?
+        (:humetty? humetty)
         (:voided? voided)) (squiggle-display-shape context)))
