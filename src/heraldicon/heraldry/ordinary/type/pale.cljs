@@ -249,14 +249,14 @@
                                                right-upper right-lower
                                                bounding-box)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-left
-               :clockwise-shortest
-               line-right
-               :clockwise-shortest)]
-      :edges [{:lines [line-left]}
-              {:lines [line-right]}]}
+     (assoc (shape/build-shapes
+             context
+             line-left
+             :clockwise-shortest
+             line-right
+             :clockwise-shortest)
+            :edges [{:lines [line-left]}
+                    {:lines [line-right]}])
      context
      properties)))
 

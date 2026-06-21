@@ -637,16 +637,25 @@
                                 [(v/dot line-start (v/Vector. 1 -1))
                                  (v/dot line-end (v/Vector. 1 -1))]
                                 [line-start line-end])
-        squiggly? (interface/render-option :squiggly? context)]
-    (assoc line-data
-           :line (-> line-path
-                     (cond->
-                       squiggly? (squiggly/squiggly-path :seed seed))
+        squiggly? (interface/render-option :squiggly? context)
+        ;; finish applies the flip/rotate/serialise that turns a raw line-path
+        ;; into the final oriented svg string. :line is the clean geometric line
+        ;; (used to build field/ordinary shapes); :display-line is the squiggly
+        ;; one (used only for rendering the visible stroke). When squiggly is off
+        ;; they're identical.
+        finish (fn [p]
+                 (-> p
                      path/parse-path
                      (cond->
                        effective-flipped? (path/scale 1 -1))
                      (path/rotate angle)
-                     path/to-svg)
+                     path/to-svg))
+        clean-line (finish line-path)]
+    (assoc line-data
+           :line clean-line
+           :display-line (if squiggly?
+                           (finish (squiggly/squiggly-path line-path :seed seed))
+                           clean-line)
            :line-start (when line-start (v/rotate line-start angle))
            :line-end (when line-end (v/rotate (v/add base-end line-end) angle))
            :up (v/rotate (v/Vector. 0 -50) angle)
@@ -705,7 +714,7 @@
         line-from (line-start first-segment)
         base-line-start (v/sub line-from (:line-start first-segment))
         base-path (into ["M" line-from]
-                        (map (fn [{line-path-snippet :line}]
+                        (map (fn [{line-path-snippet :display-line}]
                                (path/stitch line-path-snippet)))
                         line-segments)
         line-path (path/make-path base-path)

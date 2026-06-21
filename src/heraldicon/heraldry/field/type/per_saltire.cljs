@@ -192,26 +192,26 @@
                                                         :mirrored? true
                                                         :flipped? true
                                                         :extend-from? false)]
-    {:subfields [{:shape [(shape/build-shape
-                           (c/++ context :fields 0)
-                           line-edge-top-left
-                           line-edge-top-right
-                           :counter-clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 1)
-                           line-edge-top-left
-                           line-edge-bottom-left
-                           :clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 2)
-                           line-edge-bottom-right
-                           line-edge-top-right
-                           :clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 3)
-                           line-edge-bottom-right
-                           line-edge-bottom-left
-                           :counter-clockwise)]}]
+    {:subfields [(shape/build-shapes
+                  (c/++ context :fields 0)
+                  line-edge-top-left
+                  line-edge-top-right
+                  :counter-clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 1)
+                  line-edge-top-left
+                  line-edge-bottom-left
+                  :clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 2)
+                  line-edge-bottom-right
+                  line-edge-top-right
+                  :clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 3)
+                  line-edge-bottom-right
+                  line-edge-bottom-left
+                  :counter-clockwise)]
      :edges [{:lines [line-edge-top-left]}
              {:lines [line-edge-bottom-right]}
              {:lines [line-edge-bottom-left]}

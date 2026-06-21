@@ -405,23 +405,23 @@
                                                            :extend-from? false)]
     ;; TODO: seems to work fine without it, but maybe infinity patching would improve this
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-edge-bottom-first
-               line-edge-bottom-second
-               :clockwise-shortest
-               line-edge-left-first
-               line-edge-left-second
-               :clockwise-shortest
-               line-edge-right-first
-               line-edge-right-second
-               :clockwise-shortest)]
-      :edges [{:lines [line-edge-bottom-first
-                       line-edge-bottom-second]}
-              {:lines [line-edge-left-first
-                       line-edge-left-second]}
-              {:lines [line-edge-right-first
-                       line-edge-right-second]}]}
+     (assoc (shape/build-shapes
+             context
+             line-edge-bottom-first
+             line-edge-bottom-second
+             :clockwise-shortest
+             line-edge-left-first
+             line-edge-left-second
+             :clockwise-shortest
+             line-edge-right-first
+             line-edge-right-second
+             :clockwise-shortest)
+            :edges [{:lines [line-edge-bottom-first
+                             line-edge-bottom-second]}
+                    {:lines [line-edge-left-first
+                             line-edge-left-second]}
+                    {:lines [line-edge-right-first
+                             line-edge-right-second]}])
      context
      properties)))
 

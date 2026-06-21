@@ -513,20 +513,20 @@
                                                bounding-box
                                                :reversed? true)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-upper
-               :clockwise-shortest
-               line-lower
-               :clockwise-shortest)]
-      :edges [{:lines [line-upper]}
-              {:lines [line-lower]}]}
+     (assoc (shape/build-shapes
+             context
+             line-upper
+             :clockwise-shortest
+             line-lower
+             :clockwise-shortest)
+            :edges [{:lines [line-upper]}
+                    {:lines [line-lower]}])
      context
      properties)))
 
 (defmethod interface/exact-shape ordinary-type [context]
   (let [{:keys [reverse-transform-fn]} (interface/get-properties context)
-        shape-path (:shape (interface/get-render-shape context))
+        shape-path (interface/geometry-shape (interface/get-render-shape context))
         shape-path (if (vector? shape-path)
                      (first shape-path)
                      shape-path)

@@ -39,7 +39,7 @@
 
 (defmethod interface/exact-shape :heraldry/subfield [context]
   (let [{:keys [reverse-transform-fn]} (interface/get-properties (interface/parent context))
-        shape-path (:shape (component-attribute context interface/get-subfield-render-shapes))
+        shape-path (interface/geometry-shape (component-attribute context interface/get-subfield-render-shapes))
         shape-path (if (vector? shape-path)
                      (first shape-path)
                      shape-path)

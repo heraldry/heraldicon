@@ -57,26 +57,29 @@
       (process-humetty-properties context)
       (process-voided-properties context)))
 
-(defn- process-shape-humetty [{:keys [shape]
+(defn- process-shape-humetty [{:keys [shape clean-shape]
                                :as shape-data} context {:keys [humetty]}]
   (if (:humetty? humetty)
     (let [parent-shape (interface/get-parent-field-shape context)
           adjusted-shape (humetty/coup shape parent-shape humetty)]
-      (assoc shape-data
-             :shape adjusted-shape
-             :edges [{:paths adjusted-shape}]))
+      (cond-> (assoc shape-data
+                     :shape adjusted-shape
+                     :edges [{:paths adjusted-shape}])
+        ;; keep the clean geometry shape in lock-step so exact-shape stays clean
+        clean-shape (assoc :clean-shape (humetty/coup clean-shape parent-shape humetty))))
     shape-data))
 
-(defn- process-shape-voided [{:keys [shape]
+(defn- process-shape-voided [{:keys [shape clean-shape]
                               :as shape-data} context {:keys [voided]}]
   (if (:voided? voided)
     (let [parent-shape (interface/get-parent-field-shape context)
           adjusted-shape (voided/void shape parent-shape voided)]
-      (-> shape-data
-          (assoc :shape adjusted-shape)
-          ;; TODO: bit hacky, the code here needs to know the last shape path was
-          ;; added and then add it as an additional line
-          (update :edges conj {:paths [(last adjusted-shape)]})))
+      (cond-> (-> shape-data
+                  (assoc :shape adjusted-shape)
+                  ;; TODO: bit hacky, the code here needs to know the last shape path was
+                  ;; added and then add it as an additional line
+                  (update :edges conj {:paths [(last adjusted-shape)]}))
+        clean-shape (assoc :clean-shape (voided/void clean-shape parent-shape voided))))
     shape-data))
 
 (defn- squiggle-paths [paths]
@@ -103,14 +106,17 @@
 (defn shape [{:keys [squiggle-display?]
               :as shape-data} context {:keys [humetty voided]
                                        :as properties}]
-  ;; squiggle-display? lets a producer whose base shape has no line-squiggle
-  ;; (e.g. the point-based label) always get the display squiggle. Otherwise we
-  ;; only squiggle when couped/voided re-cut the shape against the clean parent,
-  ;; so line-based ordinaries keep their existing per-line squiggle untouched.
-  (cond-> (-> shape-data
-              (dissoc :squiggle-display?)
-              (process-shape-humetty context properties)
-              (process-shape-voided context properties))
-    (or squiggle-display?
-        (:humetty? humetty)
-        (:voided? voided)) (squiggle-display-shape context)))
+  ;; Line-based shapes arrive with both a squiggly :shape and a clean
+  ;; :clean-shape (from shape/build-shapes), so nothing further is needed —
+  ;; couped/voided above keep both in lock-step. Only point-based shapes that
+  ;; carry no clean variant (e.g. the label, flagged squiggle-display?) need a
+  ;; squiggly display shape synthesised from their otherwise-clean :shape.
+  (let [processed (-> shape-data
+                      (dissoc :squiggle-display?)
+                      (process-shape-humetty context properties)
+                      (process-shape-voided context properties))]
+    (cond-> processed
+      (and (not (:clean-shape processed))
+           (or squiggle-display?
+               (:humetty? humetty)
+               (:voided? voided))) (squiggle-display-shape context))))

@@ -263,28 +263,28 @@
                                                             bounding-box
                                                             :extend-from? false)]
     (post-process/shape
-     {:shape [(shape/build-shape
-               context
-               line-edge-top-first
-               line-edge-top-second
-               :clockwise-shortest
-               line-edge-right-first
-               line-edge-right-second
-               :clockwise-shortest
-               line-edge-bottom-first
-               line-edge-bottom-second
-               :clockwise-shortest
-               line-edge-left-first
-               line-edge-left-second
-               :clockwise-shortest)]
-      :edges [{:lines [line-edge-top-first
-                       line-edge-top-second]}
-              {:lines [line-edge-left-first
-                       line-edge-left-second]}
-              {:lines [line-edge-right-first
-                       line-edge-right-second]}
-              {:lines [line-edge-bottom-first
-                       line-edge-bottom-second]}]}
+     (assoc (shape/build-shapes
+             context
+             line-edge-top-first
+             line-edge-top-second
+             :clockwise-shortest
+             line-edge-right-first
+             line-edge-right-second
+             :clockwise-shortest
+             line-edge-bottom-first
+             line-edge-bottom-second
+             :clockwise-shortest
+             line-edge-left-first
+             line-edge-left-second
+             :clockwise-shortest)
+            :edges [{:lines [line-edge-top-first
+                             line-edge-top-second]}
+                    {:lines [line-edge-left-first
+                             line-edge-left-second]}
+                    {:lines [line-edge-right-first
+                             line-edge-right-second]}
+                    {:lines [line-edge-bottom-first
+                             line-edge-bottom-second]}])
      context
      properties)))
 

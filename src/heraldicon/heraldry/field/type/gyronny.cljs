@@ -240,46 +240,46 @@
                                                     :mirrored? true
                                                     :flipped? true
                                                     :extend-from? false)]
-    {:subfields [{:shape [(shape/build-shape
-                           (c/++ context :fields 0)
-                           line-edge-top-left
-                           line-edge-top
-                           :counter-clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 1)
-                           line-edge-top-right
-                           line-edge-top
-                           :clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 2)
-                           line-edge-top-left
-                           line-edge-left
-                           :clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 3)
-                           line-edge-top-right
-                           line-edge-right
-                           :counter-clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 4)
-                           line-edge-bottom-left
-                           line-edge-left
-                           :counter-clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 5)
-                           line-edge-bottom-right
-                           line-edge-right
-                           :clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 6)
-                           line-edge-bottom-left
-                           line-edge-bottom
-                           :clockwise)]}
-                 {:shape [(shape/build-shape
-                           (c/++ context :fields 7)
-                           line-edge-bottom-right
-                           line-edge-bottom
-                           :counter-clockwise)]}]
+    {:subfields [(shape/build-shapes
+                  (c/++ context :fields 0)
+                  line-edge-top-left
+                  line-edge-top
+                  :counter-clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 1)
+                  line-edge-top-right
+                  line-edge-top
+                  :clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 2)
+                  line-edge-top-left
+                  line-edge-left
+                  :clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 3)
+                  line-edge-top-right
+                  line-edge-right
+                  :counter-clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 4)
+                  line-edge-bottom-left
+                  line-edge-left
+                  :counter-clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 5)
+                  line-edge-bottom-right
+                  line-edge-right
+                  :clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 6)
+                  line-edge-bottom-left
+                  line-edge-bottom
+                  :clockwise)
+                 (shape/build-shapes
+                  (c/++ context :fields 7)
+                  line-edge-bottom-right
+                  line-edge-bottom
+                  :counter-clockwise)]
      :edges [{:lines [line-edge-top-left]}
              {:lines [line-edge-bottom-right]}
              {:lines [line-edge-bottom-left]}
