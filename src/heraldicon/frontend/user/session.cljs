@@ -40,7 +40,8 @@
   (go-catch
    (try
      (let [result (<? (api/call :validate-session nil session-data))]
-       (when-not result
+       (if result
+         (rf/dispatch [::refresh result])
          (rf/dispatch [::session-expired])))
      (catch :default _
        (rf/dispatch [::session-expired])))))
@@ -90,6 +91,19 @@
      :dispatch [::message/clear-all]
      ::set-cookie [(:session-id session-data)]
      ::write-to-local-storage [session-data]}))
+
+;; Refresh the server-authoritative fields (username, user-id) of an existing
+;; session without touching the cookie or clearing messages. Lets a server-side
+;; rename surface on the next page load instead of sticking until re-login.
+(rf/reg-event-fx ::refresh
+  (fn [{:keys [db]} [_ {:keys [username user-id]}]]
+    (let [session-data (get-in db db-path)
+          refreshed (assoc session-data
+                           :username username
+                           :user-id user-id)]
+      (when (not= session-data refreshed)
+        {:db (assoc-in db db-path refreshed)
+         ::write-to-local-storage [refreshed]}))))
 
 (rf/reg-event-fx ::clear
   (fn [{:keys [db]} _]
