@@ -310,7 +310,13 @@
                    stretch)
         base-top-left (v/div (v/Vector. base-width base-height)
                              -2)
-        charge-shape (into []
+        ;; Build the scaled charge in its own un-rotated, un-positioned frame.
+        ;; Masking is computed in this frame so that it follows the charge's own
+        ;; axes; the shape, mask shapes, and bounding box are then rotated and
+        ;; moved into place together. Otherwise an axis-aligned mask would be
+        ;; applied after the rotation, which is unintuitive for charges that are
+        ;; rotated, e.g. to face around a charge group.
+        scaled-shape (into []
                            (map #(-> %
                                      path/make-path
                                      path/parse-path
@@ -319,28 +325,48 @@
                                        squiggly? (->
                                                    path/to-svg
                                                    squiggly/squiggly-path
-                                                   path/parse-path)
-                                       (not= angle 0) (.rotate angle))
-                                     (path/translate (:x anchor-point) (:y anchor-point))
+                                                   path/parse-path))
                                      path/to-svg))
                            base-shape)
-        {:keys [min-x max-x
-                min-y max-y]
-         :as bounding-box} (bb/from-paths charge-shape)]
+        local-bounding-box (bb/from-paths scaled-shape)
+        rotation-center (bb/center local-bounding-box)
+        place (fn [svg-path]
+                (-> svg-path
+                    path/parse-path
+                    (cond-> (not= angle 0) (path/rotate angle :center rotation-center))
+                    (path/translate (:x anchor-point) (:y anchor-point))
+                    path/to-svg))
+        {masked-bounding-box :bounding-box
+         :keys [horizontal-mask-shape
+                vertical-mask-shape]} (->> (merge base-properties
+                                                  {:bounding-box local-bounding-box
+                                                   :width (bb/width local-bounding-box)
+                                                   :height (bb/height local-bounding-box)})
+                                           (apply-horizontal-mask context)
+                                           (apply-vertical-mask context))
+        bounding-box (-> (path/make-path
+                          ["M" (:min-x masked-bounding-box) (:min-y masked-bounding-box)
+                           "H" (:max-x masked-bounding-box)
+                           "V" (:max-y masked-bounding-box)
+                           "H" (:min-x masked-bounding-box)
+                           "z"])
+                         place
+                         vector
+                         bb/from-paths)]
 
-    (->> (merge base-properties
-                {:type (interface/get-raw-data (c/++ context :type))
-                 :bounding-box bounding-box
-                 :width (- max-x min-x)
-                 :height (- max-y min-y)
-                 :shape charge-shape
-                 :anchor-point anchor-point
-                 :scale-x scale-x
-                 :scale-y scale-y
-                 :angle angle
-                 :top-left base-top-left})
-         (apply-horizontal-mask context)
-         (apply-vertical-mask context))))
+    (merge base-properties
+           {:type (interface/get-raw-data (c/++ context :type))
+            :bounding-box bounding-box
+            :width (bb/width bounding-box)
+            :height (bb/height bounding-box)
+            :shape (mapv place scaled-shape)
+            :anchor-point anchor-point
+            :scale-x scale-x
+            :scale-y scale-y
+            :angle angle
+            :top-left base-top-left
+            :horizontal-mask-shape (some-> horizontal-mask-shape place)
+            :vertical-mask-shape (some-> vertical-mask-shape place)})))
 
 (defmethod interface/environment :heraldry/charge [context]
   (let [{:keys [bounding-box anchor-point]} (interface/get-properties context)]
