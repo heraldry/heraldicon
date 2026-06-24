@@ -202,7 +202,8 @@
                            [:div.no-select {:style {:padding-right "10px"
                                                     :white-space "nowrap"}}
                             [:a (if (zero? idx)
-                                  {:class "disabled"}
+                                  {:class "disabled"
+                                   :on-click (js-event/handled)}
                                   {:on-click (js-event/handled
                                               #(rf/dispatch [::component.element/move
                                                              strip-context
@@ -211,7 +212,8 @@
                              [:i.fas.fa-chevron-up]]
                             " "
                             [:a (if (= idx (dec num-strips))
-                                  {:class "disabled"}
+                                  {:class "disabled"
+                                   :on-click (js-event/handled)}
                                   {:on-click (js-event/handled
                                               #(rf/dispatch [::component.element/move
                                                              strip-context
@@ -222,7 +224,8 @@
                             [strip-form strip-context type-str]]
                            [:div {:style {:padding-left "10px"}}
                             [:a (if (< num-strips 2)
-                                  {:class "disabled"}
+                                  {:class "disabled"
+                                   :on-click (js-event/handled)}
                                   {:on-click (js-event/handled
                                               #(rf/dispatch [::component.element/remove strip-context]))})
                              [:i.far.fa-trash-alt]]]])))
