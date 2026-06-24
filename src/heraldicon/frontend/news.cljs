@@ -14,7 +14,22 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-06-15"
+  [{:id "2026-06-24"
+    :title "Bug fix: partitioned fields respect the escutcheon's field better"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "Some escutcheons have small nibs or notches in their outline that aren't really part of the field — for example the little feet at the bottom of the " [:b "French modern"] " escutcheon, or the notched top corners of the " [:b "English"] " one. Each of these escutcheons already defines a " [:em "field area"] " (a bounding box and fess point) that excludes those extremities, and ordinaries and charges have always honoured it."]
+         [:p "Partitions did not. When a field was partitioned (e.g. " [:em "quarterly"] ", " [:em "per pale"] ", " [:em "per saltire"] ", …) the sub-fields were derived from the raw outline, so those nibs could stretch a sub-field's area and pull its fess point — and any charges placed within it — slightly off. Divisions now use the escutcheon's field area for the sub-fields, while the outline itself (nibs included) is still drawn and tinctured exactly as before."]
+         [:p
+          [:span {:style {:color "darkred"}} [:b "Some of your coats of arms may look different now if they use a partitioned field on one of these escutcheons"]] "."]
+         [:p "Please have a look. Perhaps you already noticed the inaccuracy yourself and placed things manually, then that won't look right anymore. Resetting back to the defaults is a good idea."]
+         [:p " The effect is most visible on " [:b "French modern"] " and " [:b "English"] ", but the escutcheons that define such a custom field area, and could therefore be affected, are: " [:b "French modern"] ", " [:b "English"] ", Polish, Polish 19th century, Renaissance, Flag, Rounded Norman (late), Square Iberian Engrailed, Kalasag, Louisiana, French Slim, Bulgy Heater, Rounded Heater, Pointed Heater, Angular, Scutum, Triangular, NRW, Sleek Pointy, Gonfalon, Orcish, Orcish2, Dwarven, Gnomish, Halfling, Halfling Pavise, Owlfolk, Arrowhead, Dragonborn, Draped Pointy Banner, Embattled Heater, Embattled Iberian, and Pauldron. Escutcheons without such extremities, and any arms with an undivided field, are unaffected."]]
+        [:div
+         (release-image "/img/2026-06-24-release-update.png" :width "520px")]]])}
+
+   {:id "2026-06-15"
     :title "Structured search for arms"
     :content
     (fn []
