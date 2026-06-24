@@ -168,13 +168,24 @@
 (defmethod subfield-environments :default [context]
   (log/warn :not-implemented 'subfield-environments context))
 
+(declare get-subfields-environment)
+
 (rf/reg-sub-raw ::subfield-environments
   (fn [_app-db [_ context]]
     (reaction-or-cache
      ::subfield-environments
      context
-     #(let [context (resolve-context context)]
-        (subfield-environments context)))))
+     #(let [context (resolve-context context)
+            result (subfield-environments context)
+            parent-bounding-box (:bounding-box (get-subfields-environment context))]
+        (cond-> result
+          (and parent-bounding-box
+               (:subfields result))
+          (update :subfields
+                  (fn [subfields]
+                    (mapv (fn [subfield-environment]
+                            (environment/clamp-to-bounding-box subfield-environment parent-bounding-box))
+                          subfields))))))))
 
 (defn get-subfield-environments [context]
   @(rf/subscribe [::subfield-environments (c/scrub-render-hints context)]))
