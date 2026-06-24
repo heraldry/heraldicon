@@ -140,6 +140,26 @@
         (.intersect (paper/Path. shape2))
         .-pathData)))
 
+(defn clamp-to-bounding-box
+  "Clamp an environment's bounding box to `parent-bounding-box`.
+
+  Some escutcheons (e.g. French modern, English) declare a custom bounding box
+  that is tighter than their outline, because the outline has little
+  nibs/notches that aren't real corner points. The partition shape stays the
+  full outline (so those nibs render and dividing lines split them cleanly),
+  but the subfield environments are derived from where the dividing lines meet
+  that outline, so they'd otherwise stretch out to the nibs and throw off the
+  fess point and charge placement.
+
+  When the environment already fits inside the parent bounding box (the normal
+  case) it is returned unchanged, so ordinary escutcheons are untouched."
+  [{:keys [bounding-box]
+    :as environment} parent-bounding-box]
+  (let [clamped (bb/intersection bounding-box parent-bounding-box)]
+    (if (= clamped bounding-box)
+      environment
+      (create clamped))))
+
 (defn subtract-shape [shape1 shape2]
   (if (shape? shape2)
     (when (shape? shape1)

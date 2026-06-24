@@ -27,6 +27,22 @@
   (^BoundingBox [^BoundingBox b1 ^BoundingBox b2 & more]
    (reduce combine (combine b1 b2) more)))
 
+(defn intersection
+  ^BoundingBox [^BoundingBox {min-x1 :min-x max-x1 :max-x
+                              min-y1 :min-y max-y1 :max-y
+                              :as bounding-box-1}
+                ^BoundingBox {min-x2 :min-x max-x2 :max-x
+                              min-y2 :min-y max-y2 :max-y
+                              :as bounding-box-2}]
+  (if (and bounding-box-1
+           bounding-box-2)
+    (BoundingBox. (max min-x1 min-x2)
+                  (min max-x1 max-x2)
+                  (max min-y1 min-y2)
+                  (min max-y1 max-y2))
+    (or bounding-box-1
+        bounding-box-2)))
+
 (defn from-vector ^BoundingBox [^v/Vector {x :x y :y}]
   (BoundingBox. x x y y))
 
