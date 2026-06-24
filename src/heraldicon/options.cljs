@@ -30,6 +30,20 @@
                     (map (comp vec reverse) items))))
         choices))
 
+(defn- sanitize-range [value options]
+  ;; -180..180 is used exclusively for angles; since angles are periodic, wrap
+  ;; out-of-range values instead of clamping. This keeps legacy data stored in
+  ;; the old 0..360 range rendering identically (e.g. 270 -> -90).
+  (if (and (= (:min options) -180)
+           (= (:max options) 180))
+    (let [wrapped (mod value 360)]
+      (if (> wrapped 180)
+        (- wrapped 360)
+        wrapped))
+    (-> value
+        (max (:min options))
+        (min (:max options)))))
+
 (defn get-value [value options]
   (cond
     (and (vector? value)
@@ -51,9 +65,7 @@
                                    (and (nil? value)
                                         (-> options :default nil?)) nil
                                    (nil? value) (:min options)
-                                   :else (-> value
-                                             (max (:min options))
-                                             (min (:max options))))
+                                   :else (sanitize-range value options))
               :option.type/text (or value (:default options))
               nil))))
 
@@ -65,9 +77,7 @@
                             (when (contains? choices value)
                               value))
       :option.type/range (when-not (nil? value)
-                           (-> value
-                               (max (:min options))
-                               (min (:max options))))
+                           (sanitize-range value options))
       :option.type/text value
       nil)))
 

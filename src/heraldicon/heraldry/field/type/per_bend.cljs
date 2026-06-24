@@ -92,8 +92,8 @@
 
                     (= current-orientation-point
                        :angle) (assoc :angle {:type :option.type/range
-                                              :min 0
-                                              :max 360
+                                              :min -180
+                                              :max 180
                                               :default 45
                                               :ui/label :string.option/angle})
 
