@@ -132,10 +132,11 @@
 (rf/reg-event-db ::load-more
   (fn [db [_ id entity-type page-size]]
     (let [path (entity-search-path id entity-type)
-          {:keys [query entities]} (get-in db path)
+          {:keys [query entities total]} (get-in db path)
           offset (count entities)
           session (session/data-from-db db)]
-      (fetch-more id entity-type query offset page-size session)
+      (when (< offset (or total 0))
+        (fetch-more id entity-type query offset page-size session))
       db)))
 
 (rf/reg-sub-raw ::data
