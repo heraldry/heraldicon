@@ -180,7 +180,8 @@
   color: #5ba6d0 !important;
 }
 
-.dark text.arms-title, .dark text.collection-title {
+.dark text.arms-title,
+.dark text.collection-title {
   fill: #eee;
 }
 
@@ -232,4 +233,9 @@
 
 .dark .charge-type-filter {
   background-color: #222;
+}
+
+.dark a.disabled {
+  color: #ccc !important;
+  cursor: not-allowed;
 }
