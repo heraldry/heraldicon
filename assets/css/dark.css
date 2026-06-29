@@ -70,6 +70,11 @@
   color: #fff;
 }
 
+.dark .button.danger {
+  background-color: #c0392b;
+  color: #fff;
+}
+
 .dark .ui-hover-menu .ui-menu {
   color: #ccc;
   background-color: #222;
