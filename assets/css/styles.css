@@ -202,6 +202,10 @@ p {
   max-width: 600px;
 }
 
+.modal.dialog.blazonry-editor-modal {
+  max-width: none;
+}
+
 .modal > .modal-header {
   font-size: 1.1em;
   background-color: #eee;

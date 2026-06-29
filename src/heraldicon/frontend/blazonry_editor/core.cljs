@@ -105,4 +105,5 @@
                                  :style {:flex "initial"
                                          :margin-left "10px"}}
          [tr :string.button/apply]]]])]
+   :class "blazonry-editor-modal"
    :on-cancel #(rf/dispatch [::auto-complete/clear])))

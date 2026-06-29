@@ -10,10 +10,11 @@
 (def ^:private loader-db-path
   [:modal :loader])
 
-(defn create [title content & {:keys [on-cancel]}]
+(defn create [title content & {:keys [on-cancel class]}]
   (rf/dispatch [:set dialog-db-path {:title title
                                      :content content
-                                     :on-cancel on-cancel}]))
+                                     :on-cancel on-cancel
+                                     :class class}]))
 (rf/reg-event-db ::create
   (fn [db [_ title content on-cancel]]
     (assoc-in db dialog-db-path {:title title
@@ -39,11 +40,11 @@
   (rf/dispatch [:set loader-db-path nil]))
 
 (defn- modal []
-  (let [{:keys [title content]} @(rf/subscribe [:get dialog-db-path])]
+  (let [{:keys [title content class]} @(rf/subscribe [:get dialog-db-path])]
     (when content
       [:<>
        [:div.modal-background {:on-click #(clear)}]
-       [:div.modal.dialog {:class (dark-mode/class)}
+       [:div.modal.dialog {:class [(dark-mode/class) class]}
         [:div.modal-header (if (vector? title)
                              title
                              [tr title])]
