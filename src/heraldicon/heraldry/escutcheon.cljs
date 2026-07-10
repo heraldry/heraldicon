@@ -497,6 +497,21 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-soft-rounded
+  {:shape "M 30 0
+           C 15 0 0 15 0 30
+             0 60 15 80 50 100
+             85 80 100 60 100 30
+             100 15 85 0 70 0
+             55 0 45 0 30 0
+           Z"
+
+   ::name "Soft Rounded"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private community-extravagant
   {:shape "M 10,85
            C 10,65 0,50 0,50 0,50 10,35 10,25 10,15 5,5 5,5
@@ -1466,7 +1481,7 @@
     [:community-engraved-german community-engraved-german]
     [:community-hungarian community-hungarian]
     [:community-playful community-playful]
-    [:community-arabic community-arabic]
+    [:community-soft-rounded community-soft-rounded]
     [:community-danish community-danish]
     [:community-croatian community-croatian]
     [:community-herzeg-croatian community-herzeg-croatian]
@@ -1474,6 +1489,7 @@
     [:community-embattled-heater community-embattled-heater]
     [:community-embattled-iberian community-embattled-iberian]
     [:community-pauldron community-pauldron]
+    [:community-arabic community-arabic]
     [:community-manilla community-manilla]
     [:community-simple-kalasag community-simple-kalasag]
     [:community-draped-pointy-banner community-draped-pointy-banner]
