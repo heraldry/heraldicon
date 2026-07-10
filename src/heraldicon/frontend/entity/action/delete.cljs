@@ -126,11 +126,8 @@
                            @(rf/subscribe [::entity/saved? form-db-path])
                            (or @(rf/subscribe [::entity/owned-by? form-db-path session-data])
                                @(rf/subscribe [::session/admin?])))]
-      {:title :string.button/delete
-       :icon "fas fa-trash"
-       :destructive? true
-       :handler (when can-delete?
-                  #(rf/dispatch [::invoke entity-type]))
-       :disabled? (not can-delete?)
-       :tooltip (when-not can-delete?
-                  :string.user.message/need-to-be-logged-in-and-own-to-delete)})))
+      (when can-delete?
+        {:title :string.button/delete
+         :icon "fas fa-trash"
+         :destructive? true
+         :handler #(rf/dispatch [::invoke entity-type])}))))
