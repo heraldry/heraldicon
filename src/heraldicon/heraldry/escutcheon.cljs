@@ -505,6 +505,7 @@
              100 15 85 0 70 0
              55 0 45 0 30 0
            Z"
+   :points {:fess (v/Vector. 50 40)}
 
    ::name "Soft Rounded"
    ::attribution {:nature :own-work
