@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.element.text-field
   (:require
+   [heraldicon.frontend.element.controlled-input :as controlled-input]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.tooltip :as tooltip]
@@ -20,13 +21,14 @@
          [:label [tr label]
           [tooltip/info tooltip]])
        [:div.option
-        [:input {:type "text"
-                 :value value
-                 :placeholder (tr placeholder)
-                 :on-change #(let [value (-> % .-target .-value)]
-                               (if on-change
-                                 (on-change value)
-                                 (rf/dispatch-sync [:set context value])))}]]])))
+        [controlled-input/input
+         {:type "text"
+          :value value
+          :placeholder (tr placeholder)
+          :on-change (fn [value]
+                       (if on-change
+                         (on-change value)
+                         (rf/dispatch-sync [:set context value])))}]]])))
 
 (defmethod element/element :ui.element/text-field [context]
   [text-field context])

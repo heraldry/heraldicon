@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.entity.metadata :as metadata]
+   [heraldicon.frontend.element.controlled-input :as controlled-input]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.element.select :as select]
    [heraldicon.frontend.element.submenu :as submenu]
@@ -20,13 +21,11 @@
 (def ^:private value-path
   [:ui :metadata :new-value])
 
-(defn- on-name-change [event]
-  (let [new-value (-> event .-target .-value)]
-    (rf/dispatch-sync [:set name-path new-value])))
+(defn- on-name-change [new-value]
+  (rf/dispatch-sync [:set name-path new-value]))
 
-(defn- on-value-change [event]
-  (let [new-value (-> event .-target .-value)]
-    (rf/dispatch-sync [:set value-path new-value])))
+(defn- on-value-change [new-value]
+  (rf/dispatch-sync [:set value-path new-value]))
 
 (defn- remove-metadata-name [metadata name]
   (into []
@@ -84,14 +83,16 @@
                             (when (not= value :preset)
                               (rf/dispatch [:set name-path value])))]
               [:br]
-              [:input {:value name-value
-                       :on-change on-name-change
-                       :type "text"
-                       :style {:margin-right "0.5em"}}]
-              [:input {:value value-value
-                       :on-change on-value-change
-                       :type "text"
-                       :style {:margin-right "0.5em"}}]
+              [controlled-input/input
+               {:value name-value
+                :on-change on-name-change
+                :type "text"
+                :style {:margin-right "0.5em"}}]
+              [controlled-input/input
+               {:value value-value
+                :on-change on-value-change
+                :type "text"
+                :style {:margin-right "0.5em"}}]
               [:button
                {:disabled (or (str/blank? name-value)
                               (str/blank? value-value))
@@ -109,11 +110,12 @@
                                                    :white-space "nowrap"}}
                           [:label n]
                           [:div.option
-                           [:input {:value v
-                                    :on-change (js-event/stop-propagation
-                                                #(rf/dispatch-sync [::add-metadata context n (-> % .-target .-value)]))
-                                    :type "text"
-                                    :style {:margin-right "0.5em"}}]
+                           [controlled-input/input
+                            {:value v
+                             :on-change (fn [new-value]
+                                          (rf/dispatch-sync [::add-metadata context n new-value]))
+                             :type "text"
+                             :style {:margin-right "0.5em"}}]
                            [:button
                             {:on-click #(rf/dispatch [::remove-metadata context n])
                              :type "button"}

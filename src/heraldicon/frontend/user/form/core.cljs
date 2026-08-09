@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.user.form.core
   (:require
+   [heraldicon.frontend.element.controlled-input :as controlled-input]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
@@ -57,14 +58,15 @@
          [tr label]])
       [:div {:style {:display "inline-block"
                      :vertical-align "top"}}
-       [:input {:id (name field-id)
-                :name (name field-id)
-                :value @(rf/subscribe [::field-value form-id field-id])
-                :on-change #(let [new-value (-> % .-target .-value)]
-                              (rf/dispatch-sync [::set-field-value form-id field-id new-value]))
-                :placeholder (tr placeholder)
-                :type type
-                :style {:display "block"}}]
+       [controlled-input/input
+        {:id (name field-id)
+         :name (name field-id)
+         :value @(rf/subscribe [::field-value form-id field-id])
+         :on-change (fn [new-value]
+                      (rf/dispatch-sync [::set-field-value form-id field-id new-value]))
+         :placeholder (tr placeholder)
+         :type type
+         :style {:display "block"}}]
        (when help
          [:span {:style {:display "block"
                          :color "#aaa"
