@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.entity.tag :as tag]
+   [heraldicon.frontend.element.controlled-input :as controlled-input]
    [heraldicon.frontend.element.core :as element]
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.macros :as macros]
@@ -33,9 +34,8 @@
                                        remaining)
                                 current-tags))))))
 
-(defn- on-change [event]
-  (let [new-value (-> event .-target .-value)]
-    (rf/dispatch-sync [:set value-path new-value])))
+(defn- on-change [new-value]
+  (rf/dispatch-sync [:set value-path new-value]))
 
 (defn- add-tag-clicked [path value]
   (let [tags (-> value
@@ -107,13 +107,14 @@
                                :white-space "nowrap"}}
       [:label [tr :string.entity/tags]]
       [:div.option
-       [:input {:value value
-                :on-change on-change
-                :on-key-press (fn [event]
-                                (when (-> event .-code (= "Enter"))
-                                  (on-click event)))
-                :type "text"
-                :style {:margin-right "0.5em"}}]
+       [controlled-input/input
+        {:value value
+         :on-change on-change
+         :on-key-press (fn [event]
+                         (when (-> event .-code (= "Enter"))
+                           (on-click event)))
+         :type "text"
+         :style {:margin-right "0.5em"}}]
        [:button
         {:disabled (str/blank? value)
          :on-click on-click
