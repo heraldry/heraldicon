@@ -14,7 +14,16 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-06-24"
+  [{:id "2026-08-19"
+    :title "Better exports"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "SVG and PNG exports always were a bit awkward. They opened in a new tab, they had awful filenames, and you had to know how to save them as files in your browser."]
+         [:p "But no more! Now they're more convenient: they'll automatically download after they've been generated, and they'll have proper filenames based on the arms/collection name and the export function chosen."]]]])}
+
+   {:id "2026-06-24"
     :title "Bug fix: partitioned fields respect the escutcheon's field better"
     :content
     (fn []
