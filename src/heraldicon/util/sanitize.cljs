@@ -23,6 +23,20 @@
       (str/replace #"--*$" "")
       keyword))
 
+(defn filename
+  "Turn an entity name into a safe download filename base, falling back to
+   `fallback` when the name is blank. Strips control characters and characters
+   that are invalid in filenames or would break a Content-Disposition header."
+  [data fallback]
+  (let [base (-> (or data "")
+                 (str/replace #"[\x00-\x1f\x7f]" "")
+                 (str/replace #"[\\/:*?\"<>|]" "")
+                 (str/replace #"\s+" " ")
+                 str/trim)]
+    (if (str/blank? base)
+      fallback
+      base)))
+
 (defn normalize-charge-type-name [s]
   (-> (or s "")
       str/trim

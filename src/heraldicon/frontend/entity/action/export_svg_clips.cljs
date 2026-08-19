@@ -3,6 +3,7 @@
    [cljs.core.async :refer [go]]
    [com.wsscode.async.async-cljs :refer [<?]]
    [heraldicon.frontend.api :as api]
+   [heraldicon.frontend.entity.action.export-result :as export-result]
    [heraldicon.frontend.entity.core :as entity]
    [heraldicon.frontend.entity.form :as form]
    [heraldicon.frontend.modal :as modal]
@@ -31,7 +32,8 @@
                                            :heraldicon.entity.type/collection [:data :render-options])))
                           (assoc :clip? true))
               response (<? (api/call (generate-svg-api-function entity-type) payload session))]
-          (js/window.open (:svg-url response)))
+          (export-result/show (:svg-url response)
+                              (export-result/filename entity-type (:name entity-data) " (clips)" "svg")))
 
         (catch :default e
           (log/error e "generate svg error"))
