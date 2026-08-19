@@ -1,4 +1,8 @@
 {
+  "export": {
+    "ready-title": "Esportazione pronta",
+    "ready-message": "Il tuo file è pronto per il download:"
+  },
   "menu": {
     "news": "Novità",
     "about": "Info",
