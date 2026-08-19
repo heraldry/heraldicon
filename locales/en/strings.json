@@ -1191,9 +1191,5 @@
     "title": "Structured search",
     "description": "Mix key:value tokens with free text to filter. All tokens must match.",
     "example-label": "Example:"
-  },
-  "export": {
-    "ready-title": "Export ready",
-    "ready-message": "Your file is ready to download:"
   }
 }

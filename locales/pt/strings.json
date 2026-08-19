@@ -1,8 +1,4 @@
 {
-  "export": {
-    "ready-title": "Exportação pronta",
-    "ready-message": "O teu ficheiro está pronto para transferir:"
-  },
   "banner": {
     "not-logged-in": "Não tem sessão iniciada."
   },
