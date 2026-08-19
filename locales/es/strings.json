@@ -1,8 +1,4 @@
 {
-  "export": {
-    "ready-title": "Exportación lista",
-    "ready-message": "Tu archivo está listo para descargar:"
-  },
   "menu": {
     "news": "Noticias",
     "about": "Acerca de",
