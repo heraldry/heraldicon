@@ -899,6 +899,8 @@
     "various": "varie"
   },
   "entity": {
+    "created": "Creato",
+    "updated": "Aggiornato",
     "attributes": "Attributi",
     "arms": "Stemmi",
     "blazon": "Blasonatura",

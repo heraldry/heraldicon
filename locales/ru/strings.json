@@ -898,6 +898,8 @@
     "various": "various"
   },
   "entity": {
+    "created": "Создано",
+    "updated": "Обновлено",
     "attributes": "Ссылки на источник",
     "arms": "Гербы",
     "blazon": "Блазон",

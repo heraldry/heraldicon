@@ -105,7 +105,8 @@
     [buttons/buttons entity-type]
     [blazonry form-db-path]
     [attribution form-db-path]
-    [dependents/used-by form-db-path]]
+    [dependents/used-by form-db-path]
+    [attribution/for-dates {:path form-db-path}]]
    [:<>
     [history/buttons form-db-path]
     [:div {:data-tour "arms-tree"}

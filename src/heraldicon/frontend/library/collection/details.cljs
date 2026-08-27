@@ -224,7 +224,8 @@
     [buttons/buttons entity-type]
     [render-arms-preview form-db-path]
     [attribution form-db-path]
-    [dependents/used-by form-db-path]]
+    [dependents/used-by form-db-path]
+    [attribution/for-dates {:path form-db-path}]]
    [:<>
     [history/buttons form-db-path]
     [tree/tree

@@ -915,6 +915,8 @@
     "various": "varios"
   },
   "entity": {
+    "created": "Creado",
+    "updated": "Actualizado",
     "attributes": "Atributos",
     "arms": "Blasón",
     "blazon": "Blasón",

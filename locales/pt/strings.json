@@ -193,6 +193,8 @@
   },
   "language": {},
   "entity": {
+    "created": "Criado",
+    "updated": "Atualizado",
     "tinctures": "Esmaltes"
   },
   "submenu-summary": {},

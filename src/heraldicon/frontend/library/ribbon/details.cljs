@@ -357,7 +357,8 @@
     [message/display entity-type]
     [buttons/buttons entity-type]
     [attribution/attribution {:path form-db-path}]
-    [dependents/used-by form-db-path]]
+    [dependents/used-by form-db-path]
+    [attribution/for-dates {:path form-db-path}]]
    :banner (let [entity-id @(rf/subscribe [:get (conj form-db-path :id)])
                  entity-version @(rf/subscribe [:get (conj form-db-path :version)])]
              [details/latest-version-banner
