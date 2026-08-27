@@ -906,6 +906,8 @@
     "various": "різні"
   },
   "entity": {
+    "created": "Створено",
+    "updated": "Оновлено",
     "attributes": "Атрибути",
     "arms": "Герби",
     "blazon": "Блазон",

@@ -916,6 +916,8 @@
     "various": "verschiedenen"
   },
   "entity": {
+    "created": "Erstellt",
+    "updated": "Aktualisiert",
     "attributes": "Attribute",
     "arms": "Wappen",
     "blazon": "Blasonierung",

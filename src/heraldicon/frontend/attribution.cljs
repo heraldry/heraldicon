@@ -87,6 +87,27 @@
            [:<>
             " " [tr :string.attribution/modifications] ": " source-modification])])]]))
 
+(defn- format-date-time [iso-string]
+  (when iso-string
+    (.toLocaleString (js/Date. iso-string) "en-US"
+                     #js {:year "numeric"
+                          :month "long"
+                          :day "numeric"
+                          :hour "numeric"
+                          :minute "2-digit"})))
+
+(defn for-dates [context]
+  (let [id (interface/get-raw-data (c/++ context :id))
+        version (interface/get-raw-data (c/++ context :version))
+        created-at (interface/get-raw-data (c/++ context :created-at))]
+    (when (and id created-at)
+      [:div.entity-dates
+       [tr (if (= version 1)
+             :string.entity/created
+             :string.entity/updated)]
+       ": "
+       (format-date-time created-at)])))
+
 (defn for-entity [context]
   (let [id (interface/get-raw-data (c/++ context :id))]
     [:div.credit
