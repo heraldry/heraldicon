@@ -539,7 +539,7 @@
            z"
    :center-fess? true
 
-   ::name "Philippino"
+   ::name "Filipino"
    ::attribution {:nature :own-work
                   :license :public-domain
                   :creator-name "Korfi2Go"
