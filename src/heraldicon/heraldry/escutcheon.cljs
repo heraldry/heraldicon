@@ -669,6 +669,138 @@
                   :creator-name "Korfi2Go"
                   :creator-link "https://heraldicon.org/users/korfi2go"}})
 
+(def ^:private community-french-embattled
+  {:shape "M 50 125
+           C 45 120 40 120 25 120
+             10 120 0 120 0 110
+           V 0
+           H 20
+           V 5
+           H 40
+           V 0
+           H 60
+           V 5
+           H 80
+           V 0
+           h 20
+           v 110
+           c 0 10 -10 10 -25 10
+             -15 0 -20 0 -25 5
+           z"
+   :bounding-box (bb/BoundingBox. 0 100 5 120)
+   :points {:fess (v/Vector. 50 62.5)}
+
+   ::name "French Embattled"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-french-engrailed
+  {:shape "M 50 125
+           C 45 120 40 120 25 120
+             10 120 0 120 0 110
+           V 0
+           c 10 5 20 5 25 5
+             5 0 15 0 25 -5
+             10 5 20 5 25 5
+             5 0 15 0 25 -5
+           v 110
+           c 0 10 -10 10 -25 10
+             -15 0 -20 0 -25 5
+           z"
+   :bounding-box (bb/BoundingBox. 0 100 5 120)
+   :points {:fess (v/Vector. 50 62.5)}
+
+   ::name "French Engrailed"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-french-pointed
+  {:shape "M 50 125
+           C 45 120 40 120 25 120
+             10 120 0 120 0 110
+           V 5
+           c 0 0 35 0 50 -5
+             15 5 50 5 50 5
+           v 105
+           c 0 10 -10 10 -25 10
+             -15 0 -20 0 -25 5
+           z"
+   :bounding-box (bb/BoundingBox. 0 100 5 120)
+   :points {:fess (v/Vector. 50 62.5)}
+
+   ::name "French Pointed"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-french-rounded
+  {:shape "M 50 125
+           C 45 120 40 120 25 120
+             10 120 0 120 0 110
+           V 5
+           c 0 0 25 -5 50 -5
+             25 0 50 5 50 5
+           v 105
+           c 0 10 -10 10 -25 10
+             -15 0 -20 0 -25 5
+           z"
+   :bounding-box (bb/BoundingBox. 0 100 5 120)
+   :points {:fess (v/Vector. 50 62.5)}
+
+   ::name "French Rounded"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-french-mirrored
+  {:shape "M 50 125
+           C 45 120 40 120 25 120
+             10 120 0 120 0 110
+           V 15
+           C 0 5 10 5 25 5
+             40 5 45 5 50 0
+           c 5 5 10 5 25 5
+             15 0 25 0 25 10
+           v 95
+           c 0 10 -10 10 -25 10
+             -15 0 -20 0 -25 5
+           z"
+   :bounding-box (bb/BoundingBox. 0 100 5 120)
+   :points {:fess (v/Vector. 50 62.5)}
+
+   ::name "French Mirrored"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
+(def ^:private community-tournament
+  {:shape "M 50 0
+           C 40 10 25 5 25 5
+             15 20 0 20 0 20
+           c 25 45 10 100 10 100
+             15 0 25 10 25 10
+             10 -5 20 -5 30 0
+             0 0 10 -10 25 -10
+             0 0 -15 -55 10 -100
+             0 0 -15 0 -25 -15
+             0 0 -15 5 -25 -5
+           z"
+   :bounding-box (bb/BoundingBox. 10 90 10 120)
+   :points {:fess (v/Vector. 50 65)}
+
+   ::name "Tournament"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "Korfi2Go"
+                  :creator-link "https://heraldicon.org/users/korfi2go"}})
+
 (def ^:private community-rhombus
   {:shape "M 50,0 L 100,50 L 50,100 L 0,50 z"
 
@@ -1523,6 +1655,11 @@
     [:community-heater-bulgy community-heater-bulgy]
     [:community-bavarian community-bavarian]
     [:community-french-slim community-french-slim]
+    [:community-french-embattled community-french-embattled]
+    [:community-french-engrailed community-french-engrailed]
+    [:community-french-rounded community-french-rounded]
+    [:community-french-pointed community-french-pointed]
+    [:community-french-mirrored community-french-mirrored]
     [:community-german community-german]
     [:community-innsbruck community-innsbruck]
     [:community-italian community-italian]
@@ -1564,14 +1701,15 @@
     [:community-embattled-iberian community-embattled-iberian]
     [:community-pauldron community-pauldron]
     [:community-arabic community-arabic]
-    [:community-manilla community-manilla]
-    [:community-simple-kalasag community-simple-kalasag]
+    [:community-tournament community-tournament]
     [:community-draped-pointy-banner community-draped-pointy-banner]
     [:community-oval-gonfalon community-oval-gonfalon]
     [:community-chevron-gonfalon community-chevron-gonfalon]
     [:community-dovetailed-gonfalon community-dovetailed-gonfalon]
     [:community-rounded-gonfalon community-rounded-gonfalon]
     [:community-gonfalon community-gonfalon]
+    [:community-manilla community-manilla]
+    [:community-simple-kalasag community-simple-kalasag]
     [:community-kalasag community-kalasag]]])
 
 (def ^:private kinds-map
