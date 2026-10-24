@@ -16,7 +16,7 @@
     "react-dom": "^18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "source-map": "^0.6.1",
-    "svgo": "^4.0.0"
+    "svgo": "^4.1.0"
   },
   "devDependencies": {
     "shadow-cljs": "3.3.8"
