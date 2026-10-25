@@ -234,7 +234,8 @@
                        "v" base-height
                        "h" (- base-width)
                        "z"]])
-        unadjusted-charge (svg/strip-clip-paths data)]
+        ;; sanitized here too, for charges saved before the backend did it
+        unadjusted-charge (-> data svg/sanitize-charge-data svg/strip-clip-paths)]
     (charge.shared/process-shape
      context
      {:base-shape base-shape
