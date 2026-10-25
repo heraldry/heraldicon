@@ -21,9 +21,9 @@
                       v))
                   payload)
          response (<? (http/post (config/get :heraldicon-api-endpoint)
-                                 {:headers {"Session-Id" (:session-id session)
-                                            "Content-Type" content-type
-                                            "Accept" accept}
+                                 {:headers (cond-> {"Content-Type" content-type
+                                                    "Accept" accept}
+                                             (:session-id session) (assoc "Session-Id" (:session-id session)))
                                   :body (encode-fn {:call name
                                                     :data payload})}))
          status (:status response)

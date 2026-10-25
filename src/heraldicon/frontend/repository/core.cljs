@@ -1,5 +1,6 @@
 (ns heraldicon.frontend.repository.core
   (:require
+   [heraldicon.config :as config]
    [re-frame.core :as rf]))
 
 (def db-path-base
@@ -13,7 +14,10 @@
                  (not (data-stale? data))))
       data
       (do
-        (load-fn :on-loaded on-loaded)
+        ;; server-side rendering is synchronous and never waits for a load, and its
+        ;; API calls would go over HTTP; the backend preloads what it renders
+        (when-not (config/get :backend?)
+          (load-fn :on-loaded on-loaded))
         {:status :loading}))))
 
 (rf/reg-event-db ::session-change
