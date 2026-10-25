@@ -16,6 +16,7 @@
    [heraldicon.frontend.library.user :as library.user]
    [heraldicon.frontend.maintenance :as maintenance]
    [heraldicon.frontend.news :as news]
+   [heraldicon.frontend.scroll-restoration :as scroll-restoration]
    [heraldicon.frontend.status :as status]
    [heraldicon.util.trailing-slash-router :as trailing-slash-router]
    [reagent.core :as rc]
@@ -53,16 +54,19 @@
 
    ["/collections/new"
     {:name :route.collection.details/create
+     :app-shell? true
      :view library.collection.details/create-view
      :conflicting true}]
 
    ["/collections/:id"
     {:name :route.collection.details/by-id
+     :app-shell? true
      :view library.collection.details/details-view
      :conflicting true}]
 
    ["/collections/:id/:version"
     {:name :route.collection.details/by-id-and-version
+     :app-shell? true
      :view library.collection.details/details-view}]
 
    ["/arms/"
@@ -71,16 +75,19 @@
 
    ["/arms/new"
     {:name :route.arms.details/create
+     :app-shell? true
      :view library.arms.details/create-view
      :conflicting true}]
 
    ["/arms/:id"
     {:name :route.arms.details/by-id
+     :app-shell? true
      :view library.arms.details/details-view
      :conflicting true}]
 
    ["/arms/:id/:version"
     {:name :route.arms.details/by-id-and-version
+     :app-shell? true
      :view library.arms.details/details-view}]
 
    ["/charges/"
@@ -89,16 +96,19 @@
 
    ["/charges/new"
     {:name :route.charge.details/create
+     :app-shell? true
      :view library.charge.details/create-view
      :conflicting true}]
 
    ["/charges/:id"
     {:name :route.charge.details/by-id
+     :app-shell? true
      :view library.charge.details/details-view
      :conflicting true}]
 
    ["/charges/:id/:version"
     {:name :route.charge.details/by-id-and-version
+     :app-shell? true
      :view library.charge.details/details-view}]
 
    ["/ribbons/"
@@ -107,16 +117,19 @@
 
    ["/ribbons/new"
     {:name :route.ribbon.details/create
+     :app-shell? true
      :view library.ribbon.details/create-view
      :conflicting true}]
 
    ["/ribbons/:id"
     {:name :route.ribbon.details/by-id
+     :app-shell? true
      :view library.ribbon.details/details-view
      :conflicting true}]
 
    ["/ribbons/:id/:version"
     {:name :route.ribbon.details/by-id-and-version
+     :app-shell? true
      :view library.ribbon.details/details-view}]
 
    ["/users/"
@@ -125,14 +138,17 @@
 
    ["/users/:username"
     {:name :route.user/details
+     :app-shell? true
      :view library.user/details-view}]
 
    ["/account/"
     {:name :route.account/main
+     :app-shell? true
      :view account/view}]
 
    ["/charge-types/"
     {:name :route.charge-types/main
+     :app-shell? true
      :view charge-types/view}]])
 
 (def ^:private router
@@ -146,6 +162,11 @@
 
 (defn- section [route]
   (some-> route namespace (str/split #"[.]") second))
+
+;; app-shell pages fill the viewport and scroll their own panes,
+;; all others scroll the document
+(defn app-shell? []
+  (-> @current-state :data :app-shell? boolean))
 
 (defn- current-section []
   (section (current-route)))
@@ -165,7 +186,8 @@
 
 (defn- on-navigate [match _history]
   (trailing-slash-router/fix-path-in-address-bar (:path match))
-  (reset! current-state match))
+  (reset! current-state match)
+  (scroll-restoration/after-navigation))
 
 (defn start []
   (reife/start! router on-navigate {:use-fragment false}))

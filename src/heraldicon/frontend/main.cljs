@@ -11,6 +11,7 @@
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
    [heraldicon.frontend.router :as router]
+   [heraldicon.frontend.scroll-restoration :as scroll-restoration]
    [heraldicon.frontend.search-filter :as search-filter]
    [heraldicon.frontend.state :as state]
    [heraldicon.frontend.title :as title]
@@ -54,7 +55,9 @@
 (defn app []
   [:<>
    [header/view]
-   [:div.main-content.no-scrollbar {:class (dark-mode/class)}
+   [:div.main-content {:class [(dark-mode/class)
+                               (when (router/app-shell?)
+                                 "app-shell no-scrollbar")]}
     [login-banner]
     [flash-banner]
     [router/view]
@@ -116,6 +119,7 @@
   (rf/dispatch-sync [::language/load-setting])
   (restore-search-list-from-url-parameters)
   (session/read-from-storage)
+  (scroll-restoration/start)
   (router/start)
   (r/render (app-root) [app])
   (r/render (title-root) [title/title]))

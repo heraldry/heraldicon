@@ -36,4 +36,4 @@
                   (blazonry-editor/open (c/++ base-context :data :achievement :coat-of-arms :field)))}
     [tr :string.button/create-from-blazon]]
    [:div {:style {:padding-top "0.5em"}}
-    [arms-select/list-arms on-select]]])
+    [arms-select/list-arms on-select {:page-scroll? true}]]])

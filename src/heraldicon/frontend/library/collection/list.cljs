@@ -26,4 +26,4 @@
                   (reife/push-state :route.collection.details/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
-    [collection-select/list-collections on-select]]])
+    [collection-select/list-collections on-select {:page-scroll? true}]]])
