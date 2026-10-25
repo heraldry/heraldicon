@@ -3,7 +3,6 @@
   "private": true,
   "dependencies": {
     "copy-to-clipboard": "^3.3.3",
-    "draft-js": "^0.11.7",
     "genex": "^1.1.0",
     "paper-jsdom": "^0.12.18",
     "paperjs-offset": "^1.0.8",

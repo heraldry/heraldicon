@@ -1541,15 +1541,51 @@ li.ui-menu-header {
   color: #ff0;
 }
 
-.DraftEditor-root,
-.DraftEditor-editorContainer,
-.public-DraftEditor-content {
+.blazonry-editor {
+  position: relative;
   width: 100%;
   height: 100%;
+  outline: 1px solid #000;
 }
 
-.public-DraftEditor-content {
+/* the textarea and the highlighting layer behind it must wrap identically */
+.blazonry-editor-text {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  border: 0;
+  padding: 2px 4px;
+  box-sizing: border-box;
+  font: inherit;
+  line-height: 1.4;
+  letter-spacing: normal;
+  word-spacing: normal;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  scrollbar-gutter: stable;
+}
+
+.blazonry-editor-backdrop {
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blazonry-editor-input {
   overflow-y: auto;
+  resize: none;
+  outline: none;
+  background: transparent;
+  color: transparent;
+  caret-color: #000;
+}
+
+.blazonry-editor-input::selection {
+  color: transparent;
+  background-color: rgba(80, 130, 255, 0.35);
+}
+
+.blazonry-editor-error {
+  color: red;
 }
 
 .blazonry-editor-help ul {

@@ -248,3 +248,11 @@
   color: #ccc !important;
   cursor: not-allowed;
 }
+
+.dark .blazonry-editor {
+  outline-color: #777;
+}
+
+.dark .blazonry-editor-input {
+  caret-color: #ccc;
+}
