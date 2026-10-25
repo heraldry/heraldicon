@@ -138,7 +138,7 @@
                                 :function :heraldry.charge.function/helmet
                                 :variant {:id "charge:def" :version 2}}]}]}}})]
     (testing "only crest-tagged variants are returned, not the helmet"
-      (is (= #{{:id "charge:abc" :version 1}} variants)))))
+      (is (= variants #{{:id "charge:abc" :version 1}})))))
 
 (deftest skips-uninteresting-tinctures
   (let [tokens (facets {:achievement
@@ -156,26 +156,26 @@
 
 (deftest split-input-separates-facets-from-phrases
   (testing "pure free text"
-    (is (= {:phrase-text "smith arms" :facets []}
-           (facets/split-input "smith arms"))))
+    (is (= (facets/split-input "smith arms")
+           {:phrase-text "smith arms" :facets []})))
   (testing "facet tokens routed to :facets"
-    (is (= {:phrase-text "smith" :facets ["tincture:or" "charge:lion"]}
-           (facets/split-input "smith tincture:or charge:lion"))))
+    (is (= (facets/split-input "smith tincture:or charge:lion")
+           {:phrase-text "smith" :facets ["tincture:or" "charge:lion"]})))
   (testing "facet tokens are lowercased"
-    (is (= {:phrase-text "" :facets ["main-field:per-pale"]}
-           (facets/split-input "MAIN-FIELD:PER-PALE"))))
+    (is (= (facets/split-input "MAIN-FIELD:PER-PALE")
+           {:phrase-text "" :facets ["main-field:per-pale"]})))
   (testing "unknown key stays a phrase"
-    (is (= {:phrase-text "unknown:lion" :facets []}
-           (facets/split-input "unknown:lion"))))
+    (is (= (facets/split-input "unknown:lion")
+           {:phrase-text "unknown:lion" :facets []})))
   (testing "empty/blank input"
-    (is (= {:phrase-text "" :facets []} (facets/split-input "")))
-    (is (= {:phrase-text "" :facets []} (facets/split-input nil))))
+    (is (= (facets/split-input "") {:phrase-text "" :facets []}))
+    (is (= (facets/split-input nil) {:phrase-text "" :facets []})))
   (testing "trailing colon is not a facet"
-    (is (= {:phrase-text "charge:" :facets []}
-           (facets/split-input "charge:")))))
+    (is (= (facets/split-input "charge:")
+           {:phrase-text "charge:" :facets []}))))
 
 (deftest slugify-name
-  (is (= "lion" (facets/slugify-name "lion")))
-  (is (= "north-american-bald-eagle"
-         (facets/slugify-name "North American bald  eagle")))
+  (is (= (facets/slugify-name "lion") "lion"))
+  (is (= (facets/slugify-name "North American bald  eagle")
+         "north-american-bald-eagle"))
   (is (nil? (facets/slugify-name nil))))

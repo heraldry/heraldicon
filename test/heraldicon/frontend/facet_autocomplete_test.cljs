@@ -35,20 +35,20 @@
 
 (deftest apply-suggestion-replaces-token-at-cursor
   (testing "cursor parks at the end of the inserted value"
-    (is (= ["tincture:" (count "tincture:")]
-           (ac/apply-suggestion "tin" "tincture:")))
-    (is (= ["tincture:or" (count "tincture:or")]
-           (ac/apply-suggestion "" "tincture:or"))))
+    (is (= (ac/apply-suggestion "tin" "tincture:")
+           ["tincture:" (count "tincture:")]))
+    (is (= (ac/apply-suggestion "" "tincture:or")
+           ["tincture:or" (count "tincture:or")])))
   (testing "tail is left untouched, cursor at end of just-inserted value"
-    (is (= ["tincture:or charge:lion" (count "tincture:or")]
-           (ac/apply-suggestion "tincture:o charge:lion" 10 "tincture:or")))
-    (is (= ["tincture:argent charge:lion" (count "tincture:argent")]
-           (ac/apply-suggestion "tincture:or charge:lion" 5 "tincture:argent")))))
+    (is (= (ac/apply-suggestion "tincture:o charge:lion" 10 "tincture:or")
+           ["tincture:or charge:lion" (count "tincture:or")]))
+    (is (= (ac/apply-suggestion "tincture:or charge:lion" 5 "tincture:argent")
+           ["tincture:argent charge:lion" (count "tincture:argent")]))))
 
 (deftest tree-key-recognizes-charge-and-crest
-  (is (= "charge" (ac/tree-key "charge:")))
-  (is (= "charge" (ac/tree-key "smith charge:lion")))
-  (is (= "crest" (ac/tree-key "crest:l")))
+  (is (= (ac/tree-key "charge:") "charge"))
+  (is (= (ac/tree-key "smith charge:lion") "charge"))
+  (is (= (ac/tree-key "crest:l") "crest"))
   (testing "non-tree keys are nil"
     (is (nil? (ac/tree-key "tincture:or")))
     (is (nil? (ac/tree-key "ornament:helm"))))
@@ -66,15 +66,15 @@
     (is (nil? (ac/tree-key "tincture:or charge:lion" 5))))
   (testing "cursor inside the second token picks that token"
     ;; cursor 18 is inside "charge:lion"
-    (is (= "charge" (ac/tree-key "tincture:or charge:lion" 18))))
+    (is (= (ac/tree-key "tincture:or charge:lion" 18) "charge")))
   (testing "cursor at end of input picks the last token (default behavior)"
-    (is (= "charge" (ac/tree-key "tincture:or charge:lion")))))
+    (is (= (ac/tree-key "tincture:or charge:lion") "charge"))))
 
 (deftest current-value-returns-value-portion
-  (is (= "lion" (ac/current-value "charge:lion")))
-  (is (= "" (ac/current-value "charge:")))
+  (is (= (ac/current-value "charge:lion") "lion"))
+  (is (= (ac/current-value "charge:") ""))
   (testing "follows the cursor across multiple tokens"
     ;; "charge:lion crest:eagle" — cursor in middle of second token
-    (is (= "eagle" (ac/current-value "charge:lion crest:eagle" 20)))
+    (is (= (ac/current-value "charge:lion crest:eagle" 20) "eagle"))
     ;; cursor in first token
-    (is (= "lion" (ac/current-value "charge:lion crest:eagle" 8)))))
+    (is (= (ac/current-value "charge:lion crest:eagle" 8) "lion"))))
