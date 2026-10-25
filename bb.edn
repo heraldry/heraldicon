@@ -8,7 +8,7 @@
                 :out
                 str/trim))
 
-          (def BACKEND-CONFIG {:clojure-defines {'heraldicon.config/is_backend true}})
+          (def BACKEND-CONFIG {:closure-defines {'heraldicon.config/is_backend true}})
 
           (def PROD-FRONTEND-DIR "build/prod")
           (def PROD-BACKEND-DIR "backend/build/prod")

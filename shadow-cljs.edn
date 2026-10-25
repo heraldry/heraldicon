@@ -34,6 +34,7 @@
           :backend
           {:target :node-script
            :main heraldicon.backend.server/start
+           :closure-defines {heraldicon.config/is_backend true}
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es2020
                               :warnings {:redef false}
@@ -45,6 +46,7 @@
           :stats
           {:target :node-script
            :main heraldicon.backend.stats/start
+           :closure-defines {heraldicon.config/is_backend true}
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es2020
                               :warnings {:redef false}
@@ -56,6 +58,7 @@
           :manage
           {:target :node-script
            :main heraldicon.manage/main
+           :closure-defines {heraldicon.config/is_backend true}
            :output-to "./backend/build/manage/manage.js"
            :js-options {:js-package-dirs ["./backend/node_modules"]}
            :compiler-options {:output-feature-set :es2020
