@@ -435,24 +435,26 @@ tincture/OR
 tincture/ARGENT
     = #"\bargent\b"
     | #"\bd'argent\b"
-    | #"\ba[.]\b"
-    | #"\bar[.]?\b"
+    | #"\ba[.](?=([ ,&]|$))"
+    | #"\bar\b[.]?"
     | #"\bsilver\b"
 tincture/SABLE
     = #"\bsable\b"
-    | #"\bsa[.]?\b"
+    | #"\bsa\b[.]?"
 tincture/AZURE
     = #"\bazure\b"
     | #"\bd'azure\b"
-    | #"\baz[.]?\b"
+    | #"\baz\b[.]?"
 tincture/GULES
     = #"\bgules\b"
-    | #"\bgu[.]?\b"
+    | #"\bgu\b[.]?"
 tincture/PURPURE
     = #"\bpurpure\b"
+    | #"\bpurp\b[.]?"
+    | #"\bpu\b[.]?"
 tincture/VERT
     = #"\bvert\b"
-    | #"\bve[.]?\b"
+    | #"\bvt\b[.]?"
 tincture/TENNE
     = #"\btenne\b"
     | #"\btenn[ée](?=([ ,&]|$))"
@@ -470,7 +472,7 @@ tincture/ROSE = #"\brose\b"
 tincture/COPPER = #"\bcopper\b"
 tincture/PROPER
     = #"\bproper\b"
-    | #"\bppr[.]?\b"
+    | #"\bppr\b[.]?"
 tincture/WHITE = #"\bwhite\b"
 
 tincture/BRUNATRE
@@ -493,7 +495,7 @@ tincture/AMARANTH
 
 tincture/ERMINE
     = #"\bermine\b"
-    | #"\berm[.]?\b"
+    | #"\berm\b[.]?"
     | #"\barmine\b"
     | #"\bermined\b"
     | #"\bhermine\b"
