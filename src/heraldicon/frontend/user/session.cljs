@@ -40,11 +40,14 @@
   (go-catch
    (try
      (let [result (<? (api/call :validate-session nil session-data))]
+       ;; only an answer without a user means the backend doesn't know the session
        (if result
          (rf/dispatch [::refresh result])
          (rf/dispatch [::session-expired])))
-     (catch :default _
-       (rf/dispatch [::session-expired])))))
+     (catch :default e
+       ;; e.g. a backend restart during a deploy; the session may well be valid,
+       ;; and calls that need a login still end it if it isn't
+       (log/warn e "Session validation failed, keeping the session")))))
 
 (defonce ^:private initial-load?
   (atom true))
