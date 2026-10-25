@@ -18,6 +18,6 @@
     "svgo": "^4.1.0"
   },
   "devDependencies": {
-    "shadow-cljs": "3.3.8"
+    "shadow-cljs": "3.5.7"
   }
 }
