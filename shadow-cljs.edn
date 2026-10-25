@@ -12,7 +12,9 @@
                         :resolve {"source-map-resolve" false
                                   "path" false
                                   "url" false
-                                  "fs" false}}
+                                  "fs" false
+                                  ;; paper only needs it for PaperScript, which we don't use
+                                  "acorn" false}}
            :devtools {:after-load heraldicon.frontend.main/init
                       :http-root "./assets"
                       :http-port 8081
