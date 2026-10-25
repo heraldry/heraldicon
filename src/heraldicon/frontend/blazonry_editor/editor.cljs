@@ -1,6 +1,5 @@
 (ns heraldicon.frontend.blazonry-editor.editor
   (:require
-   ["draft-js" :as draft-js]
    [clojure.string :as str]
    [heraldicon.frontend.auto-complete :as auto-complete]
    [heraldicon.frontend.blazonry-editor.dom :as dom]
@@ -40,10 +39,14 @@
 (def ^:private change-dedupe-time
   250)
 
-(rf/reg-event-fx ::update-state
-  (fn [{:keys [db]} [_ state]]
-    {:db (assoc-in db state-path state)
+(rf/reg-event-fx ::update-text
+  (fn [{:keys [db]} [_ text cursor]]
+    {:db (update-in db state-path state/update-from-input text cursor)
      ::debounce/dispatch [::debounce-update-state [::parse-if-changed] change-dedupe-time]}))
+
+(rf/reg-event-db ::set-cursor
+  (fn [db [_ cursor]]
+    (update-in db state-path state/set-cursor-index cursor)))
 
 (rf/reg-event-fx ::update-state-and-parse
   (fn [{:keys [db]} [_ state]]
@@ -78,28 +81,70 @@
                   (fn [choice]
                     (rf/dispatch [::auto-completion-clicked index cursor-index choice]))]})))
 
+(defn- highlighted-text
+  "The text for the layer behind the textarea, with the unparsed rest in red."
+  [text error-index]
+  (let [error-index (some-> error-index (min (count text)))]
+    [:<>
+     (if error-index
+       (subs text 0 error-index)
+       text)
+     (when error-index
+       [:span.blazonry-editor-error (subs text error-index)])
+     ;; a trailing newline only takes up a line if something follows it
+     "​"]))
+
+;; The textarea shows a caret but transparent text; the identically styled layer
+;; behind it shows the text with the highlighting. The textarea is uncontrolled:
+;; a controlled one loses keystrokes when a render with a stale value arrives
+;; while typing. Only changes made by the app are written into it.
 (defn editor []
-  [:div {:style {:display "inline-block"
-                 :outline "1px solid black"
-                 :width "100%"
-                 :height "100%"}}
-   [(r/create-class
-     {:display-name "core"
-      :reagent-render (fn []
-                        (let [state @(rf/subscribe [:get state-path])]
-                          [:> draft-js/Editor
-                           {:editorState state
-                            :onChange #(rf/dispatch-sync [::update-state %])
-                            :keyBindingFn (fn [event]
-                                            (if (= (.-code event) "Tab")
-                                              (do
-                                                (.preventDefault event)
-                                                (.stopPropagation event)
-                                                "auto-complete")
-                                              (draft-js/getDefaultKeyBinding event)))
-                            :handleKeyCommand (fn [command]
-                                                (if (= command "auto-complete")
-                                                  (do
-                                                    (rf/dispatch [::auto-complete/apply-first])
-                                                    "handled")
-                                                  "not-handled"))}]))})]])
+  (let [input (atom nil)
+        backdrop (atom nil)
+        rendered-state (atom nil)
+        applied-revision (atom nil)
+        apply-app-changes! (fn []
+                             (when-let [^js element @input]
+                               (let [state @rendered-state
+                                     revision (state/revision state)]
+                                 (when (not= revision @applied-revision)
+                                   (reset! applied-revision revision)
+                                   (when (not= (.-value element) (state/text state))
+                                     (set! (.-value element) (state/text state)))
+                                   (let [cursor (state/cursor-index state)]
+                                     (.focus element)
+                                     (.setSelectionRange element cursor cursor))))))]
+    (r/create-class
+     {:display-name "blazonry-editor"
+      :component-did-mount #(reset! applied-revision (state/revision @rendered-state))
+      :component-did-update apply-app-changes!
+      :reagent-render
+      (fn []
+        (let [state @(rf/subscribe [:get state-path])
+              text (state/text state)]
+          (reset! rendered-state state)
+          [:div.blazonry-editor
+           [:div.blazonry-editor-text.blazonry-editor-backdrop
+            {:ref #(reset! backdrop %)}
+            [highlighted-text text (state/error-index state)]]
+           [:textarea.blazonry-editor-text.blazonry-editor-input
+            {:id dom/input-id
+             :ref #(reset! input %)
+             :default-value text
+             :spell-check false
+             :auto-complete "off"
+             :auto-capitalize "off"
+             :auto-correct "off"
+             :on-change (fn [^js event]
+                          (let [element (.-target event)]
+                            (rf/dispatch-sync [::update-text (.-value element) (.-selectionStart element)])))
+             :on-select (fn [^js event]
+                          (rf/dispatch-sync [::set-cursor (.. event -target -selectionStart)]))
+             :on-scroll (fn [^js event]
+                          (when-let [^js element @backdrop]
+                            (set! (.-scrollTop element) (.. event -target -scrollTop))))
+             :on-key-down (fn [^js event]
+                            (when (= (.-key event) "Tab")
+                              (.preventDefault event)
+                              (.stopPropagation event)
+                              (rf/dispatch [::auto-complete/apply-first])))}]]))})))
