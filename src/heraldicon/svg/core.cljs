@@ -1,11 +1,9 @@
 (ns heraldicon.svg.core
   (:require
-   ["css" :as css]
    [clojure.string :as str]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
-   [heraldicon.util.uid :as uid]
-   [taoensso.timbre :as log]))
+   [heraldicon.util.uid :as uid]))
 
 (defn- split-style-value [value]
   (into {}
@@ -111,19 +109,71 @@
        (js->clj :keywordize-keys true)
        :data)))
 
-(defn- parse-css-rules [css]
-  (try
-    (let [parsed (-> (css/parse css)
-                     (js->clj :keywordize-keys true))]
-      (mapv (fn [{:keys [selectors declarations]}]
-              [selectors
-               (into {}
-                     (map (fn [{:keys [property value]}]
-                            [(keyword property) value]))
-                     declarations)])
-            (-> parsed :stylesheet :rules)))
-    (catch :default e
-      (log/error e))))
+(defn- split-outside-quotes-and-parens
+  "Splits s at every separator character that isn't inside quotes or
+  parentheses, e.g. the ; in url(data:image/png;base64,...)."
+  [s separator]
+  (loop [[c & remaining] s
+         current []
+         parts []
+         quote-char nil
+         depth 0]
+    (cond
+      (nil? c) (conj parts (apply str current))
+      quote-char (recur remaining (conj current c) parts (when (not= c quote-char) quote-char) depth)
+      (#{\" \'} c) (recur remaining (conj current c) parts c depth)
+      (= c \() (recur remaining (conj current c) parts nil (inc depth))
+      (= c \)) (recur remaining (conj current c) parts nil (max 0 (dec depth)))
+      (and (= c separator)
+           (zero? depth)) (recur remaining [] (conj parts (apply str current)) nil depth)
+      :else (recur remaining (conj current c) parts nil depth))))
+
+(defn- parse-declarations [block]
+  (into {}
+        (keep (fn [declaration]
+                (let [[property value] (str/split declaration #":" 2)
+                      property (some-> property str/trim)
+                      value (some-> value str/trim)]
+                  (when-not (or (str/blank? property)
+                                (str/blank? value))
+                    [(keyword property) value]))))
+        (split-outside-quotes-and-parens block \;)))
+
+(defn- skip-block
+  "Returns the index after the block whose { is at start, counting nested braces."
+  [css start]
+  (loop [index (inc start)
+         depth 1]
+    (cond
+      (>= index (count css)) index
+      (zero? depth) index
+      :else (recur (inc index)
+                   (case (nth css index)
+                     \{ (inc depth)
+                     \} (dec depth)
+                     depth)))))
+
+(defn- parse-css-rules
+  "Parses a stylesheet into [selectors declarations] pairs. Only plain rules are
+  kept; at-rules like @media or @font-face are skipped."
+  [css]
+  (let [css (str/replace css #"(?s)/\*.*?\*/" "")]
+    (loop [index 0
+           rules []]
+      (let [open (str/index-of css "{" index)
+            prelude (some-> open (->> (subs css index)) str/trim)]
+        (cond
+          (nil? open) rules
+          ;; an at-rule without a block, e.g. @import ...; before the next rule
+          (str/includes? prelude ";") (recur (inc (str/index-of css ";" index)) rules)
+          (str/starts-with? prelude "@") (recur (skip-block css open) rules)
+          :else (let [close (or (str/index-of css "}" open) (count css))
+                      selectors (into []
+                                      (comp (map str/trim)
+                                            (remove str/blank?))
+                                      (str/split prelude #","))]
+                  (recur (inc close)
+                         (conj rules [selectors (parse-declarations (subs css (inc open) close))]))))))))
 
 (defn- read-css-rules [svg-data]
   (let [style-blocks (->> svg-data
