@@ -301,11 +301,12 @@
              [:div [tr :string.miscellaneous/none]]
              [:<>
               [:> InfiniteScroll
-               {:dataLength (count entities)
-                :hasMore (not= (count entities) total)
-                :next #(rf/dispatch [::entity-search/load-more id kind page-size])
-                :scrollableTarget (when-not page-scroll? results-id)
-                :style {:overflow "visible"}}
+               ;; without a scrollableTarget it listens to the window; passing null makes it warn
+               (cond-> {:dataLength (count entities)
+                        :hasMore (not= (count entities) total)
+                        :next #(rf/dispatch [::entity-search/load-more id kind page-size])
+                        :style {:overflow "visible"}}
+                 (not page-scroll?) (assoc :scrollableTarget results-id))
                [:ul.filter-results {:class (when small? "small")}
                 (when display-selected-item?
                   [result-card id (:id selected-item) kind nil
