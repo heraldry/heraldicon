@@ -4,7 +4,8 @@
    [heraldicon.frontend.language :refer [tr]]
    [heraldicon.frontend.message :as message]
    [heraldicon.frontend.modal :as modal]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [reagent.core :as r]))
 
 (def ^:private db-path-user-forms
   [:ui :user-form :forms])
@@ -45,7 +46,8 @@
 
 (defn text-field [form-id field-id placeholder & {:keys [type
                                                          label
-                                                         help]
+                                                         help
+                                                         adornment]
                                                   :or {type "text"}}]
   (let [message-id (message-id form-id field-id)]
     [:div {:class (when @(rf/subscribe [::message/error? message-id])
@@ -58,15 +60,17 @@
          [tr label]])
       [:div {:style {:display "inline-block"
                      :vertical-align "top"}}
-       [controlled-input/input
-        {:id (name field-id)
-         :name (name field-id)
-         :value @(rf/subscribe [::field-value form-id field-id])
-         :on-change (fn [new-value]
-                      (rf/dispatch-sync [::set-field-value form-id field-id new-value]))
-         :placeholder (tr placeholder)
-         :type type
-         :style {:display "block"}}]
+       [:div.form-field-input {:class (when adornment "with-adornment")}
+        [controlled-input/input
+         {:id (name field-id)
+          :name (name field-id)
+          :value @(rf/subscribe [::field-value form-id field-id])
+          :on-change (fn [new-value]
+                       (rf/dispatch-sync [::set-field-value form-id field-id new-value]))
+          :placeholder (tr placeholder)
+          :type type
+          :style {:display "block"}}]
+        adornment]
        (when help
          [:span {:style {:display "block"
                          :color "#aaa"
@@ -75,8 +79,24 @@
                          :margin-bottom "5px"}}
           [tr help]])]]]))
 
-(defn password-field [form-id field-id placeholder & {:as options}]
-  (text-field form-id field-id placeholder (assoc options :type "password")))
+(defn password-field [_form-id _field-id _placeholder & {:as _options}]
+  (let [visible? (r/atom false)]
+    (fn [form-id field-id placeholder & {:as options}]
+      (let [label (if @visible?
+                    :string.user/hide-password
+                    :string.user/show-password)]
+        (text-field form-id field-id placeholder
+                    (assoc options
+                           :type (if @visible? "text" "password")
+                           :adornment [:button.password-toggle
+                                       {:type "button"
+                                        :title (tr label)
+                                        :aria-label (tr label)
+                                        :aria-pressed @visible?
+                                        ;; keeps the focus in the input
+                                        :on-mouse-down #(.preventDefault %)
+                                        :on-click #(swap! visible? not)}
+                                       [:i.fas {:class (if @visible? "fa-eye-slash" "fa-eye")}]]))))))
 
 (defn on-submit-fn [event-vector]
   (fn [event]
