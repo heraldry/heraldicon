@@ -1,5 +1,7 @@
 (ns heraldicon.frontend.canvas
   (:require
+   ["react-dom" :as react-dom]
+   ["react-dom/client" :as react-dom-client]
    [cljs.core.async.interop :refer-macros [<p!]]
    [com.wsscode.async.async-cljs :refer [go-catch <?]]
    [heraldicon.math.bounding-box :as bb]
@@ -7,11 +9,22 @@
    [heraldicon.math.vector :as v]
    [heraldicon.svg.path :as path]
    [heraldicon.util.async :as util.async]
-   [reagent.dom.server :as r-server]))
+   [reagent.core :as r]))
+
+;; Renders with the client renderer into a detached element instead of using
+;; reagent.dom.server, which would pull React's server renderer into the bundle.
+(defn- render-svg-markup [element]
+  (let [container (js/document.createElement "div")
+        ^js root (react-dom-client/createRoot container)]
+    (try
+      (react-dom/flushSync #(.render root (r/as-element element)))
+      (.serializeToString (js/XMLSerializer.) (.-firstChild container))
+      (finally
+        (.unmount root)))))
 
 (defn- draw-svg [svg-data target-width target-height]
   (go-catch
-   (let [svg-data-str (r-server/render-to-static-markup
+   (let [svg-data-str (render-svg-markup
                        [:svg {:viewBox (str "0 0 " target-width " " target-height)
                               :version "1.1"
                               :xmlns "http://www.w3.org/2000/svg"
