@@ -226,6 +226,49 @@
                      value))
                  data))
 
+(def ^:private allowed-elements
+  #{"svg" "g" "defs" "symbol" "use" "switch" "title" "desc"
+    "path" "rect" "circle" "ellipse" "line" "polyline" "polygon"
+    "text" "tspan" "textpath"
+    "lineargradient" "radialgradient" "stop" "pattern" "clippath" "mask" "marker"
+    "filter" "image"})
+
+(defn- local-name [k]
+  (-> (name k)
+      str/lower-case
+      (str/replace #"^[^:]*:" "")))
+
+(defn- allowed-element? [tag]
+  (let [element (local-name tag)]
+    (or (contains? allowed-elements element)
+        ;; filter primitives: feGaussianBlur, feOffset, ...
+        (str/starts-with? element "fe"))))
+
+(defn- allowed-attribute? [[k v]]
+  (let [attribute (local-name k)]
+    (cond
+      (str/starts-with? attribute "on") false
+      (= attribute "href") (and (string? v)
+                                (or (str/starts-with? v "#")
+                                    (str/starts-with? v "data:image/")))
+      :else true)))
+
+(defn sanitize-charge-data
+  "Keeps only the SVG elements and attributes needed to draw a charge. Charge
+  data is user-supplied and gets rendered on the site and in exports."
+  [data]
+  (walk/postwalk (fn [value]
+                   (cond
+                     (map-entry? value) value
+                     (map? value) (into {} (filter allowed-attribute?) value)
+                     (not (and (vector? value)
+                               (keyword? (first value)))) value
+                     ;; links wrap drawn content, which stays as a group
+                     (= (local-name (first value)) "a") (assoc value 0 :g)
+                     (not (allowed-element? (first value))) nil
+                     :else value))
+                 data))
+
 (defn strip-unnecessary-parts [svg-data]
   (-> svg-data
       (strip-elements #{:style :foreignObject :foreign-object :foreignobject})
