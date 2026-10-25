@@ -32,6 +32,8 @@
       "ribbon-detached": "Fita desvinculada da tua conta. Os brasões que a usam continuam a funcionar."
     },
     "button": {},
+    "hide-password": "Ocultar palavra-passe",
+    "show-password": "Mostrar palavra-passe",
     "username-or-email": "Nome de utilizador ou email",
     "avatar": {
       "title": "Imagem de perfil",

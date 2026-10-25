@@ -1541,6 +1541,38 @@ li.ui-menu-header {
   color: #ff0;
 }
 
+.form-field-input {
+  position: relative;
+}
+
+.form-field-input.with-adornment input {
+  padding-right: 2em;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #777;
+  cursor: pointer;
+}
+
+.password-toggle:hover,
+.password-toggle:focus-visible {
+  color: #000;
+}
+
+.dark .password-toggle:hover,
+.dark .password-toggle:focus-visible {
+  color: #fff;
+}
+
 .blazonry-editor {
   position: relative;
   width: 100%;
