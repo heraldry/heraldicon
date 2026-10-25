@@ -264,6 +264,7 @@
      :on-default (fn [_])]))
 
 (defn- results [id kind on-select {:keys [page-size
+                                          page-scroll?
                                           display-selected-item?
                                           selected-item]
                                    :as options}]
@@ -303,7 +304,7 @@
                {:dataLength (count entities)
                 :hasMore (not= (count entities) total)
                 :next #(rf/dispatch [::entity-search/load-more id kind page-size])
-                :scrollableTarget results-id
+                :scrollableTarget (when-not page-scroll? results-id)
                 :style {:overflow "visible"}}
                [:ul.filter-results {:class (when small? "small")}
                 (when display-selected-item?
@@ -768,9 +769,11 @@
             [tr :string.structured-search/example-label] " "
             [:code "smith tincture:or charge:lion"]]]])])))
 
-(defn component [id kind on-select {:keys [component-styles]
+(defn component [id kind on-select {:keys [component-styles page-scroll?]
                                     :as options}]
-  [:div.filter-component {:style component-styles}
+  ;; with page-scroll? the results flow in the document instead of scrolling in a box
+  [:div.filter-component {:class (when page-scroll? "page-scroll")
+                          :style (when-not page-scroll? component-styles)}
    [:div.filter-component-search
     [search-input id kind options]
 

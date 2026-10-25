@@ -26,4 +26,4 @@
                   (reife/push-state :route.charge.details/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
-    [charge-select/list-charges on-select]]])
+    [charge-select/list-charges on-select {:page-scroll? true}]]])

@@ -26,4 +26,4 @@
                   (reife/push-state :route.ribbon.details/create))}
     [tr :string.button/create]]
    [:div {:style {:padding-top "0.5em"}}
-    [ribbon-select/list-ribbons on-select]]])
+    [ribbon-select/list-ribbons on-select {:page-scroll? true}]]])

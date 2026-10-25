@@ -171,6 +171,9 @@ p {
 
 .main-content {
   grid-area: content;
+}
+
+.main-content.app-shell {
   overflow: auto;
 }
 
@@ -589,23 +592,33 @@ label div {
 
 /* new layout */
 
+/* pages scroll the document; app-shell pages (editors) fill the viewport
+   and scroll their own panes */
 #app {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100vh;
+  min-height: 100dvh;
   display: grid;
   grid-template-columns: [start] auto [end];
   grid-template-rows: [top] 2.5em [header-end] auto [bottom];
   grid-template-areas:
     "header"
     "content";
+}
+
+#app:has(> .main-content.app-shell) {
+  height: 100dvh;
   overflow: auto;
 }
 
 .header {
   grid-area: header;
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background-color: #fff;
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid #ddd;
@@ -1469,6 +1482,10 @@ li.ui-menu-header {
   padding: 5px;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.filter-component.page-scroll .filter-component-results {
+  overflow-y: visible;
 }
 
 .filter-component-show-more {
