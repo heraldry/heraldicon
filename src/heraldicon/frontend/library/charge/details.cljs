@@ -1,6 +1,7 @@
 (ns heraldicon.frontend.library.charge.details
   (:require
    [cljs.core.async :refer [go]]
+   [cljs.core.async.interop :refer-macros [<p!]]
    [clojure.set :as set]
    [clojure.string :as str]
    [clojure.walk :as walk]
@@ -169,6 +170,24 @@
                         :svg-data raw-svg-data}))
        :dispatch [::clear-selected-colours]})))
 
+(def ^:private import-svgo
+  ;; svgo's browser build is an ES module outside the bundle, the browser imports it only once;
+  ;; Closure can't compile a dynamic import(), so the function is created at runtime
+  (js/Function. "return import(\"/js/svgo.browser.js\")"))
+
+(defn- svgo-optimize [data]
+  (-> (import-svgo)
+      (.then (fn [^js svgo]
+               (.optimize svgo
+                          data
+                          (clj->js
+                           {:plugins [{:name "preset-default"
+                                       :params {:overrides {:removeUnknownsAndDefaults false
+                                                            :removeHiddenElems false
+                                                            :convertPathData false
+                                                            :mergePaths false}}}
+                                      "removeScripts"]}))))))
+
 (rf/reg-fx ::process-svg-file
   (fn [[db-path raw-svg-data colours]]
     (go
@@ -176,15 +195,7 @@
         (let [parsed-svg-data (-> raw-svg-data
                                   (svg/optimize (fn [data]
                                                   (go-catch
-                                                   (js/SVGO.optimize
-                                                    data
-                                                    (clj->js
-                                                     {:plugins [{:name "preset-default"
-                                                                 :params {:overrides {:removeUnknownsAndDefaults false
-                                                                                      :removeHiddenElems false
-                                                                                      :convertPathData false
-                                                                                      :mergePaths false}}}
-                                                                "removeScripts"]})))))
+                                                   (<p! (svgo-optimize data)))))
                                   <?
                                   hickory/parse-fragment
                                   first
