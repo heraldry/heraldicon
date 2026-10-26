@@ -7,7 +7,7 @@
    [heraldicon.reader.blazonry.result :as result]))
 
 (deftest parsing
-  (are [blazon form] (= (reader/read blazon parser/default) form)
+  (are [blazon form] (= (reader/read blazon @parser/default) form)
 
     "or"
     {:type :heraldry.field.type/plain
