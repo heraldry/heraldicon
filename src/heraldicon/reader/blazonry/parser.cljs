@@ -52,11 +52,12 @@
        (apply merge-with (fn [a _] a))))
 
 (def default
-  (let [parser (default-parser)]
-    {:parser parser
-     :bad-charge-types (generate-strings-for-rule parser :bad-charge-type)
-     :suggestion-classifications (suggestion-classifications parser)
-     :charge-map {}}))
+  (delay
+    (let [parser (default-parser)]
+      {:parser parser
+       :bad-charge-types (generate-strings-for-rule parser :bad-charge-type)
+       :suggestion-classifications (suggestion-classifications parser)
+       :charge-map {}})))
 
 (defn- make-rule [[rule terminals]]
   [rule
@@ -144,14 +145,14 @@
                                           (let [kw-name (str "charge-" (swap! charge-type-id inc))
                                                 rule-name (keyword "charge-other-type" kw-name)]
                                             (swap! charge-type-id-map assoc charge-type (keyword "heraldry.charge.type" kw-name))
-                                            (if (contains? (:bad-charge-types default) charge-type)
+                                            (if (contains? (:bad-charge-types @default) charge-type)
                                               [rule-name (let [clean-name (str "charge " charge-type)]
                                                            (set [clean-name
                                                                  (pluralize clean-name)]))]
                                               [rule-name (set [charge-type
                                                                (pluralize charge-type)])])))))
                                 (keys charge-type-map))
-        default-parser (:parser default)
+        default-parser (:parser @default)
         new-parser (inject-charge-type-rules
                     default-parser
                     charge-type-rules)]

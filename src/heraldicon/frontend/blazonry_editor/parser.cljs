@@ -95,7 +95,7 @@
 
 (rf/reg-event-fx ::parse
   (fn [{:keys [db]} [_ text]]
-    (let [parser (get-in db (conj parser-path :parser) parser/default)
+    (let [parser (or (get-in db (conj parser-path :parser)) @parser/default)
           {:keys [hdn error] :as result} (parse-blazonry text parser)]
       {:db (set-status db hdn error)
        :dispatch [::editor/on-parse-result text result]})))
