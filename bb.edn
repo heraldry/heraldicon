@@ -26,8 +26,19 @@
             (fs/copy "node_modules/svgo/dist/svgo.browser.js" "assets/js/svgo.browser.js"
                      {:replace-existing true}))
 
+          ;; the frontend fetches every language except English from assets/locales,
+          ;; which is ignored by git
+          (defn copy-locales! []
+            (fs/create-dirs "assets/locales")
+            (doseq [file (fs/glob "locales" "*/strings.json")]
+              (let [language (str (fs/file-name (fs/parent file)))]
+                (when (not= language "en")
+                  (fs/copy file (str "assets/locales/" language ".json")
+                           {:replace-existing true})))))
+
           (defn build-frontend-release [build-dir config]
             (copy-svgo-browser!)
+            (copy-locales!)
             (fs/delete-tree STAGING-FRONTEND-DIR)
             (fs/delete-tree PROD-FRONTEND-DIR)
 
@@ -152,7 +163,11 @@
                        check-debug-print-backend
                        check-json]}
 
-  dev-local (shell "npx shadow-cljs watch frontend backend test manage")
+  copy-locales (copy-locales!)
+
+  dev-local (do
+              (copy-locales!)
+              (shell "npx shadow-cljs watch frontend backend test manage"))
 
   staging-backend-release (do
                             (fs/delete-tree STAGING-BACKEND-DIR)

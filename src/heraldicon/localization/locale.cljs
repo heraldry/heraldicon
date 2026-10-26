@@ -1,21 +1,32 @@
 (ns heraldicon.localization.locale
   (:require-macros [heraldicon.localization.locale :refer [load-locale]]))
 
-(def ^:private JSON-DICT
-  {:en (load-locale "en/strings.json")
-   :de (load-locale "de/strings.json")
-   :es (load-locale "es/strings.json")
-   :fr (load-locale "fr/strings.json")
-   :it (load-locale "it/strings.json")
-   :pt (load-locale "pt/strings.json")
-   :ru (load-locale "ru/strings.json")
-   :uk (load-locale "uk/strings.json")})
+;; English is bundled as the fallback, the frontend fetches other languages when they are selected
+(def ^:private english
+  (load-locale "en/strings.json"))
 
-(defn string [s]
+(defonce ^:private dictionaries
+  (atom {}))
+
+(defn- flatten-keys [data prefix]
   (into {}
-        (map (fn [[k strings]]
-               [k (get strings s)]))
-        JSON-DICT))
+        (mapcat (fn [[k v]]
+                  (if (map? v)
+                    (flatten-keys v (str prefix "." k))
+                    [[(keyword prefix k) v]])))
+        data))
+
+(defn loaded? [language]
+  (or (= language :en)
+      (contains? @dictionaries language)))
+
+(defn register! [language ^js data]
+  (swap! dictionaries assoc language (flatten-keys (js->clj data) "string")))
+
+(defn string [language key]
+  (if (= language :en)
+    (get english key)
+    (get-in @dictionaries [language key])))
 
 (def all
   {:en "English"
