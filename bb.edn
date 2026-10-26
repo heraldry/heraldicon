@@ -20,7 +20,14 @@
           (def STAGING-CONFIG {:closure-defines {'heraldicon.config/stage "staging"
                                                  'heraldicon.config/commit COMMIT-HASH}})
 
+          ;; the charge upload imports svgo's browser build from assets; a changed copy
+          ;; after an svgo upgrade shows up as a dirty repository
+          (defn copy-svgo-browser []
+            (fs/copy "node_modules/svgo/dist/svgo.browser.js" "assets/js/svgo.browser.js"
+                     {:replace-existing true}))
+
           (defn build-frontend-release [build-dir config]
+            (copy-svgo-browser)
             (fs/delete-tree STAGING-FRONTEND-DIR)
             (fs/delete-tree PROD-FRONTEND-DIR)
 
@@ -125,10 +132,13 @@
   check-json (-> (shell {:out :string} "find locales -iname '*.json'")
                  (shell {:out :string} "xargs jq ."))
 
-  check-dirty-frontend (-> (shell {:continue true} "git diff --quiet")
-                           :exit
-                           (= 0)
-                           (or (throw (Exception. ". is dirty"))))
+  copy-svgo-browser (copy-svgo-browser)
+
+  check-dirty-frontend {:depends [copy-svgo-browser]
+                        :task (-> (shell {:continue true} "git diff --quiet")
+                                  :exit
+                                  (= 0)
+                                  (or (throw (Exception. ". is dirty"))))}
 
   check-dirty-backend (-> (shell {:continue true
                                   :dir "backend"} "git diff --quiet")
