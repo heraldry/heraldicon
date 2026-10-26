@@ -3,56 +3,52 @@
    [clojure.string :as str]
    [heraldicon.localization.locale :as locale]))
 
+;; translated text is only resolved for one language when it is displayed, so
+;; only the selected language's dictionary needs to be loaded
+(defrecord ^:private Joined [separator parts upper-case-first?]
+  ;; React stringifies keys, and choice labels are used as keys
+  Object
+  (toString [this]
+    (pr-str* this)))
+
+(defn- upper-case-first-str [s]
+  (let [s (or s "")]
+    (str (str/upper-case (subs s 0 1)) (subs s 1))))
+
 (defn tr-raw [data language]
   (cond
-    (keyword? data) (tr-raw (locale/string data) language)
+    (keyword? data) (let [translated (locale/string language data)]
+                      (if (some-> translated count pos?)
+                        translated
+                        (locale/string :en data)))
+    (instance? Joined data) (let [{:keys [separator parts upper-case-first?]} data]
+                              (cond-> (->> parts
+                                           (map (fn [s]
+                                                  (tr-raw s language)))
+                                           (filter (comp pos? count))
+                                           (str/join (tr-raw separator language)))
+                                upper-case-first? upper-case-first-str))
     (map? data) (let [translated (get data language)]
                   (if (some-> translated count pos?)
                     translated
                     (get data :en)))
     :else (str data)))
 
+(defn- translatable? [data]
+  (or (keyword? data)
+      (map? data)))
+
+(defn- join [separator parts]
+  (let [joined (->Joined separator (vec parts) false)]
+    (if (some translatable? (cons separator parts))
+      joined
+      (tr-raw joined :en))))
+
 (defn combine [separator words]
-  (let [translated (into {}
-                         (map (fn [language]
-                                [language
-                                 (->> words
-                                      (map (fn [s]
-                                             (if (or (string? s)
-                                                     (keyword? s)
-                                                     (map? s))
-                                               s
-                                               (str s))))
-                                      (map (fn [s]
-                                             (tr-raw s language)))
-                                      (filter (comp pos? count))
-                                      (str/join (tr-raw separator language)))]))
-                         (keys locale/all))]
-    (if (-> translated
-            vals
-            set
-            count
-            (= 1))
-      (-> translated vals first)
-      translated)))
+  (join separator words))
 
 (defn str-tr [& strs]
-  (let [translated (into {}
-                         (map (fn [language]
-                                [language
-                                 (->> strs
-                                      (map (fn [s]
-                                             (tr-raw s language)))
-                                      (filter (comp pos? count))
-                                      str/join)]))
-                         (keys locale/all))]
-    (if (-> translated
-            vals
-            set
-            count
-            (= 1))
-      (-> translated vals first)
-      translated)))
+  (join "" strs))
 
 (defn- interleave-all
   "Returns a lazy seq of the first item in each coll, then the second etc.,
@@ -69,14 +65,7 @@
   (let [chunks (str/split s "%s")]
     (apply str-tr (interleave-all chunks args))))
 
-(defn- upper-case-first-str [s]
-  (let [s (or s "")]
-    (str (str/upper-case (subs s 0 1)) (subs s 1))))
-
 (defn upper-case-first [s]
-  (if (map? s)
-    (into {}
-          (map (fn [[k v]]
-                 [k (upper-case-first-str v)]))
-          s)
+  (if (translatable? s)
+    (->Joined "" [s] true)
     (upper-case-first-str s)))

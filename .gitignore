@@ -7,5 +7,6 @@ backend
 
 .cpcache
 build
+/assets/locales/
 
 gettext/*.mo

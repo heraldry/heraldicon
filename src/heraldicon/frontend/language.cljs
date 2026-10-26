@@ -1,16 +1,21 @@
 (ns heraldicon.frontend.language
   (:require
    [clojure.string :as str]
+   [heraldicon.config :as config]
    [heraldicon.frontend.header :as-alias header]
    [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.localization.locale :as locale]
    [heraldicon.localization.string :as string]
    [hodgepodge.core :refer [get-item local-storage set-item]]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [taoensso.timbre :as log]))
 
 (def ^:private language-path
   [:ui :language])
+
+(def ^:private requested-language-path
+  [:ui :requested-language])
 
 (def ^:private language-menu-open?-path
   [:ui :menu :language-menu :open?])
@@ -37,18 +42,47 @@
         :en)))
 
 (defn- set-language [db language]
-  (if (locale/all language)
-    (do
-      (store-language-setting language)
-      (assoc-in db language-path language))
-    db))
+  (store-language-setting language)
+  (-> db
+      (assoc-in language-path language)
+      (assoc-in requested-language-path nil)))
 
-(macros/reg-event-db ::set
+(defn- dictionary-url [language]
+  (str "/locales/" (name language) ".json?version=" (config/get :commit)))
+
+(rf/reg-fx ::load-dictionary
+  (fn [language]
+    (-> (js/fetch (dictionary-url language))
+        (.then (fn [^js response]
+                 (if (.-ok response)
+                   (.json response)
+                   (throw (ex-info "dictionary request failed" {:status (.-status response)})))))
+        (.then (fn [data]
+                 (locale/register! language data)
+                 (rf/dispatch [::activate language])))
+        (.catch (fn [error]
+                  (log/error error "load dictionary error" {:language language}))))))
+
+(macros/reg-event-db ::activate
   (fn [db [_ language]]
-    (set-language db language)))
+    ;; a later selection wins over a dictionary that arrives late
+    (if (= (get-in db requested-language-path) language)
+      (set-language db language)
+      db)))
 
-(macros/reg-event-db ::load-setting
-  (fn [db _]
+(defn- select-language [db language]
+  (cond
+    (not (locale/all language)) {}
+    (locale/loaded? language) {:db (set-language db language)}
+    :else {:db (assoc-in db requested-language-path language)
+           ::load-dictionary language}))
+
+(macros/reg-event-fx ::set
+  (fn [{:keys [db]} [_ language]]
+    (select-language db language)))
+
+(macros/reg-event-fx ::load-setting
+  (fn [{:keys [db]} _]
     (browser-preferred-language)
     (let [loaded-language (get-item local-storage local-storage-language-name ":en")
           loaded-language (cond-> loaded-language
@@ -56,8 +90,8 @@
                                                                      (subs 1)
                                                                      keyword))]
       (if loaded-language
-        (set-language db loaded-language)
-        (set-language db (browser-preferred-language))))))
+        (select-language db loaded-language)
+        (select-language db (browser-preferred-language))))))
 
 (defn tr [data]
   (string/tr-raw data @(rf/subscribe [::selected-language])))
