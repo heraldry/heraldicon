@@ -1606,6 +1606,47 @@
                   :creator-name "okkolol"
                   :creator-link "https://heraldicon.org/users/okkolol"}})
 
+(def ^:private community-croatian-engrailed
+  {:shape "M 0 0
+           C 0.01888033 21.321615 0.03776067 42.643229 0.056641 63.964844
+             2.2091777 77.166454 9.8405608 89.503663 21.478616 96.360275
+             30.388439 101.99563 40.479874 105.27044 50 109.66992
+             64.611518 103.01969 81.464544 98.26866 91.382321 84.675717
+             95.975568 78.271708 99.134669 70.62288 99.94441 62.777511
+             99.96294 41.851674 99.98147 20.925837 100 0
+             85.389489 9.831217 64.359426 10.896922 50 0
+             35.647494 10.919317 14.606934 9.8078449 0 0
+           Z"
+
+   :bounding-box (bb/BoundingBox. 0 100 7.6 109.67)
+
+   ::name "Croatian Engrailed"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "okkolol"
+                  :creator-link "https://heraldicon.org/users/okkolol"}})
+
+(def ^:private community-georgian
+  {:shape "m 0 0
+           v 107.11045
+           c 0 11.98579 5.9112549 13.59526 14.813962 13.76242
+             4.020165 0.0401 14.854906 -0.097 18.230207 -0.0655
+             9.129178 0.0836 13.91704 4.30084 16.95583 11.41943
+             3.038793 -7.11859 7.827292 -11.33584 16.956473 -11.41943
+             3.375296 -0.0314 14.21004 0.10565 18.229562 0.0655
+           C 94.089385 120.70571 100 119.09624 100 107.11045
+           V 0
+           Z"
+
+   :bounding-box (bb/BoundingBox. 0 100 0 120.807)
+   :points {:fess (v/Vector. 50 60.4035)}
+
+   ::name "Georgian"
+   ::attribution {:nature :own-work
+                  :license :public-domain
+                  :creator-name "okkolol"
+                  :creator-link "https://heraldicon.org/users/okkolol"}})
+
 (def ^:private escutcheons
   [[:string.escutcheon.group/traditional
     [:heater heater]
@@ -1696,10 +1737,12 @@
     [:community-interstate community-interstate]
     [:community-american-highway community-american-highway]
     [:community-herzeg-croatian community-herzeg-croatian]
-    [:community-persian community-persian]
+    [:community-croatian-engrailed community-croatian-engrailed]
+    [:community-georgian community-georgian]
     [:community-embattled-heater community-embattled-heater]
     [:community-embattled-iberian community-embattled-iberian]
     [:community-pauldron community-pauldron]
+    [:community-persian community-persian]
     [:community-arabic community-arabic]
     [:community-tournament community-tournament]
     [:community-draped-pointy-banner community-draped-pointy-banner]
