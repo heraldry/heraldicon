@@ -10,3 +10,5 @@ build
 /assets/locales/
 
 gettext/*.mo
+
+CLAUDE.md
