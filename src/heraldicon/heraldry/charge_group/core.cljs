@@ -8,6 +8,7 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.core :as math]
    [heraldicon.math.vector :as v]
+   [heraldicon.render.ir :as ir]
    [heraldicon.svg.path :as path]))
 
 (defn- calculate-strip-slot-positions [context spacing]
@@ -218,12 +219,16 @@
          (map interface/get-bounding-box)
          (reduce bb/combine))))
 
+(defmethod interface/render-ir :heraldry/charge-group [context]
+  (let [charge-contexts (vec (iterate-charge-contexts context (interface/get-properties context)))]
+    (-> (reduce ir/add-child ir/blank charge-contexts)
+        (assoc :body (into [:g]
+                           (map (fn [charge-context]
+                                  [interface/ir-node charge-context]))
+                           charge-contexts)))))
+
 (defmethod interface/render-component :heraldry/charge-group [context]
-  (let [properties (interface/get-properties context)]
-    (into [:g]
-          (for [[idx charge-context] (map-indexed vector (iterate-charge-contexts context properties))]
-            ^{:key idx}
-            [interface/render-component charge-context]))))
+  [interface/render-ir-root context])
 
 (defmethod interface/blazon-component :heraldry/charge-group [context]
   ;; TODO: no need to calculate all positions here

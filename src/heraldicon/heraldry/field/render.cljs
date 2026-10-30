@@ -4,16 +4,17 @@
    [heraldicon.heraldry.render :as render]
    [heraldicon.heraldry.subfield :as subfield]
    [heraldicon.heraldry.tincture :as tincture]
-   [heraldicon.interface :as interface]))
+   [heraldicon.interface :as interface]
+   [heraldicon.render.ir :as ir]))
 
-(defn- render-subfields [context {:keys [num-subfields transform overlap?-fn]
-                                  :or {overlap?-fn even?}}]
-  ;; TODO: overlap should move into subfield/render
-  (into [:<>]
-        (map (fn [idx]
-               ^{:key idx}
-               [subfield/render (c/++ context :fields idx) transform (overlap?-fn idx)]))
-        (sort-by overlap?-fn > (range num-subfields))))
+(defn- subfields-ir [context {:keys [num-subfields transform overlap?-fn]
+                              :or {overlap?-fn even?}}]
+  ;; TODO: overlap should move into subfield/render-ir
+  (let [subfield-irs (mapv (fn [idx]
+                             (subfield/render-ir (c/++ context :fields idx) transform (overlap?-fn idx)))
+                           (sort-by overlap?-fn > (range num-subfields)))]
+    (assoc (reduce ir/combine ir/blank subfield-irs)
+           :body (into [:<>] (map :body) subfield-irs))))
 
 (defn- field-path-allowed? [{:keys [path]
                              :as context}]
@@ -38,35 +39,45 @@
             false
             (recur rest)))))))
 
-(defn- render-components [context]
-  (into [:<>]
-        (for [idx (range (interface/get-list-size (c/++ context :components)))
-              :while (field-path-allowed? (c/++ context :components idx))]
-          ^{:key idx}
-          [interface/render-component (c/++ context :components idx)])))
+(defn- components-ir [context]
+  (let [component-contexts (into []
+                                 (comp (map #(c/++ context :components %))
+                                       (take-while field-path-allowed?))
+                                 (range (interface/get-list-size (c/++ context :components))))]
+    (-> (reduce ir/add-child ir/blank component-contexts)
+        (assoc :body (into [:<>]
+                           (map (fn [component-context]
+                                  [interface/ir-node component-context]))
+                           component-contexts)))))
 
-(defn- render-counterchanged-field [{:keys [path]
-                                     :as context} _properties]
-  (when-let [parent-field-context (interface/parent (interface/parent context))]
+(defn- counterchanged-field-ir [{:keys [path]
+                                 :as context}]
+  (if-let [parent-field-context (interface/parent (interface/parent context))]
     (let [counterchange-tinctures (interface/counterchanged-tinctures parent-field-context)
           counterchanged-context (-> parent-field-context
                                      (c/add-counterchanged-path path)
                                      (c/add-counterchanged-tinctures counterchange-tinctures))]
-      [interface/render-component counterchanged-context])))
+      (-> ir/blank
+          (ir/add-child counterchanged-context)
+          (assoc :body [interface/ir-node counterchanged-context])))
+    ir/blank))
 
-(defn- render-plain-field [context _properties]
-  [tincture/tinctured-field context])
-
-(defmethod interface/render-component :heraldry/field [context]
+(defmethod interface/render-ir :heraldry/field [context]
   (let [{:keys [render-fn]
          field-type :type
          :as properties} (interface/get-properties context)
-        render-fn (case field-type
-                    :heraldry.field.type/plain render-plain-field
-                    :heraldry.field.type/counterchanged render-counterchanged-field
-                    (or render-fn
-                        render-subfields))]
-    [:<>
-     [render-fn context properties]
-     [render/field-edges context]
-     [render-components context]]))
+        field-ir (case field-type
+                   :heraldry.field.type/plain (assoc ir/blank :body [tincture/tinctured-field context])
+                   :heraldry.field.type/counterchanged (counterchanged-field-ir context)
+                   (if render-fn
+                     (assoc ir/blank :body [render-fn context properties])
+                     (subfields-ir context properties)))
+        components (components-ir context)]
+    (-> (ir/combine field-ir components)
+        (assoc :body [:<>
+                      (:body field-ir)
+                      [render/field-edges context]
+                      (:body components)]))))
+
+(defmethod interface/render-component :heraldry/field [context]
+  [interface/render-ir-root context])

@@ -7,7 +7,7 @@
    [heraldicon.render.ir :as ir]
    [heraldicon.util.uid :as uid]))
 
-(defn- render-ir [context]
+(defmethod interface/render-ir :heraldry/charge [context]
   (let [{:keys [svg-export?
                 clip?
                 self-below-shield?
@@ -27,11 +27,12 @@
                        (boolean render-pass-below-shield?)) (-> ir/blank
                                                                 (ir/add-def [mask-or-clip-path {:id shape-clip-path-id}
                                                                              [render/shape-mask context]])
+                                                                (ir/add-child (c/++ context :field))
                                                                 (assoc :body
                                                                        [:<>
                                                                         [render/shape-fimbriation context]
                                                                         [:g {mask-or-clip-path-attr (str "url(#" shape-clip-path-id ")")}
-                                                                         [interface/render-component (c/++ context :field)]]
+                                                                         [interface/ir-node (c/++ context :field)]]
                                                                         [render/charge-edges context]
                                                                         [render/shape-highlight context]]))
                     :else ir/blank)]
@@ -55,4 +56,4 @@
                           body]])))))
 
 (defmethod interface/render-component :heraldry/charge [context]
-  (ir/->hiccup (render-ir context)))
+  [interface/render-ir-root context])

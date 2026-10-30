@@ -490,7 +490,11 @@
                    (= outline-mode :keep)) (ir/add-def [:mask {:id (:id mask-base)}
                                                         (:content mask-base)])
               charge-clip-path (ir/add-def [:clipPath {:id (:id charge-clip-path)}
-                                            (:content charge-clip-path)]))
+                                            (:content charge-clip-path)])
+              (and render-field?
+                   (not (or preview-original?
+                            landscape?
+                            highlight-colours?))) (ir/add-child (c/++ context :field)))
             (assoc
              :body
              [:<>
@@ -539,7 +543,7 @@
                           (when render-field?
                             [:g {:mask (str "url(#" (:id mask-inverted) ")")}
                              [:g {:transform reverse-transform}
-                              [interface/render-component (c/++ context :field)]]])
+                              [interface/ir-node (c/++ context :field)]]])
 
                           [:g {:mask (str "url(#" (:id mask) ")")}
                            (svg/make-unique-ids coloured-charge)]

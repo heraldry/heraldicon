@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.render :as render]
    [heraldicon.interface :as interface]
+   [heraldicon.render.ir :as ir]
    [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
@@ -38,8 +39,11 @@
            (range num-cottise-parts))
      [render/shape-highlight context]]))
 
+(defmethod interface/render-ir :heraldry/cottise [context]
+  ((get-method interface/render-ir :heraldry/ordinary) context))
+
 (defmethod interface/render-component :heraldry/cottise [context]
-  ((get-method interface/render-component :heraldry/ordinary) context))
+  [interface/render-ir-root context])
 
 (defn- cottising [context]
   (let [cottising-context (c/++ context :cottising)
@@ -67,27 +71,28 @@
                 cottise-extra-2?)
        [render-cottise (c/++ cottising-context :cottise-extra-2)])]))
 
-(defmethod interface/render-component :heraldry/ordinary [context]
+(defmethod interface/render-ir :heraldry/ordinary [context]
   (let [{:keys [svg-export?
                 clip?]} (c/render-hints context)
         clip-path-id (uid/generate "clip")
-        {:keys [transform]} (interface/get-properties context)]
-    [:<>
-     [:defs
-      [(if (and svg-export?
-                (not clip?))
-         :mask
-         :clipPath) {:id clip-path-id}
-       [render/shape-mask context]]]
-     [render/shape-fimbriation context]
-     [:g {(if (and svg-export?
+        {:keys [transform]} (interface/get-properties context)
+        mask? (and svg-export?
                    (not clip?))
-            :mask
-            :clip-path) (str "url(#" clip-path-id ")")}
-      (let [wrapper (if transform
-                      [:g {:transform transform}]
-                      [:<>])]
-        (conj wrapper [interface/render-component (c/++ context :field)]))]
-     [render/ordinary-edges context]
-     [cottising context]
-     [render/shape-highlight context]]))
+        field-context (c/++ context :field)]
+    (-> ir/blank
+        (ir/add-def [(if mask? :mask :clipPath) {:id clip-path-id}
+                     [render/shape-mask context]])
+        (ir/add-child field-context)
+        (assoc :body [:<>
+                      [render/shape-fimbriation context]
+                      [:g {(if mask? :mask :clip-path) (str "url(#" clip-path-id ")")}
+                       (let [wrapper (if transform
+                                       [:g {:transform transform}]
+                                       [:<>])]
+                         (conj wrapper [interface/ir-node field-context]))]
+                      [render/ordinary-edges context]
+                      [cottising context]
+                      [render/shape-highlight context]]))))
+
+(defmethod interface/render-component :heraldry/ordinary [context]
+  [interface/render-ir-root context])

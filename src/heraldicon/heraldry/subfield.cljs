@@ -4,6 +4,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.render :as render]
    [heraldicon.interface :as interface]
+   [heraldicon.render.ir :as ir]
    [heraldicon.svg.path :as path]
    [heraldicon.util.uid :as uid]))
 
@@ -59,33 +60,29 @@
           context)
         (c/++ :field))))
 
-(defn render [context transform overlap?]
+(defn render-ir [context transform overlap?]
   (let [{:keys [charge-preview?
                 svg-export?
                 clip?]} (c/render-hints context)
         clip-path-id (uid/generate "clip")
-        field-context (effective-field-context context)]
-    [:<>
-     [:defs
-      [(if (and svg-export?
-                (not clip?))
-         :mask
-         :clipPath) {:id clip-path-id}
-       [render/shape-mask context overlap?]]]
-     [:g {(if (and svg-export?
+        field-context (effective-field-context context)
+        mask? (and svg-export?
                    (not clip?))
-            :mask
-            :clip-path) (str "url(#" clip-path-id ")")}
-      (let [clickable? (not (or svg-export?
-                                charge-preview?))
-            wrapper (if (or clickable?
-                            transform)
-                      [:g {:style (when clickable?
-                                    {:pointer-events "visiblePainted"
-                                     :cursor "pointer"})
-                           :transform transform}]
-                      [:<>])]
-        (conj wrapper [interface/render-component field-context]))]]))
+        clickable? (not (or svg-export?
+                            charge-preview?))
+        wrapper (if (or clickable?
+                        transform)
+                  [:g {:style (when clickable?
+                                {:pointer-events "visiblePainted"
+                                 :cursor "pointer"})
+                       :transform transform}]
+                  [:<>])]
+    (-> ir/blank
+        (ir/add-def [(if mask? :mask :clipPath) {:id clip-path-id}
+                     [render/shape-mask context overlap?]])
+        (ir/add-child field-context)
+        (assoc :body [:g {(if mask? :mask :clip-path) (str "url(#" clip-path-id ")")}
+                      (conj wrapper [interface/ir-node field-context])]))))
 
 (defmethod interface/render-component :heraldry/subfield [_context]
   nil)
