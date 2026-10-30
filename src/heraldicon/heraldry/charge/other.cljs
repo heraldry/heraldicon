@@ -19,7 +19,6 @@
    [heraldicon.svg.path :as path]
    [heraldicon.util.cache :as cache]
    [heraldicon.util.colour :as colour]
-   [heraldicon.util.uid :as uid]
    [re-frame.core :as rf]))
 
 (defmethod charge.interface/options :heraldry.charge.type/other [context]
@@ -202,6 +201,91 @@
                                   :else "#fff")))))]
        [mask mask-inverted mask-base]))))
 
+(defn- def-id
+  "An id for a memoized def. It counts in the cache store, which lives as long as
+  the memoized defs do; uid/current-id is reset per render and could hand out an
+  id a cached def already uses."
+  [prefix]
+  (str prefix "-" (::def-count (swap! cache/store update ::def-count (fnil inc 0)))))
+
+(defn- mask-def [prefix content]
+  (let [id (def-id prefix)]
+    {:id id
+     :content (svg/make-unique-ids content id)}))
+
+;; ids and content are memoized together on the inputs, so identical masks share
+;; their id, and an id can never refer to different content
+(def ^:private mask-defs
+  (cache/memoize
+   ::mask-defs
+   (fn mask-defs [data placeholder-colours provided-placeholder-colours
+                  outline-mode hide-lower-layer?]
+     (let [[mask mask-inverted mask-base] (make-mask data placeholder-colours provided-placeholder-colours
+                                                     outline-mode hide-lower-layer?)]
+       {:mask (mask-def "charge-mask" mask)
+        :mask-inverted (mask-def "charge-mask-inverted" mask-inverted)
+        :mask-base (mask-def "charge-mask-base" mask-base)}))))
+
+(defn- shading-mask-colour [placeholder-colours layer-separator-colour]
+  (fn [colour]
+    (if (str/starts-with? colour "url")
+      "none"
+      (case (placeholder-colour-modifier placeholder-colours (colour/normalize colour))
+        :outline "#000000"
+        :shadow "none"
+        :highlight "none"
+        :layer-separator layer-separator-colour
+        "#ffffff"))))
+
+(defn- shading-colour [kind placeholder-colours layer-separator-colour]
+  (let [[own-kind other-kind qualifiers] (case kind
+                                           :shadow [:shadow :highlight attributes/shadow-qualifiers]
+                                           :highlight [:highlight :shadow attributes/highlight-qualifiers])]
+    (fn [colour]
+      (if (str/starts-with? colour "url")
+        colour
+        (let [colour-lower (colour/normalize colour)
+              modifier (placeholder-colour-modifier placeholder-colours colour-lower)
+              specific (qualifiers (placeholder-colour-qualifier placeholder-colours colour-lower))]
+          (cond
+            specific specific
+            (= modifier own-kind) "#ffffff"
+            (= modifier other-kind) "none"
+            (= modifier :layer-separator) layer-separator-colour
+            :else "#000000"))))))
+
+(def ^:private shading-mask-def
+  (cache/memoize
+   ::shading-mask-def
+   (fn shading-mask-def [kind charge-without-shading charge placeholder-colours layer-separator-colour]
+     (let [id (def-id (str "charge-" (name kind)))
+           helper-id (str id "-helper")]
+       {:id id
+        :content [:<>
+                  [:defs
+                   [:mask {:id helper-id}
+                    (-> charge-without-shading
+                        (replace-colours (shading-mask-colour placeholder-colours layer-separator-colour))
+                        (svg/make-unique-ids helper-id))]]
+                  [:g {:mask (str "url(#" helper-id ")")}
+                   (-> charge
+                       (replace-colours (shading-colour kind placeholder-colours layer-separator-colour))
+                       (svg/make-unique-ids id))]]}))))
+
+(def ^:private clip-path-def
+  (cache/memoize
+   ::clip-path-def
+   (fn clip-path-def [charge-shapes base-width base-height]
+     {:id (def-id "charge-clip")
+      :content (if (empty? charge-shapes)
+                 [:rect {:x 0
+                         :y 0
+                         :width base-width
+                         :height base-height}]
+                 (for [path charge-shapes]
+                   ^{:key path}
+                   [:path {:d (str/join " " path)}]))})))
+
 (defn- colours-for-modifier [placeholder-colours modifier]
   (->> placeholder-colours
        (keep (fn [[colour placeholder]]
@@ -299,10 +383,6 @@
                                      first)
                                 (:shadow tincture)
                                 (pos? (:shadow tincture)))
-            shadow-mask-id (when render-shadow?
-                             (uid/generate "mask"))
-            shadow-helper-mask-id (when render-shadow?
-                                    (uid/generate "mask"))
             render-highlight? (and (not preview-original?)
                                    (->> placeholder-colours
                                         vals
@@ -313,10 +393,6 @@
                                         first)
                                    (:highlight tincture)
                                    (pos? (:highlight tincture)))
-            highlight-mask-id (when render-highlight?
-                                (uid/generate "mask"))
-            highlight-helper-mask-id (when render-highlight?
-                                       (uid/generate "mask"))
             adjusted-charge (when-not preview-original?
                               (-> unadjusted-charge
                                   (set-layer-separator-opacity
@@ -340,16 +416,15 @@
             hide-lower-layer? (and (seq layer-separator-colours)
                                    (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
-            mask-id (uid/generate "mask")
-            mask-inverted-id (uid/generate "mask")
-            mask-base-id (uid/generate "mask")
-            [mask mask-inverted mask-base] (when-not (or preview-original?
-                                                         landscape?)
-                                             (make-mask adjusted-charge-without-shading
-                                                        placeholder-colours
-                                                        tincture
-                                                        outline-mode
-                                                        hide-lower-layer?))
+            {mask :mask
+             mask-inverted :mask-inverted
+             mask-base :mask-base} (when-not (or preview-original?
+                                                 landscape?)
+                                     (mask-defs adjusted-charge-without-shading
+                                                placeholder-colours
+                                                tincture
+                                                outline-mode
+                                                hide-lower-layer?))
             ;; this is the one drawn on top of the masked field version, for the tincture replacements
             ;; and outline; the primary colour has no replacement here, which might make it shine through
             ;; around the edges, to prevent that, it is specifically replaced with black
@@ -375,7 +450,19 @@
                                    :else (outline/color context)))))
             layer-separator-colour-for-shadow-highlight (if hide-lower-layer?
                                                           "#000000"
-                                                          "none")]
+                                                          "none")
+            shadow-mask (when render-shadow?
+                          (shading-mask-def :shadow
+                                            adjusted-charge-without-shading
+                                            adjusted-charge
+                                            placeholder-colours
+                                            layer-separator-colour-for-shadow-highlight))
+            highlight-mask (when render-highlight?
+                             (shading-mask-def :highlight
+                                               adjusted-charge-without-shading
+                                               adjusted-charge
+                                               placeholder-colours
+                                               layer-separator-colour-for-shadow-highlight))]
         [:<>
          [:g (when-not (or svg-export?
                            charge-preview?)
@@ -394,85 +481,21 @@
                                    #(leave-component-fn context)))
                 :style {:cursor "pointer"}})
           [:defs
-           (when render-shadow?
-             [:mask {:id shadow-mask-id}
-              [:defs
-               [:mask {:id shadow-helper-mask-id}
-                (-> adjusted-charge-without-shading
-                    (replace-colours
-                     (fn [colour]
-                       (if (str/starts-with? colour "url")
-                         "none"
-                         (let [colour-lower (colour/normalize colour)
-                               kind (placeholder-colour-modifier placeholder-colours colour-lower)]
-                           (case kind
-                             :outline "#000000"
-                             :shadow "none"
-                             :highlight "none"
-                             :layer-separator layer-separator-colour-for-shadow-highlight
-                             "#ffffff")))))
-                    svg/make-unique-ids)]]
-              [:g {:mask (str "url(#" shadow-helper-mask-id ")")}
-               (-> adjusted-charge
-                   (replace-colours
-                    (fn [colour]
-                      (if (str/starts-with? colour "url")
-                        colour
-                        (let [colour-lower (colour/normalize colour)
-                              kind (placeholder-colour-modifier placeholder-colours colour-lower)
-                              qualifier (placeholder-colour-qualifier placeholder-colours colour-lower)
-                              specific (attributes/shadow-qualifiers qualifier)]
-                          (cond
-                            specific specific
-                            (= kind :shadow) "#ffffff"
-                            (= kind :highlight) "none"
-                            (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
-                            :else "#000000")))))
-                   svg/make-unique-ids)]])
-           (when render-highlight?
-             [:mask {:id highlight-mask-id}
-              [:defs
-               [:mask {:id highlight-helper-mask-id}
-                (-> adjusted-charge-without-shading
-                    (replace-colours
-                     (fn [colour]
-                       (if (str/starts-with? colour "url")
-                         "none"
-                         (let [colour-lower (colour/normalize colour)
-                               kind (placeholder-colour-modifier placeholder-colours colour-lower)]
-                           (case kind
-                             :outline "#000000"
-                             :shadow "none"
-                             :highlight "none"
-                             :layer-separator layer-separator-colour-for-shadow-highlight
-                             "#ffffff")))))
-                    svg/make-unique-ids)]]
-              [:g {:mask (str "url(#" highlight-helper-mask-id ")")}
-               (-> adjusted-charge
-                   (replace-colours
-                    (fn [colour]
-                      (if (str/starts-with? colour "url")
-                        colour
-                        (let [colour-lower (colour/normalize colour)
-                              kind (placeholder-colour-modifier placeholder-colours colour-lower)
-                              qualifier (placeholder-colour-qualifier placeholder-colours colour-lower)
-                              specific (attributes/highlight-qualifiers qualifier)]
-                          (cond
-                            specific specific
-                            (= kind :highlight) "#ffffff"
-                            (= kind :shadow) "none"
-                            (= kind :layer-separator) layer-separator-colour-for-shadow-highlight
-                            :else "#000000")))))
-                   svg/make-unique-ids)]])
-           (when-not landscape?
+           (when shadow-mask
+             [:mask {:id (:id shadow-mask)}
+              (:content shadow-mask)])
+           (when highlight-mask
+             [:mask {:id (:id highlight-mask)}
+              (:content highlight-mask)])
+           (when mask
              [:<>
-              [:mask {:id mask-id}
-               (svg/make-unique-ids mask)]
-              [:mask {:id mask-inverted-id}
-               (svg/make-unique-ids mask-inverted)]
+              [:mask {:id (:id mask)}
+               (:content mask)]
+              [:mask {:id (:id mask-inverted)}
+               (:content mask-inverted)]
               (when (= outline-mode :keep)
-                [:mask {:id mask-base-id}
-                 (svg/make-unique-ids mask-base)])])]
+                [:mask {:id (:id mask-base)}
+                 (:content mask-base)])])]
           (let [transform (str "translate(" (v/->str anchor-point) ")"
                                "rotate(" angle ")"
                                "scale(" scale-x "," scale-y ")"
@@ -484,28 +507,21 @@
                 clip? (or clip?
                           (not (or svg-export?
                                    preview-original?)))
-                charge-clip-path-id (when clip?
-                                      (uid/generate "shape-clip"))]
+                charge-clip-path (when clip?
+                                   (clip-path-def charge-shapes base-width base-height))]
             [:<>
-             (when clip?
+             (when charge-clip-path
                [:defs
-                [:clipPath {:id charge-clip-path-id}
-                 (if (empty? charge-shapes)
-                   [:rect {:x 0
-                           :y 0
-                           :width base-width
-                           :height base-height}]
-                   (for [path charge-shapes]
-                     ^{:key path}
-                     [:path {:d (str/join " " path)}]))]])
+                [:clipPath {:id (:id charge-clip-path)}
+                 (:content charge-clip-path)]])
              [:g {:transform transform}
               [render/shape-fimbriation context
                :fimbriation-shape fimbriation-shape
                :reverse-transform reverse-transform
                :scale (Math/abs (/ 1 scale-x))]
               [svg.metadata/attribution {:path charge-entity-path}]
-              [:g (when clip?
-                    {:clip-path (str "url(#" charge-clip-path-id ")")})
+              [:g (when charge-clip-path
+                    {:clip-path (str "url(#" (:id charge-clip-path) ")")})
                (cond
                  preview-original? (cond-> (svg/make-unique-ids unadjusted-charge)
                                      highlight-colours? (replace-colours
@@ -516,7 +532,7 @@
                  highlight-colours? adjusted-charge
                  :else [:<>
                         (when (= outline-mode :keep)
-                          [:g {:mask (str "url(#" mask-base-id ")")}
+                          [:g {:mask (str "url(#" (:id mask-base) ")")}
                            [:rect {:transform reverse-transform
                                    :x -500
                                    :y -500
@@ -525,17 +541,17 @@
                                    :fill (outline/color context)}]])
 
                         (when render-field?
-                          [:g {:mask (str "url(#" mask-inverted-id ")")}
+                          [:g {:mask (str "url(#" (:id mask-inverted) ")")}
                            (let [wrapper (if reverse-transform
                                            [:g {:transform reverse-transform}]
                                            [:<>])]
                              (conj wrapper [interface/render-component (c/++ context :field)]))])
 
-                        [:g {:mask (str "url(#" mask-id ")")}
+                        [:g {:mask (str "url(#" (:id mask) ")")}
                          (svg/make-unique-ids coloured-charge)]
 
                         (when render-shadow?
-                          [:g {:mask (str "url(#" shadow-mask-id ")")}
+                          [:g {:mask (str "url(#" (:id shadow-mask) ")")}
                            [:rect {:transform reverse-transform
                                    :x -500
                                    :y -500
@@ -545,7 +561,7 @@
                                    :style {:opacity (:shadow tincture)}}]])
 
                         (when render-highlight?
-                          [:g {:mask (str "url(#" highlight-mask-id ")")}
+                          [:g {:mask (str "url(#" (:id highlight-mask) ")")}
                            [:rect {:transform reverse-transform
                                    :x -500
                                    :y -500
