@@ -89,18 +89,25 @@
         %)
      data)))
 
-(defn make-unique-ids [data]
-  (let [ids (->> data
-                 (tree-seq (some-fn map? vector? seq?) seq)
-                 (filter #(and (vector? %)
-                               (-> % first (= :id))))
-                 (map second)
-                 set)
-        id-map (into {}
-                     (map (fn [id]
-                            [id (uid/generate (str "unique-" id))]))
-                     ids)]
-    (replace-id-references data id-map)))
+(defn make-unique-ids
+  "Rewrites all ids in data and the references to them. With a prefix, the new
+  ids are derived from it instead of generated, so the result is deterministic."
+  ([data]
+   (make-unique-ids data nil))
+  ([data prefix]
+   (let [ids (->> data
+                  (tree-seq (some-fn map? vector? seq?) seq)
+                  (filter #(and (vector? %)
+                                (-> % first (= :id))))
+                  (map second)
+                  set)
+         id-map (into {}
+                      (map (fn [id]
+                             [id (if prefix
+                                   (str prefix "-" id)
+                                   (uid/generate (str "unique-" id)))]))
+                      ids)]
+     (replace-id-references data id-map))))
 
 (defn optimize [data svgo-optimize-fn]
   (go-catch
