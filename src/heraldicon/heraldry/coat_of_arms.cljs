@@ -7,6 +7,7 @@
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.options :as options]
    [heraldicon.render.hatching :as hatching]
+   [heraldicon.render.ir :as ir]
    [heraldicon.render.outline :as outline]
    [heraldicon.render.pattern :as pattern]
    [heraldicon.render.texture :as texture]
@@ -60,7 +61,7 @@
 (defmethod interface/exact-shape :heraldry/coat-of-arms [context]
   (-> (interface/get-render-shape context) :clean-shape first))
 
-(defmethod interface/render-component :heraldry/coat-of-arms [context]
+(defn- render-body [context]
   (let [{:keys [svg-export?
                 clip?
                 root-path
@@ -161,8 +162,16 @@
        [:path {:d (str/join "" shape-paths)
                :fill-rule "evenodd"
                :fill "#f0f0f0"}]
-       [interface/render-component (c/++ context :field)]]]
+       [interface/ir-node (c/++ context :field)]]]
      (when (or escutcheon-outline?
                outline?)
        [:g (outline/style context)
         [:path {:d (str/join "" shape-paths)}]])]))
+
+(defmethod interface/render-ir :heraldry/coat-of-arms [context]
+  (-> ir/blank
+      (ir/add-child (c/++ context :field))
+      (assoc :body (render-body context))))
+
+(defmethod interface/render-component :heraldry/coat-of-arms [context]
+  [interface/render-ir-root context])

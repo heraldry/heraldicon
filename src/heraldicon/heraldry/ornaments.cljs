@@ -19,18 +19,11 @@
          (map interface/get-bounding-box)
          (reduce bb/combine nil))))
 
+(defmethod interface/render-ir :heraldry/ornaments [context]
+  (shield-separator/elements-ir (c/++ context :elements)))
+
 (defmethod interface/render-component :heraldry/ornaments [context]
-  (let [elements-context (c/++ context :elements)]
-    (into [:<>]
-          ;; TODO: self-below-shield? probably should be a subscription as well,
-          ;; which can always be checked in the render-component function
-          (map (fn [[idx self-below-shield?]]
-                 ^{:key idx}
-                 [interface/render-component
-                  (-> (c/++ elements-context idx)
-                      (c/set-key :auto-resize? false)
-                      (c/set-render-hint :self-below-shield? self-below-shield?))]))
-          (shield-separator/get-element-indices elements-context))))
+  [interface/render-ir-root context])
 
 (defmethod interface/render-shape :heraldry/ornaments [_context]
   nil)

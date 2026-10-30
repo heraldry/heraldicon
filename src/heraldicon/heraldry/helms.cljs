@@ -23,16 +23,11 @@
   (let [{:keys [environments]} (interface/get-properties (interface/parent context))]
     (get environments (last path))))
 
+(defmethod interface/render-ir :heraldry/helm [context]
+  (shield-separator/elements-ir (c/++ context :components)))
+
 (defmethod interface/render-component :heraldry/helm [context]
-  (let [components-context (c/++ context :components)]
-    (into [:<>]
-          (map (fn [[idx self-below-shield?]]
-                 ^{:key idx}
-                 [interface/render-component
-                  (-> (c/++ components-context idx)
-                      (c/set-key :auto-resize? false)
-                      (c/set-render-hint :self-below-shield? self-below-shield?))])
-               (shield-separator/get-element-indices components-context)))))
+  [interface/render-ir-root context])
 
 (defmethod interface/properties :heraldry/helms [context]
   (let [elements-context (c/++ context :elements)
@@ -65,15 +60,8 @@
          (map interface/get-bounding-box)
          (reduce bb/combine nil))))
 
+(defmethod interface/render-ir :heraldry/helms [context]
+  (shield-separator/elements-ir (c/++ context :elements)))
+
 (defmethod interface/render-component :heraldry/helms [context]
-  (let [elements-context (c/++ context :elements)]
-    (into [:<>]
-          ;; TODO: self-below-shield? probably should be a subscription as well,
-          ;; which can always be checked in the render-component function
-          (map (fn [[idx self-below-shield?]]
-                 ^{:key idx}
-                 [interface/render-component
-                  (-> (c/++ elements-context idx)
-                      (c/set-key :auto-resize? false)
-                      (c/set-render-hint :self-below-shield? self-below-shield?))]))
-          (shield-separator/get-element-indices elements-context))))
+  [interface/render-ir-root context])

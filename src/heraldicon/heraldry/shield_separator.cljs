@@ -1,7 +1,9 @@
 (ns heraldicon.heraldry.shield-separator
   (:require
+   [heraldicon.context :as c]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
+   [heraldicon.render.ir :as ir]
    [re-frame.core :as rf]))
 
 (defn shield-separator? [element]
@@ -76,6 +78,21 @@
 ;; TODO: get rid of this
 (defn get-element-indices [{:keys [path]}]
   (element-indices-with-position @(rf/subscribe [:get path])))
+
+(defn elements-ir
+  "IR embedding the elements in elements-context, each marked with whether it
+  sits below the shield."
+  [elements-context]
+  (let [element-contexts (mapv (fn [[idx self-below-shield?]]
+                                 (-> (c/++ elements-context idx)
+                                     (c/set-key :auto-resize? false)
+                                     (c/set-render-hint :self-below-shield? self-below-shield?)))
+                               (get-element-indices elements-context))]
+    (-> (reduce ir/add-child ir/blank element-contexts)
+        (assoc :body (into [:<>]
+                           (map (fn [element-context]
+                                  [interface/ir-node element-context]))
+                           element-contexts)))))
 
 (defmethod interface/properties :heraldry/shield-separator [_context]
   {:type :heraldry/shield-separator})

@@ -5,6 +5,7 @@
    [heraldicon.localization.string :as string]
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
+   [heraldicon.render.ir :as ir]
    [heraldicon.util.uid :as uid]))
 
 (derive :heraldry/semy :heraldry.options/root)
@@ -105,7 +106,7 @@
      :num-fields-x num-fields-x
      :num-fields-y num-fields-y}))
 
-(defmethod interface/render-component :heraldry/semy [context]
+(defmethod interface/render-ir :heraldry/semy [context]
   (let [{:keys [rectangular? top-left
                 part-width part-height
                 rotation]} (interface/get-properties context)
@@ -125,35 +126,41 @@
                                      :bottom-right (v/Vector. part-width-half part-height-half)}}
         charge-context (-> context
                            (c/++ :charge)
-                           (c/<< :size-default 50))]
+                           (c/<< :size-default 50))
+        charge-contexts (mapv (fn [shift]
+                                (-> charge-context
+                                    (c/set-key :anchor-override shift)
+                                    (c/set-key :parent-environment-override (shift-environment charge-environment shift))))
+                              (cond->
+                                [v/zero
+                                 (v/Vector. part-width 0)
+                                 (v/Vector. 0 part-height)
+                                 (v/Vector. part-width part-height)]
+                                (not rectangular?) (conj (v/Vector. part-width-half part-height-half))))]
     ;; TODO: reverse transform inside charge
-    [:<>
-     [:defs
-      (into [:pattern {:id pattern-id
-                       :width part-width
-                       :height part-height
-                       :x (:x top-left)
-                       :y (:y top-left)
-                       :pattern-units "userSpaceOnUse"}]
-            (map-indexed (fn [idx shift]
-                           ^{:key idx}
-                           [interface/render-component
-                            (-> charge-context
-                                (c/set-key :anchor-override shift)
-                                (c/set-key :parent-environment-override (shift-environment charge-environment shift)))]))
-            (cond->
-              [v/zero
-               (v/Vector. part-width 0)
-               (v/Vector. 0 part-height)
-               (v/Vector. part-width part-height)]
-              (not rectangular?) (conj (v/Vector. part-width-half part-height-half))))]
-     [:g {:transform (str "rotate(" (- rotation) ")")}
-      [:rect {:x -500
-              :y -500
-              :width 1100
-              :height 1100
-              :fill (str "url(#" pattern-id ")")
-              :pointer-events "none"}]]]))
+    (-> (reduce ir/add-child ir/blank charge-contexts)
+        (assoc :body
+               [:<>
+                [:defs
+                 (into [:pattern {:id pattern-id
+                                  :width part-width
+                                  :height part-height
+                                  :x (:x top-left)
+                                  :y (:y top-left)
+                                  :pattern-units "userSpaceOnUse"}]
+                       (map (fn [charge-context]
+                              [interface/ir-node charge-context]))
+                       charge-contexts)]
+                [:g {:transform (str "rotate(" (- rotation) ")")}
+                 [:rect {:x -500
+                         :y -500
+                         :width 1100
+                         :height 1100
+                         :fill (str "url(#" pattern-id ")")
+                         :pointer-events "none"}]]]))))
+
+(defmethod interface/render-component :heraldry/semy [context]
+  [interface/render-ir-root context])
 
 (defmethod interface/blazon-component :heraldry/semy [context]
   (string/str-tr "semy of " (interface/blazon
