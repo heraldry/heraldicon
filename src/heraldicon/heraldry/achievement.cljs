@@ -6,7 +6,9 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
-   [heraldicon.math.vector :as v]))
+   [heraldicon.math.vector :as v]
+   [heraldicon.render.ir :as ir]
+   [re-frame.core :as rf]))
 
 (defn- transform-bounding-box [^BoundingBox {:keys [min-x min-y]
                                              :as bounding-box}
@@ -157,7 +159,18 @@
                       scale-width
                       scale-height))
                 1)
-        [document-width document-height] [(Math/round (* result-width scale)) (Math/round (* result-height scale))]]
+        [document-width document-height] [(Math/round (* result-width scale)) (Math/round (* result-height scale))]
+        ornaments-below-context (c/set-render-hint ornaments-context :render-pass-below-shield? true)
+        helms-below-context (c/set-render-hint helms-context :render-pass-below-shield? true)
+        helms-above-context (c/set-render-hint helms-context :render-pass-below-shield? false)
+        ornaments-above-context (c/set-render-hint ornaments-context :render-pass-below-shield? false)
+        ;; the achievement is the root of the svg, so it emits the defs of all parts inside it
+        defs (transduce (map (fn [part-context]
+                               @(rf/subscribe [::interface/render-defs part-context])))
+                        merge
+                        (cond-> [coat-of-arms-context]
+                          render-helms? (into [helms-below-context helms-above-context])
+                          render-ornaments? (into [ornaments-below-context ornaments-above-context])))]
 
     [:svg (merge
            {:viewBox (str/join " " (map str [(- margin-left) (- margin-top)
@@ -173,16 +186,17 @@
      (when (and svg-export?
                 embed-fonts)
        [embed-fonts used-fonts])
+     (ir/defs->hiccup defs)
      [:g {:transform result-transform
           :style {:transition "transform 0.5s"}}
 
       (when render-ornaments?
-        [interface/render-component (c/set-render-hint ornaments-context :render-pass-below-shield? true)])
+        [interface/ir-node ornaments-below-context])
 
       (when render-helms?
         [:g {:transform (str "translate(" (v/->str helm-position) ")")
              :style {:transition "transform 0.5s"}}
-         [interface/render-component (c/set-render-hint helms-context :render-pass-below-shield? true)]])
+         [interface/ir-node helms-below-context]])
 
       [:g {:transform (cond
                         (neg? coat-of-arms-angle) (str "rotate(" (- coat-of-arms-angle) ")")
@@ -191,15 +205,15 @@
                                                        "translate(" (- coat-of-arms-width) "," 0 ")")
                         :else nil)
            :style {:transition "transform 0.5s"}}
-       [interface/render-component coat-of-arms-context]]
+       [interface/ir-node coat-of-arms-context]]
 
       (when render-helms?
         [:g {:transform (str "translate(" (v/->str helm-position) ")")
              :style {:transition "transform 0.5s"}}
-         [interface/render-component (c/set-render-hint helms-context :render-pass-below-shield? false)]])
+         [interface/ir-node helms-above-context]])
 
       (when render-ornaments?
-        [interface/render-component (c/set-render-hint ornaments-context :render-pass-below-shield? false)])]
+        [interface/ir-node ornaments-above-context])]
 
      (when short-url
        [:<>
