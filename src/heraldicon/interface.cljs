@@ -144,31 +144,39 @@
       (blazon-component context)
       (str "[" manual-blazon "]"))))
 
-(defn parent [context]
-  (some-> (cond
-            ;; TODO: can all this be done without inspecting the path?
-            (-> context :path last (= :coat-of-arms)) nil
-            (-> context :path last (= :field)) (c/-- context)
-            (-> context :path drop-last last (= :charges)) (c/-- context 4)
-            (-> context :path last int?) (c/-- context 2)
-            (-> context :path drop-last last (= :cottising)) (parent (c/-- context 2))
-            :else nil #_(do
-                          (log/warn :not-implemented "parent" context)
-                          nil))
-          c/remove-keys-for-children))
+(declare parent)
 
-(defn parent-node-context [context]
-  (some-> (cond
-            ;; TODO: can all this be done without inspecting the path?
-            (-> context :path last (= :coat-of-arms)) nil
-            (-> context :path last (= :field)) (c/-- context)
-            (-> context :path drop-last last (= :charges)) (c/-- context 2)
-            (-> context :path last int?) (c/-- context 2)
-            (-> context :path drop-last last (= :cottising)) (parent (c/-- context 2))
-            :else nil #_(do
-                          (log/warn :not-implemented "parent" context)
-                          nil))
-          c/remove-keys-for-children))
+(defn parent-node-context
+  "The node that contains the component in the data tree. The position in the
+  data decides it, not the component type:
+
+  - a :field belongs to the component that owns it
+  - an element of a list such as :components, :fields, :elements or :charges
+    belongs to the owner of the list
+  - a cottise belongs to the field of its ordinary
+
+  Anything else, e.g. the coat of arms itself, has no parent."
+  [{:keys [path]
+    :as context}]
+  (let [[container slot] (take-last 2 path)]
+    (some-> (cond
+              (= slot :coat-of-arms) nil
+              (= slot :field) (c/-- context)
+              (int? slot) (c/-- context 2)
+              (= container :cottising) (parent (c/-- context 2))
+              :else nil)
+            c/remove-keys-for-children)))
+
+(defn parent
+  "The component whose geometry this one depends on. That's the node
+  parent, except for charges in a charge group, which depend on the field the
+  group sits in."
+  [{:keys [path]
+    :as context}]
+  (let [node-parent (parent-node-context context)]
+    (if (= (-> path drop-last last) :charges)
+      (parent-node-context node-parent)
+      node-parent)))
 
 (defn- resolve-context [context]
   (if-let [path-redirect (c/get-key context :path-redirect)]
