@@ -64,7 +64,7 @@
     (options/sanitize-value-or-data data options)))
 
 (defn get-sanitized-data [context]
-  @(rf/subscribe [::sanitized-data context]))
+  @(rf/subscribe [::sanitized-data (c/scrub-render-hints context)]))
 
 (defn get-list-size [{:keys [path]}]
   @(rf/subscribe [:get-list-size path]))
