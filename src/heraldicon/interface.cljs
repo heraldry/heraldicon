@@ -12,7 +12,9 @@
    [heraldicon.render.options :as render.options]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
-  (:require-macros [reagent.ratom :refer [reaction]]))
+  (:require-macros
+   [heraldicon.interface.macros :refer [defattribute]]
+   [reagent.ratom :refer [reaction]]))
 
 (def ^:dynamic cache
   (atom {}))
@@ -67,18 +69,10 @@
 (defn get-list-size [{:keys [path]}]
   @(rf/subscribe [:get-list-size path]))
 
-(defn get-options [context]
-  @(rf/subscribe [::options (c/scrub-render-hints context)]))
-
-(rf/reg-sub-raw ::options
-  (fn [_app-db [_ {:keys [path]
-                   :as context}]]
-    (reaction-or-cache
-     ::options
-     context
-     #(when (seq path)
-        (or (options context)
-            (get (get-options (c/-- context)) (last path)))))))
+(defattribute get-options [context]
+  (when (seq (:path context))
+    (or (options context)
+        (get (get-options (c/-- context)) (-> context :path last)))))
 
 (defn render-option [key {:keys [render-options-path
                                  override-render-options-path] :as context}]
@@ -188,15 +182,8 @@
   (when context
     (log/warn :not-implemented "interface.properties" context)))
 
-(rf/reg-sub-raw ::properties
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::properties
-     context
-     #(properties context))))
-
-(defn get-properties [context]
-  @(rf/subscribe [::properties (c/scrub-render-hints context)]))
+(defattribute get-properties [context]
+  (properties context))
 
 (defmulti environment effective-component-type)
 
@@ -210,47 +197,25 @@
 
 (declare get-subfields-environment)
 
-(rf/reg-sub-raw ::subfield-environments
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::subfield-environments
-     context
-     #(let [context (resolve-context context)
-            result (subfield-environments context)
-            parent-bounding-box (:bounding-box (get-subfields-environment context))]
-        (cond-> result
-          (and parent-bounding-box
-               (:subfields result))
-          (update :subfields
-                  (fn [subfields]
-                    (mapv (fn [subfield-environment]
-                            (environment/clamp-to-bounding-box subfield-environment parent-bounding-box))
-                          subfields))))))))
+(defattribute get-subfield-environments [context]
+  (let [context (resolve-context context)
+        result (subfield-environments context)
+        parent-bounding-box (:bounding-box (get-subfields-environment context))]
+    (cond-> result
+      (and parent-bounding-box
+           (:subfields result))
+      (update :subfields
+              (fn [subfields]
+                (mapv (fn [subfield-environment]
+                        (environment/clamp-to-bounding-box subfield-environment parent-bounding-box))
+                      subfields))))))
 
-(defn get-subfield-environments [context]
-  @(rf/subscribe [::subfield-environments (c/scrub-render-hints context)]))
+(defattribute get-environment [context]
+  (environment (resolve-context context)))
 
-(rf/reg-sub-raw ::environment
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::environment
-     context
-     #(let [context (resolve-context context)]
-        (environment context)))))
-
-(rf/reg-sub-raw ::parent-environment
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::parent-environment
-     context
-     #(or (c/get-key context :parent-environment-override)
-          @(rf/subscribe [::environment (parent context)])))))
-
-(defn get-parent-environment [context]
-  @(rf/subscribe [::parent-environment (c/scrub-render-hints context)]))
-
-(defn get-environment [context]
-  @(rf/subscribe [::environment (c/scrub-render-hints context)]))
+(defattribute get-parent-environment [context]
+  (or (c/get-key context :parent-environment-override)
+      (get-environment (parent context))))
 
 (defmulti render-shape effective-component-type)
 
@@ -263,36 +228,19 @@
 (defmethod subfield-render-shapes :default [context]
   (log/warn :not-implemented 'subfield-render-shapes context))
 
-(rf/reg-sub-raw ::subfield-render-shapes
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     :subfield-render-shapes
-     context
-     #(let [context (resolve-context context)]
-        (subfield-render-shapes context)))))
+(defattribute get-subfield-render-shapes [context]
+  (subfield-render-shapes (resolve-context context)))
 
-(defn get-subfield-render-shapes [context]
-  @(rf/subscribe [::subfield-render-shapes (c/scrub-render-hints context)]))
-
-(rf/reg-sub-raw ::render-shape
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::render-shape
-     context
-     #(let [context (resolve-context context)]
-        (render-shape context)))))
-
-(defn get-render-shape [context]
-  @(rf/subscribe [::render-shape (c/scrub-render-hints context)]))
+(defattribute get-render-shape [context]
+  (render-shape (resolve-context context)))
 
 (defmulti exact-shape effective-component-type)
 
-(defn get-exact-shape [context]
-  @(rf/subscribe [::exact-shape (c/scrub-render-hints context)]))
+(declare get-exact-shape)
 
 (defn get-exact-parent-shape [context]
   (or (c/get-key context :parent-shape)
-      @(rf/subscribe [::exact-shape (c/scrub-render-hints (parent context))])))
+      (get-exact-shape (parent context))))
 
 (defn geometry-shape
   "The path(s) a render-shape exposes for geometric computation. Prefers the
@@ -304,50 +252,42 @@
   (or (:clean-shape render-shape)
       (:shape render-shape)))
 
-(rf/reg-sub-raw ::exact-impacted-shape
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::exact-impacted-shape
-     context
-     (fn []
-       (let [context (resolve-context context)
-             shape (exact-shape context)
-             components-context (c/++ context :components)
-             num-components (get-list-size components-context)
-             impactful-ordinary-contexts (into []
-                                               (comp
-                                                (map #(c/++ components-context %))
-                                                (filter #(#{:heraldry.ordinary.type/chief
-                                                            :heraldry.ordinary.type/base}
-                                                          (get-raw-data (c/++ % :type)))))
-                                               (range num-components))
-             component-properties (map (fn [context]
-                                         [context (get-properties context)])
-                                       impactful-ordinary-contexts)
-             chief-context (->> component-properties
-                                (filter (comp #{:heraldry.ordinary.type/chief} :type second))
-                                (sort-by (comp :y first :lower second) >)
-                                first
-                                first)
-             chief-shape (some-> chief-context
-                                 get-render-shape
-                                 geometry-shape
-                                 first)
-             base-context (->> component-properties
-                               (filter (comp #{:heraldry.ordinary.type/base} :type second))
-                               (sort-by (comp :y first :upper second) <)
-                               first
-                               first)
-             base-shape (some-> base-context
-                                get-render-shape
-                                :shape
-                                first)]
-         (cond-> shape
-           chief-shape (environment/subtract-shape chief-shape)
-           base-shape (environment/subtract-shape base-shape)))))))
-
-(defn get-exact-impacted-shape [context & {:as opts}]
-  @(rf/subscribe [::exact-impacted-shape (c/scrub-render-hints context) opts]))
+(defattribute get-exact-impacted-shape [context]
+  (let [context (resolve-context context)
+        shape (exact-shape context)
+        components-context (c/++ context :components)
+        num-components (get-list-size components-context)
+        impactful-ordinary-contexts (into []
+                                          (comp
+                                           (map #(c/++ components-context %))
+                                           (filter #(#{:heraldry.ordinary.type/chief
+                                                       :heraldry.ordinary.type/base}
+                                                     (get-raw-data (c/++ % :type)))))
+                                          (range num-components))
+        component-properties (map (fn [context]
+                                    [context (get-properties context)])
+                                  impactful-ordinary-contexts)
+        chief-context (->> component-properties
+                           (filter (comp #{:heraldry.ordinary.type/chief} :type second))
+                           (sort-by (comp :y first :lower second) >)
+                           first
+                           first)
+        chief-shape (some-> chief-context
+                            get-render-shape
+                            geometry-shape
+                            first)
+        base-context (->> component-properties
+                          (filter (comp #{:heraldry.ordinary.type/base} :type second))
+                          (sort-by (comp :y first :upper second) <)
+                          first
+                          first)
+        base-shape (some-> base-context
+                           get-render-shape
+                           :shape
+                           first)]
+    (cond-> shape
+      chief-shape (environment/subtract-shape chief-shape)
+      base-shape (environment/subtract-shape base-shape))))
 
 (declare get-parent-field-shape)
 
@@ -371,89 +311,54 @@
   ;; not affect it like it does for ordinaries
   (-> (get-render-shape context) geometry-shape first))
 
-(rf/reg-sub-raw ::exact-shape
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::exact-shape
-     context
-     #(let [context (resolve-context context)]
-        (exact-shape context)))))
+(defattribute get-exact-shape [context]
+  (exact-shape (resolve-context context)))
 
-(rf/reg-sub-raw ::field-edges
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::field-edges
-     context
-     #(:edges (subfield-render-shapes context)))))
-
-(defn get-field-edges [context]
-  @(rf/subscribe [::field-edges (c/scrub-render-hints context)]))
+(defattribute get-field-edges [context]
+  (:edges (subfield-render-shapes context)))
 
 (defmulti bounding-box effective-component-type)
 
 (defmethod bounding-box :default [context]
   (:bounding-box (get-environment context)))
 
-(rf/reg-sub-raw ::bounding-box
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::bounding-box
-     context
-     #(let [context (resolve-context context)]
-        (bounding-box context)))))
+(defattribute get-bounding-box [context]
+  (bounding-box (resolve-context context)))
 
-(defn get-bounding-box [context]
-  @(rf/subscribe [::bounding-box (c/scrub-render-hints context)]))
-
-(rf/reg-sub-raw ::impacted-environment
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::impacted-environment
-     context
-     (fn []
-       (let [{:keys [bounding-box
-                     root?]
-              :as environment} (get-environment context)
-             components-context (c/++ context :components)
-             num-components (get-list-size components-context)
-             impactful-ordinary-contexts (into []
-                                               (comp
-                                                (map #(c/++ components-context %))
-                                                (filter #(#{:heraldry.ordinary.type/chief
-                                                            :heraldry.ordinary.type/base}
-                                                          (get-raw-data (c/++ % :type)))))
-                                               (range num-components))
-             component-properties (map get-properties impactful-ordinary-contexts)
-             chief-impact (->> component-properties
-                               (filter (comp #{:heraldry.ordinary.type/chief} :type))
-                               (map (comp :y first :lower))
-                               (apply max))
-             base-impact (->> component-properties
-                              (filter (comp #{:heraldry.ordinary.type/base} :type))
-                              (map (comp :y first :upper))
-                              (apply min))
-             new-bounding-box (cond-> bounding-box
-                                chief-impact (bb/shrink-top chief-impact :min-height 5)
-                                base-impact (bb/shrink-bottom base-impact :min-height 5))]
-         (if (= new-bounding-box bounding-box)
-           environment
-           (environment/create new-bounding-box nil :root? root?)))))))
-
-(defn get-impacted-environment [context]
-  @(rf/subscribe [::impacted-environment (c/scrub-render-hints context)]))
+(defattribute get-impacted-environment [context]
+  (let [{:keys [bounding-box
+                root?]
+         :as environment} (get-environment context)
+        components-context (c/++ context :components)
+        num-components (get-list-size components-context)
+        impactful-ordinary-contexts (into []
+                                          (comp
+                                           (map #(c/++ components-context %))
+                                           (filter #(#{:heraldry.ordinary.type/chief
+                                                       :heraldry.ordinary.type/base}
+                                                     (get-raw-data (c/++ % :type)))))
+                                          (range num-components))
+        component-properties (map get-properties impactful-ordinary-contexts)
+        chief-impact (->> component-properties
+                          (filter (comp #{:heraldry.ordinary.type/chief} :type))
+                          (map (comp :y first :lower))
+                          (apply max))
+        base-impact (->> component-properties
+                         (filter (comp #{:heraldry.ordinary.type/base} :type))
+                         (map (comp :y first :upper))
+                         (apply min))
+        new-bounding-box (cond-> bounding-box
+                           chief-impact (bb/shrink-top chief-impact :min-height 5)
+                           base-impact (bb/shrink-bottom base-impact :min-height 5))]
+    (if (= new-bounding-box bounding-box)
+      environment
+      (environment/create new-bounding-box nil :root? root?))))
 
 (defmulti auto-ordinary-info (fn [ordinary-type _context]
                                ordinary-type))
 
-(rf/reg-sub-raw ::auto-ordinary-info
-  (fn [_app-db [_ ordinary-type context]]
-    (reaction-or-cache
-     [::auto-ordinary-info ordinary-type]
-     context
-     #(auto-ordinary-info ordinary-type context))))
-
-(defn get-auto-ordinary-info [ordinary-type context]
-  @(rf/subscribe [::auto-ordinary-info ordinary-type (c/scrub-render-hints context)]))
+(defattribute get-auto-ordinary-info [ordinary-type context]
+  (auto-ordinary-info ordinary-type context))
 
 (defmulti auto-arrangement (fn [ordinary-type _context]
                              ordinary-type))
@@ -461,15 +366,8 @@
 (defmethod auto-arrangement :default [ordinary-type context]
   (log/warn :not-implemented "interface.auto-arrangement" ordinary-type context))
 
-(rf/reg-sub-raw ::auto-arrangement
-  (fn [_app-db [_ ordinary-type context]]
-    (reaction-or-cache
-     [::auto-arrangement ordinary-type]
-     context
-     #(auto-arrangement ordinary-type context))))
-
-(defn get-auto-arrangement [ordinary-type context]
-  @(rf/subscribe [::auto-arrangement ordinary-type (c/scrub-render-hints context)]))
+(defattribute get-auto-arrangement [ordinary-type context]
+  (auto-arrangement ordinary-type context))
 
 (defmulti parent-field-environment effective-component-type)
 
@@ -482,16 +380,9 @@
       (get-impacted-environment parent-context)
       (get-environment parent-context))))
 
-(rf/reg-sub-raw ::parent-field-environment
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::parent-field-environment
-     context
-     #(or (c/get-key context :parent-environment-override)
-          (parent-field-environment context)))))
-
-(defn get-parent-field-environment [context]
-  @(rf/subscribe [::parent-field-environment (c/scrub-render-hints context)]))
+(defattribute get-parent-field-environment [context]
+  (or (c/get-key context :parent-environment-override)
+      (parent-field-environment context)))
 
 (defmulti parent-field-shape effective-component-type)
 
@@ -504,39 +395,18 @@
       (get-exact-impacted-shape parent-context)
       (get-exact-shape parent-context))))
 
-(rf/reg-sub-raw ::parent-field-shape
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::parent-field-shape
-     context
-     #(parent-field-shape context))))
+(defattribute get-parent-field-shape [context]
+  (parent-field-shape context))
 
-(defn get-parent-field-shape [context]
-  @(rf/subscribe [::parent-field-shape (c/scrub-render-hints context)]))
+(defattribute get-subfields-environment [context]
+  (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+    (get-impacted-environment context)
+    (get-environment context)))
 
-(rf/reg-sub-raw ::subfields-environment
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::subfields-environment
-     context
-     #(if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
-        (get-impacted-environment context)
-        (get-environment context)))))
-
-(defn get-subfields-environment [context]
-  @(rf/subscribe [::subfields-environment (c/scrub-render-hints context)]))
-
-(rf/reg-sub-raw ::subfields-shape
-  (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::subfields-shape
-     context
-     #(if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
-        (get-exact-impacted-shape context)
-        (get-exact-shape context)))))
-
-(defn get-subfields-shape [context]
-  @(rf/subscribe [::subfields-shape (c/scrub-render-hints context)]))
+(defattribute get-subfields-shape [context]
+  (if (get-sanitized-data (c/++ context :adapt-to-ordinaries?))
+    (get-exact-impacted-shape context)
+    (get-exact-shape context)))
 
 (defn counterchanged-tinctures [context]
   @(rf/subscribe [::counterchanged-tinctures context]))

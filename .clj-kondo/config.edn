@@ -4,5 +4,6 @@
                                         goog.string gstring
                                         reframe.core rf}}}
  :lint-as {heraldicon.backend.migration.macros/defmigration clojure.core/fn
+           heraldicon.interface.macros/defattribute clojure.core/defn
            heraldicon.frontend.macros/reg-event-db re-frame.core/reg-event-db
            taoensso.tufte/defnp clojure.core/defn}}

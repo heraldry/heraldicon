@@ -19,6 +19,7 @@
            #_#_cond-> [[:block 1]]
            #_#_cond->> [[:block 1]]
            def [[:inner 0]]
+           defattribute [[:inner 0]]
            defmacro [[:inner 0]]
            defmethod [[:inner 0]]
            defmulti [[:inner 0]]
