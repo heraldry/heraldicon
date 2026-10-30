@@ -8,6 +8,7 @@
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.options :as options]
+   [heraldicon.render.ir :as ir]
    [heraldicon.render.options :as render.options]
    [re-frame.core :as rf]
    [taoensso.timbre :as log])
@@ -97,6 +98,45 @@
 (defmethod render-component nil [context]
   (log/warn :not-implemented "render-component" context)
   [:<>])
+
+;; Render results as data, see heraldicon.render.ir. A component type that
+;; implements render-ir renders its children as ir-nodes and lists them in
+;; :children; its render-component is render-ir-root, which emits the defs of
+;; the whole subtree once. Types without render-ir are wrapped as they are.
+(defmulti render-ir effective-component-type)
+
+(defmethod render-ir :default [context]
+  (assoc ir/blank :body [render-component context]))
+
+(rf/reg-sub-raw ::render-ir
+  (fn [_app-db [_ context]]
+    (reaction-or-cache
+     ::render-ir
+     context
+     #(render-ir context))))
+
+(rf/reg-sub-raw ::render-defs
+  (fn [_app-db [_ context]]
+    (reaction-or-cache
+     ::render-defs
+     context
+     #(let [{:keys [defs children]} @(rf/subscribe [::render-ir context])]
+        (transduce (map (fn [child-context]
+                          @(rf/subscribe [::render-defs child-context])))
+                   merge
+                   defs
+                   children)))))
+
+(defn ir-node
+  "Renders the body of a node; its defs are emitted by the nearest
+  render-ir-root above it."
+  [context]
+  (:body @(rf/subscribe [::render-ir context])))
+
+(defn render-ir-root [context]
+  [:<>
+   (ir/defs->hiccup @(rf/subscribe [::render-defs context]))
+   [ir-node context]])
 
 (defmulti blazon-component effective-component-type)
 
