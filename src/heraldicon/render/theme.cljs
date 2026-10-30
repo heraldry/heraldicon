@@ -2,15 +2,6 @@
   (:require
    [heraldicon.options :as options]))
 
-(def ^:private theme-all
-  {:all true
-
-   ::name :string.theme/all
-   ::attribution {:nature :own-work
-                  :license :public-domain
-                  :creator-name "Heraldicon"
-                  :creator-link "https://heraldicon.org"}})
-
 ;; colours taken from ;; https://github.com/drawshield/Drawshield-Code/blob/0d7ecc865e5ccd2ae8b17c11511c6afebb2ff6c9/svg/schemes/wappenwiki.txt
 (def ^:private theme-wappenwiki
   {;; metals
@@ -1097,8 +1088,7 @@
     [:wappenwiki theme-wappenwiki]
     [:encyclopedia-heraldica theme-encyclopedia-heraldica]
     [:web theme-web]
-    [:ral-traffic theme-ral-traffic]
-    [:all theme-all]]
+    [:ral-traffic theme-ral-traffic]]
    ["Wikipedia"
     [:wikipedia-default theme-wikipedia-default]
     [:wikipedia-web theme-wikipedia-web]

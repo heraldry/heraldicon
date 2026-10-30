@@ -117,19 +117,7 @@
         pattern-rotation (interface/get-sanitized-data (c/++ context :pattern-rotation))
         pattern-offset-x (interface/get-sanitized-data (c/++ context :pattern-offset-x))
         pattern-offset-y (interface/get-sanitized-data (c/++ context :pattern-offset-y))
-        theme (interface/render-option :theme context)
-        theme (if (and svg-export?
-                       (= theme :all))
-                :wappenwiki
-                theme)
-        tincture-mapping (c/tincture-mapping context)
-        effective-tincture (get tincture-mapping tincture tincture)
-        [colour animation] (if (and (= theme :all)
-                                    (-> theme/theme-data-map
-                                        (get :wappenwiki)
-                                        (get effective-tincture)))
-                             [nil (str "all-theme-transition-" (name effective-tincture))]
-                             [(pick tincture context) nil])
+        colour (pick tincture context)
         selected? (and (not svg-export?)
                        @(rf/subscribe [::tree/node-highlighted?
                                        ::arms.details/identifier
@@ -176,12 +164,9 @@
                                              leave-component-fn)
                                     (js-event/handled
                                      #(leave-component-fn context)))
-                  :style (merge
-                          (when (and (not charge-preview?)
-                                     (not svg-export?))
-                            {:cursor "pointer"})
-                          (when animation
-                            {:animation (str animation " linear 20s infinite")}))}]
+                  :style (when (and (not charge-preview?)
+                                    (not svg-export?))
+                           {:cursor "pointer"})}]
           (when selected?
             [:<>
              [highlight/defs]

@@ -29,12 +29,10 @@
                                          "1px solid transparent")
                                :border-radius "5px"}}
                  [:img.clickable {:style {:width "4em"
-                                          :height (when-not (= key :all) "4.5em")}
+                                          :height "4.5em"}
                                   :on-click (when clickable?
                                               (js-event/handled #(rf/dispatch [:set context key])))
-                                  :src (if (= key :all)
-                                         "/img/psychedelic.png"
-                                         (str "/svg/theme-" (name key) ".svg"))}]]
+                                  :src (str "/svg/theme-" (name key) ".svg")}]]
                 (when clickable?
                   [:div.choice-label (tr display-name)])]]
     (if clickable?
