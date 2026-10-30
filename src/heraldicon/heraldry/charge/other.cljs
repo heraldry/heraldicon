@@ -331,6 +331,18 @@
       :charge-entity-path entity-path
       :unadjusted-charge unadjusted-charge})))
 
+(defn- plain-field-colour
+  "The flat colour of a plain field without components, or nil if the field
+  needs to be rendered, e.g. for a fur, a hatching or a division."
+  [field-context]
+  (when (and (= (interface/get-sanitized-data (c/++ field-context :type))
+                :heraldry.field.type/plain)
+             (zero? (interface/get-list-size (c/++ field-context :components))))
+    (let [colour (tincture/pick (interface/get-sanitized-data (c/++ field-context :tincture))
+                                field-context)]
+      (when-not (str/starts-with? colour "url")
+        colour))))
+
 (defn render-ir [context {:keys [anchor-point scale-x scale-y angle top-left unadjusted-charge
                                  charge-entity charge-entity-path]}]
   (let [{:keys [self-below-shield?
@@ -417,10 +429,22 @@
             hide-lower-layer? (and (seq layer-separator-colours)
                                    (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
+            ;; on a flat-coloured field the charge can be painted directly instead of
+            ;; showing the field through masks; exports only, because in the editor the
+            ;; field inside the charge is a click target of its own; a layer separator
+            ;; that hides lower layers needs a mask to cut them away
+            field-colour (when (and svg-export?
+                                    render-field?
+                                    (not (or preview-original?
+                                             landscape?
+                                             highlight-colours?
+                                             hide-lower-layer?)))
+                           (plain-field-colour (c/++ context :field)))
             {mask :mask
              mask-inverted :mask-inverted
              mask-base :mask-base} (when-not (or preview-original?
-                                                 landscape?)
+                                                 landscape?
+                                                 field-colour)
                                      (mask-defs adjusted-charge-without-shading
                                                 placeholder-colours
                                                 tincture
@@ -449,6 +473,25 @@
                                    replacement (tincture/pick replacement context)
                                    (= kind :keep) colour
                                    :else (outline/color context)))))
+            ;; the colours the masks would show: the field's colour where the field shows
+            ;; through, the tinctures and kept colours where the coloured charge shows, and
+            ;; the outline colour where only the base layer shows
+            directly-coloured-charge (when field-colour
+                                       (replace-colours
+                                        adjusted-charge-without-shading
+                                        (fn [colour]
+                                          (if (str/starts-with? colour "url")
+                                            "none"
+                                            (let [colour-lower (colour/normalize colour)
+                                                  kind (placeholder-colour-modifier placeholder-colours colour-lower)
+                                                  replacement (get-replacement kind tincture)]
+                                              (cond
+                                                replacement (tincture/pick replacement context)
+                                                (= kind :keep) colour
+                                                (= kind :layer-separator) "none"
+                                                (and (= kind :outline)
+                                                     (not= outline-mode :primary)) (outline/color context)
+                                                :else field-colour))))))
             layer-separator-colour-for-shadow-highlight (if hide-lower-layer?
                                                           "#000000"
                                                           "none")
@@ -472,6 +515,25 @@
                                    "scale(" (/ 1 scale-x) "," (/ 1 scale-y) ")"
                                    "rotate(" (- angle) ")"
                                    "translate(" (-> anchor-point (v/mul -1) v/->str) ")")
+            shading-layers [:<>
+                            (when render-shadow?
+                              [:g {:mask (str "url(#" (:id shadow-mask) ")")}
+                               [:rect {:transform reverse-transform
+                                       :x -500
+                                       :y -500
+                                       :width 1100
+                                       :height 1100
+                                       :fill "#001040"
+                                       :style {:opacity (:shadow tincture)}}]])
+                            (when render-highlight?
+                              [:g {:mask (str "url(#" (:id highlight-mask) ")")}
+                               [:rect {:transform reverse-transform
+                                       :x -500
+                                       :y -500
+                                       :width 1100
+                                       :height 1100
+                                       :fill "#ffffe8"
+                                       :style {:opacity (:highlight tincture)}}]])]
             charge-clip-path (when (or clip?
                                        (not (or svg-export?
                                                 preview-original?)))
@@ -494,7 +556,8 @@
               (and render-field?
                    (not (or preview-original?
                             landscape?
-                            highlight-colours?))) (ir/add-child (c/++ context :field)))
+                            highlight-colours?
+                            field-colour))) (ir/add-child (c/++ context :field)))
             (assoc
              :body
              [:<>
@@ -530,6 +593,10 @@
                                                               colour ui-show-colours))))
                    landscape? unadjusted-charge
                    highlight-colours? adjusted-charge
+                   directly-coloured-charge [:<>
+                                             (svg/make-unique-ids directly-coloured-charge)
+
+                                             shading-layers]
                    :else [:<>
                           (when (= outline-mode :keep)
                             [:g {:mask (str "url(#" (:id mask-base) ")")}
@@ -548,25 +615,7 @@
                           [:g {:mask (str "url(#" (:id mask) ")")}
                            (svg/make-unique-ids coloured-charge)]
 
-                          (when render-shadow?
-                            [:g {:mask (str "url(#" (:id shadow-mask) ")")}
-                             [:rect {:transform reverse-transform
-                                     :x -500
-                                     :y -500
-                                     :width 1100
-                                     :height 1100
-                                     :fill "#001040"
-                                     :style {:opacity (:shadow tincture)}}]])
-
-                          (when render-highlight?
-                            [:g {:mask (str "url(#" (:id highlight-mask) ")")}
-                             [:rect {:transform reverse-transform
-                                     :x -500
-                                     :y -500
-                                     :width 1100
-                                     :height 1100
-                                     :fill "#ffffe8"
-                                     :style {:opacity (:highlight tincture)}}]])])]]]
+                          shading-layers])]]]
 
               (when (and (not svg-export?)
                          @(rf/subscribe [::tree/node-highlighted?
