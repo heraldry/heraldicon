@@ -3,7 +3,6 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.field.environment :as environment]
    [heraldicon.heraldry.render :as render]
-   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.ir :as ir]
    [heraldicon.svg.path :as path]
@@ -78,12 +77,11 @@
                                  :cursor "pointer"})
                        :transform transform}]
                   [:<>])
-        ;; exports paint a flat-coloured field's shape directly; a clip path
+        ;; a flat-coloured field's shape is painted directly; a clip path
         ;; ignores strokes, so the overlap only applies in mask mode
-        flat-colour (when svg-export?
-                      (tincture/flat-colour field-context))]
+        flat-colour (render/direct-fill-colour field-context)]
     (if flat-colour
-      (assoc ir/blank :body [render/shape-fill context flat-colour (and mask? overlap?)])
+      (assoc ir/blank :body [render/shape-fill context field-context flat-colour (and mask? overlap?)])
       (-> ir/blank
           (ir/add-def [(if mask? :mask :clipPath) {:id clip-path-id}
                        [render/shape-mask context overlap?]])

@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
+   [heraldicon.frontend.js-event :as js-event]
    [heraldicon.frontend.library.arms.details :as-alias arms.details]
    [heraldicon.heraldry.line.core :as line]
    [heraldicon.heraldry.line.fimbriation :as fimbriation]
@@ -26,17 +27,46 @@
     (cond->> shape-path
       (vector? shape-path) (apply str))))
 
+(defn direct-fill-colour
+  "The colour to paint a field with directly, or nil if it needs the masked
+  rendering, see tincture/flat-colour. In the editor a field highlighted by
+  hovering it, or the component it belongs to, in the preview is masked, so it
+  can show the highlight."
+  [field-context]
+  (when (or (:svg-export? (c/render-hints field-context))
+            (not @(rf/subscribe [::tree/node-highlighted?
+                                 ::arms.details/identifier
+                                 (:path field-context)])))
+    (tincture/flat-colour field-context)))
+
 (defn shape-fill
-  "The shape of a flat-coloured field filled directly, instead of a mask or
-  clip path around a tinctured rect, see tincture/flat-colour. With overlap?
-  it's widened like the mask of an overlapping subfield."
-  [context colour overlap?]
-  (let [render-shape (interface/get-render-shape context)]
+  "The shape of a field filled directly with colour, instead of a mask or clip
+  path around a tinctured rect, see direct-fill-colour. With overlap? it's
+  widened like the mask of an overlapping subfield. In the editor it reacts to
+  the pointer like the field's rect did."
+  [context field-context colour overlap?]
+  (let [{:keys [svg-export?
+                charge-preview?
+                select-component-fn
+                select-field-fn
+                enter-component-fn
+                leave-component-fn]} (c/render-hints field-context)
+        render-shape (interface/get-render-shape context)]
     [:path (cond-> {:d (shape-path render-shape)
                     :fill-rule "evenodd"
                     :fill colour}
              overlap? (assoc :stroke colour
-                             :stroke-width overlap-width))]))
+                             :stroke-width overlap-width)
+             (not svg-export?) (assoc :on-click (when select-component-fn
+                                                  (js-event/handled #(select-component-fn field-context)))
+                                      :on-double-click (when select-field-fn
+                                                         (js-event/handled #(select-field-fn field-context)))
+                                      :on-mouse-enter (when enter-component-fn
+                                                        (js-event/handled #(enter-component-fn field-context)))
+                                      :on-mouse-leave (when leave-component-fn
+                                                        (js-event/handled #(leave-component-fn field-context)))
+                                      :style (when-not charge-preview?
+                                               {:cursor "pointer"})))]))
 
 (defn shape-mask [context overlap?]
   (let [render-shape (interface/get-render-shape context)]

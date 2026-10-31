@@ -482,16 +482,15 @@
                                    (not ignore-layer-separator?)
                                    (not render-pass-below-shield?))
             ;; on a flat-coloured field the charge can be painted directly instead of
-            ;; showing the field through masks; exports only, because in the editor the
-            ;; field inside the charge is a click target of its own; a layer separator
-            ;; that hides lower layers needs a mask to cut them away
-            field-colour (when (and svg-export?
-                                    render-field?
+            ;; showing the field through masks; clicks then select the charge, a
+            ;; double click its field; a layer separator that hides lower layers
+            ;; needs a mask to cut them away
+            field-colour (when (and render-field?
                                     (not (or preview-original?
                                              landscape?
                                              highlight-colours?
                                              hide-lower-layer?)))
-                           (tincture/flat-colour (c/++ context :field)))
+                           (render/direct-fill-colour (c/++ context :field)))
             {mask :mask
              mask-inverted :mask-inverted
              mask-base :mask-base} (when-not (or preview-original?
