@@ -71,17 +71,18 @@
         mask? (and svg-export?
                    (not clip?))
         field-context (c/++ context :field)
-        ;; a flat-coloured field's shape is painted directly
-        flat-colour (render/direct-fill-colour field-context)]
+        ;; a plain field's shape is painted directly
+        direct-fill (render/direct-fill field-context transform)]
     (-> ir/blank
         (cond->
-          (not flat-colour) (-> (ir/add-def [(if mask? :mask :clipPath) {:id clip-path-id}
+          (:def direct-fill) (ir/add-def (:def direct-fill))
+          (not direct-fill) (-> (ir/add-def [(if mask? :mask :clipPath) {:id clip-path-id}
                                              [render/shape-mask context]])
                                 (ir/add-child field-context)))
         (assoc :body [:<>
                       [render/shape-fimbriation context]
-                      (if flat-colour
-                        [render/shape-fill context field-context flat-colour false]
+                      (if direct-fill
+                        [render/shape-fill context field-context (:fill direct-fill) false]
                         [:g {(if mask? :mask :clip-path) (str "url(#" clip-path-id ")")}
                          (let [wrapper (if transform
                                          [:g {:transform transform}]

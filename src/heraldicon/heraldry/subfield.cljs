@@ -77,11 +77,14 @@
                                  :cursor "pointer"})
                        :transform transform}]
                   [:<>])
-        ;; a flat-coloured field's shape is painted directly; a clip path
-        ;; ignores strokes, so the overlap only applies in mask mode
-        flat-colour (render/direct-fill-colour field-context)]
-    (if flat-colour
-      (assoc ir/blank :body [render/shape-fill context field-context flat-colour (and mask? overlap?)])
+        ;; a plain field's shape is painted directly; a clip path ignores
+        ;; strokes, so the overlap only applies in mask mode
+        direct-fill (render/direct-fill field-context transform)]
+    (if direct-fill
+      (-> ir/blank
+          (cond->
+            (:def direct-fill) (ir/add-def (:def direct-fill)))
+          (assoc :body [render/shape-fill context field-context (:fill direct-fill) (and mask? overlap?)]))
       (-> ir/blank
           (ir/add-def [(if mask? :mask :clipPath) {:id clip-path-id}
                        [render/shape-mask context overlap?]])

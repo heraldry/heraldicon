@@ -21,22 +21,23 @@
          :as properties} (interface/get-properties context)
         mask-or-clip-path (if (and svg-export? (not clip?)) :mask :clipPath)
         mask-or-clip-path-attr (if (and svg-export? (not clip?)) :mask :clip-path)
-        ;; a flat-coloured field's shape is painted directly
-        flat-colour (when-not other?
-                      (render/direct-fill-colour (c/++ context :field)))
+        ;; a plain field's shape is painted directly
+        direct-fill (when-not other?
+                      (render/direct-fill (c/++ context :field) nil))
         charge-ir (cond
                     other? (other/render-ir context properties)
                     (= (boolean self-below-shield?)
                        (boolean render-pass-below-shield?)) (-> ir/blank
                                                                 (cond->
-                                                                  (not flat-colour) (-> (ir/add-def [mask-or-clip-path {:id shape-clip-path-id}
+                                                                  (:def direct-fill) (ir/add-def (:def direct-fill))
+                                                                  (not direct-fill) (-> (ir/add-def [mask-or-clip-path {:id shape-clip-path-id}
                                                                                                      [render/shape-mask context]])
                                                                                         (ir/add-child (c/++ context :field))))
                                                                 (assoc :body
                                                                        [:<>
                                                                         [render/shape-fimbriation context]
-                                                                        (if flat-colour
-                                                                          [render/shape-fill context (c/++ context :field) flat-colour false]
+                                                                        (if direct-fill
+                                                                          [render/shape-fill context (c/++ context :field) (:fill direct-fill) false]
                                                                           [:g {mask-or-clip-path-attr (str "url(#" shape-clip-path-id ")")}
                                                                            [interface/ir-node (c/++ context :field)]])
                                                                         [render/charge-edges context]

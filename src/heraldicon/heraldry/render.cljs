@@ -11,6 +11,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.core :as math]
    [heraldicon.render.outline :as outline]
+   [heraldicon.util.cache :as cache]
    [re-frame.core :as rf]))
 
 (def ^:private overlap-width
@@ -27,24 +28,60 @@
     (cond->> shape-path
       (vector? shape-path) (apply str))))
 
+(defn- paint-directly?
+  "In the editor a field highlighted by hovering it, or the component it
+  belongs to, in the preview is masked, so it can show the highlight."
+  [field-context]
+  (or (:svg-export? (c/render-hints field-context))
+      (not @(rf/subscribe [::tree/node-highlighted?
+                           ::arms.details/identifier
+                           (:path field-context)]))))
+
 (defn direct-fill-colour
   "The colour to paint a field with directly, or nil if it needs the masked
-  rendering, see tincture/flat-colour. In the editor a field highlighted by
-  hovering it, or the component it belongs to, in the preview is masked, so it
-  can show the highlight."
+  rendering, see tincture/flat-colour and paint-directly?."
   [field-context]
-  (when (or (:svg-export? (c/render-hints field-context))
-            (not @(rf/subscribe [::tree/node-highlighted?
-                                 ::arms.details/identifier
-                                 (:path field-context)])))
+  (when (paint-directly? field-context)
     (tincture/flat-colour field-context)))
 
+;; patterns are defined in user space units, so a pattern that fills a field's
+;; shape directly carries the transforms the masked rendering applies to the
+;; tinctured rect; ids count in the cache store, like charge defs
+(def ^:private transformed-pattern
+  (cache/memoize
+   ::transformed-pattern
+   (fn transformed-pattern [pattern-id pattern-transform]
+     (let [id (str pattern-id "-"
+                   (::pattern-count (swap! cache/store update ::pattern-count (fnil inc 0))))
+           href (str "#" pattern-id)]
+       [:pattern {:id id
+                  :href href
+                  :xlinkHref href
+                  :patternTransform pattern-transform}]))))
+
+(defn direct-fill
+  "The fill to paint a field's shape with directly, a colour or a pattern url,
+  and the pattern def it needs, if any, or nil if the field needs the masked
+  rendering, see tincture/plain-fill and paint-directly?. transform is the
+  transform the masked rendering applies to the field."
+  [field-context transform]
+  (when (paint-directly? field-context)
+    (when-let [fill (tincture/plain-fill field-context)]
+      (let [pattern-id (second (re-matches #"url\(#(.+)\)" fill))
+            pattern-transform (str transform (tincture/pattern-transform field-context))]
+        (if (and pattern-id
+                 (not (str/blank? pattern-transform)))
+          (let [pattern (transformed-pattern pattern-id pattern-transform)]
+            {:fill (str "url(#" (-> pattern second :id) ")")
+             :def pattern})
+          {:fill fill})))))
+
 (defn shape-fill
-  "The shape of a field filled directly with colour, instead of a mask or clip
-  path around a tinctured rect, see direct-fill-colour. With overlap? it's
+  "The shape of a field filled directly with a colour or pattern, instead of a
+  mask or clip path around a tinctured rect, see direct-fill. With overlap? it's
   widened like the mask of an overlapping subfield. In the editor it reacts to
   the pointer like the field's rect did."
-  [context field-context colour overlap?]
+  [context field-context fill overlap?]
   (let [{:keys [svg-export?
                 charge-preview?
                 select-component-fn
@@ -54,8 +91,8 @@
         render-shape (interface/get-render-shape context)]
     [:path (cond-> {:d (shape-path render-shape)
                     :fill-rule "evenodd"
-                    :fill colour}
-             overlap? (assoc :stroke colour
+                    :fill fill}
+             overlap? (assoc :stroke fill
                              :stroke-width overlap-width)
              (not svg-export?) (assoc :on-click (when select-component-fn
                                                   (js-event/handled #(select-component-fn field-context)))

@@ -105,18 +105,44 @@
       :else (or (theme/lookup-colour tincture theme)
                 "url(#void)"))))
 
-(defn flat-colour
-  "The flat colour of a plain field without components, or nil if the field
-  needs to be rendered, e.g. for a fur, a hatching or a division. Such a field
-  can be painted directly instead of being masked."
+(defn plain-fill
+  "The fill of a plain field without components, a colour or a pattern url, or
+  nil if the field needs to be rendered, e.g. for a division. Such a field can
+  be painted directly instead of being masked."
   [field-context]
   (when (and (= (interface/get-sanitized-data (c/++ field-context :type))
                 :heraldry.field.type/plain)
              (zero? (interface/get-list-size (c/++ field-context :components))))
-    (let [colour (pick (interface/get-sanitized-data (c/++ field-context :tincture))
-                       field-context)]
-      (when-not (str/starts-with? colour "url")
-        colour))))
+    (pick (interface/get-sanitized-data (c/++ field-context :tincture))
+          field-context)))
+
+(defn flat-colour
+  "The flat colour of a plain field without components, or nil, e.g. for a fur,
+  a hatching or a division, see plain-fill."
+  [field-context]
+  (let [fill (plain-fill field-context)]
+    (when-not (some-> fill (str/starts-with? "url"))
+      fill)))
+
+(defn pattern-transform
+  "The transform of a field's pattern, from its pattern offset, scaling and
+  rotation, or nil if they leave it as it is."
+  [context]
+  (let [pattern-scaling (interface/get-sanitized-data (c/++ context :pattern-scaling))
+        pattern-rotation (interface/get-sanitized-data (c/++ context :pattern-rotation))
+        pattern-offset-x (interface/get-sanitized-data (c/++ context :pattern-offset-x))
+        pattern-offset-y (interface/get-sanitized-data (c/++ context :pattern-offset-y))]
+    (cond-> nil
+      (and pattern-offset-x
+           pattern-offset-y
+           (not (and (zero? pattern-offset-x)
+                     (zero? pattern-offset-y)))) (str "translate("
+                                                      pattern-offset-x ","
+                                                      pattern-offset-y ")")
+      (and pattern-scaling
+           (not= pattern-scaling 1)) (str "scale(" pattern-scaling "," pattern-scaling ")")
+      (and pattern-rotation
+           (not (zero? pattern-rotation))) (str "rotate(" pattern-rotation ")"))))
 
 (defn tinctured-field [context & {:keys [mask-id
                                          transform]}]
@@ -127,10 +153,7 @@
                 enter-component-fn
                 leave-component-fn]} (c/render-hints context)
         tincture (interface/get-sanitized-data (c/++ context :tincture))
-        pattern-scaling (interface/get-sanitized-data (c/++ context :pattern-scaling))
-        pattern-rotation (interface/get-sanitized-data (c/++ context :pattern-rotation))
-        pattern-offset-x (interface/get-sanitized-data (c/++ context :pattern-offset-x))
-        pattern-offset-y (interface/get-sanitized-data (c/++ context :pattern-offset-y))
+        pattern-transform (pattern-transform context)
         colour (pick tincture context)
         selected? (and (not svg-export?)
                        @(rf/subscribe [::tree/node-highlighted?
@@ -154,13 +177,9 @@
                   :height (if svg-export?
                             2000
                             1100)
-                  :transform (cond-> transform
-                               (and pattern-offset-x
-                                    pattern-offset-y) (str "translate("
-                                                           pattern-offset-x ","
-                                                           pattern-offset-y ")")
-                               pattern-scaling (str "scale(" pattern-scaling "," pattern-scaling ")")
-                               pattern-rotation (str "rotate(" pattern-rotation ")"))
+                  :transform (if pattern-transform
+                               (str transform pattern-transform)
+                               transform)
                   :fill colour
                   :on-click (when (and (not svg-export?)
                                        select-component-fn)
