@@ -305,6 +305,24 @@
    (fn clean-charge-data [data]
      (-> data svg/sanitize-charge-data svg/strip-clip-paths))))
 
+(def ^:private centred-shape
+  (cache/memoize
+   ::centred-shape
+   (fn centred-shape [shapes base-width base-height]
+     (if (seq shapes)
+       (mapv (fn [path]
+               (-> path
+                   first
+                   path/parse-path
+                   (path/translate (v/Vector. (- (/ base-width 2)) (- (/ base-height 2))))
+                   path/to-svg))
+             shapes)
+       [["M" (- (/ base-width 2)) (- (/ base-height 2))
+         "h" base-width
+         "v" base-height
+         "h" (- base-width)
+         "z"]]))))
+
 (derive :heraldry.charge.type/other :heraldry/charge)
 
 (defmethod interface/properties :heraldry.charge.type/other [{:keys [load-charge-data] :as context}]
@@ -317,19 +335,7 @@
                 shapes]} (-> charge-entity :data :edn-data)
         base-width (js/parseFloat (or width "1"))
         base-height (js/parseFloat (or height "1"))
-        base-shape (if (seq shapes)
-                     (mapv (fn [path]
-                             (-> path
-                                 first
-                                 path/parse-path
-                                 (path/translate (v/Vector. (- (/ base-width 2)) (- (/ base-height 2))))
-                                 path/to-svg))
-                           shapes)
-                     [["M" (- (/ base-width 2)) (- (/ base-height 2))
-                       "h" base-width
-                       "v" base-height
-                       "h" (- base-width)
-                       "z"]])
+        base-shape (centred-shape shapes base-width base-height)
         unadjusted-charge (clean-charge-data data)]
     (charge.shared/process-shape
      context
