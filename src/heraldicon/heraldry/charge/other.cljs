@@ -381,7 +381,8 @@
 
 ;; the colours the masks would show: the field's colour where the field shows
 ;; through, the tinctures and kept colours where the coloured charge shows, and
-;; the outline colour where only the base layer shows
+;; the outline colour where only the base layer shows; transparent outlines
+;; aren't a colour, so they keep the masks
 (def ^:private colour-charge-directly
   (cache/memoize
    ::colour-charge-directly
@@ -489,12 +490,13 @@
             ;; on a flat-coloured field the charge can be painted directly instead of
             ;; showing the field through masks; clicks then select the charge, a
             ;; double click its field; a layer separator that hides lower layers
-            ;; needs a mask to cut them away
+            ;; and transparent outlines need a mask to cut them away
             field-colour (when (and render-field?
                                     (not (or preview-original?
                                              landscape?
                                              highlight-colours?
-                                             hide-lower-layer?)))
+                                             hide-lower-layer?
+                                             (= outline-mode :transparent))))
                            (render/direct-fill-colour (c/++ context :field)))
             {mask :mask
              mask-inverted :mask-inverted
