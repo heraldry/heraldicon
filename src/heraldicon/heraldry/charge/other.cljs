@@ -259,23 +259,28 @@
             (= modifier :layer-separator) layer-separator-colour
             :else "#000000"))))))
 
+(def ^:private shading-helper-mask-def
+  (cache/memoize
+   ::shading-helper-mask-def
+   (fn shading-helper-mask-def [charge-without-shading placeholder-colours layer-separator-colour]
+     (mask-def "charge-shading-helper"
+               (replace-colours charge-without-shading
+                                (shading-mask-colour placeholder-colours layer-separator-colour))))))
+
+;; the helper keeps shading off outlines; it doesn't depend on the kind, so shadow and
+;; highlight share it
 (def ^:private shading-mask-def
   (cache/memoize
    ::shading-mask-def
    (fn shading-mask-def [kind charge-without-shading charge placeholder-colours layer-separator-colour]
      (let [id (def-id (str "charge-" (name kind)))
-           helper-id (str id "-helper")]
+           helper (shading-helper-mask-def charge-without-shading placeholder-colours layer-separator-colour)]
        {:id id
-        :content [:<>
-                  [:defs
-                   [:mask {:id helper-id}
-                    (-> charge-without-shading
-                        (replace-colours (shading-mask-colour placeholder-colours layer-separator-colour))
-                        (svg/make-unique-ids helper-id))]]
-                  [:g {:mask (str "url(#" helper-id ")")}
-                   (-> charge
-                       (replace-colours (shading-colour kind placeholder-colours layer-separator-colour))
-                       (svg/make-unique-ids id))]]}))))
+        :helper helper
+        :content [:g {:mask (str "url(#" (:id helper) ")")}
+                  (-> charge
+                      (replace-colours (shading-colour kind placeholder-colours layer-separator-colour))
+                      (svg/make-unique-ids id))]}))))
 
 (def ^:private clip-path-def
   (cache/memoize
@@ -576,10 +581,16 @@
                                (clip-path-def charge-shapes base-width base-height))]
         (-> ir/blank
             (cond->
-              shadow-mask (ir/add-def [:mask {:id (:id shadow-mask)}
-                                       (:content shadow-mask)])
-              highlight-mask (ir/add-def [:mask {:id (:id highlight-mask)}
-                                          (:content highlight-mask)])
+              shadow-mask (->
+                            (ir/add-def [:mask {:id (:id (:helper shadow-mask))}
+                                         (:content (:helper shadow-mask))])
+                            (ir/add-def [:mask {:id (:id shadow-mask)}
+                                         (:content shadow-mask)]))
+              highlight-mask (->
+                               (ir/add-def [:mask {:id (:id (:helper highlight-mask))}
+                                            (:content (:helper highlight-mask))])
+                               (ir/add-def [:mask {:id (:id highlight-mask)}
+                                            (:content highlight-mask)]))
               mask (ir/add-def [:mask {:id (:id mask)}
                                 (:content mask)])
               mask (ir/add-def [:mask {:id (:id mask-inverted)}
