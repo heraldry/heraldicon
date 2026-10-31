@@ -11,29 +11,37 @@
    [heraldicon.render.ir :as ir]
    [heraldicon.render.options :as render.options]
    [re-frame.core :as rf]
+   [re-frame.db]
+   [reagent.ratom]
    [taoensso.timbre :as log])
   (:require-macros
    [heraldicon.interface.macros :refer [defattribute]]
    [reagent.ratom :refer [reaction]]))
 
-(def ^:dynamic cache
-  (atom {}))
+(def ^:dynamic *static-cache*
+  "An atom while a server render runs, see the backend's with-render-state,
+  nil in the browser. With it, the functions here compute their values
+  directly, memoized for the render, instead of through re-frame
+  subscriptions: a server render runs once and synchronously, so it needs no
+  reactivity. The values are the same either way, only the caching differs."
+  nil)
 
-(defn clear-subscription-cache! []
-  (reset! cache {}))
+(def ^:private not-found (js-obj))
 
-(defn reaction-or-cache [id
-                         {:keys [cache-subscriptions?]
-                          :as context} f]
-  (if cache-subscriptions?
-    (let [key [id context]
-          value (or (get @cache key) (f))]
-      (swap! cache assoc key value)
-      (reaction value))
-    (reaction (f))))
+(defn static-value
+  "The value of f for key, computed once per server render."
+  [key f]
+  (let [value (get @*static-cache* key not-found)]
+    (if (identical? value not-found)
+      (let [result (f)]
+        (swap! *static-cache* assoc key result)
+        result)
+      value)))
 
 (defn get-raw-data [{:keys [path]}]
-  @(rf/subscribe [:get path]))
+  (if *static-cache*
+    (get-in @re-frame.db/app-db path)
+    @(rf/subscribe [:get path])))
 
 (defn effective-component-type [context]
   (let [component-type (component/effective-type (get-raw-data (c/++ context :type)))]
@@ -63,11 +71,20 @@
   (fn [[data options] [_ _context]]
     (options/sanitize-value-or-data data options)))
 
-(defn get-sanitized-data [context]
-  @(rf/subscribe [::sanitized-data (c/scrub-render-hints context)]))
+(declare get-options)
 
-(defn get-list-size [{:keys [path]}]
-  @(rf/subscribe [:get-list-size path]))
+(defn get-sanitized-data [context]
+  (let [context (c/scrub-render-hints context)]
+    (if *static-cache*
+      (static-value [::sanitized-data context]
+                    #(options/sanitize-value-or-data (get-raw-data context) (get-options context)))
+      @(rf/subscribe [::sanitized-data context]))))
+
+(defn get-list-size [{:keys [path]
+                      :as context}]
+  (if *static-cache*
+    (count (get-raw-data context))
+    @(rf/subscribe [:get-list-size path])))
 
 (defattribute get-options [context]
   (when (seq (:path context))
@@ -77,7 +94,7 @@
 (defn render-option [key {:keys [render-options-path
                                  override-render-options-path] :as context}]
   (let [override-value (when override-render-options-path
-                         (let [value @(rf/subscribe [:get (conj override-render-options-path key)])]
+                         (let [value (get-raw-data {:path (conj override-render-options-path key)})]
                            ;; treat :none as nil
                            (when (not= value :none)
                              value)))]
@@ -104,32 +121,39 @@
 
 (rf/reg-sub-raw ::render-ir
   (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::render-ir
-     context
-     #(render-ir context))))
+    (reaction (render-ir context))))
+
+(defn get-render-ir [context]
+  (if *static-cache*
+    (static-value [::render-ir context] #(render-ir context))
+    @(rf/subscribe [::render-ir context])))
+
+(declare get-render-defs)
+
+(defn- merge-render-defs [context]
+  (let [{:keys [defs children]} (get-render-ir context)]
+    (transduce (map get-render-defs) merge defs children)))
 
 (rf/reg-sub-raw ::render-defs
   (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::render-defs
-     context
-     #(let [{:keys [defs children]} @(rf/subscribe [::render-ir context])]
-        (transduce (map (fn [child-context]
-                          @(rf/subscribe [::render-defs child-context])))
-                   merge
-                   defs
-                   children)))))
+    (reaction (merge-render-defs context))))
+
+(defn get-render-defs
+  "The defs of a node and all nodes below it."
+  [context]
+  (if *static-cache*
+    (static-value [::render-defs context] #(merge-render-defs context))
+    @(rf/subscribe [::render-defs context])))
 
 (defn ir-node
   "Renders the body of a node; its defs are emitted by the nearest
   render-ir-root above it."
   [context]
-  (:body @(rf/subscribe [::render-ir context])))
+  (:body (get-render-ir context)))
 
 (defn render-ir-root [context]
   [:<>
-   (ir/defs->hiccup @(rf/subscribe [::render-defs context]))
+   (ir/defs->hiccup (get-render-defs context))
    [ir-node context]])
 
 (defmulti blazon-component effective-component-type)
@@ -416,17 +440,22 @@
     (get-exact-impacted-shape context)
     (get-exact-shape context)))
 
-(defn counterchanged-tinctures [context]
-  @(rf/subscribe [::counterchanged-tinctures context]))
+(declare counterchanged-tinctures)
+
+;; keyed on the full context: the tincture mapping in the render hints matters
+(defn- compute-counterchanged-tinctures [context]
+  (if (= (get-sanitized-data (c/++ context :type))
+         :heraldry.field.type/counterchanged)
+    (-> (counterchanged-tinctures (parent (parent context)))
+        reverse
+        vec)
+    (counterchange/get-tinctures (get-raw-data context) context)))
 
 (rf/reg-sub-raw ::counterchanged-tinctures
   (fn [_app-db [_ context]]
-    (reaction-or-cache
-     ::counterchanged-tinctures
-     context
-     #(if (= (get-sanitized-data (c/++ context :type))
-             :heraldry.field.type/counterchanged)
-        (-> (counterchanged-tinctures (parent (parent context)))
-            reverse
-            vec)
-        (counterchange/get-tinctures @(rf/subscribe [:get context]) context)))))
+    (reaction (compute-counterchanged-tinctures context))))
+
+(defn counterchanged-tinctures [context]
+  (if *static-cache*
+    (static-value [::counterchanged-tinctures context] #(compute-counterchanged-tinctures context))
+    @(rf/subscribe [::counterchanged-tinctures context])))

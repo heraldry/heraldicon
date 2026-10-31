@@ -9,7 +9,9 @@
    [heraldicon.frontend.component.tree :as tree]
    [heraldicon.frontend.macros :as macros]
    [heraldicon.interface :as interface]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf])
+  (:require-macros
+   [reagent.ratom :refer [reaction]]))
 
 (macros/reg-event-db ::add
   (fn [db [_ {:keys [path]
@@ -97,14 +99,12 @@
 
 (rf/reg-sub-raw ::all-subtypes-count
   (fn [_app-db [_ context]]
-    (interface/reaction-or-cache
-     ::all-subtypes-count
-     context
-     #(let [children-count (interface/get-list-size (c/++ context :types))]
-        (->> (range children-count)
-             (map (fn [idx]
-                    @(rf/subscribe [::all-subtypes-count (c/++ context :types idx)])))
-             (reduce + children-count))))))
+    (reaction
+     (let [children-count (interface/get-list-size (c/++ context :types))]
+       (->> (range children-count)
+            (map (fn [idx]
+                   @(rf/subscribe [::all-subtypes-count (c/++ context :types idx)])))
+            (reduce + children-count))))))
 
 (defn- sort-key
   [{:keys [context]}]

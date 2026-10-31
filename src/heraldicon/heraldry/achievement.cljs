@@ -7,8 +7,7 @@
    [heraldicon.interface :as interface]
    [heraldicon.math.bounding-box :as bb]
    [heraldicon.math.vector :as v]
-   [heraldicon.render.ir :as ir]
-   [re-frame.core :as rf]))
+   [heraldicon.render.ir :as ir]))
 
 (defn- transform-bounding-box [^BoundingBox {:keys [min-x min-y]
                                              :as bounding-box}
@@ -166,7 +165,7 @@
         ornaments-above-context (c/set-render-hint ornaments-context :render-pass-below-shield? false)
         ;; the achievement is the root of the svg, so it emits the defs of all parts inside it
         defs (transduce (map (fn [part-context]
-                               @(rf/subscribe [::interface/render-defs part-context])))
+                               (interface/get-render-defs part-context)))
                         merge
                         (cond-> [coat-of-arms-context]
                           render-helms? (into [helms-below-context helms-above-context])

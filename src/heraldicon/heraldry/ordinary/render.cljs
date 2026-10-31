@@ -4,15 +4,7 @@
    [heraldicon.heraldry.render :as render]
    [heraldicon.interface :as interface]
    [heraldicon.render.ir :as ir]
-   [heraldicon.util.uid :as uid]
-   [re-frame.core :as rf]))
-
-(rf/reg-sub ::cottise?
-  (fn [[_ {:keys [path]}] _]
-    (rf/subscribe [:get (conj path :type)]))
-
-  (fn [cottise? _]
-    cottise?))
+   [heraldicon.util.uid :as uid]))
 
 (defn- set-cottise-part [context part]
   (let [cottising-path (-> context c/-- :path)
@@ -47,12 +39,12 @@
 
 (defn- cottising [context]
   (let [cottising-context (c/++ context :cottising)
-        cottise-1? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-1)])
-        cottise-2? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-2)])
-        cottise-opposite-1? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-opposite-1)])
-        cottise-opposite-2? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-opposite-2)])
-        cottise-extra-1? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-extra-1)])
-        cottise-extra-2? @(rf/subscribe [::cottise? (c/++ cottising-context :cottise-extra-2)])]
+        cottise-1? (interface/get-raw-data (c/++ (c/++ cottising-context :cottise-1) :type))
+        cottise-2? (interface/get-raw-data (c/++ (c/++ cottising-context :cottise-2) :type))
+        cottise-opposite-1? (interface/get-raw-data (c/++ (c/++ cottising-context :cottise-opposite-1) :type))
+        cottise-opposite-2? (interface/get-raw-data (c/++ (c/++ cottising-context :cottise-opposite-2) :type))
+        cottise-extra-1? (interface/get-raw-data (c/++ (c/++ cottising-context :cottise-extra-1) :type))
+        cottise-extra-2? (interface/get-raw-data (c/++ (c/++ cottising-context :cottise-extra-2) :type))]
     [:<>
      (when cottise-1?
        [render-cottise (c/++ cottising-context :cottise-1)])

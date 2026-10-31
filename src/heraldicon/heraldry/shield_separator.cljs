@@ -3,8 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.default :as default]
    [heraldicon.interface :as interface]
-   [heraldicon.render.ir :as ir]
-   [re-frame.core :as rf]))
+   [heraldicon.render.ir :as ir]))
 
 (defn shield-separator? [element]
   (-> element
@@ -77,7 +76,7 @@
 
 ;; TODO: get rid of this
 (defn get-element-indices [{:keys [path]}]
-  (element-indices-with-position @(rf/subscribe [:get path])))
+  (element-indices-with-position (interface/get-raw-data {:path path})))
 
 (defn elements-ir
   "IR embedding the elements in elements-context, each marked with whether it

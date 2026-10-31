@@ -4,7 +4,9 @@
 
 (defmacro defattribute
   "Defines a cached attribute of a component: a subscription that computes body
-  once per context, and the function name that reads it.
+  once per context, and the function name that reads it. In a server render
+  the function computes body directly, memoized for the render, see
+  heraldicon.interface/*static-cache*.
 
   The last argument is the context, any arguments before it are part of the
   cache key as well. The function scrubs the render hints from the context, so
@@ -30,12 +32,10 @@
        (re-frame.core/reg-sub-raw
          ~sub-id
          (fn [_# [_# ~@args]]
-           (heraldicon.interface/reaction-or-cache
-            ~(if (seq extra-args)
-               `[~sub-id ~@extra-args]
-               sub-id)
-            ~context
-            (fn [] ~@body))))
+           (reagent.ratom/make-reaction (fn [] ~@body))))
 
        (defn ~name ~@(when doc [doc]) ~args
-         @(re-frame.core/subscribe [~sub-id ~@extra-args (heraldicon.context/scrub-render-hints ~context)])))))
+         (let [~context (heraldicon.context/scrub-render-hints ~context)]
+           (if heraldicon.interface/*static-cache*
+             (heraldicon.interface/static-value [~sub-id ~@extra-args ~context] (fn [] ~@body))
+             @(re-frame.core/subscribe [~sub-id ~@extra-args ~context])))))))
