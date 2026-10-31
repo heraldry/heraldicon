@@ -3,7 +3,8 @@
    [clojure.string :as str]
    [clojure.walk :as walk]
    [com.wsscode.async.async-cljs :refer [<? go-catch]]
-   [heraldicon.util.uid :as uid]))
+   [heraldicon.util.uid :as uid]
+   [heraldicon.util.walk :as util.walk]))
 
 (defn- split-style-value [value]
   (into {}
@@ -79,7 +80,7 @@
                                          [(str "#" k) (str "#" v)]
                                          [(str "url(#" k ")") (str "url(#" v ")")]]))
                               id-map)]
-    (walk/postwalk
+    (util.walk/postwalk
      #(if (and (vector? %)
                (-> % second string?)
                (-> % first #{:id :href :stroke :fill :mask :clip-path}))
@@ -314,17 +315,20 @@
   "Keeps only the SVG elements and attributes needed to draw a charge. Charge
   data is user-supplied and gets rendered on the site and in exports."
   [data]
-  (walk/postwalk (fn [value]
-                   (cond
-                     (map-entry? value) value
-                     (map? value) (into {} (filter allowed-attribute?) value)
-                     (not (and (vector? value)
-                               (keyword? (first value)))) value
+  (util.walk/postwalk (fn [value]
+                        (cond
+                          (map-entry? value) value
+                     ;; rebuilt only when something goes, so the walk can reuse it
+                          (map? value) (if (every? allowed-attribute? value)
+                                         value
+                                         (into {} (filter allowed-attribute?) value))
+                          (not (and (vector? value)
+                                    (keyword? (first value)))) value
                      ;; links wrap drawn content, which stays as a group
-                     (= (local-name (first value)) "a") (assoc value 0 :g)
-                     (not (allowed-element? (first value))) nil
-                     :else value))
-                 data))
+                          (= (local-name (first value)) "a") (assoc value 0 :g)
+                          (not (allowed-element? (first value))) nil
+                          :else value))
+                      data))
 
 (defn strip-unnecessary-parts [svg-data]
   (-> svg-data
@@ -349,12 +353,13 @@
                  data))
 
 (defn strip-clip-paths [data]
-  (walk/postwalk (fn [value]
-                   (if (and (vector? value)
-                            (= (first value) :clip-path))
-                     [:clip-path nil]
-                     value))
-                 data))
+  (util.walk/postwalk (fn [value]
+                        (if (and (vector? value)
+                                 (= (first value) :clip-path)
+                                 (not= value [:clip-path nil]))
+                          [:clip-path nil]
+                          value))
+                      data))
 
 (defn fix-stroke-and-fill [data]
   ;; add fill and stroke at top level as default

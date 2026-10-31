@@ -1,7 +1,6 @@
 (ns heraldicon.heraldry.charge.other
   (:require
    [clojure.string :as str]
-   [clojure.walk :as walk]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
    [heraldicon.frontend.js-event :as js-event]
@@ -20,6 +19,7 @@
    [heraldicon.svg.path :as path]
    [heraldicon.util.cache :as cache]
    [heraldicon.util.colour :as colour]
+   [heraldicon.util.walk :as util.walk]
    [re-frame.core :as rf]))
 
 (defmethod charge.interface/options :heraldry.charge.type/other [context]
@@ -62,48 +62,52 @@
   (cache/memoize
    ::remove-outlines
    (fn remove-outlines [data placeholder-colours]
-     (walk/postwalk #(if (and (vector? %)
-                              (->> % first (get #{:stroke :fill :stop-color}))
-                              (or (-> % second (str/starts-with? "url"))
-                                  (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) (= :outline))))
-                       [(first %) "none"]
-                       %)
-                    data))))
+     (util.walk/postwalk #(if (and (vector? %)
+                                   (->> % first (get #{:stroke :fill :stop-color}))
+                                   (or (-> % second (str/starts-with? "url"))
+                                       (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) (= :outline))))
+                            [(first %) "none"]
+                            %)
+                         data))))
 
 (def remove-shading
   (cache/memoize
    ::remove-shading
    (fn remove-shading [data placeholder-colours]
-     (walk/postwalk #(if (and (vector? %)
-                              (->> % first (get #{:stroke :fill :stop-color}))
-                              (or (-> % second (str/starts-with? "url"))
-                                  (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) #{:shadow :highlight})))
-                       [(first %) "none"]
-                       %)
-                    data))))
+     (util.walk/postwalk #(if (and (vector? %)
+                                   (->> % first (get #{:stroke :fill :stop-color}))
+                                   (or (-> % second (str/starts-with? "url"))
+                                       (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) #{:shadow :highlight})))
+                            [(first %) "none"]
+                            %)
+                         data))))
 
 (def remove-layer-separator
   (cache/memoize
    ::remove-layer-separator
    (fn remove-layer-separator [data placeholder-colours]
-     (walk/postwalk #(cond
-                       (and (vector? %)
-                            (->> % first (get #{:stroke :fill :stop-color}))
-                            (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) #{:layer-separator}))
-                       [(first %) "none"]
-                       :else %)
-                    data))))
+     (util.walk/postwalk #(cond
+                            (and (vector? %)
+                                 (->> % first (get #{:stroke :fill :stop-color}))
+                                 (->> % second colour/normalize (placeholder-colour-modifier placeholder-colours) #{:layer-separator}))
+                            [(first %) "none"]
+                            :else %)
+                         data))))
 
 ;; TODO: the function here prevents efficient memoization, because the calling
 ;; context uses anonymous functions that use closures
 (defn- replace-colours [data function]
-  (walk/postwalk #(if (and (vector? %)
-                           (-> % second string?)
-                           (->> % first (get #{:stroke :fill :stop-color}))
-                           (-> % second (not= "none")))
-                    [(first %) (function (second %))]
-                    %)
-                 data))
+  (util.walk/postwalk #(if (and (vector? %)
+                                (-> % second string?)
+                                (->> % first (get #{:stroke :fill :stop-color}))
+                                (-> % second (not= "none")))
+                         (let [colour (second %)
+                               new-colour (function colour)]
+                           (if (= new-colour colour)
+                             %
+                             [(first %) new-colour]))
+                         %)
+                      data))
 
 (defn- highlight-colour [colour highlight-colours]
   (if (-> colour colour/normalize highlight-colours)
@@ -120,24 +124,24 @@
    (fn set-layer-separator-opacity [data layer-separator-colours opacity]
      (if (seq layer-separator-colours)
        (let [layer-separator-colours (set layer-separator-colours)]
-         (walk/postwalk (fn [v]
-                          (if (map? v)
-                            (loop [v v
-                                   [[attribute opacity-attribute] & rest] [[:stroke :stroke-opacity]
-                                                                           [:fill :fill-opacity]
-                                                                           [:stop-color :stop-opacity]]]
-                              (let [new-v (cond-> v
-                                            (some-> (get v attribute)
-                                                    colour/normalize
-                                                    layer-separator-colours) (->
-                                                                               (assoc opacity-attribute opacity)
-                                                                               (cond->
-                                                                                 (:opacity v) (assoc :opacity opacity))))]
-                                (if (seq rest)
-                                  (recur new-v rest)
-                                  new-v)))
-                            v))
-                        data))
+         (util.walk/postwalk (fn [v]
+                               (if (map? v)
+                                 (loop [v v
+                                        [[attribute opacity-attribute] & rest] [[:stroke :stroke-opacity]
+                                                                                [:fill :fill-opacity]
+                                                                                [:stop-color :stop-opacity]]]
+                                   (let [new-v (cond-> v
+                                                 (some-> (get v attribute)
+                                                         colour/normalize
+                                                         layer-separator-colours) (->
+                                                                                    (assoc opacity-attribute opacity)
+                                                                                    (cond->
+                                                                                      (:opacity v) (assoc :opacity opacity))))]
+                                     (if (seq rest)
+                                       (recur new-v rest)
+                                       new-v)))
+                                 v))
+                             data))
        data))))
 
 (defn- get-replacement [kind provided-placeholder-colours]
