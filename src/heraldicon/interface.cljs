@@ -104,10 +104,16 @@
         (get-sanitized-data (c/<< context :path (conj render-options-path key)))
         (get (options/sanitize-value-or-data default/render-options (render.options/build nil)) key)))))
 
+(defn- warn-not-implemented
+  "Logs a missing method with what identifies the component; the whole
+  context, with its component data and render hints, would flood the log."
+  [fn-name context]
+  (log/warn :not-implemented fn-name (effective-component-type context) (:path context)))
+
 (defmulti render-component effective-component-type)
 
 (defmethod render-component nil [context]
-  (log/warn :not-implemented "render-component" context)
+  (warn-not-implemented 'render-component context)
   [:<>])
 
 ;; Render results as data, see heraldicon.render.ir. A component type that
@@ -159,7 +165,7 @@
 (defmulti blazon-component effective-component-type)
 
 (defmethod blazon-component nil [context]
-  (log/warn "blazon: unknown component" context)
+  (warn-not-implemented 'blazon-component context)
   nil)
 
 (defn blazon [context]
@@ -212,7 +218,7 @@
 
 (defmethod properties :default [context]
   (when context
-    (log/warn :not-implemented "interface.properties" context)))
+    (warn-not-implemented 'properties context)))
 
 (defattribute get-properties [context]
   (properties context))
@@ -225,7 +231,7 @@
 
 (defmethod subfield-environments nil [_context])
 (defmethod subfield-environments :default [context]
-  (log/warn :not-implemented 'subfield-environments context))
+  (warn-not-implemented 'subfield-environments context))
 
 (declare get-subfields-environment)
 
@@ -252,13 +258,13 @@
 (defmulti render-shape effective-component-type)
 
 (defmethod render-shape nil [context]
-  (log/warn :not-implemented 'render-shape context))
+  (warn-not-implemented 'render-shape context))
 
 (defmulti subfield-render-shapes effective-component-type)
 
 (defmethod subfield-render-shapes nil [_context])
 (defmethod subfield-render-shapes :default [context]
-  (log/warn :not-implemented 'subfield-render-shapes context))
+  (warn-not-implemented 'subfield-render-shapes context))
 
 (defattribute get-subfield-render-shapes [context]
   (subfield-render-shapes (resolve-context context)))
@@ -396,7 +402,7 @@
                              ordinary-type))
 
 (defmethod auto-arrangement :default [ordinary-type context]
-  (log/warn :not-implemented "interface.auto-arrangement" ordinary-type context))
+  (log/warn :not-implemented 'auto-arrangement ordinary-type (:path context)))
 
 (defattribute get-auto-arrangement [ordinary-type context]
   (auto-arrangement ordinary-type context))
