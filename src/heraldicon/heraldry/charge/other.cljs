@@ -294,6 +294,13 @@
                  (colour/normalize colour))))
        set))
 
+(def ^:private clean-charge-data
+  (cache/memoize
+   ::clean-charge-data
+   ;; sanitized here too, for charges saved before the backend did it
+   (fn clean-charge-data [data]
+     (-> data svg/sanitize-charge-data svg/strip-clip-paths))))
+
 (derive :heraldry.charge.type/other :heraldry/charge)
 
 (defmethod interface/properties :heraldry.charge.type/other [{:keys [load-charge-data] :as context}]
@@ -319,8 +326,7 @@
                        "v" base-height
                        "h" (- base-width)
                        "z"]])
-        ;; sanitized here too, for charges saved before the backend did it
-        unadjusted-charge (-> data svg/sanitize-charge-data svg/strip-clip-paths)]
+        unadjusted-charge (clean-charge-data data)]
     (charge.shared/process-shape
      context
      {:base-shape base-shape
@@ -330,6 +336,54 @@
       :charge-entity charge-entity
       :charge-entity-path entity-path
       :unadjusted-charge unadjusted-charge})))
+
+(defn- picked-replacements
+  "The colours the tinctures of a charge resolve to, by placeholder kind. As
+  data, they can key the memoized recolourings below, which a closure over the
+  context couldn't."
+  [tincture context]
+  (into {}
+        (keep (fn [[kind replacement]]
+                (when (and (keyword? replacement)
+                           (not= replacement :none))
+                  [kind (tincture/pick replacement context)])))
+        tincture))
+
+;; drawn on top of the masked field: replaced and kept colours, everything else
+;; in the outline colour, see the comment in render-ir
+(def ^:private colour-charge
+  (cache/memoize
+   ::colour-charge
+   (fn colour-charge [data placeholder-colours picks outline-colour]
+     (replace-colours
+      data
+      (fn [colour]
+        (let [kind (placeholder-colour-modifier placeholder-colours (colour/normalize colour))]
+          (or (get picks kind)
+              (if (= kind :keep)
+                colour
+                outline-colour))))))))
+
+;; the colours the masks would show: the field's colour where the field shows
+;; through, the tinctures and kept colours where the coloured charge shows, and
+;; the outline colour where only the base layer shows
+(def ^:private colour-charge-directly
+  (cache/memoize
+   ::colour-charge-directly
+   (fn colour-charge-directly [data placeholder-colours picks outline-colour outline-mode field-colour]
+     (replace-colours
+      data
+      (fn [colour]
+        (if (str/starts-with? colour "url")
+          "none"
+          (let [kind (placeholder-colour-modifier placeholder-colours (colour/normalize colour))]
+            (cond
+              (get picks kind) (get picks kind)
+              (= kind :keep) colour
+              (= kind :layer-separator) "none"
+              (and (= kind :outline)
+                   (not= outline-mode :primary)) outline-colour
+              :else field-colour))))))))
 
 (defn- plain-field-colour
   "The flat colour of a plain field without components, or nil if the field
@@ -463,35 +517,20 @@
                                              adjusted-charge-without-shading
                                              layer-separator-colours
                                              0)
-            coloured-charge (replace-colours
-                             adjusted-charge-without-shading
-                             (fn [colour]
-                               (let [colour-lower (colour/normalize colour)
-                                     kind (placeholder-colour-modifier placeholder-colours colour-lower)
-                                     replacement (get-replacement kind tincture)]
-                                 (cond
-                                   replacement (tincture/pick replacement context)
-                                   (= kind :keep) colour
-                                   :else (outline/color context)))))
-            ;; the colours the masks would show: the field's colour where the field shows
-            ;; through, the tinctures and kept colours where the coloured charge shows, and
-            ;; the outline colour where only the base layer shows
+            picks (picked-replacements tincture context)
+            outline-colour (outline/color context)
+            coloured-charge (when-not field-colour
+                              (colour-charge adjusted-charge-without-shading
+                                             placeholder-colours
+                                             picks
+                                             outline-colour))
             directly-coloured-charge (when field-colour
-                                       (replace-colours
-                                        adjusted-charge-without-shading
-                                        (fn [colour]
-                                          (if (str/starts-with? colour "url")
-                                            "none"
-                                            (let [colour-lower (colour/normalize colour)
-                                                  kind (placeholder-colour-modifier placeholder-colours colour-lower)
-                                                  replacement (get-replacement kind tincture)]
-                                              (cond
-                                                replacement (tincture/pick replacement context)
-                                                (= kind :keep) colour
-                                                (= kind :layer-separator) "none"
-                                                (and (= kind :outline)
-                                                     (not= outline-mode :primary)) (outline/color context)
-                                                :else field-colour))))))
+                                       (colour-charge-directly adjusted-charge-without-shading
+                                                               placeholder-colours
+                                                               picks
+                                                               outline-colour
+                                                               outline-mode
+                                                               field-colour))
             layer-separator-colour-for-shadow-highlight (if hide-lower-layer?
                                                           "#000000"
                                                           "none")

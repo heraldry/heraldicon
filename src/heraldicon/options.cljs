@@ -172,16 +172,19 @@
     (and (keyword? choice)
          (keep-choice? choice))))
 
-(defn select-choices [choices select]
-  (let [keep-choice? (set select)]
-    (walk/postwalk (fn [data]
-                     (if (vector? data)
-                       (into []
-                             (keep (fn [element]
-                                     (when (or (not-vector? element)
-                                               (populated-group? element)
-                                               (desired-choice? element keep-choice?))
-                                       element)))
-                             data)
-                       data))
-                   choices)))
+;; choices and selections are fixed lists from the code, so the cache stays small
+(def select-choices
+  (memoize
+   (fn select-choices [choices select]
+     (let [keep-choice? (set select)]
+       (walk/postwalk (fn [data]
+                        (if (vector? data)
+                          (into []
+                                (keep (fn [element]
+                                        (when (or (not-vector? element)
+                                                  (populated-group? element)
+                                                  (desired-choice? element keep-choice?))
+                                          element)))
+                                data)
+                          data))
+                      choices)))))
