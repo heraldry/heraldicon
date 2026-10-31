@@ -390,15 +390,18 @@
         parent-type (interface/get-raw-data (-> context
                                                 interface/parent
                                                 interface/parent
-                                                (c/++ :type)))]
+                                                (c/++ :type)))
+        ;; the group options are nil without ordinaries; most fields have no
+        ;; components at all, so their ordinaries needn't be looked at
+        components? (pos? (interface/get-list-size (c/++ context :components)))]
     (cond-> (assoc (field.interface/options context)
                    :type type-option
                    :manual-blazon options/manual-blazon
-                   :fess-group (fess-group-options context)
-                   :pale-group (pale-group-options context)
-                   :chevron-group (chevron-group-options context)
-                   :bend-group (bend-group-options context)
-                   :bend-sinister-group (bend-sinister-group-options context))
+                   :fess-group (when components? (fess-group-options context))
+                   :pale-group (when components? (pale-group-options context))
+                   :chevron-group (when components? (chevron-group-options context))
+                   :bend-group (when components? (bend-group-options context))
+                   :bend-sinister-group (when components? (bend-sinister-group-options context)))
       (not (or counterchanged?
                plain?)) (assoc :outline? options/plain-outline?-option
                                :adapt-to-ordinaries? {:type :option.type/boolean

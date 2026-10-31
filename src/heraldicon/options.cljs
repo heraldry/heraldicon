@@ -19,7 +19,7 @@
    :default false
    :ui/label :string.charge.tincture-modifier.special/outline})
 
-(defn choices->map [choices]
+(defn- choices->map* [choices]
   (into {}
         (mapcat (fn [[group-name & items]]
                   (if (and (-> items count (= 1))
@@ -29,6 +29,18 @@
                     [[(first items) group-name]]
                     (map (comp vec reverse) items))))
         choices))
+
+;; choice lists are mostly constants, and options are sanitized all the time;
+;; the WeakMap forgets a map together with its list
+(def ^:private choice-maps (js/WeakMap.))
+
+(defn choices->map [choices]
+  (if (coll? choices)
+    (or (.get choice-maps choices)
+        (let [result (choices->map* choices)]
+          (.set choice-maps choices result)
+          result))
+    (choices->map* choices)))
 
 (defn- sanitize-range [value options]
   ;; -180..180 is used exclusively for angles; since angles are periodic, wrap
