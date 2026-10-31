@@ -6,17 +6,33 @@
 
 (def ^:private lookup-sentinel (js-obj))
 
+(def ^:private generation-size 4096)
+
+(defn- remember [{:keys [young]
+                  :as generations} args result]
+  (if (>= (count young) generation-size)
+    {:young {args result}
+     :old young}
+    (assoc-in generations [:young args] result)))
+
 (defn memoize
-  "Returns a memoized version of a referentially transparent function. The
-  memoized version of the function keeps a cache of the mapping from arguments
-  to results and, when calls with the same arguments are repeated often, has
-  higher performance at the expense of higher memory use."
+  "Returns a memoized version of a referentially transparent function.
+
+  The results live in the store, which a server render binds afresh. In the
+  browser the store lives on, so each function keeps two generations of
+  results: a result is remembered in the young one, and when that is full, it
+  becomes the old one, from which results used again move back. Results unused
+  for a whole generation are dropped."
   [id f]
   (fn [& args]
-    (let [v (get-in @store [id args] lookup-sentinel)]
+    (let [{:keys [young old]} (clojure.core/get @store id)
+          v (clojure.core/get young args lookup-sentinel)]
       (if (identical? v lookup-sentinel)
-        (let [ret (apply f args)]
-          (swap! store assoc-in [id args] ret)
+        (let [v (clojure.core/get old args lookup-sentinel)
+              ret (if (identical? v lookup-sentinel)
+                    (apply f args)
+                    v)]
+          (swap! store update id remember args ret)
           ret)
         v))))
 
