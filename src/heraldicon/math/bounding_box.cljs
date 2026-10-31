@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as str]
    [heraldicon.math.vector :as v]
-   [heraldicon.svg.path :as path]))
+   [heraldicon.svg.path-data :as path-data]))
 
 (defrecord ^:export BoundingBox [^js/Number min-x
                                  ^js/Number max-x
@@ -55,12 +55,16 @@
 (defn from-bounds ^BoundingBox [^js/Object bounds]
   (from-vector-and-size (v/Vector. (.-x bounds) (.-y bounds)) (.-width bounds) (.-height bounds)))
 
-(defn from-paths ^BoundingBox [paths]
-  (reduce combine (map #(-> %
-                            path/parse-path
-                            .-bounds
-                            from-bounds)
+(defn from-path-data
+  "The bounding box of parsed paths, see heraldicon.svg.path-data."
+  ^BoundingBox [paths]
+  (reduce combine (map (fn [path]
+                         (let [[x y width height] (path-data/bounds path)]
+                           (from-vector-and-size (v/Vector. x y) width height)))
                        paths)))
+
+(defn from-paths ^BoundingBox [paths]
+  (from-path-data (map path-data/parse paths)))
 
 (defn rotate ^BoundingBox [^BoundingBox {x1 :min-x x2 :max-x
                                          y1 :min-y y2 :max-y}

@@ -10,6 +10,7 @@
    [heraldicon.math.vector :as v]
    [heraldicon.options :as options]
    [heraldicon.svg.path :as path]
+   [heraldicon.svg.path-data :as path-data]
    [heraldicon.svg.squiggly :as squiggly]))
 
 (def ^:private outline-mode-choices
@@ -316,26 +317,28 @@
         ;; moved into place together. Otherwise an axis-aligned mask would be
         ;; applied after the rotation, which is unintuitive for charges that are
         ;; rotated, e.g. to face around a charge group.
+        ;; paths stay data until they're written out once at the end, see
+        ;; heraldicon.svg.path-data; only squiggly works on the written path
         scaled-shape (into []
                            (map #(-> %
                                      path/make-path
-                                     path/parse-path
-                                     (path/scale scale-x scale-y)
+                                     path-data/parse
+                                     (path-data/scale scale-x scale-y)
                                      (cond->
                                        squiggly? (->
-                                                   path/to-svg
+                                                   path-data/to-svg
                                                    squiggly/squiggly-path
-                                                   path/parse-path))
-                                     path/to-svg))
+                                                   path-data/parse))))
                            base-shape)
-        local-bounding-box (bb/from-paths scaled-shape)
+        local-bounding-box (bb/from-path-data scaled-shape)
         rotation-center (bb/center local-bounding-box)
-        place (fn [svg-path]
-                (-> svg-path
-                    path/parse-path
-                    (cond-> (not= angle 0) (path/rotate angle :center rotation-center))
-                    (path/translate (:x anchor-point) (:y anchor-point))
-                    path/to-svg))
+        place (fn [path]
+                (-> (if (string? path)
+                      (path-data/parse path)
+                      path)
+                    (cond-> (not= angle 0) (path-data/rotate angle rotation-center))
+                    (path-data/translate (:x anchor-point) (:y anchor-point))
+                    path-data/to-svg))
         {masked-bounding-box :bounding-box
          :keys [horizontal-mask-shape
                 vertical-mask-shape]} (->> (merge base-properties
