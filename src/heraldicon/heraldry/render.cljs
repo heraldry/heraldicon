@@ -26,6 +26,18 @@
     (cond->> shape-path
       (vector? shape-path) (apply str))))
 
+(defn shape-fill
+  "The shape of a flat-coloured field filled directly, instead of a mask or
+  clip path around a tinctured rect, see tincture/flat-colour. With overlap?
+  it's widened like the mask of an overlapping subfield."
+  [context colour overlap?]
+  (let [render-shape (interface/get-render-shape context)]
+    [:path (cond-> {:d (shape-path render-shape)
+                    :fill-rule "evenodd"
+                    :fill colour}
+             overlap? (assoc :stroke colour
+                             :stroke-width overlap-width))]))
+
 (defn shape-mask [context overlap?]
   (let [render-shape (interface/get-render-shape context)]
     [:path (cond-> {:d (shape-path render-shape)

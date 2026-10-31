@@ -1,5 +1,6 @@
 (ns heraldicon.heraldry.tincture
   (:require
+   [clojure.string :as str]
    [heraldicon.blazonry :as blazonry]
    [heraldicon.context :as c]
    [heraldicon.frontend.component.tree :as-alias tree]
@@ -103,6 +104,19 @@
                           "#eee")
       :else (or (theme/lookup-colour tincture theme)
                 "url(#void)"))))
+
+(defn flat-colour
+  "The flat colour of a plain field without components, or nil if the field
+  needs to be rendered, e.g. for a fur, a hatching or a division. Such a field
+  can be painted directly instead of being masked."
+  [field-context]
+  (when (and (= (interface/get-sanitized-data (c/++ field-context :type))
+                :heraldry.field.type/plain)
+             (zero? (interface/get-list-size (c/++ field-context :components))))
+    (let [colour (pick (interface/get-sanitized-data (c/++ field-context :tincture))
+                       field-context)]
+      (when-not (str/starts-with? colour "url")
+        colour))))
 
 (defn tinctured-field [context & {:keys [mask-id
                                          transform]}]

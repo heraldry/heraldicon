@@ -3,6 +3,7 @@
    [heraldicon.context :as c]
    [heraldicon.heraldry.charge.other :as other]
    [heraldicon.heraldry.render :as render]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.ir :as ir]
    [heraldicon.util.uid :as uid]))
@@ -21,18 +22,24 @@
          :as properties} (interface/get-properties context)
         mask-or-clip-path (if (and svg-export? (not clip?)) :mask :clipPath)
         mask-or-clip-path-attr (if (and svg-export? (not clip?)) :mask :clip-path)
+        ;; exports paint a flat-coloured field's shape directly
+        flat-colour (when (and svg-export? (not other?))
+                      (tincture/flat-colour (c/++ context :field)))
         charge-ir (cond
                     other? (other/render-ir context properties)
                     (= (boolean self-below-shield?)
                        (boolean render-pass-below-shield?)) (-> ir/blank
-                                                                (ir/add-def [mask-or-clip-path {:id shape-clip-path-id}
-                                                                             [render/shape-mask context]])
-                                                                (ir/add-child (c/++ context :field))
+                                                                (cond->
+                                                                  (not flat-colour) (-> (ir/add-def [mask-or-clip-path {:id shape-clip-path-id}
+                                                                                                     [render/shape-mask context]])
+                                                                                        (ir/add-child (c/++ context :field))))
                                                                 (assoc :body
                                                                        [:<>
                                                                         [render/shape-fimbriation context]
-                                                                        [:g {mask-or-clip-path-attr (str "url(#" shape-clip-path-id ")")}
-                                                                         [interface/ir-node (c/++ context :field)]]
+                                                                        (if flat-colour
+                                                                          [render/shape-fill context flat-colour false]
+                                                                          [:g {mask-or-clip-path-attr (str "url(#" shape-clip-path-id ")")}
+                                                                           [interface/ir-node (c/++ context :field)]])
                                                                         [render/charge-edges context]
                                                                         [render/shape-highlight context]]))
                     :else ir/blank)]

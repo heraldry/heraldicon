@@ -395,18 +395,6 @@
                    (not= outline-mode :primary)) outline-colour
               :else field-colour))))))))
 
-(defn- plain-field-colour
-  "The flat colour of a plain field without components, or nil if the field
-  needs to be rendered, e.g. for a fur, a hatching or a division."
-  [field-context]
-  (when (and (= (interface/get-sanitized-data (c/++ field-context :type))
-                :heraldry.field.type/plain)
-             (zero? (interface/get-list-size (c/++ field-context :components))))
-    (let [colour (tincture/pick (interface/get-sanitized-data (c/++ field-context :tincture))
-                                field-context)]
-      (when-not (str/starts-with? colour "url")
-        colour))))
-
 (defn render-ir [context {:keys [anchor-point scale-x scale-y angle top-left unadjusted-charge
                                  charge-entity charge-entity-path]}]
   (let [{:keys [self-below-shield?
@@ -503,7 +491,7 @@
                                              landscape?
                                              highlight-colours?
                                              hide-lower-layer?)))
-                           (plain-field-colour (c/++ context :field)))
+                           (tincture/flat-colour (c/++ context :field)))
             {mask :mask
              mask-inverted :mask-inverted
              mask-base :mask-base} (when-not (or preview-original?

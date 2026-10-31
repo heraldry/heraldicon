@@ -2,6 +2,7 @@
   (:require
    [heraldicon.context :as c]
    [heraldicon.heraldry.render :as render]
+   [heraldicon.heraldry.tincture :as tincture]
    [heraldicon.interface :as interface]
    [heraldicon.render.ir :as ir]
    [heraldicon.util.uid :as uid]))
@@ -70,18 +71,24 @@
         {:keys [transform]} (interface/get-properties context)
         mask? (and svg-export?
                    (not clip?))
-        field-context (c/++ context :field)]
+        field-context (c/++ context :field)
+        ;; exports paint a flat-coloured field's shape directly
+        flat-colour (when svg-export?
+                      (tincture/flat-colour field-context))]
     (-> ir/blank
-        (ir/add-def [(if mask? :mask :clipPath) {:id clip-path-id}
-                     [render/shape-mask context]])
-        (ir/add-child field-context)
+        (cond->
+          (not flat-colour) (-> (ir/add-def [(if mask? :mask :clipPath) {:id clip-path-id}
+                                             [render/shape-mask context]])
+                                (ir/add-child field-context)))
         (assoc :body [:<>
                       [render/shape-fimbriation context]
-                      [:g {(if mask? :mask :clip-path) (str "url(#" clip-path-id ")")}
-                       (let [wrapper (if transform
-                                       [:g {:transform transform}]
-                                       [:<>])]
-                         (conj wrapper [interface/ir-node field-context]))]
+                      (if flat-colour
+                        [render/shape-fill context flat-colour false]
+                        [:g {(if mask? :mask :clip-path) (str "url(#" clip-path-id ")")}
+                         (let [wrapper (if transform
+                                         [:g {:transform transform}]
+                                         [:<>])]
+                           (conj wrapper [interface/ir-node field-context]))])
                       [render/ordinary-edges context]
                       [cottising context]
                       [render/shape-highlight context]]))))
