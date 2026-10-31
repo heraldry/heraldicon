@@ -345,10 +345,7 @@
    :top "100%"
    :left 0
    :z-index 50
-   :background "white"
-   :border "1px solid #ddd"
-   :border-radius "0 0 4px 4px"
-   :box-shadow "2px 4px 10px rgba(0,0,0,0.15)"})
+   :border-radius "0 0 4px 4px"})
 
 (defn- search-input [id _kind _options]
   (let [path (filter-temporary-search-string-path id)
@@ -572,12 +569,12 @@
             ;; handle-outside-click above. No overlay div here.)
             (cond
               tree-key
-              [:div {:style (merge dropdown-base-style
-                                   {:width "25em"
-                                    :max-height "25em"
-                                    :overflow-y "auto"
-                                    :padding "10px"})
-                     :on-mouse-down #(.stopPropagation %)}
+              [:div.search-popup {:style (merge dropdown-base-style
+                                                {:width "25em"
+                                                 :max-height "25em"
+                                                 :overflow-y "auto"
+                                                 :padding "10px"})
+                                  :on-mouse-down #(.stopPropagation %)}
                [charge-type-select/charge-type-filter-tree
                 (fn [name leaf?]
                   (apply-suggestion! (str tree-key ":" (facets/slugify-name name)))
@@ -587,19 +584,19 @@
                  :with-standard-shapes? true}]]
 
               (seq suggestions)
-              [:ul {:style (merge dropdown-base-style
-                                  {:right 0
-                                   :margin 0
-                                   :padding 0
-                                   :list-style "none"
-                                   :max-height "20em"
-                                   :overflow-y "auto"})
-                    :on-mouse-down #(.stopPropagation %)}
+              [:ul.search-popup {:style (merge dropdown-base-style
+                                               {:right 0
+                                                :margin 0
+                                                :padding 0
+                                                :list-style "none"
+                                                :max-height "20em"
+                                                :overflow-y "auto"})
+                                 :on-mouse-down #(.stopPropagation %)}
                (for [[index s] (map-indexed vector suggestions)]
                  ^{:key s}
-                 [:li {:style {:padding "0.3em 0.7em"
-                               :cursor "pointer"
-                               :background (when (= index effective-selected) "#e0e0e0")}
+                 [:li {:class (when (= index effective-selected) "selected")
+                       :style {:padding "0.3em 0.7em"
+                               :cursor "pointer"}
                        :on-click #(apply-suggestion! s)
                        :on-mouse-enter #(reset! selected-index index)}
                   [:code s]])])])]))))
@@ -746,18 +743,15 @@
                          :top 0 :left 0 :right 0 :bottom 0
                          :z-index 99}
                  :on-click #(reset! open? false)}]
-          [:div {:style {:position "absolute"
-                         :top "100%"
-                         :left 0
-                         :z-index 100
-                         :background "white"
-                         :border "1px solid #ddd"
-                         :border-radius "5px"
-                         :padding "10px"
-                         :margin-top "5px"
-                         :width "26em"
-                         :box-shadow "2px 2px 10px rgba(0,0,0,0.15)"}
-                 :on-click #(.stopPropagation %)}
+          [:div.search-popup {:style {:position "absolute"
+                                      :top "100%"
+                                      :left 0
+                                      :z-index 100
+                                      :border-radius "5px"
+                                      :padding "10px"
+                                      :margin-top "5px"
+                                      :width "26em"}
+                              :on-click #(.stopPropagation %)}
            [:div {:style {:font-weight "bold" :margin-bottom "6px"}}
             [tr :string.structured-search/title]]
            [:div {:style {:font-size "0.9em" :margin-bottom "8px"}}

@@ -1558,6 +1558,16 @@ li.ui-menu-header {
   color: #ff0;
 }
 
+.search-popup {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.search-popup li.selected {
+  background-color: #e0e0e0;
+}
+
 .form-field-input {
   position: relative;
 }

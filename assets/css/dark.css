@@ -147,6 +147,51 @@
   color: #eee;
 }
 
+.dark .search-popup {
+  background-color: #222;
+  border-color: #444;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dark .search-popup li.selected {
+  background-color: #444;
+}
+
+.dark .filter-result-card.selected,
+.dark .small .filter-result-card.selected {
+  background-color: #2e2a24;
+}
+
+.dark .count-badge {
+  background-color: #444;
+  color: #ccc;
+}
+
+.dark .tooltip .bottom,
+.dark .tooltip .bottom > i::after {
+  background-color: #333;
+  color: #ccc;
+}
+
+.dark .error-message,
+.dark form > .error-message,
+.dark .banner.warning {
+  border-color: #733;
+  background-color: #3a2222;
+  color: #e88;
+}
+
+.dark .success-message,
+.dark .banner.success {
+  border-color: #363;
+  background-color: #223a22;
+  color: #8c8;
+}
+
+.dark .banner.success i {
+  color: #8c8;
+}
+
 .dark .filter-result-card {
   background-color: #222;
   filter: drop-shadow(#888 0px 0px 5px);
