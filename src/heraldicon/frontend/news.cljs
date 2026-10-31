@@ -27,7 +27,8 @@
           [:li "SVG size: " [:b "up to 4 times smaller"]]
           [:li "SVGs a little easier to edit in SVG tools"]
           [:li "PNG exports and previews: " [:b "up to 4 times faster"]]
-          [:li "PNG quality is sharper due to better rasterization"]]
+          [:li "PNG quality is sharper due to better rasterization"]
+          [:li "Rendering in the editor: " [:b "sharper"] ", and interaction should feel snappier for complex arms"]]
          [:p "A lot of that is due to less repetition in the SVG data, which also makes it cleaner and easier to work with in editors; it's still challenging, but it should be much easier now, especially with plain tincture fields. The PNGs look sharper because there's less masking now, it's very noticeable on zoom. But even better! Since these exports are fast now, I've increased the size, making them even better quality:"]
          [:ul
           [:li "Coats of arms export to a width of " [:b "1000 pixels, making them 4 times bigger"] "."]
