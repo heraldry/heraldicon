@@ -14,7 +14,28 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-08-19"
+  [{:id "2026-10-31"
+    :title "Faster, bigger, better exports"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "Over the years I've added many features to Heraldicon, while trying to keep performance up. Nevertheless some features added complexity and processing time, which also forced me to lower export resolution a while ago. I always had a few optimizations planned, but they'd require daunting rewrites of the code."]
+         [:p "Today we have AI, and this sort of thing is one area where it can really help. So in the last three days I went through a bunch of rewrites and optimizations, and they've paid off nicely!"]
+         [:ul
+          [:li "SVG exports: " [:b "up to 4 times faster"]]
+          [:li "SVG size: " [:b "up to 4 times smaller"]]
+          [:li "SVGs a little easier to edit in SVG tools"]
+          [:li "PNG exports and previews: " [:b "up to 4 times faster"]]
+          [:li "PNG quality is sharper due to better rasterization"]]
+         [:p "A lot of that is due to less repetition in the SVG data, which also makes it cleaner and easier to work with in editors; it's still challenging, but it should be much easier now, especially with plain tincture fields. The PNGs look sharper because there's less masking now, it's very noticeable on zoom. But even better! Since these exports are fast now, I've increased the size, making them even better quality:"]
+         [:ul
+          [:li "Coats of arms export to a width of " [:b "1000 pixels, making them 4 times bigger"] "."]
+          [:li "Collections export to a width of " [:b "3000 pixels, making them 9 times bigger"] ". (Note: a maximal height of 10,000 pixels, it's a technical limitation.)"]]]
+        [:div
+         (release-image "/img/2026-10-31-release-update.png" :width "520px")]]])}
+
+   {:id "2026-08-19"
     :title "Better exports"
     :content
     (fn []
