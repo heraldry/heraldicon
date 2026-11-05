@@ -14,7 +14,18 @@
   (or date (subs id 0 10)))
 
 (def posts
-  [{:id "2026-10-31"
+  [{:id "2026-11-05"
+    :title "Fastest, biggest and best exports"
+    :content
+    (fn []
+      [[:div.release-row
+        [:div.info
+         [:p "Exporting is now done in your browser. That helps the server, because there are less requests, and it makes it much faster for you. It's now pretty much instantaneous (unless you make it huge and the arms/collection are very complex)."]
+         [:p "The PNG export now also allows you to specify a width, to generate truly large and high resolution exports, which again are done pretty much immediately directly in the browser."]]
+        [:div
+         (release-image "/img/2026-11-05-release-update.png" :width "520px")]]])}
+
+   {:id "2026-10-31"
     :title "Faster, bigger, better exports"
     :content
     (fn []
