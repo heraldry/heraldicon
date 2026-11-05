@@ -62,7 +62,10 @@
                                        max-width)))]
     (fn [svg-data filename max-width]
       (let [dimensions (export/svg-dimensions svg-data)
-            [width height] (pixel-size dimensions (clamp-width (js/parseFloat @text) max-width))]
+            ;; read the text when an event fires: it may have changed since
+            ;; the last render
+            size #(pixel-size dimensions (clamp-width (js/parseFloat @text) max-width))
+            [width height] (size)]
         [:div {:style {:min-width "24em"
                        :max-width "30em"}}
          [:p [tr :string.miscellaneous/png-width-hint]]
@@ -81,7 +84,7 @@
                    :max max-width
                    :value @text
                    :on-change #(reset! text (-> % .-target .-value))
-                   :on-blur #(reset! text (str width))
+                   :on-blur #(reset! text (str (first (size))))
                    :style {:width "5em"}}]]
          [:div.buttons {:style {:display "flex"
                                 :align-items "center"
@@ -96,7 +99,7 @@
           [:button.button.primary
            {:type "button"
             :style {:margin-left "10px"}
-            :on-click #(do
+            :on-click #(let [[width height] (size)]
                          (set-item local-storage local-storage-width-name (str width))
                          (rf/dispatch [::export svg-data width height filename]))}
            [tr :string.button/export]]]]))))
