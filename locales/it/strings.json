@@ -714,6 +714,7 @@
     "none": "Nessuno",
     "no-item-selected": "Nessun oggetto selezionato",
     "opposite": "opposto",
+    "png-width-hint": "Larghezza dell'immagine in pixel. Larghezze maggiori danno più dettagli e file più grandi. L'altezza deriva dalle proporzioni.",
     "svg-file": "Documento SVG",
     "right": "Destra",
     "semy-of": "Seminato di",

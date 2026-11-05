@@ -7,7 +7,8 @@
   },
   "menu": {},
   "miscellaneous": {
-    "search": "Procurar..."
+    "search": "Procurar...",
+    "png-width-hint": "Largura da imagem em píxeis. Larguras maiores dão mais detalhe e ficheiros maiores. A altura resulta das proporções."
   },
   "tooltip": {
     "ignore-layer-separator?": "Se a peça contém um separador de camada para o escudo, então isto pode desativá-la. ",

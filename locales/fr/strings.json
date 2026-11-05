@@ -730,6 +730,7 @@
     "none": "Aucun",
     "no-item-selected": "Aucun élément sélectionné",
     "opposite": "opposé",
+    "png-width-hint": "Largeur de l'image en pixels. Une largeur plus grande donne plus de détails et des fichiers plus volumineux. La hauteur découle des proportions.",
     "svg-file": "Fichier SVG",
     "right": "Droite",
     "semy-of": "Semé de",

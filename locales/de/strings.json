@@ -729,6 +729,7 @@
     "none": "Keins",
     "no-item-selected": "Nichts ausgewählt",
     "opposite": "gegenüber",
+    "png-width-hint": "Breite des Bildes in Pixeln. Größere Breiten ergeben mehr Details und größere Dateien. Die Höhe ergibt sich aus den Proportionen.",
     "svg-file": "SVG Datei",
     "right": "Rechts",
     "semy-of": "Besät mit",
