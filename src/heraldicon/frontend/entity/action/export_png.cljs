@@ -27,12 +27,28 @@
 (defn- pixel-size [[width height] target-width]
   [target-width (js/Math.round (* height (/ target-width width)))])
 
+(def ^:private width-cap
+  16384)
+
+(def ^:private width-step
+  50)
+
 (defn- max-width
-  "The largest width the browser's canvas can hold, of a few candidates."
+  "The largest width, in steps of width-step, whose image the browser's canvas
+  can hold at these proportions. Browsers limit both the side and the area of
+  a canvas, so a binary search tries the actual sizes."
   [dimensions]
-  (or (first (filter #(apply export/canvas-fits? (pixel-size dimensions %))
-                     [8000 6000 4000 3000 2000 1000]))
-      min-width))
+  (let [fits? #(apply export/canvas-fits? (pixel-size dimensions %))]
+    (if (fits? width-cap)
+      width-cap
+      (loop [low min-width
+             high width-cap]
+        (if (<= (- high low) width-step)
+          (- low (mod low width-step))
+          (let [middle (quot (+ low high) 2)]
+            (if (fits? middle)
+              (recur middle high)
+              (recur low middle))))))))
 
 (defn- clamp-width [value max-width]
   (-> (if (js/isNaN value)
