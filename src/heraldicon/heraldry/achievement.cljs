@@ -31,7 +31,9 @@
                         (- 0 (/ total-width 2) min-x) ","
                         (- 0 (/ total-height 2) min-y) ")")}))
 
-(defn- get-used-fonts [context]
+(defn used-fonts
+  "The fonts the ornaments use, which an export embeds."
+  [context]
   (let [num-ornaments (interface/get-list-size (c/++ context :ornaments :elements))]
     ;; TODO: might have to be smarter here to only look into mottos,
     ;; but it should work if there's no :ribbon :segments
@@ -111,8 +113,8 @@
         ornaments-bounding-box (when render-ornaments?
                                  (interface/get-bounding-box ornaments-context))
 
-        used-fonts (cond-> (get-used-fonts context)
-                     short-url (conj short-url-font))
+        embedded-fonts (cond-> (used-fonts context)
+                         short-url (conj short-url-font))
 
         achievement-bounding-box (bb/combine ornaments-bounding-box coa-and-helms-bounding-box)
 
@@ -184,7 +186,7 @@
               :preserveAspectRatio "xMidYMin meet"}))
      (when (and svg-export?
                 embed-fonts)
-       [embed-fonts used-fonts])
+       [embed-fonts embedded-fonts])
      (ir/defs->hiccup defs)
      [:g {:transform result-transform
           :style {:transition "transform 0.5s"}}
